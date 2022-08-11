@@ -12,12 +12,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.dockyard.liveviewtest.android.managers.DomFetchManager
-import com.dockyard.liveviewtest.android.managers.SocketManager
-import com.dockyard.liveviewtest.android.mappers.SocketPayloadMapper
-import com.dockyard.liveviewtest.android.ui.phx_components.PhxAction
-import com.dockyard.liveviewtest.android.ui.phx_components.PhxLiveView
-import com.dockyard.liveviewtest.android.ui.theme.LiveViewTestTheme
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import okhttp3.Cookie
@@ -25,6 +19,12 @@ import okhttp3.CookieJar
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import org.jsoup.nodes.Document
+import org.phoenixframework.liveview.managers.DomFetchManager
+import org.phoenixframework.liveview.managers.SocketManager
+import org.phoenixframework.liveview.mappers.SocketPayloadMapper
+import org.phoenixframework.liveview.ui.phx_components.PhxAction
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
+import org.phoenixframework.liveview.ui.theme.LiveViewTestTheme
 
 class MainActivity : ComponentActivity() {
 
