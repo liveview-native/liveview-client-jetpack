@@ -6,3 +6,6 @@ build
 
 # JetBrains IDE
 .idea
+
+# local properties file
+local.properties
