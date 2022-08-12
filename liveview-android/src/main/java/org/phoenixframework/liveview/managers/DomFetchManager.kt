@@ -14,11 +14,11 @@ class DomFetchManager(
 
     private val phxLiveViewPayload: PhoenixLiveViewPayload = PhoenixLiveViewPayload()
 
-    suspend fun getWebsite(): PhoenixLiveViewPayload {
+    suspend fun getWebsite(url: String): PhoenixLiveViewPayload {
         withContext(Dispatchers.IO) {
             try {
 
-                val request = Request.Builder().url("http://10.0.2.2:4000").get().build()
+                val request = Request.Builder().url(url).get().build()
                 val doc: Document? = okHttpClient.newCall(request).execute().body?.string()?.let { Jsoup.parse(it) }
 
                 val theLiveViewMetaDataElement = doc!!.body().getElementsByAttributeValue("data-phx-main", "true")

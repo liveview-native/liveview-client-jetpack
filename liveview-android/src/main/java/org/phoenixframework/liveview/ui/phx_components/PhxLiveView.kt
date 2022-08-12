@@ -117,11 +117,12 @@ fun generateElementByTag(
             )
         }
 
-        "image", "img", "phx-image", "image-view", "async-image" -> {
+        "async-image" -> {
 
-            PhxImage(
+            PhxAsyncImage(
                 element = element,
-                modifier = attributeModifiers
+                modifier = attributeModifiers,
+                phxActionListener = phxActionListener
             )
 
         }

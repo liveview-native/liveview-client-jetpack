@@ -13,7 +13,6 @@ class SocketPayloadMapper {
 
     fun mapRawPayloadToDom(payload: Map<String, Any?>): Document {
         val renderedMap: Map<String, Any?> = payload["rendered"] as Map<String, Any?>
-//        Log.d("RENDERED", renderedMap.toString())
 
         val nextLevelDeep = renderedMap["0"] as Map<String, Any?>
 
@@ -69,7 +68,6 @@ class SocketPayloadMapper {
 
                     val innerTemplateList = pMap.values.first() as List<String>
                     val innerTemplate = innerTemplateList.first()
-//                    "${outerValues?.first() ?: ""}$innerTemplate${outerValues?.last() ?: ""}"
                     "$innerTemplate"
 
                 } else {
@@ -119,23 +117,18 @@ class SocketPayloadMapper {
             val finalDom = finalDomList.reduce { acc, s -> acc + s }
 
             val document: Document = Jsoup.parse(finalDom)
-//            Log.d("OUTPUT DOM: ", document.toString())
             return document
-//            domParsedListener.invoke(document)
         } else {
             val finalDom = originalRenderDom.reduce { acc, s -> acc + s }
             val document: Document = Jsoup.parse(finalDom)
 
-//            Log.d("OUTPUT DOM: ", document.toString())
             return document
-//            domParsedListener.invoke(document)
         }
     }
 
     fun parseDiff(message: Message) : Document? {
         if (message.payload.containsKey("diff")) {
             val rawDiff = message.payload["diff"] as Map<String, Any>
-//            Log.d("RAW DIFF", rawDiff.toString())
 
             return extractDiff(rawDiff)
         }
@@ -145,10 +138,8 @@ class SocketPayloadMapper {
 
     fun extractDiff(rawDiff: Map<String, Any?>): Document {
         val firstLevel = rawDiff["0"] as LinkedTreeMap<String, Any>
-//        Log.d("FIRST LEVEL", firstLevel.toString())
 
         val secondLevel = firstLevel["0"] as LinkedTreeMap<String, Any>
-//        Log.d("SECOND LEVEL", secondLevel.toString())
 
         val liveValuesLevel = secondLevel.entries
 

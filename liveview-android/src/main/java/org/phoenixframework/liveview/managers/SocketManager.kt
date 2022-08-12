@@ -41,7 +41,7 @@ class SocketManager(
         val socketParams = mapOf(
             "_csrf_token" to phxLiveViewPayload._csrfToken,
             "_mounts" to 0,
-            "client_id" to uuid,
+            "client_id" to uuid
         )
 
         val socketQueryParams = socketParams.entries.fold("") { acc: String, entry: Map.Entry<String, Any?> ->
@@ -49,12 +49,12 @@ class SocketManager(
         }
 
         phxSocket = Socket(
-            url = "ws://10.0.2.2:4000/live/websocket?$socketQueryParams",
+            url = "ws://10.0.2.2:8080/live/websocket?$socketQueryParams",
             client = okHttpClient
         )
 
         liveReloadSocket = Socket(
-            url = "ws://10.0.2.2:4000/phoenix/live_reload/socket",
+            url = "ws://10.0.2.2:8080/phoenix/live_reload/socket",
             client = okHttpClient
         )
 
@@ -76,7 +76,8 @@ class SocketManager(
             "params" to mapOf(
                 "_mounts" to 0,
                 "_csrf_token" to phxLiveViewPayload._csrfToken,
-                "_native" to true,
+//                "_native" to true,
+                "_platform" to "android",
                 "client_id" to uuid
             )
         )
