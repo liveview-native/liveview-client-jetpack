@@ -9,7 +9,8 @@ import org.jsoup.select.Elements
 import org.phoenixframework.liveview.extensions.xGenerateFromElement
 import org.phoenixframework.liveview.ui.phx_components.phx_canvas.PhxCanvas
 
-@Composable fun PhxLiveView(documentState: MutableState<Document?>, phxActionListener: (PhxAction) -> Unit) {
+@Composable
+fun PhxLiveView(documentState: MutableState<Document?>, phxActionListener: (PhxAction) -> Unit) {
     walkDomAndBuildComposables(
         document = documentState.value,
         phxActionListener = phxActionListener
@@ -17,16 +18,21 @@ import org.phoenixframework.liveview.ui.phx_components.phx_canvas.PhxCanvas
 }
 
 
-@Composable fun walkDomAndBuildComposables(document: Document?, phxActionListener: (PhxAction) -> Unit) {
+@Composable
+fun walkDomAndBuildComposables(document: Document?, phxActionListener: (PhxAction) -> Unit) {
 
     document?.body()?.let { theBody ->
-        walkChildrenAndBuildComposables(children = theBody.children(), phxActionListener = phxActionListener)
+        walkChildrenAndBuildComposables(
+            children = theBody.children(),
+            phxActionListener = phxActionListener
+        )
     }
 
 }
 
 
-@Composable fun walkChildrenAndBuildComposables(children: Elements? , phxActionListener: (PhxAction) -> Unit) {
+@Composable
+fun walkChildrenAndBuildComposables(children: Elements?, phxActionListener: (PhxAction) -> Unit) {
 
     children?.forEach { theElement ->
         mapElementToComposable(element = theElement, phxActionListener = phxActionListener)
@@ -35,7 +41,8 @@ import org.phoenixframework.liveview.ui.phx_components.phx_canvas.PhxCanvas
 }
 
 
-@Composable private fun mapElementToComposable(element: Element, phxActionListener: (PhxAction) -> Unit) {
+@Composable
+private fun mapElementToComposable(element: Element, phxActionListener: (PhxAction) -> Unit) {
 
     Log.d("Element Tag:", element.tagName())
     generateElementByTag(element, phxActionListener)
@@ -108,7 +115,7 @@ fun generateElementByTag(
                 }
             )
         }
-        
+
         "column" -> {
             PhxColumn(
                 element = element,
@@ -117,13 +124,12 @@ fun generateElementByTag(
             )
         }
 
-        "image", "img", "phx-image", "image-view", "async-image" -> {
-
-            PhxImage(
+        "async-image" -> {
+            PhxAsyncImage(
                 element = element,
-                modifier = attributeModifiers
+                modifier = attributeModifiers,
+                phxActionListener = phxActionListener
             )
-
         }
 
         "lazy-column" -> {

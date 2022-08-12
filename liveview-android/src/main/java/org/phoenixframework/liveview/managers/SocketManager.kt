@@ -19,7 +19,7 @@ class SocketManager(
 ) {
 
     private var phxSocket: Socket? = null
-    private var channel : Channel? = null
+    private var channel: Channel? = null
     private val uuid: String = UUID.randomUUID().toString()
 
     private var liveReloadChannel: Channel? = null
@@ -41,20 +41,21 @@ class SocketManager(
         val socketParams = mapOf(
             "_csrf_token" to phxLiveViewPayload._csrfToken,
             "_mounts" to 0,
-            "client_id" to uuid,
+            "client_id" to uuid
         )
 
-        val socketQueryParams = socketParams.entries.fold("") { acc: String, entry: Map.Entry<String, Any?> ->
-            acc + "${entry.key}=${entry.value}&"
-        }
+        val socketQueryParams =
+            socketParams.entries.fold("") { acc: String, entry: Map.Entry<String, Any?> ->
+                acc + "${entry.key}=${entry.value}&"
+            }
 
         phxSocket = Socket(
-            url = "ws://10.0.2.2:4000/live/websocket?$socketQueryParams",
+            url = "ws://10.0.2.2:8080/live/websocket?$socketQueryParams",
             client = okHttpClient
         )
 
         liveReloadSocket = Socket(
-            url = "ws://10.0.2.2:4000/phoenix/live_reload/socket",
+            url = "ws://10.0.2.2:8080/phoenix/live_reload/socket",
             client = okHttpClient
         )
 
@@ -76,7 +77,7 @@ class SocketManager(
             "params" to mapOf(
                 "_mounts" to 0,
                 "_csrf_token" to phxLiveViewPayload._csrfToken,
-                "_native" to true,
+                "_platform" to "android",
                 "client_id" to uuid
             )
         )
@@ -110,7 +111,7 @@ class SocketManager(
         channel?.onMessage { message: Message ->
             Log.d("CHANNEL MESSAGE", message.toString())
 
-            when(message.event) {
+            when (message.event) {
                 "phx_reply" -> {
                     Log.d("ON MESSAGE PAYLOAD", message.payload.toString())
 
@@ -154,7 +155,7 @@ class SocketManager(
 
             Log.e("TAG", throwable.message.toString())
 
-            when(throwable) {
+            when (throwable) {
                 is ConnectException -> {
                     val errorHtml = "<column>" +
                             "<text width=fill padding=16>" + throwable.message.toString() + "</text>" +
