@@ -12,6 +12,7 @@ import org.jsoup.nodes.Element
     onAction: () -> Unit
 ) {
     Button(
+        modifier = modifier,
         onClick = {
           onAction.invoke()
         }

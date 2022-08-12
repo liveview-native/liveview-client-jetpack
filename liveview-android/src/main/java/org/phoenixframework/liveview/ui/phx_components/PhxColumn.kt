@@ -15,17 +15,17 @@ fun PhxColumn(
     phxActionListener: (PhxAction) -> Unit
 ) {
 
-    val horizontalAlignment = when(element.multiAttr("horizontal-alignment", "h-al")) {
+    val horizontalAlignment = when(element.multiAttr("horizontal-alignment")) {
 
-        "start", "s" -> {
+        "start" -> {
             Alignment.Start
         }
 
-        "end", "e" -> {
+        "end" -> {
             Alignment.End
         }
 
-        "center-horizontally", "center", "c" -> {
+        "center-horizontally" -> {
             Alignment.CenterHorizontally
         }
 
@@ -36,29 +36,29 @@ fun PhxColumn(
 
 
 
-    val verticalArrangement = when(element.multiAttr("vertical-arrangement", "v-ar")) {
+    val verticalArrangement = when(element.multiAttr("vertical-arrangement")) {
 
-        "top", "t" -> {
+        "top" -> {
             Arrangement.Top
         }
 
-        "bottom", "b" -> {
+        "bottom" -> {
             Arrangement.Bottom
         }
 
-        "center", "c" -> {
+        "center" -> {
             Arrangement.Center
         }
 
-        "space-between", "s-b" -> {
+        "space-between" -> {
             Arrangement.SpaceBetween
         }
 
-        "space-around", "s-a" -> {
+        "space-around" -> {
             Arrangement.SpaceAround
         }
 
-        "space-evenly", "s-e" -> {
+        "space-evenly" -> {
             Arrangement.SpaceEvenly
         }
 
