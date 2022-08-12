@@ -23,11 +23,11 @@ fun xGenerateFromElement(
 
         internalModifier = when(attribute.key) {
 
-            "p", "padding" -> {
+            "padding" -> {
                 internalModifier.then(Modifier.padding(attribute.value.toInt().dp))
             }
 
-            "width", "w" -> {
+            "width" -> {
                 when(attribute.value) {
                     "wrap", "wrap_content" -> {
                         internalModifier.then(Modifier.wrapContentWidth())
@@ -41,7 +41,7 @@ fun xGenerateFromElement(
                 }
             }
 
-            "height", "h" -> {
+            "height" -> {
                 when(attribute.value) {
                     "wrap", "wrap_content" -> {
                         internalModifier.then(Modifier.wrapContentHeight())
@@ -59,7 +59,7 @@ fun xGenerateFromElement(
                 internalModifier.then(Modifier.fillMaxSize())
             }
 
-            "background", "bg" -> {
+            "background" -> {
                 val color = Color(attribute.value.toColorInt())
                 internalModifier.then(Modifier.background(color))
             }

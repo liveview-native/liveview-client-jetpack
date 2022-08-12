@@ -117,7 +117,7 @@ fun generateElementByTag(
             )
         }
 
-        "image", "img", "phx-image", "image-view" -> {
+        "image", "img", "phx-image", "image-view", "async-image" -> {
 
             PhxImage(
                 element = element,
