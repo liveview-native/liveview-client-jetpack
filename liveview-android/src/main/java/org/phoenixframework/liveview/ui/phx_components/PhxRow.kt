@@ -17,15 +17,15 @@ fun PhxRow(
 
     val verticalAlignment = when(element.multiAttr("vertical-alignment", "v-al")) {
 
-        "top", "t" -> {
+        "top" -> {
             Alignment.Top
         }
 
-        "bottom", "b" -> {
+        "bottom" -> {
             Alignment.Bottom
         }
 
-        "center-vertically", "center", "c" -> {
+        "center-vertically" -> {
             Alignment.CenterVertically
         }
 
@@ -34,28 +34,28 @@ fun PhxRow(
         }
     }
 
-    val horizontalArrangement = when(element.multiAttr("horizontal-arrangement", "h-ar")) {
-        "end", "e" -> {
+    val horizontalArrangement = when(element.multiAttr("horizontal-arrangement")) {
+        "end" -> {
             Arrangement.End
         }
 
-        "start", "s" -> {
+        "start" -> {
             Arrangement.Start
         }
 
-        "center", "c" -> {
+        "center" -> {
             Arrangement.Center
         }
 
-        "space-between", "s-b" -> {
+        "space-between" -> {
             Arrangement.SpaceBetween
         }
 
-        "space-around", "s-a" -> {
+        "space-around" -> {
             Arrangement.SpaceAround
         }
 
-        "space-evenly", "s-e" -> {
+        "space-evenly" -> {
             Arrangement.SpaceEvenly
         }
 
