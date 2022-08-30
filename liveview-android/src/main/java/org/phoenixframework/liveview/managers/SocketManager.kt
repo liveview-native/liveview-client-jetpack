@@ -41,7 +41,8 @@ class SocketManager(
         val socketParams = mapOf(
             "_csrf_token" to phxLiveViewPayload._csrfToken,
             "_mounts" to 0,
-            "client_id" to uuid
+            "client_id" to uuid,
+            "_platform" to "android"
         )
 
         val socketQueryParams =
@@ -50,20 +51,24 @@ class SocketManager(
             }
 
         phxSocket = Socket(
-            url = "ws://10.0.2.2:8080/live/websocket?$socketQueryParams",
+            url = "${LiveViewState.baseSocketUrl}/live/websocket?$socketQueryParams",
             client = okHttpClient
         )
 
         liveReloadSocket = Socket(
-            url = "ws://10.0.2.2:8080/phoenix/live_reload/socket",
+            url = "${LiveViewState.baseSocketUrl}/phoenix/live_reload/socket",
             client = okHttpClient
         )
 
         // Listen to events on the Socket
         phxSocket?.logger = {
-            Log.d("SOCKET TAG", it)
+            Log.d("PHX-SOCKET LOGGER TAG", it)
         }
 
+        phxSocket?.onError { error, response ->
+            Log.e("ON ERROR", error.toString())
+            Log.e("ON ERROR RESPONSE", error.toString())
+        }
 
         phxSocket?.onOpen {
             Log.d("TAG", "----- SOCKET OPENED -----")
@@ -73,7 +78,7 @@ class SocketManager(
         val channelConnectionParams = mapOf(
             "session" to phxLiveViewPayload.dataPhxSession,
             "static" to phxLiveViewPayload.dataPhxStatic,
-            "url" to "http://localhost:4000/",
+            "url" to LiveViewState.baseUrl,
             "params" to mapOf(
                 "_mounts" to 0,
                 "_csrf_token" to phxLiveViewPayload._csrfToken,
@@ -93,7 +98,7 @@ class SocketManager(
 
         channel?.join()
             ?.receive("ok") { theMessage: Message ->
-                Log.d("TAG", "CHAT ROOM LIVEVIEW JOINED")
+                Log.d("SOCKET MANAGER CHANNEL JOIN OK", "CHAT ROOM LIVEVIEW JOINED")
                 val payload: Map<String, Any?> = theMessage.payload
                 val outputDom = socketPayloadMapper.mapRawPayloadToDom(payload)
                 domParsedListener.invoke(outputDom)
@@ -101,7 +106,7 @@ class SocketManager(
             }
             ?.receive("error") {
                 /* failed to join the chatroom */
-                Log.d("TAG", "CHAT ROOM LIVEVIEW ERROR")
+                Log.d("SOCKET MANAGER CHANNEL JOIN ERROR", "CHAT ROOM LIVEVIEW ERROR")
                 Log.e("ERROR", it.toString())
             }
             ?.receive("response") {
@@ -115,14 +120,10 @@ class SocketManager(
                 "phx_reply" -> {
                     Log.d("ON MESSAGE PAYLOAD", message.payload.toString())
 
-                    val outputDom = socketPayloadMapper.parseDiff(message)
-                    outputDom?.let {
+                    socketPayloadMapper.parseDiff(message)?.let {
                         domParsedListener.invoke(it)
                     }
-
-
                 }
-//
                 "diff" -> {
                     Log.d("ON DIFF PAYLOAD", message.payload.toString())
 

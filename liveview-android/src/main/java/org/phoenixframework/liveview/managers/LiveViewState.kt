@@ -17,7 +17,8 @@ object LiveViewState {
     private var storedCookies: MutableList<Cookie> = mutableListOf()
     private val socketPayloadMapper: SocketPayloadMapper = SocketPayloadMapper()
     val documentState = mutableStateOf<Document?>(null)
-    var url: String? = "http://10.0.2.2:8080"
+    var baseUrl: String? = "http://10.0.2.2:8080"
+    var baseSocketUrl: String? = "ws://10.0.2.2:8080"
 
     private val cookieJar = object : CookieJar {
         override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
@@ -52,12 +53,12 @@ object LiveViewState {
         }
 
         socketManager.liveReloadListener = {
-            url?.let {
+            baseUrl?.let {
                 launchLiveView(it)
             }
         }
 
-        url?.let {
+        baseUrl?.let {
             launchLiveView(it)
         }
     }
