@@ -8,18 +8,16 @@ import org.phoenixframework.liveview.extensions.orderedMix
 
 class SocketPayloadMapper {
     private lateinit var originalRenderDom: List<String>
-    private lateinit var liveValuesMap: MutableMap<String, Any>
+    private lateinit var liveValuesMap: MutableMap<String, Any?>
 
     fun mapRawPayloadToDom(payload: Map<String, Any?>): Document {
         val renderedMap: Map<String, Any?> = payload["rendered"] as Map<String, Any?>
 
-        val nextLevelDeep = renderedMap["0"] as Map<String, Any?>
-
-        val domDiffList = nextLevelDeep["0"] as Map<String, Any?>
+        val domDiffList = initialWalkDownSocketTreeToBody(renderedMap)
 
         originalRenderDom = domDiffList["s"] as List<String>
 
-        liveValuesMap = domDiffList.filter { it.key != "s" } as MutableMap<String, Any>
+        liveValuesMap = domDiffList.filter { it.key != "s" } as MutableMap<String, Any?>
 
         val valuesToMerge: List<String> = liveValuesMap.map { theEntry ->
             when (theEntry.value) {
@@ -47,6 +45,21 @@ class SocketPayloadMapper {
 
         return generateFinalDomFromLiveValues(valuesToMerge)
     }
+
+    tailrec fun initialWalkDownSocketTreeToBody(inputMap: Map<String, Any?>): Map<String, Any?> =
+        if (inputMap.containsKey("0")) {
+            val castedInputMap = inputMap["0"] as Map<String, Any?>
+
+            if (castedInputMap.containsKey("s")) {
+                castedInputMap
+            } else {
+                val nextLevelDeepMap = inputMap["0"] as Map<String, Any?>
+
+                initialWalkDownSocketTreeToBody(nextLevelDeepMap)
+            }
+        } else {
+            inputMap
+        }
 
     private fun generateHtmlFromDynamics(
         innerComprehensionValues: List<List<Any>>,
@@ -100,8 +113,8 @@ class SocketPayloadMapper {
         message.payload["diff"]?.let { it as Map<String, Any> }?.let(::extractDiff)
 
     fun extractDiff(rawDiff: Map<String, Any?>): Document {
-        val firstLevel = rawDiff["0"] as LinkedTreeMap<String, Any>
-        val secondLevel = firstLevel["0"] as LinkedTreeMap<String, Any>
+        val firstLevel = rawDiff["0"] as LinkedTreeMap<String, Any?>
+        val secondLevel = firstLevel["0"] as LinkedTreeMap<String, Any?>
         val liveValuesLevel = secondLevel.entries
 
         liveValuesLevel.forEach { mutableEntry ->

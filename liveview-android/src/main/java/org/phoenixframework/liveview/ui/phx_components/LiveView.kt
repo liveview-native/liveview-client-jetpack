@@ -19,7 +19,11 @@ fun LiveView() {
             PhxLiveView(
                 documentState = LiveViewState.documentState,
                 phxActionListener = { phxAction: PhxAction ->
-                    LiveViewState.socketManager.pushChannelMessage(phxAction = phxAction)
+                    LiveViewState
+                        .socketManager
+                        .pushChannelMessage(
+                            phxAction = phxAction
+                        )
                 }
             )
         }
