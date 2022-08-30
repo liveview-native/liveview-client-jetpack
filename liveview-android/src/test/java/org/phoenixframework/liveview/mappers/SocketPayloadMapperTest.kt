@@ -16,7 +16,79 @@ internal class SocketPayloadMapperTest {
     }
 
     @Test
+    fun `initial walk finds correct render statics map`() {
+
+        val expectedExtractedMap: Map<String, Any?> = mapOf(
+            "s" to listOf("<text>Hello</text>")
+        )
+
+        val inputPayload1 = mapOf(
+            "rendered" to mapOf(
+                "0" to mapOf(
+                    "s" to listOf("<text>Hello</text>")
+                )
+            )
+        )
+
+        val renderedMap1 = inputPayload1["rendered"] as Map<String, Any?>
+
+        val actualExtractedMap1: Map<String, Any?> = sut.initialWalkDownSocketTreeToBody(renderedMap1)
+
+        assertEquals(expectedExtractedMap, actualExtractedMap1)
+
+        val inputPayload2 = mapOf(
+            "rendered" to mapOf(
+                "0" to mapOf(
+                    "0" to mapOf(
+                        "s" to listOf("<text>Hello</text>")
+                    )
+                )
+            )
+        )
+
+        val renderedMap2 = inputPayload2["rendered"] as Map<String, Any?>
+        val actualExtractedMap2 = sut.initialWalkDownSocketTreeToBody(renderedMap2)
+
+        assertEquals(expectedExtractedMap, actualExtractedMap2)
+
+        val inputPayload3 = mapOf(
+            "rendered" to mapOf(
+                "0" to mapOf(
+                    "0" to mapOf(
+                        "0" to mapOf(
+                            "s" to listOf("<text>Hello</text>")
+                        )
+                    )
+                )
+            )
+        )
+
+        val renderedMap3 = inputPayload3["rendered"] as Map<String, Any?>
+        val actualExtractedMap3 = sut.initialWalkDownSocketTreeToBody(renderedMap3)
+
+        assertEquals(expectedExtractedMap, actualExtractedMap3)
+
+    }
+
+    @Test
     fun `test simple input`() {
+
+        val inputPayload = mapOf(
+            "rendered" to mapOf(
+                "0" to mapOf(
+                    "s" to listOf("<text>Hello</text>")
+                )
+            )
+        )
+
+        val outputDom = sut.mapRawPayloadToDom(inputPayload)
+
+        val expected = Jsoup.parse("<text>Hello</text>")
+
+        assert(expected.html() == outputDom.html())
+    }
+    @Test
+    fun `test multiple dom depth input`() {
 
         val inputPayload = mapOf(
             "rendered" to mapOf(
@@ -34,6 +106,8 @@ internal class SocketPayloadMapperTest {
 
         assert(expected.html() == outputDom.html())
     }
+
+
 
     @Test
     fun `test column input`() {

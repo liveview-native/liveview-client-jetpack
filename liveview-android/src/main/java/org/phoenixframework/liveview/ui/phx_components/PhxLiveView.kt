@@ -9,7 +9,12 @@ import org.jsoup.select.Elements
 import org.phoenixframework.liveview.extensions.xGenerateFromElement
 import org.phoenixframework.liveview.ui.phx_components.phx_canvas.PhxCanvas
 
-@Composable fun PhxLiveView(documentState: MutableState<Document?>, phxActionListener: (PhxAction) -> Unit) {
+@Composable fun PhxLiveView(
+    documentState: MutableState<Document?>,
+    phxActionListener: (PhxAction) -> Unit
+) {
+
+
     walkDomAndBuildComposables(
         document = documentState.value,
         phxActionListener = phxActionListener
@@ -163,7 +168,7 @@ fun generateElementByTag(
             )
         }
 
-        "textfield" -> {
+        "text-field" -> {
             PhxTextField(
                 element = element,
                 modifier = attributeModifiers,

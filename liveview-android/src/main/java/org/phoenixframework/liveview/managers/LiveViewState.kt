@@ -19,7 +19,8 @@ object LiveViewState {
     private val socketPayloadMapper: SocketPayloadMapper = SocketPayloadMapper()
 
     private val documentState = mutableStateOf<Document?>(null)
-    var url: String? = "http://10.0.2.2:8080"
+    var baseUrl: String? = "http://10.0.2.2:8080"
+    var baseSocketUrl: String? = "ws://10.0.2.2:8080"
 
     fun getDocumentState() = documentState
     fun getSocketManager() = socketManager
@@ -61,12 +62,12 @@ object LiveViewState {
         }
 
         socketManager.liveReloadListener = {
-            url?.let {
+            baseUrl?.let {
                 launchLiveView(it)
             }
         }
 
-        url?.let {
+        baseUrl?.let {
             launchLiveView(it)
         }
     }
