@@ -12,16 +12,13 @@ fun PhxLazyColumn(
     modifier: Modifier,
     phxActionListener: (PhxAction) -> Unit
 ) {
-
-
-
     LazyColumn(modifier = modifier) {
-
         items(element.children()) {
-            generateElementByTag(it, phxActionListener)
+            generateElementByTag(
+                element = it,
+                phxActionListener = phxActionListener
+            )
         }
-
     }
-
 }
 

@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.ui.phx_components
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.navigation.NavHostController
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -12,38 +13,58 @@ import org.phoenixframework.liveview.ui.phx_components.phx_canvas.PhxCanvas
 @Composable
 fun PhxLiveView(
     documentState: MutableState<Document?>,
+    navHostController: NavHostController,
     phxActionListener: (PhxAction) -> Unit
 ) {
     walkDomAndBuildComposables(
         document = documentState.value,
+        navHostController = navHostController,
         phxActionListener = phxActionListener
     )
 }
 
-
 @Composable
-fun walkDomAndBuildComposables(document: Document?, phxActionListener: (PhxAction) -> Unit) {
+fun walkDomAndBuildComposables(
+    document: Document?,
+    navHostController: NavHostController,
+    phxActionListener: (PhxAction) -> Unit
+) {
     document?.body()?.let { theBody ->
         walkChildrenAndBuildComposables(
             children = theBody.children(),
+            navHostController = navHostController,
             phxActionListener = phxActionListener
         )
     }
 }
 
-
 @Composable
-fun walkChildrenAndBuildComposables(children: Elements?, phxActionListener: (PhxAction) -> Unit) {
+fun walkChildrenAndBuildComposables(
+    children: Elements?,
+    navHostController: NavHostController? = null,
+    phxActionListener: (PhxAction) -> Unit
+) {
     children?.forEach { theElement ->
-        mapElementToComposable(element = theElement, phxActionListener = phxActionListener)
+        mapElementToComposable(
+            element = theElement,
+            navHostController = navHostController,
+            phxActionListener = phxActionListener
+        )
     }
 }
 
-
 @Composable
-private fun mapElementToComposable(element: Element, phxActionListener: (PhxAction) -> Unit) {
+private fun mapElementToComposable(
+    element: Element,
+    navHostController: NavHostController? = null,
+    phxActionListener: (PhxAction) -> Unit
+) {
     Log.d("Element Tag:", element.tagName())
-    generateElementByTag(element, phxActionListener)
+    generateElementByTag(
+        element = element,
+        navHostController = navHostController,
+        phxActionListener = phxActionListener
+    )
 
     if (element.children().isNotEmpty()) {
         return
@@ -53,6 +74,7 @@ private fun mapElementToComposable(element: Element, phxActionListener: (PhxActi
 @Composable
 fun generateElementByTag(
     element: Element,
+    navHostController: NavHostController? = null,
     phxActionListener: (PhxAction) -> Unit
 ) {
     val attributeModifiers = xGenerateFromElement(
@@ -123,11 +145,14 @@ fun generateElementByTag(
             modifier = attributeModifiers,
             phxActionListener = phxActionListener
         )
-        "nav-host" -> PhxNavHost(
-            element = element,
-            modifier = attributeModifiers,
-            phxActionListener = phxActionListener,
-        )
+        "nav-host" -> if (navHostController != null) {
+            PhxNavHost(
+                element = element,
+                modifier = attributeModifiers,
+                navHostController = navHostController,
+                phxActionListener = phxActionListener,
+            )
+        }
         "row" -> PhxRow(
             element = element,
             modifier = attributeModifiers,

@@ -12,14 +12,13 @@ fun PhxLazyRow(
     modifier: Modifier,
     phxActionListener: (PhxAction) -> Unit
 ) {
-
     LazyRow(modifier = modifier) {
-
         items(element.children()) {
-            generateElementByTag(it, phxActionListener)
+            generateElementByTag(
+                element = it,
+                phxActionListener = phxActionListener
+            )
         }
-
     }
-
 }
 
