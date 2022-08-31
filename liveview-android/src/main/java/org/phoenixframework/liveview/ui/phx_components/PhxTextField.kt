@@ -1,20 +1,38 @@
 package org.phoenixframework.liveview.ui.phx_components
 
 import androidx.compose.material.TextField
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import org.jsoup.nodes.Element
 
 @Composable
 fun PhxTextField(
     element: Element,
     modifier: Modifier,
-    _onValueChange: (String) -> Unit) {
+    phxActionListener: (PhxAction) -> Unit,
+) {
+    var textValue by remember { mutableStateOf(TextFieldValue(element.attr("value"))) }
+
+    val label: @Composable () -> Unit = {
+        walkChildrenAndBuildComposables(
+            children = element.getElementsByTag("label*").first()?.children(),
+            phxActionListener = phxActionListener
+        )
+    }
 
     TextField(
-        value = element.ownText(),
+        value = textValue,
+        label = label,
         modifier = modifier,
         onValueChange = {
-            _onValueChange.invoke(it)
+            textValue = it
+
+            phxActionListener.invoke(
+                PhxAction.PhxTextValueChangeAction(
+                    element = element,
+                    inputText = it.text
+                )
+            )
         })
 }

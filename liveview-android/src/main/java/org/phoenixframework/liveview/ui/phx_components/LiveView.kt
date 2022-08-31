@@ -5,6 +5,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import org.phoenixframework.liveview.managers.LiveViewState
 import org.phoenixframework.liveview.ui.theme.LiveViewTestTheme
 
@@ -16,14 +17,20 @@ fun LiveView() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
+            val navController = rememberNavController()
+
             PhxLiveView(
                 documentState = LiveViewState.documentState,
                 phxActionListener = { phxAction: PhxAction ->
-                    LiveViewState
-                        .socketManager
-                        .pushChannelMessage(
-                            phxAction = phxAction
-                        )
+                    when (phxAction) {
+                        is PhxAction.PhxNavAction -> navController.navigate(phxAction.navDestination)
+                        else -> LiveViewState
+                            .socketManager
+                            .pushChannelMessage(
+                                phxAction = phxAction
+                            )
+                    }
+
                 }
             )
         }

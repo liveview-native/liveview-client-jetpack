@@ -12,56 +12,23 @@ import org.phoenixframework.liveview.extensions.multiAttr
 fun PhxRow(
     element: Element,
     modifier: Modifier,
-    content: @Composable () -> Unit
+    phxActionListener: (PhxAction) -> Unit
 ) {
-
-    val verticalAlignment = when(element.multiAttr("vertical-alignment", "v-al")) {
-
-        "top" -> {
-            Alignment.Top
-        }
-
-        "bottom" -> {
-            Alignment.Bottom
-        }
-
-        "center-vertically" -> {
-            Alignment.CenterVertically
-        }
-
-        else -> {
-            Alignment.Top
-        }
+    val verticalAlignment = when (element.multiAttr("vertical-alignment", "v-al")) {
+        "top" -> Alignment.Top
+        "bottom" -> Alignment.Bottom
+        "center-vertically" -> Alignment.CenterVertically
+        else -> Alignment.Top
     }
 
-    val horizontalArrangement = when(element.multiAttr("horizontal-arrangement")) {
-        "end" -> {
-            Arrangement.End
-        }
-
-        "start" -> {
-            Arrangement.Start
-        }
-
-        "center" -> {
-            Arrangement.Center
-        }
-
-        "space-between" -> {
-            Arrangement.SpaceBetween
-        }
-
-        "space-around" -> {
-            Arrangement.SpaceAround
-        }
-
-        "space-evenly" -> {
-            Arrangement.SpaceEvenly
-        }
-
-        else -> {
-            Arrangement.Start
-        }
+    val horizontalArrangement = when (element.multiAttr("horizontal-arrangement")) {
+        "end" -> Arrangement.End
+        "start" -> Arrangement.Start
+        "center" -> Arrangement.Center
+        "space-between" -> Arrangement.SpaceBetween
+        "space-around" -> Arrangement.SpaceAround
+        "space-evenly" -> Arrangement.SpaceEvenly
+        else -> Arrangement.Start
     }
 
     Row(
@@ -69,7 +36,9 @@ fun PhxRow(
         verticalAlignment = verticalAlignment,
         horizontalArrangement = horizontalArrangement
     ) {
-        content.invoke()
+        walkChildrenAndBuildComposables(
+            children = element.children(),
+            phxActionListener = phxActionListener
+        )
     }
-
 }
