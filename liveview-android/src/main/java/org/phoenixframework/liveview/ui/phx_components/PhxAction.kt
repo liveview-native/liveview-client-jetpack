@@ -9,6 +9,15 @@ sealed class PhxAction(
     val payload: Payload,
 ) {
 
+    class GenericAction(
+        val element: Element
+    ) : PhxAction(
+        payload = mapOf(
+            "type" to element.attr("type"),
+            "value" to element.attr("value")
+        )
+    )
+
     class PhxButtonClickAction(
         val element: Element
     ) : PhxAction(

@@ -25,9 +25,30 @@ fun LiveView(
 
             PhxLiveView(
                 documentState = LiveViewState.getDocumentState(),
+                navHostController = navController,
                 phxActionListener = { phxAction: PhxAction ->
 
                     when (phxAction) {
+
+                        is PhxAction.GenericAction -> {
+                            val type = phxAction.element.attr("type")
+                            val value = phxAction.element.attr("value")
+
+                            when (type) {
+                                "navigate" -> {
+                                    navController.navigate(value)
+                                }
+
+                                "click" -> {
+                                    LiveViewState.getSocketManager()
+                                        .pushChannelMessage(
+                                            PhxAction.PhxButtonClickAction(
+                                                element = phxAction.element
+                                            )
+                                        )
+                                }
+                            }
+                        }
                         is PhxAction.PhxNavAction -> {
                             navController.navigate(phxAction.navDestination)
                         }

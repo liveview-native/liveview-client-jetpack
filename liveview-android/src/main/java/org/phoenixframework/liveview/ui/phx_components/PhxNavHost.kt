@@ -2,14 +2,15 @@ package org.phoenixframework.liveview.ui.phx_components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import org.jsoup.nodes.Element
 
 @Composable fun PhxNavHost(
     element: Element,
     modifier: Modifier,
+    navHostController: NavHostController,
     phxActionListener: (PhxAction) -> Unit,
 ) {
 
@@ -17,7 +18,7 @@ import org.jsoup.nodes.Element
 
     NavHost(
         modifier = modifier,
-        navController = rememberNavController(),
+        navController = navHostController,
         startDestination = element.attr("start-destination")
     ) {
 

@@ -14,11 +14,17 @@ import org.jsoup.nodes.Element
     Button(
         modifier = modifier,
         onClick = {
+
             phxActionListener.invoke(
-                PhxAction.PhxButtonClickAction(
+                PhxAction.GenericAction(
                     element = element
                 )
             )
+//            phxActionListener.invoke(
+//                PhxAction.PhxButtonClickAction(
+//                    element = element
+//                )
+//            )
 //          onAction.invoke()
         }
     ) {

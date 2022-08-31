@@ -18,7 +18,10 @@ fun PhxLazyColumn(
     LazyColumn(modifier = modifier) {
 
         items(element.children()) {
-            generateElementByTag(it, phxActionListener)
+            generateElementByTag(
+                element = it,
+                phxActionListener = phxActionListener
+            )
         }
 
     }
