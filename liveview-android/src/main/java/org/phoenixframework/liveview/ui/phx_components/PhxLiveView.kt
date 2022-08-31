@@ -49,8 +49,9 @@ import org.phoenixframework.liveview.ui.phx_components.phx_canvas.PhxCanvas
         return
     }
 
-
 }
+
+
 
 @Composable
 fun generateElementByTag(
@@ -65,17 +66,29 @@ fun generateElementByTag(
 
     when (element.tagName()) {
 
+        "async-image" -> {
+
+            PhxAsyncImage(
+                element = element,
+                modifier = attributeModifiers,
+                phxActionListener = phxActionListener
+            )
+
+        }
+
         "button" -> {
             PhxButton(
                 element = element,
                 modifier = attributeModifiers,
-                onAction = {
-                    phxActionListener.invoke(
-                        PhxAction.PhxButtonClickAction(
-                            element = element
-                        )
-                    )
-                }
+                phxActionListener = phxActionListener
+            )
+        }
+
+        "box" -> {
+            PhxBox(
+                element = element,
+                modifier = attributeModifiers,
+                phxActionListener = phxActionListener
             )
         }
 
@@ -122,15 +135,21 @@ fun generateElementByTag(
             )
         }
 
-        "async-image" -> {
+        "icon" -> {
+            PhxIcon(
+                element = element,
+                modifier = attributeModifiers
+            )
+        }
 
-            PhxAsyncImage(
+        "icon-button" -> {
+            PhxIconButton(
                 element = element,
                 modifier = attributeModifiers,
-                phxActionListener = phxActionListener
+                phxActionListener = phxActionListener,
             )
-
         }
+
 
         "lazy-column" -> {
             PhxLazyColumn(
@@ -148,16 +167,27 @@ fun generateElementByTag(
             )
         }
 
+        "nav-host" -> {
+            PhxNavHost(
+                element = element,
+                modifier = attributeModifiers,
+                phxActionListener = phxActionListener,
+            )
+        }
+
         "row" -> {
             PhxRow(
                 element = element,
                 modifier = attributeModifiers,
-                content = {
-                    walkChildrenAndBuildComposables(
-                        children = element.children(),
-                        phxActionListener = phxActionListener
-                    )
-                }
+                phxActionListener = phxActionListener
+            )
+        }
+
+        "scaffold" -> {
+            PhxScaffold(
+                element = element,
+                modifier = attributeModifiers,
+                phxActionListener = phxActionListener
             )
         }
 
@@ -172,15 +202,24 @@ fun generateElementByTag(
             PhxTextField(
                 element = element,
                 modifier = attributeModifiers,
-                _onValueChange = { theText ->
-                    phxActionListener.invoke(
-                        PhxAction.PhxTextValueChangeAction(
-                            element = element,
-                            inputText = theText
-                        )
-                    )
-                }
+                phxActionListener = phxActionListener,
             )
+        }
+
+        "top-app-bar" -> {
+            PhxTopAppBar(
+                element = element,
+                modifier = attributeModifiers,
+                phxActionListener = phxActionListener
+            )
+        }
+
+        else -> { //dynamically attempt to generate server-defined composable
+
+            if (element.tagName().endsWith("+")) {
+
+            }
+
         }
     }
 }

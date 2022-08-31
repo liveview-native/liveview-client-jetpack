@@ -1,17 +1,17 @@
 package org.phoenixframework.liveview.ui.phx_components
 
-import androidx.compose.material.Button
+import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.jsoup.nodes.Element
 
-@Composable fun PhxButton(
+@Composable fun PhxIconButton(
     element: Element,
     modifier: Modifier,
     phxActionListener: (PhxAction) -> Unit,
 //    onAction: () -> Unit
 ) {
-    Button(
+    IconButton(
         modifier = modifier,
         onClick = {
             phxActionListener.invoke(
@@ -19,7 +19,6 @@ import org.jsoup.nodes.Element
                     element = element
                 )
             )
-//          onAction.invoke()
         }
     ) {
         walkChildrenAndBuildComposables(

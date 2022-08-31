@@ -12,7 +12,7 @@ import org.phoenixframework.liveview.extensions.multiAttr
 fun PhxRow(
     element: Element,
     modifier: Modifier,
-    content: @Composable () -> Unit
+    phxActionListener: (PhxAction) -> Unit
 ) {
 
     val verticalAlignment = when(element.multiAttr("vertical-alignment", "v-al")) {
@@ -69,7 +69,10 @@ fun PhxRow(
         verticalAlignment = verticalAlignment,
         horizontalArrangement = horizontalArrangement
     ) {
-        content.invoke()
+        walkChildrenAndBuildComposables(
+            children = element.children(),
+            phxActionListener = phxActionListener
+        )
     }
 
 }
