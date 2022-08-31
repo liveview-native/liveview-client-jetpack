@@ -53,7 +53,16 @@ sealed class PhxAction(
         )
     )
 
-
+    class PhxNavAction(
+        val element: Element,
+        val navDestination: String
+    ) : PhxAction(
+        payload = mapOf(
+            "type" to "navigate",
+            "event" to "phx-navigate",
+            "value" to navDestination
+        )
+    )
 }
 
 fun Element.extractMetaData() : Payload {

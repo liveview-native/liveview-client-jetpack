@@ -11,7 +11,7 @@ fun PhxText(
     modifier: Modifier
 ) {
     Text(
-        text = element.ownText(),
+        text = element.attr("text"),
         modifier = modifier
     )
 }

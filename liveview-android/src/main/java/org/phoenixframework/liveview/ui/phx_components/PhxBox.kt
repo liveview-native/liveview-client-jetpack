@@ -1,24 +1,18 @@
 package org.phoenixframework.liveview.ui.phx_components
 
-import androidx.compose.material.Button
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.jsoup.nodes.Element
 
-@Composable fun PhxButton(
+@Composable
+fun PhxBox(
     element: Element,
     modifier: Modifier,
-    phxActionListener: (PhxAction) -> Unit,
+    phxActionListener: (PhxAction) -> Unit
 ) {
-    Button(
+    Box(
         modifier = modifier,
-        onClick = {
-            phxActionListener.invoke(
-                PhxAction.PhxButtonClickAction(
-                    element = element
-                )
-            )
-        }
     ) {
         walkChildrenAndBuildComposables(
             children = element.children(),
