@@ -8,11 +8,18 @@ sealed class PhxAction(
     val event: String = "event",
     val payload: Payload,
 ) {
+    class GenericAction(
+        val element: Element
+    ) : PhxAction(
+        payload = mapOf(
+            "type" to element.attr("type"),
+            "value" to element.attr("value")
+        )
+    )
 
     class PhxButtonClickAction(
         val element: Element
     ) : PhxAction(
-
         payload = mapOf(
             "type" to "click",
             "event" to element.attr("phx-click"),
@@ -22,13 +29,12 @@ sealed class PhxAction(
 
     class PhxModifierClickAction(
         val element: Element
-    ) : PhxAction (
-
-            payload = mapOf(
-                "type" to "click",
-                "event" to element.attr("phx-mod-click"),
-                "value" to element.extractMetaData()
-            )
+    ) : PhxAction(
+        payload = mapOf(
+            "type" to "click",
+            "event" to element.attr("phx-mod-click"),
+            "value" to element.extractMetaData()
+        )
     )
 
     class PhxTextValueChangeAction(
@@ -65,16 +71,14 @@ sealed class PhxAction(
     )
 }
 
-fun Element.extractMetaData() : Payload {
+fun Element.extractMetaData(): Payload {
     return this.attributes()
         .filter { it.key.startsWith("phx-", true) }
         .fold(mapOf()) { acc: Map<String, Any>, attribute: Attribute? ->
-
-            val key = attribute?.key?.substringAfter("phx-")
-
-            key?.let {
-                acc + mapOf(key to attribute.value)
-            } ?: acc
-
+            attribute
+                ?.key
+                ?.substringAfter("phx-")
+                ?.let { key -> acc + mapOf(key to attribute.value) }
+                ?: acc
         }
 }

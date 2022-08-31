@@ -14,7 +14,7 @@ import org.jsoup.nodes.Element
         modifier = modifier,
         onClick = {
             phxActionListener.invoke(
-                PhxAction.PhxButtonClickAction(
+                PhxAction.GenericAction(
                     element = element
                 )
             )
