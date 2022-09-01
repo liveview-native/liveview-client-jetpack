@@ -11,14 +11,9 @@ import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 
 
-//fun walkChildrenAndBuildCanvasInstructions(children: Elements?): DrawScope.() -> Unit {
-//    children?.forEach { theElement ->
-//        mapElementToCanvasInstruction(element = theElement)
-//    }
-//}
-
-
-fun generateCanvasInstructionByTag(children: Elements): DrawScope.() -> Unit {
+fun generateCanvasInstructionByTag(
+    children: Elements,
+): DrawScope.() -> Unit {
 
     return {
         val canvasWidth = size.width
@@ -33,54 +28,73 @@ fun generateCanvasInstructionByTag(children: Elements): DrawScope.() -> Unit {
             }
 
             when (theElement.tagName()) {
+
                 "draw-circle" -> {
 
-                    val center = when (theElement.attr("center")) {
-
-                        "origin" -> {
-                            Offset(x = 0.toFloat(), y = 0.toFloat())
-                        }
-
-                        else -> {
-                            val coordinates = theElement.attr("center")
-
-                            if (coordinates.isNullOrEmpty()) {
-                                Offset(x = canvasWidth / 2, y = canvasHeight / 2)
-                            } else {
-
-                                val coordList = coordinates.split(",")
-                                val x = coordList.first().removePrefix("(").toFloat()
-                                val y = coordList.last().removeSuffix(")").toFloat()
-
-
-                                Offset(x = x, y = y)
-                            }
-                        }
-                    }
+                    val centerElement = theElement.getElementsByTag("center*").first()
+                    val centerOffset = PhxOffset(
+                        element = centerElement?.children()?.first(),
+                        canvasHeight = canvasHeight,
+                        canvasWidth = canvasWidth
+                    )
 
                     val radius = theElement.attr("radius").toFloatOrNull() ?: 0.toFloat()
 
                     drawCircle(
                         color = color,
-                        center = center,
+                        center = centerOffset,
                         radius = radius
                     )
                 }
 
                 "draw-line" -> {
+
+                    val start = theElement.getElementsByTag("start*").first()
+                    val startOffset = PhxOffset(
+                        element = start?.children()?.first(),
+                        canvasWidth = canvasWidth,
+                        canvasHeight = canvasHeight
+                    )
+
+                    val end = theElement.getElementsByTag("end*").first()
+                    val endOffset = PhxOffset(
+                        element = end?.children()?.first(),
+                        canvasWidth = canvasWidth,
+                        canvasHeight = canvasHeight
+                    )
+
                     drawLine(
                         color = color,
-                        start = Offset(x = 0.toFloat(), y = 0.toFloat()),
-                        end = Offset(x = canvasWidth, y = canvasHeight)
+                        start = startOffset,
+                        end = endOffset
                     )
                 }
+
             }
         }
 
     }
 }
 
+fun PhxOffset(
+    element: Element?,
+    canvasWidth: Float,
+    canvasHeight: Float
+) : Offset {
 
+
+    if (element?.hasAttr("center") == true) {
+        return Offset(
+            x = canvasWidth/2,
+            y = canvasHeight/2
+        )
+    }
+
+    return Offset(
+        x = element?.attr("x")?.toFloatOrNull() ?: 0.toFloat(),
+        y = element?.attr("y")?.toFloatOrNull() ?: 0.toFloat()
+    )
+}
 
 
 @Composable
