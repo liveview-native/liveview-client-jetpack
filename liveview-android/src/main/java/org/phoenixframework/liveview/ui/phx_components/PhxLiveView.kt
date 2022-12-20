@@ -146,23 +146,14 @@ fun generateElementByTag(
             phxActionListener = phxActionListener
         )
         "nav-host" -> if (navHostController != null) {
-            PhxNavHost(
-                element = element,
-                modifier = attributeModifiers,
-                navHostController = navHostController,
-                phxActionListener = phxActionListener,
-            )
+            PhxNavHost()
         }
         "row" -> PhxRow(
             element = element,
             modifier = attributeModifiers,
             phxActionListener = phxActionListener
         )
-        "scaffold" -> PhxScaffold(
-            element = element,
-            modifier = attributeModifiers,
-            phxActionListener = phxActionListener
-        )
+        "scaffold" -> PhxScaffold()
         "text" -> PhxText(
             element = element,
             modifier = attributeModifiers

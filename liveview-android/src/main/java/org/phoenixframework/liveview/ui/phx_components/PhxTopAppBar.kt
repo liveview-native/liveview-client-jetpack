@@ -17,7 +17,6 @@ fun PhxTopAppBar(
         .toSet()
 
     val functionalElementsTagNames = element.children()
-        .filter { it.tagName().endsWith("*") }
         .map { it.tagName() }
         .toSet()
 
