@@ -16,13 +16,13 @@ fun PhxScaffold(
     phxActionListener: (PhxAction) -> Unit
 ) {
 
-    val functionalAttributeKeys = element.attributes()
+  /*  val functionalAttributeKeys = element.attributes()
         .filter { it.key.endsWith("*") }
         .map { it.key }
         .toSet()
 
     val functionalElementsTagNames = element.children()
-        .filter { it.tagName().endsWith("*")}
+        //.filter { it.tagName().endsWith("*")}
         .map { it.tagName() }
         .toSet()
 
@@ -54,7 +54,7 @@ fun PhxScaffold(
             children = element.children(),
             phxActionListener = phxActionListener
         )
-    }
+    }*/
 }
 
 @Composable

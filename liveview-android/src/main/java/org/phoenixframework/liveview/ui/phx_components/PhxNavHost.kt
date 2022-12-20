@@ -14,7 +14,7 @@ import org.jsoup.nodes.Element
     phxActionListener: (PhxAction) -> Unit,
 ) {
 
-    val screenElements: List<Element> = element.children().filter { it.tagName().endsWith("+") }
+    /*val screenElements: List<Element> = element.children().f
 
     NavHost(
         modifier = modifier,
@@ -32,6 +32,6 @@ import org.jsoup.nodes.Element
                 }
             }
 
-    }
+    }*/
 
 }

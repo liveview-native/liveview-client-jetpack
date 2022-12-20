@@ -125,19 +125,19 @@ class SocketPayloadMapper {
 
     private fun generateFinalDomFromLiveValues(liveValues: List<String>): Document {
 
-        if (liveValues.isNotEmpty()) {
+        return if (liveValues.isNotEmpty()) {
 
             val finalDomList = originalRenderDom.orderedMix(liveValues)
 
             val finalDom = finalDomList.reduce { acc, s -> acc + s }
 
             val document: Document = Jsoup.parse(finalDom)
-            return document
+            document
         } else {
             val finalDom = originalRenderDom.reduce { acc, s -> acc + s }
             val document: Document = Jsoup.parse(finalDom)
 
-            return document
+            document
         }
     }
 
