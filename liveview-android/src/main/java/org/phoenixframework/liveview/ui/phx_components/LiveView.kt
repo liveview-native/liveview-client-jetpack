@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import org.phoenixframework.liveview.managers.LiveViewState
@@ -14,6 +16,7 @@ fun LiveView(
 
 ) {
 
+    val liveViewState by LiveViewState.slotTable.collectAsState()
     LiveViewTestTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -23,7 +26,9 @@ fun LiveView(
 
             val navController = rememberNavController()
 
-            PhxLiveView(
+            PhxLiveView(liveViewState)
+
+            /*PhxLiveView(
                 documentState = LiveViewState.getDocumentState(),
                 navHostController = navController,
                 phxActionListener = { phxAction: PhxAction ->
@@ -64,7 +69,7 @@ fun LiveView(
 
 
                 }
-            )
+            )*/
         }
     }
 }
