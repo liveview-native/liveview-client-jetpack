@@ -10,10 +10,10 @@ class ColumnDTO private constructor(builder: Builder) : ComposableView() {
     var modifier : Modifier
 
 
-    class Builder {
+    class Builder : ComposableBuilder(){
         private var verticalArrangement: Arrangement.Vertical = Arrangement.Top
         private var horizontalAlignment: Alignment.Horizontal = Alignment.Start
-        private var modifier : Modifier = Modifier
+
         fun setVerticalArrangement(verticalArrangement: String) = apply {
             this.verticalArrangement = when (verticalArrangement) {
                 "top" -> Arrangement.Top
@@ -42,7 +42,7 @@ class ColumnDTO private constructor(builder: Builder) : ComposableView() {
         fun build(): ColumnDTO {
             return ColumnDTO(this)
         }
-        fun getModifier() = modifier
+
     }
 
     init {

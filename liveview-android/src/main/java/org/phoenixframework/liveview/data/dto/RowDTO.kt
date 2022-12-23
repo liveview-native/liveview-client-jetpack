@@ -10,10 +10,10 @@ class RowDTO private constructor(builder: Builder) : ComposableView() {
     var verticalAlignment: Alignment.Vertical
     var modifier: Modifier
 
-    class Builder {
+    class Builder : ComposableBuilder(){
         private var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
         private var verticalAlignment: Alignment.Vertical = Alignment.Top
-        private var modifier: Modifier = Modifier
+
 
         fun setHorizontalArrangement(horizontalArrangement: String) = apply {
             if (horizontalArrangement.isNotEmpty()) {
@@ -48,7 +48,6 @@ class RowDTO private constructor(builder: Builder) : ComposableView() {
         @JvmName("getVerticalAlignment1")
         fun getVerticalAlignment() = verticalAlignment
 
-        fun getModifier() = modifier
 
         fun build(): RowDTO {
             return RowDTO(this)

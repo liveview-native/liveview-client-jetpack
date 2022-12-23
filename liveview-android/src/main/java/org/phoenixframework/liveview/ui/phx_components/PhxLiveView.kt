@@ -272,12 +272,7 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
                     .build(),
                 contentDescription = composableTreeNode.value.contentDescription,
                 contentScale = composableTreeNode.value.contentScale,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .clip(composableTreeNode.value.shape)
-
-
+                modifier = composableTreeNode.value.modifier
             )
         }
         is TextDTO -> {
@@ -302,9 +297,7 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
         is CardDTO -> {
             Card(
                 backgroundColor = composableTreeNode.value.backgroundColor,
-                modifier = Modifier
-                    .height(200.dp)
-                    .width(150.dp),
+                modifier = composableTreeNode.value.modifier,
                 elevation = composableTreeNode.value.elevation,
                 shape = composableTreeNode.value.shape,
 
@@ -317,6 +310,7 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
         }
         is RowDTO -> {
             Row(
+                modifier = composableTreeNode.value.modifier,
                 horizontalArrangement = composableTreeNode.value.horizontalArrangement,
                 verticalAlignment = composableTreeNode.value.verticalAlignment
             ) {
@@ -327,8 +321,7 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
         }
         is ColumnDTO -> {
             Column(
-                modifier = Modifier
-                    .wrapContentSize(),
+                modifier = composableTreeNode.value.modifier,
                 verticalArrangement = composableTreeNode.value.verticalArrangement,
                 horizontalAlignment = composableTreeNode.value.horizontalAlignment
             ) {
@@ -339,6 +332,4 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
             }
         }
     }
-
-
 }

@@ -32,10 +32,9 @@ class TextDTO private constructor(builder: Builder) : ComposableView() {
 
 
     // Builder class
-    class Builder {
+    class Builder : ComposableBuilder(){
         // Required parameters
         private var text: String = ""
-        private var modifier: Modifier = Modifier
 
         // Optional parameters - initialized to default values
         private var color: Color = Color.Unspecified
@@ -53,7 +52,6 @@ class TextDTO private constructor(builder: Builder) : ComposableView() {
 
         // Setters for required parameters
         fun setText(text: String) = apply { this.text = text }
-        fun setModifier(modifier: List<String>) = apply { /*this.modifier = modifier */ }
 
         // Setters for optional parameters
         /**
@@ -257,7 +255,7 @@ class TextDTO private constructor(builder: Builder) : ComposableView() {
 
         // Getters for required parameters
         fun getText() = this.text
-        fun getModifier() = this.modifier
+
 
         // Getters for optional parameters
         fun getColor() = this.color

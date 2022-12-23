@@ -1,6 +1,7 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
@@ -19,8 +20,8 @@ class CardDTO(builder: Builder) : ComposableView() {
     var border: BorderStroke?
     var elevation: Dp
 
-    class Builder {
-       private var modifier: Modifier = Modifier
+    class Builder : ComposableBuilder() {
+
        private var shape: Shape = RoundedCornerShape(0.dp)
        private var backgroundColor: Color = Color.White
        private var border: BorderStroke? = null
@@ -44,7 +45,7 @@ class CardDTO(builder: Builder) : ComposableView() {
             }
         }
 
-        fun getModifier() = modifier
+
 
         fun setBackgroundColor(color: String) = apply {
             if (color.isNotEmpty()) {
@@ -63,6 +64,7 @@ class CardDTO(builder: Builder) : ComposableView() {
         fun getBackgroundColor() = backgroundColor
 
         fun build() = CardDTO(this)
+
 
     }
 

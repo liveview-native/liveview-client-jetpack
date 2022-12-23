@@ -70,6 +70,9 @@ object ComposableNodeFactory {
                 "shape" -> cardNode.setShape(attribute.value)
                 "background-color" -> cardNode.setBackgroundColor(attribute.value)
                 "elevation" -> cardNode.setCardElevation(attribute.value)
+                "size" -> cardNode.setSize(attribute.value)
+                "height" -> cardNode.setHeight(attribute.value)
+                "width" -> cardNode.setWidth(attribute.value)
             }
         }
         return cardNode.build()
@@ -91,6 +94,9 @@ object ComposableNodeFactory {
                 "content-description" -> asyncImageNode.setContentDescription(attribute.key)
                 "cross-fade" -> asyncImageNode.setCrossFade(attribute.key)
                 "shape" -> asyncImageNode.setShape(attribute.key)
+                "size" -> asyncImageNode.setSize(attribute.value)
+                "height" -> asyncImageNode.setHeight(attribute.value)
+                "width" -> asyncImageNode.setWidth(attribute.value)
             }
         }
         return asyncImageNode.build()
@@ -112,6 +118,9 @@ object ComposableNodeFactory {
                 "vertical-alignment" -> {
                     rowNode.setVerticalAlignment(verticalAlignment = attribute.key)
                 }
+                "size" -> rowNode.setSize(attribute.value)
+                "height" -> rowNode.setHeight(attribute.value)
+                "width" -> rowNode.setWidth(attribute.value)
             }
 
         }
@@ -136,6 +145,9 @@ object ComposableNodeFactory {
                 "horizontal-alignment" -> {
                     columnNode.setHorizontalAlignment(attribute.value)
                 }
+                "size" -> columnNode.setSize(attribute.value)
+                "height" -> columnNode.setHeight(attribute.value)
+                "width" -> columnNode.setWidth(attribute.value)
 
             }
         }
@@ -167,6 +179,9 @@ object ComposableNodeFactory {
                 "overflow" -> textNode.setOverflow(attribute.value)
                 "soft-wrap" -> textNode.setSoftWrap(attribute.value)
                 "max-lines" -> textNode.setMaxLines(attribute.value)
+                "size" -> textNode.setSize(attribute.value)
+                "height" -> textNode.setHeight(attribute.value)
+                "width" -> textNode.setWidth(attribute.value)
 
             }
         }
