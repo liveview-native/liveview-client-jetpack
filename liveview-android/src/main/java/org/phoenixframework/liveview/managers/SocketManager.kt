@@ -23,9 +23,9 @@ class SocketManager(
 ) {
 
     private val androidTemplate = """
-        <card elevation="8" shape="8">
+        <card elevation="8" shape="8" height=80 width=80>
         <column vertical-arrangement="space-evenly" horizontal-alignment="start">
-         <async-image> https://www.themoviedb.org/t/p/w1280/94xxm5701CzOdJdUEdIuwqZaowx.jpg </async-image>
+         <async-image size="50"> https://www.themoviedb.org/t/p/w1280/94xxm5701CzOdJdUEdIuwqZaowx.jpg </async-image>
          <text color="0xFF000000" font-size="24"> Avatar- way of the water </text>
           <text color="0xFF000000" font-size="14" max-lines="4" overflow="ellipsis"> It’s a James Cameron film, so it’s impressive. The special effects, camerawork, world-building, and action were all off the charts. But Avatar: The Way of Water struggles like its predecessor in the story and character development departments. In fact, the story of The Way of Water is almost identical to the first Avatar. Instead of humans learning to be Na’vi and then fighting Stephen slang, a family of forest Na’vi learns to be ocean Na’vi and then fight Stephen Lang. </text>
           <row horizontal-arrangement="space-between" vertical-alignment="center">

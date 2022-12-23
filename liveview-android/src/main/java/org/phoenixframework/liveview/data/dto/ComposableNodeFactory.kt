@@ -54,6 +54,9 @@ object ComposableNodeFactory {
                     "content-description" -> builder.contentDescription(attribute.key)
                     "cross-fade" -> builder.crossFade(attribute.key)
                     "shape" -> builder.shape(attribute.key)
+                    "size" -> builder.size(attribute.value)
+                    "height" -> builder.height(attribute.value)
+                    "width" -> builder.width(attribute.value)
                     else -> builder
                 }
             }
@@ -72,6 +75,9 @@ object ComposableNodeFactory {
                     "shape" -> builder.shape(attribute.value)
                     "background-color" -> builder.backgroundColor(attribute.value)
                     "elevation" -> builder.elevation(attribute.value)
+                    "size" -> builder.size(attribute.value)
+                    "height" -> builder.height(attribute.value)
+                    "width" -> builder.width(attribute.value)
                     else -> builder
                 }
             }
@@ -93,6 +99,9 @@ object ComposableNodeFactory {
                     "horizontal-alignment" -> {
                         builder.horizontalAlignment(attribute.value)
                     }
+                    "size" -> builder.size(attribute.value)
+                    "height" -> builder.height(attribute.value)
+                    "width" -> builder.width(attribute.value)
                     else -> builder
                 }
             }
@@ -114,6 +123,9 @@ object ComposableNodeFactory {
                     "vertical-alignment" -> {
                         builder.verticalAlignment(verticalAlignment = attribute.key)
                     }
+                    "size" -> builder.size(attribute.value)
+                    "height" -> builder.height(attribute.value)
+                    "width" -> builder.width(attribute.value)
                     else -> builder
                 }
             }
@@ -141,6 +153,9 @@ object ComposableNodeFactory {
                     "overflow" -> builder.overflow(attribute.value)
                     "soft-wrap" -> builder.softWrap(attribute.value)
                     "max-lines" -> builder.maxLines(attribute.value)
+                    "size" -> builder.size(attribute.value)
+                    "height" -> builder.height(attribute.value)
+                    "width" -> builder.width(attribute.value)
                     else -> builder
                 }
             }

@@ -3,11 +3,11 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.Alignment
 
-class RowDTO private constructor(builder: Builder) : ComposableView() {
+class RowDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
     var horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
     var verticalAlignment: Alignment.Vertical = builder.verticalAlignment
 
-    class Builder {
+    class Builder : ComposableBuilder() {
         var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
         var verticalAlignment: Alignment.Vertical = Alignment.Top
 
@@ -32,6 +32,18 @@ class RowDTO private constructor(builder: Builder) : ComposableView() {
                     else -> Alignment.Bottom
                 }
             }
+        }
+
+        override fun size(size: String): Builder = apply {
+            super.size(size)
+        }
+
+        override fun height(height: String): Builder = apply {
+            super.height(height)
+        }
+
+        override fun width(width: String): Builder = apply {
+            super.width(width)
         }
 
         fun build(): RowDTO = RowDTO(this)

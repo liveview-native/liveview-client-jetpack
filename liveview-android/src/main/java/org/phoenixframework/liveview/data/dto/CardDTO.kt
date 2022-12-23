@@ -9,12 +9,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
 
-class CardDTO private constructor(builder: Builder) : ComposableView() {
-    var shape: Shape = builder.getShape()
-    var backgroundColor: Color = builder.getBackgroundColor()
-    var elevation: Dp = builder.getCardElevation()
+class CardDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
+    var shape: Shape = builder.shape
+    var backgroundColor: Color = builder.backgroundColor
+    var elevation: Dp = builder.elevation
 
-    class Builder {
+    class Builder : ComposableBuilder() {
         var shape: Shape = RoundedCornerShape(0.dp)
         var backgroundColor: Color = Color.White
         var elevation: Dp = 1.dp
@@ -40,9 +40,17 @@ class CardDTO private constructor(builder: Builder) : ComposableView() {
             }
         }
 
-        fun getShape() = shape
-        fun getCardElevation() = elevation
-        fun getBackgroundColor() = backgroundColor
+        override fun size(size: String): Builder = apply {
+            super.size(size)
+        }
+
+        override fun height(height: String): Builder = apply {
+            super.height(height)
+        }
+
+        override fun width(width: String): Builder = apply {
+            super.width(width)
+        }
 
         fun build() = CardDTO(this)
     }

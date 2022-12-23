@@ -1,6 +1,5 @@
 package org.phoenixframework.liveview.data.dto
 
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -12,9 +11,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
 
-class TextDTO private constructor(builder: Builder) : ComposableView() {
+class TextDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
     var text: String = builder.text
-    var modifier: Modifier = Modifier
     var color: Color = builder.color
     var fontSize: TextUnit = builder.fontSize
     var fontStyle: FontStyle? = builder.fontStyle
@@ -28,7 +26,7 @@ class TextDTO private constructor(builder: Builder) : ComposableView() {
     var softWrap: Boolean = builder.softWrap
     var maxLines: Int = builder.maxLines
 
-    class Builder {
+    class Builder : ComposableBuilder() {
         var text: String = ""
         var color: Color = Color.Unspecified
         var fontSize: TextUnit = TextUnit.Unspecified
@@ -214,6 +212,18 @@ class TextDTO private constructor(builder: Builder) : ComposableView() {
             if (maxLines.isNotEmptyAndIsDigitsOnly()) {
                 this.maxLines = maxLines.toInt()
             }
+        }
+
+        override fun size(size: String): Builder = apply {
+            super.size(size)
+        }
+
+        override fun height(height: String): Builder = apply {
+            super.height(height)
+        }
+
+        override fun width(width: String): Builder = apply {
+            super.width(width)
         }
 
         fun build() = TextDTO(this)

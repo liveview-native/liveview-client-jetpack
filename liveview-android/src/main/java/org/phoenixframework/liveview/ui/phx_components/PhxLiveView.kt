@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -167,10 +165,7 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
                 .build(),
             contentDescription = composableTreeNode.value.contentDescription,
             contentScale = composableTreeNode.value.contentScale,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp)
-                .clip(composableTreeNode.value.shape)
+            modifier = composableTreeNode.value.modifier.clip(composableTreeNode.value.shape)
         )
         is TextDTO -> Text(
             text = composableTreeNode.value.text,
@@ -190,19 +185,16 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
         )
         is CardDTO -> Card(
             backgroundColor = composableTreeNode.value.backgroundColor,
-            modifier = Modifier
-                .height(200.dp)
-                .width(150.dp),
+            modifier = composableTreeNode.value.modifier,
             elevation = composableTreeNode.value.elevation,
             shape = composableTreeNode.value.shape,
-
-            ) {
+        ) {
             composableTreeNode.children.forEach {
                 TraverseComposableViewTree(composableTreeNode = it)
             }
-
         }
         is RowDTO -> Row(
+            modifier = composableTreeNode.value.modifier,
             horizontalArrangement = composableTreeNode.value.horizontalArrangement,
             verticalAlignment = composableTreeNode.value.verticalAlignment
         ) {
@@ -211,8 +203,7 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
             }
         }
         is ColumnDTO -> Column(
-            modifier = Modifier
-                .wrapContentSize(),
+            modifier = composableTreeNode.value.modifier,
             verticalArrangement = composableTreeNode.value.verticalArrangement,
             horizontalAlignment = composableTreeNode.value.horizontalAlignment
         ) {
