@@ -20,7 +20,9 @@ fun LiveView() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            PhxLiveView(liveViewState)
+            Surface {
+                PhxLiveView(liveViewState)
+            }
         }
     }
 }
