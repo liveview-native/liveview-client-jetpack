@@ -3,10 +3,19 @@ package org.phoenixframework.liveview.data.dto
 import org.jsoup.nodes.Attributes
 import org.jsoup.nodes.Element
 
-
+/**
+ * A factory class that is used to create `ComposableTreeNode` objects that co-relate to composable views based on
+ * the type of an input `Element` object.
+ * The `ComposableTreeNode` objects are created by calling different functions depending on the tag name of the input
+ * `Element` object.
+ */
 object ComposableNodeFactory {
-
-    fun getComposableView(element: Element): ComposableTreeNode {
+    /**
+     * Creates a `ComposableTreeNode` object based on the input `Element` object.
+     * @param element the `Element` object to create the `ComposableTreeNode` object from
+     * @return a `ComposableTreeNode` object based on the input `Element` object
+     */
+    fun buildComposable(element: Element): ComposableTreeNode {
         return when (element.tagName()) {
             ComposableTypes.column -> {
                 ComposableTreeNode(buildColumnNode(element.attributes()))
@@ -47,6 +56,13 @@ object ComposableNodeFactory {
         }
     }
 
+    /**
+     * Creates a `CardDTO` object based on the attributes of the input `Attributes` object.
+     * Card co-relates to the Card composable
+     * @param attributes the `Attributes` object to create the `CardDTO` object from
+     * @return a `CardDTO` object based on the attributes of the input `Attributes` object
+     **/
+
     private fun buildCardNode(attributes: Attributes): ComposableView {
         val cardNode = CardDTO.Builder()
         attributes.forEach { attribute ->
@@ -59,8 +75,16 @@ object ComposableNodeFactory {
         return cardNode.build()
     }
 
-    private fun buildAsyncImageNode(attributes: Attributes, text: String): ComposableView {
-        val asyncImageNode = AsyncImageDTO.Builder().setImageUrl(text)
+    /**
+     * Creates an `AsyncImageDTO` object based on the attributes and text of the input `Attributes` object.
+     * AsyncImage co-relates to the AsyncImage composable from Coil library used to load images from network
+     * @param attributes the `Attributes` object to create the `AsyncImageDTO` object from
+     * @param url is the url of image that is to be loaded
+     * @return an `AsyncImageDTO` object based on the attributes and text of the input `Attributes` object
+     */
+
+    private fun buildAsyncImageNode(attributes: Attributes, url: String): ComposableView {
+        val asyncImageNode = AsyncImageDTO.Builder().setImageUrl(url)
         attributes.forEach { attribute ->
             when (attribute.key) {
                 "content-scale" -> asyncImageNode.setContentScale(attribute.key)
@@ -72,6 +96,12 @@ object ComposableNodeFactory {
         return asyncImageNode.build()
     }
 
+    /**
+     * Creates a `RowDTO` object based on the attributes of the input `Attributes` object.
+     * Row co-relates to the Row composable
+     * @param attributes the `Attributes` object to create the `RowDTO` object from
+     * @return a `RowDTO` object based on the attributes of the input `Attributes` object
+     */
     private fun buildRowNode(attributes: Attributes): ComposableView {
         val rowNode = RowDTO.Builder()
         attributes.forEach { attribute ->
@@ -90,6 +120,12 @@ object ComposableNodeFactory {
 
     }
 
+    /**
+     * Creates a `ColumnDTO` object based on the attributes of the input `Attributes` object.
+     * Column co-relates to the Column composable
+     * @param attributes the `Attributes` object to create the `ColumnDTO` object from
+     * @return a `ColumnDTO` object based on the attributes of the input `Attributes` object
+     */
     private fun buildColumnNode(attributes: Attributes): ComposableView {
         val columnNode = ColumnDTO.Builder()
         attributes.forEach { attribute ->
@@ -105,6 +141,13 @@ object ComposableNodeFactory {
         }
         return columnNode.build()
     }
+    /**
+     * Creates a `TextDTO` object based on the attributes and text of the input `Attributes` object.
+     * Text co-relates to the Text composable
+     * @param attributes the `Attributes` object to create the `TextDTO` object from
+     * @param text the text of the input `Attributes` object
+     * @return a `TextDTO` object based on the attributes and text of the input `Attributes` object
+     */
 
     private fun buildTextNode(attributes: Attributes, text: String): ComposableView {
 

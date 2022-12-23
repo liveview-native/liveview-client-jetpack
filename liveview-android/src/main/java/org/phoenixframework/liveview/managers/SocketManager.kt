@@ -4,10 +4,14 @@ import android.util.Log
 import okhttp3.OkHttpClient
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
 import org.phoenixframework.Channel
 import org.phoenixframework.Message
 import org.phoenixframework.Payload
 import org.phoenixframework.Socket
+import org.phoenixframework.liveview.data.dto.ComposableNodeFactory
+import org.phoenixframework.liveview.data.dto.ComposableTreeNode
 import org.phoenixframework.liveview.mappers.SocketPayloadMapper
 import org.phoenixframework.liveview.ui.phx_components.PhxAction
 import java.net.ConnectException
@@ -18,6 +22,19 @@ class SocketManager(
     private val socketPayloadMapper: SocketPayloadMapper
 ) {
 
+    private val androidTemplate = """
+        <card elevation="8" shape="8">
+        <column vertical-arrangement="space-evenly" horizontal-alignment="start">
+         <async-image> https://www.themoviedb.org/t/p/w1280/94xxm5701CzOdJdUEdIuwqZaowx.jpg </async-image>
+         <text color="0xFF000000" font-size="24"> Avatar- way of the water </text>
+          <text color="0xFF000000" font-size="14" max-lines="4" overflow="ellipsis"> It’s a James Cameron film, so it’s impressive. The special effects, camerawork, world-building, and action were all off the charts. But Avatar: The Way of Water struggles like its predecessor in the story and character development departments. In fact, the story of The Way of Water is almost identical to the first Avatar. Instead of humans learning to be Na’vi and then fighting Stephen slang, a family of forest Na’vi learns to be ocean Na’vi and then fight Stephen Lang. </text>
+          <row horizontal-arrangement="space-between" vertical-alignment="center">
+             <text color="0xFFF4B400" font-size="12"> Audience rating 94%</text>
+             <text color="0xFFF4B400" font-size="12"> Roton tomatoes rating 64%</text>
+           </row>
+         </column>
+         </card>
+    """
     private var phxSocket: Socket? = null
     private var channel : Channel? = null
     private val uuid: String = UUID.randomUUID().toString()
@@ -28,6 +45,9 @@ class SocketManager(
     lateinit var domParsedListener: (Document) -> Unit
     var liveReloadListener: (() -> Unit)? = null
 
+    var nodeListener :  (node: ComposableTreeNode) -> Unit = {
+
+    }
 
     fun connectToChatRoomWithParams(
         phxLiveViewPayload: PhoenixLiveViewPayload
@@ -188,6 +208,40 @@ class SocketManager(
         liveReloadSocket?.connect()
     }
 
+
+    fun parseTemplate(){
+        val elements = Jsoup.parse(androidTemplate)
+            .apply { ownerDocument()!!.outputSettings().prettyPrint(false) }.body().children()
+
+
+        elements.forEach { element ->
+            val root = createComposable(element)
+            extractChildren(root, element.children())
+            nodeListener(root)
+        }
+
+    }
+
+    // Method to recursively add child nodes to the tree
+    private fun extractChildren(parent: ComposableTreeNode, children: Elements) {
+        for (child in children) {
+            // Create a tree node for the child element
+            val childNode = createComposable(child)
+
+            // Add the child node to the parent node
+            parent.addNode(childNode)
+
+            // Recursively add the child's child nodes to the tree
+            extractChildren(childNode, child.children())
+        }
+    }
+
+    private fun createComposable(element: Element): ComposableTreeNode {
+
+        return ComposableNodeFactory.buildComposable(element)
+
+
+    }
 
     fun pushChannelMessage(phxAction: PhxAction) {
         pushChannelMessage(event = phxAction.event, payload = phxAction.payload)
