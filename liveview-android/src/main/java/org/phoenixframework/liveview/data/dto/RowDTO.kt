@@ -2,15 +2,18 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 
 class RowDTO private constructor(builder: Builder) : ComposableView() {
 
     var horizontalArrangement: Arrangement.Horizontal
     var verticalAlignment: Alignment.Vertical
+    var modifier: Modifier
 
     class Builder {
-      private  var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
-      private  var verticalAlignment: Alignment.Vertical = Alignment.Top
+        private var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
+        private var verticalAlignment: Alignment.Vertical = Alignment.Top
+        private var modifier: Modifier = Modifier
 
         fun setHorizontalArrangement(horizontalArrangement: String) = apply {
             if (horizontalArrangement.isNotEmpty()) {
@@ -45,6 +48,7 @@ class RowDTO private constructor(builder: Builder) : ComposableView() {
         @JvmName("getVerticalAlignment1")
         fun getVerticalAlignment() = verticalAlignment
 
+        fun getModifier() = modifier
 
         fun build(): RowDTO {
             return RowDTO(this)
@@ -53,6 +57,7 @@ class RowDTO private constructor(builder: Builder) : ComposableView() {
     }
 
     init {
+        modifier = builder.getModifier()
         horizontalArrangement = builder.getHorizontalArrangement()
         verticalAlignment = builder.getVerticalAlignment()
     }

@@ -30,6 +30,7 @@ class TextDTO private constructor(builder: Builder) : ComposableView() {
     var maxLines: Int
 
 
+
     // Builder class
     class Builder {
         // Required parameters
@@ -278,6 +279,7 @@ class TextDTO private constructor(builder: Builder) : ComposableView() {
     }
 
     init {
+        this.modifier = builder.getModifier()
         this.text = builder.getText()
         this.color = builder.getColor()
         this.fontSize = builder.getFontSize()

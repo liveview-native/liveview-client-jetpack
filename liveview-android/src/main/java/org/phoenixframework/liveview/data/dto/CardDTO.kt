@@ -44,6 +44,8 @@ class CardDTO(builder: Builder) : ComposableView() {
             }
         }
 
+        fun getModifier() = modifier
+
         fun setBackgroundColor(color: String) = apply {
             if (color.isNotEmpty()) {
                 this.backgroundColor = Color(java.lang.Long.decode(color))
@@ -70,5 +72,6 @@ class CardDTO(builder: Builder) : ComposableView() {
         modifier = Modifier
         backgroundColor = builder.getBackgroundColor()
         border = null
+        modifier = builder.getModifier()
     }
 }

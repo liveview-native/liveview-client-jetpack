@@ -16,7 +16,7 @@ class AsyncImageDTO private constructor(val builder: Builder): ComposableView(){
     val crossfade: Boolean
     val shape :Shape
     val contentScale : ContentScale
-    val modifier: Modifier = Modifier
+    var modifier: Modifier = Modifier
 
     class Builder(){
         private var imageUrl: String =""
@@ -76,6 +76,7 @@ class AsyncImageDTO private constructor(val builder: Builder): ComposableView(){
         fun getCrossFade(): Boolean = crossFade
         fun getShape(): Shape = shape
         fun getContentScale(): ContentScale = contentScale
+        fun getModifier() = modifier
 
     }
 
@@ -85,6 +86,7 @@ class AsyncImageDTO private constructor(val builder: Builder): ComposableView(){
         contentScale = builder.getContentScale()
         crossfade = builder.getCrossFade()
         shape = builder.getShape()
+        modifier = builder.getModifier()
     }
 
 
