@@ -9,7 +9,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
 
-class AsyncImageDTO private constructor() : ComposableView() {
+class AsyncImageDTO private constructor(builder: Builder) : ComposableView() {
+    val imageUrl: String = builder.imageUrl
+    val contentDescription: String? = builder.contentDescription
+    val crossFade: Boolean = builder.crossFade
+    val shape: Shape = builder.shape
+    val contentScale: ContentScale = builder.contentScale
     val modifier: Modifier = Modifier
 
     class Builder {
@@ -56,6 +61,6 @@ class AsyncImageDTO private constructor() : ComposableView() {
             }
         }
 
-        fun build(): AsyncImageDTO = AsyncImageDTO()
+        fun build(): AsyncImageDTO = AsyncImageDTO(this)
     }
 }

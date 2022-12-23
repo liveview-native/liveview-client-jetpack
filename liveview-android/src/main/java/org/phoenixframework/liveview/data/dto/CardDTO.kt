@@ -2,7 +2,6 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
@@ -10,8 +9,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
 
-class CardDTO : ComposableView() {
-    var modifier: Modifier = Modifier
+class CardDTO private constructor(builder: Builder) : ComposableView() {
+    var shape: Shape = builder.getShape()
+    var backgroundColor: Color = builder.getBackgroundColor()
+    var elevation: Dp = builder.getCardElevation()
 
     class Builder {
         var shape: Shape = RoundedCornerShape(0.dp)
@@ -39,6 +40,10 @@ class CardDTO : ComposableView() {
             }
         }
 
-        fun build() = CardDTO()
+        fun getShape() = shape
+        fun getCardElevation() = elevation
+        fun getBackgroundColor() = backgroundColor
+
+        fun build() = CardDTO(this)
     }
 }

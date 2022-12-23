@@ -2,6 +2,7 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -15,6 +16,17 @@ class TextDTO private constructor(builder: Builder) : ComposableView() {
     var text: String = builder.text
     var modifier: Modifier = Modifier
     var color: Color = builder.color
+    var fontSize: TextUnit = builder.fontSize
+    var fontStyle: FontStyle? = builder.fontStyle
+    var fontWeight: FontWeight? = builder.fontWeight
+    var fontFamily: FontFamily? = builder.fontFamily
+    var letterSpacing: TextUnit = builder.letterSpacing
+    var textDecoration: TextDecoration? = builder.textDecoration
+    var textAlign: TextAlign? = builder.textAlign
+    var lineHeight: TextUnit = builder.lineHeight
+    var overflow: TextOverflow = builder.overflow
+    var softWrap: Boolean = builder.softWrap
+    var maxLines: Int = builder.maxLines
 
     class Builder {
         var text: String = ""
@@ -22,6 +34,7 @@ class TextDTO private constructor(builder: Builder) : ComposableView() {
         var fontSize: TextUnit = TextUnit.Unspecified
         var fontStyle: FontStyle? = null
         var fontWeight: FontWeight? = null
+        var fontFamily: FontFamily? = null
         var letterSpacing: TextUnit = TextUnit.Unspecified
         var textDecoration: TextDecoration? = null
         var textAlign: TextAlign? = null
