@@ -26,7 +26,10 @@ fun LiveView(
 
             val navController = rememberNavController()
 
-            PhxLiveView(liveViewState)
+            Surface() {
+                PhxLiveView(liveViewState, navController)
+            }
+
 
             /*PhxLiveView(
                 documentState = LiveViewState.getDocumentState(),

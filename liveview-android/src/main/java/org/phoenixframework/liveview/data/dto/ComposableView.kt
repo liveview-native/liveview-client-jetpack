@@ -4,45 +4,57 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
 
-abstract class ComposableView{
+abstract class ComposableView {
 
 
 }
 
-abstract class ComposableBuilder(){
-   private var modifier: Modifier = Modifier
+abstract class ComposableBuilder() {
+    private var modifier: Modifier = Modifier.alpha(1f)
     fun setSize(size: String) {
-        when {
+        this.modifier = when {
             size.isNotEmptyAndIsDigitsOnly() -> {
-                modifier.size(size = size.toInt().dp)
+                modifier.then(Modifier.size(size = size.toInt().dp))
             }
             size == "fill" -> {
-                modifier.fillMaxSize()
+                modifier.then(Modifier.fillMaxSize())
+            }
+            else -> {
+                modifier
             }
         }
     }
 
     fun setHeight(height: String) {
-        when {
+        this.modifier = when {
             height.isNotEmptyAndIsDigitsOnly() -> {
-                modifier.height(height.toInt().dp)
+                modifier.then(Modifier.height(height.toInt().dp))
             }
             height == "fill" -> {
-                modifier.fillMaxHeight()
+                modifier.then(
+                    Modifier.fillMaxHeight()
+                )
+            }
+            else -> {
+                modifier
             }
         }
     }
 
     fun setWidth(width: String) {
-        when {
+        modifier = when {
             width.isNotEmptyAndIsDigitsOnly() -> {
-                modifier.width(width.toInt().dp)
+                modifier.then(Modifier.width(width.toInt().dp))
             }
             width == "fill" -> {
-                modifier.fillMaxWidth()
+                modifier.then(Modifier.fillMaxWidth())
+            }
+            else -> {
+                modifier
             }
         }
     }

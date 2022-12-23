@@ -14,7 +14,7 @@ import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
 
 class CardDTO(builder: Builder) : ComposableView() {
 
-    var modifier: Modifier
+    var modifier: Modifier = Modifier
     var shape: Shape
     var backgroundColor: Color
     var border: BorderStroke?
@@ -69,11 +69,12 @@ class CardDTO(builder: Builder) : ComposableView() {
     }
 
     init {
+        modifier = builder.getModifier()
         shape = builder.getShape()
         elevation = builder.getCardElevation()
         modifier = Modifier
         backgroundColor = builder.getBackgroundColor()
         border = null
-        modifier = builder.getModifier()
+
     }
 }

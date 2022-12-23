@@ -1,15 +1,11 @@
 package org.phoenixframework.liveview.ui.phx_components
 
-import android.provider.DocumentsContract
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -253,7 +249,7 @@ fun generateElementByTag(
 }
 
 @Composable
-fun PhxLiveView(liveViewState: MutableList<ComposableTreeNode>) {
+fun PhxLiveView(liveViewState: MutableList<ComposableTreeNode>, navController: NavHostController) {
     liveViewState.forEach { node ->
         TraverseComposableViewTree(composableTreeNode = node)
     }
@@ -296,8 +292,8 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
         }
         is CardDTO -> {
             Card(
-                backgroundColor = composableTreeNode.value.backgroundColor,
                 modifier = composableTreeNode.value.modifier,
+                backgroundColor = composableTreeNode.value.backgroundColor,
                 elevation = composableTreeNode.value.elevation,
                 shape = composableTreeNode.value.shape,
 
