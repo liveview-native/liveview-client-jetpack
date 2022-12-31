@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.managers
 
+import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,6 +10,7 @@ import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
+import org.jsoup.nodes.Document
 import org.phoenixframework.liveview.data.dto.ComposableTreeNode
 import org.phoenixframework.liveview.mappers.SocketPayloadMapper
 
@@ -18,6 +20,7 @@ object LiveViewState {
     private var domFetchManager: DomFetchManager
     private var storedCookies: MutableList<Cookie> = mutableListOf()
     private val socketPayloadMapper: SocketPayloadMapper = SocketPayloadMapper()
+    private val documentState = mutableStateOf<Document?>(null)
 
     private val _slotTable = MutableStateFlow<MutableList<ComposableTreeNode>>(mutableListOf())
     val slotTable = _slotTable.asStateFlow()
@@ -34,11 +37,11 @@ object LiveViewState {
     }
 
     private val okHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).addInterceptor { chain ->
-            val original = chain.request();
-            val authorized = original.newBuilder().build();
+        val original = chain.request();
+        val authorized = original.newBuilder().build();
 
-            chain.proceed(authorized);
-        }.build()
+        chain.proceed(authorized);
+    }.build()
 
     init {
         socketManager = SocketManager(
@@ -48,7 +51,9 @@ object LiveViewState {
             okHttpClient = okHttpClient
         )
 
-        socketManager.domParsedListener = {}
+        socketManager.domParsedListener = { document: Document ->
+            this.documentState.value = document
+        }
 
         socketManager.liveReloadListener = {
             baseUrl?.let {
@@ -61,7 +66,7 @@ object LiveViewState {
         }
 
         socketManager.nodeListener = { composableNode ->
-            if (!_slotTable.value.contains(composableNode)){
+            if (!_slotTable.value.contains(composableNode)) {
                 _slotTable.value.add(composableNode)
 
                 _slotTable.update {

@@ -68,7 +68,7 @@ object ComposableNodeFactory {
      * @param attributes the `Attributes` object to create the `CardDTO` object from
      * @return a `CardDTO` object based on the attributes of the input `Attributes` object
      **/
-    private fun buildCardNode(attributes: Attributes): ComposableView =
+    fun buildCardNode(attributes: Attributes): ComposableView =
         attributes
             .fold(CardDTO.Builder()) { builder, attribute ->
                 when (attribute.key) {

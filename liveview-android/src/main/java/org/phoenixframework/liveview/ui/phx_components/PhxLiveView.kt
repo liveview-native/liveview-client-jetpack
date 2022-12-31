@@ -158,55 +158,19 @@ fun PhxLiveView(liveViewState: MutableList<ComposableTreeNode>) {
 @Composable
 private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
     when (composableTreeNode.value) {
-        is AsyncImageDTO -> AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(composableTreeNode.value.imageUrl)
-                .crossfade(composableTreeNode.value.crossFade)
-                .build(),
-            contentDescription = composableTreeNode.value.contentDescription,
-            contentScale = composableTreeNode.value.contentScale,
-            modifier = composableTreeNode.value.modifier.clip(composableTreeNode.value.shape)
-        )
-        is TextDTO -> Text(
-            text = composableTreeNode.value.text,
-            color = composableTreeNode.value.color,
-            modifier = composableTreeNode.value.modifier,
-            fontSize = composableTreeNode.value.fontSize,
-            fontStyle = composableTreeNode.value.fontStyle,
-            fontWeight = composableTreeNode.value.fontWeight,
-            fontFamily = composableTreeNode.value.fontFamily,
-            letterSpacing = composableTreeNode.value.letterSpacing,
-            textAlign = composableTreeNode.value.textAlign,
-            lineHeight = composableTreeNode.value.lineHeight,
-            overflow = composableTreeNode.value.overflow,
-            softWrap = composableTreeNode.value.softWrap,
-            maxLines = composableTreeNode.value.maxLines,
-            textDecoration = composableTreeNode.value.textDecoration
-        )
-        is CardDTO -> Card(
-            backgroundColor = composableTreeNode.value.backgroundColor,
-            modifier = composableTreeNode.value.modifier,
-            elevation = composableTreeNode.value.elevation,
-            shape = composableTreeNode.value.shape,
-        ) {
+        is AsyncImageDTO -> composableTreeNode.value.Compose()
+        is TextDTO -> composableTreeNode.value.Compose()
+        is CardDTO -> composableTreeNode.value.Compose {
             composableTreeNode.children.forEach {
                 TraverseComposableViewTree(composableTreeNode = it)
             }
         }
-        is RowDTO -> Row(
-            modifier = composableTreeNode.value.modifier,
-            horizontalArrangement = composableTreeNode.value.horizontalArrangement,
-            verticalAlignment = composableTreeNode.value.verticalAlignment
-        ) {
+        is RowDTO -> composableTreeNode.value.Compose {
             composableTreeNode.children.forEach {
                 TraverseComposableViewTree(composableTreeNode = it)
             }
         }
-        is ColumnDTO -> Column(
-            modifier = composableTreeNode.value.modifier,
-            verticalArrangement = composableTreeNode.value.verticalArrangement,
-            horizontalAlignment = composableTreeNode.value.horizontalAlignment
-        ) {
+        is ColumnDTO -> composableTreeNode.value.Compose {
             composableTreeNode.children.forEach {
                 TraverseComposableViewTree(composableTreeNode = it)
             }
