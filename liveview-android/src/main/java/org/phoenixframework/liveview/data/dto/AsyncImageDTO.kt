@@ -2,22 +2,37 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
 
 
 class AsyncImageDTO private constructor(val builder: Builder): ComposableView(){
-    val imageUrl: String
-    val contentDescription: String?
-    val crossfade: Boolean
-    val shape :Shape
-    val contentScale : ContentScale
-    var modifier: Modifier = Modifier
+    private val imageUrl: String
+    private val contentDescription: String?
+    private val crossfade: Boolean
+    private val shape :Shape
+    private val contentScale : ContentScale
+    private var modifier: Modifier = Modifier
 
+    @Composable
+    fun  Compose(){
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(crossfade).build(),
+            contentDescription = contentDescription,
+            contentScale = contentScale,
+            modifier = modifier
+        )
+    }
     class Builder() : ComposableBuilder(){
         private var imageUrl: String =""
         private var contentDescription: String?= null

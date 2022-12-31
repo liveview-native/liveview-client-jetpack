@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.managers
 
+import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +25,7 @@ object LiveViewState {
 
     private val socketPayloadMapper: SocketPayloadMapper = SocketPayloadMapper()
 
-    // private val documentState = mutableStateOf<Document?>(null)
+     private val documentState = mutableStateOf<Document?>(null)
 
     private val _slotTable = MutableStateFlow<MutableList<ComposableTreeNode>>(mutableListOf())
     val slotTable = _slotTable.asStateFlow()
@@ -64,7 +65,7 @@ object LiveViewState {
         )
 
         socketManager.domParsedListener = { document: Document ->
-            /// slotTable.value = document
+           this.documentState.value = document
         }
 
         socketManager.liveReloadListener = {

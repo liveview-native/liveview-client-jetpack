@@ -63,7 +63,7 @@ object ComposableNodeFactory {
      * @return a `CardDTO` object based on the attributes of the input `Attributes` object
      **/
 
-    private fun buildCardNode(attributes: Attributes): ComposableView {
+    fun buildCardNode(attributes: Attributes): ComposableView {
         val cardNode = CardDTO.Builder()
         attributes.forEach { attribute ->
             when (attribute.key) {

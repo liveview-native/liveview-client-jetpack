@@ -1,5 +1,7 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
@@ -14,25 +16,46 @@ import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
 
 class TextDTO private constructor(builder: Builder) : ComposableView() {
     // Original class fields
-    var text: String
-    var modifier: Modifier = Modifier
-    var color: Color
-    var fontSize: TextUnit
-    var fontStyle: FontStyle?
-    var fontWeight: FontWeight?
-    var fontFamily: FontFamily?
-    var letterSpacing: TextUnit
-    var textDecoration: TextDecoration?
-    var textAlign: TextAlign?
-    var lineHeight: TextUnit
-    var overflow: TextOverflow
-    var softWrap: Boolean
-    var maxLines: Int
+    private var text: String
+    private var modifier: Modifier = Modifier
+    private var color: Color
+    private var fontSize: TextUnit
+    private var fontStyle: FontStyle?
+    private var fontWeight: FontWeight?
+    private var fontFamily: FontFamily?
+    private var letterSpacing: TextUnit
+    private var textDecoration: TextDecoration?
+    private var textAlign: TextAlign?
+    private var lineHeight: TextUnit
+    private var overflow: TextOverflow
+    private var softWrap: Boolean
+    private var maxLines: Int
 
+
+    @Composable
+    fun Compose() {
+        Text(
+            text = text,
+            color = color,
+            modifier = modifier,
+            fontSize = fontSize,
+            fontStyle = fontStyle,
+            fontWeight = fontWeight,
+            fontFamily = fontFamily,
+            letterSpacing = letterSpacing,
+            textAlign = textAlign,
+            lineHeight = lineHeight,
+            overflow = overflow,
+            softWrap = softWrap,
+            maxLines = maxLines,
+            textDecoration = textDecoration
+
+        )
+    }
 
 
     // Builder class
-    class Builder : ComposableBuilder(){
+    class Builder : ComposableBuilder() {
         // Required parameters
         private var text: String = ""
 

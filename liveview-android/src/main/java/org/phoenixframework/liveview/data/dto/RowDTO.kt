@@ -1,15 +1,28 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
+
 class RowDTO private constructor(builder: Builder) : ComposableView() {
 
-    var horizontalArrangement: Arrangement.Horizontal
-    var verticalAlignment: Alignment.Vertical
-    var modifier: Modifier
-
+    private var horizontalArrangement: Arrangement.Horizontal
+    private var verticalAlignment: Alignment.Vertical
+    private var modifier: Modifier
+    
+    @Composable
+    fun Compose(content: @Composable() ()-> Unit){
+        Row(
+            modifier = modifier,
+            horizontalArrangement = horizontalArrangement,
+            verticalAlignment = verticalAlignment
+        ) {
+            content()
+        }
+    }
     class Builder : ComposableBuilder(){
         private var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
         private var verticalAlignment: Alignment.Vertical = Alignment.Top

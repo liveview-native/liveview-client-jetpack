@@ -23,7 +23,7 @@ class SocketManager(
 ) {
 
     private val androidTemplate = """
-       
+       <column>
         <card elevation="8" shape="8" size="300" background-color = "0xFFF2F2F2" >
         <column vertical-arrangement="space-evenly" horizontal-alignment="start" width="280" width="100" padding = "12" >
          <async-image width="fill" height="150" content-scale="fill-bounds"> https://www.themoviedb.org/t/p/w1280/94xxm5701CzOdJdUEdIuwqZaowx.jpg </async-image>
@@ -35,6 +35,7 @@ class SocketManager(
            </row>
          </column>
          </card>
+         </column>
         
     """
     private var phxSocket: Socket? = null

@@ -17,7 +17,8 @@ import org.phoenixframework.liveview.extensions.xGenerateFromElement
 import org.phoenixframework.liveview.ui.phx_components.phx_canvas.PhxCanvas
 
 
-@Composable fun walkDomAndBuildComposables(
+@Composable
+fun walkDomAndBuildComposables(
     document: Document?,
     navHostController: NavHostController,
     phxActionListener: (PhxAction) -> Unit
@@ -34,7 +35,8 @@ import org.phoenixframework.liveview.ui.phx_components.phx_canvas.PhxCanvas
 }
 
 
-@Composable fun walkChildrenAndBuildComposables(
+@Composable
+fun walkChildrenAndBuildComposables(
     children: Elements?,
     navHostController: NavHostController? = null,
     phxActionListener: (PhxAction) -> Unit
@@ -51,7 +53,8 @@ import org.phoenixframework.liveview.ui.phx_components.phx_canvas.PhxCanvas
 }
 
 
-@Composable private fun mapElementToComposable(
+@Composable
+private fun mapElementToComposable(
     element: Element,
     navHostController: NavHostController? = null,
     phxActionListener: (PhxAction) -> Unit
@@ -71,7 +74,6 @@ import org.phoenixframework.liveview.ui.phx_components.phx_canvas.PhxCanvas
 }
 
 
-
 @Composable
 fun generateElementByTag(
     element: Element,
@@ -80,8 +82,7 @@ fun generateElementByTag(
 ) {
 
     val attributeModifiers = xGenerateFromElement(
-        element,
-        phxActionListener = phxActionListener
+        element, phxActionListener = phxActionListener
     )
 
     when (element.tagName()) {
@@ -114,39 +115,30 @@ fun generateElementByTag(
 
         "canvas" -> {
             PhxCanvas(
-                element = element,
-                modifier = attributeModifiers
+                element = element, modifier = attributeModifiers
             )
         }
 
         "card" -> {
-            PhxCard(
-                element = element,
-                modifier = attributeModifiers,
-                content = {
-                    walkChildrenAndBuildComposables(
-                        children = element.children(),
-                        phxActionListener = phxActionListener
-                    )
-                }
-            )
+            PhxCard(element = element, modifier = attributeModifiers, content = {
+                walkChildrenAndBuildComposables(
+                    children = element.children(), phxActionListener = phxActionListener
+                )
+            })
         }
 
         "checkbox" -> {
-            PhxCheckbox(
-                element = element,
+            PhxCheckbox(element = element,
                 modifier = attributeModifiers,
                 _onValueChange = { isChecked ->
                     phxActionListener.invoke(
                         PhxAction.PhxCheckChangedAction(
-                            element = element,
-                            isChecked = isChecked
+                            element = element, isChecked = isChecked
                         )
                     )
-                }
-            )
+                })
         }
-        
+
         "column" -> {
             PhxColumn(
                 element = element,
@@ -157,8 +149,7 @@ fun generateElementByTag(
 
         "icon" -> {
             PhxIcon(
-                element = element,
-                modifier = attributeModifiers
+                element = element, modifier = attributeModifiers
             )
         }
 
@@ -217,8 +208,7 @@ fun generateElementByTag(
 
         "text" -> {
             PhxText(
-                element = element,
-                modifier = attributeModifiers
+                element = element, modifier = attributeModifiers
             )
         }
 
@@ -261,70 +251,31 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
     when (composableTreeNode.value) {
         is AsyncImageDTO -> {
 
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(composableTreeNode.value.imageUrl)
-                    .crossfade(composableTreeNode.value.crossfade)
-                    .build(),
-                contentDescription = composableTreeNode.value.contentDescription,
-                contentScale = composableTreeNode.value.contentScale,
-                modifier = composableTreeNode.value.modifier
-            )
+            composableTreeNode.value.Compose()
         }
         is TextDTO -> {
-            Text(
-                text = composableTreeNode.value.text,
-                color = composableTreeNode.value.color,
-                modifier = composableTreeNode.value.modifier,
-                fontSize = composableTreeNode.value.fontSize,
-                fontStyle = composableTreeNode.value.fontStyle,
-                fontWeight = composableTreeNode.value.fontWeight,
-                fontFamily = composableTreeNode.value.fontFamily,
-                letterSpacing = composableTreeNode.value.letterSpacing,
-                textAlign = composableTreeNode.value.textAlign,
-                lineHeight = composableTreeNode.value.lineHeight,
-                overflow = composableTreeNode.value.overflow,
-                softWrap = composableTreeNode.value.softWrap,
-                maxLines = composableTreeNode.value.maxLines,
-                textDecoration = composableTreeNode.value.textDecoration
-
-            )
+            composableTreeNode.value.Compose()
         }
         is CardDTO -> {
-            Card(
-                modifier = composableTreeNode.value.modifier,
-                backgroundColor = composableTreeNode.value.backgroundColor,
-                elevation = composableTreeNode.value.elevation,
-                shape = composableTreeNode.value.shape,
-
-                ) {
+            composableTreeNode.value.Compose {
                 composableTreeNode.children.forEach {
                     TraverseComposableViewTree(composableTreeNode = it)
                 }
-
             }
         }
         is RowDTO -> {
-            Row(
-                modifier = composableTreeNode.value.modifier,
-                horizontalArrangement = composableTreeNode.value.horizontalArrangement,
-                verticalAlignment = composableTreeNode.value.verticalAlignment
-            ) {
+            composableTreeNode.value.Compose {
                 composableTreeNode.children.forEach {
                     TraverseComposableViewTree(composableTreeNode = it)
                 }
             }
         }
         is ColumnDTO -> {
-            Column(
-                modifier = composableTreeNode.value.modifier,
-                verticalArrangement = composableTreeNode.value.verticalArrangement,
-                horizontalAlignment = composableTreeNode.value.horizontalAlignment
-            ) {
+            composableTreeNode.value.Compose {
+
                 composableTreeNode.children.forEach {
                     TraverseComposableViewTree(composableTreeNode = it)
                 }
-
             }
         }
     }
