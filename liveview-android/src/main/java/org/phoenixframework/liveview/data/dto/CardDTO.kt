@@ -2,6 +2,8 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
@@ -13,6 +15,18 @@ class CardDTO private constructor(builder: Builder) : ComposableView(modifier = 
     var shape: Shape = builder.shape
     var backgroundColor: Color = builder.backgroundColor
     var elevation: Dp = builder.elevation
+
+    @Composable
+    fun Compose(content: @Composable () -> Unit) {
+        Card(
+            modifier = modifier,
+            backgroundColor = backgroundColor,
+            elevation = elevation,
+            shape = shape,
+        ) {
+            content()
+        }
+    }
 
     class Builder : ComposableBuilder() {
         var shape: Shape = RoundedCornerShape(0.dp)
