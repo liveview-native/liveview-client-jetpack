@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.ui.phx_components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -20,9 +21,8 @@ fun LiveView(
     // val liveViewState by LiveViewState.slotTable.collectAsState()
     LiveViewTestTheme {
         // A surface container using the 'background' color from the theme
-        Surface(
+        Box(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.background
         ) {
 
 

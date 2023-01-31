@@ -2,6 +2,7 @@ package org.phoenixframework.liveview.domain.factory
 
 import org.jsoup.nodes.Attributes
 import org.jsoup.nodes.Element
+import org.phoenixframework.liveview.data.dto.AsyncImageDTO
 import org.phoenixframework.liveview.data.dto.TextDTO
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -25,6 +26,9 @@ object ComposableNodeFactory {
                     buildTextNode(attributes = element.attributes(), text = element.text())
                 )
             }
+            ComposableTypes.asyncImage -> {
+                ComposableTreeNode(buildAsyncImageNode(element.attributes()))
+            }
 
             else -> {
                 ComposableTreeNode(
@@ -33,6 +37,33 @@ object ComposableNodeFactory {
 
             }
         }
+    }
+
+    /**
+     * Creates an `AsyncImageDTO` object based on the attributes and text of the input `Attributes` object.
+     * AsyncImage co-relates to the AsyncImage composable from Coil library used to load images from network
+     * @param attributes the `Attributes` object to create the `AsyncImageDTO` object from
+     * @param url is the url of image that is to be loaded
+     * @return an `AsyncImageDTO` object based on the attributes and text of the input `Attributes` object
+     */
+
+    private fun buildAsyncImageNode(attributes: Attributes): ComposableView {
+        val asyncImageNode = AsyncImageDTO.Builder().setImageUrl(attributes.get("url"))
+        attributes.forEach { attribute ->
+            when (attribute.key) {
+                "content-scale" -> asyncImageNode.setContentScale(attribute.value)
+                "content-description" -> asyncImageNode.setContentDescription(attribute.value)
+                "cross-fade" -> asyncImageNode.setCrossFade(attribute.value)
+                "shape" -> asyncImageNode.setShape(attribute.value)
+                "size" -> asyncImageNode.setSize(attribute.value)
+                "height" -> asyncImageNode.setHeight(attribute.value)
+                "width" -> asyncImageNode.setWidth(attribute.value)
+                "padding" -> asyncImageNode.setPadding(attribute.value)
+                "horizontal-padding" -> asyncImageNode.setHorizontalPadding(attribute.value)
+                "vertical-padding" -> asyncImageNode.setVerticalPadding(attribute.value)
+            }
+        }
+        return asyncImageNode.build()
     }
 
 
