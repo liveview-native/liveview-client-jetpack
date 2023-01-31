@@ -21,9 +21,7 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
         is TextDTO -> {
             composableTreeNode.value.Compose()
         }
-        is AsyncImageDTO -> {
-            composableTreeNode.value.Compose()
-        }
+
 
     }
 }
