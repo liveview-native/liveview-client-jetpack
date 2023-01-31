@@ -22,11 +22,12 @@ object ComposableNodeFactory {
         ComposableTypes.asyncImage -> ComposableTreeNode(buildAsyncImageNode(element.attributes()))
         ComposableTypes.card -> ComposableTreeNode(buildCardNode(element.attributes()))
         ComposableTypes.column -> ComposableTreeNode(buildColumnNode(element.attributes()))
+        ComposableTypes.icon -> ComposableTreeNode(buildIconNode(element.attributes()))
         ComposableTypes.lazyColumn -> ComposableTreeNode(
-            buildLazyColumnNode(attributes = element.attributes())
+            buildLazyColumnNode(element.attributes())
         )
         ComposableTypes.lazyRow -> ComposableTreeNode(
-            buildLazyRowNode(attributes = element.attributes())
+            buildLazyRowNode(element.attributes())
         )
         ComposableTypes.row -> ComposableTreeNode(buildRowNode(element.attributes()))
         ComposableTypes.spacer -> ComposableTreeNode(buildSpacerNode(element.attributes()))
@@ -109,6 +110,23 @@ object ComposableNodeFactory {
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
                     "width" -> builder.width(attribute.value)
+                    "padding" -> builder.padding(attribute.value)
+                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
+                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    else -> builder
+                }
+            }
+            .build()
+
+    private fun buildIconNode(attributes: Attributes): IconDTO =
+        attributes
+            .fold(IconDTO.Builder().imageVector(attributes.get("name"))) { builder, attribute ->
+                when (attribute.key) {
+                    "tint" -> builder.tint(attribute.value)
+                    "size" -> builder.size(attribute.value)
+                    "height" -> builder.height(attribute.value)
+                    "width" -> builder.width(attribute.value)
+                    "content-description" -> builder.contentDescription(attribute.value)
                     "padding" -> builder.padding(attribute.value)
                     "horizontal-padding" -> builder.horizontalPadding(attribute.value)
                     "vertical-padding" -> builder.verticalPadding(attribute.value)

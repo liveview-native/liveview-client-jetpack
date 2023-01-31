@@ -23,6 +23,7 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
                 TraverseComposableViewTree(composableTreeNode = node)
             }
         }
+        is IconDTO -> composableTreeNode.value.Compose()
         is LazyColumnDTO ->
             composableTreeNode.value.ComposeLazyItems(composableTreeNode.children) { node ->
                 TraverseComposableViewTree(composableTreeNode = node)
