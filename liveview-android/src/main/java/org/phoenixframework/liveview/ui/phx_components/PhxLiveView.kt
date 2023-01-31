@@ -27,8 +27,8 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
             composableTreeNode.value.ComposeLazyItems(composableTreeNode.children) { node ->
                 TraverseComposableViewTree(composableTreeNode = node)
             }
-        is LazyRowDTO ->{
-            composableTreeNode.value.ComposeLazyItems(composableTreeNode.children) { node->
+        is LazyRowDTO -> {
+            composableTreeNode.value.ComposeLazyItems(composableTreeNode.children) { node ->
                 TraverseComposableViewTree(composableTreeNode = node)
             }
         }
@@ -37,6 +37,7 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
                 TraverseComposableViewTree(composableTreeNode = node)
             }
         }
+        is SpacerDTO -> composableTreeNode.value.Compose()
         is TextDTO -> composableTreeNode.value.Compose()
     }
 }
