@@ -8,6 +8,8 @@ object ComposableTypes {
     const val lazyColumn = "lazy-column"
     const val lazyRow = "lazy-row"
     const val row = "row"
+    const val scaffold = "scaffold"
     const val spacer = "spacer"
     const val text = "text"
+    const val topAppBar = "top-app-bar"
 }

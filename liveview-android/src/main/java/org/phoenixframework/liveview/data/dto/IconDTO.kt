@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.domain.extensions.toColor
 
 class IconDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
     var contentDescription: String = builder.contentDescription
@@ -65,8 +66,6 @@ class IconDTO private constructor(builder: Builder) : ComposableView(modifier = 
         fun build() = IconDTO(this)
     }
 }
-
-private fun String.toColor(): Color = Color(this.toLong())
 
 private fun String.toMaterialIcon(): ImageVector? = try {
     val imageParameters = split(":")
