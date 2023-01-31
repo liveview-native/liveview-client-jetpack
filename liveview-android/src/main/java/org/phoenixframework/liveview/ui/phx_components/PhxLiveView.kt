@@ -17,6 +17,13 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
         is AsyncImageDTO -> {
             composableTreeNode.value.Compose()
         }
+        is CardDTO -> {
+            composableTreeNode.value.Compose {
+                composableTreeNode.children.forEach { node ->
+                    TraverseComposableViewTree(composableTreeNode = node)
+                }
+            }
+        }
         is TextDTO -> {
             composableTreeNode.value.Compose()
         }

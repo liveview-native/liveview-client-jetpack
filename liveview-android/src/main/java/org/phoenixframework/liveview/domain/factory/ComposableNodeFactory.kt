@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.domain.factory
 import org.jsoup.nodes.Attributes
 import org.jsoup.nodes.Element
 import org.phoenixframework.liveview.data.dto.AsyncImageDTO
+import org.phoenixframework.liveview.data.dto.CardDTO
 import org.phoenixframework.liveview.data.dto.TextDTO
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -20,6 +21,11 @@ object ComposableNodeFactory {
      * @return a `ComposableTreeNode` object based on the input `Element` object
      */
     fun buildComposable(element: Element): ComposableTreeNode = when (element.tagName()) {
+        ComposableTypes.card -> {
+            ComposableTreeNode(
+                buildCardNode(attributes = element.attributes())
+            )
+        }
         ComposableTypes.text -> {
             ComposableTreeNode(
                 buildTextNode(attributes = element.attributes(), text = element.text())
@@ -51,6 +57,27 @@ object ComposableNodeFactory {
                     "content-description" -> builder.contentDescription(attribute.key)
                     "cross-fade" -> builder.crossFade(attribute.key)
                     "shape" -> builder.shape(attribute.key)
+                    "size" -> builder.size(attribute.value)
+                    "height" -> builder.height(attribute.value)
+                    "width" -> builder.width(attribute.value)
+                    else -> builder
+                }
+            }
+            .build()
+
+    /**
+     * Creates a `CardDTO` object based on the attributes of the input `Attributes` object.
+     * Card co-relates to the Card composable
+     * @param attributes the `Attributes` object to create the `CardDTO` object from
+     * @return a `CardDTO` object based on the attributes of the input `Attributes` object
+     **/
+    private fun buildCardNode(attributes: Attributes): ComposableView =
+        attributes
+            .fold(CardDTO.Builder()) { builder, attribute ->
+                when (attribute.key) {
+                    "shape" -> builder.shape(attribute.value)
+                    "background-color" -> builder.backgroundColor(attribute.value)
+                    "elevation" -> builder.elevation(attribute.value)
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
                     "width" -> builder.width(attribute.value)
