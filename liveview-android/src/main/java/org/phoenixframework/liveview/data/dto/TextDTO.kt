@@ -11,7 +11,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 
 class TextDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
     var text: String = builder.text
@@ -238,6 +240,18 @@ class TextDTO private constructor(builder: Builder) : ComposableView(modifier = 
 
         override fun size(size: String): Builder = apply {
             super.size(size)
+        }
+
+        override fun padding(padding: String): Builder = apply {
+            super.padding(padding)
+        }
+
+        override fun verticalPadding(padding: String): Builder = apply {
+            super.verticalPadding(padding)
+        }
+
+        override fun horizontalPadding(padding: String): Builder = apply {
+            super.horizontalPadding(padding)
         }
 
         override fun height(height: String): Builder = apply {

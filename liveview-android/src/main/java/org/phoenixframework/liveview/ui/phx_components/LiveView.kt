@@ -7,12 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import org.phoenixframework.liveview.managers.LiveViewState
+import org.phoenixframework.liveview.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.ui.theme.LiveViewTestTheme
 
 @Composable
-fun LiveView() {
-    val liveViewState by LiveViewState.slotTable.collectAsState()
+fun LiveView(liveViewCoordinator: LiveViewCoordinator) {
+    val state by liveViewCoordinator.backStack.collectAsState()
 
     LiveViewTestTheme {
         // A surface container using the 'background' color from the theme
@@ -20,8 +20,8 @@ fun LiveView() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            Surface {
-                PhxLiveView(liveViewState)
+            if (state.isNotEmpty()) {
+                PhxLiveView(liveViewState = state.peek())
             }
         }
     }
