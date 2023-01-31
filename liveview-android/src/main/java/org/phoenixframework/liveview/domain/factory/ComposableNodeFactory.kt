@@ -29,6 +29,7 @@ object ComposableNodeFactory {
             buildLazyRowNode(attributes = element.attributes())
         )
         ComposableTypes.row -> ComposableTreeNode(buildRowNode(element.attributes()))
+        ComposableTypes.spacer -> ComposableTreeNode(buildSpacerNode(element.attributes()))
         ComposableTypes.text -> ComposableTreeNode(
             buildTextNode(attributes = element.attributes(), text = element.text())
         )
@@ -188,6 +189,21 @@ object ComposableNodeFactory {
                     "padding" -> builder.padding(attribute.value)
                     "horizontal-padding" -> builder.horizontalPadding(attribute.value)
                     "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    else -> builder
+                }
+            }
+            .build()
+
+    private fun buildSpacerNode(attributes: Attributes): ComposableView =
+        attributes
+            .fold(SpacerDTO.Builder()) { builder, attribute ->
+                when (attribute.key) {
+                    "size" -> builder.size(attribute.value)
+                    "padding" -> builder.padding(attribute.value)
+                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
+                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "height" -> builder.height(attribute.value)
+                    "width" -> builder.width(attribute.value)
                     else -> builder
                 }
             }
