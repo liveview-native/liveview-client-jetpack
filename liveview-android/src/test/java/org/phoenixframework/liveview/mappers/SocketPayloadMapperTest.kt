@@ -4,6 +4,7 @@ import org.jsoup.Jsoup
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.phoenixframework.liveview.data.mappers.SocketPayloadMapper
 
 
 internal class SocketPayloadMapperTest {

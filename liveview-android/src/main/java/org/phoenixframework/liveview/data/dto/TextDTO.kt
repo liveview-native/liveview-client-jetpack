@@ -2,7 +2,6 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -12,12 +11,13 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 
 class TextDTO private constructor(builder: Builder) : ComposableView() {
     // Original class fields
     private var text: String
-    private var modifier: Modifier = Modifier
     private var color: Color
     private var fontSize: TextUnit
     private var fontStyle: FontStyle?
@@ -33,7 +33,7 @@ class TextDTO private constructor(builder: Builder) : ComposableView() {
 
 
     @Composable
-    fun Compose() {
+     fun Compose() {
         Text(
             text = text,
             color = color,
@@ -73,10 +73,10 @@ class TextDTO private constructor(builder: Builder) : ComposableView() {
         private var softWrap: Boolean = true
         private var maxLines: Int = Int.MAX_VALUE
 
-        // Setters for required parameters
+
         fun setText(text: String) = apply { this.text = text }
 
-        // Setters for optional parameters
+
         /**
          *Sets the text color for a given text.
          *@param color The color to be applied to the text. The color must be specified as a string in the format "0xFFBB86FC", where
@@ -115,8 +115,11 @@ class TextDTO private constructor(builder: Builder) : ComposableView() {
                     "normal" -> {
                         FontStyle.Normal
                     }
-                    else -> {
+                    "italic" ->{
                         FontStyle.Italic
+                    }
+                    else -> {
+                        FontStyle.Normal
                     }
 
                 }

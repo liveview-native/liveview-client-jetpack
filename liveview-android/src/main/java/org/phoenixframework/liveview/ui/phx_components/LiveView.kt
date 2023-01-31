@@ -8,15 +8,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import org.phoenixframework.liveview.managers.LiveViewState
+import org.phoenixframework.liveview.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.ui.theme.LiveViewTestTheme
 
 @Composable
 fun LiveView(
+    liveViewCoordinator: LiveViewCoordinator
 
 ) {
-
-    val liveViewState by LiveViewState.slotTable.collectAsState()
+    val state by liveViewCoordinator.backStack.collectAsState()
+    // val liveViewState by LiveViewState.slotTable.collectAsState()
     LiveViewTestTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -24,55 +25,15 @@ fun LiveView(
             color = MaterialTheme.colors.background
         ) {
 
-            val navController = rememberNavController()
 
-            Surface() {
-                PhxLiveView(liveViewState, navController)
+            val navController =  rememberNavController()
+
+            if(state.isNotEmpty()){
+
+                PhxLiveView(liveViewState = state.peek(), navController = navController)
             }
 
 
-            /*PhxLiveView(
-                documentState = LiveViewState.getDocumentState(),
-                navHostController = navController,
-                phxActionListener = { phxAction: PhxAction ->
-
-                    when (phxAction) {
-
-                        is PhxAction.GenericAction -> {
-                            val type = phxAction.element.attr("type")
-                            val value = phxAction.element.attr("value")
-
-                            when (type) {
-                                "navigate" -> {
-                                    navController.navigate(value)
-                                }
-
-                                "click" -> {
-                                    LiveViewState.getSocketManager()
-                                        .pushChannelMessage(
-                                            PhxAction.PhxButtonClickAction(
-                                                element = phxAction.element
-                                            )
-                                        )
-                                }
-                            }
-                        }
-                        is PhxAction.PhxNavAction -> {
-                            navController.navigate(phxAction.navDestination)
-                        }
-
-                        else -> {
-                            LiveViewState
-                                .getSocketManager()
-                                .pushChannelMessage(
-                                    phxAction = phxAction
-                                )
-                        }
-                    }
-
-
-                }
-            )*/
         }
     }
 }
