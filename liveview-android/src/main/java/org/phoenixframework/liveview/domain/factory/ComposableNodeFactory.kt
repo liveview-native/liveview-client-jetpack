@@ -2,6 +2,7 @@ package org.phoenixframework.liveview.domain.factory
 
 import org.jsoup.nodes.Attributes
 import org.jsoup.nodes.Element
+import org.phoenixframework.liveview.data.dto.AsyncImageDTO
 import org.phoenixframework.liveview.data.dto.TextDTO
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -19,9 +20,14 @@ object ComposableNodeFactory {
      * @return a `ComposableTreeNode` object based on the input `Element` object
      */
     fun buildComposable(element: Element): ComposableTreeNode = when (element.tagName()) {
-        ComposableTypes.text -> ComposableTreeNode(
-            buildTextNode(attributes = element.attributes(), text = element.text())
-        )
+        ComposableTypes.text -> {
+            ComposableTreeNode(
+                buildTextNode(attributes = element.attributes(), text = element.text())
+            )
+        }
+        ComposableTypes.asyncImage -> {
+            ComposableTreeNode(buildAsyncImageNode(element.attributes()))
+        }
         else -> ComposableTreeNode(
             buildTextNode(
                 attributes = element.attributes(),
@@ -29,6 +35,29 @@ object ComposableNodeFactory {
             )
         )
     }
+
+    /**
+     * Creates an `AsyncImageDTO` object based on the attributes and text of the input `Attributes` object.
+     * AsyncImage co-relates to the AsyncImage composable from Coil library used to load images from network
+     * @param attributes the `Attributes` object to create the `AsyncImageDTO` object from
+     * @param url is the url of image that is to be loaded
+     * @return an `AsyncImageDTO` object based on the attributes and text of the input `Attributes` object
+     */
+    private fun buildAsyncImageNode(attributes: Attributes): ComposableView =
+        attributes
+            .fold(AsyncImageDTO.Builder().imageUrl(attributes.get("url"))) { builder, attribute ->
+                when (attribute.key) {
+                    "content-scale" -> builder.contentScale(attribute.key)
+                    "content-description" -> builder.contentDescription(attribute.key)
+                    "cross-fade" -> builder.crossFade(attribute.key)
+                    "shape" -> builder.shape(attribute.key)
+                    "size" -> builder.size(attribute.value)
+                    "height" -> builder.height(attribute.value)
+                    "width" -> builder.width(attribute.value)
+                    else -> builder
+                }
+            }
+            .build()
 
     /**
      * Creates a `TextDTO` object based on the attributes and text of the input `Attributes` object.

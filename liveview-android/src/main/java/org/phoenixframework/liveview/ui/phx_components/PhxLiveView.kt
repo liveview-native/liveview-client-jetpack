@@ -14,6 +14,11 @@ fun PhxLiveView(liveViewState: MutableList<ComposableTreeNode>) {
 @Composable
 private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
     when (composableTreeNode.value) {
-        is TextDTO -> composableTreeNode.value.Compose()
+        is AsyncImageDTO -> {
+            composableTreeNode.value.Compose()
+        }
+        is TextDTO -> {
+            composableTreeNode.value.Compose()
+        }
     }
 }
