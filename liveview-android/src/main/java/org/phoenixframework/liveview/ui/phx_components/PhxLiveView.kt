@@ -6,40 +6,32 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
 @Composable
 fun PhxLiveView(liveViewState: MutableList<ComposableTreeNode>) {
-    liveViewState.forEach { node ->
-        TraverseComposableViewTree(composableTreeNode = node)
-    }
+    liveViewState.forEach { node -> TraverseComposableViewTree(composableTreeNode = node) }
 }
 
 @Composable
 private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
     when (composableTreeNode.value) {
-        is AsyncImageDTO -> {
-            composableTreeNode.value.Compose()
-        }
-        is CardDTO -> {
-            composableTreeNode.value.Compose {
-                composableTreeNode.children.forEach { node ->
-                    TraverseComposableViewTree(composableTreeNode = node)
-                }
+        is AsyncImageDTO -> composableTreeNode.value.Compose()
+        is CardDTO -> composableTreeNode.value.Compose {
+            composableTreeNode.children.forEach { node ->
+                TraverseComposableViewTree(composableTreeNode = node)
             }
         }
-        is ColumnDTO -> {
-            composableTreeNode.value.Compose {
-                composableTreeNode.children.forEach {node->
-                    TraverseComposableViewTree(composableTreeNode = node)
-                }
+        is ColumnDTO -> composableTreeNode.value.Compose {
+            composableTreeNode.children.forEach { node ->
+                TraverseComposableViewTree(composableTreeNode = node)
             }
         }
-        is RowDTO -> {
-            composableTreeNode.value.Compose {
-                composableTreeNode.children.forEach {node->
-                    TraverseComposableViewTree(composableTreeNode = node)
-                }
+        is LazyColumnDTO ->
+            composableTreeNode.value.ComposeLazyItems(composableTreeNode.children) { node ->
+                TraverseComposableViewTree(composableTreeNode = node)
+            }
+        is RowDTO -> composableTreeNode.value.Compose {
+            composableTreeNode.children.forEach { node ->
+                TraverseComposableViewTree(composableTreeNode = node)
             }
         }
-        is TextDTO -> {
-            composableTreeNode.value.Compose()
-        }
+        is TextDTO -> composableTreeNode.value.Compose()
     }
 }
