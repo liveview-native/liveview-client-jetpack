@@ -27,6 +27,11 @@ private fun TraverseComposableViewTree(composableTreeNode: ComposableTreeNode) {
             composableTreeNode.value.ComposeLazyItems(composableTreeNode.children) { node ->
                 TraverseComposableViewTree(composableTreeNode = node)
             }
+        is LazyRowDTO ->{
+            composableTreeNode.value.ComposeLazyItems(composableTreeNode.children) { node->
+                TraverseComposableViewTree(composableTreeNode = node)
+            }
+        }
         is RowDTO -> composableTreeNode.value.Compose {
             composableTreeNode.children.forEach { node ->
                 TraverseComposableViewTree(composableTreeNode = node)

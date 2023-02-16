@@ -25,6 +25,9 @@ object ComposableNodeFactory {
         ComposableTypes.lazyColumn -> ComposableTreeNode(
             buildLazyColumnNode(attributes = element.attributes())
         )
+        ComposableTypes.lazyRow -> ComposableTreeNode(
+            buildLazyRowNode(attributes = element.attributes())
+        )
         ComposableTypes.row -> ComposableTreeNode(buildRowNode(element.attributes()))
         ComposableTypes.text -> ComposableTreeNode(
             buildTextNode(attributes = element.attributes(), text = element.text())
@@ -128,9 +131,34 @@ object ComposableNodeFactory {
                     "item-top-padding" -> builder.topPadding(attribute.value)
                     "item-vertical-padding" -> builder.verticalPadding(attribute.value)
                     "padding" -> builder.padding(attribute.value)
-                    "reverse-layout" -> builder.horizontalAlignment(attribute.value)
+                    "reverse-layout" -> builder.reverseLayout(attribute.value)
                     "size" -> builder.size(attribute.value)
                     "vertical-arrangement" -> builder.verticalArrangement(attribute.value)
+                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "width" -> builder.width(attribute.value)
+                    else -> builder
+                }
+            }
+            .build()
+
+    private fun buildLazyRowNode(attributes: Attributes): ComposableView =
+        attributes
+            .fold(LazyRowDTO.Builder()) { builder, attribute ->
+                when (attribute.key) {
+                    "height" -> builder.height(attribute.value)
+                    "horizontal-arrangement" -> builder.horizontalArrangement(horizontalArrangement = attribute.value)
+                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
+                    "item-bottom-padding" -> builder.bottomPadding(attribute.value)
+                    "item-horizontal-padding" -> builder.horizontalPadding(attribute.value)
+                    "item-left-padding" -> builder.leftPadding(attribute.value)
+                    "item-padding" -> builder.lazyRowItemPadding(attribute.value)
+                    "item-right-padding" -> builder.rightPadding(attribute.value)
+                    "item-top-padding" -> builder.topPadding(attribute.value)
+                    "item-vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "padding" -> builder.padding(attribute.value)
+                    "reverse-layout" -> builder.reverseLayout(attribute.value)
+                    "size" -> builder.size(attribute.value)
+                    "vertical-alignment" -> builder.verticalAlignment(verticalAlignment = attribute.value)
                     "vertical-padding" -> builder.verticalPadding(attribute.value)
                     "width" -> builder.width(attribute.value)
                     else -> builder
