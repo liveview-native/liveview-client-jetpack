@@ -20,7 +20,9 @@ class LazyColumnDTO private constructor(builder: Builder) :
     // content padding is a pair of pairs,
     // the first pair is the horizontal padding,
     // the second pair is the vertical padding
-    private var contentPadding: Pair<Pair<Int, Int>, Pair<Int, Int>> = builder.contentPadding
+    private val contentPadding: Pair<Pair<Int, Int>, Pair<Int, Int>> = builder.contentPadding
+
+    private val reverseLayout: Boolean = builder.reverseLayout
 
     @Composable
     fun ComposeLazyItems(
@@ -29,21 +31,31 @@ class LazyColumnDTO private constructor(builder: Builder) :
     ) {
         LazyColumn(
             modifier = modifier,
+            reverseLayout = reverseLayout,
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
             contentPadding =
-                PaddingValues(
-                    contentPadding.first.first.dp,
-                    contentPadding.second.first.dp,
-                    contentPadding.first.second.dp,
-                    contentPadding.second.second.dp),
-            content = { items(items, key = { item -> item.id }) { item -> drawContent(item) } })
+            PaddingValues(
+                contentPadding.first.first.dp,
+                contentPadding.second.first.dp,
+                contentPadding.first.second.dp,
+                contentPadding.second.second.dp
+            ),
+            content = { items(items, key = { item -> item.id }) { item -> drawContent(item) } }
+        )
     }
 
     class Builder : ComposableBuilder() {
         var verticalArrangement: Arrangement.Vertical = Arrangement.Top
         var horizontalAlignment: Alignment.Horizontal = Alignment.Start
         var contentPadding: Pair<Pair<Int, Int>, Pair<Int, Int>> = Pair(Pair(0, 0), Pair(0, 0))
+        var reverseLayout: Boolean = false
+
+        fun reverseLayout(isReverseLayout: String) = apply {
+            if (isReverseLayout.isNotEmpty()) {
+                this.reverseLayout = isReverseLayout.toBoolean()
+            }
+        }
 
         fun verticalArrangement(verticalArrangement: String) = apply {
             this.verticalArrangement =
@@ -73,7 +85,8 @@ class LazyColumnDTO private constructor(builder: Builder) :
                 contentPadding =
                     Pair(
                         Pair(contentPadding.first.first, paddingValue.toInt()),
-                        Pair(contentPadding.second.first, contentPadding.second.second))
+                        Pair(contentPadding.second.first, contentPadding.second.second)
+                    )
             }
         }
 
@@ -82,7 +95,8 @@ class LazyColumnDTO private constructor(builder: Builder) :
                 contentPadding =
                     Pair(
                         Pair(paddingValue.toInt(), contentPadding.first.second),
-                        Pair(contentPadding.second.first, contentPadding.second.second))
+                        Pair(contentPadding.second.first, contentPadding.second.second)
+                    )
             }
         }
 
@@ -91,7 +105,8 @@ class LazyColumnDTO private constructor(builder: Builder) :
                 contentPadding =
                     Pair(
                         Pair(contentPadding.first.first, contentPadding.first.second),
-                        Pair(paddingValue.toInt(), contentPadding.second.second))
+                        Pair(paddingValue.toInt(), contentPadding.second.second)
+                    )
             }
         }
 
@@ -100,7 +115,8 @@ class LazyColumnDTO private constructor(builder: Builder) :
                 contentPadding =
                     Pair(
                         Pair(contentPadding.first.first, contentPadding.first.second),
-                        Pair(contentPadding.second.first, paddingValue.toInt()))
+                        Pair(contentPadding.second.first, paddingValue.toInt())
+                    )
             }
         }
 
@@ -109,7 +125,8 @@ class LazyColumnDTO private constructor(builder: Builder) :
                 contentPadding =
                     Pair(
                         Pair(paddingValue.toInt(), paddingValue.toInt()),
-                        Pair(paddingValue.toInt(), paddingValue.toInt()))
+                        Pair(paddingValue.toInt(), paddingValue.toInt())
+                    )
             }
         }
 

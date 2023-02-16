@@ -128,7 +128,7 @@ object ComposableNodeFactory {
                     "item-top-padding" -> builder.topPadding(attribute.value)
                     "item-vertical-padding" -> builder.verticalPadding(attribute.value)
                     "padding" -> builder.padding(attribute.value)
-                    "reverse-layout" -> builder.horizontalAlignment(attribute.value)
+                    "reverse-layout" -> builder.reverseLayout(attribute.value)
                     "size" -> builder.size(attribute.value)
                     "vertical-arrangement" -> builder.verticalArrangement(attribute.value)
                     "vertical-padding" -> builder.verticalPadding(attribute.value)
