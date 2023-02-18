@@ -18,27 +18,31 @@ object ComposableNodeFactory {
      * @param element the `Element` object to create the `ComposableTreeNode` object from
      * @return a `ComposableTreeNode` object based on the input `Element` object
      */
-    fun buildComposable(element: Element): ComposableTreeNode = when (element.tagName()) {
-        ComposableTypes.asyncImage -> ComposableTreeNode(buildAsyncImageNode(element.attributes()))
-        ComposableTypes.card -> ComposableTreeNode(buildCardNode(element.attributes()))
-        ComposableTypes.column -> ComposableTreeNode(buildColumnNode(element.attributes()))
-        ComposableTypes.icon -> ComposableTreeNode(buildIconNode(element.attributes()))
-        ComposableTypes.lazyColumn -> ComposableTreeNode(buildLazyColumnNode(element.attributes()))
-        ComposableTypes.lazyRow -> ComposableTreeNode(buildLazyRowNode(element.attributes()))
-        ComposableTypes.row -> ComposableTreeNode(buildRowNode(element.attributes()))
-        ComposableTypes.scaffold -> ComposableTreeNode(buildScaffoldNode(element.attributes()))
-        ComposableTypes.spacer -> ComposableTreeNode(buildSpacerNode(element.attributes()))
-        ComposableTypes.text -> ComposableTreeNode(
-            buildTextNode(attributes = element.attributes(), text = element.text())
+    fun buildComposableTreeNode(element: Element): ComposableTreeNode =
+        buildComposableView(element)
+            .let(::ComposableTreeNode)
+
+    private fun buildComposableView(element: Element): ComposableView = when (element.tagName()) {
+        ComposableTypes.asyncImage -> buildAsyncImageNode(element.attributes())
+        ComposableTypes.card -> buildCardNode(element.attributes())
+        ComposableTypes.column -> buildColumnNode(element.attributes())
+        ComposableTypes.icon -> buildIconNode(element.attributes())
+        ComposableTypes.lazyColumn -> buildLazyColumnNode(element.attributes())
+        ComposableTypes.lazyRow -> buildLazyRowNode(element.attributes())
+        ComposableTypes.row -> buildRowNode(element.attributes())
+        ComposableTypes.scaffold -> buildScaffoldNode(element.attributes())
+        ComposableTypes.spacer -> buildSpacerNode(element.attributes())
+        ComposableTypes.text -> buildTextNode(
+            attributes = element.attributes(),
+            text = element.text()
         )
-        ComposableTypes.topAppBar -> ComposableTreeNode(
-            buildTopAppBarNode(element = element, attributes = element.attributes())
+        ComposableTypes.topAppBar -> buildTopAppBarNode(
+            element = element,
+            attributes = element.attributes()
         )
-        else -> ComposableTreeNode(
-            buildTextNode(
-                attributes = element.attributes(),
-                text = "${element.tagName()} not supported yet"
-            )
+        else -> buildTextNode(
+            attributes = element.attributes(),
+            text = "${element.tagName()} not supported yet"
         )
     }
 
