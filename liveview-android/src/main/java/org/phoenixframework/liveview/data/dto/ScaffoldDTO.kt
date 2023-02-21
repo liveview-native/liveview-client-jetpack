@@ -1,11 +1,13 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class ScaffoldDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -14,12 +16,14 @@ class ScaffoldDTO private constructor(builder: Builder) :
     private val backgroundColor: Color = builder.backgroundColor
 
     @Composable
-    fun Compose(content: @Composable () -> Unit) {
-        Scaffold(modifier = modifier, backgroundColor = backgroundColor, topBar = {
-            topAppBar?.Compose()
-        }) { paddingValues ->
-            paddingValues
-            content()
+    fun Compose(paddingValues: PaddingValues?, content: @Composable (PaddingValues) -> Unit) {
+        Scaffold(
+            modifier = modifier.paddingIfNotNull(paddingValues),
+            backgroundColor = backgroundColor,
+            topBar = {
+                topAppBar?.Compose()
+            }) { contentPaddingValues ->
+            content(contentPaddingValues)
         }
     }
 

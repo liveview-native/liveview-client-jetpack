@@ -36,12 +36,12 @@ class TopAppBarDTO private constructor(builder: Builder) :
         TopAppBar(
             backgroundColor = Color.White,
             title = {
-                textDTO?.Compose()
+                textDTO?.Compose(paddingValues = null)
             },
             navigationIcon = navigationIcon,
             actions = {
                 actionIcons.forEach { actionIcon ->
-                    actionIcon.Compose()
+                    actionIcon.Compose(paddingValues = null)
 
                 }
             },
@@ -53,7 +53,7 @@ class TopAppBarDTO private constructor(builder: Builder) :
         val navIcons = mutableListOf<IconDTO>()
         val actionIcons = mutableListOf<IconDTO>()
         var backgroundColor = Color.White
-         var textDTO: TextDTO? = null
+        var textDTO: TextDTO? = null
 
         fun backgroundColor(color: String) = apply {
             if (color.isNotEmpty()) {

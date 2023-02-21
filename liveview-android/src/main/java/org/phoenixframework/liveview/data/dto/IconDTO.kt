@@ -1,6 +1,7 @@
 package org.phoenixframework.liveview.data.dto
 
 import android.util.Log
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
@@ -9,6 +10,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class IconDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
     var contentDescription: String = builder.contentDescription
@@ -16,9 +18,14 @@ class IconDTO private constructor(builder: Builder) : ComposableView(modifier = 
     var imageVector: ImageVector? = builder.imageVector
 
     @Composable
-    fun Compose() {
+    fun Compose(paddingValues: PaddingValues?) {
         imageVector?.let { imageVector ->
-            Icon(imageVector = imageVector, contentDescription = contentDescription, tint = tint)
+            Icon(
+                imageVector = imageVector,
+                contentDescription = contentDescription,
+                tint = tint,
+                modifier = modifier.paddingIfNotNull(paddingValues)
+            )
         }
     }
 

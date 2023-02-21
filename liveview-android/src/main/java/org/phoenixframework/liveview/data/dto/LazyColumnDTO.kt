@@ -11,6 +11,7 @@ import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class LazyColumnDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -27,10 +28,11 @@ class LazyColumnDTO private constructor(builder: Builder) :
     @Composable
     fun ComposeLazyItems(
         items: MutableList<ComposableTreeNode>,
+        paddingValues: PaddingValues?,
         drawContent: @Composable (node: ComposableTreeNode) -> Unit
     ) {
         LazyColumn(
-            modifier = modifier,
+            modifier = modifier.paddingIfNotNull(paddingValues),
             reverseLayout = reverseLayout,
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
