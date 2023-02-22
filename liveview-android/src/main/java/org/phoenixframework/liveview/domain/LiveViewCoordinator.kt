@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import org.phoenixframework.liveview.data.dto.ScaffoldDTO
+import org.phoenixframework.liveview.data.dto.TopAppBarDTO
 import org.phoenixframework.liveview.data.repository.Repository
 import org.phoenixframework.liveview.domain.factory.ComposableNodeFactory
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -89,7 +91,7 @@ class LiveViewCoordinator(url: String) : ViewModel() {
         elements.forEach { element ->
             Log.e("VM", "=====================> \n element: $element")
 
-            val viewTree = createComposable(element)
+            val viewTree = createComposableTreeNode(element)
 
             extractChildren(viewTree, element.children())
 
@@ -112,16 +114,19 @@ class LiveViewCoordinator(url: String) : ViewModel() {
     private fun extractChildren(parent: ComposableTreeNode, children: Elements) {
         for (child in children) {
             // Create a tree node for the child element
-            val childNode = createComposable(child)
+            val childNode = createComposableTreeNode(child)
 
             // Add the child node to the parent node
-            parent.addNode(childNode)
-
+            if (childNode.value is TopAppBarDTO && parent.value is ScaffoldDTO) {
+                parent.value.topAppBar = childNode.value
+            } else {
+                parent.addNode(childNode)
+            }
             // Recursively add the child's child nodes to the tree
             extractChildren(childNode, child.children())
         }
     }
 
-    private fun createComposable(element: Element): ComposableTreeNode =
-        ComposableNodeFactory.buildComposable(element)
+    private fun createComposableTreeNode(element: Element): ComposableTreeNode =
+        ComposableNodeFactory.buildComposableTreeNode(element)
 }

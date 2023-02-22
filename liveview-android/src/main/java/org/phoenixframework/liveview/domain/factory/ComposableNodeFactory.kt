@@ -18,27 +18,31 @@ object ComposableNodeFactory {
      * @param element the `Element` object to create the `ComposableTreeNode` object from
      * @return a `ComposableTreeNode` object based on the input `Element` object
      */
-    fun buildComposable(element: Element): ComposableTreeNode = when (element.tagName()) {
-        ComposableTypes.asyncImage -> ComposableTreeNode(buildAsyncImageNode(element.attributes()))
-        ComposableTypes.card -> ComposableTreeNode(buildCardNode(element.attributes()))
-        ComposableTypes.column -> ComposableTreeNode(buildColumnNode(element.attributes()))
-        ComposableTypes.icon -> ComposableTreeNode(buildIconNode(element.attributes()))
-        ComposableTypes.lazyColumn -> ComposableTreeNode(
-            buildLazyColumnNode(element.attributes())
+    fun buildComposableTreeNode(element: Element): ComposableTreeNode =
+        buildComposableView(element)
+            .let(::ComposableTreeNode)
+
+    private fun buildComposableView(element: Element): ComposableView = when (element.tagName()) {
+        ComposableTypes.asyncImage -> buildAsyncImageNode(element.attributes())
+        ComposableTypes.card -> buildCardNode(element.attributes())
+        ComposableTypes.column -> buildColumnNode(element.attributes())
+        ComposableTypes.icon -> buildIconNode(element.attributes())
+        ComposableTypes.lazyColumn -> buildLazyColumnNode(element.attributes())
+        ComposableTypes.lazyRow -> buildLazyRowNode(element.attributes())
+        ComposableTypes.row -> buildRowNode(element.attributes())
+        ComposableTypes.scaffold -> buildScaffoldNode(element.attributes())
+        ComposableTypes.spacer -> buildSpacerNode(element.attributes())
+        ComposableTypes.text -> buildTextNode(
+            attributes = element.attributes(),
+            text = element.text()
         )
-        ComposableTypes.lazyRow -> ComposableTreeNode(
-            buildLazyRowNode(element.attributes())
+        ComposableTypes.topAppBar -> buildTopAppBarNode(
+            element = element,
+            attributes = element.attributes()
         )
-        ComposableTypes.row -> ComposableTreeNode(buildRowNode(element.attributes()))
-        ComposableTypes.spacer -> ComposableTreeNode(buildSpacerNode(element.attributes()))
-        ComposableTypes.text -> ComposableTreeNode(
-            buildTextNode(attributes = element.attributes(), text = element.text())
-        )
-        else -> ComposableTreeNode(
-            buildTextNode(
-                attributes = element.attributes(),
-                text = "${element.tagName()} not supported yet"
-            )
+        else -> buildTextNode(
+            attributes = element.attributes(),
+            text = "${element.tagName()} not supported yet"
         )
     }
 
@@ -212,6 +216,22 @@ object ComposableNodeFactory {
             }
             .build()
 
+    private fun buildScaffoldNode(attributes: Attributes): ComposableView =
+        attributes
+            .fold(ScaffoldDTO.Builder()) { builder, attribute ->
+                when (attribute.key) {
+                    "background-color" -> builder.backgroundColor(attribute.value)
+                    "size" -> builder.size(attribute.value)
+                    "height" -> builder.height(attribute.value)
+                    "width" -> builder.width(attribute.value)
+                    "padding" -> builder.padding(attribute.value)
+                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
+                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    else -> builder
+                }
+            }
+            .build()
+
     private fun buildSpacerNode(attributes: Attributes): ComposableView =
         attributes
             .fold(SpacerDTO.Builder()) { builder, attribute ->
@@ -260,4 +280,38 @@ object ComposableNodeFactory {
                 }
             }
             .build()
+
+    private fun buildTopAppBarNode(element: Element, attributes: Attributes): ComposableView =
+        attributes
+            .fold(TopAppBarDTO.Builder()) { builder, attribute ->
+                when (attribute.key) {
+                    "background-color" -> builder.backgroundColor(attribute.value)
+                    "size" -> builder.size(attribute.value)
+                    "height" -> builder.height(attribute.value)
+                    "width" -> builder.width(attribute.value)
+                    "padding" -> builder.padding(attribute.value)
+                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
+                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    else -> builder
+                }
+            }
+            .also { builder ->
+                element.select("text").first()?.let { element ->
+                    builder.textDTO =
+                        buildTextNode(element.attributes(), element.text()) as TextDTO
+                }
+
+                element.select("nav-icon").forEach { navIcon ->
+                    buildAndAddIconNode(navIcon, builder::addNavIcon)
+                }
+
+                element.select("action-icon").forEach { actionIcon ->
+                    buildAndAddIconNode(actionIcon, builder::addActionIcon)
+                }
+            }
+            .build()
+
+    private fun buildAndAddIconNode(element: Element, setter: (IconDTO) -> Unit) {
+        setter(buildIconNode(element.attributes()))
+    }
 }

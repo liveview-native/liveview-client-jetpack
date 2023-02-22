@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import coil.request.ImageRequest
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class AsyncImageDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -24,14 +26,16 @@ class AsyncImageDTO private constructor(builder: Builder) :
     private val contentScale: ContentScale = builder.contentScale
 
     @Composable
-    fun Compose() {
+    fun Compose(paddingValues: PaddingValues?) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUrl)
                 .crossfade(crossFade).build(),
             contentDescription = contentDescription,
             contentScale = contentScale,
-            modifier = modifier.clip(shape)
+            modifier = modifier
+                .clip(shape)
+                .paddingIfNotNull(paddingValues)
         )
     }
 

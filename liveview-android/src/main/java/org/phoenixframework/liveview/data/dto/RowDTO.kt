@@ -1,20 +1,22 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class RowDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
     var horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
     var verticalAlignment: Alignment.Vertical = builder.verticalAlignment
 
     @Composable
-    fun Compose(content: @Composable () -> Unit) {
+    fun Compose(paddingValues: PaddingValues?, content: @Composable () -> Unit) {
         Row(
-            modifier = modifier,
+            modifier = modifier.paddingIfNotNull(paddingValues),
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment
         ) {

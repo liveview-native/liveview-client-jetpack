@@ -2,10 +2,12 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class ColumnDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -13,9 +15,9 @@ class ColumnDTO private constructor(builder: Builder) :
     var horizontalAlignment: Alignment.Horizontal = builder.horizontalAlignment
 
     @Composable
-    fun Compose(content: @Composable () -> Unit) {
+    fun Compose(paddingValues: PaddingValues?, content: @Composable () -> Unit) {
         Column(
-            modifier = modifier,
+            modifier = modifier.paddingIfNotNull(paddingValues),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment
         ) {

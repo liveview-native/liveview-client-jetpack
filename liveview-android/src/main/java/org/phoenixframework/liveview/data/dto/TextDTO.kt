@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -14,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class TextDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
     var text: String = builder.text
@@ -31,11 +33,11 @@ class TextDTO private constructor(builder: Builder) : ComposableView(modifier = 
     var maxLines: Int = builder.maxLines
 
     @Composable
-    fun Compose() {
+    fun Compose(paddingValues: PaddingValues?) {
         Text(
             text = text,
             color = color,
-            modifier = modifier,
+            modifier = modifier.paddingIfNotNull(paddingValues),
             fontSize = fontSize,
             fontStyle = fontStyle,
             fontWeight = fontWeight,

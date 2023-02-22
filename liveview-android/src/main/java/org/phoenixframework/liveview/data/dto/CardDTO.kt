@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -12,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class CardDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
     var shape: Shape = builder.shape
@@ -19,9 +21,9 @@ class CardDTO private constructor(builder: Builder) : ComposableView(modifier = 
     var elevation: Dp = builder.elevation
 
     @Composable
-    fun Compose(content: @Composable () -> Unit) {
+    fun Compose(paddingValues: PaddingValues?, content: @Composable () -> Unit) {
         Card(
-            modifier = modifier,
+            modifier = modifier.paddingIfNotNull(paddingValues),
             backgroundColor = backgroundColor,
             elevation = elevation,
             shape = shape,
