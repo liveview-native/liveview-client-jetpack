@@ -16,11 +16,17 @@ import org.phoenixframework.liveview.data.dto.TopAppBarDTO
 import org.phoenixframework.liveview.data.repository.Repository
 import org.phoenixframework.liveview.domain.factory.ComposableNodeFactory
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.lib.Document
+import org.phoenixframework.liveview.lib.Node
+import org.phoenixframework.liveview.lib.NodeRef
 
 class LiveViewCoordinator(url: String) : ViewModel() {
     private val repository: Repository = Repository(baseUrl = url)
 
-    init {
+    private var doc: Document? = null
+
+    fun initialiseDom(document: Document) {
+        doc = document
         connectToLiveViewMessageStream()
     }
 
@@ -41,6 +47,7 @@ class LiveViewCoordinator(url: String) : ViewModel() {
                         val domDiffList = initialWalkDownSocketTreeToBody(renderedMap)
 
                         val originalRenderDom = domDiffList["s"] as List<String>
+
                         parseTemplate(originalRenderDom.first())
                     }
                 }
