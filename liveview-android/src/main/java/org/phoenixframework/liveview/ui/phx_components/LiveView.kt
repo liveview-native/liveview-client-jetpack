@@ -9,11 +9,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import org.phoenixframework.liveview.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.ui.theme.LiveViewTestTheme
+import org.phoenixframework.liveview.lib.Document
 
 @Composable
 fun LiveView(liveViewCoordinator: LiveViewCoordinator) {
     val state by liveViewCoordinator.backStack.collectAsState()
-
+    System.loadLibrary("liveview_native_core")
+    liveViewCoordinator.initialiseDom(Document())
     LiveViewTestTheme {
         // A surface container using the 'background' color from the theme
         Surface(

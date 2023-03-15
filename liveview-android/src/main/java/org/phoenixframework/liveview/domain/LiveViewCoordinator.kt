@@ -16,9 +16,17 @@ import org.phoenixframework.liveview.data.dto.TopAppBarDTO
 import org.phoenixframework.liveview.data.repository.Repository
 import org.phoenixframework.liveview.domain.factory.ComposableNodeFactory
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.lib.Document
 
 class LiveViewCoordinator(url: String) : ViewModel() {
     private val repository: Repository = Repository(baseUrl = url)
+
+    private var doc: Document? = null
+
+    fun initialiseDom(document: Document) {
+        doc = document
+        connectToLiveViewMessageStream()
+    }
 
     init {
         connectToLiveViewMessageStream()
@@ -42,6 +50,8 @@ class LiveViewCoordinator(url: String) : ViewModel() {
 
                         val originalRenderDom = domDiffList["s"] as List<String>
                         parseTemplate(originalRenderDom.first())
+
+                        val parsedDom = Document.parse(originalRenderDom.first())
                     }
                 }
         }
@@ -52,6 +62,7 @@ class LiveViewCoordinator(url: String) : ViewModel() {
             is ConnectException -> {
                 "<column><text width=fill padding=16>${cause.message}</text><text width=fill padding=16>This probably means your localhost server isn't running...\nPlease start your server in the terminal using iex -S mix phx.server and rerun the android application</text></column>"
             }
+
             else -> {
                 "<column><text width=fill padding=16>${cause.message}</text></column>"
             }

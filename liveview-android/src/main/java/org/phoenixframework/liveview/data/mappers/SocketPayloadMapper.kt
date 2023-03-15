@@ -1,9 +1,7 @@
 package org.phoenixframework.liveview.data.mappers
 
-import com.google.gson.internal.LinkedTreeMap
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.phoenixframework.Message
 import org.phoenixframework.liveview.domain.extensions.orderedMix
 
 class SocketPayloadMapper {
