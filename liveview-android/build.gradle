@@ -66,7 +66,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
 
     //live-view core jetpack
-    implementation 'com.github.liveview-native:liveview-native-core-jetpack:0.1.0-pre-alpha01'
+    implementation 'com.github.liveview-native:liveview-native-core-jetpack:0.1.0-pre-alpha-07'
 
     api 'org.jsoup:jsoup:1.15.3'
     api 'com.github.dsrees:JavaPhoenixClient:1.0.0'

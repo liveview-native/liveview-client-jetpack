@@ -18,6 +18,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableNodeFactory
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.lib.Document
 
+
 class LiveViewCoordinator(url: String) : ViewModel() {
     private val repository: Repository = Repository(baseUrl = url)
 
@@ -52,6 +53,9 @@ class LiveViewCoordinator(url: String) : ViewModel() {
                         parseTemplate(originalRenderDom.first())
 
                         val parsedDom = Document.parse(originalRenderDom.first())
+                        //val handler = Handler()
+                     //  val c = doc?.merge(parsedDom, handler =  handler)
+
                     }
                 }
         }
@@ -141,3 +145,8 @@ class LiveViewCoordinator(url: String) : ViewModel() {
     private fun createComposableTreeNode(element: Element): ComposableTreeNode =
         ComposableNodeFactory.buildComposableTreeNode(element)
 }
+
+/*
+class  Handler : Document.Companion.Handler(){
+
+}*/
