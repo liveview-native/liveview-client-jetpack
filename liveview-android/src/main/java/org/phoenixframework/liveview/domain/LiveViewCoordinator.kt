@@ -82,6 +82,29 @@ class LiveViewCoordinator(url: String) : ViewModel() {
     private fun parseTemplate(originalRenderDom: String) {
         val currentDom = mutableListOf(ComposableTreeNode(ComposableNodeFactory.createEmptyNode()))
         val parsedDocument = Document.parse(originalRenderDom)
+        doc.merge(
+            parsedDocument,
+            object : Document.Companion.Handler() {
+                override fun onHandle(
+                    context: Document,
+                    changeType: Document.Companion.ChangeType,
+                    nodeRef: NodeRef,
+                    parent: NodeRef?
+                ) {
+                    super.onHandle(context, changeType, nodeRef, parent)
+                    when (changeType) {
+                        Document.Companion.ChangeType.Change -> {
+                            println("Changed: ${context.getNodeString(nodeRef)}")
+                        }
+                        Document.Companion.ChangeType.Add -> {
+                            println("Added: ${context.getNodeString(nodeRef)}")
+                        }
+                        Document.Companion.ChangeType.Remove -> {
+                            println("Removed: ${context.getNodeString(nodeRef)}")
+                        }
+                    }
+                }
+            })
 
         val rootElement = parsedDocument.rootNodeRef
 
