@@ -111,16 +111,12 @@ class LiveViewCoordinator(url: String) : ViewModel() {
         // Walk through the DOM and create a ComposableTreeNode tree
         walkThroughDOM(parsedDocument, rootElement, currentDom.first())
 
-        val stack =
-            Stack<MutableList<ComposableTreeNode>>().apply {
-                while (_backStack.value.isNotEmpty()) {
-                    push(_backStack.value.pop())
-                }
-
-                push(currentDom)
-            }
-
-        _backStack.update { stack }
+        _backStack.update {
+            val newStack = Stack<MutableList<ComposableTreeNode>>()
+            newStack.addAll(it)
+            newStack.push(currentDom)
+            newStack
+        }
     }
 
     private fun walkThroughDOM(document: Document, nodeRef: NodeRef, parent: ComposableTreeNode?) {
