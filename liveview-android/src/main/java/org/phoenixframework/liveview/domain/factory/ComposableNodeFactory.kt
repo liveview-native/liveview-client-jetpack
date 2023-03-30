@@ -1,10 +1,10 @@
 package org.phoenixframework.liveview.domain.factory
 
-import org.jsoup.nodes.Attributes
-import org.jsoup.nodes.Element
 import org.phoenixframework.liveview.data.dto.*
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.lib.Attribute
+import org.phoenixframework.liveview.lib.Node
 
 /**
  * A factory class that is used to create `ComposableTreeNode` objects that co-relate to composable
@@ -18,31 +18,31 @@ object ComposableNodeFactory {
      * @param element the `Element` object to create the `ComposableTreeNode` object from
      * @return a `ComposableTreeNode` object based on the input `Element` object
      */
-    fun buildComposableTreeNode(element: Element): ComposableTreeNode =
+    fun buildComposableTreeNode(element: Node.Element): ComposableTreeNode =
         buildComposableView(element)
             .let(::ComposableTreeNode)
 
-    private fun buildComposableView(element: Element): ComposableView = when (element.tagName()) {
-        ComposableTypes.asyncImage -> buildAsyncImageNode(element.attributes())
-        ComposableTypes.card -> buildCardNode(element.attributes())
-        ComposableTypes.column -> buildColumnNode(element.attributes())
-        ComposableTypes.icon -> buildIconNode(element.attributes())
-        ComposableTypes.lazyColumn -> buildLazyColumnNode(element.attributes())
-        ComposableTypes.lazyRow -> buildLazyRowNode(element.attributes())
-        ComposableTypes.row -> buildRowNode(element.attributes())
-        ComposableTypes.scaffold -> buildScaffoldNode(element.attributes())
-        ComposableTypes.spacer -> buildSpacerNode(element.attributes())
+    private fun buildComposableView(element: Node.Element): ComposableView = when (element.tag) {
+        ComposableTypes.asyncImage -> buildAsyncImageNode(element.attributes)
+        ComposableTypes.card -> buildCardNode(element.attributes)
+        ComposableTypes.column -> buildColumnNode(element.attributes)
+        ComposableTypes.icon -> buildIconNode(element.attributes)
+        ComposableTypes.lazyColumn -> buildLazyColumnNode(element.attributes)
+        ComposableTypes.lazyRow -> buildLazyRowNode(element.attributes)
+        ComposableTypes.row -> buildRowNode(element.attributes)
+        ComposableTypes.scaffold -> buildScaffoldNode(element.attributes)
+        ComposableTypes.spacer -> buildSpacerNode(element.attributes)
         ComposableTypes.text -> buildTextNode(
-            attributes = element.attributes(),
-            text = element.text()
+            attributes = element.attributes,
+            text = element.tag
         )
         ComposableTypes.topAppBar -> buildTopAppBarNode(
             element = element,
-            attributes = element.attributes()
+            attributes = element.attributes
         )
         else -> buildTextNode(
-            attributes = element.attributes(),
-            text = "${element.tagName()} not supported yet"
+            attributes = element.attributes,
+            text = "${element.tag} not supported yet"
         )
     }
 
@@ -52,14 +52,16 @@ object ComposableNodeFactory {
      * @param attributes the `Attributes` object to create the `AsyncImageDTO` object from
      * @return an `AsyncImageDTO` object based on the attributes and text of the input `Attributes` object
      */
-    private fun buildAsyncImageNode(attributes: Attributes): ComposableView =
+    private fun buildAsyncImageNode(attributes: Array<Attribute>): ComposableView =
         attributes
-            .fold(AsyncImageDTO.Builder().imageUrl(attributes.get("url"))) { builder, attribute ->
-                when (attribute.key) {
-                    "content-scale" -> builder.contentScale(attribute.key)
-                    "content-description" -> builder.contentDescription(attribute.key)
-                    "cross-fade" -> builder.crossFade(attribute.key)
-                    "shape" -> builder.shape(attribute.key)
+            .fold(
+                AsyncImageDTO.Builder().imageUrl(attributes.find { it.name == "url" }?.value ?: "")
+            ) { builder, attribute ->
+                when (attribute.name) {
+                    "content-scale" -> builder.contentScale(attribute.value)
+                    "content-description" -> builder.contentDescription(attribute.value)
+                    "cross-fade" -> builder.crossFade(attribute.value)
+                    "shape" -> builder.shape(attribute.value)
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
                     "width" -> builder.width(attribute.value)
@@ -77,10 +79,10 @@ object ComposableNodeFactory {
      * @param attributes the `Attributes` object to create the `CardDTO` object from
      * @return a `CardDTO` object based on the attributes of the input `Attributes` object
      **/
-    private fun buildCardNode(attributes: Attributes): ComposableView =
+    private fun buildCardNode(attributes: Array<Attribute>): ComposableView =
         attributes
             .fold(CardDTO.Builder()) { builder, attribute ->
-                when (attribute.key) {
+                when (attribute.name) {
                     "shape" -> builder.shape(attribute.value)
                     "background-color" -> builder.backgroundColor(attribute.value)
                     "elevation" -> builder.elevation(attribute.value)
@@ -101,10 +103,10 @@ object ComposableNodeFactory {
      * @param attributes the `Attributes` object to create the `ColumnDTO` object from
      * @return a `ColumnDTO` object based on the attributes of the input `Attributes` object
      */
-    private fun buildColumnNode(attributes: Attributes): ComposableView =
+    private fun buildColumnNode(attributes: Array<Attribute>): ComposableView =
         attributes
             .fold(ColumnDTO.Builder()) { builder, attribute ->
-                when (attribute.key) {
+                when (attribute.name) {
                     "vertical-arrangement" -> {
                         builder.verticalArrangement(attribute.value)
                     }
@@ -122,10 +124,12 @@ object ComposableNodeFactory {
             }
             .build()
 
-    private fun buildIconNode(attributes: Attributes): IconDTO =
+    private fun buildIconNode(attributes: Array<Attribute>): IconDTO =
         attributes
-            .fold(IconDTO.Builder().imageVector(attributes.get("name"))) { builder, attribute ->
-                when (attribute.key) {
+            .fold(
+                IconDTO.Builder().imageVector(attributes.find { it.name == "name" }?.value ?: "")
+            ) { builder, attribute ->
+                when (attribute.name) {
                     "tint" -> builder.tint(attribute.value)
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
@@ -139,10 +143,10 @@ object ComposableNodeFactory {
             }
             .build()
 
-    private fun buildLazyColumnNode(attributes: Attributes): ComposableView =
+    private fun buildLazyColumnNode(attributes: Array<Attribute>): ComposableView =
         attributes
             .fold(LazyColumnDTO.Builder()) { builder, attribute ->
-                when (attribute.key) {
+                when (attribute.name) {
                     "height" -> builder.height(attribute.value)
                     "horizontal-alignment" -> builder.horizontalAlignment(attribute.value)
                     "horizontal-padding" -> builder.horizontalPadding(attribute.value)
@@ -164,10 +168,10 @@ object ComposableNodeFactory {
             }
             .build()
 
-    private fun buildLazyRowNode(attributes: Attributes): ComposableView =
+    private fun buildLazyRowNode(attributes: Array<Attribute>): ComposableView =
         attributes
             .fold(LazyRowDTO.Builder()) { builder, attribute ->
-                when (attribute.key) {
+                when (attribute.name) {
                     "height" -> builder.height(attribute.value)
                     "horizontal-arrangement" -> builder.horizontalArrangement(horizontalArrangement = attribute.value)
                     "horizontal-padding" -> builder.horizontalPadding(attribute.value)
@@ -195,15 +199,15 @@ object ComposableNodeFactory {
      * @param attributes the `Attributes` object to create the `RowDTO` object from
      * @return a `RowDTO` object based on the attributes of the input `Attributes` object
      */
-    private fun buildRowNode(attributes: Attributes): ComposableView =
+    private fun buildRowNode(attributes: Array<Attribute>): ComposableView =
         attributes
             .fold(RowDTO.Builder()) { builder, attribute ->
-                when (attribute.key) {
+                when (attribute.name) {
                     "horizontal-arrangement" -> {
-                        builder.horizontalArrangement(horizontalArrangement = attribute.key)
+                        builder.horizontalArrangement(horizontalArrangement = attribute.value)
                     }
                     "vertical-alignment" -> {
-                        builder.verticalAlignment(verticalAlignment = attribute.key)
+                        builder.verticalAlignment(verticalAlignment = attribute.value)
                     }
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
@@ -216,10 +220,10 @@ object ComposableNodeFactory {
             }
             .build()
 
-    private fun buildScaffoldNode(attributes: Attributes): ComposableView =
+    private fun buildScaffoldNode(attributes: Array<Attribute>): ComposableView =
         attributes
             .fold(ScaffoldDTO.Builder()) { builder, attribute ->
-                when (attribute.key) {
+                when (attribute.name) {
                     "background-color" -> builder.backgroundColor(attribute.value)
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
@@ -232,10 +236,10 @@ object ComposableNodeFactory {
             }
             .build()
 
-    private fun buildSpacerNode(attributes: Attributes): ComposableView =
+    private fun buildSpacerNode(attributes: Array<Attribute>): ComposableView =
         attributes
             .fold(SpacerDTO.Builder()) { builder, attribute ->
-                when (attribute.key) {
+                when (attribute.name) {
                     "size" -> builder.size(attribute.value)
                     "padding" -> builder.padding(attribute.value)
                     "horizontal-padding" -> builder.horizontalPadding(attribute.value)
@@ -255,10 +259,10 @@ object ComposableNodeFactory {
      * @param text the text of the input `Attributes` object
      * @return a `TextDTO` object based on the attributes and text of the input `Attributes` object
      */
-    private fun buildTextNode(attributes: Attributes, text: String): ComposableView =
+    private fun buildTextNode(attributes: Array<Attribute>, text: String): ComposableView =
         attributes
             .fold(TextDTO.Builder().text(text)) { builder, attribute ->
-                when (attribute.key) {
+                when (attribute.name) {
                     "color" -> builder.color(attribute.value)
                     "font-size" -> builder.fontSize(attribute.value)
                     "font-style" -> builder.fontStyle(attribute.value)
@@ -281,10 +285,13 @@ object ComposableNodeFactory {
             }
             .build()
 
-    private fun buildTopAppBarNode(element: Element, attributes: Attributes): ComposableView =
+    private fun buildTopAppBarNode(
+        element: Node.Element,
+        attributes: Array<Attribute>
+    ): ComposableView =
         attributes
             .fold(TopAppBarDTO.Builder()) { builder, attribute ->
-                when (attribute.key) {
+                when (attribute.name) {
                     "background-color" -> builder.backgroundColor(attribute.value)
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
@@ -296,9 +303,9 @@ object ComposableNodeFactory {
                 }
             }
             .also { builder ->
-                element.select("text").first()?.let { element ->
+              /*  element.attributes.find{it.name == "text"}?.value?.let { element ->
                     builder.textDTO =
-                        buildTextNode(element.attributes(), element.text()) as TextDTO
+                        buildTextNode(element.attributes, element.text()) as TextDTO
                 }
 
                 element.select("nav-icon").forEach { navIcon ->
@@ -307,11 +314,15 @@ object ComposableNodeFactory {
 
                 element.select("action-icon").forEach { actionIcon ->
                     buildAndAddIconNode(actionIcon, builder::addActionIcon)
-                }
+                }*/
             }
             .build()
 
-    private fun buildAndAddIconNode(element: Element, setter: (IconDTO) -> Unit) {
-        setter(buildIconNode(element.attributes()))
+    private fun buildAndAddIconNode(element: Node.Element, setter: (IconDTO) -> Unit) {
+        setter(buildIconNode(element.attributes))
+    }
+
+    fun createEmptyNode(): ComposableView {
+        return ColumnDTO.Builder().build()
     }
 }

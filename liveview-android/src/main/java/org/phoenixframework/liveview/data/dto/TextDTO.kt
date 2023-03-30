@@ -18,7 +18,7 @@ import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class TextDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
-    var text: String = builder.text
+
     var color: Color = builder.color
     var fontSize: TextUnit = builder.fontSize
     var fontStyle: FontStyle? = builder.fontStyle

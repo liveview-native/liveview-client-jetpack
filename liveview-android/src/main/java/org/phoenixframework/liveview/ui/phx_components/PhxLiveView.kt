@@ -19,41 +19,41 @@ private fun TraverseComposableViewTree(
 ) {
     when (composableTreeNode.value) {
         is AsyncImageDTO -> composableTreeNode.value.Compose(paddingValues)
-        is CardDTO -> composableTreeNode.value.Compose(paddingValues) {
-            composableTreeNode.children.forEach { node ->
-                TraverseComposableViewTree(node, paddingValues = null)
+        is CardDTO ->
+            composableTreeNode.value.Compose(paddingValues) {
+                composableTreeNode.children.forEach { node ->
+                    TraverseComposableViewTree(node, paddingValues = null)
+                }
             }
-        }
-        is ColumnDTO -> composableTreeNode.value.Compose(paddingValues) {
-            composableTreeNode.children.forEach { node ->
-                TraverseComposableViewTree(node, paddingValues = null)
+        is ColumnDTO ->
+            composableTreeNode.value.Compose(paddingValues) {
+                composableTreeNode.children.forEach { node ->
+                    TraverseComposableViewTree(node, paddingValues = null)
+                }
             }
-        }
         is IconDTO -> composableTreeNode.value.Compose(paddingValues)
         is LazyColumnDTO ->
-            composableTreeNode.value.ComposeLazyItems(
-                composableTreeNode.children,
-                paddingValues
-            ) { node ->
+            composableTreeNode.value.ComposeLazyItems(composableTreeNode.children, paddingValues) {
+                node ->
                 TraverseComposableViewTree(node, paddingValues = null)
             }
         is LazyRowDTO ->
-            composableTreeNode.value.ComposeLazyItems(
-                composableTreeNode.children,
-                paddingValues
-            ) { node ->
+            composableTreeNode.value.ComposeLazyItems(composableTreeNode.children, paddingValues) {
+                node ->
                 TraverseComposableViewTree(node, paddingValues = null)
             }
-        is RowDTO -> composableTreeNode.value.Compose(paddingValues) {
-            composableTreeNode.children.forEach { node ->
-                TraverseComposableViewTree(node, paddingValues = null)
+        is RowDTO ->
+            composableTreeNode.value.Compose(paddingValues) {
+                composableTreeNode.children.forEach { node ->
+                    TraverseComposableViewTree(node, paddingValues = null)
+                }
             }
-        }
-        is ScaffoldDTO -> composableTreeNode.value.Compose(paddingValues) { contentPaddingValues ->
-            composableTreeNode.children.forEach { node ->
-                TraverseComposableViewTree(node, contentPaddingValues)
+        is ScaffoldDTO ->
+            composableTreeNode.value.Compose(paddingValues) { contentPaddingValues ->
+                composableTreeNode.children.forEach { node ->
+                    TraverseComposableViewTree(node, contentPaddingValues)
+                }
             }
-        }
         is SpacerDTO -> composableTreeNode.value.Compose(paddingValues)
         is TextDTO -> composableTreeNode.value.Compose(paddingValues)
     }
