@@ -94,13 +94,13 @@ class LiveViewCoordinator(url: String) : ViewModel() {
                     super.onHandle(context, changeType, nodeRef, parent)
                     when (changeType) {
                         Document.Companion.ChangeType.Change -> {
-                            println("Changed: ${context.getNodeString(nodeRef)}")
+                            Log.i("Changed:" , context.getNodeString(nodeRef))
                         }
                         Document.Companion.ChangeType.Add -> {
-                            println("Added: ${context.getNodeString(nodeRef)}")
+                            Log.i("Added:" , context.getNodeString(nodeRef))
                         }
                         Document.Companion.ChangeType.Remove -> {
-                            println("Removed: ${context.getNodeString(nodeRef)}")
+                            Log.i("Remove:" , context.getNodeString(nodeRef))
                         }
                     }
                 }
