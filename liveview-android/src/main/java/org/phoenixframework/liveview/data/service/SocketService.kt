@@ -59,19 +59,19 @@ class SocketService(private val okHttpClient: OkHttpClient) {
                 ?.apply {
                     join()
                         .receive("ok") { message: Message ->
-                            Log.d("SOCKET MANAGER CHANNEL JOIN OK", "CHAT ROOM LIVEVIEW JOINED")
+                            Log.d("SM JOIN OK", "CHAT ROOM LIVEVIEW JOINED")
 
                             messageListener(message)
                         }
                         .receive("error") {
                             /* failed to join the chatroom */
-                            Log.d("SOCKET MANAGER CHANNEL JOIN ERROR", "CHAT ROOM LIVEVIEW ERROR")
+                            Log.d("SM JOIN FAIL", "CHAT ROOM LIVEVIEW ERROR")
                             Log.e("ERROR", it.toString())
                         }
                         .receive("response") { Log.d("RESPONSE", "CHAT ROOM RESPONSE") }
 
                     onMessage { message: Message ->
-                        Log.d("========= >>> CHANNEL MESSAGE", message.toString())
+                        Log.d("==> CHANNEL MESSAGE", message.toString())
 
                         when (message.event) {
                             "phx_reply" -> {

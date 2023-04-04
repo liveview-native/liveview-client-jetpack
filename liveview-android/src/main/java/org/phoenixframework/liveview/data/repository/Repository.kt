@@ -4,6 +4,7 @@ import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.withContext
 import okhttp3.*
 import org.jsoup.Jsoup
@@ -49,6 +50,8 @@ class Repository(private val baseUrl: String) {
         } catch (e: Exception) {
             Log.e("Repository", "Error: ${e.message}")
         }
+    }.catch {
+        Log.e("Repository", "Error: ${it.message}")
     }
 
     private suspend fun getInitialPayload(url: String): PhoenixLiveViewPayload =

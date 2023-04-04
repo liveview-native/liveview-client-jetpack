@@ -8,16 +8,17 @@ import java.util.Stack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
-import org.jsoup.select.Elements
 import org.phoenixframework.liveview.data.dto.ScaffoldDTO
 import org.phoenixframework.liveview.data.dto.TopAppBarDTO
 import org.phoenixframework.liveview.data.repository.Repository
 import org.phoenixframework.liveview.domain.factory.ComposableNodeFactory
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.lib.Document
+import org.phoenixframework.liveview.lib.Node
+import org.phoenixframework.liveview.lib.NodeRef
 
 class LiveViewCoordinator(url: String) : ViewModel() {
+    private lateinit var doc: Document
     private val repository: Repository = Repository(baseUrl = url)
 
     init {
@@ -48,14 +49,15 @@ class LiveViewCoordinator(url: String) : ViewModel() {
     }
 
     private fun getDomFromThrowable(cause: Throwable) {
-        val errorHtml = when (cause) {
-            is ConnectException -> {
-                "<column><text width=fill padding=16>${cause.message}</text><text width=fill padding=16>This probably means your localhost server isn't running...\nPlease start your server in the terminal using iex -S mix phx.server and rerun the android application</text></column>"
+        val errorHtml =
+            when (cause) {
+                is ConnectException -> {
+                    "<column><text width=fill padding=16>${cause.message}</text><text width=fill padding=16>This probably means your localhost server isn't running...\nPlease start your server in the terminal using iex -S mix phx.server and rerun the android application</text></column>"
+                }
+                else -> {
+                    "<column><text width=fill padding=16>${cause.message}</text></column>"
+                }
             }
-            else -> {
-                "<column><text width=fill padding=16>${cause.message}</text></column>"
-            }
-        }
 
         parseTemplate(errorHtml)
     }
@@ -78,55 +80,82 @@ class LiveViewCoordinator(url: String) : ViewModel() {
         }
 
     private fun parseTemplate(originalRenderDom: String) {
-        val currentDom = mutableListOf<ComposableTreeNode>()
-        Log.e("dom", "=====================> \n originalRenderDom: $originalRenderDom")
+        val currentDom = mutableListOf(ComposableTreeNode(ComposableNodeFactory.createEmptyNode()))
+        val parsedDocument = Document.parse(originalRenderDom)
+        doc.merge(
+            parsedDocument,
+            object : Document.Companion.Handler() {
+                override fun onHandle(
+                    context: Document,
+                    changeType: Document.Companion.ChangeType,
+                    nodeRef: NodeRef,
+                    parent: NodeRef?
+                ) {
+                    super.onHandle(context, changeType, nodeRef, parent)
+                    when (changeType) {
+                        Document.Companion.ChangeType.Change -> {
+                            Log.i("Changed:" , context.getNodeString(nodeRef))
+                        }
+                        Document.Companion.ChangeType.Add -> {
+                            Log.i("Added:" , context.getNodeString(nodeRef))
+                        }
+                        Document.Companion.ChangeType.Remove -> {
+                            Log.i("Remove:" , context.getNodeString(nodeRef))
+                        }
+                    }
+                }
+            })
 
-        val elements =
-            Jsoup
-                .parse(originalRenderDom)
-                .apply { ownerDocument()!!.outputSettings().prettyPrint(false) }
-                .body()
-                .children()
+        val rootElement = parsedDocument.rootNodeRef
 
-        elements.forEach { element ->
-            Log.e("VM", "=====================> \n element: $element")
+        // Walk through the DOM and create a ComposableTreeNode tree
+        walkThroughDOM(parsedDocument, rootElement, currentDom.first())
 
-            val viewTree = createComposableTreeNode(element)
-
-            extractChildren(viewTree, element.children())
-
-            // view tree extracted from the dom
-            currentDom.add(viewTree)
-        }
-
-        val stack = Stack<MutableList<ComposableTreeNode>>().apply {
-            while (_backStack.value.isNotEmpty()) {
-                push(_backStack.value.pop())
-            }
-
-            push(currentDom)
-        }
-
-        _backStack.update { stack }
-    }
-
-    // Method to recursively add child nodes to the tree
-    private fun extractChildren(parent: ComposableTreeNode, children: Elements) {
-        for (child in children) {
-            // Create a tree node for the child element
-            val childNode = createComposableTreeNode(child)
-
-            // Add the child node to the parent node
-            if (childNode.value is TopAppBarDTO && parent.value is ScaffoldDTO) {
-                parent.value.topAppBar = childNode.value
-            } else {
-                parent.addNode(childNode)
-            }
-            // Recursively add the child's child nodes to the tree
-            extractChildren(childNode, child.children())
+        _backStack.update {
+            val newStack = Stack<MutableList<ComposableTreeNode>>()
+            newStack.addAll(it)
+            newStack.push(currentDom)
+            newStack
         }
     }
 
-    private fun createComposableTreeNode(element: Element): ComposableTreeNode =
-        ComposableNodeFactory.buildComposableTreeNode(element)
+    private fun walkThroughDOM(document: Document, nodeRef: NodeRef, parent: ComposableTreeNode?) {
+
+        when (val node = document.getNode(nodeRef)) {
+            is Node.Element -> {
+                val composableTreeNode =
+                    createComposableTreeNode(node, document.getChildren(nodeRef))
+
+                if (parent != null) {
+                    if (composableTreeNode.value is TopAppBarDTO && parent.value is ScaffoldDTO) {
+                        parent.value.topAppBar = composableTreeNode.value
+                    } else {
+                        parent.addNode(composableTreeNode)
+                    }
+                }
+
+                val childNodeRefs = document.getChildren(nodeRef)
+                for (childNodeRef in childNodeRefs) {
+                    walkThroughDOM(document, childNodeRef, composableTreeNode)
+                }
+            }
+            is Node.Leaf -> {
+                parent?.value?.text = node.value
+            }
+            Node.Root -> {
+                val childNodeRefs = document.getChildren(nodeRef)
+                for (childNodeRef in childNodeRefs) {
+                    walkThroughDOM(document, childNodeRef, parent)
+                }
+            }
+        }
+    }
+
+    private fun createComposableTreeNode(node: Node.Element, children: List<NodeRef>) =
+        ComposableNodeFactory.buildComposableTreeNode(
+            node, children.map { nodeRef -> doc.getNode(nodeRef = nodeRef) })
+
+    fun initialiseDom(document: Document) {
+        this.doc = document
+    }
 }

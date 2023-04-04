@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 
 abstract class ComposableView(var modifier: Modifier = Modifier) {
+    var text: String = ""
 }
 
 abstract class ComposableBuilder {
