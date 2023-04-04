@@ -18,33 +18,28 @@ object ComposableNodeFactory {
      * @param element the `Element` object to create the `ComposableTreeNode` object from
      * @return a `ComposableTreeNode` object based on the input `Element` object
      */
-    fun buildComposableTreeNode(element: Node.Element): ComposableTreeNode =
-        buildComposableView(element)
-            .let(::ComposableTreeNode)
+    fun buildComposableTreeNode(element: Node.Element, children: List<Node>): ComposableTreeNode =
+        buildComposableView(element, children).let(::ComposableTreeNode)
 
-    private fun buildComposableView(element: Node.Element): ComposableView = when (element.tag) {
-        ComposableTypes.asyncImage -> buildAsyncImageNode(element.attributes)
-        ComposableTypes.card -> buildCardNode(element.attributes)
-        ComposableTypes.column -> buildColumnNode(element.attributes)
-        ComposableTypes.icon -> buildIconNode(element.attributes)
-        ComposableTypes.lazyColumn -> buildLazyColumnNode(element.attributes)
-        ComposableTypes.lazyRow -> buildLazyRowNode(element.attributes)
-        ComposableTypes.row -> buildRowNode(element.attributes)
-        ComposableTypes.scaffold -> buildScaffoldNode(element.attributes)
-        ComposableTypes.spacer -> buildSpacerNode(element.attributes)
-        ComposableTypes.text -> buildTextNode(
-            attributes = element.attributes,
-            text = element.tag
-        )
-        ComposableTypes.topAppBar -> buildTopAppBarNode(
-            element = element,
-            attributes = element.attributes
-        )
-        else -> buildTextNode(
-            attributes = element.attributes,
-            text = "${element.tag} not supported yet"
-        )
-    }
+    private fun buildComposableView(element: Node.Element, children: List<Node>): ComposableView =
+        when (element.tag) {
+            ComposableTypes.asyncImage -> buildAsyncImageNode(element.attributes)
+            ComposableTypes.card -> buildCardNode(element.attributes)
+            ComposableTypes.column -> buildColumnNode(element.attributes)
+            ComposableTypes.icon -> buildIconNode(element.attributes)
+            ComposableTypes.lazyColumn -> buildLazyColumnNode(element.attributes)
+            ComposableTypes.lazyRow -> buildLazyRowNode(element.attributes)
+            ComposableTypes.row -> buildRowNode(element.attributes)
+            ComposableTypes.scaffold -> buildScaffoldNode(element.attributes)
+            ComposableTypes.spacer -> buildSpacerNode(element.attributes)
+            ComposableTypes.text ->
+                buildTextNode(attributes = element.attributes, text = element.tag)
+            ComposableTypes.topAppBar ->
+                buildTopAppBarNode(attributes = element.attributes, children = children)
+            else ->
+                buildTextNode(
+                    attributes = element.attributes, text = "${element.tag} not supported yet")
+        }
 
     /**
      * Creates an `AsyncImageDTO` object based on the attributes and text of the input `Attributes` object.
@@ -286,11 +281,13 @@ object ComposableNodeFactory {
             .build()
 
     private fun buildTopAppBarNode(
-        element: Node.Element,
-        attributes: Array<Attribute>
-    ): ComposableView =
+        attributes: Array<Attribute>,
+        children: List<Node>
+    ): ComposableView {
+        val builder = TopAppBarDTO.Builder()
+
         attributes
-            .fold(TopAppBarDTO.Builder()) { builder, attribute ->
+            .forEach { attribute ->
                 when (attribute.name) {
                     "background-color" -> builder.backgroundColor(attribute.value)
                     "size" -> builder.size(attribute.value)
@@ -299,27 +296,35 @@ object ComposableNodeFactory {
                     "padding" -> builder.padding(attribute.value)
                     "horizontal-padding" -> builder.horizontalPadding(attribute.value)
                     "vertical-padding" -> builder.verticalPadding(attribute.value)
-                    else -> builder
                 }
             }
-            .also { builder ->
-              /*  element.attributes.find{it.name == "text"}?.value?.let { element ->
-                    builder.textDTO =
-                        buildTextNode(element.attributes, element.text()) as TextDTO
-                }
+            .also {
+                children.forEach { childNode ->
+                    childNode as Node.Element
+                    when (childNode.tag) {
+                        "heading" -> {
+                            val textDto =
+                                buildTextNode(
+                                    childNode.attributes,
+                                    childNode.attributes.find { it.name == "value" }?.value ?: "")
+                                    as TextDTO
+                            builder.textDTO = textDto
+                        }
+                        "nav-icon",
+                        "action-icon" -> {
+                            val iconDto = buildIconNode(childNode.attributes)
 
-                element.select("nav-icon").forEach { navIcon ->
-                    buildAndAddIconNode(navIcon, builder::addNavIcon)
+                            if (childNode.tag == "nav-icon") {
+                                builder.addNavIcon(iconDto)
+                            } else {
+                                builder.addActionIcon(iconDto)
+                            }
+                        }
+                    }
                 }
-
-                element.select("action-icon").forEach { actionIcon ->
-                    buildAndAddIconNode(actionIcon, builder::addActionIcon)
-                }*/
             }
-            .build()
 
-    private fun buildAndAddIconNode(element: Node.Element, setter: (IconDTO) -> Unit) {
-        setter(buildIconNode(element.attributes))
+        return builder.build()
     }
 
     fun createEmptyNode(): ComposableView {

@@ -123,7 +123,8 @@ class LiveViewCoordinator(url: String) : ViewModel() {
 
         when (val node = document.getNode(nodeRef)) {
             is Node.Element -> {
-                val composableTreeNode = createComposableTreeNode(node)
+                val composableTreeNode =
+                    createComposableTreeNode(node, document.getChildren(nodeRef))
 
                 if (parent != null) {
                     if (composableTreeNode.value is TopAppBarDTO && parent.value is ScaffoldDTO) {
@@ -150,8 +151,9 @@ class LiveViewCoordinator(url: String) : ViewModel() {
         }
     }
 
-    private fun createComposableTreeNode(node: Node.Element) =
-        ComposableNodeFactory.buildComposableTreeNode(node)
+    private fun createComposableTreeNode(node: Node.Element, children: List<NodeRef>) =
+        ComposableNodeFactory.buildComposableTreeNode(
+            node, children.map { nodeRef -> doc.getNode(nodeRef = nodeRef) })
 
     fun initialiseDom(document: Document) {
         this.doc = document
