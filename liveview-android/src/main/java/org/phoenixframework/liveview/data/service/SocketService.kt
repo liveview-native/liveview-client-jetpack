@@ -46,7 +46,7 @@ class SocketService(private val okHttpClient: OkHttpClient) {
                         "_csrf_token" to phxLiveViewPayload._csrfToken,
                         "_mounts" to 0,
                         "client_id" to uuid,
-                        "_platform" to "android"
+                        "_platform" to "jetpack"
                     )
         )
 
@@ -96,7 +96,7 @@ class SocketService(private val okHttpClient: OkHttpClient) {
             "_csrf_token" to phxLiveViewPayload._csrfToken,
             "_mounts" to 0,
             "client_id" to uuid,
-            "_platform" to "android"
+            "_platform" to "jetpack"
         )
 
         val socketQueryParams =

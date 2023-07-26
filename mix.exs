@@ -25,7 +25,7 @@ defmodule LiveViewNativeJetpack.MixProject do
     [
       {:jason, "~> 1.2"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:live_view_native_platform, "~> 0.0.6"}
+      {:live_view_native_platform, "~> 0.0.7"}
     ]
   end
 
