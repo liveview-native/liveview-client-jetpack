@@ -9,8 +9,6 @@ android {
     defaultConfig {
         minSdk 21
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -42,6 +40,7 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    namespace 'org.phoenixframework.liveview'
 }
 
 dependencies {
