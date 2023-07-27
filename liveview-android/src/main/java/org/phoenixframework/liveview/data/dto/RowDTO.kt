@@ -10,8 +10,8 @@ import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class RowDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
-    var horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
-    var verticalAlignment: Alignment.Vertical = builder.verticalAlignment
+    private val horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
+    private val verticalAlignment: Alignment.Vertical = builder.verticalAlignment
 
     @Composable
     fun Compose(paddingValues: PaddingValues?, content: @Composable () -> Unit) {
@@ -31,9 +31,9 @@ class RowDTO private constructor(builder: Builder) : ComposableView(modifier = b
         fun horizontalArrangement(horizontalArrangement: String) = apply {
             if (horizontalArrangement.isNotEmpty()) {
                 this.horizontalArrangement = when (horizontalArrangement) {
-                    "spaced-evenly" -> Arrangement.SpaceEvenly
-                    "space-around" -> Arrangement.SpaceAround
-                    "space-between" -> Arrangement.SpaceBetween
+                    "spaceEvenly" -> Arrangement.SpaceEvenly
+                    "spaceAround" -> Arrangement.SpaceAround
+                    "spaceBetween" -> Arrangement.SpaceBetween
                     "start" -> Arrangement.Start
                     "end" -> Arrangement.End
                     else -> Arrangement.Center
@@ -49,30 +49,6 @@ class RowDTO private constructor(builder: Builder) : ComposableView(modifier = b
                     else -> Alignment.Bottom
                 }
             }
-        }
-
-        override fun size(size: String): Builder = apply {
-            super.size(size)
-        }
-
-        override fun padding(padding: String): Builder = apply {
-            super.padding(padding)
-        }
-
-        override fun verticalPadding(padding: String): Builder = apply {
-            super.verticalPadding(padding)
-        }
-
-        override fun horizontalPadding(padding: String): Builder = apply {
-            super.horizontalPadding(padding)
-        }
-
-        override fun height(height: String): Builder = apply {
-            super.height(height)
-        }
-
-        override fun width(width: String): Builder = apply {
-            super.width(width)
         }
 
         fun build(): RowDTO = RowDTO(this)

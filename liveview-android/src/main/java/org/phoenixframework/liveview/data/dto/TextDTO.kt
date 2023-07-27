@@ -20,18 +20,18 @@ import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 class TextDTO private constructor(private val builder: Builder) :
     ComposableView(modifier = builder.modifier) {
 
-    var color: Color = builder.color
-    var fontSize: TextUnit = builder.fontSize
-    var fontStyle: FontStyle? = builder.fontStyle
-    var fontWeight: FontWeight? = builder.fontWeight
-    var fontFamily: FontFamily? = builder.fontFamily
-    var letterSpacing: TextUnit = builder.letterSpacing
-    var textDecoration: TextDecoration? = builder.textDecoration
-    var textAlign: TextAlign? = builder.textAlign
-    var lineHeight: TextUnit = builder.lineHeight
-    var overflow: TextOverflow = builder.overflow
-    var softWrap: Boolean = builder.softWrap
-    var maxLines: Int = builder.maxLines
+    private val color: Color = builder.color
+    private val fontSize: TextUnit = builder.fontSize
+    private val fontStyle: FontStyle? = builder.fontStyle
+    private val fontWeight: FontWeight? = builder.fontWeight
+    private val fontFamily: FontFamily? = builder.fontFamily
+    private val letterSpacing: TextUnit = builder.letterSpacing
+    private val textDecoration: TextDecoration? = builder.textDecoration
+    private val textAlign: TextAlign? = builder.textAlign
+    private val lineHeight: TextUnit = builder.lineHeight
+    private val overflow: TextOverflow = builder.overflow
+    private val softWrap: Boolean = builder.softWrap
+    private val maxLines: Int = builder.maxLines
 
     @Composable
     fun Compose(paddingValues: PaddingValues?) {
@@ -52,7 +52,8 @@ class TextDTO private constructor(private val builder: Builder) :
             overflow = overflow,
             softWrap = softWrap,
             maxLines = maxLines,
-            textDecoration = textDecoration)
+            textDecoration = textDecoration
+        )
     }
 
     class Builder : ComposableBuilder() {
@@ -250,22 +251,6 @@ class TextDTO private constructor(private val builder: Builder) :
                 this.maxLines = maxLines.toInt()
             }
         }
-
-        override fun size(size: String): Builder = apply { super.size(size) }
-
-        override fun padding(padding: String): Builder = apply { super.padding(padding) }
-
-        override fun verticalPadding(padding: String): Builder = apply {
-            super.verticalPadding(padding)
-        }
-
-        override fun horizontalPadding(padding: String): Builder = apply {
-            super.horizontalPadding(padding)
-        }
-
-        override fun height(height: String): Builder = apply { super.height(height) }
-
-        override fun width(width: String): Builder = apply { super.width(width) }
 
         fun build() = TextDTO(this)
     }

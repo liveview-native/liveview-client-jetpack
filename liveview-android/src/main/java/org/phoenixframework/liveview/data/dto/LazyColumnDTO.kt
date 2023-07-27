@@ -63,9 +63,9 @@ class LazyColumnDTO private constructor(builder: Builder) :
             this.verticalArrangement =
                 when (verticalArrangement) {
                     "top" -> Arrangement.Top
-                    "space-evenly" -> Arrangement.SpaceEvenly
-                    "space-around" -> Arrangement.SpaceAround
-                    "space-between" -> Arrangement.SpaceBetween
+                    "spaceEvenly" -> Arrangement.SpaceEvenly
+                    "spaceAround" -> Arrangement.SpaceAround
+                    "spaceBetween" -> Arrangement.SpaceBetween
                     "bottom" -> Arrangement.Bottom
                     "center" -> Arrangement.Center
                     else -> Arrangement.spacedBy(verticalArrangement.toInt().dp)
@@ -131,22 +131,6 @@ class LazyColumnDTO private constructor(builder: Builder) :
                     )
             }
         }
-
-        override fun size(size: String): Builder = apply { super.size(size) }
-
-        override fun padding(padding: String): Builder = apply { super.padding(padding) }
-
-        override fun verticalPadding(padding: String): Builder = apply {
-            super.verticalPadding(padding)
-        }
-
-        override fun horizontalPadding(padding: String): Builder = apply {
-            super.horizontalPadding(padding)
-        }
-
-        override fun height(height: String): Builder = apply { super.height(height) }
-
-        override fun width(width: String): Builder = apply { super.width(width) }
 
         fun build() = LazyColumnDTO(this)
     }

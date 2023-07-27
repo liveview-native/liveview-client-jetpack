@@ -64,7 +64,7 @@ class Repository(private val baseUrl: String) {
                     ?.let { Jsoup.parse(it) }!!
 
                 val theLiveViewMetaDataElement =
-                    doc.body().getElementsByAttributeValue("data-phx-main", "true")
+                    doc.body().getElementsByAttribute("data-phx-main")
 
                 phxLiveViewPayload.phxId = theLiveViewMetaDataElement.attr("id")
                 phxLiveViewPayload.dataPhxStatic =
@@ -85,4 +85,15 @@ class Repository(private val baseUrl: String) {
 
             phxLiveViewPayload
         }
+
+    fun pushEvent(type: String, event: String, value: Any, target: Int? = null) {
+        socketService.pushEvent(
+            "event", mapOf(
+                "type" to type,
+                "event" to event,
+                "value" to value,
+                "cid" to target as Any?
+            )
+        )
+    }
 }

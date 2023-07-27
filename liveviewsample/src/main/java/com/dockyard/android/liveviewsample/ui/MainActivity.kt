@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             LiveView(
-                viewModel(initializer = { LiveViewCoordinator(url = "http://127.0.0.1:4000/hello") })
+                viewModel(initializer = { LiveViewCoordinator(url = "http://10.0.2.2:4000") })
             )
         }
     }

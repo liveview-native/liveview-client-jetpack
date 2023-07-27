@@ -1,12 +1,13 @@
 package org.phoenixframework.liveview.data.service
 
 import android.util.Log
-import java.util.*
 import okhttp3.OkHttpClient
 import org.phoenixframework.Channel
 import org.phoenixframework.Message
+import org.phoenixframework.Payload
 import org.phoenixframework.Socket
 import org.phoenixframework.liveview.data.dto.PhoenixLiveViewPayload
+import java.util.UUID
 
 class SocketService(private val okHttpClient: OkHttpClient) {
     private var phxSocket: Socket? = null
@@ -79,6 +80,7 @@ class SocketService(private val okHttpClient: OkHttpClient) {
 
                                 messageListener(message)
                             }
+
                             "diff" -> {
                                 messageListener(message)
                             }
@@ -125,5 +127,9 @@ class SocketService(private val okHttpClient: OkHttpClient) {
                         throw throwable
                     }
                 }
+    }
+
+    fun pushEvent(event: String, payload: Payload) {
+        channel?.push(event, payload)
     }
 }

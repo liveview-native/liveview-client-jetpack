@@ -1,8 +1,20 @@
 package org.phoenixframework.liveview.domain.factory
 
-import org.phoenixframework.liveview.data.dto.*
+import org.phoenixframework.liveview.data.dto.AsyncImageDTO
+import org.phoenixframework.liveview.data.dto.ButtonDTO
+import org.phoenixframework.liveview.data.dto.CardDTO
+import org.phoenixframework.liveview.data.dto.ColumnDTO
+import org.phoenixframework.liveview.data.dto.IconDTO
+import org.phoenixframework.liveview.data.dto.LazyColumnDTO
+import org.phoenixframework.liveview.data.dto.LazyRowDTO
+import org.phoenixframework.liveview.data.dto.RowDTO
+import org.phoenixframework.liveview.data.dto.ScaffoldDTO
+import org.phoenixframework.liveview.data.dto.SpacerDTO
+import org.phoenixframework.liveview.data.dto.TextDTO
+import org.phoenixframework.liveview.data.dto.TopAppBarDTO
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.lib.Attribute
 import org.phoenixframework.liveview.lib.Node
 
@@ -18,12 +30,21 @@ object ComposableNodeFactory {
      * @param element the `Element` object to create the `ComposableTreeNode` object from
      * @return a `ComposableTreeNode` object based on the input `Element` object
      */
-    fun buildComposableTreeNode(element: Node.Element, children: List<Node>): ComposableTreeNode =
-        buildComposableView(element, children).let(::ComposableTreeNode)
+    fun buildComposableTreeNode(
+        element: Node.Element,
+        children: List<Node>,
+        pushEvent: PushEvent
+    ): ComposableTreeNode =
+        buildComposableView(element, children, pushEvent).let(::ComposableTreeNode)
 
-    private fun buildComposableView(element: Node.Element, children: List<Node>): ComposableView =
+    private fun buildComposableView(
+        element: Node.Element,
+        children: List<Node>,
+        pushEvent: PushEvent
+    ): ComposableView =
         when (element.tag) {
             ComposableTypes.asyncImage -> buildAsyncImageNode(element.attributes)
+            ComposableTypes.button -> buildButtonNode(element.attributes, pushEvent)
             ComposableTypes.card -> buildCardNode(element.attributes)
             ComposableTypes.column -> buildColumnNode(element.attributes)
             ComposableTypes.icon -> buildIconNode(element.attributes)
@@ -34,11 +55,15 @@ object ComposableNodeFactory {
             ComposableTypes.spacer -> buildSpacerNode(element.attributes)
             ComposableTypes.text ->
                 buildTextNode(attributes = element.attributes, text = element.tag)
+
             ComposableTypes.topAppBar ->
                 buildTopAppBarNode(attributes = element.attributes, children = children)
+
             else ->
                 buildTextNode(
-                    attributes = element.attributes, text = "${element.tag} not supported yet")
+                    attributes = element.attributes,
+                    text = "${element.tag} not supported yet"
+                )
         }
 
     /**
@@ -53,16 +78,40 @@ object ComposableNodeFactory {
                 AsyncImageDTO.Builder().imageUrl(attributes.find { it.name == "url" }?.value ?: "")
             ) { builder, attribute ->
                 when (attribute.name) {
-                    "content-scale" -> builder.contentScale(attribute.value)
-                    "content-description" -> builder.contentDescription(attribute.value)
-                    "cross-fade" -> builder.crossFade(attribute.value)
+                    "contentScale" -> builder.contentScale(attribute.value)
+                    "contentDescription" -> builder.contentDescription(attribute.value)
+                    "crossFade" -> builder.crossFade(attribute.value)
                     "shape" -> builder.shape(attribute.value)
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
                     "width" -> builder.width(attribute.value)
                     "padding" -> builder.padding(attribute.value)
-                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
-                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                    "verticalPadding" -> builder.verticalPadding(attribute.value)
+                    else -> builder
+                } as AsyncImageDTO.Builder
+            }
+            .build()
+
+    /**
+     * Creates a `ButtonDTO` object based on the attributes of the input `Attributes` object.
+     * Button co-relates to the Button composable
+     * @param attributes the `Attributes` object to create the `CardDTO` object from
+     * @return a `ButtonDTO` object based on the attributes of the input `Attributes` object
+     **/
+    private fun buildButtonNode(
+        attributes: Array<Attribute>,
+        pushEvent: PushEvent
+    ): ComposableView =
+        attributes
+            .fold(ButtonDTO.Builder()) { builder, attribute ->
+                when (attribute.name) {
+                    //TODO Swift is using `phx-click`. Should Android use the same?
+                    "phx-click" -> builder.onClick {
+                        pushEvent("click", attribute.value, "", null)
+                    }
+
+                    "padding" -> builder.padding(attribute.value)
                     else -> builder
                 }
             }
@@ -79,16 +128,16 @@ object ComposableNodeFactory {
             .fold(CardDTO.Builder()) { builder, attribute ->
                 when (attribute.name) {
                     "shape" -> builder.shape(attribute.value)
-                    "background-color" -> builder.backgroundColor(attribute.value)
+                    "backgroundColor" -> builder.backgroundColor(attribute.value)
                     "elevation" -> builder.elevation(attribute.value)
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
                     "width" -> builder.width(attribute.value)
                     "padding" -> builder.padding(attribute.value)
-                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
-                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                    "verticalPadding" -> builder.verticalPadding(attribute.value)
                     else -> builder
-                }
+                } as CardDTO.Builder
             }
             .build()
 
@@ -102,39 +151,42 @@ object ComposableNodeFactory {
         attributes
             .fold(ColumnDTO.Builder()) { builder, attribute ->
                 when (attribute.name) {
-                    "vertical-arrangement" -> {
+                    "verticalArrangement" -> {
                         builder.verticalArrangement(attribute.value)
                     }
-                    "horizontal-alignment" -> {
+
+                    "horizontalAlignment" -> {
                         builder.horizontalAlignment(attribute.value)
                     }
+
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
                     "width" -> builder.width(attribute.value)
                     "padding" -> builder.padding(attribute.value)
-                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
-                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                    "verticalPadding" -> builder.verticalPadding(attribute.value)
                     else -> builder
-                }
+                } as ColumnDTO.Builder
             }
             .build()
 
     private fun buildIconNode(attributes: Array<Attribute>): IconDTO =
         attributes
             .fold(
-                IconDTO.Builder().imageVector(attributes.find { it.name == "name" }?.value ?: "")
+                IconDTO.Builder()
+                    .imageVector(attributes.find { it.name == "imageVector" }?.value ?: "")
             ) { builder, attribute ->
                 when (attribute.name) {
                     "tint" -> builder.tint(attribute.value)
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
                     "width" -> builder.width(attribute.value)
-                    "content-description" -> builder.contentDescription(attribute.value)
+                    "contentDescription" -> builder.contentDescription(attribute.value)
                     "padding" -> builder.padding(attribute.value)
-                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
-                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                    "verticalPadding" -> builder.verticalPadding(attribute.value)
                     else -> builder
-                }
+                } as IconDTO.Builder
             }
             .build()
 
@@ -143,23 +195,23 @@ object ComposableNodeFactory {
             .fold(LazyColumnDTO.Builder()) { builder, attribute ->
                 when (attribute.name) {
                     "height" -> builder.height(attribute.value)
-                    "horizontal-alignment" -> builder.horizontalAlignment(attribute.value)
-                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
-                    "item-bottom-padding" -> builder.bottomPadding(attribute.value)
-                    "item-horizontal-padding" -> builder.horizontalPadding(attribute.value)
-                    "item-left-padding" -> builder.leftPadding(attribute.value)
-                    "item-padding" -> builder.lazyColumnItemPadding(attribute.value)
-                    "item-right-padding" -> builder.rightPadding(attribute.value)
-                    "item-top-padding" -> builder.topPadding(attribute.value)
-                    "item-vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "horizontalAlignment" -> builder.horizontalAlignment(attribute.value)
+                    "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                    "itemBottomPadding" -> builder.bottomPadding(attribute.value)
+                    "itemHorizontalPadding" -> builder.horizontalPadding(attribute.value)
+                    "itemLeftPadding" -> builder.leftPadding(attribute.value)
+                    "itemPadding" -> builder.lazyColumnItemPadding(attribute.value)
+                    "itemRightPadding" -> builder.rightPadding(attribute.value)
+                    "itemTopPadding" -> builder.topPadding(attribute.value)
+                    "itemVerticalPadding" -> builder.verticalPadding(attribute.value)
                     "padding" -> builder.padding(attribute.value)
-                    "reverse-layout" -> builder.reverseLayout(attribute.value)
+                    "reverseLayout" -> builder.reverseLayout(attribute.value)
                     "size" -> builder.size(attribute.value)
-                    "vertical-arrangement" -> builder.verticalArrangement(attribute.value)
-                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "verticalArrangement" -> builder.verticalArrangement(attribute.value)
+                    "verticalPadding" -> builder.verticalPadding(attribute.value)
                     "width" -> builder.width(attribute.value)
                     else -> builder
-                }
+                } as LazyColumnDTO.Builder
             }
             .build()
 
@@ -168,23 +220,23 @@ object ComposableNodeFactory {
             .fold(LazyRowDTO.Builder()) { builder, attribute ->
                 when (attribute.name) {
                     "height" -> builder.height(attribute.value)
-                    "horizontal-arrangement" -> builder.horizontalArrangement(horizontalArrangement = attribute.value)
-                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
-                    "item-bottom-padding" -> builder.bottomPadding(attribute.value)
-                    "item-horizontal-padding" -> builder.horizontalPadding(attribute.value)
-                    "item-left-padding" -> builder.leftPadding(attribute.value)
-                    "item-padding" -> builder.lazyRowItemPadding(attribute.value)
-                    "item-right-padding" -> builder.rightPadding(attribute.value)
-                    "item-top-padding" -> builder.topPadding(attribute.value)
-                    "item-vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "horizontalArrangement" -> builder.horizontalArrangement(horizontalArrangement = attribute.value)
+                    "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                    "itemBottomPadding" -> builder.bottomPadding(attribute.value)
+                    "itemHorizontalPadding" -> builder.horizontalPadding(attribute.value)
+                    "itemLeftPadding" -> builder.leftPadding(attribute.value)
+                    "itemPadding" -> builder.lazyRowItemPadding(attribute.value)
+                    "itemRightPadding" -> builder.rightPadding(attribute.value)
+                    "itemTopPadding" -> builder.topPadding(attribute.value)
+                    "itemVerticalPadding" -> builder.verticalPadding(attribute.value)
                     "padding" -> builder.padding(attribute.value)
-                    "reverse-layout" -> builder.reverseLayout(attribute.value)
+                    "reverseLayout" -> builder.reverseLayout(attribute.value)
                     "size" -> builder.size(attribute.value)
-                    "vertical-alignment" -> builder.verticalAlignment(verticalAlignment = attribute.value)
-                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "verticalAlignment" -> builder.verticalAlignment(verticalAlignment = attribute.value)
+                    "verticalPadding" -> builder.verticalPadding(attribute.value)
                     "width" -> builder.width(attribute.value)
                     else -> builder
-                }
+                } as LazyRowDTO.Builder
             }
             .build()
 
@@ -198,20 +250,22 @@ object ComposableNodeFactory {
         attributes
             .fold(RowDTO.Builder()) { builder, attribute ->
                 when (attribute.name) {
-                    "horizontal-arrangement" -> {
+                    "horizontalArrangement" -> {
                         builder.horizontalArrangement(horizontalArrangement = attribute.value)
                     }
-                    "vertical-alignment" -> {
+
+                    "verticalAlignment" -> {
                         builder.verticalAlignment(verticalAlignment = attribute.value)
                     }
+
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
                     "width" -> builder.width(attribute.value)
                     "padding" -> builder.padding(attribute.value)
-                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
-                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                    "verticalPadding" -> builder.verticalPadding(attribute.value)
                     else -> builder
-                }
+                } as RowDTO.Builder
             }
             .build()
 
@@ -219,15 +273,15 @@ object ComposableNodeFactory {
         attributes
             .fold(ScaffoldDTO.Builder()) { builder, attribute ->
                 when (attribute.name) {
-                    "background-color" -> builder.backgroundColor(attribute.value)
+                    "backgroundColor" -> builder.backgroundColor(attribute.value)
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
                     "width" -> builder.width(attribute.value)
                     "padding" -> builder.padding(attribute.value)
-                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
-                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                    "verticalPadding" -> builder.verticalPadding(attribute.value)
                     else -> builder
-                }
+                } as ScaffoldDTO.Builder
             }
             .build()
 
@@ -237,12 +291,12 @@ object ComposableNodeFactory {
                 when (attribute.name) {
                     "size" -> builder.size(attribute.value)
                     "padding" -> builder.padding(attribute.value)
-                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
-                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                    "verticalPadding" -> builder.verticalPadding(attribute.value)
                     "height" -> builder.height(attribute.value)
                     "width" -> builder.width(attribute.value)
                     else -> builder
-                }
+                } as SpacerDTO.Builder
             }
             .build()
 
@@ -258,25 +312,26 @@ object ComposableNodeFactory {
         attributes
             .fold(TextDTO.Builder().text(text)) { builder, attribute ->
                 when (attribute.name) {
+                    "text" -> builder.text(attribute.value)
                     "color" -> builder.color(attribute.value)
-                    "font-size" -> builder.fontSize(attribute.value)
-                    "font-style" -> builder.fontStyle(attribute.value)
-                    "font-weight" -> builder.fontWeight(attribute.value)
-                    "letter-spacing" -> builder.letterSpacing(attribute.value)
-                    "text-decoration" -> builder.textDecoration(attribute.value)
-                    "text-align" -> builder.textAlign(attribute.value)
-                    "line-height" -> builder.lineHeight(attribute.value)
+                    "fontSize" -> builder.fontSize(attribute.value)
+                    "fontStyle" -> builder.fontStyle(attribute.value)
+                    "fontWeight" -> builder.fontWeight(attribute.value)
+                    "letterSpacing" -> builder.letterSpacing(attribute.value)
+                    "textDecoration" -> builder.textDecoration(attribute.value)
+                    "textAlign" -> builder.textAlign(attribute.value)
+                    "lineHeight" -> builder.lineHeight(attribute.value)
                     "overflow" -> builder.overflow(attribute.value)
-                    "soft-wrap" -> builder.softWrap(attribute.value)
-                    "max-lines" -> builder.maxLines(attribute.value)
+                    "softWrap" -> builder.softWrap(attribute.value)
+                    "maxLines" -> builder.maxLines(attribute.value)
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
                     "width" -> builder.width(attribute.value)
                     "padding" -> builder.padding(attribute.value)
-                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
-                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                    "verticalPadding" -> builder.verticalPadding(attribute.value)
                     else -> builder
-                }
+                } as TextDTO.Builder
             }
             .build()
 
@@ -289,36 +344,36 @@ object ComposableNodeFactory {
         attributes
             .forEach { attribute ->
                 when (attribute.name) {
-                    "background-color" -> builder.backgroundColor(attribute.value)
+                    "backgroundColor" -> builder.backgroundColor(attribute.value)
                     "size" -> builder.size(attribute.value)
                     "height" -> builder.height(attribute.value)
                     "width" -> builder.width(attribute.value)
                     "padding" -> builder.padding(attribute.value)
-                    "horizontal-padding" -> builder.horizontalPadding(attribute.value)
-                    "vertical-padding" -> builder.verticalPadding(attribute.value)
+                    "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                    "verticalPadding" -> builder.verticalPadding(attribute.value)
                 }
             }
             .also {
                 children.forEach { childNode ->
                     childNode as Node.Element
+                    // TopAppBar can have three sub-items:
+                    // Title, NavigationIcon and a list of Actions
                     when (childNode.tag) {
-                        "heading" -> {
-                            val textDto =
-                                buildTextNode(
-                                    childNode.attributes,
-                                    childNode.attributes.find { it.name == "value" }?.value ?: "")
-                                    as TextDTO
-                            builder.textDTO = textDto
+                        "Title" -> {
+                            builder.textDTO = buildTextNode(
+                                childNode.attributes,
+                                childNode.tag
+                            ) as TextDTO
                         }
-                        "nav-icon",
-                        "action-icon" -> {
-                            val iconDto = buildIconNode(childNode.attributes)
 
-                            if (childNode.tag == "nav-icon") {
-                                builder.addNavIcon(iconDto)
-                            } else {
-                                builder.addActionIcon(iconDto)
-                            }
+                        "NavigationIcon" -> {
+                            val iconDto = buildIconNode(childNode.attributes)
+                            builder.addNavIcon(iconDto)
+                        }
+
+                        "Action" -> {
+                            val iconDto = buildIconNode(childNode.attributes)
+                            builder.addActionIcon(iconDto)
                         }
                     }
                 }
