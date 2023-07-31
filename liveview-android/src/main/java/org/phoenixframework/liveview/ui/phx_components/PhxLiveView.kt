@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import org.phoenixframework.liveview.data.dto.*
+import org.phoenixframework.liveview.domain.base.OnChildren
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
 @Composable
@@ -12,57 +12,23 @@ fun PhxLiveView(liveViewState: MutableList<ComposableTreeNode>) {
     liveViewState.forEach { node -> TraverseComposableViewTree(node, paddingValues = null) }
 }
 
+private val processChildren: OnChildren =
+    { composableTreeNode: ComposableTreeNode, paddingValues: PaddingValues? ->
+        TraverseComposableViewTree(
+            composableTreeNode,
+            paddingValues
+        )
+    }
+
 @Composable
 private fun TraverseComposableViewTree(
-    composableTreeNode: ComposableTreeNode,
-    paddingValues: PaddingValues?
+    composableTreeNode: ComposableTreeNode, paddingValues: PaddingValues?
 ) {
-    when (composableTreeNode.value) {
-        is AsyncImageDTO -> composableTreeNode.value.Compose(paddingValues)
-        is ButtonDTO ->
-            composableTreeNode.value.Compose(paddingValues) {
-                composableTreeNode.children.forEach { node ->
-                    TraverseComposableViewTree(node, paddingValues = null)
-                }
-            }
-        is CardDTO ->
-            composableTreeNode.value.Compose(paddingValues) {
-                composableTreeNode.children.forEach { node ->
-                    TraverseComposableViewTree(node, paddingValues = null)
-                }
-            }
-        is ColumnDTO ->
-            composableTreeNode.value.Compose(paddingValues) {
-                composableTreeNode.children.forEach { node ->
-                    TraverseComposableViewTree(node, paddingValues = null)
-                }
-            }
-        is IconDTO -> composableTreeNode.value.Compose(paddingValues)
-        is LazyColumnDTO ->
-            composableTreeNode.value.ComposeLazyItems(composableTreeNode.children, paddingValues) {
-                node ->
-                TraverseComposableViewTree(node, paddingValues = null)
-            }
-        is LazyRowDTO ->
-            composableTreeNode.value.ComposeLazyItems(composableTreeNode.children, paddingValues) {
-                node ->
-                TraverseComposableViewTree(node, paddingValues = null)
-            }
-        is RowDTO ->
-            composableTreeNode.value.Compose(paddingValues) {
-                composableTreeNode.children.forEach { node ->
-                    TraverseComposableViewTree(node, paddingValues = null)
-                }
-            }
-        is ScaffoldDTO ->
-            composableTreeNode.value.Compose(paddingValues) { contentPaddingValues ->
-                composableTreeNode.children.forEach { node ->
-                    TraverseComposableViewTree(node, contentPaddingValues)
-                }
-            }
-        is SpacerDTO -> composableTreeNode.value.Compose(paddingValues)
-        is TextDTO -> composableTreeNode.value.Compose(paddingValues)
-    }
+    composableTreeNode.value.Compose(
+        composableTreeNode.children,
+        paddingValues,
+        processChildren
+    )
 }
 
 fun Modifier.paddingIfNotNull(paddingValues: PaddingValues?): Modifier =

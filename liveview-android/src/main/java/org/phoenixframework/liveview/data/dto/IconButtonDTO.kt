@@ -1,7 +1,7 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material.Button
+import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -11,61 +11,53 @@ import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.lib.Attribute
 import org.phoenixframework.liveview.lib.Node
-import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
-class ButtonDTO private constructor(builder: Builder) :
+class IconButtonDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val onClick: () -> Unit = builder.onClick
+    private val enabled: Boolean = builder.enabled
 
     @Composable
     override fun Compose(
-        children: List<ComposableTreeNode>?,
-        paddingValues: PaddingValues?,
-        onChildren: OnChildren?
+        children: List<ComposableTreeNode>?, paddingValues: PaddingValues?, onChildren: OnChildren?
     ) {
-        Button(
-            modifier = modifier.paddingIfNotNull(paddingValues),
-            onClick = onClick,
-        ) {
-            children?.forEach { node ->
-                onChildren?.invoke(node, paddingValues)
+        IconButton(onClick = onClick, enabled = enabled) {
+            IconDtoFactory
+            children?.forEach {
+                onChildren?.invoke(it, paddingValues)
             }
         }
     }
 
     class Builder : ComposableBuilder() {
         var onClick: () -> Unit = {}
+        var enabled: Boolean = true
+
         fun onClick(clickEvent: () -> Unit): Builder = apply {
             this.onClick = clickEvent
         }
 
-        override fun padding(padding: String): Builder = apply {
-            super.padding(padding)
+        fun enabled(enabled: String): Builder = apply {
+            this.enabled = enabled.toBoolean()
         }
 
-        fun build() = ButtonDTO(this)
+        fun build() = IconButtonDTO(this)
     }
 }
 
-object ButtonDtoFactory : ComposableViewFactory<ButtonDTO, ButtonDTO.Builder>() {
-    /**
-     * Creates a `ButtonDTO` object based on the attributes of the input `Attributes` object.
-     * Button co-relates to the Button composable
-     * @param attributes the `Attributes` object to create the `CardDTO` object from
-     * @return a `ButtonDTO` object based on the attributes of the input `Attributes` object
-     **/
+object IconButtonDtoFactory : ComposableViewFactory<IconButtonDTO, IconButtonDTO.Builder>() {
     override fun buildComposableView(
-        attributes: Array<Attribute>,
-        children: List<Node>?,
-        pushEvent: PushEvent?
-    ): ButtonDTO = attributes.fold(ButtonDTO.Builder()) { builder, attribute ->
+        attributes: Array<Attribute>, children: List<Node>?, pushEvent: PushEvent?
+    ): IconButtonDTO = attributes.fold(
+        IconButtonDTO.Builder()
+    ) { builder, attribute ->
         when (attribute.name) {
             //TODO Swift is using `phx-click`. Should Android use the same?
             "phx-click" -> builder.onClick {
                 pushEvent?.invoke("click", attribute.value, "", null)
             }
 
-            "padding" -> builder.padding(attribute.value)
+            "enabled" -> builder.enabled(attribute.value)
             else -> builder
         }
     }.build()

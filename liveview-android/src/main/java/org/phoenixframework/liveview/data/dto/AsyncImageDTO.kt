@@ -12,6 +12,12 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.domain.base.ComposableViewFactory
+import org.phoenixframework.liveview.domain.base.OnChildren
+import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.lib.Attribute
+import org.phoenixframework.liveview.lib.Node
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class AsyncImageDTO private constructor(builder: Builder) :
@@ -23,7 +29,11 @@ class AsyncImageDTO private constructor(builder: Builder) :
     private val contentScale: ContentScale = builder.contentScale
 
     @Composable
-    fun Compose(paddingValues: PaddingValues?) {
+    override fun Compose(
+        children: List<ComposableTreeNode>?,
+        paddingValues: PaddingValues?,
+        onChildren: OnChildren?
+    ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUrl)
@@ -77,4 +87,35 @@ class AsyncImageDTO private constructor(builder: Builder) :
 
         fun build(): AsyncImageDTO = AsyncImageDTO(this)
     }
+}
+
+object AsyncImageDtoFactory : ComposableViewFactory<AsyncImageDTO, AsyncImageDTO.Builder>() {
+    /**
+     * Creates an `AsyncImageDTO` object based on the attributes and text of the input `Attributes` object.
+     * AsyncImage co-relates to the AsyncImage composable from Coil library used to load images from network
+     * @param attributes the `Attributes` object to create the `AsyncImageDTO` object from
+     * @return an `AsyncImageDTO` object based on the attributes and text of the input `Attributes` object
+     */
+    override fun buildComposableView(
+        attributes: Array<Attribute>,
+        children: List<Node>?,
+        pushEvent: PushEvent?
+    ): AsyncImageDTO = attributes.fold(
+        AsyncImageDTO.Builder().imageUrl(attributes.find { it.name == "url" }?.value ?: "")
+    ) { builder, attribute ->
+        when (attribute.name) {
+            "contentScale" -> builder.contentScale(attribute.value)
+            "contentDescription" -> builder.contentDescription(attribute.value)
+            "crossFade" -> builder.crossFade(attribute.value)
+            "shape" -> builder.shape(attribute.value)
+            "size" -> builder.size(attribute.value)
+            "height" -> builder.height(attribute.value)
+            "width" -> builder.width(attribute.value)
+            "padding" -> builder.padding(attribute.value)
+            "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+            "verticalPadding" -> builder.verticalPadding(attribute.value)
+            else -> builder
+        } as AsyncImageDTO.Builder
+    }.build()
+
 }

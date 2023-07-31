@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.phoenixframework.liveview.data.dto.ScaffoldDTO
-import org.phoenixframework.liveview.data.dto.TopAppBarDTO
 import org.phoenixframework.liveview.data.repository.Repository
 import org.phoenixframework.liveview.domain.factory.ComposableNodeFactory
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -96,7 +94,8 @@ class LiveViewCoordinator(url: String) : ViewModel() {
         }
 
     private fun parseTemplate(originalRenderDom: String) {
-        val currentDom = mutableListOf(ComposableTreeNode(ComposableNodeFactory.createEmptyNode()))
+        val currentDom =
+            mutableListOf(ComposableTreeNode("empty", ComposableNodeFactory.createEmptyNode()))
         val parsedDocument = Document.parse(originalRenderDom)
         doc.merge(
             parsedDocument,
@@ -145,13 +144,7 @@ class LiveViewCoordinator(url: String) : ViewModel() {
                 val composableTreeNode =
                     createComposableTreeNode(node, document.getChildren(nodeRef))
 
-                if (parent != null) {
-                    if (composableTreeNode.value is TopAppBarDTO && parent.value is ScaffoldDTO) {
-                        parent.value.topAppBar = composableTreeNode.value
-                    } else {
-                        parent.addNode(composableTreeNode)
-                    }
-                }
+                parent?.addNode(composableTreeNode)
 
                 val childNodeRefs = document.getChildren(nodeRef)
                 for (childNodeRef in childNodeRefs) {

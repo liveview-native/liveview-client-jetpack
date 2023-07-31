@@ -9,16 +9,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.domain.base.ComposableViewFactory
+import org.phoenixframework.liveview.domain.base.OnChildren
+import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.lib.Attribute
+import org.phoenixframework.liveview.lib.Node
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class IconDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
-    var contentDescription: String = builder.contentDescription
-    var tint: Color = builder.tint
-    var imageVector: ImageVector? = builder.imageVector
+    private val contentDescription: String = builder.contentDescription
+    private val tint: Color = builder.tint
+    private val imageVector: ImageVector? = builder.imageVector
 
     @Composable
-    fun Compose(paddingValues: PaddingValues?) {
+    override fun Compose(
+        children: List<ComposableTreeNode>?, paddingValues: PaddingValues?, onChildren: OnChildren?
+    ) {
         imageVector?.let { imageVector ->
             Icon(
                 imageVector = imageVector,
@@ -29,7 +37,7 @@ class IconDTO private constructor(builder: Builder) : ComposableView(modifier = 
         }
     }
 
-    class Builder : ComposableBuilder() {
+    open class Builder : ComposableBuilder() {
         var contentDescription: String = ""
         var tint: Color = Color.Black
         var imageVector: ImageVector? = null
@@ -50,13 +58,32 @@ class IconDTO private constructor(builder: Builder) : ComposableView(modifier = 
     }
 }
 
+object IconDtoFactory : ComposableViewFactory<IconDTO, IconDTO.Builder>() {
+    override fun buildComposableView(
+        attributes: Array<Attribute>, children: List<Node>?, pushEvent: PushEvent?
+    ): IconDTO = attributes.fold(
+        IconDTO.Builder().imageVector(attributes.find { it.name == "imageVector" }?.value ?: "")
+    ) { builder, attribute ->
+        when (attribute.name) {
+            "tint" -> builder.tint(attribute.value)
+            "size" -> builder.size(attribute.value)
+            "height" -> builder.height(attribute.value)
+            "width" -> builder.width(attribute.value)
+            "contentDescription" -> builder.contentDescription(attribute.value)
+            "padding" -> builder.padding(attribute.value)
+            "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+            "verticalPadding" -> builder.verticalPadding(attribute.value)
+            else -> builder
+        } as IconDTO.Builder
+    }.build()
+}
+
 private fun String.toMaterialIcon(): ImageVector? = try {
     val imageParameters = split(":")
     val themePackage = imageParameters.first()
     val action = imageParameters.last()
 
-    val iconClass =
-        Class.forName("androidx.compose.material.icons.${themePackage}.${action}Kt")
+    val iconClass = Class.forName("androidx.compose.material.icons.${themePackage}.${action}Kt")
     val method = iconClass.declaredMethods.first()
 
     val theme: Any = when (themePackage) {

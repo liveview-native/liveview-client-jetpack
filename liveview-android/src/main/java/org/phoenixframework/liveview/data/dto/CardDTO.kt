@@ -10,7 +10,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.domain.base.ComposableViewFactory
+import org.phoenixframework.liveview.domain.base.OnChildren
+import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.lib.Attribute
+import org.phoenixframework.liveview.lib.Node
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class CardDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
@@ -19,14 +25,18 @@ class CardDTO private constructor(builder: Builder) : ComposableView(modifier = 
     private val elevation: Dp = builder.elevation
 
     @Composable
-    fun Compose(paddingValues: PaddingValues?, content: @Composable () -> Unit) {
+    override fun Compose(
+        children: List<ComposableTreeNode>?, paddingValues: PaddingValues?, onChildren: OnChildren?
+    ) {
         Card(
             modifier = modifier.paddingIfNotNull(paddingValues),
             backgroundColor = backgroundColor,
             elevation = elevation,
             shape = shape,
         ) {
-            content()
+            children?.forEach { node ->
+                onChildren?.invoke(node, paddingValues)
+            }
         }
     }
 
@@ -53,4 +63,29 @@ class CardDTO private constructor(builder: Builder) : ComposableView(modifier = 
 
         fun build() = CardDTO(this)
     }
+}
+
+object CardDtoFactory : ComposableViewFactory<CardDTO, CardDTO.Builder>() {
+    /**
+     * Creates a `CardDTO` object based on the attributes of the input `Attributes` object.
+     * Card co-relates to the Card composable
+     * @param attributes the `Attributes` object to create the `CardDTO` object from
+     * @return a `CardDTO` object based on the attributes of the input `Attributes` object
+     **/
+    override fun buildComposableView(
+        attributes: Array<Attribute>, children: List<Node>?, pushEvent: PushEvent?
+    ): CardDTO = attributes.fold(CardDTO.Builder()) { builder, attribute ->
+        when (attribute.name) {
+            "shape" -> builder.shape(attribute.value)
+            "backgroundColor" -> builder.backgroundColor(attribute.value)
+            "elevation" -> builder.elevation(attribute.value)
+            "size" -> builder.size(attribute.value)
+            "height" -> builder.height(attribute.value)
+            "width" -> builder.width(attribute.value)
+            "padding" -> builder.padding(attribute.value)
+            "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+            "verticalPadding" -> builder.verticalPadding(attribute.value)
+            else -> builder
+        } as CardDTO.Builder
+    }.build()
 }

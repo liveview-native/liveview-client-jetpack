@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.domain.base
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,14 +13,22 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.lib.Attribute
+import org.phoenixframework.liveview.lib.Node
 
 abstract class ComposableView(var modifier: Modifier = Modifier) {
     var text: String = ""
+    @Composable
+    abstract fun Compose(
+        children: List<ComposableTreeNode>?, paddingValues: PaddingValues?, onChildren: OnChildren?
+    )
 }
 
 abstract class ComposableBuilder {
@@ -77,4 +86,12 @@ abstract class ComposableBuilder {
         shape.isNotEmpty() && shape == "rectangle" -> RectangleShape
         else -> RoundedCornerShape(0.dp)
     }
+}
+
+abstract class ComposableViewFactory<CV : ComposableView, CB : ComposableBuilder> {
+    abstract fun buildComposableView(
+        attributes: Array<Attribute>,
+        children: List<Node>?,
+        pushEvent: PushEvent?
+    ): CV
 }

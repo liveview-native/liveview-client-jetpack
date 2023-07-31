@@ -14,7 +14,13 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.domain.base.ComposableViewFactory
+import org.phoenixframework.liveview.domain.base.OnChildren
+import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.lib.Attribute
+import org.phoenixframework.liveview.lib.Node
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class TextDTO private constructor(private val builder: Builder) :
@@ -34,7 +40,9 @@ class TextDTO private constructor(private val builder: Builder) :
     private val maxLines: Int = builder.maxLines
 
     @Composable
-    fun Compose(paddingValues: PaddingValues?) {
+    override fun Compose(
+        children: List<ComposableTreeNode>?, paddingValues: PaddingValues?, onChildren: OnChildren?
+    ) {
         if (text.isEmpty() && builder.text.isNotEmpty()) {
             text = builder.text
         }
@@ -108,12 +116,11 @@ class TextDTO private constructor(private val builder: Builder) :
          */
         fun fontStyle(fontStyle: String) = apply {
             if (fontStyle.isNotEmpty()) {
-                this.fontStyle =
-                    when (fontStyle) {
-                        "normal" -> FontStyle.Normal
-                        "italic" -> FontStyle.Italic
-                        else -> FontStyle.Normal
-                    }
+                this.fontStyle = when (fontStyle) {
+                    "normal" -> FontStyle.Normal
+                    "italic" -> FontStyle.Italic
+                    else -> FontStyle.Normal
+                }
             }
         }
 
@@ -128,19 +135,18 @@ class TextDTO private constructor(private val builder: Builder) :
          */
         fun fontWeight(fontWeight: String) = apply {
             if (fontWeight.isNotEmpty()) {
-                this.fontWeight =
-                    when (fontWeight) {
-                        "W100" -> FontWeight(100)
-                        "W200" -> FontWeight(200)
-                        "W300" -> FontWeight(300)
-                        "W400" -> FontWeight(400)
-                        "W500" -> FontWeight(500)
-                        "W600" -> FontWeight(600)
-                        "W700" -> FontWeight(700)
-                        "W800" -> FontWeight(800)
-                        "W900" -> FontWeight(900)
-                        else -> FontWeight.Normal
-                    }
+                this.fontWeight = when (fontWeight) {
+                    "W100" -> FontWeight(100)
+                    "W200" -> FontWeight(200)
+                    "W300" -> FontWeight(300)
+                    "W400" -> FontWeight(400)
+                    "W500" -> FontWeight(500)
+                    "W600" -> FontWeight(600)
+                    "W700" -> FontWeight(700)
+                    "W800" -> FontWeight(800)
+                    "W900" -> FontWeight(900)
+                    else -> FontWeight.Normal
+                }
             }
         }
 
@@ -165,14 +171,13 @@ class TextDTO private constructor(private val builder: Builder) :
          */
         fun textDecoration(textDecoration: String) = apply {
             if (textDecoration.isNotEmpty()) {
-                this.textDecoration =
-                    when (textDecoration) {
-                        // Draws a horizontal line below the text.
-                        "underline" -> TextDecoration.Underline
-                        // Draws a horizontal line over the text.
-                        "line-through" -> TextDecoration.LineThrough
-                        else -> TextDecoration.None
-                    }
+                this.textDecoration = when (textDecoration) {
+                    // Draws a horizontal line below the text.
+                    "underline" -> TextDecoration.Underline
+                    // Draws a horizontal line over the text.
+                    "line-through" -> TextDecoration.LineThrough
+                    else -> TextDecoration.None
+                }
             }
         }
 
@@ -185,16 +190,15 @@ class TextDTO private constructor(private val builder: Builder) :
          */
         fun textAlign(textAlign: String) = apply {
             if (textAlign.isNotEmpty()) {
-                this.textAlign =
-                    when (textAlign) {
-                        "left" -> TextAlign.Left
-                        "right" -> TextAlign.Right
-                        "center" -> TextAlign.Center
-                        "justify" -> TextAlign.Justify
-                        "start" -> TextAlign.Start
-                        "end" -> TextAlign.End
-                        else -> TextAlign.Start
-                    }
+                this.textAlign = when (textAlign) {
+                    "left" -> TextAlign.Left
+                    "right" -> TextAlign.Right
+                    "center" -> TextAlign.Center
+                    "justify" -> TextAlign.Justify
+                    "start" -> TextAlign.Start
+                    "end" -> TextAlign.End
+                    else -> TextAlign.Start
+                }
             }
         }
 
@@ -219,12 +223,11 @@ class TextDTO private constructor(private val builder: Builder) :
          */
         fun overflow(overflow: String) = apply {
             if (overflow.isNotEmpty()) {
-                this.overflow =
-                    when (overflow) {
-                        "clip" -> TextOverflow.Clip
-                        "ellipsis" -> TextOverflow.Ellipsis
-                        else -> TextOverflow.Visible
-                    }
+                this.overflow = when (overflow) {
+                    "clip" -> TextOverflow.Clip
+                    "ellipsis" -> TextOverflow.Ellipsis
+                    else -> TextOverflow.Visible
+                }
             }
         }
 
@@ -254,4 +257,48 @@ class TextDTO private constructor(private val builder: Builder) :
 
         fun build() = TextDTO(this)
     }
+}
+
+object TextDtoFactory : ComposableViewFactory<TextDTO, TextDTO.Builder>() {
+    fun buildComposableView(
+        text: String,
+        attributes: Array<Attribute>,
+    ): TextDTO = textBuilder(attributes).text(text).build()
+
+    /**
+     * Creates a `TextDTO` object based on the attributes and text of the input `Attributes` object.
+     * Text co-relates to the Text composable
+     *
+     * @param attributes the `Attributes` object to create the `TextDTO` object from
+     * @param text the text of the input `Attributes` object
+     * @return a `TextDTO` object based on the attributes and text of the input `Attributes` object
+     */
+    override fun buildComposableView(
+        attributes: Array<Attribute>, children: List<Node>?, pushEvent: PushEvent?
+    ): TextDTO = textBuilder(attributes).build()
+
+    private fun textBuilder(attributes: Array<Attribute>): TextDTO.Builder =
+        attributes.fold(TextDTO.Builder()) { builder, attribute ->
+            when (attribute.name) {
+                "text" -> builder.text(attribute.value)
+                "color" -> builder.color(attribute.value)
+                "fontSize" -> builder.fontSize(attribute.value)
+                "fontStyle" -> builder.fontStyle(attribute.value)
+                "fontWeight" -> builder.fontWeight(attribute.value)
+                "letterSpacing" -> builder.letterSpacing(attribute.value)
+                "textDecoration" -> builder.textDecoration(attribute.value)
+                "textAlign" -> builder.textAlign(attribute.value)
+                "lineHeight" -> builder.lineHeight(attribute.value)
+                "overflow" -> builder.overflow(attribute.value)
+                "softWrap" -> builder.softWrap(attribute.value)
+                "maxLines" -> builder.maxLines(attribute.value)
+                "size" -> builder.size(attribute.value)
+                "height" -> builder.height(attribute.value)
+                "width" -> builder.width(attribute.value)
+                "padding" -> builder.padding(attribute.value)
+                "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                "verticalPadding" -> builder.verticalPadding(attribute.value)
+                else -> builder
+            } as TextDTO.Builder
+        }
 }
