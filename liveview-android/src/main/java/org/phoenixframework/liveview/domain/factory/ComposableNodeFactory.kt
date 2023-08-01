@@ -26,10 +26,8 @@ import org.phoenixframework.liveview.lib.Node
  */
 object ComposableNodeFactory {
 
-    val registry = ComposableRegistry()
-
     init {
-        registry.run {
+        ComposableRegistry.run {
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
             registerComponent(ComposableTypes.button, ButtonDtoFactory)
             registerComponent(ComposableTypes.card, CardDtoFactory)
@@ -61,7 +59,7 @@ object ComposableNodeFactory {
     ): ComposableTreeNode {
         return ComposableTreeNode(
             element.tag,
-            registry.getComponentFactory(element.tag)?.buildComposableView(
+            ComposableRegistry.getComponentFactory(element.tag)?.buildComposableView(
                 element.attributes,
                 children,
                 pushEvent

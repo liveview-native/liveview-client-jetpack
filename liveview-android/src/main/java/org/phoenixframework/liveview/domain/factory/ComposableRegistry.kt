@@ -2,7 +2,7 @@ package org.phoenixframework.liveview.domain.factory
 
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 
-class ComposableRegistry {
+object ComposableRegistry {
     private val componentsRegistry = mutableMapOf<String, ComposableViewFactory<*, *>>()
 
     fun registerComponent(
