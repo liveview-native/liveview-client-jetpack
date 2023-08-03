@@ -22,6 +22,7 @@ import java.util.Stack
 class LiveViewCoordinator(url: String) : ViewModel() {
     private lateinit var doc: Document
     private val repository: Repository = Repository(baseUrl = url)
+    private var lastRenderedMap: Map<String, Any?> = emptyMap()
 
     init {
         connectToLiveViewMessageStream()
@@ -31,6 +32,13 @@ class LiveViewCoordinator(url: String) : ViewModel() {
     val backStack = _backStack.asStateFlow()
 
     private fun connectToLiveViewMessageStream() {
+        fun handleMap(newMessage: Map<String, Any?>) {
+            val domDiffList = initialWalkDownSocketTreeToBody(newMessage)
+
+            val originalRenderDom = domDiffList["s"] as List<String>
+            parseTemplate(originalRenderDom.joinToString())
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             repository
                 .connect()
@@ -38,13 +46,21 @@ class LiveViewCoordinator(url: String) : ViewModel() {
                 .buffer()
                 .collect { message ->
                     Log.e("VM", "=====================> \n message received: $message")
-                    message.payload["rendered"]?.let { inputMap ->
-                        val renderedMap: Map<String, Any?> = inputMap as Map<String, Any?>
+                    if (message.payload.containsKey("rendered")) {
+                        message.payload["rendered"]?.let { inputMap ->
+                            val renderedMap: Map<String, Any?> = inputMap as Map<String, Any?>
+                            lastRenderedMap = renderedMap
 
-                        val domDiffList = initialWalkDownSocketTreeToBody(renderedMap)
-
-                        val originalRenderDom = domDiffList["s"] as List<String>
-                        parseTemplate(originalRenderDom.first())
+                            handleMap(lastRenderedMap)
+                        }
+                    } else if (message.payload.containsKey("diff") && lastRenderedMap.isNotEmpty()) {
+                        val newMessage = lastRenderedMap.toMutableMap()
+                        val diffDict = message.payload["diff"] as Map<String, Any>
+                        diffDict.forEach { (key, value) ->
+                            newMessage[key] = value
+                        }
+                        lastRenderedMap = newMessage
+                        handleMap(lastRenderedMap)
                     }
                 }
         }
@@ -76,19 +92,16 @@ class LiveViewCoordinator(url: String) : ViewModel() {
         parseTemplate(errorHtml)
     }
 
-    private tailrec fun initialWalkDownSocketTreeToBody(
+    private fun initialWalkDownSocketTreeToBody(
         inputMap: Map<String, Any?>
     ): Map<String, Any?> =
+        // It means that there's at least one state into the template
         if (inputMap.containsKey("0")) {
-            val castedInputMap = inputMap["0"] as Map<String, Any?>
-
-            if (castedInputMap.containsKey("s")) {
-                castedInputMap
-            } else {
-                val nextLevelDeepMap = inputMap["0"] as Map<String, Any?>
-
-                initialWalkDownSocketTreeToBody(nextLevelDeepMap)
+            val renderChunks = inputMap["s"] as? List<String>
+            val list = renderChunks?.mapIndexed { index, chunk ->
+                "$chunk${inputMap["$index"] ?: ""}"
             }
+            mapOf("s" to list)
         } else {
             inputMap
         }
