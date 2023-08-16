@@ -119,7 +119,6 @@ class LiveViewCoordinator(url: String) : ViewModel() {
                     nodeRef: NodeRef,
                     parent: NodeRef?
                 ) {
-                    super.onHandle(context, changeType, nodeRef, parent)
                     when (changeType) {
                         Document.Companion.ChangeType.Change -> {
                             Log.i("Changed:", context.getNodeString(nodeRef))
@@ -132,10 +131,15 @@ class LiveViewCoordinator(url: String) : ViewModel() {
                         Document.Companion.ChangeType.Remove -> {
                             Log.i("Remove:", context.getNodeString(nodeRef))
                         }
+
+                        Document.Companion.ChangeType.Replace -> {
+                            Log.i("Replace:", context.getNodeString(nodeRef))
+                        }
                     }
                 }
             }
         )
+        doc = parsedDocument
 
         val rootElement = parsedDocument.rootNodeRef
 
