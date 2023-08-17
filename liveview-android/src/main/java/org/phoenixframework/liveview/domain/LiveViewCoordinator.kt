@@ -139,7 +139,6 @@ class LiveViewCoordinator(url: String) : ViewModel() {
                 }
             }
         )
-        doc = parsedDocument
 
         val rootElement = parsedDocument.rootNodeRef
 
