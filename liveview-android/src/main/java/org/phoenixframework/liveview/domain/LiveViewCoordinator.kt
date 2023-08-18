@@ -25,6 +25,8 @@ class LiveViewCoordinator(url: String) : ViewModel() {
     private var lastRenderedMap: Map<String, Any?> = emptyMap()
 
     init {
+        System.loadLibrary("liveview_native_core")
+        this.doc = Document()
         connectToLiveViewMessageStream()
     }
 
@@ -40,10 +42,7 @@ class LiveViewCoordinator(url: String) : ViewModel() {
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            repository
-                .connect()
-                .catch { cause: Throwable -> getDomFromThrowable(cause) }
-                .buffer()
+            repository.connect().catch { cause: Throwable -> getDomFromThrowable(cause) }.buffer()
                 .collect { message ->
                     Log.e("VM", "=====================> \n message received: $message")
                     if (message.payload.containsKey("rendered")) {
@@ -110,35 +109,33 @@ class LiveViewCoordinator(url: String) : ViewModel() {
         val currentDom =
             mutableListOf(ComposableTreeNode("empty", ComposableNodeFactory.createEmptyNode()))
         val parsedDocument = Document.parse(originalRenderDom)
-        doc.merge(
-            parsedDocument,
-            object : Document.Companion.Handler() {
-                override fun onHandle(
-                    context: Document,
-                    changeType: Document.Companion.ChangeType,
-                    nodeRef: NodeRef,
-                    parent: NodeRef?
-                ) {
-                    when (changeType) {
-                        Document.Companion.ChangeType.Change -> {
-                            Log.i("Changed:", context.getNodeString(nodeRef))
-                        }
+        doc.merge(parsedDocument, object : Document.Companion.Handler() {
+            override fun onHandle(
+                context: Document,
+                changeType: Document.Companion.ChangeType,
+                nodeRef: NodeRef,
+                parent: NodeRef?
+            ) {
+                Log.d("LiveViewCoordinator", "onHandle: $changeType")
+                when (changeType) {
+                    Document.Companion.ChangeType.Change -> {
+                        Log.i("Changed:", context.getNodeString(nodeRef))
+                    }
 
-                        Document.Companion.ChangeType.Add -> {
-                            Log.i("Added:", context.getNodeString(nodeRef))
-                        }
+                    Document.Companion.ChangeType.Add -> {
+                        Log.i("Added:", context.getNodeString(nodeRef))
+                    }
 
-                        Document.Companion.ChangeType.Remove -> {
-                            Log.i("Remove:", context.getNodeString(nodeRef))
-                        }
+                    Document.Companion.ChangeType.Remove -> {
+                        Log.i("Remove:", context.getNodeString(nodeRef))
+                    }
 
-                        Document.Companion.ChangeType.Replace -> {
-                            Log.i("Replace:", context.getNodeString(nodeRef))
-                        }
+                    Document.Companion.ChangeType.Replace -> {
+                        Log.i("Replace:", context.getNodeString(nodeRef))
                     }
                 }
             }
-        )
+        })
 
         val rootElement = parsedDocument.rootNodeRef
 
@@ -183,16 +180,10 @@ class LiveViewCoordinator(url: String) : ViewModel() {
 
     private fun createComposableTreeNode(node: Node.Element, children: List<NodeRef>) =
         ComposableNodeFactory.buildComposableTreeNode(
-            element = node,
-            children = children.map { nodeRef ->
+            element = node, children = children.map { nodeRef ->
                 doc.getNode(nodeRef = nodeRef)
-            },
-            pushEvent = ::pushEvent
+            }, pushEvent = ::pushEvent
         )
-
-    fun initialiseDom(document: Document) {
-        this.doc = document
-    }
 
     private fun pushEvent(type: String, event: String, value: Any, target: Int? = null) {
         repository.pushEvent(type, event, value, target)

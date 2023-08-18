@@ -57,16 +57,18 @@ object ComposableNodeFactory {
     fun buildComposableTreeNode(
         element: Node.Element, children: List<Node>, pushEvent: PushEvent
     ): ComposableTreeNode {
+        val tag = element.tag()
+        val attrs = element.attributes()
         return ComposableTreeNode(
-            element.tag,
-            ComposableRegistry.getComponentFactory(element.tag)?.buildComposableView(
-                element.attributes,
+            tag,
+            ComposableRegistry.getComponentFactory(tag)?.buildComposableView(
+                attrs,
                 children,
                 pushEvent
             ) ?: run {
                 TextDtoFactory.buildComposableView(
-                    "${element.tag} not supported yet",
-                    element.attributes,
+                    "$tag not supported yet",
+                    attrs,
                 )
             }
         )
