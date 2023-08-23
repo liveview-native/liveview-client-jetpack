@@ -1,31 +1,43 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.OnChildren
 import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.domain.base.optional
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.lib.Attribute
 import org.phoenixframework.liveview.lib.Node
-import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class ColumnDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
     private val horizontalAlignment: Alignment.Horizontal = builder.horizontalAlignment
+    private val hasVerticalScroll = builder.hasVerticalScrolling
+    private val hasHorizontalScroll = builder.hasHorizontalScrolling
 
     @Composable
     override fun Compose(
         children: List<ComposableTreeNode>?, paddingValues: PaddingValues?, onChildren: OnChildren?
     ) {
         Column(
-            modifier = modifier.paddingIfNotNull(paddingValues),
+            modifier = modifier
+                .optional(
+                    hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
+                )
+                .optional(
+                    hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
+                ),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment
         ) {
@@ -89,6 +101,7 @@ object ColumnDtoFactory : ComposableViewFactory<ColumnDTO, ColumnDTO.Builder>() 
             "padding" -> builder.padding(attribute.value)
             "horizontalPadding" -> builder.horizontalPadding(attribute.value)
             "verticalPadding" -> builder.verticalPadding(attribute.value)
+            "scroll" -> builder.scrolling(attribute.value)
             else -> builder
         } as ColumnDTO.Builder
     }.build()

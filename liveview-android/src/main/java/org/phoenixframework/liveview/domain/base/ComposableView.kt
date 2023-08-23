@@ -25,6 +25,7 @@ import org.phoenixframework.liveview.lib.Node
 
 abstract class ComposableView(var modifier: Modifier = Modifier) {
     var text: String = ""
+
     @Composable
     abstract fun Compose(
         children: List<ComposableTreeNode>?, paddingValues: PaddingValues?, onChildren: OnChildren?
@@ -32,6 +33,9 @@ abstract class ComposableView(var modifier: Modifier = Modifier) {
 }
 
 abstract class ComposableBuilder {
+    var hasVerticalScrolling: Boolean = false
+    var hasHorizontalScrolling: Boolean = false
+
     var modifier: Modifier = Modifier
         private set
 
@@ -78,6 +82,13 @@ abstract class ComposableBuilder {
             width == "wrap" -> modifier.then(Modifier.wrapContentWidth())
             else -> modifier
         }
+    }
+
+    fun scrolling(scrolling: String) = apply {
+        val options = scrolling.split('|')
+        hasHorizontalScrolling = options.contains("horizontal")
+        hasVerticalScrolling = options.contains("vertical")
+        modifier
     }
 
     protected fun shapeFromString(shape: String): Shape = when {

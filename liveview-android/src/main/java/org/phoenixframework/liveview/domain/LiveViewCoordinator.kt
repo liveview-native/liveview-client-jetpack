@@ -180,9 +180,11 @@ class LiveViewCoordinator(url: String) : ViewModel() {
 
     private fun createComposableTreeNode(node: Node.Element, children: List<NodeRef>) =
         ComposableNodeFactory.buildComposableTreeNode(
-            element = node, children = children.map { nodeRef ->
+            element = node,
+            children = children.map { nodeRef ->
                 doc.getNode(nodeRef = nodeRef)
-            }, pushEvent = ::pushEvent
+            },
+            pushEvent = ::pushEvent,
         )
 
     private fun pushEvent(type: String, event: String, value: Any, target: Int? = null) {
