@@ -20,7 +20,7 @@ import java.net.ConnectException
 import java.util.Stack
 
 class LiveViewCoordinator(url: String) : ViewModel() {
-    private lateinit var doc: Document
+    private var doc: Document
     private val repository: Repository = Repository(baseUrl = url)
     private var lastRenderedMap: Map<String, Any?> = emptyMap()
 
