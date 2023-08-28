@@ -21,7 +21,7 @@ class SocketService(private val okHttpClient: OkHttpClient) {
         messageListener: (message: Message) -> Unit
     ) {
         phxSocket?.disconnect()
-        Log.d("TAG", "Connection to socket with params $phxLiveViewPayload")
+        Log.d(TAG, "Connection to socket with params $phxLiveViewPayload")
         setupPhxSocketConnection(phxLiveViewPayload, baseUrl = socketBase)
 
         setupPhoenixChannel(
@@ -60,24 +60,21 @@ class SocketService(private val okHttpClient: OkHttpClient) {
                 ?.apply {
                     join()
                         .receive("ok") { message: Message ->
-                            Log.d("SM JOIN OK", "CHAT ROOM LIVEVIEW JOINED")
-
+                            Log.d(TAG, "Channel::join::receive::ok")
                             messageListener(message)
                         }
                         .receive("error") {
-                            /* failed to join the chatroom */
-                            Log.d("SM JOIN FAIL", "CHAT ROOM LIVEVIEW ERROR")
-                            Log.e("ERROR", it.toString())
+                            Log.d(TAG, "Channel::join::receive::error->$it")
                         }
-                        .receive("response") { Log.d("RESPONSE", "CHAT ROOM RESPONSE") }
+                        .receive("response") {
+                            Log.d(TAG, "Channel::join::receive::response->$it")
+                        }
 
                     onMessage { message: Message ->
-                        Log.d("==> CHANNEL MESSAGE", message.toString())
+                        Log.d(TAG, "Channel::onMessage->$message")
 
                         when (message.event) {
                             "phx_reply" -> {
-                                Log.d("ON MESSAGE PAYLOAD", message.payload.toString())
-
                                 messageListener(message)
                             }
 
@@ -110,20 +107,19 @@ class SocketService(private val okHttpClient: OkHttpClient) {
             Socket(url = "${baseUrl}/live/websocket?$socketQueryParams", client = okHttpClient)
                 .apply {
                     // Listen to events on the Socket
-                    logger = { Log.d("PHX-SOCKET LOGGER TAG", it) }
+                    logger = { Log.d(TAG, it) }
 
-                    onError { error, response ->
-                        Log.e("ON ERROR", error.toString())
-                        Log.e("ON ERROR RESPONSE", error.toString())
+                    onOpen {
+                        Log.d(TAG, "Socket::onOpen")
+                        Log.d(TAG, "----- SOCKET OPENED -----")
                     }
 
-                    onOpen { Log.d("TAG", "----- SOCKET OPENED -----") }
+                    onClose {
+                        Log.d(TAG, "Socket::onClose")
+                    }
 
-                    onClose { Log.d("TAG", "Socket Closed") }
-
-                    onError { throwable, response ->
-                        Log.e("TAG", throwable.message.toString())
-
+                    onError { throwable, _ ->
+                        Log.e(TAG, "Socket::onError-->${throwable.message}")
                         throw throwable
                     }
                 }
@@ -131,5 +127,9 @@ class SocketService(private val okHttpClient: OkHttpClient) {
 
     fun pushEvent(event: String, payload: Payload) {
         channel?.push(event, payload)
+    }
+
+    companion object {
+        private const val TAG = "SocketService"
     }
 }

@@ -10,10 +10,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
-import org.phoenixframework.liveview.domain.base.OnChildren
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.lib.Attribute
@@ -30,14 +30,12 @@ class AsyncImageDTO private constructor(builder: Builder) :
 
     @Composable
     override fun Compose(
-        children: List<ComposableTreeNode>?,
+        children: ImmutableList<ComposableTreeNode>?,
         paddingValues: PaddingValues?,
-        onChildren: OnChildren?
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
-                .crossfade(crossFade).build(),
+            model = ImageRequest.Builder(LocalContext.current).data(imageUrl).crossfade(crossFade)
+                .build(),
             contentDescription = contentDescription,
             contentScale = contentScale,
             modifier = modifier
@@ -97,9 +95,7 @@ object AsyncImageDtoFactory : ComposableViewFactory<AsyncImageDTO, AsyncImageDTO
      * @return an `AsyncImageDTO` object based on the attributes and text of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<Attribute>,
-        children: List<Node>?,
-        pushEvent: PushEvent?
+        attributes: Array<Attribute>, children: List<Node>?, pushEvent: PushEvent?,
     ): AsyncImageDTO = attributes.fold(
         AsyncImageDTO.Builder().imageUrl(attributes.find { it.name == "url" }?.value ?: "")
     ) { builder, attribute ->

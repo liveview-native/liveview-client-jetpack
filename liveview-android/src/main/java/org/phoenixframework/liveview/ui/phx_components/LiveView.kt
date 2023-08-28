@@ -20,7 +20,7 @@ fun LiveView(liveViewCoordinator: LiveViewCoordinator) {
             color = MaterialTheme.colors.background
         ) {
             if (state.isNotEmpty()) {
-                PhxLiveView(liveViewState = state.peek())
+                PhxLiveView(node = state.peek())
             }
         }
     }

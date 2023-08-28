@@ -8,10 +8,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
-import org.phoenixframework.liveview.domain.base.OnChildren
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -26,7 +26,7 @@ class CardDTO private constructor(builder: Builder) : ComposableView(modifier = 
 
     @Composable
     override fun Compose(
-        children: List<ComposableTreeNode>?, paddingValues: PaddingValues?, onChildren: OnChildren?
+        children: ImmutableList<ComposableTreeNode>?, paddingValues: PaddingValues?
     ) {
         Card(
             modifier = modifier.paddingIfNotNull(paddingValues),
@@ -34,8 +34,8 @@ class CardDTO private constructor(builder: Builder) : ComposableView(modifier = 
             elevation = elevation,
             shape = shape,
         ) {
-            children?.forEach { node ->
-                onChildren?.invoke(node, paddingValues)
+            children?.forEach {
+                it.value.Compose(children = it.children, paddingValues = null)
             }
         }
     }

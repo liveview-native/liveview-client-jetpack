@@ -7,10 +7,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
-import org.phoenixframework.liveview.domain.base.OnChildren
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -32,9 +32,10 @@ class LazyColumnDTO private constructor(builder: Builder) :
 
     @Composable
     override fun Compose(
-        children: List<ComposableTreeNode>?, paddingValues: PaddingValues?, onChildren: OnChildren?
+        children: ImmutableList<ComposableTreeNode>?, paddingValues: PaddingValues?
     ) {
-        LazyColumn(modifier = modifier.paddingIfNotNull(paddingValues),
+        LazyColumn(
+            modifier = modifier.paddingIfNotNull(paddingValues),
             reverseLayout = reverseLayout,
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
@@ -47,8 +48,15 @@ class LazyColumnDTO private constructor(builder: Builder) :
             content = {
                 items(
                     children ?: emptyList(),
-                    key = { item -> item.id }) { item -> onChildren?.invoke(item, paddingValues) }
-            })
+                    key = { item -> item.id },
+                ) { item ->
+                    item.value.Compose(
+                        children = item.children,
+                        paddingValues = null
+                    )
+                }
+            },
+        )
     }
 
     class Builder : ComposableBuilder() {

@@ -9,10 +9,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
-import org.phoenixframework.liveview.domain.base.OnChildren
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.base.optional
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -28,7 +28,7 @@ class ColumnDTO private constructor(builder: Builder) :
 
     @Composable
     override fun Compose(
-        children: List<ComposableTreeNode>?, paddingValues: PaddingValues?, onChildren: OnChildren?
+        children: ImmutableList<ComposableTreeNode>?, paddingValues: PaddingValues?
     ) {
         Column(
             modifier = modifier
@@ -41,8 +41,8 @@ class ColumnDTO private constructor(builder: Builder) :
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment
         ) {
-            children?.forEach { node ->
-                onChildren?.invoke(node, paddingValues)
+            children?.forEach {
+                it.value.Compose(children = it.children, paddingValues = null)
             }
         }
     }

@@ -18,6 +18,7 @@ import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.lib.Node
+import org.phoenixframework.liveview.lib.NodeRef
 
 /**
  * A factory class that is used to create `ComposableTreeNode` objects that co-relate to composable
@@ -33,6 +34,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.card, CardDtoFactory)
             registerComponent(ComposableTypes.column, ColumnDtoFactory)
             registerComponent(ComposableTypes.icon, IconDtoFactory)
+            registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.lazyColumn, LazyColumnDtoFactory)
             registerComponent(ComposableTypes.lazyRow, LazyRowDtoFactory)
             registerComponent(ComposableTypes.row, RowDtoFactory)
@@ -42,9 +44,9 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
 
             // Specific for TopAppBar
-            registerComponent("Title", RowDtoFactory)
-            registerComponent("Action", IconButtonDtoFactory)
-            registerComponent("NavIcon", IconButtonDtoFactory)
+            registerComponent(TopAppBarDtoFactory.titleTag, RowDtoFactory)
+            registerComponent(TopAppBarDtoFactory.actionTag, IconButtonDtoFactory)
+            registerComponent(TopAppBarDtoFactory.navigationIconTag, IconButtonDtoFactory)
         }
     }
 
@@ -55,23 +57,20 @@ object ComposableNodeFactory {
      * @return a `ComposableTreeNode` object based on the input `Element` object
      */
     fun buildComposableTreeNode(
-        element: Node.Element, children: List<Node>, pushEvent: PushEvent
+        nodeRef: NodeRef, element: Node.Element, children: List<Node>, pushEvent: PushEvent,
     ): ComposableTreeNode {
         val tag = element.tag()
         val attrs = element.attributes()
-        return ComposableTreeNode(
-            tag,
+        return ComposableTreeNode(tag,
+            nodeRef,
             ComposableRegistry.getComponentFactory(tag)?.buildComposableView(
-                attrs,
-                children,
-                pushEvent
+                attrs, children, pushEvent
             ) ?: run {
                 TextDtoFactory.buildComposableView(
                     "$tag not supported yet",
                     attrs,
                 )
-            }
-        )
+            })
     }
 
     fun createEmptyNode(): ComposableView {

@@ -3,12 +3,13 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
-import org.phoenixframework.liveview.domain.base.OnChildren
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -22,18 +23,31 @@ class ScaffoldDTO private constructor(builder: Builder) :
 
     @Composable
     override fun Compose(
-        children: List<ComposableTreeNode>?, paddingValues: PaddingValues?, onChildren: OnChildren?
+        children: ImmutableList<ComposableTreeNode>?, paddingValues: PaddingValues?
     ) {
-        val topBar = children?.find { it.tag == ComposableTypes.topAppBar }
-        val body = children?.find { it.tag != ComposableTypes.topAppBar }
+        val topBar = remember(children) {
+            children?.find { it.tag == ComposableTypes.topAppBar }
+        }
+        val body = remember(children) {
+            children?.find { it.tag != ComposableTypes.topAppBar }
+        }
         Scaffold(
             modifier = modifier.paddingIfNotNull(paddingValues),
             backgroundColor = backgroundColor,
             topBar = {
-                topBar?.let { appBar -> onChildren?.invoke(appBar, null) }
-            }) { contentPaddingValues ->
-            body?.let { onChildren?.invoke(it, contentPaddingValues) }
-        }
+                topBar?.let { appBar ->
+                    appBar.value.Compose(children = appBar.children, paddingValues = null)
+                }
+            },
+            content = { contentPaddingValues ->
+                body?.let { content ->
+                    content.value.Compose(
+                        children = content.children,
+                        paddingValues = contentPaddingValues
+                    )
+                }
+            }
+        )
     }
 
     class Builder : ComposableBuilder() {
