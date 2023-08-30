@@ -8,15 +8,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import kotlinx.collections.immutable.ImmutableList
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.lib.Attribute
-import org.phoenixframework.liveview.lib.Node
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class CardDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
@@ -26,7 +26,9 @@ class CardDTO private constructor(builder: Builder) : ComposableView(modifier = 
 
     @Composable
     override fun Compose(
-        children: ImmutableList<ComposableTreeNode>?, paddingValues: PaddingValues?
+        composableNode: ComposableTreeNode?,
+        paddingValues: PaddingValues?,
+        pushEvent: PushEvent,
     ) {
         Card(
             modifier = modifier.paddingIfNotNull(paddingValues),
@@ -34,8 +36,8 @@ class CardDTO private constructor(builder: Builder) : ComposableView(modifier = 
             elevation = elevation,
             shape = shape,
         ) {
-            children?.forEach {
-                it.value.Compose(children = it.children, paddingValues = null)
+            composableNode?.children?.forEach {
+                PhxLiveView(it, paddingValues, pushEvent)
             }
         }
     }
@@ -73,7 +75,9 @@ object CardDtoFactory : ComposableViewFactory<CardDTO, CardDTO.Builder>() {
      * @return a `CardDTO` object based on the attributes of the input `Attributes` object
      **/
     override fun buildComposableView(
-        attributes: Array<Attribute>, children: List<Node>?, pushEvent: PushEvent?
+        attributes: List<CoreAttribute>,
+        children: List<CoreNodeElement>?,
+        pushEvent: PushEvent?,
     ): CardDTO = attributes.fold(CardDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             "shape" -> builder.shape(attribute.value)

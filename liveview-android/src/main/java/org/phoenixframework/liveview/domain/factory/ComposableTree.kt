@@ -1,15 +1,17 @@
 package org.phoenixframework.liveview.domain.factory
 
-import androidx.compose.runtime.Stable
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import org.phoenixframework.liveview.domain.base.ComposableView
-import org.phoenixframework.liveview.lib.NodeRef
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import java.util.UUID
 
-@Stable
-class ComposableTreeNode(val tag: String, val nodeRef: NodeRef?, val value: ComposableView) {
-    val id = UUID.randomUUID().toString()
+data class ComposableTreeNode(
+    var refId: Int,
+    val node: CoreNodeElement?,
+    val childrenNodes: ImmutableList<CoreNodeElement>?,
+    var text: String = "",
+    val id: String = UUID.randomUUID().toString()
+) {
     val children: ImmutableList<ComposableTreeNode>
         get() = _children.toImmutableList()
 

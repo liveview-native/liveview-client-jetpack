@@ -6,8 +6,9 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.actionTag
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.navigationIconTag
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.titleTag
@@ -17,43 +18,43 @@ import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.lib.Attribute
-import org.phoenixframework.liveview.lib.Node
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 class TopAppBarDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
 
     @Composable
     override fun Compose(
-        children: ImmutableList<ComposableTreeNode>?, paddingValues: PaddingValues?
+        composableNode: ComposableTreeNode?,
+        paddingValues: PaddingValues?,
+        pushEvent: PushEvent
     ) {
-        val title = remember(children) {
-            children?.find { it.tag == titleTag }
+        val title = remember(composableNode?.children) {
+            composableNode?.children?.find { it.node?.tag == titleTag }
         }
-        val actions = remember(children) {
-            children?.filter { it.tag == actionTag }?.toImmutableList()
+        val actions = remember(composableNode?.children) {
+            composableNode?.children?.filter { it.node?.tag == actionTag }?.toImmutableList()
         }
-        val navIcon = remember(children) {
-            children?.find { it.tag == navigationIconTag }
+        val navIcon = remember(composableNode?.children) {
+            composableNode?.children?.find { it.node?.tag == navigationIconTag }
         }
         TopAppBar(
             backgroundColor = Color.White,
             title = {
-                title?.let { it.value.Compose(children = it.children, paddingValues = null) }
+                title?.let {
+                    PhxLiveView(it, null, pushEvent)
+                }
             },
             navigationIcon = {
                 navIcon?.let {
                     Box {
-                        it.value.Compose(
-                            children = it.children,
-                            paddingValues = null
-                        )
+                        PhxLiveView(it, null, pushEvent)
                     }
                 }
             },
             actions = {
                 actions?.forEach {
-                    it.value.Compose(children = it.children, paddingValues = null)
+                    PhxLiveView(it, null, pushEvent)
                 }
             },
             modifier = modifier,
@@ -75,7 +76,9 @@ class TopAppBarDTO private constructor(builder: Builder) :
 
 object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopAppBarDTO.Builder>() {
     override fun buildComposableView(
-        attributes: Array<Attribute>, children: List<Node>?, pushEvent: PushEvent?
+        attributes: List<CoreAttribute>,
+        children: List<CoreNodeElement>?,
+        pushEvent: PushEvent?
     ): TopAppBarDTO {
         val builder = TopAppBarDTO.Builder()
 

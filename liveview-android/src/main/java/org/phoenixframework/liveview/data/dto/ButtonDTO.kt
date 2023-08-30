@@ -3,14 +3,14 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.Button
 import androidx.compose.runtime.Composable
-import kotlinx.collections.immutable.ImmutableList
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.lib.Attribute
-import org.phoenixframework.liveview.lib.Node
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class ButtonDTO private constructor(builder: Builder) :
@@ -19,15 +19,16 @@ class ButtonDTO private constructor(builder: Builder) :
 
     @Composable
     override fun Compose(
-        children: ImmutableList<ComposableTreeNode>?,
+        composableNode: ComposableTreeNode?,
         paddingValues: PaddingValues?,
+        pushEvent: PushEvent,
     ) {
         Button(
             modifier = modifier.paddingIfNotNull(paddingValues),
             onClick = onClick,
         ) {
-            children?.forEach {
-                it.value.Compose(children = it.children, paddingValues = null)
+            composableNode?.children?.forEach {
+                PhxLiveView(it, paddingValues, pushEvent)
             }
         }
     }
@@ -54,9 +55,9 @@ object ButtonDtoFactory : ComposableViewFactory<ButtonDTO, ButtonDTO.Builder>() 
      * @return a `ButtonDTO` object based on the attributes of the input `Attributes` object
      **/
     override fun buildComposableView(
-        attributes: Array<Attribute>,
-        children: List<Node>?,
-        pushEvent: PushEvent?
+        attributes: List<CoreAttribute>,
+        children: List<CoreNodeElement>?,
+        pushEvent: PushEvent?,
     ): ButtonDTO = attributes.fold(ButtonDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             //TODO Swift is using `phx-click`. Should Android use the same?

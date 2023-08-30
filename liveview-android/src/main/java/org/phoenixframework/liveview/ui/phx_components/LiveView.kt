@@ -20,7 +20,10 @@ fun LiveView(liveViewCoordinator: LiveViewCoordinator) {
             color = MaterialTheme.colors.background
         ) {
             if (state.isNotEmpty()) {
-                PhxLiveView(node = state.peek())
+                PhxLiveView(
+                    composableNode = state.peek().children.first(),
+                    pushEvent = liveViewCoordinator::pushEvent
+                )
             }
         }
     }

@@ -18,18 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import kotlinx.collections.immutable.ImmutableList
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.lib.Attribute
-import org.phoenixframework.liveview.lib.Node
 
 abstract class ComposableView(var modifier: Modifier = Modifier) {
-    var text: String = ""
 
     @Composable
     abstract fun Compose(
-        children: ImmutableList<ComposableTreeNode>?, paddingValues: PaddingValues?
+        composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     )
 }
 
@@ -102,8 +100,8 @@ abstract class ComposableBuilder {
 
 abstract class ComposableViewFactory<CV : ComposableView, CB : ComposableBuilder> {
     abstract fun buildComposableView(
-        attributes: Array<Attribute>,
-        children: List<Node>?,
+        attributes: List<CoreAttribute>,
+        children: List<CoreNodeElement>?,
         pushEvent: PushEvent?
     ): CV
 }

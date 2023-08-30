@@ -3,14 +3,14 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
-import kotlinx.collections.immutable.ImmutableList
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.lib.Attribute
-import org.phoenixframework.liveview.lib.Node
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 class IconButtonDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -19,11 +19,13 @@ class IconButtonDTO private constructor(builder: Builder) :
 
     @Composable
     override fun Compose(
-        children: ImmutableList<ComposableTreeNode>?, paddingValues: PaddingValues?
+        composableNode: ComposableTreeNode?,
+        paddingValues: PaddingValues?,
+        pushEvent: PushEvent,
     ) {
         IconButton(onClick = onClick, enabled = enabled) {
-            children?.forEach {
-                it.value.Compose(children = it.children, paddingValues = null)
+            composableNode?.children?.forEach {
+                PhxLiveView(it, paddingValues, pushEvent)
             }
         }
     }
@@ -46,7 +48,9 @@ class IconButtonDTO private constructor(builder: Builder) :
 
 object IconButtonDtoFactory : ComposableViewFactory<IconButtonDTO, IconButtonDTO.Builder>() {
     override fun buildComposableView(
-        attributes: Array<Attribute>, children: List<Node>?, pushEvent: PushEvent?
+        attributes: List<CoreAttribute>,
+        children: List<CoreNodeElement>?,
+        pushEvent: PushEvent?,
     ): IconButtonDTO = attributes.fold(
         IconButtonDTO.Builder()
     ) { builder, attribute ->

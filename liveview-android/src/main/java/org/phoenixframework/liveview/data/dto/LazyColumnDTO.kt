@@ -7,15 +7,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-import kotlinx.collections.immutable.ImmutableList
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.lib.Attribute
-import org.phoenixframework.liveview.lib.Node
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class LazyColumnDTO private constructor(builder: Builder) :
@@ -32,7 +32,9 @@ class LazyColumnDTO private constructor(builder: Builder) :
 
     @Composable
     override fun Compose(
-        children: ImmutableList<ComposableTreeNode>?, paddingValues: PaddingValues?
+        composableNode: ComposableTreeNode?,
+        paddingValues: PaddingValues?,
+        pushEvent: PushEvent,
     ) {
         LazyColumn(
             modifier = modifier.paddingIfNotNull(paddingValues),
@@ -47,13 +49,10 @@ class LazyColumnDTO private constructor(builder: Builder) :
             ),
             content = {
                 items(
-                    children ?: emptyList(),
+                    composableNode?.children ?: emptyList(),
                     key = { item -> item.id },
                 ) { item ->
-                    item.value.Compose(
-                        children = item.children,
-                        paddingValues = null
-                    )
+                    PhxLiveView(item, paddingValues, pushEvent)
                 }
             },
         )
@@ -143,7 +142,9 @@ class LazyColumnDTO private constructor(builder: Builder) :
 
 object LazyColumnDtoFactory : ComposableViewFactory<LazyColumnDTO, LazyColumnDTO.Builder>() {
     override fun buildComposableView(
-        attributes: Array<Attribute>, children: List<Node>?, pushEvent: PushEvent?
+        attributes: List<CoreAttribute>,
+        children: List<CoreNodeElement>?,
+        pushEvent: PushEvent?,
     ): LazyColumnDTO = attributes.fold(LazyColumnDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             "height" -> builder.height(attribute.value)

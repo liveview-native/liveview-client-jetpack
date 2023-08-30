@@ -9,15 +9,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import kotlinx.collections.immutable.ImmutableList
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.base.optional
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.lib.Attribute
-import org.phoenixframework.liveview.lib.Node
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class RowDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
@@ -28,8 +28,9 @@ class RowDTO private constructor(builder: Builder) : ComposableView(modifier = b
 
     @Composable
     override fun Compose(
-        children: ImmutableList<ComposableTreeNode>?,
+        composableNode: ComposableTreeNode?,
         paddingValues: PaddingValues?,
+        pushEvent: PushEvent
     ) {
         Row(
             modifier = modifier
@@ -43,8 +44,8 @@ class RowDTO private constructor(builder: Builder) : ComposableView(modifier = b
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment
         ) {
-            children?.forEach {
-                it.value.Compose(children = it.children, paddingValues = null)
+            composableNode?.children?.forEach {
+                PhxLiveView(it, paddingValues, pushEvent)
             }
         }
     }
@@ -88,8 +89,8 @@ object RowDtoFactory : ComposableViewFactory<RowDTO, RowDTO.Builder>() {
      * @return a `RowDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<Attribute>,
-        children: List<Node>?,
+        attributes: List<CoreAttribute>,
+        children: List<CoreNodeElement>?,
         pushEvent: PushEvent?
     ): RowDTO =
         attributes.fold(RowDTO.Builder()) { builder, attribute ->

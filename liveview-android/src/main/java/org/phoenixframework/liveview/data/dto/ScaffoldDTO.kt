@@ -5,7 +5,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import kotlinx.collections.immutable.ImmutableList
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -13,8 +14,7 @@ import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.lib.Attribute
-import org.phoenixframework.liveview.lib.Node
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class ScaffoldDTO private constructor(builder: Builder) :
@@ -23,28 +23,27 @@ class ScaffoldDTO private constructor(builder: Builder) :
 
     @Composable
     override fun Compose(
-        children: ImmutableList<ComposableTreeNode>?, paddingValues: PaddingValues?
+        composableNode: ComposableTreeNode?,
+        paddingValues: PaddingValues?,
+        pushEvent: PushEvent,
     ) {
-        val topBar = remember(children) {
-            children?.find { it.tag == ComposableTypes.topAppBar }
+        val topBar = remember(composableNode?.children) {
+            composableNode?.children?.find { it.node?.tag == ComposableTypes.topAppBar }
         }
-        val body = remember(children) {
-            children?.find { it.tag != ComposableTypes.topAppBar }
+        val body = remember(composableNode?.children) {
+            composableNode?.children?.find { it.node?.tag != ComposableTypes.topAppBar }
         }
         Scaffold(
             modifier = modifier.paddingIfNotNull(paddingValues),
             backgroundColor = backgroundColor,
             topBar = {
                 topBar?.let { appBar ->
-                    appBar.value.Compose(children = appBar.children, paddingValues = null)
+                    PhxLiveView(appBar, paddingValues, pushEvent)
                 }
             },
             content = { contentPaddingValues ->
                 body?.let { content ->
-                    content.value.Compose(
-                        children = content.children,
-                        paddingValues = contentPaddingValues
-                    )
+                    PhxLiveView(content, contentPaddingValues, pushEvent)
                 }
             }
         )
@@ -65,9 +64,9 @@ class ScaffoldDTO private constructor(builder: Builder) :
 
 object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, ScaffoldDTO.Builder>() {
     override fun buildComposableView(
-        attributes: Array<Attribute>,
-        children: List<Node>?,
-        pushEvent: PushEvent?
+        attributes: List<CoreAttribute>,
+        children: List<CoreNodeElement>?,
+        pushEvent: PushEvent?,
     ): ScaffoldDTO = attributes.fold(ScaffoldDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             "backgroundColor" -> builder.backgroundColor(attribute.value)

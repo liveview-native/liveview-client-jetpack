@@ -1,9 +1,11 @@
 package org.phoenixframework.liveview.domain.factory
 
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.CardDtoFactory
-import org.phoenixframework.liveview.data.dto.ColumnDTO
 import org.phoenixframework.liveview.data.dto.ColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.IconButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconDtoFactory
@@ -17,7 +19,6 @@ import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.lib.Node
 import org.phoenixframework.liveview.lib.NodeRef
 
 /**
@@ -57,12 +58,23 @@ object ComposableNodeFactory {
      * @return a `ComposableTreeNode` object based on the input `Element` object
      */
     fun buildComposableTreeNode(
-        nodeRef: NodeRef, element: Node.Element, children: List<Node>, pushEvent: PushEvent,
+        nodeRef: NodeRef, element: CoreNodeElement, children: List<CoreNodeElement>,
     ): ComposableTreeNode {
-        val tag = element.tag()
-        val attrs = element.attributes()
-        return ComposableTreeNode(tag,
-            nodeRef,
+        return ComposableTreeNode(
+            nodeRef.ref,
+            element,
+            children.toImmutableList(),
+        )
+    }
+
+    fun buildComposableView(
+        element: CoreNodeElement?,
+        children: ImmutableList<CoreNodeElement>?,
+        pushEvent: PushEvent,
+    ): ComposableView {
+        return if (element != null) {
+            val tag = element.tag
+            val attrs = element.attributes
             ComposableRegistry.getComponentFactory(tag)?.buildComposableView(
                 attrs, children, pushEvent
             ) ?: run {
@@ -70,10 +82,12 @@ object ComposableNodeFactory {
                     "$tag not supported yet",
                     attrs,
                 )
-            })
-    }
-
-    fun createEmptyNode(): ComposableView {
-        return ColumnDTO.Builder().build()
+            }
+        } else {
+            TextDtoFactory.buildComposableView(
+                "Invalid element",
+                emptyList(),
+            )
+        }
     }
 }

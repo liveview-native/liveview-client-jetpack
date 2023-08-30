@@ -12,15 +12,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import kotlinx.collections.immutable.ImmutableList
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.lib.Attribute
-import org.phoenixframework.liveview.lib.Node
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class TextDTO private constructor(private val builder: Builder) :
@@ -41,13 +40,12 @@ class TextDTO private constructor(private val builder: Builder) :
 
     @Composable
     override fun Compose(
-        children: ImmutableList<ComposableTreeNode>?, paddingValues: PaddingValues?
+        composableNode: ComposableTreeNode?,
+        paddingValues: PaddingValues?,
+        pushEvent: PushEvent,
     ) {
-        if (text.isEmpty() && builder.text.isNotEmpty()) {
-            text = builder.text
-        }
         Text(
-            text = text,
+            text = composableNode?.text ?: "",
             color = color,
             modifier = modifier.paddingIfNotNull(paddingValues),
             fontSize = fontSize,
@@ -262,7 +260,7 @@ class TextDTO private constructor(private val builder: Builder) :
 object TextDtoFactory : ComposableViewFactory<TextDTO, TextDTO.Builder>() {
     fun buildComposableView(
         text: String,
-        attributes: Array<Attribute>,
+        attributes: List<CoreAttribute>,
     ): TextDTO = textBuilder(attributes).text(text).build()
 
     /**
@@ -274,10 +272,12 @@ object TextDtoFactory : ComposableViewFactory<TextDTO, TextDTO.Builder>() {
      * @return a `TextDTO` object based on the attributes and text of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<Attribute>, children: List<Node>?, pushEvent: PushEvent?
+        attributes: List<CoreAttribute>,
+        children: List<CoreNodeElement>?,
+        pushEvent: PushEvent?
     ): TextDTO = textBuilder(attributes).build()
 
-    private fun textBuilder(attributes: Array<Attribute>): TextDTO.Builder =
+    private fun textBuilder(attributes: List<CoreAttribute>): TextDTO.Builder =
         attributes.fold(TextDTO.Builder()) { builder, attribute ->
             when (attribute.name) {
                 "text" -> builder.text(attribute.value)

@@ -7,15 +7,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import kotlinx.collections.immutable.ImmutableList
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.lib.Attribute
-import org.phoenixframework.liveview.lib.Node
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class IconDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
@@ -25,7 +24,9 @@ class IconDTO private constructor(builder: Builder) : ComposableView(modifier = 
 
     @Composable
     override fun Compose(
-        children: ImmutableList<ComposableTreeNode>?, paddingValues: PaddingValues?
+        composableNode: ComposableTreeNode?,
+        paddingValues: PaddingValues?,
+        pushEvent: PushEvent,
     ) {
         imageVector?.let { imageVector ->
             Icon(
@@ -60,7 +61,9 @@ class IconDTO private constructor(builder: Builder) : ComposableView(modifier = 
 
 object IconDtoFactory : ComposableViewFactory<IconDTO, IconDTO.Builder>() {
     override fun buildComposableView(
-        attributes: Array<Attribute>, children: List<Node>?, pushEvent: PushEvent?
+        attributes: List<CoreAttribute>,
+        children: List<CoreNodeElement>?,
+        pushEvent: PushEvent?,
     ): IconDTO = attributes.fold(
         IconDTO.Builder().imageVector(attributes.find { it.name == "imageVector" }?.value ?: "")
     ) { builder, attribute ->
