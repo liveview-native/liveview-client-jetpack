@@ -79,7 +79,7 @@ class LiveViewCoordinator(url: String) : ViewModel() {
             newMessage
         }
         val originalRenderDom = domDiffList["s"] as List<String>
-        parseTemplate(originalRenderDom.joinToString(), reRender)
+        parseTemplate(originalRenderDom.joinToString(""), reRender)
     }
 
     private fun parseTemplate(originalRenderDom: String, reRender: Boolean) {
