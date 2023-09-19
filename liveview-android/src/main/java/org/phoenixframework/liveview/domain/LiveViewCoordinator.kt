@@ -82,9 +82,9 @@ class LiveViewCoordinator(url: String) : ViewModel() {
         parseTemplate(originalRenderDom.joinToString(""), reRender)
     }
 
-    private fun parseTemplate(originalRenderDom: String, reRender: Boolean) {
+    private fun parseTemplate(s: String, reRender: Boolean) {
         val currentDom = ComposableTreeNode(0, null, null)
-        val parsedDocument = Document.parse(originalRenderDom)
+        val parsedDocument = Document.parse(s)
         doc.merge(parsedDocument, object : Document.Companion.Handler() {
             override fun onHandle(
                 context: Document,
@@ -252,6 +252,8 @@ class LiveViewCoordinator(url: String) : ViewModel() {
 
         val stateMap = mutableMapOf<Int, MutableStateFlow<ComposableTreeNode?>>()
 
+        // TODO This is a temporary solution for node updates.
+        // TODO As soon Core implement the new diff mechanism, this approach should be re-evaluated.
         fun getNodeState(composableTreeNode: ComposableTreeNode?): StateFlow<ComposableTreeNode?> {
             val refId = composableTreeNode?.refId
             if (refId != null && !stateMap.containsKey(refId)) {
