@@ -7,16 +7,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.domain.base.ComposableViewFactory
+import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class LazyRowDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
-    private var horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
-    private var verticalAlignment: Alignment.Vertical = builder.verticalAlignment
+    private val horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
+    private val verticalAlignment: Alignment.Vertical = builder.verticalAlignment
 
     // content padding is a pair of pairs,
     // the first pair is the horizontal padding,
@@ -26,10 +31,10 @@ class LazyRowDTO private constructor(builder: Builder) :
     private val reverseLayout: Boolean = builder.reverseLayout
 
     @Composable
-    fun ComposeLazyItems(
-        items: MutableList<ComposableTreeNode>,
+    override fun Compose(
+        composableNode: ComposableTreeNode?,
         paddingValues: PaddingValues?,
-        drawContent: @Composable (node: ComposableTreeNode) -> Unit
+        pushEvent: PushEvent,
     ) {
         LazyRow(
             modifier = modifier.paddingIfNotNull(paddingValues),
@@ -43,8 +48,13 @@ class LazyRowDTO private constructor(builder: Builder) :
                 contentPadding.second.second.dp
             ),
             content = {
-                items(items, key = { item -> item.id }) { item -> drawContent(item) }
-            }
+                items(
+                    composableNode?.children ?: emptyList(),
+                    key = { item -> item.id },
+                ) { item ->
+                    PhxLiveView(item, paddingValues, pushEvent)
+                }
+            },
         )
     }
 
@@ -63,9 +73,9 @@ class LazyRowDTO private constructor(builder: Builder) :
         fun horizontalArrangement(horizontalArrangement: String) = apply {
             if (horizontalArrangement.isNotEmpty()) {
                 this.horizontalArrangement = when (horizontalArrangement) {
-                    "spaced-evenly" -> Arrangement.SpaceEvenly
-                    "space-around" -> Arrangement.SpaceAround
-                    "space-between" -> Arrangement.SpaceBetween
+                    "spacedEvenly" -> Arrangement.SpaceEvenly
+                    "spaceAround" -> Arrangement.SpaceAround
+                    "spaceBetween" -> Arrangement.SpaceBetween
                     "start" -> Arrangement.Start
                     "end" -> Arrangement.End
                     else -> if (horizontalArrangement.isNotEmptyAndIsDigitsOnly()) {
@@ -132,22 +142,38 @@ class LazyRowDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun size(size: String): Builder = apply { super.size(size) }
-
-        override fun padding(padding: String): Builder = apply { super.padding(padding) }
-
-        override fun verticalPadding(padding: String): Builder = apply {
-            super.verticalPadding(padding)
-        }
-
-        override fun horizontalPadding(padding: String): Builder = apply {
-            super.horizontalPadding(padding)
-        }
-
-        override fun height(height: String): Builder = apply { super.height(height) }
-
-        override fun width(width: String): Builder = apply { super.width(width) }
-
         fun build() = LazyRowDTO(this)
     }
+}
+
+object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO, LazyRowDTO.Builder>() {
+    override fun buildComposableView(
+        attributes: List<CoreAttribute>,
+        children: List<CoreNodeElement>?,
+        pushEvent: PushEvent?,
+    ): LazyRowDTO =
+        attributes.fold(LazyRowDTO.Builder()) { builder, attribute ->
+            when (attribute.name) {
+                "height" -> builder.height(attribute.value)
+                "horizontalArrangement" -> builder.horizontalArrangement(
+                    horizontalArrangement = attribute.value
+                )
+
+                "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                "itemBottomPadding" -> builder.bottomPadding(attribute.value)
+                "itemHorizontalPadding" -> builder.horizontalPadding(attribute.value)
+                "itemLeftPadding" -> builder.leftPadding(attribute.value)
+                "itemPadding" -> builder.lazyRowItemPadding(attribute.value)
+                "itemRightPadding" -> builder.rightPadding(attribute.value)
+                "itemTopPadding" -> builder.topPadding(attribute.value)
+                "itemVerticalPadding" -> builder.verticalPadding(attribute.value)
+                "padding" -> builder.padding(attribute.value)
+                "reverseLayout" -> builder.reverseLayout(attribute.value)
+                "size" -> builder.size(attribute.value)
+                "verticalAlignment" -> builder.verticalAlignment(verticalAlignment = attribute.value)
+                "verticalPadding" -> builder.verticalPadding(attribute.value)
+                "width" -> builder.width(attribute.value)
+                else -> builder
+            } as LazyRowDTO.Builder
+        }.build()
 }

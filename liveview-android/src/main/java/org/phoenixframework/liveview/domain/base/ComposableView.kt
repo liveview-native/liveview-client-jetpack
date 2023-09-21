@@ -1,15 +1,40 @@
 package org.phoenixframework.liveview.domain.base
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
 abstract class ComposableView(var modifier: Modifier = Modifier) {
-    var text: String = ""
+
+    @Composable
+    abstract fun Compose(
+        composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
+    )
 }
 
 abstract class ComposableBuilder {
+    var hasVerticalScrolling: Boolean = false
+    var hasHorizontalScrolling: Boolean = false
+
     var modifier: Modifier = Modifier
         private set
 
@@ -57,4 +82,26 @@ abstract class ComposableBuilder {
             else -> modifier
         }
     }
+
+    fun scrolling(scrolling: String) = apply {
+        val options = scrolling.split('|')
+        hasHorizontalScrolling = options.contains("horizontal")
+        hasVerticalScrolling = options.contains("vertical")
+        modifier
+    }
+
+    protected fun shapeFromString(shape: String): Shape = when {
+        shape.isNotEmptyAndIsDigitsOnly() -> RoundedCornerShape(shape.toInt().dp)
+        shape.isNotEmpty() && shape == "circle" -> CircleShape
+        shape.isNotEmpty() && shape == "rectangle" -> RectangleShape
+        else -> RoundedCornerShape(0.dp)
+    }
+}
+
+abstract class ComposableViewFactory<CV : ComposableView, CB : ComposableBuilder> {
+    abstract fun buildComposableView(
+        attributes: List<CoreAttribute>,
+        children: List<CoreNodeElement>?,
+        pushEvent: PushEvent?
+    ): CV
 }

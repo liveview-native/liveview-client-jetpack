@@ -3,42 +3,45 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.Composable
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.domain.base.ComposableViewFactory
+import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class SpacerDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     @Composable
-    fun Compose(paddingValues: PaddingValues?) {
+    override fun Compose(
+        composableNode: ComposableTreeNode?,
+        paddingValues: PaddingValues?,
+        pushEvent: PushEvent
+    ) {
         Spacer(modifier = modifier.paddingIfNotNull(paddingValues))
     }
 
     class Builder : ComposableBuilder() {
-        override fun size(size: String): Builder = apply {
-            super.size(size)
-        }
-
-        override fun padding(padding: String): Builder = apply {
-            super.padding(padding)
-        }
-
-        override fun verticalPadding(padding: String): Builder = apply {
-            super.verticalPadding(padding)
-        }
-
-        override fun horizontalPadding(padding: String): Builder = apply {
-            super.horizontalPadding(padding)
-        }
-
-        override fun height(height: String): Builder = apply {
-            super.height(height)
-        }
-
-        override fun width(width: String): Builder = apply {
-            super.width(width)
-        }
-
         fun build() = SpacerDTO(this)
     }
+}
+
+object SpacerDtoFactory : ComposableViewFactory<SpacerDTO, SpacerDTO.Builder>() {
+    override fun buildComposableView(
+        attributes: List<CoreAttribute>,
+        children: List<CoreNodeElement>?,
+        pushEvent: PushEvent?
+    ): SpacerDTO = attributes.fold(SpacerDTO.Builder()) { builder, attribute ->
+        when (attribute.name) {
+            "size" -> builder.size(attribute.value)
+            "padding" -> builder.padding(attribute.value)
+            "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+            "verticalPadding" -> builder.verticalPadding(attribute.value)
+            "height" -> builder.height(attribute.value)
+            "width" -> builder.width(attribute.value)
+            else -> builder
+        } as SpacerDTO.Builder
+    }.build()
 }

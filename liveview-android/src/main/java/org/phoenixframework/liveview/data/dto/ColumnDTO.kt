@@ -1,27 +1,51 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
-import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
+import org.phoenixframework.liveview.domain.base.ComposableViewFactory
+import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.domain.base.optional
+import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 class ColumnDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
-    var verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
-    var horizontalAlignment: Alignment.Horizontal = builder.horizontalAlignment
+    private val verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
+    private val horizontalAlignment: Alignment.Horizontal = builder.horizontalAlignment
+    private val hasVerticalScroll = builder.hasVerticalScrolling
+    private val hasHorizontalScroll = builder.hasHorizontalScrolling
 
     @Composable
-    fun Compose(paddingValues: PaddingValues?, content: @Composable () -> Unit) {
+    override fun Compose(
+        composableNode: ComposableTreeNode?,
+        paddingValues: PaddingValues?,
+        pushEvent: PushEvent,
+    ) {
         Column(
-            modifier = modifier.paddingIfNotNull(paddingValues),
+            modifier = modifier
+                .optional(
+                    hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
+                )
+                .optional(
+                    hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
+                ),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment
         ) {
-            content()
+            composableNode?.children?.forEach {
+                PhxLiveView(it, paddingValues, pushEvent)
+            }
         }
     }
 
@@ -32,9 +56,9 @@ class ColumnDTO private constructor(builder: Builder) :
         fun verticalArrangement(verticalArrangement: String) = apply {
             this.verticalArrangement = when (verticalArrangement) {
                 "top" -> Arrangement.Top
-                "spaced-evenly" -> Arrangement.SpaceEvenly
-                "space-around" -> Arrangement.SpaceAround
-                "space-between" -> Arrangement.SpaceBetween
+                "spacedEvenly" -> Arrangement.SpaceEvenly
+                "spaceAround" -> Arrangement.SpaceAround
+                "spaceBetween" -> Arrangement.SpaceBetween
                 "bottom" -> Arrangement.Bottom
                 else -> Arrangement.Center
             }
@@ -48,33 +72,39 @@ class ColumnDTO private constructor(builder: Builder) :
                 "end" -> Alignment.End
                 else -> Alignment.Start
             }
-
-        }
-
-        override fun size(size: String): Builder = apply {
-            super.size(size)
-        }
-
-        override fun padding(padding: String): Builder = apply {
-            super.padding(padding)
-        }
-
-        override fun verticalPadding(padding: String): Builder = apply {
-            super.verticalPadding(padding)
-        }
-
-        override fun horizontalPadding(padding: String): Builder = apply {
-            super.horizontalPadding(padding)
-        }
-
-        override fun height(height: String): Builder = apply {
-            super.height(height)
-        }
-
-        override fun width(width: String): Builder = apply {
-            super.width(width)
         }
 
         fun build(): ColumnDTO = ColumnDTO(this)
     }
+}
+
+object ColumnDtoFactory : ComposableViewFactory<ColumnDTO, ColumnDTO.Builder>() {
+    /**
+     * Creates a `ColumnDTO` object based on the attributes of the input `Attributes` object.
+     * Column co-relates to the Column composable
+     * @param attributes the `Attributes` object to create the `ColumnDTO` object from
+     * @return a `ColumnDTO` object based on the attributes of the input `Attributes` object
+     */
+    override fun buildComposableView(
+        attributes: List<CoreAttribute>, children: List<CoreNodeElement>?, pushEvent: PushEvent?
+    ): ColumnDTO = attributes.fold(ColumnDTO.Builder()) { builder, attribute ->
+        when (attribute.name) {
+            "verticalArrangement" -> {
+                builder.verticalArrangement(attribute.value)
+            }
+
+            "horizontalAlignment" -> {
+                builder.horizontalAlignment(attribute.value)
+            }
+
+            "size" -> builder.size(attribute.value)
+            "height" -> builder.height(attribute.value)
+            "width" -> builder.width(attribute.value)
+            "padding" -> builder.padding(attribute.value)
+            "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+            "verticalPadding" -> builder.verticalPadding(attribute.value)
+            "scroll" -> builder.scrolling(attribute.value)
+            else -> builder
+        } as ColumnDTO.Builder
+    }.build()
 }
