@@ -1,7 +1,5 @@
 package org.phoenixframework.liveview.domain.factory
 
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
@@ -64,16 +62,17 @@ object ComposableNodeFactory {
         children: List<CoreNodeElement>,
     ): ComposableTreeNode {
         return ComposableTreeNode(
-            screenId,
-            nodeRef.ref,
-            element,
-            children.toImmutableList(),
+            screenId = screenId,
+            refId = nodeRef.ref,
+            node = element,
+            id = "${screenId}_${nodeRef.ref}",
+            coreChildrenNodes = children
         )
     }
 
     fun buildComposableView(
         element: CoreNodeElement?,
-        children: ImmutableList<CoreNodeElement>?,
+        children: List<CoreNodeElement>?,
         pushEvent: PushEvent,
     ): ComposableView {
         return if (element != null) {

@@ -64,11 +64,11 @@ dependencies {
 
     api "com.github.dsrees:JavaPhoenixClient:$java_phoenix_client_version"
     api "com.google.guava:guava:$guava_version"
-    api "com.github.liveview-native:liveview-native-core-jetpack:$liveview_native_core_jetpack_version"
+    //api "com.github.liveview-native:liveview-native-core-jetpack:$liveview_native_core_jetpack_version"
+    api files("/Users/nelson.glauber/dockyard/code/liveview-native-core-jetpack/core/build/outputs/aar/core-debug.aar")
 
     api "org.apache.commons:commons-math3:$commons_math_version"
     api "org.apache.commons:commons-text:$commons_text_version"
-    api "org.jetbrains.kotlinx:kotlinx-collections-immutable:$kotlin_immutable_collections_version"
     api "org.jsoup:jsoup:$jsoup_version"
 
     api "io.coil-kt:coil:$coil_version"

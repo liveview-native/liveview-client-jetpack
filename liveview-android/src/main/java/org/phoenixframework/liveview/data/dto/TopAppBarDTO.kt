@@ -10,7 +10,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import kotlinx.collections.immutable.toImmutableList
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.actionTag
@@ -42,13 +41,13 @@ class TopAppBarDTO private constructor(builder: Builder) :
             composableNode?.children?.find { it.node?.tag == titleTag }
         }
         val actions = remember(composableNode?.children) {
-            composableNode?.children?.filter { it.node?.tag == actionTag }?.toImmutableList()
+            composableNode?.children?.filter { it.node?.tag == actionTag }
         }
         val navIcon = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.tag == navigationIconTag }
         }
         TopAppBar(
-            colors = getTopAppBarColors(colors = colors) ?: TopAppBarDefaults.topAppBarColors(),
+            colors = getTopAppBarColors(colors = colors),
             title = {
                 title?.let {
                     PhxLiveView(it, null, pushEvent)
@@ -88,7 +87,7 @@ class TopAppBarDTO private constructor(builder: Builder) :
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun getTopAppBarColors(colors: Map<String, String>?): TopAppBarColors? {
+    private fun getTopAppBarColors(colors: Map<String, String>?): TopAppBarColors {
         val defaultColors = TopAppBarDefaults.topAppBarColors()
         return if (colors == null) {
             defaultColors

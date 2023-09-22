@@ -8,7 +8,7 @@ import org.phoenixframework.liveview.lib.Node
  * It stores data from `Node.Element` class in order to avoid to deal native objects.
  */
 @Experimental
-data class CoreNodeElement(
+data class CoreNodeElement internal constructor(
     val tag: String,
     val namespace: String,
     val attributes: List<CoreAttribute>
@@ -31,5 +31,18 @@ data class CoreNodeElement(
                     CoreNodeElement("", "", emptyList())
             }
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return super.equals(other) && attributes.toTypedArray().contentDeepEquals(
+            (other as CoreNodeElement).attributes.toTypedArray()
+        )
+    }
+
+    override fun hashCode(): Int {
+        var result = tag.hashCode()
+        result = 31 * result + namespace.hashCode()
+        result = 31 * result + attributes.hashCode()
+        return result
     }
 }

@@ -1,20 +1,18 @@
 package org.phoenixframework.liveview.domain.factory
 
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import java.util.UUID
 
 data class ComposableTreeNode(
     val screenId: String,
-    var refId: Int,
+    val refId: Int,
     val node: CoreNodeElement?,
-    val childrenNodes: ImmutableList<CoreNodeElement>?,
     var text: String = "",
-    val id: String = UUID.randomUUID().toString()
+    val id: String = UUID.randomUUID().toString(),
+    val coreChildrenNodes: List<CoreNodeElement> = emptyList(),
 ) {
-    val children: ImmutableList<ComposableTreeNode>
-        get() = _children.toImmutableList()
+    val children: List<ComposableTreeNode>
+        get() = _children
 
     private val _children: MutableList<ComposableTreeNode> = mutableListOf()
 

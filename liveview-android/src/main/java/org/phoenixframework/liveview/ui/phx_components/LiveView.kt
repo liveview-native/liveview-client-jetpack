@@ -94,10 +94,10 @@ private fun NavDestination(
             )
         }
     )
-    val state by liveViewCoordinator.backStack.collectAsState()
-    if (state.isNotEmpty()) {
+    val state by liveViewCoordinator.composableTree.collectAsState()
+    if (state.children.isNotEmpty()) {
         PhxLiveView(
-            composableNode = state.peek().children.first(),
+            composableNode = state.children.first(),
             pushEvent = liveViewCoordinator::pushEvent
         )
     }

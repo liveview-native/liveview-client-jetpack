@@ -22,7 +22,7 @@ import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
-abstract class ComposableView(var modifier: Modifier = Modifier) {
+abstract class ComposableView(val modifier: Modifier = Modifier) {
 
     @Composable
     abstract fun Compose(
