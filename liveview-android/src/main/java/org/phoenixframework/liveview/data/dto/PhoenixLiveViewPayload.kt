@@ -1,8 +1,8 @@
 package org.phoenixframework.liveview.data.dto
 
 data class PhoenixLiveViewPayload(
-    var dataPhxSession: String? = null,
-    var dataPhxStatic: String? = null,
-    var phxId: String? = null,
-    var _csrfToken: String? = null
+    val dataPhxSession: String? = null,
+    val dataPhxStatic: String? = null,
+    val phxId: String? = null,
+    val _csrfToken: String? = null
 )

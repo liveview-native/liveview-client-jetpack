@@ -6,6 +6,7 @@ import org.phoenixframework.liveview.data.core.CoreNodeElement
 import java.util.UUID
 
 data class ComposableTreeNode(
+    val screenId: String,
     var refId: Int,
     val node: CoreNodeElement?,
     val childrenNodes: ImmutableList<CoreNodeElement>?,
