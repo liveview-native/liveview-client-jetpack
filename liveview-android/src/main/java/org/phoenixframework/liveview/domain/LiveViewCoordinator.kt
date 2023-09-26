@@ -24,7 +24,6 @@ import java.net.ConnectException
 import java.util.Stack
 
 class LiveViewCoordinator(
-    private val screenId: String,
     private val httpBaseUrl: String,
     private val wsBaseUrl: String,
     private val onNavigate: (String) -> Unit,
@@ -38,6 +37,9 @@ class LiveViewCoordinator(
     //TODO Is this stack necessary?
     private val _backStack = MutableStateFlow<Stack<ComposableTreeNode>>(Stack())
     val backStack = _backStack.asStateFlow()
+
+    private val screenId: String
+        get() = this.toString()
 
     fun joinChannel() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -286,6 +288,7 @@ class LiveViewCoordinator(
     override fun onCleared() {
         super.onCleared()
         repository.closeChannel()
+        deleteNodeStateByScreenId(screenId)
     }
 
     companion object {
@@ -299,10 +302,17 @@ class LiveViewCoordinator(
         // TODO As soon Core implement the new diff mechanism, this approach should be re-evaluated.
         fun getNodeState(composableTreeNode: ComposableTreeNode?): StateFlow<ComposableTreeNode?> {
             val key = stateKey(composableTreeNode?.screenId, composableTreeNode?.refId)
+            Log.d(TAG, key)
             if (!stateMap.containsKey(key)) {
                 stateMap[key] = MutableStateFlow(composableTreeNode)
             }
             return stateMap[key]!!
+        }
+
+        private fun deleteNodeStateByScreenId(screenId: String) {
+            stateMap.filter { it.key.startsWith(screenId) }.keys.forEach {
+                stateMap.remove(it)
+            }
         }
     }
 }

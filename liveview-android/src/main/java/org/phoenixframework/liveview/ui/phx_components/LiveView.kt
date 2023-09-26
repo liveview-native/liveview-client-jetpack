@@ -69,7 +69,6 @@ private fun NavDestination(
         viewModelStoreOwner = backStackEntry,
         initializer = {
             LiveViewCoordinator(
-                screenId = route ?: "/",
                 httpBaseUrl = httpUrl,
                 wsBaseUrl = webSocketUrl,
                 onNavigate = onNavigate
