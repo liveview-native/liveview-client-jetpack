@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.ui.phx_components
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -8,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
@@ -24,11 +26,14 @@ private const val ARG_ROUTE = "route"
 
 @Composable
 fun LiveView(
-    httpBaseUrl: String,
-    wsBaseUrl: String
+    url: String,
 ) {
+    // The WebSocket URL is the same of the HTTP URL, so we just copy the HTTP URL changing the schema (protocol)
+    val webSocketBaseUrl = remember(url) {
+        Uri.parse(url).buildUpon().scheme("ws").build().toString()
+    }
+
     LiveViewTestTheme {
-        // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
@@ -43,8 +48,8 @@ fun LiveView(
                 ) { backStackEntry ->
                     NavDestination(
                         backStackEntry = backStackEntry,
-                        httpBaseUrl = httpBaseUrl,
-                        wsBaseUrl = wsBaseUrl,
+                        httpBaseUrl = url,
+                        wsBaseUrl = webSocketBaseUrl,
                         onNavigate = { route ->
                             navController.navigate("$PHX_LIVE_VIEW_ROUTE?$ARG_ROUTE=$route")
                         }

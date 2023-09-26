@@ -10,10 +10,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            LiveView(
-                "http://10.0.2.2:4000",
-                "ws://10.0.2.2:4000"
-            )
+            LiveView(url = "http://10.0.2.2:4000")
         }
     }
 }

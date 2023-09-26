@@ -302,7 +302,6 @@ class LiveViewCoordinator(
         // TODO As soon Core implement the new diff mechanism, this approach should be re-evaluated.
         fun getNodeState(composableTreeNode: ComposableTreeNode?): StateFlow<ComposableTreeNode?> {
             val key = stateKey(composableTreeNode?.screenId, composableTreeNode?.refId)
-            Log.d(TAG, key)
             if (!stateMap.containsKey(key)) {
                 stateMap[key] = MutableStateFlow(composableTreeNode)
             }
