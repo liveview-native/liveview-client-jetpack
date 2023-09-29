@@ -2,7 +2,10 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -10,19 +13,21 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
+import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.privateField
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class CardDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
     private val shape: Shape = builder.shape
-    private val backgroundColor: Color = builder.backgroundColor
-    private val elevation: Dp = builder.elevation
+    private val colors: Map<String, String>? = builder.cardColors
+    private val elevation: Map<String, String>? = builder.elevation
 
     @Composable
     override fun Compose(
@@ -32,34 +37,97 @@ class CardDTO private constructor(builder: Builder) : ComposableView(modifier = 
     ) {
         Card(
             modifier = modifier.paddingIfNotNull(paddingValues),
-            backgroundColor = backgroundColor,
-            elevation = elevation,
             shape = shape,
+            colors = getCardColors(colors),
+            elevation = getCardElevation(elevation),
         ) {
             composableNode?.children?.forEach {
-                PhxLiveView(it, paddingValues, pushEvent)
+                PhxLiveView(it, null, pushEvent)
             }
+        }
+    }
+
+    @Composable
+    private fun getCardColors(cardColors: Map<String, String>?): CardColors {
+        val defaultValue = CardDefaults.cardColors()
+        return if (cardColors == null) {
+            defaultValue
+        } else {
+            CardDefaults.cardColors(
+                containerColor = cardColors["containerColor"]?.toColor()
+                    ?: Color(defaultValue.privateField("containerColor")),
+                contentColor = cardColors["contentColor"]?.toColor()
+                    ?: Color(defaultValue.privateField("contentColor")),
+                disabledContainerColor = cardColors["disabledContainerColor"]?.toColor()
+                    ?: Color(defaultValue.privateField("disabledContainerColor")),
+                disabledContentColor = cardColors["disabledContentColor"]?.toColor()
+                    ?: Color(defaultValue.privateField("disabledContentColor")),
+            )
+        }
+    }
+
+    @Composable
+    private fun getCardElevation(elevation: Map<String, String>?): CardElevation {
+        val defaultValue = CardDefaults.cardElevation()
+        return if (elevation == null) {
+            defaultValue
+        } else {
+            CardDefaults.cardElevation(
+                defaultElevation = elevation["defaultElevation"]?.toIntOrNull()?.dp
+                    ?: Dp(defaultValue.privateField("defaultElevation")),
+                pressedElevation = elevation["pressedElevation"]?.toIntOrNull()?.dp
+                    ?: Dp(defaultValue.privateField("pressedElevation")),
+                focusedElevation = elevation["focusedElevation"]?.toIntOrNull()?.dp
+                    ?: Dp(defaultValue.privateField("focusedElevation")),
+                hoveredElevation = elevation["hoveredElevation"]?.toIntOrNull()?.dp
+                    ?: Dp(defaultValue.privateField("hoveredElevation")),
+                draggedElevation = elevation["draggedElevation"]?.toIntOrNull()?.dp
+                    ?: Dp(defaultValue.privateField("draggedElevation")),
+                disabledElevation = elevation["disabledElevation"]?.toIntOrNull()?.dp ?: Dp(
+                    defaultValue.privateField("disabledElevation")
+                ),
+            )
         }
     }
 
     class Builder : ComposableBuilder() {
         var shape: Shape = RoundedCornerShape(0.dp)
-        var backgroundColor: Color = Color.White
-        var elevation: Dp = 1.dp
+        var cardColors: Map<String, String>? = null
+        var elevation: Map<String, String>? = null
 
         fun shape(shape: String) = apply {
             this.shape = shapeFromString(shape)
         }
 
-        fun backgroundColor(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.backgroundColor = Color(java.lang.Long.decode(color))
+        /**
+         * Set Card colors.
+         *
+         * <Card ...
+         *   colors="{'containerColor': '#FFFF0000', 'contentColor': '#FF00FF00'}">
+         */
+        fun cardColors(colors: String) = apply {
+            if (colors.isNotEmpty()) {
+                try {
+                    this.cardColors = JsonParser.parse(colors)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
 
-        fun elevation(elevation: String) = apply {
-            if (elevation.isNotEmptyAndIsDigitsOnly()) {
-                this.elevation = (elevation.toInt()).dp
+        /**
+         * Set Card elevations.
+         *
+         * <Card ...
+         *   elevation="{'defaultElevation': '10', 'pressedElevation': '5'}">
+         */
+        fun elevation(elevations: String) = apply {
+            if (elevations.isNotEmpty()) {
+                try {
+                    this.elevation = JsonParser.parse(elevations)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
 
@@ -81,7 +149,7 @@ object CardDtoFactory : ComposableViewFactory<CardDTO, CardDTO.Builder>() {
     ): CardDTO = attributes.fold(CardDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             "shape" -> builder.shape(attribute.value)
-            "backgroundColor" -> builder.backgroundColor(attribute.value)
+            "colors" -> builder.cardColors(attribute.value)
             "elevation" -> builder.elevation(attribute.value)
             "size" -> builder.size(attribute.value)
             "height" -> builder.height(attribute.value)
@@ -89,6 +157,7 @@ object CardDtoFactory : ComposableViewFactory<CardDTO, CardDTO.Builder>() {
             "padding" -> builder.padding(attribute.value)
             "horizontalPadding" -> builder.horizontalPadding(attribute.value)
             "verticalPadding" -> builder.verticalPadding(attribute.value)
+            "phx-click" -> builder.clickable(attribute.value, pushEvent)
             else -> builder
         } as CardDTO.Builder
     }.build()

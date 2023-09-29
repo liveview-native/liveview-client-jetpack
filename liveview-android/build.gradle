@@ -47,12 +47,14 @@ dependencies {
     // These dependencies are used internally, and not exposed to consumers on their own compile classpath.
     implementation platform("androidx.compose:compose-bom:$compose_bom_version")
     implementation "androidx.compose.ui:ui"
-    implementation "androidx.compose.material:material"
-    implementation 'androidx.compose.material:material-icons-core'
-    implementation 'androidx.compose.material:material-icons-extended'
+    implementation "androidx.compose.material:material-icons-core"
+    implementation "androidx.compose.material:material-icons-extended"
+    implementation "androidx.compose.material3:material3:$material_design_3_version"
 
     implementation "androidx.activity:activity-compose:$activity_compose_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecyle_version"
+
+    implementation "com.google.code.gson:gson:$gson_version"
 
     // These dependencies are exported to consumers, that is to say found on their compile classpath.
     api "androidx.core:core-ktx:$core_ktx_version"

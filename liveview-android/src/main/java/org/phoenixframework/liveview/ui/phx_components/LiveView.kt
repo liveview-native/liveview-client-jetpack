@@ -3,8 +3,8 @@ package org.phoenixframework.liveview.ui.phx_components
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -18,7 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.phoenixframework.liveview.domain.LiveViewCoordinator
-import org.phoenixframework.liveview.ui.theme.LiveViewTestTheme
+import org.phoenixframework.liveview.ui.theme.LiveViewNativeTheme
 
 private const val TAG = "LiveView"
 private const val PHX_LIVE_VIEW_ROUTE = "phxLiveView"
@@ -36,10 +36,10 @@ fun LiveView(
         uri.buildUpon().scheme(webSocketScheme).build().toString()
     }
 
-    LiveViewTestTheme {
+    LiveViewNativeTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.background
+            color = MaterialTheme.colorScheme.background
         ) {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = PHX_LIVE_VIEW_ROUTE) {

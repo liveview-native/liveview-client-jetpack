@@ -2,8 +2,9 @@ package org.phoenixframework.liveview.data.dto
 
 import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -19,7 +20,7 @@ import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class IconDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
     private val contentDescription: String = builder.contentDescription
-    private val tint: Color = builder.tint
+    private val tint: Color? = builder.tint
     private val imageVector: ImageVector? = builder.imageVector
 
     @Composable
@@ -32,7 +33,7 @@ class IconDTO private constructor(builder: Builder) : ComposableView(modifier = 
             Icon(
                 imageVector = imageVector,
                 contentDescription = contentDescription,
-                tint = tint,
+                tint = tint ?: LocalContentColor.current,
                 modifier = modifier.paddingIfNotNull(paddingValues)
             )
         }
@@ -40,7 +41,7 @@ class IconDTO private constructor(builder: Builder) : ComposableView(modifier = 
 
     open class Builder : ComposableBuilder() {
         var contentDescription: String = ""
-        var tint: Color = Color.Black
+        var tint: Color? = null
         var imageVector: ImageVector? = null
 
         fun contentDescription(contentDescription: String) = apply {

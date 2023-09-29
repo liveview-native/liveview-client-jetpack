@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
@@ -17,7 +18,6 @@ import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class AsyncImageDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -25,7 +25,9 @@ class AsyncImageDTO private constructor(builder: Builder) :
     private val contentDescription: String? = builder.contentDescription
     private val crossFade: Boolean = builder.crossFade
     private val shape: Shape = builder.shape
+    private val alignment: Alignment = builder.alignment
     private val contentScale: ContentScale = builder.contentScale
+    private val alpha: Float = builder.alpha
 
     @Composable
     override fun Compose(
@@ -34,13 +36,15 @@ class AsyncImageDTO private constructor(builder: Builder) :
         pushEvent: PushEvent,
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current).data(imageUrl).crossfade(crossFade)
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(crossFade)
                 .build(),
             contentDescription = contentDescription,
+            modifier = modifier.clip(shape),
+            alignment = alignment,
             contentScale = contentScale,
-            modifier = modifier
-                .clip(shape)
-                .paddingIfNotNull(paddingValues)
+            alpha = alpha
         )
     }
 
@@ -49,7 +53,9 @@ class AsyncImageDTO private constructor(builder: Builder) :
         var contentDescription: String? = null
         var crossFade: Boolean = false
         var shape: Shape = RoundedCornerShape(0.dp)
+        var alignment: Alignment = Alignment.Center
         var contentScale: ContentScale = ContentScale.Fit
+        var alpha: Float = 1.0f
 
         fun imageUrl(imageUrl: String) = apply {
             this.imageUrl = imageUrl
@@ -67,20 +73,26 @@ class AsyncImageDTO private constructor(builder: Builder) :
 
         fun contentScale(contentScale: String) = apply {
             if (contentScale.isNotEmpty()) {
-                this.contentScale = when (contentScale) {
-                    "fit" -> ContentScale.Fit
-                    "crop" -> ContentScale.Crop
-                    "fillBounds" -> ContentScale.FillBounds
-                    "fillHeight" -> ContentScale.FillHeight
-                    "fillWidth" -> ContentScale.FillWidth
-                    "inside" -> ContentScale.Inside
-                    else -> ContentScale.None
-                }
+                this.contentScale = contentScaleFromString(
+                    contentScale = contentScale,
+                    defaultValue = ContentScale.None
+                )
+            }
+        }
+
+        fun alignment(alignment: String) = apply {
+            if (alignment.isNotEmpty()) {
+                this.alignment =
+                    alignmentFromString(alignment = alignment, defaultValue = Alignment.Center)
             }
         }
 
         fun shape(shape: String) = apply {
             this.shape = shapeFromString(shape)
+        }
+
+        fun alpha(alpha: String) = apply {
+            this.alpha = alpha.toFloatOrNull() ?: 1f
         }
 
         fun build(): AsyncImageDTO = AsyncImageDTO(this)
@@ -102,6 +114,8 @@ object AsyncImageDtoFactory : ComposableViewFactory<AsyncImageDTO, AsyncImageDTO
         AsyncImageDTO.Builder().imageUrl(attributes.find { it.name == "url" }?.value ?: "")
     ) { builder, attribute ->
         when (attribute.name) {
+            "alignment" -> builder.alignment(attribute.value)
+            "alpha" -> builder.alpha(attribute.value)
             "contentScale" -> builder.contentScale(attribute.value)
             "contentDescription" -> builder.contentDescription(attribute.value)
             "crossFade" -> builder.crossFade(attribute.value)

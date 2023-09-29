@@ -45,7 +45,7 @@ class RowDTO private constructor(builder: Builder) : ComposableView(modifier = b
             verticalAlignment = verticalAlignment
         ) {
             composableNode?.children?.forEach {
-                PhxLiveView(it, paddingValues, pushEvent)
+                PhxLiveView(it, null, pushEvent)
             }
         }
     }
@@ -95,14 +95,8 @@ object RowDtoFactory : ComposableViewFactory<RowDTO, RowDTO.Builder>() {
     ): RowDTO =
         attributes.fold(RowDTO.Builder()) { builder, attribute ->
             when (attribute.name) {
-                "horizontalArrangement" -> {
-                    builder.horizontalArrangement(horizontalArrangement = attribute.value)
-                }
-
-                "verticalAlignment" -> {
-                    builder.verticalAlignment(verticalAlignment = attribute.value)
-                }
-
+                "horizontalArrangement" -> builder.horizontalArrangement(attribute.value)
+                "verticalAlignment" -> builder.verticalAlignment(attribute.value)
                 "size" -> builder.size(attribute.value)
                 "height" -> builder.height(attribute.value)
                 "width" -> builder.width(attribute.value)

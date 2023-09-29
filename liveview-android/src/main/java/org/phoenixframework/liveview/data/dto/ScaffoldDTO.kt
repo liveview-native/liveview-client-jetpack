@@ -1,7 +1,9 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material.Scaffold
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -15,11 +17,11 @@ import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
-import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class ScaffoldDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
-    private val backgroundColor: Color = builder.backgroundColor
+    private val containerColor: Color? = builder.containerColor
+    private val contentColor: Color? = builder.contentColor
 
     @Composable
     override fun Compose(
@@ -33,9 +35,11 @@ class ScaffoldDTO private constructor(builder: Builder) :
         val body = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.tag != ComposableTypes.topAppBar }
         }
+        val containerColor = containerColor ?: MaterialTheme.colorScheme.background
         Scaffold(
-            modifier = modifier.paddingIfNotNull(paddingValues),
-            backgroundColor = backgroundColor,
+            modifier = modifier,
+            containerColor = containerColor,
+            contentColor = contentColorFor(containerColor),
             topBar = {
                 topBar?.let { appBar ->
                     PhxLiveView(appBar, paddingValues, pushEvent)
@@ -50,11 +54,18 @@ class ScaffoldDTO private constructor(builder: Builder) :
     }
 
     class Builder : ComposableBuilder() {
-        var backgroundColor: Color = Color.White
+        var containerColor: Color? = null
+        var contentColor: Color? = null
 
-        fun backgroundColor(color: String) = apply {
+        fun containerColor(color: String) = apply {
             if (color.isNotEmpty()) {
-                this.backgroundColor = color.toColor()
+                this.containerColor = color.toColor()
+            }
+        }
+
+        fun contentColor(color: String) = apply {
+            if (color.isNotEmpty()) {
+                this.contentColor = color.toColor()
             }
         }
 
@@ -69,7 +80,8 @@ object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, ScaffoldDTO.Build
         pushEvent: PushEvent?,
     ): ScaffoldDTO = attributes.fold(ScaffoldDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "backgroundColor" -> builder.backgroundColor(attribute.value)
+            "containerColor" -> builder.containerColor(attribute.value)
+            "contentColor" -> builder.contentColor(attribute.value)
             "size" -> builder.size(attribute.value)
             "height" -> builder.height(attribute.value)
             "width" -> builder.width(attribute.value)

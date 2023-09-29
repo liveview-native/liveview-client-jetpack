@@ -1,7 +1,7 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
@@ -20,7 +20,6 @@ import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class TextDTO private constructor(private val builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -47,7 +46,7 @@ class TextDTO private constructor(private val builder: Builder) :
         Text(
             text = composableNode?.text ?: "",
             color = color,
-            modifier = modifier.paddingIfNotNull(paddingValues),
+            modifier = modifier,
             fontSize = fontSize,
             fontStyle = fontStyle,
             fontWeight = fontWeight,
