@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.phoenixframework.liveview.domain.LiveViewCoordinator
+import org.phoenixframework.liveview.domain.ThemeHolder
 import org.phoenixframework.liveview.ui.theme.LiveViewNativeTheme
 
 private const val TAG = "LiveView"
@@ -35,8 +36,11 @@ fun LiveView(
         val webSocketScheme = if (uri.scheme == "https") "wss" else "ws"
         uri.buildUpon().scheme(webSocketScheme).build().toString()
     }
+    val themeData by ThemeHolder.themeData.collectAsState()
 
-    LiveViewNativeTheme {
+    LiveViewNativeTheme(
+        themeData = themeData
+    ) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
