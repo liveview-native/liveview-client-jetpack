@@ -11,7 +11,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.sp
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
@@ -20,6 +19,14 @@ import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.ui.theme.fontSizeFromString
+import org.phoenixframework.liveview.ui.theme.fontStyleFromString
+import org.phoenixframework.liveview.ui.theme.fontWeightFromString
+import org.phoenixframework.liveview.ui.theme.letterSpacingFromString
+import org.phoenixframework.liveview.ui.theme.lineHeightFromString
+import org.phoenixframework.liveview.ui.theme.textAlignFromString
+import org.phoenixframework.liveview.ui.theme.textDecorationFromString
+import org.phoenixframework.liveview.ui.theme.textStyleFromString
 
 class TextDTO private constructor(private val builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -36,6 +43,7 @@ class TextDTO private constructor(private val builder: Builder) :
     private val overflow: TextOverflow = builder.overflow
     private val softWrap: Boolean = builder.softWrap
     private val maxLines: Int = builder.maxLines
+    private val style: String? = builder.style
 
     @Composable
     override fun Compose(
@@ -57,7 +65,8 @@ class TextDTO private constructor(private val builder: Builder) :
             overflow = overflow,
             softWrap = softWrap,
             maxLines = maxLines,
-            textDecoration = textDecoration
+            textDecoration = textDecoration,
+            style = textStyleFromString(style),
         )
     }
 
@@ -75,6 +84,7 @@ class TextDTO private constructor(private val builder: Builder) :
         var overflow: TextOverflow = TextOverflow.Clip
         var softWrap: Boolean = true
         var maxLines: Int = Int.MAX_VALUE
+        var style: String? = null
 
         fun text(text: String) = apply { this.text = text }
 
@@ -100,7 +110,7 @@ class TextDTO private constructor(private val builder: Builder) :
          */
         fun fontSize(fontSize: String) = apply {
             if (fontSize.isNotEmptyAndIsDigitsOnly()) {
-                this.fontSize = (fontSize.toInt()).sp
+                this.fontSize = fontSizeFromString(fontSize)
             }
         }
 
@@ -113,11 +123,7 @@ class TextDTO private constructor(private val builder: Builder) :
          */
         fun fontStyle(fontStyle: String) = apply {
             if (fontStyle.isNotEmpty()) {
-                this.fontStyle = when (fontStyle) {
-                    "normal" -> FontStyle.Normal
-                    "italic" -> FontStyle.Italic
-                    else -> FontStyle.Normal
-                }
+                this.fontStyle = fontStyleFromString(fontStyle)
             }
         }
 
@@ -132,18 +138,7 @@ class TextDTO private constructor(private val builder: Builder) :
          */
         fun fontWeight(fontWeight: String) = apply {
             if (fontWeight.isNotEmpty()) {
-                this.fontWeight = when (fontWeight) {
-                    "W100" -> FontWeight(100)
-                    "W200" -> FontWeight(200)
-                    "W300" -> FontWeight(300)
-                    "W400" -> FontWeight(400)
-                    "W500" -> FontWeight(500)
-                    "W600" -> FontWeight(600)
-                    "W700" -> FontWeight(700)
-                    "W800" -> FontWeight(800)
-                    "W900" -> FontWeight(900)
-                    else -> FontWeight.Normal
-                }
+                this.fontWeight = fontWeightFromString(fontWeight)
             }
         }
 
@@ -156,7 +151,7 @@ class TextDTO private constructor(private val builder: Builder) :
          */
         fun letterSpacing(letterSpacing: String) = apply {
             if (letterSpacing.isNotEmptyAndIsDigitsOnly()) {
-                this.letterSpacing = (letterSpacing.toInt()).sp
+                this.letterSpacing = letterSpacingFromString(letterSpacing)
             }
         }
 
@@ -168,13 +163,7 @@ class TextDTO private constructor(private val builder: Builder) :
          */
         fun textDecoration(textDecoration: String) = apply {
             if (textDecoration.isNotEmpty()) {
-                this.textDecoration = when (textDecoration) {
-                    // Draws a horizontal line below the text.
-                    "underline" -> TextDecoration.Underline
-                    // Draws a horizontal line over the text.
-                    "line-through" -> TextDecoration.LineThrough
-                    else -> TextDecoration.None
-                }
+                this.textDecoration = textDecorationFromString(textDecoration)
             }
         }
 
@@ -187,15 +176,7 @@ class TextDTO private constructor(private val builder: Builder) :
          */
         fun textAlign(textAlign: String) = apply {
             if (textAlign.isNotEmpty()) {
-                this.textAlign = when (textAlign) {
-                    "left" -> TextAlign.Left
-                    "right" -> TextAlign.Right
-                    "center" -> TextAlign.Center
-                    "justify" -> TextAlign.Justify
-                    "start" -> TextAlign.Start
-                    "end" -> TextAlign.End
-                    else -> TextAlign.Start
-                }
+                this.textAlign = textAlignFromString(textAlign)
             }
         }
 
@@ -208,7 +189,7 @@ class TextDTO private constructor(private val builder: Builder) :
          */
         fun lineHeight(lineHeight: String) = apply {
             if (lineHeight.isNotEmptyAndIsDigitsOnly()) {
-                this.lineHeight = (lineHeight.toInt()).sp
+                this.lineHeight = lineHeightFromString(lineHeight)
             }
         }
 
@@ -252,6 +233,16 @@ class TextDTO private constructor(private val builder: Builder) :
             }
         }
 
+        /**
+         * Sets the text style using Material Design naming convention.
+         *
+         * @param style text style based on Material Design naming convention (e.g.: displayLarge,
+         * headlineMedium, titleSmall, bodyMedium, labelSmall, etc.).
+         */
+        fun style(style: String) = apply {
+            this.style = style
+        }
+
         fun build() = TextDTO(this)
     }
 }
@@ -289,6 +280,7 @@ object TextDtoFactory : ComposableViewFactory<TextDTO, TextDTO.Builder>() {
                 "textAlign" -> builder.textAlign(attribute.value)
                 "lineHeight" -> builder.lineHeight(attribute.value)
                 "overflow" -> builder.overflow(attribute.value)
+                "style" -> builder.style(attribute.value)
                 "softWrap" -> builder.softWrap(attribute.value)
                 "maxLines" -> builder.maxLines(attribute.value)
                 "size" -> builder.size(attribute.value)
