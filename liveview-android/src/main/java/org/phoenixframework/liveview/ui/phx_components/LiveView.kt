@@ -28,9 +28,12 @@ private const val ARG_ROUTE = "route"
 fun LiveView(
     url: String,
 ) {
-    // The WebSocket URL is the same of the HTTP URL, so we just copy the HTTP URL changing the schema (protocol)
+    // The WebSocket URL is the same of the HTTP URL,
+    // so we just copy the HTTP URL changing the schema (protocol)
     val webSocketBaseUrl = remember(url) {
-        Uri.parse(url).buildUpon().scheme("ws").build().toString()
+        val uri = Uri.parse(url)
+        val webSocketScheme = if (uri.scheme == "https") "wss" else "ws"
+        uri.buildUpon().scheme(webSocketScheme).build().toString()
     }
 
     LiveViewTestTheme {
@@ -50,8 +53,15 @@ fun LiveView(
                         backStackEntry = backStackEntry,
                         httpBaseUrl = url,
                         wsBaseUrl = webSocketBaseUrl,
-                        onNavigate = { route ->
-                            navController.navigate("$PHX_LIVE_VIEW_ROUTE?$ARG_ROUTE=$route")
+                        onNavigate = { route, redirect ->
+                            val routePath = "$PHX_LIVE_VIEW_ROUTE?$ARG_ROUTE=$route"
+                            navController.navigate(routePath) {
+                                if (redirect) {
+                                    popUpTo(backStackEntry.destination.id) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
                         }
                     )
                 }
@@ -65,7 +75,7 @@ private fun NavDestination(
     backStackEntry: NavBackStackEntry,
     httpBaseUrl: String,
     wsBaseUrl: String,
-    onNavigate: (String) -> Unit
+    onNavigate: (route: String, redirect: Boolean) -> Unit
 ) {
     val route = backStackEntry.arguments?.getString("route")
     val httpUrl = if (route == null) httpBaseUrl else "$httpBaseUrl$route"

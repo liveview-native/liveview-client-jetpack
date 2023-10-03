@@ -26,7 +26,7 @@ import java.util.Stack
 class LiveViewCoordinator(
     private val httpBaseUrl: String,
     private val wsBaseUrl: String,
-    private val onNavigate: (String) -> Unit,
+    private val onNavigate: (route: String, redirect: Boolean) -> Unit,
 ) : ViewModel() {
     private val repository: Repository = Repository(httpBaseUrl, wsBaseUrl)
 
@@ -52,7 +52,9 @@ class LiveViewCoordinator(
                 .collect { message ->
                     Log.d(TAG, "message: $message")
                     when {
-                        message.payload.containsKey("live_redirect") -> handleRedirect(message)
+                        message.payload.containsKey("live_redirect") -> handleNavigation(message)
+
+                        message.payload.containsKey("redirect") -> handleRedirect(message)
 
                         message.payload.containsKey("rendered") -> handleRenderedMessage(message)
 
@@ -66,13 +68,20 @@ class LiveViewCoordinator(
         }
     }
 
-    private fun handleRedirect(message: Message) {
-        Log.d(TAG, message.toString())
+    private fun handleNavigation(message: Message) {
         message.payload["live_redirect"]?.let { inputMap ->
             val redirectMap: Map<String, Any?> = inputMap as Map<String, Any?>
-            Log.d(TAG, "kind->${redirectMap["kind"]} | to->${redirectMap["to"]}")
             viewModelScope.launch(Dispatchers.Main) {
-                onNavigate(redirectMap["to"].toString())
+                onNavigate(redirectMap["to"].toString(), false)
+            }
+        }
+    }
+
+    private fun handleRedirect(message: Message) {
+        message.payload["redirect"]?.let { inputMap ->
+            val redirectMap: Map<String, Any?> = inputMap as Map<String, Any?>
+            viewModelScope.launch(Dispatchers.Main) {
+                onNavigate(redirectMap["to"].toString(), true)
             }
         }
     }
