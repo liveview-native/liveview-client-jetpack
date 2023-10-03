@@ -17,12 +17,17 @@ fun LiveViewNativeTheme(
     themeData: Map<String, Any> = emptyMap(),
     content: @Composable () -> Unit
 ) {
+    val colorScheme = getColorScheme(darkTheme, dynamicColor, themeData)
+    val shapes = shapesFromThemeData(
+        themeData["shapes"] as? Map<String, Any> ?: emptyMap()
+    )
+    val typography = typographyFromThemeData(
+        themeData["typography"] as? Map<String, Any> ?: emptyMap()
+    )
     MaterialTheme(
-        colorScheme = getColorScheme(darkTheme, dynamicColor, themeData),
-        typography = typographyFromThemeData(
-            themeData["typography"] as? Map<String, Any> ?: emptyMap()
-        ),
-        shapes = Shapes,
+        colorScheme = colorScheme,
+        typography = typography,
+        shapes = shapes,
         content = content
     )
 }

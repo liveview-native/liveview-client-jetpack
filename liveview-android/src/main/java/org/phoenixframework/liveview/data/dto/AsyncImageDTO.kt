@@ -18,6 +18,7 @@ import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.ui.theme.shapeFromString
 
 class AsyncImageDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {

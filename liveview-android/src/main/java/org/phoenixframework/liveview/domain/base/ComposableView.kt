@@ -12,13 +12,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.core.CoreAttribute
@@ -99,13 +95,6 @@ abstract class ComposableBuilder {
         hasHorizontalScrolling = options.contains("horizontal")
         hasVerticalScrolling = options.contains("vertical")
         modifier
-    }
-
-    protected fun shapeFromString(shape: String): Shape = when {
-        shape.isNotEmptyAndIsDigitsOnly() -> RoundedCornerShape(shape.toInt().dp)
-        shape.isNotEmpty() && shape == "circle" -> CircleShape
-        shape.isNotEmpty() && shape == "rectangle" -> RectangleShape
-        else -> RoundedCornerShape(0.dp)
     }
 
     protected fun alignmentFromString(alignment: String, defaultValue: Alignment): Alignment =

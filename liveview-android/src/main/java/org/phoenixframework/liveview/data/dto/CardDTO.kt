@@ -23,6 +23,7 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
+import org.phoenixframework.liveview.ui.theme.shapeFromString
 
 class CardDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
     private val shape: Shape = builder.shape
