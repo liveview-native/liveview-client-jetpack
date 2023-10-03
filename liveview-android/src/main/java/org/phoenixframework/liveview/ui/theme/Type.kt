@@ -6,9 +6,12 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.style.Hyphens
 import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
@@ -16,7 +19,16 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
+import org.phoenixframework.liveview.R
 import org.phoenixframework.liveview.domain.extensions.toColor
+
+internal val provider: GoogleFont.Provider by lazy {
+    GoogleFont.Provider(
+        providerAuthority = "com.google.android.gms.fonts",
+        providerPackage = "com.google.android.gms",
+        certificates = R.array.com_google_android_gms_fonts_certs
+    )
+}
 
 internal fun typographyFromThemeData(fontData: Map<String, Any>): Typography {
     val default = Typography(
@@ -65,6 +77,11 @@ internal fun typographyFromThemeData(fontData: Map<String, Any>): Typography {
 
 internal fun textStyleFromData(textStyleData: Map<String, Any>): TextStyle {
     return TextStyle(
+        fontFamily = textStyleData["fontFamily"]?.toString()?.let {
+            FontFamily(
+                Font(googleFont = GoogleFont(it), fontProvider = provider)
+            )
+        },
         color = textStyleData["color"]?.toString()?.toColor() ?: Color.Unspecified,
         fontSize = textStyleData["fontSize"]?.let { fontSizeFromString(it.toString()) }
             ?: TextUnit.Unspecified,
@@ -84,7 +101,6 @@ internal fun textStyleFromData(textStyleData: Map<String, Any>): TextStyle {
     )
     //TODO Support these complex types
     //fontSynthesis: FontSynthesis? = null,
-    //fontFamily: FontFamily? = null,
     //baselineShift: BaselineShift? = null,
     //textGeometricTransform: TextGeometricTransform? = null,
     //localeList: LocaleList? = null,

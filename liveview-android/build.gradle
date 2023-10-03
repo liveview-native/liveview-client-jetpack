@@ -50,6 +50,7 @@ dependencies {
     implementation "androidx.compose.material:material-icons-core"
     implementation "androidx.compose.material:material-icons-extended"
     implementation "androidx.compose.material3:material3:$material_design_3_version"
+    implementation "androidx.compose.ui:ui-text-google-fonts:$google_fonts_version"
 
     implementation "androidx.activity:activity-compose:$activity_compose_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$lifecyle_version"
