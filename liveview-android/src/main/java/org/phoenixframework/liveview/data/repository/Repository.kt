@@ -6,88 +6,94 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.withContext
-import okhttp3.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.phoenixframework.liveview.data.dto.PhoenixLiveViewPayload
+import org.phoenixframework.liveview.data.service.ChannelService
 import org.phoenixframework.liveview.data.service.SocketService
 
-class Repository(private val baseUrl: String) {
-    private var phxLiveViewPayload: PhoenixLiveViewPayload = PhoenixLiveViewPayload()
+class Repository(
+    private val httpBaseUrl: String,
+    private val wsBaseUrl: String,
+) {
+    private val socketService = SocketService
+    val isSocketConnected: Boolean
+        get() = socketService.isConnected
 
-    private var storedCookies: MutableList<Cookie> = mutableListOf()
-    private val cookieJar = object : CookieJar {
-        override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-            storedCookies = cookies.toMutableList()
+    private var channelService: ChannelService? = null
+    private var payload: PhoenixLiveViewPayload? = null
+
+    suspend fun connectToLiveViewSocket() {
+        payload = getInitialPayload(httpBaseUrl)?.also {
+            socketService.connectToLiveView(
+                phxLiveViewPayload = it,
+                socketBaseUrl = wsBaseUrl,
+            )
         }
-
-        override fun loadForRequest(url: HttpUrl): MutableList<Cookie> = storedCookies
     }
 
-    private val okHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).addInterceptor { chain ->
-        val original = chain.request();
-        val authorized = original.newBuilder().build();
-
-        chain.proceed(authorized);
-    }.build()
-
-    private val socketService = SocketService(okHttpClient = okHttpClient)
-
-    suspend fun connect() = callbackFlow {
-        socketService.connectToLiveView(
-            phxLiveViewPayload = getInitialPayload(baseUrl),
-            baseUrl = baseUrl,
-            socketBase = "ws://10.0.2.2:4000/"
-        ) { message ->
-            trySend(message)
+    fun joinChannel(redirect: Boolean) = callbackFlow {
+        if (payload == null) {
+            payload = getInitialPayload(httpBaseUrl)
         }
-
+        payload?.let {
+            channelService = ChannelService(socketService).apply {
+                joinPhoenixChannel(
+                    it, httpBaseUrl, redirect
+                ) { message ->
+                    trySend(message)
+                }
+            }
+        }
         try {
             awaitClose {
+                Log.i(TAG, "Closing channel...")
                 channel.close()
             }
         } catch (e: Exception) {
-            Log.e("Repository", "Error: ${e.message}")
+            Log.e(TAG, "Error awaiting for close: ${e.message}", e)
         }
     }.catch {
-        Log.e("Repository", "Error: ${it.message}")
+        Log.e(TAG, "Error in flow: ${it.message}")
     }
 
-    private suspend fun getInitialPayload(url: String): PhoenixLiveViewPayload =
+    fun closeChannel() {
+        channelService?.closeChannel()
+    }
+
+    private suspend fun getInitialPayload(url: String): PhoenixLiveViewPayload? =
         withContext(Dispatchers.IO) {
             try {
-                val request = Request.Builder().url(url).get().build()
-                val doc: Document = okHttpClient.newCall(request)
+                val doc: Document? = socketService.newHttpCall(url)
                     .execute()
                     .body?.string()
-                    ?.let { Jsoup.parse(it) }!!
+                    ?.let { Jsoup.parse(it) }
 
                 val theLiveViewMetaDataElement =
-                    doc.body().getElementsByAttribute("data-phx-main")
+                    doc?.body()?.getElementsByAttribute("data-phx-main")
 
-                phxLiveViewPayload.phxId = theLiveViewMetaDataElement.attr("id")
-                phxLiveViewPayload.dataPhxStatic =
-                    theLiveViewMetaDataElement.attr("data-phx-static")
-                phxLiveViewPayload.dataPhxSession =
-                    theLiveViewMetaDataElement.attr("data-phx-session")
-
-                val metaElements: Elements = doc.getElementsByTag("meta")
-                val filteredElements = metaElements.filter { theElement ->
+                val metaElements: Elements? = doc?.getElementsByTag("meta")
+                val filteredElements = metaElements?.filter { theElement ->
                     theElement.attr("name") == "csrf-token"
                 }
-                val csrfToken = filteredElements.first().attr("content")
-                phxLiveViewPayload._csrfToken = csrfToken
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Log.e("Repository", "Error: ${e.message}")
-            }
+                val csrfToken = filteredElements?.first()?.attr("content")
 
-            phxLiveViewPayload
+                PhoenixLiveViewPayload(
+                    dataPhxSession = theLiveViewMetaDataElement?.attr("data-phx-session"),
+                    dataPhxStatic = theLiveViewMetaDataElement?.attr("data-phx-static"),
+                    phxId = theLiveViewMetaDataElement?.attr("id"),
+                    _csrfToken = csrfToken
+                )
+            } catch (e: Exception) {
+                Log.e(TAG, "Error: ${e.message}", e)
+                null
+            }
         }
 
     fun pushEvent(type: String, event: String, value: Any, target: Int? = null) {
-        socketService.pushEvent(
+        Log.d(TAG, "pushEvent: [type: $type | event: $event | value: $value | target: $target]")
+        channelService?.pushEvent(
             "event", mapOf(
                 "type" to type,
                 "event" to event,
@@ -95,5 +101,9 @@ class Repository(private val baseUrl: String) {
                 "cid" to target as Any?
             )
         )
+    }
+
+    companion object {
+        private const val TAG = "Repository"
     }
 }

@@ -23,28 +23,66 @@ import org.phoenixframework.liveview.lib.NodeRef
 import java.net.ConnectException
 import java.util.Stack
 
-class LiveViewCoordinator(url: String) : ViewModel() {
-    private var doc: Document = Document()
-    private val repository: Repository = Repository(baseUrl = url)
+class LiveViewCoordinator(
+    private val httpBaseUrl: String,
+    private val wsBaseUrl: String,
+    private val onNavigate: (route: String, redirect: Boolean) -> Unit,
+) : ViewModel() {
+    private val repository: Repository = Repository(httpBaseUrl, wsBaseUrl)
+
+    private var document: Document = Document()
     private var lastRenderedMap: Map<String, Any?> = emptyMap()
+    private var reconnect = false
 
-    init {
-        connectToLiveViewMessageStream()
-    }
-
+    //TODO Is this stack necessary?
     private val _backStack = MutableStateFlow<Stack<ComposableTreeNode>>(Stack())
     val backStack = _backStack.asStateFlow()
 
-    private fun connectToLiveViewMessageStream() {
+    private val screenId: String
+        get() = this.toString()
+
+    fun joinChannel() {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.connect().catch { cause: Throwable -> getDomFromThrowable(cause) }.buffer()
+            if (!repository.isSocketConnected) {
+                repository.connectToLiveViewSocket()
+            }
+            repository.joinChannel(reconnect)
+                .catch { cause: Throwable -> getDomFromThrowable(cause) }
+                .buffer()
                 .collect { message ->
+                    Log.d(TAG, "message: $message")
                     when {
+                        message.payload.containsKey("live_redirect") -> handleNavigation(message)
+
+                        message.payload.containsKey("redirect") -> handleRedirect(message)
+
                         message.payload.containsKey("rendered") -> handleRenderedMessage(message)
 
-                        message.payload.containsKey("diff") -> handleDiffMessage(message)
+                        message.payload.containsKey("diff") ||
+                                message.event == "diff" -> handleDiffMessage(message)
                     }
                 }
+
+        }.invokeOnCompletion {
+            Log.d(TAG, "Channel Flow Job completed url: $httpBaseUrl | wsUrl: $wsBaseUrl")
+        }
+    }
+
+    private fun handleNavigation(message: Message) {
+        message.payload["live_redirect"]?.let { inputMap ->
+            val redirectMap: Map<String, Any?> = inputMap as Map<String, Any?>
+            viewModelScope.launch(Dispatchers.Main) {
+                onNavigate(redirectMap["to"].toString(), false)
+            }
+        }
+    }
+
+    private fun handleRedirect(message: Message) {
+        message.payload["redirect"]?.let { inputMap ->
+            val redirectMap: Map<String, Any?> = inputMap as Map<String, Any?>
+            viewModelScope.launch(Dispatchers.Main) {
+                onNavigate(redirectMap["to"].toString(), true)
+            }
         }
     }
 
@@ -58,7 +96,11 @@ class LiveViewCoordinator(url: String) : ViewModel() {
 
     private fun handleDiffMessage(message: Message) {
         val newMessage = lastRenderedMap.toMutableMap()
-        val diffDict = message.payload["diff"] as Map<String, Any>
+        val diffDict =
+            if (message.payload.containsKey("diff"))
+                message.payload["diff"] as Map<String, Any>
+            else
+                message.payload
         diffDict.forEach { (key, value) ->
             newMessage[key] = value
         }
@@ -83,9 +125,9 @@ class LiveViewCoordinator(url: String) : ViewModel() {
     }
 
     private fun parseTemplate(s: String, reRender: Boolean) {
-        val currentDom = ComposableTreeNode(0, null, null)
+        val currentDom = ComposableTreeNode(screenId, 0, null, null)
         val parsedDocument = Document.parse(s)
-        doc.merge(parsedDocument, object : Document.Companion.Handler() {
+        document.merge(parsedDocument, object : Document.Companion.Handler() {
             override fun onHandle(
                 context: Document,
                 changeType: Document.Companion.ChangeType,
@@ -141,10 +183,11 @@ class LiveViewCoordinator(url: String) : ViewModel() {
             is Node.Element -> {
                 val childNodeRefs = document.getChildren(nodeRef)
                 val composableTreeNode = ComposableNodeFactory.buildComposableTreeNode(
+                    screenId = screenId,
                     nodeRef = nodeRef,
                     element = CoreNodeElement.fromNodeElement(node),
                     children = childNodeRefs.map { childNodeRef ->
-                        CoreNodeElement.fromNodeElement(doc.getNode(nodeRef = childNodeRef))
+                        CoreNodeElement.fromNodeElement(this.document.getNode(nodeRef = childNodeRef))
                     },
                 )
                 parent?.addNode(composableTreeNode)
@@ -168,13 +211,9 @@ class LiveViewCoordinator(url: String) : ViewModel() {
         }
     }
 
-    fun pushEvent(type: String, event: String, value: Any, target: Int? = null) {
-        repository.pushEvent(type, event, value, target)
-    }
-
     private fun getDomFromThrowable(cause: Throwable) {
         val errorHtml = when (cause) {
-            is ConnectException -> {//4e0116c
+            is ConnectException -> {
                 """
                 <Column>
                     <Text width='fill' padding='16'>${cause.message}</Text>
@@ -225,10 +264,14 @@ class LiveViewCoordinator(url: String) : ViewModel() {
     ) {
         val composableTreeNode = findNodeById(nodeRef.ref)
         Log.d(TAG, "notifyNodeChange: $composableTreeNode - ${composableTreeNode?.text}")
-        stateMap[nodeRef.ref]?.update {
+        if (composableTreeNode == null) {
+            return
+        }
+        stateMap[stateKey(screenId, nodeRef.ref)]?.update {
+            Log.d(TAG, "notifyNodeChange: Node found!")
             val node = document.getNode(nodeRef)
             val children = document.getChildren(nodeRef)
-            composableTreeNode?.copy(
+            composableTreeNode.copy(
                 node = CoreNodeElement.fromNodeElement(node),
                 childrenNodes = children.map {
                     CoreNodeElement.fromNodeElement(
@@ -242,24 +285,42 @@ class LiveViewCoordinator(url: String) : ViewModel() {
         }
     }
 
+    fun leaveChannel() {
+        repository.closeChannel()
+    }
+
+    fun pushEvent(type: String, event: String, value: Any, target: Int? = null) {
+        Log.d(TAG, "pushEvent: type: $type, event: $event, value: $value, target: $target")
+        repository.pushEvent(type, event, value, target)
+    }
+
     override fun onCleared() {
         super.onCleared()
-        stateMap.clear()
+        repository.closeChannel()
+        deleteNodeStateByScreenId(screenId)
     }
 
     companion object {
         const val TAG = "VM"
 
-        val stateMap = mutableMapOf<Int, MutableStateFlow<ComposableTreeNode?>>()
+        private val stateMap = mutableMapOf<String, MutableStateFlow<ComposableTreeNode?>>()
+
+        private fun stateKey(screenId: String?, refId: Int?) = "$screenId---$refId"
 
         // TODO This is a temporary solution for node updates.
         // TODO As soon Core implement the new diff mechanism, this approach should be re-evaluated.
         fun getNodeState(composableTreeNode: ComposableTreeNode?): StateFlow<ComposableTreeNode?> {
-            val refId = composableTreeNode?.refId
-            if (refId != null && !stateMap.containsKey(refId)) {
-                stateMap[refId] = MutableStateFlow(composableTreeNode)
+            val key = stateKey(composableTreeNode?.screenId, composableTreeNode?.refId)
+            if (!stateMap.containsKey(key)) {
+                stateMap[key] = MutableStateFlow(composableTreeNode)
             }
-            return stateMap[refId]!!
+            return stateMap[key]!!
+        }
+
+        private fun deleteNodeStateByScreenId(screenId: String) {
+            stateMap.filter { it.key.startsWith(screenId) }.keys.forEach {
+                stateMap.remove(it)
+            }
         }
     }
 }

@@ -58,9 +58,13 @@ object ComposableNodeFactory {
      * @return a `ComposableTreeNode` object based on the input `Element` object
      */
     fun buildComposableTreeNode(
-        nodeRef: NodeRef, element: CoreNodeElement, children: List<CoreNodeElement>,
+        screenId: String,
+        nodeRef: NodeRef,
+        element: CoreNodeElement,
+        children: List<CoreNodeElement>,
     ): ComposableTreeNode {
         return ComposableTreeNode(
+            screenId,
             nodeRef.ref,
             element,
             children.toImmutableList(),
