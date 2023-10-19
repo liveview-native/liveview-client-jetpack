@@ -45,6 +45,9 @@ class LiveViewCoordinator(
         viewModelScope.launch(Dispatchers.IO) {
             if (!repository.isSocketConnected) {
                 repository.connectToLiveViewSocket()
+                if (ThemeHolder.isEmpty) {
+                    ThemeHolder.updateThemeData(repository.loadThemeData())
+                }
             }
             repository.joinChannel(reconnect)
                 .catch { cause: Throwable -> getDomFromThrowable(cause) }

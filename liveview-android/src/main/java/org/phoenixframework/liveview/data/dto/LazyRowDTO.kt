@@ -52,7 +52,7 @@ class LazyRowDTO private constructor(builder: Builder) :
                     composableNode?.children ?: emptyList(),
                     key = { item -> item.id },
                 ) { item ->
-                    PhxLiveView(item, paddingValues, pushEvent)
+                    PhxLiveView(item, null, pushEvent)
                 }
             },
         )

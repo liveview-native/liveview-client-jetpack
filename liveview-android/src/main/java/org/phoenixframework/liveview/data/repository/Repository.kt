@@ -6,10 +6,13 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.phoenixframework.liveview.data.dto.PhoenixLiveViewPayload
+import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.data.service.ChannelService
 import org.phoenixframework.liveview.data.service.SocketService
 
@@ -23,6 +26,10 @@ class Repository(
 
     private var channelService: ChannelService? = null
     private var payload: PhoenixLiveViewPayload? = null
+
+    private val okHttpClient: OkHttpClient by lazy {
+        OkHttpClient()
+    }
 
     suspend fun connectToLiveViewSocket() {
         payload = getInitialPayload(httpBaseUrl)?.also {
@@ -101,6 +108,21 @@ class Repository(
                 "cid" to target as Any?
             )
         )
+    }
+
+    suspend fun loadThemeData(): Map<String, Any> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val request = Request.Builder()
+                    .url("$httpBaseUrl/assets/android_style.json")
+                    .build()
+                val result = okHttpClient.newCall(request).execute().body?.string()
+                JsonParser.parse(result ?: "") ?: emptyMap()
+
+            } catch (e: Exception) {
+                emptyMap()
+            }
+        }
     }
 
     companion object {

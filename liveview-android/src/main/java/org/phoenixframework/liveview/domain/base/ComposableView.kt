@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.domain.base
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,12 +12,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
@@ -83,6 +82,14 @@ abstract class ComposableBuilder {
         }
     }
 
+    open fun clickable(event: String, pushEvent: PushEvent?) = apply {
+        modifier = modifier.then(
+            Modifier.clickable {
+                pushEvent?.invoke("click", event, "", null)
+            }
+        )
+    }
+
     fun scrolling(scrolling: String) = apply {
         val options = scrolling.split('|')
         hasHorizontalScrolling = options.contains("horizontal")
@@ -90,12 +97,33 @@ abstract class ComposableBuilder {
         modifier
     }
 
-    protected fun shapeFromString(shape: String): Shape = when {
-        shape.isNotEmptyAndIsDigitsOnly() -> RoundedCornerShape(shape.toInt().dp)
-        shape.isNotEmpty() && shape == "circle" -> CircleShape
-        shape.isNotEmpty() && shape == "rectangle" -> RectangleShape
-        else -> RoundedCornerShape(0.dp)
-    }
+    protected fun alignmentFromString(alignment: String, defaultValue: Alignment): Alignment =
+        when (alignment) {
+            "topStart" -> Alignment.TopStart
+            "topCenter" -> Alignment.TopCenter
+            "topEnd" -> Alignment.TopEnd
+            "centerStart" -> Alignment.CenterStart
+            "center" -> Alignment.Center
+            "centerEnd" -> Alignment.CenterEnd
+            "bottomStart" -> Alignment.BottomStart
+            "bottomCenter" -> Alignment.BottomCenter
+            "bottomEnd" -> Alignment.BottomEnd
+            else -> defaultValue
+        }
+
+    protected fun contentScaleFromString(
+        contentScale: String,
+        defaultValue: ContentScale
+    ): ContentScale =
+        when (contentScale) {
+            "fit" -> ContentScale.Fit
+            "crop" -> ContentScale.Crop
+            "fillBounds" -> ContentScale.FillBounds
+            "fillHeight" -> ContentScale.FillHeight
+            "fillWidth" -> ContentScale.FillWidth
+            "inside" -> ContentScale.Inside
+            else -> defaultValue
+        }
 }
 
 abstract class ComposableViewFactory<CV : ComposableView, CB : ComposableBuilder> {

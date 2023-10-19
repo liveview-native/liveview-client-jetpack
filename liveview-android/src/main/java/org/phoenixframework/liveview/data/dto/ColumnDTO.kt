@@ -18,6 +18,7 @@ import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.base.optional
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
+import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 class ColumnDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -34,6 +35,7 @@ class ColumnDTO private constructor(builder: Builder) :
     ) {
         Column(
             modifier = modifier
+                .paddingIfNotNull(paddingValues)
                 .optional(
                     hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
                 )
@@ -44,7 +46,7 @@ class ColumnDTO private constructor(builder: Builder) :
             horizontalAlignment = horizontalAlignment
         ) {
             composableNode?.children?.forEach {
-                PhxLiveView(it, paddingValues, pushEvent)
+                PhxLiveView(it, null, pushEvent)
             }
         }
     }
@@ -89,14 +91,8 @@ object ColumnDtoFactory : ComposableViewFactory<ColumnDTO, ColumnDTO.Builder>() 
         attributes: List<CoreAttribute>, children: List<CoreNodeElement>?, pushEvent: PushEvent?
     ): ColumnDTO = attributes.fold(ColumnDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "verticalArrangement" -> {
-                builder.verticalArrangement(attribute.value)
-            }
-
-            "horizontalAlignment" -> {
-                builder.horizontalAlignment(attribute.value)
-            }
-
+            "verticalArrangement" -> builder.verticalArrangement(attribute.value)
+            "horizontalAlignment" -> builder.horizontalAlignment(attribute.value)
             "size" -> builder.size(attribute.value)
             "height" -> builder.height(attribute.value)
             "width" -> builder.width(attribute.value)
@@ -104,6 +100,7 @@ object ColumnDtoFactory : ComposableViewFactory<ColumnDTO, ColumnDTO.Builder>() 
             "horizontalPadding" -> builder.horizontalPadding(attribute.value)
             "verticalPadding" -> builder.verticalPadding(attribute.value)
             "scroll" -> builder.scrolling(attribute.value)
+            "phx-click" -> builder.clickable(attribute.value, pushEvent)
             else -> builder
         } as ColumnDTO.Builder
     }.build()
