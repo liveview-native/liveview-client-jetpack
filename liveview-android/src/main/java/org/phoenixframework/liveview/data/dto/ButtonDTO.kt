@@ -6,10 +6,13 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.mappers.JsonParser
@@ -23,13 +26,14 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
+@Stable
 class ButtonDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val onClick: () -> Unit = builder.onClick
     private val enabled: Boolean = builder.enabled
     private val shape: Shape? = builder.shape
-    private val colors: Map<String, String>? = builder.colors
-    private val elevation: Map<String, String>? = builder.elevations
+    private val colors: ImmutableMap<String, String>? = builder.colors?.toImmutableMap()
+    private val elevation: ImmutableMap<String, String>? = builder.elevations?.toImmutableMap()
     private val contentPadding: PaddingValues? = builder.contentPadding
 
     @Composable

@@ -11,6 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.mappers.JsonParser
@@ -27,8 +29,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
 
 class CardDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
     private val shape: Shape = builder.shape
-    private val colors: Map<String, String>? = builder.cardColors
-    private val elevation: Map<String, String>? = builder.elevation
+    private val colors: ImmutableMap<String, String>? = builder.cardColors?.toImmutableMap()
+    private val elevation: ImmutableMap<String, String>? = builder.elevation?.toImmutableMap()
 
     @Composable
     override fun Compose(
@@ -49,7 +51,7 @@ class CardDTO private constructor(builder: Builder) : ComposableView(modifier = 
     }
 
     @Composable
-    private fun getCardColors(cardColors: Map<String, String>?): CardColors {
+    private fun getCardColors(cardColors: ImmutableMap<String, String>?): CardColors {
         val defaultValue = CardDefaults.cardColors()
         return if (cardColors == null) {
             defaultValue
@@ -68,7 +70,7 @@ class CardDTO private constructor(builder: Builder) : ComposableView(modifier = 
     }
 
     @Composable
-    private fun getCardElevation(elevation: Map<String, String>?): CardElevation {
+    private fun getCardElevation(elevation: ImmutableMap<String, String>?): CardElevation {
         val defaultValue = CardDefaults.cardElevation()
         return if (elevation == null) {
             defaultValue

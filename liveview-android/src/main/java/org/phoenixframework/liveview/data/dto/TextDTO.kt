@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -28,7 +29,7 @@ import org.phoenixframework.liveview.ui.theme.textAlignFromString
 import org.phoenixframework.liveview.ui.theme.textDecorationFromString
 import org.phoenixframework.liveview.ui.theme.textStyleFromString
 
-class TextDTO private constructor(private val builder: Builder) :
+class TextDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
 
     private val color: Color = builder.color
@@ -51,8 +52,11 @@ class TextDTO private constructor(private val builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val text = remember(composableNode) {
+            getText(composableNode)
+        }
         Text(
-            text = composableNode?.text ?: "",
+            text = text,
             color = color,
             modifier = modifier,
             fontSize = fontSize,
@@ -68,6 +72,23 @@ class TextDTO private constructor(private val builder: Builder) :
             textDecoration = textDecoration,
             style = textStyleFromString(style),
         )
+    }
+
+    private fun getText(composableNode: ComposableTreeNode?): String {
+        // The first (and only) children node of a Text element must be the text itself.
+        // It is contained in a attribute called "text"
+        val childrenNodes = composableNode?.children
+        var text = ""
+        if (childrenNodes?.isNotEmpty() == true) {
+            val firstNode = childrenNodes.first().node
+            if (firstNode?.attributes?.isNotEmpty() == true) {
+                val firstAttr = firstNode.attributes.first()
+                if (firstAttr.name == CoreNodeElement.TEXT_ATTRIBUTE) {
+                    text = firstAttr.value
+                }
+            }
+        }
+        return text
     }
 
     class Builder : ComposableBuilder() {

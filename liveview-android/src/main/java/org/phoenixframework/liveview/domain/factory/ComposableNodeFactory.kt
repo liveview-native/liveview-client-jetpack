@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.domain.factory
 
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
@@ -59,27 +60,25 @@ object ComposableNodeFactory {
         screenId: String,
         nodeRef: NodeRef,
         element: CoreNodeElement,
-        children: List<CoreNodeElement>,
     ): ComposableTreeNode {
         return ComposableTreeNode(
             screenId = screenId,
             refId = nodeRef.ref,
             node = element,
             id = "${screenId}_${nodeRef.ref}",
-            coreChildrenNodes = children
         )
     }
 
     fun buildComposableView(
         element: CoreNodeElement?,
-        children: List<CoreNodeElement>?,
+        children: ImmutableList<ComposableTreeNode>,
         pushEvent: PushEvent,
     ): ComposableView {
         return if (element != null) {
             val tag = element.tag
             val attrs = element.attributes
             ComposableRegistry.getComponentFactory(tag)?.buildComposableView(
-                attrs, children, pushEvent
+                attrs, children.mapNotNull { it.node }, pushEvent
             ) ?: run {
                 TextDtoFactory.buildComposableView(
                     "$tag not supported yet",

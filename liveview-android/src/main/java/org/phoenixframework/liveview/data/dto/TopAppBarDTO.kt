@@ -10,6 +10,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.actionTag
@@ -28,7 +30,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 class TopAppBarDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
 
-    private val colors: Map<String, String>? = builder.colors
+    private val colors: ImmutableMap<String, String>? = builder.colors?.toImmutableMap()
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -87,7 +89,7 @@ class TopAppBarDTO private constructor(builder: Builder) :
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun getTopAppBarColors(colors: Map<String, String>?): TopAppBarColors {
+    private fun getTopAppBarColors(colors: ImmutableMap<String, String>?): TopAppBarColors {
         val defaultColors = TopAppBarDefaults.topAppBarColors()
         return if (colors == null) {
             defaultColors

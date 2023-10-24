@@ -69,6 +69,7 @@ dependencies {
 
     api "org.apache.commons:commons-math3:$commons_math_version"
     api "org.apache.commons:commons-text:$commons_text_version"
+    api "org.jetbrains.kotlinx:kotlinx-collections-immutable:$kotlin_immutable_collections_version"
     api "org.jsoup:jsoup:$jsoup_version"
 
     api "io.coil-kt:coil:$coil_version"
@@ -79,4 +80,28 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
 
     testImplementation "junit:junit:$junit_version"
+
+
+}
+
+// ./gradlew assembleRelease -PcomposeCompilerReports=true
+// Run the command above in order to generate the compose stability diagnose report.
+// https://developer.android.com/jetpack/compose/performance/stability/diagnose
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        if (project.findProperty("composeCompilerReports") == "true") {
+            freeCompilerArgs += [
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+                            project.buildDir.absolutePath + "/compose_compiler"
+            ]
+        }
+        if (project.findProperty("composeCompilerMetrics") == "true") {
+            freeCompilerArgs += [
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
+                            project.buildDir.absolutePath + "/compose_compiler"
+            ]
+        }
+    }
 }

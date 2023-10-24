@@ -1,13 +1,13 @@
 package org.phoenixframework.liveview.data.core
 
-import org.jetbrains.annotations.ApiStatus.Experimental
+import androidx.compose.runtime.Immutable
 import org.phoenixframework.liveview.lib.Attribute
 
 /**
  * This class is a copy of the `Attribute` class existing in Core-Jetpack.
  * It stores data from `Attribute` class in order to avoid to deal native objects.
  */
-@Experimental
+@Immutable
 data class CoreAttribute internal constructor(
     val name: String,
     val namespace: String,

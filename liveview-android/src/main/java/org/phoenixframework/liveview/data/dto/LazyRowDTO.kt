@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
@@ -23,10 +25,7 @@ class LazyRowDTO private constructor(builder: Builder) :
     private val horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
     private val verticalAlignment: Alignment.Vertical = builder.verticalAlignment
 
-    // content padding is a pair of pairs,
-    // the first pair is the horizontal padding,
-    // the second pair is the vertical padding
-    private val contentPadding: Pair<Pair<Int, Int>, Pair<Int, Int>> = builder.contentPadding
+    private val contentPadding: ImmutableMap<String, Int> = builder.contentPadding.toImmutableMap()
 
     private val reverseLayout: Boolean = builder.reverseLayout
 
@@ -42,10 +41,10 @@ class LazyRowDTO private constructor(builder: Builder) :
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment,
             contentPadding = PaddingValues(
-                contentPadding.first.first.dp,
-                contentPadding.second.first.dp,
-                contentPadding.first.second.dp,
-                contentPadding.second.second.dp
+                (contentPadding["left"] ?: 0).dp,
+                (contentPadding["top"] ?: 0).dp,
+                (contentPadding["right"] ?: 0).dp,
+                (contentPadding["bottom"] ?: 0).dp
             ),
             content = {
                 items(
@@ -61,7 +60,7 @@ class LazyRowDTO private constructor(builder: Builder) :
     class Builder : ComposableBuilder() {
         var horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceAround
         var verticalAlignment: Alignment.Vertical = Alignment.CenterVertically
-        var contentPadding: Pair<Pair<Int, Int>, Pair<Int, Int>> = Pair(Pair(0, 0), Pair(0, 0))
+        var contentPadding: MutableMap<String, Int> = mutableMapOf()
         var reverseLayout: Boolean = false
 
         fun reverseLayout(isReverseLayout: String) = apply {
@@ -99,47 +98,33 @@ class LazyRowDTO private constructor(builder: Builder) :
 
         fun rightPadding(paddingValue: String) = apply {
             if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding = Pair(
-                    Pair(contentPadding.first.first, paddingValue.toInt()),
-                    Pair(contentPadding.second.first, contentPadding.second.second)
-                )
+                contentPadding["right"] = paddingValue.toInt()
             }
         }
 
         fun leftPadding(paddingValue: String) = apply {
             if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding = Pair(
-                    Pair(paddingValue.toInt(), contentPadding.first.second),
-                    Pair(contentPadding.second.first, contentPadding.second.second)
-                )
+                contentPadding["left"] = paddingValue.toInt()
             }
         }
 
         fun topPadding(paddingValue: String) = apply {
             if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding = Pair(
-                    Pair(contentPadding.first.first, contentPadding.first.second),
-                    Pair(paddingValue.toInt(), contentPadding.second.second)
-                )
+                contentPadding["top"] = paddingValue.toInt()
             }
         }
 
         fun bottomPadding(paddingValue: String) = apply {
             if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding = Pair(
-                    Pair(contentPadding.first.first, contentPadding.first.second),
-                    Pair(contentPadding.second.first, paddingValue.toInt())
-                )
+                contentPadding["bottom"] = paddingValue.toInt()
             }
         }
 
         fun lazyRowItemPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding = Pair(
-                    Pair(paddingValue.toInt(), paddingValue.toInt()),
-                    Pair(paddingValue.toInt(), paddingValue.toInt())
-                )
-            }
+            topPadding(paddingValue)
+            leftPadding(paddingValue)
+            bottomPadding(paddingValue)
+            rightPadding(paddingValue)
         }
 
         fun build() = LazyRowDTO(this)

@@ -1,48 +1,50 @@
 package org.phoenixframework.liveview.data.core
 
-import org.jetbrains.annotations.ApiStatus.Experimental
+import androidx.compose.runtime.Immutable
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
+import okhttp3.internal.immutableListOf
 import org.phoenixframework.liveview.lib.Node
 
 /**
  * This class is abstraction of  the `Node.Element` class existing in Core-Jetpack.
  * It stores data from `Node.Element` class in order to avoid to deal native objects.
  */
-@Experimental
+@Immutable
 data class CoreNodeElement internal constructor(
     val tag: String,
     val namespace: String,
-    val attributes: List<CoreAttribute>
+    val attributes: ImmutableList<CoreAttribute>
 ) {
     /**
      * Create a new instance of `CoreNodeElement` from an `Node` object.
      */
     companion object {
+        internal const val TEXT_ATTRIBUTE = "text"
+
         fun fromNodeElement(node: Node): CoreNodeElement {
             return when (node) {
                 is Node.Element -> {
                     CoreNodeElement(
                         node.tag,
                         node.namespace,
-                        node.attributes.map { CoreAttribute.fromAttribute(it) }
+                        node.attributes.map { CoreAttribute.fromAttribute(it) }.toImmutableList()
                     )
                 }
 
-                is Node.Root, is Node.Leaf ->
-                    CoreNodeElement("", "", emptyList())
+                is Node.Root ->
+                    CoreNodeElement("", "", emptyList<CoreAttribute>().toImmutableList())
+
+                is Node.Leaf ->
+                    // A Leaf is considered an a Node element with a single attribute: text
+                    CoreNodeElement(
+                        "",
+                        "",
+                        immutableListOf(
+                            CoreAttribute(TEXT_ATTRIBUTE, "", node.value)
+                        ).toImmutableList()
+                    )
             }
         }
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return super.equals(other) && attributes.toTypedArray().contentDeepEquals(
-            (other as CoreNodeElement).attributes.toTypedArray()
-        )
-    }
-
-    override fun hashCode(): Int {
-        var result = tag.hashCode()
-        result = 31 * result + namespace.hashCode()
-        result = 31 * result + attributes.hashCode()
-        return result
     }
 }

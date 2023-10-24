@@ -30,14 +30,11 @@ class LiveViewCoordinator(
     private var document: Document = Document()
     private var reconnect = false
 
-    private val _composableTree = MutableStateFlow(emptyNode(-1))
+    private val _composableTree = MutableStateFlow(ComposableTreeNode(screenId, 0, null))
     val composableTree = _composableTree.asStateFlow()
 
     private val screenId: String
         get() = this.toString()
-
-    private fun emptyNode(refId: Int) =
-        ComposableTreeNode(screenId, refId, null)
 
     fun joinChannel() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -106,7 +103,6 @@ class LiveViewCoordinator(
 
     private fun parseTemplate(s: String) {
         Log.d(TAG, "parseTemplate: $s")
-        val currentDom = emptyNode(0)
         document.mergeFragmentJson(s, object : Document.Companion.Handler() {
             override fun onHandle(
                 context: Document,
@@ -136,31 +132,29 @@ class LiveViewCoordinator(
                 }
             }
         })
+        val rootNode = ComposableTreeNode(screenId, -1, null, id = "rootNode")
         val rootElement = document.rootNodeRef
         // Walk through the DOM and create a ComposableTreeNode tree
         Log.i(TAG, "walkThroughDOM start")
-        walkThroughDOM(document, rootElement, currentDom)
+        walkThroughDOM(document, rootElement, rootNode)
         Log.i(TAG, "walkThroughDOM complete")
         _composableTree.update {
-            currentDom
+            rootNode
         }
     }
 
     private fun walkThroughDOM(document: Document, nodeRef: NodeRef, parent: ComposableTreeNode?) {
         when (val node = document.getNode(nodeRef)) {
+            is Node.Leaf,
             is Node.Element -> {
-                val childNodeRefs = document.getChildren(nodeRef)
                 val composableTreeNode =
-                    composableTreeNodeFromNode(document, screenId, node, nodeRef, childNodeRefs)
+                    composableTreeNodeFromNode(screenId, node, nodeRef)
                 parent?.addNode(composableTreeNode)
 
+                val childNodeRefs = document.getChildren(nodeRef)
                 for (childNodeRef in childNodeRefs) {
                     walkThroughDOM(document, childNodeRef, composableTreeNode)
                 }
-            }
-
-            is Node.Leaf -> {
-                parent?.text = node.value
             }
 
             Node.Root -> {
@@ -216,19 +210,14 @@ class LiveViewCoordinator(
         const val TAG = "VM"
 
         internal fun composableTreeNodeFromNode(
-            document: Document,
             screenId: String,
             node: Node,
             nodeRef: NodeRef,
-            childNodeRefs: List<NodeRef>
         ): ComposableTreeNode {
             return ComposableNodeFactory.buildComposableTreeNode(
                 screenId = screenId,
                 nodeRef = nodeRef,
                 element = CoreNodeElement.fromNodeElement(node),
-                children = childNodeRefs.map { childNodeRef ->
-                    CoreNodeElement.fromNodeElement(document.getNode(childNodeRef))
-                },
             )
         }
     }
