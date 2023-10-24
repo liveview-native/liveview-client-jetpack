@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -108,8 +107,7 @@ object AsyncImageDtoFactory : ComposableViewFactory<AsyncImageDTO, AsyncImageDTO
      * @return an `AsyncImageDTO` object based on the attributes and text of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: List<CoreAttribute>,
-        children: List<CoreNodeElement>?,
+        attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
     ): AsyncImageDTO = attributes.fold(
         AsyncImageDTO.Builder().imageUrl(attributes.find { it.name == "url" }?.value ?: "")

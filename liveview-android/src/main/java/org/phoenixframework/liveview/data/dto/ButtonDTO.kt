@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -181,8 +180,7 @@ object ButtonDtoFactory : ComposableViewFactory<ButtonDTO, ButtonDTO.Builder>() 
      * @return a `ButtonDTO` object based on the attributes of the input `Attributes` object
      **/
     override fun buildComposableView(
-        attributes: List<CoreAttribute>,
-        children: List<CoreNodeElement>?,
+        attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
     ): ButtonDTO = attributes.fold(ButtonDTO.Builder()) { builder, attribute ->
         when (attribute.name) {

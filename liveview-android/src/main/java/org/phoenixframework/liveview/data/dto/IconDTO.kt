@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -62,8 +61,7 @@ class IconDTO private constructor(builder: Builder) : ComposableView(modifier = 
 
 object IconDtoFactory : ComposableViewFactory<IconDTO, IconDTO.Builder>() {
     override fun buildComposableView(
-        attributes: List<CoreAttribute>,
-        children: List<CoreNodeElement>?,
+        attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
     ): IconDTO = attributes.fold(
         IconDTO.Builder().imageVector(attributes.find { it.name == "imageVector" }?.value ?: "")

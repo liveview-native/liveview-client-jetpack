@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -88,7 +87,8 @@ object ColumnDtoFactory : ComposableViewFactory<ColumnDTO, ColumnDTO.Builder>() 
      * @return a `ColumnDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: List<CoreAttribute>, children: List<CoreNodeElement>?, pushEvent: PushEvent?
+        attributes: Array<CoreAttribute>,
+        pushEvent: PushEvent?
     ): ColumnDTO = attributes.fold(ColumnDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             "verticalArrangement" -> builder.verticalArrangement(attribute.value)

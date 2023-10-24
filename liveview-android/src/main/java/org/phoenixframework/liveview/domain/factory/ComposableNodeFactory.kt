@@ -1,6 +1,5 @@
 package org.phoenixframework.liveview.domain.factory
 
-import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
@@ -71,14 +70,13 @@ object ComposableNodeFactory {
 
     fun buildComposableView(
         element: CoreNodeElement?,
-        children: ImmutableList<ComposableTreeNode>,
         pushEvent: PushEvent,
     ): ComposableView {
         return if (element != null) {
             val tag = element.tag
             val attrs = element.attributes
             ComposableRegistry.getComponentFactory(tag)?.buildComposableView(
-                attrs, children.mapNotNull { it.node }, pushEvent
+                attrs, pushEvent
             ) ?: run {
                 TextDtoFactory.buildComposableView(
                     "$tag not supported yet",
@@ -88,7 +86,7 @@ object ComposableNodeFactory {
         } else {
             TextDtoFactory.buildComposableView(
                 "Invalid element",
-                emptyList(),
+                emptyArray(),
             )
         }
     }

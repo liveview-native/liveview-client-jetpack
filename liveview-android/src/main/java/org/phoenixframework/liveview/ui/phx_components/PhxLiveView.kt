@@ -17,7 +17,7 @@ fun PhxLiveView(
 ) {
     val composableView = remember(composableNode) {
         ComposableNodeFactory.buildComposableView(
-            composableNode.node, composableNode.children, pushEvent
+            composableNode.node, pushEvent
         )
     }
     composableView.Compose(

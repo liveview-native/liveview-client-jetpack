@@ -10,7 +10,6 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -48,7 +47,7 @@ class LazyColumnDTO private constructor(builder: Builder) :
             ),
             content = {
                 items(
-                    composableNode?.children ?: emptyList(),
+                    composableNode?.children ?: emptyArray(),
                     key = { item -> item.id },
                 ) { item ->
                     PhxLiveView(item, null, pushEvent)
@@ -127,8 +126,7 @@ class LazyColumnDTO private constructor(builder: Builder) :
 
 object LazyColumnDtoFactory : ComposableViewFactory<LazyColumnDTO, LazyColumnDTO.Builder>() {
     override fun buildComposableView(
-        attributes: List<CoreAttribute>,
-        children: List<CoreNodeElement>?,
+        attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
     ): LazyColumnDTO = attributes.fold(LazyColumnDTO.Builder()) { builder, attribute ->
         when (attribute.name) {

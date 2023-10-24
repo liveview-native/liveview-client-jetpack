@@ -271,7 +271,7 @@ class TextDTO private constructor(builder: Builder) :
 object TextDtoFactory : ComposableViewFactory<TextDTO, TextDTO.Builder>() {
     fun buildComposableView(
         text: String,
-        attributes: List<CoreAttribute>,
+        attributes: Array<CoreAttribute>,
     ): TextDTO = textBuilder(attributes).text(text).build()
 
     /**
@@ -283,12 +283,11 @@ object TextDtoFactory : ComposableViewFactory<TextDTO, TextDTO.Builder>() {
      * @return a `TextDTO` object based on the attributes and text of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: List<CoreAttribute>,
-        children: List<CoreNodeElement>?,
+        attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?
     ): TextDTO = textBuilder(attributes).build()
 
-    private fun textBuilder(attributes: List<CoreAttribute>): TextDTO.Builder =
+    private fun textBuilder(attributes: Array<CoreAttribute>): TextDTO.Builder =
         attributes.fold(TextDTO.Builder()) { builder, attribute ->
             when (attribute.name) {
                 "text" -> builder.text(attribute.value)

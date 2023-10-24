@@ -1,9 +1,6 @@
 package org.phoenixframework.liveview.data.core
 
 import androidx.compose.runtime.Immutable
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
-import okhttp3.internal.immutableListOf
 import org.phoenixframework.liveview.lib.Node
 
 /**
@@ -14,8 +11,30 @@ import org.phoenixframework.liveview.lib.Node
 data class CoreNodeElement internal constructor(
     val tag: String,
     val namespace: String,
-    val attributes: ImmutableList<CoreAttribute>
+    val attributes: Array<CoreAttribute>
 ) {
+
+    // The hashCode and equals functions has an important role in terms of performance.
+    // They guarantee that a composable function will be called again (recomposed) or not.
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CoreNodeElement
+
+        if (tag != other.tag) return false
+        if (namespace != other.namespace) return false
+        return attributes.contentDeepEquals(other.attributes)
+    }
+
+    override fun hashCode(): Int {
+        var result = tag.hashCode()
+        result = 31 * result + namespace.hashCode()
+        result = 31 * result + attributes.hashCode()
+        return result
+    }
+
     /**
      * Create a new instance of `CoreNodeElement` from an `Node` object.
      */
@@ -28,21 +47,21 @@ data class CoreNodeElement internal constructor(
                     CoreNodeElement(
                         node.tag,
                         node.namespace,
-                        node.attributes.map { CoreAttribute.fromAttribute(it) }.toImmutableList()
+                        node.attributes.map { CoreAttribute.fromAttribute(it) }.toTypedArray()
                     )
                 }
 
                 is Node.Root ->
-                    CoreNodeElement("", "", emptyList<CoreAttribute>().toImmutableList())
+                    CoreNodeElement("", "", emptyArray<CoreAttribute>())
 
                 is Node.Leaf ->
                     // A Leaf is considered an a Node element with a single attribute: text
                     CoreNodeElement(
                         "",
                         "",
-                        immutableListOf(
+                        arrayOf(
                             CoreAttribute(TEXT_ATTRIBUTE, "", node.value)
-                        ).toImmutableList()
+                        )
                     )
             }
         }

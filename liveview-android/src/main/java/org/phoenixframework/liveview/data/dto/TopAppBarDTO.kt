@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.actionTag
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.navigationIconTag
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.titleTag
@@ -122,8 +121,7 @@ class TopAppBarDTO private constructor(builder: Builder) :
 
 object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopAppBarDTO.Builder>() {
     override fun buildComposableView(
-        attributes: List<CoreAttribute>,
-        children: List<CoreNodeElement>?,
+        attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?
     ): TopAppBarDTO {
         val builder = TopAppBarDTO.Builder()
