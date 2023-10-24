@@ -31,7 +31,7 @@ import org.phoenixframework.liveview.ui.theme.textStyleFromString
 
 class TextDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
-
+    private val text: String = builder.text
     private val color: Color = builder.color
     private val fontSize: TextUnit = builder.fontSize
     private val fontStyle: FontStyle? = builder.fontStyle
@@ -78,7 +78,7 @@ class TextDTO private constructor(builder: Builder) :
         // The first (and only) children node of a Text element must be the text itself.
         // It is contained in a attribute called "text"
         val childrenNodes = composableNode?.children
-        var text = ""
+        var text = text
         if (childrenNodes?.isNotEmpty() == true) {
             val firstNode = childrenNodes.first().node
             if (firstNode?.attributes?.isNotEmpty() == true) {

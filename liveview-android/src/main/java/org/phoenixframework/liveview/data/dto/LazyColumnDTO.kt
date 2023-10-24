@@ -10,11 +10,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
@@ -40,10 +38,10 @@ class LazyColumnDTO private constructor(builder: Builder) :
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
             contentPadding = PaddingValues(
-                (contentPadding["left"] ?: 0).dp,
-                (contentPadding["top"] ?: 0).dp,
-                (contentPadding["right"] ?: 0).dp,
-                (contentPadding["bottom"] ?: 0).dp
+                (contentPadding[LazyComposableBuilder.LEFT] ?: 0).dp,
+                (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
+                (contentPadding[LazyComposableBuilder.RIGHT] ?: 0).dp,
+                (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
             ),
             content = {
                 items(
@@ -56,17 +54,9 @@ class LazyColumnDTO private constructor(builder: Builder) :
         )
     }
 
-    class Builder : ComposableBuilder() {
+    class Builder : LazyComposableBuilder() {
         var verticalArrangement: Arrangement.Vertical = Arrangement.Top
         var horizontalAlignment: Alignment.Horizontal = Alignment.Start
-        var contentPadding: MutableMap<String, Int> = mutableMapOf()
-        var reverseLayout: Boolean = false
-
-        fun reverseLayout(isReverseLayout: String) = apply {
-            if (isReverseLayout.isNotEmpty()) {
-                this.reverseLayout = isReverseLayout.toBoolean()
-            }
-        }
 
         fun verticalArrangement(verticalArrangement: String) = apply {
             this.verticalArrangement = when (verticalArrangement) {
@@ -89,37 +79,6 @@ class LazyColumnDTO private constructor(builder: Builder) :
             }
         }
 
-        fun rightPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding["right"] = paddingValue.toInt()
-            }
-        }
-
-        fun leftPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding["left"] = paddingValue.toInt()
-            }
-        }
-
-        fun topPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding["top"] = paddingValue.toInt()
-            }
-        }
-
-        fun bottomPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding["bottom"] = paddingValue.toInt()
-            }
-        }
-
-        fun lazyColumnItemPadding(paddingValue: String) = apply {
-            topPadding(paddingValue)
-            leftPadding(paddingValue)
-            bottomPadding(paddingValue)
-            rightPadding(paddingValue)
-        }
-
         fun build() = LazyColumnDTO(this)
     }
 }
@@ -136,7 +95,7 @@ object LazyColumnDtoFactory : ComposableViewFactory<LazyColumnDTO, LazyColumnDTO
             "itemBottomPadding" -> builder.bottomPadding(attribute.value)
             "itemHorizontalPadding" -> builder.horizontalPadding(attribute.value)
             "itemLeftPadding" -> builder.leftPadding(attribute.value)
-            "itemPadding" -> builder.lazyColumnItemPadding(attribute.value)
+            "itemPadding" -> builder.lazyListItemPadding(attribute.value)
             "itemRightPadding" -> builder.rightPadding(attribute.value)
             "itemTopPadding" -> builder.topPadding(attribute.value)
             "itemVerticalPadding" -> builder.verticalPadding(attribute.value)

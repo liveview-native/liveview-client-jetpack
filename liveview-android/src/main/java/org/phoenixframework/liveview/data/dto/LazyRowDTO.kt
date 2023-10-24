@@ -10,7 +10,6 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -56,17 +55,9 @@ class LazyRowDTO private constructor(builder: Builder) :
         )
     }
 
-    class Builder : ComposableBuilder() {
+    class Builder : LazyComposableBuilder() {
         var horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceAround
         var verticalAlignment: Alignment.Vertical = Alignment.CenterVertically
-        var contentPadding: MutableMap<String, Int> = mutableMapOf()
-        var reverseLayout: Boolean = false
-
-        fun reverseLayout(isReverseLayout: String) = apply {
-            if (isReverseLayout.isNotEmpty()) {
-                this.reverseLayout = isReverseLayout.toBoolean()
-            }
-        }
 
         fun horizontalArrangement(horizontalArrangement: String) = apply {
             if (horizontalArrangement.isNotEmpty()) {
@@ -95,37 +86,6 @@ class LazyRowDTO private constructor(builder: Builder) :
             }
         }
 
-        fun rightPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding["right"] = paddingValue.toInt()
-            }
-        }
-
-        fun leftPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding["left"] = paddingValue.toInt()
-            }
-        }
-
-        fun topPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding["top"] = paddingValue.toInt()
-            }
-        }
-
-        fun bottomPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding["bottom"] = paddingValue.toInt()
-            }
-        }
-
-        fun lazyRowItemPadding(paddingValue: String) = apply {
-            topPadding(paddingValue)
-            leftPadding(paddingValue)
-            bottomPadding(paddingValue)
-            rightPadding(paddingValue)
-        }
-
         fun build() = LazyRowDTO(this)
     }
 }
@@ -146,7 +106,7 @@ object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO, LazyRowDTO.Builder>
                 "itemBottomPadding" -> builder.bottomPadding(attribute.value)
                 "itemHorizontalPadding" -> builder.horizontalPadding(attribute.value)
                 "itemLeftPadding" -> builder.leftPadding(attribute.value)
-                "itemPadding" -> builder.lazyRowItemPadding(attribute.value)
+                "itemPadding" -> builder.lazyListItemPadding(attribute.value)
                 "itemRightPadding" -> builder.rightPadding(attribute.value)
                 "itemTopPadding" -> builder.topPadding(attribute.value)
                 "itemVerticalPadding" -> builder.verticalPadding(attribute.value)
