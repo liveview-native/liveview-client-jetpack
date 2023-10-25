@@ -13,11 +13,12 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 fun PhxLiveView(
     composableNode: ComposableTreeNode,
     paddingValues: PaddingValues? = null,
-    pushEvent: PushEvent
+    pushEvent: PushEvent,
+    scope: Any? = null
 ) {
     val composableView = remember(composableNode) {
         ComposableNodeFactory.buildComposableView(
-            composableNode.node, pushEvent
+            composableNode.node, pushEvent, scope
         )
     }
     composableView.Compose(

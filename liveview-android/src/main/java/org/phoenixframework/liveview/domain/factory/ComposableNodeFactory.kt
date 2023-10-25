@@ -2,6 +2,7 @@ package org.phoenixframework.liveview.domain.factory
 
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
+import org.phoenixframework.liveview.data.dto.BottomDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.CardDtoFactory
 import org.phoenixframework.liveview.data.dto.ColumnDtoFactory
@@ -29,6 +30,7 @@ object ComposableNodeFactory {
     init {
         ComposableRegistry.run {
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
+            registerComponent(ComposableTypes.box, BottomDtoFactory)
             registerComponent(ComposableTypes.button, ButtonDtoFactory)
             registerComponent(ComposableTypes.card, CardDtoFactory)
             registerComponent(ComposableTypes.column, ColumnDtoFactory)
@@ -71,22 +73,27 @@ object ComposableNodeFactory {
     fun buildComposableView(
         element: CoreNodeElement?,
         pushEvent: PushEvent,
+        scope: Any?
     ): ComposableView {
         return if (element != null) {
             val tag = element.tag
             val attrs = element.attributes
             ComposableRegistry.getComponentFactory(tag)?.buildComposableView(
-                attrs, pushEvent
+                attrs, pushEvent, scope
             ) ?: run {
                 TextDtoFactory.buildComposableView(
                     "$tag not supported yet",
                     attrs,
+                    scope,
+                    pushEvent,
                 )
             }
         } else {
             TextDtoFactory.buildComposableView(
                 "Invalid element",
                 emptyArray(),
+                scope,
+                pushEvent
             )
         }
     }

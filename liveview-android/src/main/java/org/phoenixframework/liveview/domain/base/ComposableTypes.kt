@@ -2,6 +2,7 @@ package org.phoenixframework.liveview.domain.base
 
 object ComposableTypes {
     const val asyncImage = "AsyncImage"
+    const val box = "Box"
     const val button = "Button"
     const val card = "Card"
     const val column = "Column"

@@ -9,7 +9,7 @@ abstract class LazyComposableBuilder : ComposableBuilder() {
 
     fun reverseLayout(isReverseLayout: String) = apply {
         if (isReverseLayout.isNotEmpty()) {
-            this.reverseLayout = isReverseLayout.toBoolean()
+            reverseLayout = isReverseLayout.toBoolean()
         }
     }
 

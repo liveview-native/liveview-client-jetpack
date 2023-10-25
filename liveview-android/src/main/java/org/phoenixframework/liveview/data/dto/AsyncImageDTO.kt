@@ -109,24 +109,19 @@ object AsyncImageDtoFactory : ComposableViewFactory<AsyncImageDTO, AsyncImageDTO
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
+        scope: Any?,
     ): AsyncImageDTO = attributes.fold(
-        AsyncImageDTO.Builder().imageUrl(attributes.find { it.name == "url" }?.value ?: "")
+        AsyncImageDTO.Builder()
     ) { builder, attribute ->
         when (attribute.name) {
+            "url" -> builder.imageUrl(attribute.value)
             "alignment" -> builder.alignment(attribute.value)
             "alpha" -> builder.alpha(attribute.value)
             "contentScale" -> builder.contentScale(attribute.value)
             "contentDescription" -> builder.contentDescription(attribute.value)
             "crossFade" -> builder.crossFade(attribute.value)
             "shape" -> builder.shape(attribute.value)
-            "size" -> builder.size(attribute.value)
-            "height" -> builder.height(attribute.value)
-            "width" -> builder.width(attribute.value)
-            "padding" -> builder.padding(attribute.value)
-            "horizontalPadding" -> builder.horizontalPadding(attribute.value)
-            "verticalPadding" -> builder.verticalPadding(attribute.value)
-            else -> builder
+            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
         } as AsyncImageDTO.Builder
     }.build()
-
 }

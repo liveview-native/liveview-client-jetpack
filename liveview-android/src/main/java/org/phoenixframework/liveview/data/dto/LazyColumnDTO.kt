@@ -21,9 +21,7 @@ class LazyColumnDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
     private val horizontalAlignment: Alignment.Horizontal = builder.horizontalAlignment
-
     private val contentPadding: ImmutableMap<String, Int> = builder.contentPadding.toImmutableMap()
-
     private val reverseLayout: Boolean = builder.reverseLayout
 
     @Composable
@@ -48,7 +46,7 @@ class LazyColumnDTO private constructor(builder: Builder) :
                     composableNode?.children ?: emptyArray(),
                     key = { item -> item.id },
                 ) { item ->
-                    PhxLiveView(item, null, pushEvent)
+                    PhxLiveView(item, null, pushEvent, this)
                 }
             },
         )
@@ -87,11 +85,10 @@ object LazyColumnDtoFactory : ComposableViewFactory<LazyColumnDTO, LazyColumnDTO
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
+        scope: Any?,
     ): LazyColumnDTO = attributes.fold(LazyColumnDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "height" -> builder.height(attribute.value)
             "horizontalAlignment" -> builder.horizontalAlignment(attribute.value)
-            "horizontalPadding" -> builder.horizontalPadding(attribute.value)
             "itemBottomPadding" -> builder.bottomPadding(attribute.value)
             "itemHorizontalPadding" -> builder.horizontalPadding(attribute.value)
             "itemLeftPadding" -> builder.leftPadding(attribute.value)
@@ -99,13 +96,9 @@ object LazyColumnDtoFactory : ComposableViewFactory<LazyColumnDTO, LazyColumnDTO
             "itemRightPadding" -> builder.rightPadding(attribute.value)
             "itemTopPadding" -> builder.topPadding(attribute.value)
             "itemVerticalPadding" -> builder.verticalPadding(attribute.value)
-            "padding" -> builder.padding(attribute.value)
             "reverseLayout" -> builder.reverseLayout(attribute.value)
-            "size" -> builder.size(attribute.value)
             "verticalArrangement" -> builder.verticalArrangement(attribute.value)
-            "verticalPadding" -> builder.verticalPadding(attribute.value)
-            "width" -> builder.width(attribute.value)
-            else -> builder
+            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
         } as LazyColumnDTO.Builder
     }.build()
 }

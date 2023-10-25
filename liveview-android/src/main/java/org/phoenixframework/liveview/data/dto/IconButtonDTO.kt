@@ -95,18 +95,19 @@ object IconButtonDtoFactory : ComposableViewFactory<IconButtonDTO, IconButtonDTO
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
+        scope: Any?,
     ): IconButtonDTO = attributes.fold(
         IconButtonDTO.Builder()
     ) { builder, attribute ->
         when (attribute.name) {
+            "enabled" -> builder.enabled(attribute.value)
+            "colors" -> builder.colors(attribute.value)
             //TODO Swift is using `phx-click`. Should Android use the same?
             "phx-click" -> builder.onClick {
                 pushEvent?.invoke("click", attribute.value, "", null)
             }
 
-            "enabled" -> builder.enabled(attribute.value)
-            "colors" -> builder.colors(attribute.value)
-            else -> builder
-        }
+            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+        } as IconButtonDTO.Builder
     }.build()
 }

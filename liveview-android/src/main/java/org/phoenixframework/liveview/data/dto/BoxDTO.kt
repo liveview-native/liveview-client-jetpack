@@ -1,8 +1,7 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -19,10 +18,10 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
-class ColumnDTO private constructor(builder: Builder) :
+class BoxDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
-    private val verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
-    private val horizontalAlignment: Alignment.Horizontal = builder.horizontalAlignment
+    private val contentAlignment: Alignment = builder.contentAlignment
+    private val propagateMinConstraints = builder.propagateMinConstraints
     private val hasVerticalScroll = builder.hasVerticalScrolling
     private val hasHorizontalScroll = builder.hasHorizontalScrolling
 
@@ -32,7 +31,9 @@ class ColumnDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        Column(
+        Box(
+            contentAlignment = contentAlignment,
+            propagateMinConstraints = propagateMinConstraints,
             modifier = modifier
                 .paddingIfNotNull(paddingValues)
                 .optional(
@@ -41,8 +42,6 @@ class ColumnDTO private constructor(builder: Builder) :
                 .optional(
                     hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
                 ),
-            verticalArrangement = verticalArrangement,
-            horizontalAlignment = horizontalAlignment
         ) {
             composableNode?.children?.forEach {
                 PhxLiveView(it, null, pushEvent, this)
@@ -51,51 +50,38 @@ class ColumnDTO private constructor(builder: Builder) :
     }
 
     class Builder : ComposableBuilder() {
-        var verticalArrangement: Arrangement.Vertical = Arrangement.Top
-        var horizontalAlignment: Alignment.Horizontal = Alignment.Start
+        var contentAlignment: Alignment = Alignment.TopStart
+        var propagateMinConstraints: Boolean = false
 
-        fun verticalArrangement(verticalArrangement: String) = apply {
-            this.verticalArrangement = when (verticalArrangement) {
-                "top" -> Arrangement.Top
-                "spacedEvenly" -> Arrangement.SpaceEvenly
-                "spaceAround" -> Arrangement.SpaceAround
-                "spaceBetween" -> Arrangement.SpaceBetween
-                "bottom" -> Arrangement.Bottom
-                else -> Arrangement.Center
-            }
-
+        fun contentAlignment(contentAlignment: String) = apply {
+            this.contentAlignment = alignmentFromString(contentAlignment, Alignment.TopStart)
         }
 
-        fun horizontalAlignment(horizontalAlignment: String) = apply {
-            this.horizontalAlignment = when (horizontalAlignment) {
-                "start" -> Alignment.Start
-                "center" -> Alignment.CenterHorizontally
-                "end" -> Alignment.End
-                else -> Alignment.Start
-            }
+        fun propagateMinConstraints(value: String) = apply {
+            this.propagateMinConstraints = value.toBoolean()
         }
 
-        fun build(): ColumnDTO = ColumnDTO(this)
+        fun build(): BoxDTO = BoxDTO(this)
     }
 }
 
-object ColumnDtoFactory : ComposableViewFactory<ColumnDTO, ColumnDTO.Builder>() {
+object BottomDtoFactory : ComposableViewFactory<BoxDTO, BoxDTO.Builder>() {
     /**
-     * Creates a `ColumnDTO` object based on the attributes of the input `Attributes` object.
-     * Column co-relates to the Column composable
-     * @param attributes the `Attributes` object to create the `ColumnDTO` object from
-     * @return a `ColumnDTO` object based on the attributes of the input `Attributes` object
+     * Creates a `BoxDTO` object based on the attributes of the input `Attributes` object.
+     * Box co-relates to the Box composable
+     * @param attributes the `Attributes` object to create the `BoxDTO` object from
+     * @return a `BoxDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
-    ): ColumnDTO = attributes.fold(ColumnDTO.Builder()) { builder, attribute ->
+    ): BoxDTO = attributes.fold(BoxDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "verticalArrangement" -> builder.verticalArrangement(attribute.value)
-            "horizontalAlignment" -> builder.horizontalAlignment(attribute.value)
+            "contentAlignment" -> builder.contentAlignment(attribute.value)
             "scroll" -> builder.scrolling(attribute.value)
+            "propagateMinConstraints" -> builder.propagateMinConstraints(attribute.value)
             else -> builder.processCommonAttributes(scope, attribute, pushEvent)
-        } as ColumnDTO.Builder
+        } as BoxDTO.Builder
     }.build()
 }

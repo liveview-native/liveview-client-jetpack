@@ -162,10 +162,6 @@ class ButtonDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun padding(padding: String): Builder = apply {
-            super.padding(padding)
-        }
-
         fun build() = ButtonDTO(this)
     }
 }
@@ -180,6 +176,7 @@ object ButtonDtoFactory : ComposableViewFactory<ButtonDTO, ButtonDTO.Builder>() 
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
+        scope: Any?,
     ): ButtonDTO = attributes.fold(ButtonDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             "colors" -> builder.colors(attribute.value)
@@ -187,16 +184,10 @@ object ButtonDtoFactory : ComposableViewFactory<ButtonDTO, ButtonDTO.Builder>() 
             "elevation" -> builder.elevation(attribute.value)
             "enabled" -> builder.enabled(attribute.value)
             "shape" -> builder.shape(attribute.value)
-            "padding" -> builder.padding(attribute.value)
-            "size" -> builder.size(attribute.value)
-            "height" -> builder.height(attribute.value)
-            "width" -> builder.width(attribute.value)
-            //TODO Swift is using `phx-click`. Should Android use the same?
             "phx-click" -> builder.onClick {
                 pushEvent?.invoke("click", attribute.value, "", null)
             }
-
-            else -> builder
+            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
         } as ButtonDTO.Builder
     }.build()
 }

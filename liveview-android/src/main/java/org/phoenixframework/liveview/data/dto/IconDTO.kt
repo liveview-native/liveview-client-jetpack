@@ -63,19 +63,15 @@ object IconDtoFactory : ComposableViewFactory<IconDTO, IconDTO.Builder>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
+        scope: Any?,
     ): IconDTO = attributes.fold(
-        IconDTO.Builder().imageVector(attributes.find { it.name == "imageVector" }?.value ?: "")
+        IconDTO.Builder()
     ) { builder, attribute ->
         when (attribute.name) {
+            "imageVector" -> builder.imageVector(attribute.value)
             "tint" -> builder.tint(attribute.value)
-            "size" -> builder.size(attribute.value)
-            "height" -> builder.height(attribute.value)
-            "width" -> builder.width(attribute.value)
             "contentDescription" -> builder.contentDescription(attribute.value)
-            "padding" -> builder.padding(attribute.value)
-            "horizontalPadding" -> builder.horizontalPadding(attribute.value)
-            "verticalPadding" -> builder.verticalPadding(attribute.value)
-            else -> builder
+            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
         } as IconDTO.Builder
     }.build()
 }

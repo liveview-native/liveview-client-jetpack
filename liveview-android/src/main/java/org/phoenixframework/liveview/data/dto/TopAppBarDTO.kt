@@ -122,19 +122,15 @@ class TopAppBarDTO private constructor(builder: Builder) :
 object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopAppBarDTO.Builder>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
-        pushEvent: PushEvent?
+        pushEvent: PushEvent?,
+        scope: Any?,
     ): TopAppBarDTO {
         val builder = TopAppBarDTO.Builder()
 
         attributes.forEach { attribute ->
             when (attribute.name) {
                 "colors" -> builder.colors(attribute.value)
-                "size" -> builder.size(attribute.value)
-                "height" -> builder.height(attribute.value)
-                "width" -> builder.width(attribute.value)
-                "padding" -> builder.padding(attribute.value)
-                "horizontalPadding" -> builder.horizontalPadding(attribute.value)
-                "verticalPadding" -> builder.verticalPadding(attribute.value)
+                else -> builder.processCommonAttributes(scope, attribute, pushEvent)
             }
         }
         return builder.build()

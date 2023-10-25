@@ -38,7 +38,7 @@ class ScaffoldDTO private constructor(builder: Builder) :
         Scaffold(
             modifier = modifier,
             containerColor = containerColor,
-            contentColor = contentColorFor(containerColor),
+            contentColor = contentColor ?: contentColorFor(containerColor),
             topBar = {
                 topBar?.let { appBar ->
                     PhxLiveView(appBar, paddingValues, pushEvent)
@@ -76,17 +76,12 @@ object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, ScaffoldDTO.Build
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
+        scope: Any?,
     ): ScaffoldDTO = attributes.fold(ScaffoldDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             "containerColor" -> builder.containerColor(attribute.value)
             "contentColor" -> builder.contentColor(attribute.value)
-            "size" -> builder.size(attribute.value)
-            "height" -> builder.height(attribute.value)
-            "width" -> builder.width(attribute.value)
-            "padding" -> builder.padding(attribute.value)
-            "horizontalPadding" -> builder.horizontalPadding(attribute.value)
-            "verticalPadding" -> builder.verticalPadding(attribute.value)
-            else -> builder
+            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
         } as ScaffoldDTO.Builder
     }.build()
 }

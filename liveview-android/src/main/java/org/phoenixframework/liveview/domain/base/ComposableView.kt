@@ -1,7 +1,11 @@
 package org.phoenixframework.liveview.domain.base
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
 abstract class ComposableView(val modifier: Modifier = Modifier) {
@@ -36,34 +41,34 @@ abstract class ComposableBuilder {
     var modifier: Modifier = Modifier
         private set
 
-    open fun size(size: String) = apply {
+    private fun size(size: String) = apply {
         modifier = when {
-            size.isNotEmptyAndIsDigitsOnly() -> modifier.size(size = size.toInt().dp)
-            size == "fill" -> modifier.fillMaxSize()
+            size.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.size(size = size.toInt().dp))
+            size == "fill" -> modifier.then(Modifier.fillMaxSize())
             size == "wrap" -> modifier.then(Modifier.wrapContentSize())
             else -> modifier
         }
     }
 
-    open fun padding(padding: String) = apply {
+    private fun padding(padding: String) = apply {
         if (padding.isNotEmptyAndIsDigitsOnly()) {
             modifier = modifier.then(Modifier.padding(padding.toInt().dp))
         }
     }
 
-    open fun verticalPadding(padding: String) = apply {
+    internal fun verticalPadding(padding: String) = apply {
         if (padding.isNotEmptyAndIsDigitsOnly()) {
-            modifier = modifier.then(Modifier.padding(padding.toInt().dp))
+            modifier = modifier.then(Modifier.padding(vertical = padding.toInt().dp))
         }
     }
 
-    open fun horizontalPadding(padding: String) = apply {
+    internal fun horizontalPadding(padding: String) = apply {
         if (padding.isNotEmptyAndIsDigitsOnly()) {
-            modifier = modifier.then(Modifier.padding(padding.toInt().dp))
+            modifier = modifier.then(Modifier.padding(horizontal = padding.toInt().dp))
         }
     }
 
-    open fun height(height: String) = apply {
+    private fun height(height: String) = apply {
         modifier = when {
             height.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.height(height.toInt().dp))
             height == "fill" -> modifier.then(Modifier.fillMaxHeight())
@@ -72,7 +77,7 @@ abstract class ComposableBuilder {
         }
     }
 
-    open fun width(width: String) = apply {
+    private fun width(width: String) = apply {
         modifier = when {
             width.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.width(width.toInt().dp))
             width == "fill" -> modifier.then(Modifier.fillMaxWidth())
@@ -81,7 +86,7 @@ abstract class ComposableBuilder {
         }
     }
 
-    open fun clickable(event: String, pushEvent: PushEvent?) = apply {
+    private fun clickable(event: String, pushEvent: PushEvent?) = apply {
         modifier = modifier.then(
             Modifier.clickable {
                 pushEvent?.invoke("click", event, "", null)
@@ -93,7 +98,12 @@ abstract class ComposableBuilder {
         val options = scrolling.split('|')
         hasHorizontalScrolling = options.contains("horizontal")
         hasVerticalScrolling = options.contains("vertical")
-        modifier
+    }
+
+    private fun background(background: String) = apply {
+        if (background.isNotEmpty()) {
+            modifier = modifier.then(Modifier.background(background.toColor()))
+        }
     }
 
     protected fun alignmentFromString(alignment: String, defaultValue: Alignment): Alignment =
@@ -110,6 +120,28 @@ abstract class ComposableBuilder {
             else -> defaultValue
         }
 
+    private fun verticalAlignmentFromString(
+        alignment: String,
+        defaultValue: Alignment.Vertical
+    ): Alignment.Vertical =
+        when (alignment) {
+            "top" -> Alignment.Top
+            "center" -> Alignment.CenterVertically
+            "bottom" -> Alignment.Bottom
+            else -> defaultValue
+        }
+
+    private fun horizontalAlignmentFromString(
+        alignment: String,
+        defaultValue: Alignment.Horizontal
+    ): Alignment.Horizontal =
+        when (alignment) {
+            "start" -> Alignment.Start
+            "center" -> Alignment.CenterHorizontally
+            "end" -> Alignment.End
+            else -> defaultValue
+        }
+
     protected fun contentScaleFromString(
         contentScale: String,
         defaultValue: ContentScale
@@ -123,11 +155,90 @@ abstract class ComposableBuilder {
             "inside" -> ContentScale.Inside
             else -> defaultValue
         }
+
+    internal fun processCommonAttributes(
+        scope: Any?,
+        attribute: CoreAttribute,
+        pushEvent: PushEvent?
+    ): ComposableBuilder {
+        when (attribute.name) {
+            "background" -> background(attribute.value)
+            "size" -> size(attribute.value)
+            "height" -> height(attribute.value)
+            "width" -> width(attribute.value)
+            "padding" -> padding(attribute.value)
+            "horizontalPadding" -> horizontalPadding(attribute.value)
+            "verticalPadding" -> verticalPadding(attribute.value)
+            //TODO Swift is using `phx-click`. Should Android use the same?
+            "phx-click" -> clickable(attribute.value, pushEvent)
+        }
+        when (scope) {
+            is BoxScope -> {
+                when (attribute.name) {
+                    "align" -> scope.run {
+                        modifier = modifier.then(
+                            Modifier.align(alignmentFromString(attribute.value, Alignment.TopStart))
+                        )
+                    }
+
+                    "matchParentSize" -> scope.run {
+                        if (attribute.value.toBoolean()) {
+                            modifier = modifier.then(Modifier.matchParentSize())
+                        }
+                    }
+                }
+            }
+
+            is ColumnScope -> {
+                when (attribute.name) {
+                    "weight" -> scope.run {
+                        attribute.value.toFloatOrNull()?.let {
+                            modifier = modifier.then(Modifier.weight(it))
+                        }
+                    }
+
+                    "align" -> scope.run {
+                        modifier = modifier.then(
+                            Modifier.align(
+                                horizontalAlignmentFromString(
+                                    attribute.value,
+                                    Alignment.Start
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+
+            is RowScope -> {
+                when (attribute.name) {
+                    "weight" -> scope.run {
+                        attribute.value.toFloatOrNull()?.let {
+                            modifier = modifier.then(Modifier.weight(it))
+                        }
+                    }
+
+                    "align" -> scope.run {
+                        modifier = modifier.then(
+                            Modifier.align(
+                                verticalAlignmentFromString(
+                                    attribute.value,
+                                    Alignment.Top
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+        return this
+    }
 }
 
 abstract class ComposableViewFactory<CV : ComposableView, CB : ComposableBuilder> {
     abstract fun buildComposableView(
         attributes: Array<CoreAttribute>,
-        pushEvent: PushEvent?
+        pushEvent: PushEvent?,
+        scope: Any?
     ): CV
 }

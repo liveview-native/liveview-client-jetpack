@@ -94,15 +94,11 @@ object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO, LazyRowDTO.Builder>
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
+        scope: Any?,
     ): LazyRowDTO =
         attributes.fold(LazyRowDTO.Builder()) { builder, attribute ->
             when (attribute.name) {
-                "height" -> builder.height(attribute.value)
-                "horizontalArrangement" -> builder.horizontalArrangement(
-                    horizontalArrangement = attribute.value
-                )
-
-                "horizontalPadding" -> builder.horizontalPadding(attribute.value)
+                "horizontalArrangement" -> builder.horizontalArrangement(attribute.value)
                 "itemBottomPadding" -> builder.bottomPadding(attribute.value)
                 "itemHorizontalPadding" -> builder.horizontalPadding(attribute.value)
                 "itemLeftPadding" -> builder.leftPadding(attribute.value)
@@ -110,13 +106,10 @@ object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO, LazyRowDTO.Builder>
                 "itemRightPadding" -> builder.rightPadding(attribute.value)
                 "itemTopPadding" -> builder.topPadding(attribute.value)
                 "itemVerticalPadding" -> builder.verticalPadding(attribute.value)
-                "padding" -> builder.padding(attribute.value)
                 "reverseLayout" -> builder.reverseLayout(attribute.value)
-                "size" -> builder.size(attribute.value)
-                "verticalAlignment" -> builder.verticalAlignment(verticalAlignment = attribute.value)
+                "verticalAlignment" -> builder.verticalAlignment(attribute.value)
                 "verticalPadding" -> builder.verticalPadding(attribute.value)
-                "width" -> builder.width(attribute.value)
-                else -> builder
+                else -> builder.processCommonAttributes(scope, attribute, pushEvent)
             } as LazyRowDTO.Builder
         }.build()
 }
