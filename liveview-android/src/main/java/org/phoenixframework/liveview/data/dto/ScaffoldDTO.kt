@@ -31,8 +31,14 @@ class ScaffoldDTO private constructor(builder: Builder) :
         val topBar = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.tag == ComposableTypes.topAppBar }
         }
+        val floatingActionButton = remember(composableNode?.children) {
+            composableNode?.children?.find { it.node?.tag == ComposableTypes.fab }
+        }
         val body = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag != ComposableTypes.topAppBar }
+            composableNode?.children?.find {
+                it.node?.tag != ComposableTypes.topAppBar &&
+                        it.node?.tag != ComposableTypes.fab
+            }
         }
         val containerColor = containerColor ?: MaterialTheme.colorScheme.background
         Scaffold(
@@ -42,6 +48,11 @@ class ScaffoldDTO private constructor(builder: Builder) :
             topBar = {
                 topBar?.let { appBar ->
                     PhxLiveView(appBar, paddingValues, pushEvent)
+                }
+            },
+            floatingActionButton = {
+                floatingActionButton?.let { fab ->
+                    PhxLiveView(fab, null, pushEvent)
                 }
             },
             content = { contentPaddingValues ->

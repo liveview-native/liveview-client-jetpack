@@ -27,9 +27,12 @@ fun shapesFromThemeData(map: Map<String, Any>): Shapes {
     )
 }
 
-internal fun shapeFromString(shape: String): CornerBasedShape = when {
+internal fun shapeFromString(
+    shape: String,
+    default: CornerBasedShape = RoundedCornerShape(0.dp)
+): CornerBasedShape = when {
     shape.isNotEmptyAndIsDigitsOnly() -> RoundedCornerShape(shape.toInt().dp)
     shape.isNotEmpty() && shape == "circle" -> CircleShape
     shape.isNotEmpty() && shape == "rectangle" -> RoundedCornerShape(0.dp)
-    else -> RoundedCornerShape(0.dp)
+    else -> default
 }

@@ -6,6 +6,7 @@ object ComposableTypes {
     const val button = "Button"
     const val card = "Card"
     const val column = "Column"
+    const val fab = "FloatingActionButton"
     const val icon = "Icon"
     const val iconButton = "IconButton"
     const val lazyColumn = "LazyColumn"

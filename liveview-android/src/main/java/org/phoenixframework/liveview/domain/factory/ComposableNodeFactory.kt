@@ -6,6 +6,7 @@ import org.phoenixframework.liveview.data.dto.BottomDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.CardDtoFactory
 import org.phoenixframework.liveview.data.dto.ColumnDtoFactory
+import org.phoenixframework.liveview.data.dto.FloatingActionButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyColumnDtoFactory
@@ -34,6 +35,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.button, ButtonDtoFactory)
             registerComponent(ComposableTypes.card, CardDtoFactory)
             registerComponent(ComposableTypes.column, ColumnDtoFactory)
+            registerComponent(ComposableTypes.fab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.icon, IconDtoFactory)
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.lazyColumn, LazyColumnDtoFactory)
