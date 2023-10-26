@@ -15,5 +15,6 @@ object ComposableTypes {
     const val scaffold = "Scaffold"
     const val spacer = "Spacer"
     const val text = "Text"
+    const val textField = "TextField"
     const val topAppBar = "TopAppBar"
 }

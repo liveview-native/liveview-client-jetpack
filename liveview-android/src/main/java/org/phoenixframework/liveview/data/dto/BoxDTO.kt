@@ -65,7 +65,7 @@ class BoxDTO private constructor(builder: Builder) :
     }
 }
 
-object BottomDtoFactory : ComposableViewFactory<BoxDTO, BoxDTO.Builder>() {
+object BoxDtoFactory : ComposableViewFactory<BoxDTO, BoxDTO.Builder>() {
     /**
      * Creates a `BoxDTO` object based on the attributes of the input `Attributes` object.
      * Box co-relates to the Box composable

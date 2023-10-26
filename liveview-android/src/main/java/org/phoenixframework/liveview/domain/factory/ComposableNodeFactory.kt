@@ -2,7 +2,7 @@ package org.phoenixframework.liveview.domain.factory
 
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
-import org.phoenixframework.liveview.data.dto.BottomDtoFactory
+import org.phoenixframework.liveview.data.dto.BoxDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.CardDtoFactory
 import org.phoenixframework.liveview.data.dto.ColumnDtoFactory
@@ -15,6 +15,7 @@ import org.phoenixframework.liveview.data.dto.RowDtoFactory
 import org.phoenixframework.liveview.data.dto.ScaffoldDtoFactory
 import org.phoenixframework.liveview.data.dto.SpacerDtoFactory
 import org.phoenixframework.liveview.data.dto.TextDtoFactory
+import org.phoenixframework.liveview.data.dto.TextFieldDtoFactory
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -31,7 +32,7 @@ object ComposableNodeFactory {
     init {
         ComposableRegistry.run {
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
-            registerComponent(ComposableTypes.box, BottomDtoFactory)
+            registerComponent(ComposableTypes.box, BoxDtoFactory)
             registerComponent(ComposableTypes.button, ButtonDtoFactory)
             registerComponent(ComposableTypes.card, CardDtoFactory)
             registerComponent(ComposableTypes.column, ColumnDtoFactory)
@@ -44,12 +45,22 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.scaffold, ScaffoldDtoFactory)
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
             registerComponent(ComposableTypes.text, TextDtoFactory)
+            registerComponent(ComposableTypes.textField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
 
             // Specific for TopAppBar
             registerComponent(TopAppBarDtoFactory.titleTag, RowDtoFactory)
             registerComponent(TopAppBarDtoFactory.actionTag, IconButtonDtoFactory)
             registerComponent(TopAppBarDtoFactory.navigationIconTag, IconButtonDtoFactory)
+
+            // Specific for TextField
+            registerComponent(TextFieldDtoFactory.label, BoxDtoFactory)
+            registerComponent(TextFieldDtoFactory.placeholder, BoxDtoFactory)
+            registerComponent(TextFieldDtoFactory.leadingIcon, IconDtoFactory)
+            registerComponent(TextFieldDtoFactory.trailingIcon, IconDtoFactory)
+            registerComponent(TextFieldDtoFactory.prefix, BoxDtoFactory)
+            registerComponent(TextFieldDtoFactory.suffix, BoxDtoFactory)
+            registerComponent(TextFieldDtoFactory.supportingText, TextDtoFactory)
         }
     }
 
