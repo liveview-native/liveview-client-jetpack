@@ -9,11 +9,12 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -22,9 +23,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import kotlinx.collections.immutable.ImmutableMap
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.map
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
@@ -32,6 +34,7 @@ import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.privateField
+import org.phoenixframework.liveview.domain.extensions.throttleLatest
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -88,19 +91,10 @@ class TextFieldDTO private constructor(builder: Builder) :
         var textFieldValue by remember {
             mutableStateOf(TextFieldValue(text))
         }
-        val coroutineScope = rememberCoroutineScope()
-
         TextField(
             value = textFieldValue,
             onValueChange = { value ->
                 textFieldValue = value
-                onChange?.let { event ->
-                    coroutineScope.coroutineContext.cancelChildren()
-                    coroutineScope.launch {
-                        delay(debounce)
-                        pushEvent.invoke("change", event, textFieldValue.text, null)
-                    }
-                }
             },
             modifier = modifier,
             enabled = enabled,
@@ -153,6 +147,21 @@ class TextFieldDTO private constructor(builder: Builder) :
             // TODO
             // interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
         )
+
+        // Sending the updates to the server respecting phx-debounce and phx-throttle attributes
+        LaunchedEffect(composableNode?.id) {
+            snapshotFlow { textFieldValue }
+                .map { it.text }
+                .distinctUntilChanged()
+                .drop(1) // Ignoring the first emission when the component is displayed
+                .debounce(debounce ?: 0)
+                .throttleLatest(throttle)
+                .collect { text ->
+                    onChange?.let { event ->
+                        pushEvent.invoke("change", event, text, null)
+                    }
+                }
+        }
     }
 
     @Composable
@@ -220,7 +229,7 @@ class TextFieldDTO private constructor(builder: Builder) :
             private set
         var onChange: String? = null
             private set
-        var debounce: Long = 0L
+        var debounce: Long? = null
             private set
         var throttle: Long = 300L
             private set
@@ -258,11 +267,11 @@ class TextFieldDTO private constructor(builder: Builder) :
         }
 
         fun debounce(debounce: String) = apply {
-            this.debounce = debounce.toLongOrNull() ?: 0
+            this.debounce = debounce.toLongOrNull()
         }
 
         fun throttle(throttle: String) = apply {
-            this.throttle = throttle.toLongOrNull() ?: 0
+            this.throttle = throttle.toLongOrNull() ?: 300
         }
 
         fun onKeyboardAction(event: String, pushEvent: PushEvent?) = apply {
