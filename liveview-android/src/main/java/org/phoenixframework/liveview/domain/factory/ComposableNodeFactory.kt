@@ -9,6 +9,7 @@ import org.phoenixframework.liveview.data.dto.ColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.FloatingActionButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconDtoFactory
+import org.phoenixframework.liveview.data.dto.ImageDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
 import org.phoenixframework.liveview.data.dto.RowDtoFactory
@@ -39,6 +40,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.fab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.icon, IconDtoFactory)
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
+            registerComponent(ComposableTypes.image, ImageDtoFactory)
             registerComponent(ComposableTypes.lazyColumn, LazyColumnDtoFactory)
             registerComponent(ComposableTypes.lazyRow, LazyRowDtoFactory)
             registerComponent(ComposableTypes.row, RowDtoFactory)

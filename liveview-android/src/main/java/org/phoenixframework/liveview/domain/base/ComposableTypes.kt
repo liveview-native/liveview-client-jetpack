@@ -9,6 +9,7 @@ object ComposableTypes {
     const val fab = "FloatingActionButton"
     const val icon = "Icon"
     const val iconButton = "IconButton"
+    const val image = "Image"
     const val lazyColumn = "LazyColumn"
     const val lazyRow = "LazyRow"
     const val row = "Row"
