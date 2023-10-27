@@ -49,7 +49,7 @@ class ButtonDTO private constructor(builder: Builder) :
             contentPadding = contentPadding ?: ButtonDefaults.ContentPadding,
         ) {
             composableNode?.children?.forEach {
-                PhxLiveView(it, null, pushEvent)
+                PhxLiveView(it, pushEvent, composableNode, null, this)
             }
         }
     }
@@ -187,6 +187,7 @@ object ButtonDtoFactory : ComposableViewFactory<ButtonDTO, ButtonDTO.Builder>() 
             "phx-click" -> builder.onClick {
                 pushEvent?.invoke("click", attribute.value, "", null)
             }
+
             else -> builder.processCommonAttributes(scope, attribute, pushEvent)
         } as ButtonDTO.Builder
     }.build()

@@ -51,19 +51,19 @@ class TopAppBarDTO private constructor(builder: Builder) :
             colors = getTopAppBarColors(colors = colors),
             title = {
                 title?.let {
-                    PhxLiveView(it, null, pushEvent)
+                    PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
             navigationIcon = {
                 navIcon?.let {
                     Box {
-                        PhxLiveView(it, null, pushEvent)
+                        PhxLiveView(it, pushEvent, composableNode, null, this)
                     }
                 }
             },
             actions = {
                 actions?.forEach {
-                    PhxLiveView(it, null, pushEvent)
+                    PhxLiveView(it, pushEvent, composableNode, null, this)
                 }
             },
             modifier = modifier,
@@ -134,6 +134,14 @@ object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopAppBarDTO.Bu
             }
         }
         return builder.build()
+    }
+
+    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
+        return mapOf(
+            titleTag to RowDtoFactory,
+            actionTag to IconButtonDtoFactory,
+            navigationIconTag to IconButtonDtoFactory,
+        )
     }
 
     const val titleTag = "Title"

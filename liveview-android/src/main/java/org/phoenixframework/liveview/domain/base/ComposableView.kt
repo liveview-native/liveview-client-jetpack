@@ -241,4 +241,10 @@ abstract class ComposableViewFactory<CV : ComposableView, CB : ComposableBuilder
         pushEvent: PushEvent?,
         scope: Any?
     ): CV
+
+    /**
+     * Subclasses of ComposableViewFactory can register subtags specific for a particular component.
+     * See ComposableRegistry and ComposableNodeFactory for more details.
+     */
+    open fun subTags(): Map<String, ComposableViewFactory<*, *>> = emptyMap()
 }

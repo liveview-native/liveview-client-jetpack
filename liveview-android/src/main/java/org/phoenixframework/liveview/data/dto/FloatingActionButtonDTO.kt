@@ -49,7 +49,7 @@ class FloatingActionButtonDTO private constructor(builder: Builder) :
             elevation = getFabElevation(elevation),
         ) {
             composableNode?.children?.forEach {
-                PhxLiveView(it, null, pushEvent)
+                PhxLiveView(it, pushEvent, composableNode, null)
             }
         }
     }

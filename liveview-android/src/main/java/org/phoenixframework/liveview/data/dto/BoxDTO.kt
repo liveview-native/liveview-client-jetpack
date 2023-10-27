@@ -44,7 +44,7 @@ class BoxDTO private constructor(builder: Builder) :
                 ),
         ) {
             composableNode?.children?.forEach {
-                PhxLiveView(it, null, pushEvent, this)
+                PhxLiveView(it, pushEvent, composableNode, null, this)
             }
         }
     }

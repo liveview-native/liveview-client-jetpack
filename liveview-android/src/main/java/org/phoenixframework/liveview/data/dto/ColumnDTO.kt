@@ -45,7 +45,7 @@ class ColumnDTO private constructor(builder: Builder) :
             horizontalAlignment = horizontalAlignment
         ) {
             composableNode?.children?.forEach {
-                PhxLiveView(it, null, pushEvent, this)
+                PhxLiveView(it, pushEvent, composableNode, null, this)
             }
         }
     }

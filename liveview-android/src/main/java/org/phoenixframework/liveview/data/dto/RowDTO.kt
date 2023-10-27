@@ -44,7 +44,7 @@ class RowDTO private constructor(builder: Builder) : ComposableView(modifier = b
             verticalAlignment = verticalAlignment
         ) {
             composableNode?.children?.forEach {
-                PhxLiveView(it, null, pushEvent, this)
+                PhxLiveView(it, pushEvent, composableNode, null, this)
             }
         }
     }

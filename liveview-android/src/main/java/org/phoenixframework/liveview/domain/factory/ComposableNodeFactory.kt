@@ -49,20 +49,6 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.text, TextDtoFactory)
             registerComponent(ComposableTypes.textField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
-
-            // Specific for TopAppBar
-            registerComponent(TopAppBarDtoFactory.titleTag, RowDtoFactory)
-            registerComponent(TopAppBarDtoFactory.actionTag, IconButtonDtoFactory)
-            registerComponent(TopAppBarDtoFactory.navigationIconTag, IconButtonDtoFactory)
-
-            // Specific for TextField
-            registerComponent(TextFieldDtoFactory.label, BoxDtoFactory)
-            registerComponent(TextFieldDtoFactory.placeholder, BoxDtoFactory)
-            registerComponent(TextFieldDtoFactory.leadingIcon, IconDtoFactory)
-            registerComponent(TextFieldDtoFactory.trailingIcon, IconDtoFactory)
-            registerComponent(TextFieldDtoFactory.prefix, BoxDtoFactory)
-            registerComponent(TextFieldDtoFactory.suffix, BoxDtoFactory)
-            registerComponent(TextFieldDtoFactory.supportingText, TextDtoFactory)
         }
     }
 
@@ -87,13 +73,14 @@ object ComposableNodeFactory {
 
     fun buildComposableView(
         element: CoreNodeElement?,
+        parentTag: String?,
         pushEvent: PushEvent,
         scope: Any?
     ): ComposableView {
         return if (element != null) {
             val tag = element.tag
             val attrs = element.attributes
-            ComposableRegistry.getComponentFactory(tag)?.buildComposableView(
+            ComposableRegistry.getComponentFactory(tag, parentTag)?.buildComposableView(
                 attrs, pushEvent, scope
             ) ?: run {
                 TextDtoFactory.buildComposableView(

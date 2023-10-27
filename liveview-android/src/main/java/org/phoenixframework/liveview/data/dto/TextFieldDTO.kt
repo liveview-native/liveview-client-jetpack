@@ -102,37 +102,37 @@ class TextFieldDTO private constructor(builder: Builder) :
             textStyle = textStyleFromString(textStyle),
             label = label?.let {
                 {
-                    PhxLiveView(label, null, pushEvent)
+                    PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
             placeholder = placeholder?.let {
                 {
-                    PhxLiveView(it, null, pushEvent)
+                    PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
             leadingIcon = leadingIcon?.let {
                 {
-                    PhxLiveView(it, null, pushEvent)
+                    PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
             trailingIcon = trailingIcon?.let {
                 {
-                    PhxLiveView(it, null, pushEvent)
+                    PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
             prefix = prefix?.let {
                 {
-                    PhxLiveView(it, null, pushEvent)
+                    PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
             suffix = suffix?.let {
                 {
-                    PhxLiveView(it, null, pushEvent)
+                    PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
             supportingText = supportingText?.let {
                 {
-                    PhxLiveView(it, null, pushEvent)
+                    PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
             isError = isError,
@@ -419,11 +419,23 @@ object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO, TextFieldDTO.Bu
         } as TextFieldDTO.Builder
     }.build()
 
-    const val label = "Label"
-    const val placeholder = "Placeholder"
-    const val leadingIcon = "LeadingIcon"
-    const val trailingIcon = "TrailingIcon"
-    const val prefix = "Prefix"
-    const val suffix = "Suffix"
-    const val supportingText = "SupportingText"
+    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
+        return mapOf(
+            label to BoxDtoFactory,
+            placeholder to BoxDtoFactory,
+            leadingIcon to IconDtoFactory,
+            trailingIcon to IconDtoFactory,
+            prefix to BoxDtoFactory,
+            suffix to BoxDtoFactory,
+            supportingText to TextDtoFactory,
+        )
+    }
+
+    internal const val label = "Label"
+    internal const val placeholder = "Placeholder"
+    internal const val leadingIcon = "LeadingIcon"
+    internal const val trailingIcon = "TrailingIcon"
+    internal const val prefix = "Prefix"
+    internal const val suffix = "Suffix"
+    internal const val supportingText = "SupportingText"
 }

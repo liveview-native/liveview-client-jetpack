@@ -46,7 +46,7 @@ class LazyColumnDTO private constructor(builder: Builder) :
                     composableNode?.children ?: emptyArray(),
                     key = { item -> item.id },
                 ) { item ->
-                    PhxLiveView(item, null, pushEvent, this)
+                    PhxLiveView(item, pushEvent, composableNode, null, this)
                 }
             },
         )

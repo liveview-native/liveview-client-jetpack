@@ -47,17 +47,17 @@ class ScaffoldDTO private constructor(builder: Builder) :
             contentColor = contentColor ?: contentColorFor(containerColor),
             topBar = {
                 topBar?.let { appBar ->
-                    PhxLiveView(appBar, paddingValues, pushEvent)
+                    PhxLiveView(appBar, pushEvent, composableNode, null)
                 }
             },
             floatingActionButton = {
                 floatingActionButton?.let { fab ->
-                    PhxLiveView(fab, null, pushEvent)
+                    PhxLiveView(fab, pushEvent, composableNode, null)
                 }
             },
             content = { contentPaddingValues ->
                 body?.let { content ->
-                    PhxLiveView(content, contentPaddingValues, pushEvent)
+                    PhxLiveView(content, pushEvent, composableNode, contentPaddingValues)
                 }
             }
         )

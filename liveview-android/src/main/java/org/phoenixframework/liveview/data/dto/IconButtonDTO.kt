@@ -37,7 +37,7 @@ class IconButtonDTO private constructor(builder: Builder) :
             colors = getIconButtonColors(colors),
         ) {
             composableNode?.children?.forEach {
-                PhxLiveView(it, null, pushEvent)
+                PhxLiveView(it, pushEvent, composableNode, null)
             }
         }
     }

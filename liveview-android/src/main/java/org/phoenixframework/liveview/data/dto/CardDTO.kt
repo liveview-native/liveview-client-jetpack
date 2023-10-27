@@ -44,7 +44,7 @@ class CardDTO private constructor(builder: Builder) : ComposableView(modifier = 
             elevation = getCardElevation(elevation),
         ) {
             composableNode?.children?.forEach {
-                PhxLiveView(it, null, pushEvent)
+                PhxLiveView(it, pushEvent, composableNode, null, this)
             }
         }
     }
