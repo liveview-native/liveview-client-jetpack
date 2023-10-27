@@ -156,7 +156,7 @@ abstract class ComposableBuilder {
             else -> defaultValue
         }
 
-    internal fun processCommonAttributes(
+    fun processCommonAttributes(
         scope: Any?,
         attribute: CoreAttribute,
         pushEvent: PushEvent?
