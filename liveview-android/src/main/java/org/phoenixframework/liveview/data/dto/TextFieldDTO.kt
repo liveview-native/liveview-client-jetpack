@@ -23,13 +23,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
-import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -44,7 +44,7 @@ import org.phoenixframework.liveview.ui.theme.textStyleFromString
 
 class TextFieldDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
-    private val text = builder.text
+    private val text = builder.value
     private val onChange = builder.onChange
     private val debounce = builder.debounce
     private val throttle = builder.throttle
@@ -57,7 +57,7 @@ class TextFieldDTO private constructor(builder: Builder) :
     private val maxLines = builder.maxLines
     private val minLines = builder.minLines
     private val shape = builder.shape
-    private val colors = builder.colors
+    private val colors = builder.colors?.toImmutableMap()
     private val keyboardOptions = builder.keyboardOptions
     private val keyboardActions = builder.keyboardActions
 
@@ -185,8 +185,16 @@ class TextFieldDTO private constructor(builder: Builder) :
                 cursorColor = value("cursorColor"),
                 errorCursorColor = value("errorCursorColor"),
                 selectionColors = TextSelectionColors(
-                    value("handleSelectionColors"),
-                    value("backgroundSelectionColors"),
+                    textFieldColors["selectionHandleColor"]?.toColor()
+                        ?: Color(
+                            defaultValue.privateField<TextSelectionColors>("textSelectionColors")
+                                .privateField("handleColor")
+                        ),
+                    textFieldColors["selectionBackgroundColor"]?.toColor()
+                        ?: Color(
+                            defaultValue.privateField<TextSelectionColors>("textSelectionColors")
+                                .privateField("backgroundColor")
+                        ),
                 ),
                 focusedIndicatorColor = value("focusedIndicatorColor"),
                 unfocusedIndicatorColor = value("unfocusedIndicatorColor"),
@@ -224,17 +232,7 @@ class TextFieldDTO private constructor(builder: Builder) :
         }
     }
 
-    class Builder : ComposableBuilder() {
-        var text = ""
-            private set
-        var onChange: String? = null
-            private set
-        var debounce: Long? = null
-            private set
-        var throttle: Long = 300L
-            private set
-        var enabled: Boolean = true
-            private set
+    class Builder : ChangeableDTOBuilder<String>("") {
         var readOnly: Boolean = false
             private set
         var textStyle: String? = null
@@ -251,32 +249,16 @@ class TextFieldDTO private constructor(builder: Builder) :
             private set
         var shape: CornerBasedShape? = null
             private set
-        var colors: ImmutableMap<String, String>? = null
+        var colors: Map<String, String>? = null
             private set
         var keyboardOptions: KeyboardOptions = KeyboardOptions.Default
             private set
         var keyboardActions: KeyboardActions = KeyboardActions.Default
             private set
 
-        fun text(text: String) = apply {
-            this.text = text
-        }
-
-        fun onChange(event: String) = apply {
-            this.onChange = event
-        }
-
-        fun debounce(debounce: String) = apply {
-            this.debounce = debounce.toLongOrNull()
-        }
-
-        fun throttle(throttle: String) = apply {
-            this.throttle = throttle.toLongOrNull() ?: 300
-        }
-
         fun onKeyboardAction(event: String, pushEvent: PushEvent?) = apply {
             val action = {
-                pushEvent?.invoke("click", event, text, null)
+                pushEvent?.invoke("click", event, value, null)
             }
             this.keyboardActions = KeyboardActions(
                 onDone = { action.invoke() },
@@ -288,9 +270,6 @@ class TextFieldDTO private constructor(builder: Builder) :
             )
         }
 
-        fun enabled(enabled: String) = apply {
-            this.enabled = enabled.toBoolean()
-        }
 
         fun readOnly(readOnly: String) = apply {
             this.readOnly = readOnly.toBoolean()
@@ -394,29 +373,29 @@ object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO, TextFieldDTO.Bu
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
-    ): TextFieldDTO = attributes.fold(TextFieldDTO.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            "phx-change" -> builder.onChange(attribute.value)
-            "phx-click" -> builder.onKeyboardAction(attribute.value, pushEvent)
-            "phx-debounce" -> builder.debounce(attribute.value)
-            "phx-throttle" -> builder.throttle(attribute.value)
-            "text" -> builder.text(attribute.value)
-            "enabled" -> builder.enabled(attribute.value)
-            "readOnly" -> builder.readOnly(attribute.value)
-            "textStyle" -> builder.textStyle(attribute.value)
-            "isError" -> builder.isError(attribute.value)
-            "visualTransformation" -> builder.visualTransformation(attribute.value)
-            "singleLine" -> builder.singleLine(attribute.value)
-            "maxLines" -> builder.maxLines(attribute.value)
-            "minLines" -> builder.minLines(attribute.value)
-            "shape" -> builder.shape(attribute.value)
-            "colors" -> builder.colors(attribute.value)
-            "capitalization" -> builder.capitalization(attribute.value)
-            "autoCorrect" -> builder.autoCorrect(attribute.value)
-            "keyboardType" -> builder.keyboardType(attribute.value)
-            "imeAction" -> builder.imeAction(attribute.value)
-            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
-        } as TextFieldDTO.Builder
+    ): TextFieldDTO = TextFieldDTO.Builder().apply {
+        processChangeableAttributes(attributes)
+    }.also {
+        attributes.fold(it) { builder, attribute ->
+            when (attribute.name) {
+                "phx-click" -> builder.onKeyboardAction(attribute.value, pushEvent)
+                "text" -> builder.value(attribute.value)
+                "readOnly" -> builder.readOnly(attribute.value)
+                "textStyle" -> builder.textStyle(attribute.value)
+                "isError" -> builder.isError(attribute.value)
+                "visualTransformation" -> builder.visualTransformation(attribute.value)
+                "singleLine" -> builder.singleLine(attribute.value)
+                "maxLines" -> builder.maxLines(attribute.value)
+                "minLines" -> builder.minLines(attribute.value)
+                "shape" -> builder.shape(attribute.value)
+                "colors" -> builder.colors(attribute.value)
+                "capitalization" -> builder.capitalization(attribute.value)
+                "autoCorrect" -> builder.autoCorrect(attribute.value)
+                "keyboardType" -> builder.keyboardType(attribute.value)
+                "imeAction" -> builder.imeAction(attribute.value)
+                else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+            } as TextFieldDTO.Builder
+        }
     }.build()
 
     override fun subTags(): Map<String, ComposableViewFactory<*, *>> {

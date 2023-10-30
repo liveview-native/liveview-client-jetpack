@@ -14,6 +14,7 @@ object ComposableTypes {
     const val lazyRow = "LazyRow"
     const val row = "Row"
     const val scaffold = "Scaffold"
+    const val slider = "Slider"
     const val spacer = "Spacer"
     const val text = "Text"
     const val textField = "TextField"
