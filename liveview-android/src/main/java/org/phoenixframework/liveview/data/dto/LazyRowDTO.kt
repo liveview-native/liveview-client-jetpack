@@ -7,9 +7,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.core.CoreNodeElement
-import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -18,16 +18,11 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
-class LazyRowDTO private constructor(builder: Builder) :
+internal class LazyRowDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
     private val verticalAlignment: Alignment.Vertical = builder.verticalAlignment
-
-    // content padding is a pair of pairs,
-    // the first pair is the horizontal padding,
-    // the second pair is the vertical padding
-    private val contentPadding: Pair<Pair<Int, Int>, Pair<Int, Int>> = builder.contentPadding
-
+    private val contentPadding: ImmutableMap<String, Int> = builder.contentPadding.toImmutableMap()
     private val reverseLayout: Boolean = builder.reverseLayout
 
     @Composable
@@ -42,34 +37,38 @@ class LazyRowDTO private constructor(builder: Builder) :
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment,
             contentPadding = PaddingValues(
-                contentPadding.first.first.dp,
-                contentPadding.second.first.dp,
-                contentPadding.first.second.dp,
-                contentPadding.second.second.dp
+                (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
+                (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
+                (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
+                (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
             ),
             content = {
                 items(
-                    composableNode?.children ?: emptyList(),
+                    composableNode?.children ?: emptyArray(),
                     key = { item -> item.id },
                 ) { item ->
-                    PhxLiveView(item, null, pushEvent)
+                    PhxLiveView(item, pushEvent, composableNode, null, this)
                 }
             },
         )
     }
 
-    class Builder : ComposableBuilder() {
+    internal class Builder : LazyComposableBuilder<LazyRowDTO>() {
         var horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceAround
+            private set
         var verticalAlignment: Alignment.Vertical = Alignment.CenterVertically
-        var contentPadding: Pair<Pair<Int, Int>, Pair<Int, Int>> = Pair(Pair(0, 0), Pair(0, 0))
-        var reverseLayout: Boolean = false
+            private set
 
-        fun reverseLayout(isReverseLayout: String) = apply {
-            if (isReverseLayout.isNotEmpty()) {
-                this.reverseLayout = isReverseLayout.toBoolean()
-            }
-        }
-
+        /**
+         * The horizontal arrangement of the Row's children
+         *
+         * ```
+         * <LazyRow horizontalArrangement="spaceAround" >...</Column>
+         * ```
+         * @param horizontalArrangement the horizontal arrangement of the column's children. The
+         * supported values are: `start`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `end`,
+         * and `center`. An int value is also supported, which will be used to determine the space.
+         */
         fun horizontalArrangement(horizontalArrangement: String) = apply {
             if (horizontalArrangement.isNotEmpty()) {
                 this.horizontalArrangement = when (horizontalArrangement) {
@@ -87,6 +86,15 @@ class LazyRowDTO private constructor(builder: Builder) :
             }
         }
 
+        /**
+         * The vertical alignment of the Row's children
+         *
+         * ```
+         * <LazyRow verticalAlignment="center" >...</Column>
+         * ```
+         * @param verticalAlignment the vertical alignment of the row's children. The
+         * supported values are: `top`, `center`, and `bottom`.
+         */
         fun verticalAlignment(verticalAlignment: String) = apply {
             if (verticalAlignment.isNotEmpty()) {
                 this.verticalAlignment = when (verticalAlignment) {
@@ -97,83 +105,32 @@ class LazyRowDTO private constructor(builder: Builder) :
             }
         }
 
-        fun rightPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding = Pair(
-                    Pair(contentPadding.first.first, paddingValue.toInt()),
-                    Pair(contentPadding.second.first, contentPadding.second.second)
-                )
-            }
-        }
-
-        fun leftPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding = Pair(
-                    Pair(paddingValue.toInt(), contentPadding.first.second),
-                    Pair(contentPadding.second.first, contentPadding.second.second)
-                )
-            }
-        }
-
-        fun topPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding = Pair(
-                    Pair(contentPadding.first.first, contentPadding.first.second),
-                    Pair(paddingValue.toInt(), contentPadding.second.second)
-                )
-            }
-        }
-
-        fun bottomPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding = Pair(
-                    Pair(contentPadding.first.first, contentPadding.first.second),
-                    Pair(contentPadding.second.first, paddingValue.toInt())
-                )
-            }
-        }
-
-        fun lazyRowItemPadding(paddingValue: String) = apply {
-            if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
-                contentPadding = Pair(
-                    Pair(paddingValue.toInt(), paddingValue.toInt()),
-                    Pair(paddingValue.toInt(), paddingValue.toInt())
-                )
-            }
-        }
-
-        fun build() = LazyRowDTO(this)
+        override fun build() = LazyRowDTO(this)
     }
 }
 
-object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO, LazyRowDTO.Builder>() {
+internal object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO, LazyRowDTO.Builder>() {
+    /**
+     * Creates a `LazyRowDTO` object based on the attributes of the input `Attributes` object.
+     * Row co-relates to the LazyRow composable
+     * @param attributes the `Attributes` object to create the `LazyRowDTO` object from
+     * @return a `LazyRowDTO` object based on the attributes of the input `Attributes` object
+     */
     override fun buildComposableView(
-        attributes: List<CoreAttribute>,
-        children: List<CoreNodeElement>?,
+        attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
-    ): LazyRowDTO =
-        attributes.fold(LazyRowDTO.Builder()) { builder, attribute ->
-            when (attribute.name) {
-                "height" -> builder.height(attribute.value)
-                "horizontalArrangement" -> builder.horizontalArrangement(
-                    horizontalArrangement = attribute.value
-                )
-
-                "horizontalPadding" -> builder.horizontalPadding(attribute.value)
-                "itemBottomPadding" -> builder.bottomPadding(attribute.value)
-                "itemHorizontalPadding" -> builder.horizontalPadding(attribute.value)
-                "itemLeftPadding" -> builder.leftPadding(attribute.value)
-                "itemPadding" -> builder.lazyRowItemPadding(attribute.value)
-                "itemRightPadding" -> builder.rightPadding(attribute.value)
-                "itemTopPadding" -> builder.topPadding(attribute.value)
-                "itemVerticalPadding" -> builder.verticalPadding(attribute.value)
-                "padding" -> builder.padding(attribute.value)
-                "reverseLayout" -> builder.reverseLayout(attribute.value)
-                "size" -> builder.size(attribute.value)
-                "verticalAlignment" -> builder.verticalAlignment(verticalAlignment = attribute.value)
-                "verticalPadding" -> builder.verticalPadding(attribute.value)
-                "width" -> builder.width(attribute.value)
-                else -> builder
-            } as LazyRowDTO.Builder
-        }.build()
+        scope: Any?,
+    ): LazyRowDTO = LazyRowDTO.Builder().also {
+        attributes.fold(it) { builder, attribute ->
+            if (builder.handleLazyAttribute(attribute)) {
+                builder
+            } else {
+                when (attribute.name) {
+                    "horizontalArrangement" -> builder.horizontalArrangement(attribute.value)
+                    "verticalAlignment" -> builder.verticalAlignment(attribute.value)
+                    else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
+                } as LazyRowDTO.Builder
+            }
+        }
+    }.build()
 }

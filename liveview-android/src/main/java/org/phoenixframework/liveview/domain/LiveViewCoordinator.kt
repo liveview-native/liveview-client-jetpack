@@ -3,10 +3,8 @@ package org.phoenixframework.liveview.domain
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.catch
@@ -21,7 +19,6 @@ import org.phoenixframework.liveview.lib.Document
 import org.phoenixframework.liveview.lib.Node
 import org.phoenixframework.liveview.lib.NodeRef
 import java.net.ConnectException
-import java.util.Stack
 
 class LiveViewCoordinator(
     private val httpBaseUrl: String,
@@ -31,12 +28,10 @@ class LiveViewCoordinator(
     private val repository: Repository = Repository(httpBaseUrl, wsBaseUrl)
 
     private var document: Document = Document()
-    private var lastRenderedMap: Map<String, Any?> = emptyMap()
     private var reconnect = false
 
-    //TODO Is this stack necessary?
-    private val _backStack = MutableStateFlow<Stack<ComposableTreeNode>>(Stack())
-    val backStack = _backStack.asStateFlow()
+    private val _composableTree = MutableStateFlow(ComposableTreeNode(screenId, 0, null))
+    val composableTree = _composableTree.asStateFlow()
 
     private val screenId: String
         get() = this.toString()
@@ -55,19 +50,36 @@ class LiveViewCoordinator(
                 .collect { message ->
                     Log.d(TAG, "message: $message")
                     when {
+                        // Navigation Messages
                         message.payload.containsKey("live_redirect") -> handleNavigation(message)
 
                         message.payload.containsKey("redirect") -> handleRedirect(message)
 
-                        message.payload.containsKey("rendered") -> handleRenderedMessage(message)
+                        // Render message
+                        message.payload.containsKey("rendered") -> {
+                            parseTemplate(getJsonFieldAsString("rendered", message.payloadJson))
+                        }
 
-                        message.payload.containsKey("diff") ||
-                                message.event == "diff" -> handleDiffMessage(message)
+                        // Diff messages
+                        message.event == "diff" -> {
+                            parseTemplate(message.payloadJson)
+                        }
+
+                        message.payload.containsKey("diff") -> {
+                            parseTemplate(getJsonFieldAsString("diff", message.payloadJson))
+                        }
                     }
                 }
 
         }.invokeOnCompletion {
             Log.d(TAG, "Channel Flow Job completed url: $httpBaseUrl | wsUrl: $wsBaseUrl")
+        }
+    }
+
+    private fun getJsonFieldAsString(field: String, json: String): String {
+        return json.run {
+            val jsonField = "\"${field}\":"
+            substring(indexOf(jsonField) + jsonField.length, lastIndex)
         }
     }
 
@@ -89,48 +101,9 @@ class LiveViewCoordinator(
         }
     }
 
-    private fun handleRenderedMessage(message: Message) {
-        message.payload["rendered"]?.let { inputMap ->
-            val renderedMap: Map<String, Any?> = inputMap as Map<String, Any?>
-            lastRenderedMap = renderedMap
-            handleMap(lastRenderedMap, true)
-        }
-    }
-
-    private fun handleDiffMessage(message: Message) {
-        val newMessage = lastRenderedMap.toMutableMap()
-        val diffDict =
-            if (message.payload.containsKey("diff"))
-                message.payload["diff"] as Map<String, Any>
-            else
-                message.payload
-        diffDict.forEach { (key, value) ->
-            newMessage[key] = value
-        }
-        lastRenderedMap = newMessage
-        handleMap(lastRenderedMap, false)
-    }
-
-    private fun handleMap(newMessage: Map<String, Any?>, reRender: Boolean) {
-        // It means that there's at least one state into the template
-        val hasServerState = newMessage.containsKey("0")
-        val domDiffList = if (hasServerState) {
-            val renderChunks = newMessage["s"] as? List<String>
-            val list = renderChunks?.mapIndexed { index, chunk ->
-                "$chunk${newMessage["$index"] ?: ""}"
-            }
-            mapOf("s" to list)
-        } else {
-            newMessage
-        }
-        val originalRenderDom = domDiffList["s"] as List<String>
-        parseTemplate(originalRenderDom.joinToString(""), reRender)
-    }
-
-    private fun parseTemplate(s: String, reRender: Boolean) {
-        val currentDom = ComposableTreeNode(screenId, 0, null, null)
-        val parsedDocument = Document.parse(s)
-        document.merge(parsedDocument, object : Document.Companion.Handler() {
+    private fun parseTemplate(s: String) {
+        Log.d(TAG, "parseTemplate: $s")
+        document.mergeFragmentJson(s, object : Document.Companion.Handler() {
             override fun onHandle(
                 context: Document,
                 changeType: Document.Companion.ChangeType,
@@ -157,52 +130,31 @@ class LiveViewCoordinator(
                         Log.i(TAG, "Replace: ${context.getNodeString(nodeRef)}")
                     }
                 }
-                notifyNodeChange(parsedDocument, nodeRef)
             }
         })
-        val rootElement = parsedDocument.rootNodeRef
+        val rootNode = ComposableTreeNode(screenId, -1, null, id = "rootNode")
+        val rootElement = document.rootNodeRef
         // Walk through the DOM and create a ComposableTreeNode tree
-        walkThroughDOM(parsedDocument, rootElement, currentDom)
+        Log.i(TAG, "walkThroughDOM start")
+        walkThroughDOM(document, rootElement, rootNode)
         Log.i(TAG, "walkThroughDOM complete")
-
-        if (reRender) {
-            _backStack.update {
-                val newStack = Stack<ComposableTreeNode>()
-                newStack.addAll(it)
-                newStack.push(currentDom)
-                newStack
-            }
-        } else {
-            _backStack.value.run {
-                pop()
-                push(currentDom)
-            }
+        _composableTree.update {
+            rootNode
         }
     }
 
     private fun walkThroughDOM(document: Document, nodeRef: NodeRef, parent: ComposableTreeNode?) {
-
         when (val node = document.getNode(nodeRef)) {
+            is Node.Leaf,
             is Node.Element -> {
-                val childNodeRefs = document.getChildren(nodeRef)
-                val composableTreeNode = ComposableNodeFactory.buildComposableTreeNode(
-                    screenId = screenId,
-                    nodeRef = nodeRef,
-                    element = CoreNodeElement.fromNodeElement(node),
-                    children = childNodeRefs.map { childNodeRef ->
-                        CoreNodeElement.fromNodeElement(this.document.getNode(nodeRef = childNodeRef))
-                    },
-                )
+                val composableTreeNode =
+                    composableTreeNodeFromNode(screenId, node, nodeRef)
                 parent?.addNode(composableTreeNode)
 
+                val childNodeRefs = document.getChildren(nodeRef)
                 for (childNodeRef in childNodeRefs) {
                     walkThroughDOM(document, childNodeRef, composableTreeNode)
                 }
-            }
-
-            is Node.Leaf -> {
-                parent?.text = node.value
-                parent?.refId = nodeRef.ref
             }
 
             Node.Root -> {
@@ -237,55 +189,7 @@ class LiveViewCoordinator(
             }
         }
 
-        parseTemplate(errorHtml, true)
-    }
-
-    private fun findNodeById(refId: Int): ComposableTreeNode? {
-        if (_backStack.value.isEmpty()) {
-            return null
-        } else {
-            val root = _backStack.value.peek()
-            val stack = Stack<ComposableTreeNode>()
-            stack.push(root)
-            while (stack.isNotEmpty()) {
-                val current = stack.pop()
-                if (current.refId == refId) {
-                    return current
-                } else {
-                    current.children.forEach {
-                        stack.push(it)
-                    }
-                }
-            }
-            return null
-        }
-    }
-
-    private fun notifyNodeChange(
-        document: Document,
-        nodeRef: NodeRef,
-    ) {
-        val composableTreeNode = findNodeById(nodeRef.ref)
-        Log.d(TAG, "notifyNodeChange: $composableTreeNode - ${composableTreeNode?.text}")
-        if (composableTreeNode == null) {
-            return
-        }
-        stateMap[stateKey(screenId, nodeRef.ref)]?.update {
-            Log.d(TAG, "notifyNodeChange: Node found!")
-            val node = document.getNode(nodeRef)
-            val children = document.getChildren(nodeRef)
-            composableTreeNode.copy(
-                node = CoreNodeElement.fromNodeElement(node),
-                childrenNodes = children.map {
-                    CoreNodeElement.fromNodeElement(
-                        document.getNode(
-                            nodeRef
-                        )
-                    )
-                }.toImmutableList(),
-                text = if (node is Node.Leaf) node.value else "",
-            )
-        }
+        parseTemplate(errorHtml)
     }
 
     fun leaveChannel() {
@@ -300,30 +204,21 @@ class LiveViewCoordinator(
     override fun onCleared() {
         super.onCleared()
         repository.closeChannel()
-        deleteNodeStateByScreenId(screenId)
     }
 
     companion object {
         const val TAG = "VM"
 
-        private val stateMap = mutableMapOf<String, MutableStateFlow<ComposableTreeNode?>>()
-
-        private fun stateKey(screenId: String?, refId: Int?) = "$screenId---$refId"
-
-        // TODO This is a temporary solution for node updates.
-        // TODO As soon Core implement the new diff mechanism, this approach should be re-evaluated.
-        fun getNodeState(composableTreeNode: ComposableTreeNode?): StateFlow<ComposableTreeNode?> {
-            val key = stateKey(composableTreeNode?.screenId, composableTreeNode?.refId)
-            if (!stateMap.containsKey(key)) {
-                stateMap[key] = MutableStateFlow(composableTreeNode)
-            }
-            return stateMap[key]!!
-        }
-
-        private fun deleteNodeStateByScreenId(screenId: String) {
-            stateMap.filter { it.key.startsWith(screenId) }.keys.forEach {
-                stateMap.remove(it)
-            }
+        internal fun composableTreeNodeFromNode(
+            screenId: String,
+            node: Node,
+            nodeRef: NodeRef,
+        ): ComposableTreeNode {
+            return ComposableNodeFactory.buildComposableTreeNode(
+                screenId = screenId,
+                nodeRef = nodeRef,
+                element = CoreNodeElement.fromNodeElement(node),
+            )
         }
     }
 }

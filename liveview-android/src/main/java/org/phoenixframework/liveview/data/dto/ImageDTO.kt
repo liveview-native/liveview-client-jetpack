@@ -1,12 +1,13 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import androidx.compose.ui.res.painterResource
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -14,11 +15,10 @@ import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
-internal class AsyncImageDTO private constructor(builder: Builder) :
+internal class ImageDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
-    private val imageUrl: String = builder.imageUrl
+    private val imageResource: String = builder.imageResource
     private val contentDescription: String? = builder.contentDescription
-    private val crossFade: Boolean = builder.crossFade
     private val alignment: Alignment = builder.alignment
     private val contentScale: ContentScale = builder.contentScale
     private val alpha: Float = builder.alpha
@@ -29,11 +29,8 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
-                .crossfade(crossFade)
-                .build(),
+        Image(
+            painter = getPainter(imageResource = imageResource),
             contentDescription = contentDescription,
             modifier = modifier,
             alignment = alignment,
@@ -42,12 +39,25 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
         )
     }
 
-    internal class Builder : ComposableBuilder<AsyncImageDTO>() {
-        var imageUrl: String = ""
+    companion object {
+        private val imageCache = mutableMapOf<String, Painter>()
+
+        @Composable
+        fun getPainter(imageResource: String): Painter {
+            val ctx = LocalContext.current
+            val res = ctx.resources
+            if (!imageCache.containsKey(imageResource)) {
+                imageCache[imageResource] =
+                    painterResource(res.getIdentifier(imageResource, "drawable", ctx.packageName))
+            }
+            return imageCache[imageResource]!!
+        }
+    }
+
+    class Builder : ComposableBuilder<ImageDTO>() {
+        var imageResource: String = ""
             private set
         var contentDescription: String? = null
-            private set
-        var crossFade: Boolean = false
             private set
         var alignment: Alignment = Alignment.Center
             private set
@@ -57,41 +67,27 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
             private set
 
         /**
-         * Sets the image URL.
-         *
+         * Image name. The image must be located at project's `res/drawable` folder.
          * ```
-         * <AsyncImage url="https://assets.dockyard.com/images/narwin-home-flare.jpg" />
+         *  <Image resource="android_icon" />
          * ```
-         * @param imageUrl image url
+         * @param imageResource image resource name (can be a PNG or Vector Drawable) without
+         * extension. For example, if the image is `android_icon.png`, use `android_icon`.
          */
-        fun imageUrl(imageUrl: String) = apply {
-            this.imageUrl = imageUrl
+        fun imageResource(imageResource: String) = apply {
+            this.imageResource = imageResource
         }
 
         /**
-         * Sets the image content description fro accessibility purpose.
+         * Sets the image content description fro accessibility purpose.Ø
          *
          * ```
-         * <AsyncImage contentDescription="Application Logo" />
+         * <Image contentDescription="Application Image" />
          * ```
          * @param contentDescription string representing the image's content description
          */
         fun contentDescription(contentDescription: String) = apply {
             this.contentDescription = contentDescription
-        }
-
-        /**
-         * Define if the image will have the crossfade animation after loaded.
-         *
-         * ```
-         * <AsyncImage crossFade="true" />
-         * ```
-         * @param crossFade true to enable a crossfade animation, false otherwise.
-         */
-        fun crossFade(crossFade: String) = apply {
-            if (crossFade.isNotEmpty()) {
-                this.crossFade = crossFade.toBoolean()
-            }
         }
 
         /**
@@ -113,7 +109,7 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
          * Alignment parameter used to place the image in the given bounds defined by the width and
          * height.
          * ```
-         * <AsyncImage alignment="centerStart" />
+         * <Image alignment="centerStart" />
          * ```
          * @param alignment image alignment when the image is smaller than the available area.
          * The supported values are: `topStart`, `topCenter`, `topEnd`, `centerStart`, `center`,
@@ -129,7 +125,7 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
         /**
          * Opacity to be applied to the image when it is rendered onscreen.
          * ```
-         * <AsyncImage alpha="0.5" />
+         * <Image alpha="0.5" />
          * ```
          * @param alpha float value between 0 (transparent) to 1 (opaque).
          */
@@ -137,35 +133,30 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
             this.alpha = alpha.toFloatOrNull() ?: 1f
         }
 
-        override fun build(): AsyncImageDTO = AsyncImageDTO(this)
+        override fun build(): ImageDTO = ImageDTO(this)
     }
 }
 
-internal object AsyncImageDtoFactory :
-    ComposableViewFactory<AsyncImageDTO, AsyncImageDTO.Builder>() {
+internal object ImageDtoFactory : ComposableViewFactory<ImageDTO, ImageDTO.Builder>() {
     /**
-     * Creates an `AsyncImageDTO` object based on the attributes and text of the input `Attributes`
-     * object. AsyncImage co-relates to the AsyncImage composable from Coil library used to load
-     * images from network.
+     * Creates an `ImageDTO` object based on the attributes and text of the input `Attributes` object.
+     * Image co-relates to the Image composable from Compose library used to load images from the
+     * project's folder.
      * @param attributes the `Attributes` object to create the `AsyncImageDTO` object from
-     * @return an `AsyncImageDTO` object based on the attributes and text of the input `Attributes`
-     * object
+     * @return an `ImageDTO` object based on the attributes and text of the input `Attributes` object
      */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
-    ): AsyncImageDTO = attributes.fold(
-        AsyncImageDTO.Builder()
-    ) { builder, attribute ->
+    ): ImageDTO = attributes.fold(ImageDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "url" -> builder.imageUrl(attribute.value)
+            "resource" -> builder.imageResource(attribute.value)
             "alignment" -> builder.alignment(attribute.value)
             "alpha" -> builder.alpha(attribute.value)
             "contentScale" -> builder.contentScale(attribute.value)
             "contentDescription" -> builder.contentDescription(attribute.value)
-            "crossFade" -> builder.crossFade(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as AsyncImageDTO.Builder
+        } as ImageDTO.Builder
     }.build()
 }

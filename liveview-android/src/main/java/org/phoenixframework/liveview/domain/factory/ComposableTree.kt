@@ -1,24 +1,44 @@
 package org.phoenixframework.liveview.domain.factory
 
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
+import androidx.compose.runtime.Stable
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import java.util.UUID
 
+@Stable
 data class ComposableTreeNode(
     val screenId: String,
-    var refId: Int,
+    val refId: Int,
     val node: CoreNodeElement?,
-    val childrenNodes: ImmutableList<CoreNodeElement>?,
-    var text: String = "",
-    val id: String = UUID.randomUUID().toString()
+    val id: String = UUID.randomUUID().toString(),
 ) {
-    val children: ImmutableList<ComposableTreeNode>
-        get() = _children.toImmutableList()
-
-    private val _children: MutableList<ComposableTreeNode> = mutableListOf()
+    var children: Array<ComposableTreeNode> = emptyArray()
+        private set
 
     fun addNode(child: ComposableTreeNode) {
-        _children.add(child)
+        children = arrayOf(*children, child)
+    }
+
+    // The hashCode and equals functions has an important role in terms of performance.
+    // They guarantee that a composable function will be called again (recomposed) or not.
+    override fun hashCode(): Int {
+        var result = screenId.hashCode()
+        result = 31 * result + refId
+        result = 31 * result + (node?.hashCode() ?: 0)
+        result = 31 * result + id.hashCode()
+        result = 31 * result + children.hashCode()
+        return result
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ComposableTreeNode
+
+        if (screenId != other.screenId) return false
+        if (refId != other.refId) return false
+        if (node != other.node) return false
+        if (id != other.id) return false
+        return children.contentDeepEquals(other.children)
     }
 }

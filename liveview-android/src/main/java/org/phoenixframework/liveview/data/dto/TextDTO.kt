@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -18,7 +19,9 @@ import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.ui.theme.fontFamilyFromString
 import org.phoenixframework.liveview.ui.theme.fontSizeFromString
 import org.phoenixframework.liveview.ui.theme.fontStyleFromString
 import org.phoenixframework.liveview.ui.theme.fontWeightFromString
@@ -28,9 +31,9 @@ import org.phoenixframework.liveview.ui.theme.textAlignFromString
 import org.phoenixframework.liveview.ui.theme.textDecorationFromString
 import org.phoenixframework.liveview.ui.theme.textStyleFromString
 
-class TextDTO private constructor(private val builder: Builder) :
+internal class TextDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
-
+    private val text: String = builder.text
     private val color: Color = builder.color
     private val fontSize: TextUnit = builder.fontSize
     private val fontStyle: FontStyle? = builder.fontStyle
@@ -43,6 +46,7 @@ class TextDTO private constructor(private val builder: Builder) :
     private val overflow: TextOverflow = builder.overflow
     private val softWrap: Boolean = builder.softWrap
     private val maxLines: Int = builder.maxLines
+    private val minLines: Int = builder.minLines
     private val style: String? = builder.style
 
     @Composable
@@ -51,8 +55,11 @@ class TextDTO private constructor(private val builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val text = remember(composableNode) {
+            getText(composableNode)
+        }
         Text(
-            text = composableNode?.text ?: "",
+            text = text,
             color = color,
             modifier = modifier,
             fontSize = fontSize,
@@ -65,40 +72,94 @@ class TextDTO private constructor(private val builder: Builder) :
             overflow = overflow,
             softWrap = softWrap,
             maxLines = maxLines,
+            minLines = minLines,
             textDecoration = textDecoration,
             style = textStyleFromString(style),
         )
     }
 
-    class Builder : ComposableBuilder() {
-        var text: String = ""
-        var color: Color = Color.Unspecified
-        var fontSize: TextUnit = TextUnit.Unspecified
-        var fontStyle: FontStyle? = null
-        var fontWeight: FontWeight? = null
-        var fontFamily: FontFamily? = null
-        var letterSpacing: TextUnit = TextUnit.Unspecified
-        var textDecoration: TextDecoration? = null
-        var textAlign: TextAlign? = null
-        var lineHeight: TextUnit = TextUnit.Unspecified
-        var overflow: TextOverflow = TextOverflow.Clip
-        var softWrap: Boolean = true
-        var maxLines: Int = Int.MAX_VALUE
-        var style: String? = null
+    private fun getText(composableNode: ComposableTreeNode?): String {
+        // The first (and only) children node of a Text element must be the text itself.
+        // It is contained in a attribute called "text"
+        val childrenNodes = composableNode?.children
+        var text = text
+        if (childrenNodes?.isNotEmpty() == true) {
+            val firstNode = childrenNodes.first().node
+            if (firstNode?.attributes?.isNotEmpty() == true) {
+                val firstAttr = firstNode.attributes.first()
+                if (firstAttr.name == CoreNodeElement.TEXT_ATTRIBUTE) {
+                    text = firstAttr.value
+                }
+            }
+        }
+        return text
+    }
 
+    internal class Builder : ComposableBuilder<TextDTO>() {
+        var text: String = ""
+            private set
+        var color: Color = Color.Unspecified
+            private set
+        var fontSize: TextUnit = TextUnit.Unspecified
+            private set
+        var fontStyle: FontStyle? = null
+            private set
+        var fontWeight: FontWeight? = null
+            private set
+        var fontFamily: FontFamily? = null
+            private set
+        var letterSpacing: TextUnit = TextUnit.Unspecified
+            private set
+        var textDecoration: TextDecoration? = null
+            private set
+        var textAlign: TextAlign? = null
+            private set
+        var lineHeight: TextUnit = TextUnit.Unspecified
+            private set
+        var overflow: TextOverflow = TextOverflow.Clip
+            private set
+        var softWrap: Boolean = true
+            private set
+        var minLines: Int = 1
+            private set
+        var maxLines: Int = Int.MAX_VALUE
+            private set
+        var style: String? = null
+            private set
+
+        /**
+         * Sets the text to be displayed. There are two ways to set the text:
+         * ```
+         * <Text text="Your text" />
+         * // or
+         * <Text>Your text</Text>
+         * ```
+         * @param text text to be displayed.
+         */
         fun text(text: String) = apply { this.text = text }
 
         /**
          * Sets the text color for a given text.
          *
          * @param color The color to be applied to the text. The color must be specified as a string
-         *   in the format "0xFFBB86FC", where FF, BB, 86, and FC are the red, green, blue, and
-         *   alpha (transparency) components of the color in hexadecimal format. If an empty string
-         *   or any other value is provided, the color will not be changed.
+         *   in the AARRGGBB format. If an empty string or any other value is provided, the color
+         *   will not be changed.
          */
         fun color(color: String) = apply {
             if (color.isNotEmpty()) {
-                this.color = Color(java.lang.Long.decode(color))
+                this.color = color.toColor()
+            }
+        }
+
+        /**
+         * Sets the font family for a given text. This font must be a downloadable font from
+         * fonts.google.com
+         *
+         * @param fontFamily The font family to be applied. The font family is the font name.
+         */
+        fun fontFamily(fontFamily: String) = apply {
+            if (fontFamily.isNotEmpty()) {
+                this.fontFamily = fontFamilyFromString(fontFamily)
             }
         }
 
@@ -234,6 +295,18 @@ class TextDTO private constructor(private val builder: Builder) :
         }
 
         /**
+         * Sets the minimum number of lines that a text element should display.
+         *
+         * @param minLines the minimum number of lines to set. If the provided value is not a valid
+         *   integer, the default value is used.
+         */
+        fun minLines(minLines: String) = apply {
+            if (minLines.isNotEmptyAndIsDigitsOnly()) {
+                this.minLines = minLines.toInt()
+            }
+        }
+
+        /**
          * Sets the text style using Material Design naming convention.
          *
          * @param style text style based on Material Design naming convention (e.g.: displayLarge,
@@ -243,53 +316,51 @@ class TextDTO private constructor(private val builder: Builder) :
             this.style = style
         }
 
-        fun build() = TextDTO(this)
+        override fun build() = TextDTO(this)
     }
 }
 
-object TextDtoFactory : ComposableViewFactory<TextDTO, TextDTO.Builder>() {
+internal object TextDtoFactory : ComposableViewFactory<TextDTO, TextDTO.Builder>() {
     fun buildComposableView(
         text: String,
-        attributes: List<CoreAttribute>,
-    ): TextDTO = textBuilder(attributes).text(text).build()
+        attributes: Array<CoreAttribute>,
+        scope: Any?,
+        pushEvent: PushEvent?,
+    ): TextDTO = textBuilder(attributes, scope, pushEvent).text(text).build()
 
     /**
      * Creates a `TextDTO` object based on the attributes and text of the input `Attributes` object.
-     * Text co-relates to the Text composable
+     * TextDTO co-relates to the Text composable
      *
      * @param attributes the `Attributes` object to create the `TextDTO` object from
-     * @param text the text of the input `Attributes` object
      * @return a `TextDTO` object based on the attributes and text of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: List<CoreAttribute>,
-        children: List<CoreNodeElement>?,
-        pushEvent: PushEvent?
-    ): TextDTO = textBuilder(attributes).build()
+        attributes: Array<CoreAttribute>,
+        pushEvent: PushEvent?,
+        scope: Any?,
+    ): TextDTO = textBuilder(attributes, scope, pushEvent).build()
 
-    private fun textBuilder(attributes: List<CoreAttribute>): TextDTO.Builder =
-        attributes.fold(TextDTO.Builder()) { builder, attribute ->
-            when (attribute.name) {
-                "text" -> builder.text(attribute.value)
-                "color" -> builder.color(attribute.value)
-                "fontSize" -> builder.fontSize(attribute.value)
-                "fontStyle" -> builder.fontStyle(attribute.value)
-                "fontWeight" -> builder.fontWeight(attribute.value)
-                "letterSpacing" -> builder.letterSpacing(attribute.value)
-                "textDecoration" -> builder.textDecoration(attribute.value)
-                "textAlign" -> builder.textAlign(attribute.value)
-                "lineHeight" -> builder.lineHeight(attribute.value)
-                "overflow" -> builder.overflow(attribute.value)
-                "style" -> builder.style(attribute.value)
-                "softWrap" -> builder.softWrap(attribute.value)
-                "maxLines" -> builder.maxLines(attribute.value)
-                "size" -> builder.size(attribute.value)
-                "height" -> builder.height(attribute.value)
-                "width" -> builder.width(attribute.value)
-                "padding" -> builder.padding(attribute.value)
-                "horizontalPadding" -> builder.horizontalPadding(attribute.value)
-                "verticalPadding" -> builder.verticalPadding(attribute.value)
-                else -> builder
-            } as TextDTO.Builder
-        }
+    private fun textBuilder(
+        attributes: Array<CoreAttribute>, scope: Any?, pushEvent: PushEvent?
+    ): TextDTO.Builder = attributes.fold(TextDTO.Builder()) { builder, attribute ->
+        when (attribute.name) {
+            "text" -> builder.text(attribute.value)
+            "color" -> builder.color(attribute.value)
+            "fontFamily" -> builder.fontFamily(attribute.value)
+            "fontSize" -> builder.fontSize(attribute.value)
+            "fontStyle" -> builder.fontStyle(attribute.value)
+            "fontWeight" -> builder.fontWeight(attribute.value)
+            "letterSpacing" -> builder.letterSpacing(attribute.value)
+            "textDecoration" -> builder.textDecoration(attribute.value)
+            "textAlign" -> builder.textAlign(attribute.value)
+            "lineHeight" -> builder.lineHeight(attribute.value)
+            "overflow" -> builder.overflow(attribute.value)
+            "style" -> builder.style(attribute.value)
+            "softWrap" -> builder.softWrap(attribute.value)
+            "maxLines" -> builder.maxLines(attribute.value)
+            "minLines" -> builder.minLines(attribute.value)
+            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
+        } as TextDTO.Builder
+    }
 }

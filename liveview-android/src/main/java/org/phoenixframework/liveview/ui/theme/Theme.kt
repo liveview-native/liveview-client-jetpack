@@ -8,13 +8,15 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentMapOf
 
 @Composable
 fun LiveViewNativeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
-    themeData: Map<String, Any> = emptyMap(),
+    themeData: ImmutableMap<String, Any> = persistentMapOf(),
     content: @Composable () -> Unit
 ) {
     val colorScheme = getColorScheme(darkTheme, dynamicColor, themeData)

@@ -1,20 +1,23 @@
 package org.phoenixframework.liveview.domain.factory
 
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
+import org.phoenixframework.liveview.data.dto.BoxDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.CardDtoFactory
 import org.phoenixframework.liveview.data.dto.ColumnDtoFactory
+import org.phoenixframework.liveview.data.dto.FloatingActionButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconDtoFactory
+import org.phoenixframework.liveview.data.dto.ImageDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
 import org.phoenixframework.liveview.data.dto.RowDtoFactory
 import org.phoenixframework.liveview.data.dto.ScaffoldDtoFactory
+import org.phoenixframework.liveview.data.dto.SliderDtoFactory
 import org.phoenixframework.liveview.data.dto.SpacerDtoFactory
 import org.phoenixframework.liveview.data.dto.TextDtoFactory
+import org.phoenixframework.liveview.data.dto.TextFieldDtoFactory
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -31,23 +34,23 @@ object ComposableNodeFactory {
     init {
         ComposableRegistry.run {
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
+            registerComponent(ComposableTypes.box, BoxDtoFactory)
             registerComponent(ComposableTypes.button, ButtonDtoFactory)
             registerComponent(ComposableTypes.card, CardDtoFactory)
             registerComponent(ComposableTypes.column, ColumnDtoFactory)
+            registerComponent(ComposableTypes.fab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.icon, IconDtoFactory)
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
+            registerComponent(ComposableTypes.image, ImageDtoFactory)
             registerComponent(ComposableTypes.lazyColumn, LazyColumnDtoFactory)
             registerComponent(ComposableTypes.lazyRow, LazyRowDtoFactory)
             registerComponent(ComposableTypes.row, RowDtoFactory)
             registerComponent(ComposableTypes.scaffold, ScaffoldDtoFactory)
+            registerComponent(ComposableTypes.slider, SliderDtoFactory)
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
             registerComponent(ComposableTypes.text, TextDtoFactory)
+            registerComponent(ComposableTypes.textField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
-
-            // Specific for TopAppBar
-            registerComponent(TopAppBarDtoFactory.titleTag, RowDtoFactory)
-            registerComponent(TopAppBarDtoFactory.actionTag, IconButtonDtoFactory)
-            registerComponent(TopAppBarDtoFactory.navigationIconTag, IconButtonDtoFactory)
         }
     }
 
@@ -61,36 +64,40 @@ object ComposableNodeFactory {
         screenId: String,
         nodeRef: NodeRef,
         element: CoreNodeElement,
-        children: List<CoreNodeElement>,
     ): ComposableTreeNode {
         return ComposableTreeNode(
-            screenId,
-            nodeRef.ref,
-            element,
-            children.toImmutableList(),
+            screenId = screenId,
+            refId = nodeRef.ref,
+            node = element,
+            id = "${screenId}_${nodeRef.ref}",
         )
     }
 
     fun buildComposableView(
         element: CoreNodeElement?,
-        children: ImmutableList<CoreNodeElement>?,
+        parentTag: String?,
         pushEvent: PushEvent,
+        scope: Any?
     ): ComposableView {
         return if (element != null) {
             val tag = element.tag
             val attrs = element.attributes
-            ComposableRegistry.getComponentFactory(tag)?.buildComposableView(
-                attrs, children, pushEvent
+            ComposableRegistry.getComponentFactory(tag, parentTag)?.buildComposableView(
+                attrs, pushEvent, scope
             ) ?: run {
                 TextDtoFactory.buildComposableView(
                     "$tag not supported yet",
                     attrs,
+                    scope,
+                    pushEvent,
                 )
             }
         } else {
             TextDtoFactory.buildComposableView(
                 "Invalid element",
-                emptyList(),
+                emptyArray(),
+                scope,
+                pushEvent
             )
         }
     }

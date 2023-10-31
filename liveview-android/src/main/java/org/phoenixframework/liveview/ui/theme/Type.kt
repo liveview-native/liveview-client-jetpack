@@ -74,13 +74,16 @@ internal fun typographyFromThemeData(fontData: Map<String, Any>): Typography {
     )
 }
 
+internal fun fontFamilyFromString(fontFamily: String): FontFamily {
+    return FontFamily(
+        Font(googleFont = GoogleFont(fontFamily), fontProvider = provider)
+    )
+}
 
 internal fun textStyleFromData(textStyleData: Map<String, Any>): TextStyle {
     return TextStyle(
         fontFamily = textStyleData["fontFamily"]?.toString()?.let {
-            FontFamily(
-                Font(googleFont = GoogleFont(it), fontProvider = provider)
-            )
+            fontFamilyFromString(it)
         },
         color = textStyleData["color"]?.toString()?.toColor() ?: Color.Unspecified,
         fontSize = textStyleData["fontSize"]?.let { fontSizeFromString(it.toString()) }

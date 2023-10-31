@@ -2,7 +2,6 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
@@ -10,9 +9,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.actionTag
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.navigationIconTag
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.titleTag
@@ -26,10 +25,19 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
-class TopAppBarDTO private constructor(builder: Builder) :
+/**
+ * TopAppBar is usually used as child of a `Scaffold` and represents the title of the screen.
+ * This component can contains some specific children:
+ * - `<Title>`: the title to be displayed in the top app bar.
+ * - `<Action>`: the actions displayed at the end of the top app bar. This should typically be
+ * `IconButton`s. The default layout here is a Row, so icons inside will be placed horizontally.
+ * - `<NavIcon>`:  the navigation icon displayed at the start of the top app bar. This should
+ * typically be an `IconButton`.
+ */
+internal class TopAppBarDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
 
-    private val colors: Map<String, String>? = builder.colors
+    private val colors: ImmutableMap<String, String>? = builder.colors?.toImmutableMap()
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -42,37 +50,50 @@ class TopAppBarDTO private constructor(builder: Builder) :
             composableNode?.children?.find { it.node?.tag == titleTag }
         }
         val actions = remember(composableNode?.children) {
-            composableNode?.children?.filter { it.node?.tag == actionTag }?.toImmutableList()
+            composableNode?.children?.filter { it.node?.tag == actionTag }
         }
         val navIcon = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.tag == navigationIconTag }
         }
         TopAppBar(
-            colors = getTopAppBarColors(colors = colors) ?: TopAppBarDefaults.topAppBarColors(),
+            colors = getTopAppBarColors(colors = colors),
             title = {
                 title?.let {
-                    PhxLiveView(it, null, pushEvent)
+                    PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
             navigationIcon = {
                 navIcon?.let {
                     Box {
-                        PhxLiveView(it, null, pushEvent)
+                        PhxLiveView(it, pushEvent, composableNode, null, this)
                     }
                 }
             },
             actions = {
                 actions?.forEach {
-                    PhxLiveView(it, null, pushEvent)
+                    PhxLiveView(it, pushEvent, composableNode, null, this)
                 }
             },
             modifier = modifier,
         )
     }
 
-    class Builder : ComposableBuilder() {
+    class Builder : ComposableBuilder<TopAppBarDTO>() {
         var colors: Map<String, String>? = null
+            private set
 
+        /**
+         * Set TopAppBar colors.
+         * ```
+         * <TopAppBar
+         *   colors="{'containerColor': '#FFFF0000', 'contentColor': '#FF00FF00'}">
+         *   ...
+         * </Button>
+         * ```
+         * @param colors an JSON formatted string, containing the app bar colors. The color keys
+         * supported are: `containerColor`, `scrolledContainerColor`, `navigationIconContentColor,
+         * `titleContentColor`, and `actionIconContentColor`.
+         */
         fun colors(colors: String): Builder = apply {
             if (colors.isNotEmpty()) {
                 try {
@@ -83,62 +104,63 @@ class TopAppBarDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = TopAppBarDTO(this)
+        override fun build() = TopAppBarDTO(this)
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun getTopAppBarColors(colors: Map<String, String>?): TopAppBarColors? {
+    private fun getTopAppBarColors(colors: ImmutableMap<String, String>?): TopAppBarColors {
         val defaultColors = TopAppBarDefaults.topAppBarColors()
         return if (colors == null) {
             defaultColors
         } else {
-            ButtonDefaults.buttonColors(
-                containerColor = colors["containerColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("containerColor")),
-                contentColor = colors["contentColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("contentColor")),
-                disabledContainerColor = colors["contentColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("disabledContainerColor")),
-                disabledContentColor = colors["disabledContentColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("disabledContentColor"))
-            )
+            fun value(key: String) =
+                colors[key]?.toColor()
+                    ?: Color(defaultColors.privateField(key))
+
             TopAppBarDefaults.topAppBarColors(
-                containerColor = colors["containerColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("containerColor")),
-                scrolledContainerColor = colors["scrolledContainerColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("scrolledContainerColor")),
-                navigationIconContentColor = colors["navigationIconContentColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("navigationIconContentColor")),
-                titleContentColor = colors["titleContentColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("titleContentColor")),
-                actionIconContentColor = colors["actionIconContentColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("actionIconContentColor")),
+                containerColor = value("containerColor"),
+                scrolledContainerColor = value("scrolledContainerColor"),
+                navigationIconContentColor = value("navigationIconContentColor"),
+                titleContentColor = value("titleContentColor"),
+                actionIconContentColor = value("actionIconContentColor"),
             )
         }
     }
 }
 
-object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopAppBarDTO.Builder>() {
+internal object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopAppBarDTO.Builder>() {
+
+    /**
+     * Creates a `TopAppBarDTO` object based on the attributes and text of the input `Attributes`
+     * object. TopAppBarDTO co-relates to the TopAppBar composable
+     *
+     * @param attributes the `Attributes` object to create the `TopAppBarDTO` object from
+     * @return a `TopAppBarDTO` object based on the attributes and text of the input `Attributes`
+     * object
+     */
     override fun buildComposableView(
-        attributes: List<CoreAttribute>,
-        children: List<CoreNodeElement>?,
-        pushEvent: PushEvent?
+        attributes: Array<CoreAttribute>,
+        pushEvent: PushEvent?,
+        scope: Any?,
     ): TopAppBarDTO {
         val builder = TopAppBarDTO.Builder()
 
         attributes.forEach { attribute ->
             when (attribute.name) {
                 "colors" -> builder.colors(attribute.value)
-                "size" -> builder.size(attribute.value)
-                "height" -> builder.height(attribute.value)
-                "width" -> builder.width(attribute.value)
-                "padding" -> builder.padding(attribute.value)
-                "horizontalPadding" -> builder.horizontalPadding(attribute.value)
-                "verticalPadding" -> builder.verticalPadding(attribute.value)
+                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
             }
         }
         return builder.build()
+    }
+
+    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
+        return mapOf(
+            titleTag to RowDtoFactory,
+            actionTag to IconButtonDtoFactory,
+            navigationIconTag to IconButtonDtoFactory,
+        )
     }
 
     const val titleTag = "Title"
