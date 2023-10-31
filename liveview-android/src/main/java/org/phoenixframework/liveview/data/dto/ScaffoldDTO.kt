@@ -17,7 +17,7 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
-class ScaffoldDTO private constructor(builder: Builder) :
+internal class ScaffoldDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val containerColor: Color? = builder.containerColor
     private val contentColor: Color? = builder.contentColor
@@ -63,9 +63,11 @@ class ScaffoldDTO private constructor(builder: Builder) :
         )
     }
 
-    class Builder : ComposableBuilder() {
+    internal class Builder : ComposableBuilder<ScaffoldDTO>() {
         var containerColor: Color? = null
+            private set
         var contentColor: Color? = null
+            private set
 
         fun containerColor(color: String) = apply {
             if (color.isNotEmpty()) {
@@ -79,11 +81,11 @@ class ScaffoldDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = ScaffoldDTO(this)
+        override fun build() = ScaffoldDTO(this)
     }
 }
 
-object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, ScaffoldDTO.Builder>() {
+internal object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, ScaffoldDTO.Builder>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
@@ -92,7 +94,7 @@ object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, ScaffoldDTO.Build
         when (attribute.name) {
             "containerColor" -> builder.containerColor(attribute.value)
             "contentColor" -> builder.contentColor(attribute.value)
-            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as ScaffoldDTO.Builder
     }.build()
 }

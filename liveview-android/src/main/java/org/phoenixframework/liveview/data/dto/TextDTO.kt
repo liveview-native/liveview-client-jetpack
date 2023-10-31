@@ -30,7 +30,7 @@ import org.phoenixframework.liveview.ui.theme.textAlignFromString
 import org.phoenixframework.liveview.ui.theme.textDecorationFromString
 import org.phoenixframework.liveview.ui.theme.textStyleFromString
 
-class TextDTO private constructor(builder: Builder) :
+internal class TextDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val text: String = builder.text
     private val color: Color = builder.color
@@ -94,22 +94,37 @@ class TextDTO private constructor(builder: Builder) :
         return text
     }
 
-    class Builder : ComposableBuilder() {
+    internal class Builder : ComposableBuilder<TextDTO>() {
         var text: String = ""
+            private set
         var color: Color = Color.Unspecified
+            private set
         var fontSize: TextUnit = TextUnit.Unspecified
+            private set
         var fontStyle: FontStyle? = null
+            private set
         var fontWeight: FontWeight? = null
+            private set
         var fontFamily: FontFamily? = null
+            private set
         var letterSpacing: TextUnit = TextUnit.Unspecified
+            private set
         var textDecoration: TextDecoration? = null
+            private set
         var textAlign: TextAlign? = null
+            private set
         var lineHeight: TextUnit = TextUnit.Unspecified
+            private set
         var overflow: TextOverflow = TextOverflow.Clip
+            private set
         var softWrap: Boolean = true
+            private set
         var minLines: Int = 1
+            private set
         var maxLines: Int = Int.MAX_VALUE
+            private set
         var style: String? = null
+            private set
 
         fun text(text: String) = apply { this.text = text }
 
@@ -291,11 +306,11 @@ class TextDTO private constructor(builder: Builder) :
             this.style = style
         }
 
-        fun build() = TextDTO(this)
+        override fun build() = TextDTO(this)
     }
 }
 
-object TextDtoFactory : ComposableViewFactory<TextDTO, TextDTO.Builder>() {
+internal object TextDtoFactory : ComposableViewFactory<TextDTO, TextDTO.Builder>() {
     fun buildComposableView(
         text: String,
         attributes: Array<CoreAttribute>,
@@ -339,7 +354,7 @@ object TextDtoFactory : ComposableViewFactory<TextDTO, TextDTO.Builder>() {
                 "softWrap" -> builder.softWrap(attribute.value)
                 "maxLines" -> builder.maxLines(attribute.value)
                 "minLines" -> builder.minLines(attribute.value)
-                else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
             } as TextDTO.Builder
         }
 }

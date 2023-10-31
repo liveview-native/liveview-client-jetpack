@@ -17,7 +17,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
-class LazyColumnDTO private constructor(builder: Builder) :
+internal class LazyColumnDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
     private val horizontalAlignment: Alignment.Horizontal = builder.horizontalAlignment
@@ -52,9 +52,11 @@ class LazyColumnDTO private constructor(builder: Builder) :
         )
     }
 
-    class Builder : LazyComposableBuilder() {
+    class Builder : LazyComposableBuilder<LazyColumnDTO>() {
         var verticalArrangement: Arrangement.Vertical = Arrangement.Top
+            private set
         var horizontalAlignment: Alignment.Horizontal = Alignment.Start
+            private set
 
         fun verticalArrangement(verticalArrangement: String) = apply {
             this.verticalArrangement = when (verticalArrangement) {
@@ -77,11 +79,12 @@ class LazyColumnDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = LazyColumnDTO(this)
+        override fun build() = LazyColumnDTO(this)
     }
 }
 
-object LazyColumnDtoFactory : ComposableViewFactory<LazyColumnDTO, LazyColumnDTO.Builder>() {
+internal object LazyColumnDtoFactory :
+    ComposableViewFactory<LazyColumnDTO, LazyColumnDTO.Builder>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
@@ -98,7 +101,7 @@ object LazyColumnDtoFactory : ComposableViewFactory<LazyColumnDTO, LazyColumnDTO
             "itemVerticalPadding" -> builder.verticalPadding(attribute.value)
             "reverseLayout" -> builder.reverseLayout(attribute.value)
             "verticalArrangement" -> builder.verticalArrangement(attribute.value)
-            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as LazyColumnDTO.Builder
     }.build()
 }

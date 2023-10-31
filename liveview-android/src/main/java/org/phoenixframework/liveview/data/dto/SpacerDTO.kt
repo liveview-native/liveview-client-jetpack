@@ -11,7 +11,7 @@ import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
-class SpacerDTO private constructor(builder: Builder) :
+internal class SpacerDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     @Composable
     override fun Compose(
@@ -22,17 +22,17 @@ class SpacerDTO private constructor(builder: Builder) :
         Spacer(modifier = modifier.paddingIfNotNull(paddingValues))
     }
 
-    class Builder : ComposableBuilder() {
-        fun build() = SpacerDTO(this)
+    internal class Builder : ComposableBuilder<SpacerDTO>() {
+        override fun build() = SpacerDTO(this)
     }
 }
 
-object SpacerDtoFactory : ComposableViewFactory<SpacerDTO, SpacerDTO.Builder>() {
+internal object SpacerDtoFactory : ComposableViewFactory<SpacerDTO, SpacerDTO.Builder>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): SpacerDTO = attributes.fold(SpacerDTO.Builder()) { builder, attribute ->
-        builder.processCommonAttributes(scope, attribute, pushEvent) as SpacerDTO.Builder
+        builder.handleCommonAttributes(attribute, pushEvent, scope) as SpacerDTO.Builder
     }.build()
 }

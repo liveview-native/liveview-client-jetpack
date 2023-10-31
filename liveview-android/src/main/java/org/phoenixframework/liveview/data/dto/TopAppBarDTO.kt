@@ -26,7 +26,7 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
-class TopAppBarDTO private constructor(builder: Builder) :
+internal class TopAppBarDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
 
     private val colors: ImmutableMap<String, String>? = builder.colors?.toImmutableMap()
@@ -70,8 +70,9 @@ class TopAppBarDTO private constructor(builder: Builder) :
         )
     }
 
-    class Builder : ComposableBuilder() {
+    class Builder : ComposableBuilder<TopAppBarDTO>() {
         var colors: Map<String, String>? = null
+            private set
 
         fun colors(colors: String): Builder = apply {
             if (colors.isNotEmpty()) {
@@ -83,7 +84,7 @@ class TopAppBarDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = TopAppBarDTO(this)
+        override fun build() = TopAppBarDTO(this)
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -119,7 +120,7 @@ class TopAppBarDTO private constructor(builder: Builder) :
     }
 }
 
-object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopAppBarDTO.Builder>() {
+internal object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopAppBarDTO.Builder>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
@@ -130,7 +131,7 @@ object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopAppBarDTO.Bu
         attributes.forEach { attribute ->
             when (attribute.name) {
                 "colors" -> builder.colors(attribute.value)
-                else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
             }
         }
         return builder.build()

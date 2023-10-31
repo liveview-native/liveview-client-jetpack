@@ -11,15 +11,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_SCROLL
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.base.optional
+import org.phoenixframework.liveview.domain.extensions.optional
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
-class ColumnDTO private constructor(builder: Builder) :
+internal class ColumnDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
     private val horizontalAlignment: Alignment.Horizontal = builder.horizontalAlignment
@@ -50,10 +51,22 @@ class ColumnDTO private constructor(builder: Builder) :
         }
     }
 
-    class Builder : ComposableBuilder() {
+    internal class Builder : ComposableBuilder<ColumnDTO>() {
         var verticalArrangement: Arrangement.Vertical = Arrangement.Top
+            private set
         var horizontalAlignment: Alignment.Horizontal = Alignment.Start
+            private set
 
+        /**
+         * The vertical arrangement of the Column's children
+         *
+         * ```
+         * <Column verticalArrangement="spaceAround" >...</Column>
+         * ```
+         * @param verticalArrangement the vertical arrangement of the column's children. The
+         * supported values are: `top`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `bottom`,
+         * and `center`.
+         */
         fun verticalArrangement(verticalArrangement: String) = apply {
             this.verticalArrangement = when (verticalArrangement) {
                 "top" -> Arrangement.Top
@@ -66,6 +79,15 @@ class ColumnDTO private constructor(builder: Builder) :
 
         }
 
+        /**
+         * The horizontal alignment of the Column's children
+         *
+         * ```
+         * <Column horizontalAlignment="center" >...</Column>
+         * ```
+         * @param horizontalAlignment the horizontal alignment of the column's children. The
+         * supported values are: `start`, `center`, and `end`.
+         */
         fun horizontalAlignment(horizontalAlignment: String) = apply {
             this.horizontalAlignment = when (horizontalAlignment) {
                 "start" -> Alignment.Start
@@ -75,11 +97,11 @@ class ColumnDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build(): ColumnDTO = ColumnDTO(this)
+        override fun build(): ColumnDTO = ColumnDTO(this)
     }
 }
 
-object ColumnDtoFactory : ComposableViewFactory<ColumnDTO, ColumnDTO.Builder>() {
+internal object ColumnDtoFactory : ComposableViewFactory<ColumnDTO, ColumnDTO.Builder>() {
     /**
      * Creates a `ColumnDTO` object based on the attributes of the input `Attributes` object.
      * Column co-relates to the Column composable
@@ -94,8 +116,8 @@ object ColumnDtoFactory : ComposableViewFactory<ColumnDTO, ColumnDTO.Builder>() 
         when (attribute.name) {
             "verticalArrangement" -> builder.verticalArrangement(attribute.value)
             "horizontalAlignment" -> builder.horizontalAlignment(attribute.value)
-            "scroll" -> builder.scrolling(attribute.value)
-            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+            ATTR_SCROLL -> builder.scrolling(attribute.value)
+            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as ColumnDTO.Builder
     }.build()
 }

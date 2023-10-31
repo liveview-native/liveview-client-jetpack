@@ -1,9 +1,10 @@
 package org.phoenixframework.liveview.data.dto
 
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 
-abstract class LazyComposableBuilder : ComposableBuilder() {
+abstract class LazyComposableBuilder<T : ComposableView> : ComposableBuilder<T>() {
     var contentPadding: MutableMap<String, Int> = mutableMapOf()
     var reverseLayout: Boolean = false
 

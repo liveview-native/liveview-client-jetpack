@@ -27,7 +27,7 @@ import org.phoenixframework.liveview.domain.extensions.throttleLatest
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
-class SliderDTO private constructor(builder: Builder) : ComposableView(builder.modifier) {
+internal class SliderDTO private constructor(builder: Builder) : ComposableView(builder.modifier) {
     private val value = builder.value
     private val enabled = builder.enabled
     private val debounce = builder.debounce
@@ -97,7 +97,7 @@ class SliderDTO private constructor(builder: Builder) : ComposableView(builder.m
         }
     }
 
-    class Builder : ChangeableDTOBuilder<Float>(0f) {
+    internal class Builder : ChangeableDTOBuilder<SliderDTO, Float>(0f) {
         var minValue = 0f
             private set
         var maxValue = 1f
@@ -129,11 +129,11 @@ class SliderDTO private constructor(builder: Builder) : ComposableView(builder.m
             }
         }
 
-        fun build(): SliderDTO = SliderDTO(this)
+        override fun build(): SliderDTO = SliderDTO(this)
     }
 }
 
-object SliderDtoFactory : ComposableViewFactory<SliderDTO, SliderDTO.Builder>() {
+internal object SliderDtoFactory : ComposableViewFactory<SliderDTO, SliderDTO.Builder>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
@@ -149,7 +149,7 @@ object SliderDtoFactory : ComposableViewFactory<SliderDTO, SliderDTO.Builder>() 
                 "maxValue" -> builder.maxValue(attribute.value)
                 "steps" -> builder.steps(attribute.value)
                 "colors" -> builder.colors(attribute.value)
-                else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
             } as SliderDTO.Builder
         }
     }.build()

@@ -18,7 +18,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
-class LazyRowDTO private constructor(builder: Builder) :
+internal class LazyRowDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
     private val verticalAlignment: Alignment.Vertical = builder.verticalAlignment
@@ -55,9 +55,11 @@ class LazyRowDTO private constructor(builder: Builder) :
         )
     }
 
-    class Builder : LazyComposableBuilder() {
+    internal class Builder : LazyComposableBuilder<LazyRowDTO>() {
         var horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceAround
+            private set
         var verticalAlignment: Alignment.Vertical = Alignment.CenterVertically
+            private set
 
         fun horizontalArrangement(horizontalArrangement: String) = apply {
             if (horizontalArrangement.isNotEmpty()) {
@@ -86,11 +88,11 @@ class LazyRowDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = LazyRowDTO(this)
+        override fun build() = LazyRowDTO(this)
     }
 }
 
-object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO, LazyRowDTO.Builder>() {
+internal object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO, LazyRowDTO.Builder>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
@@ -109,7 +111,7 @@ object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO, LazyRowDTO.Builder>
                 "reverseLayout" -> builder.reverseLayout(attribute.value)
                 "verticalAlignment" -> builder.verticalAlignment(attribute.value)
                 "verticalPadding" -> builder.verticalPadding(attribute.value)
-                else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
             } as LazyRowDTO.Builder
         }.build()
 }

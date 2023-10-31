@@ -10,15 +10,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_SCROLL
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.base.optional
+import org.phoenixframework.liveview.domain.extensions.optional
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
-class BoxDTO private constructor(builder: Builder) :
+internal class BoxDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val contentAlignment: Alignment = builder.contentAlignment
     private val propagateMinConstraints = builder.propagateMinConstraints
@@ -49,23 +50,44 @@ class BoxDTO private constructor(builder: Builder) :
         }
     }
 
-    class Builder : ComposableBuilder() {
+    internal class Builder : ComposableBuilder<BoxDTO>() {
         var contentAlignment: Alignment = Alignment.TopStart
+            private set
         var propagateMinConstraints: Boolean = false
+            private set
 
+        /**
+         * The default alignment inside the Box.
+         *
+         * ```
+         * <Box contentAlignment="bottomEnd">...</Box>
+         * ```
+         * @param contentAlignment children's alignment inside the Box. Supported values:
+         * `topStart`, `topCenter`, `topEnd`, `centerStart`, `center`, `centerEnd`, `bottomStart`,
+         * `bottomCenter`, or `bottomEnd`.
+         */
         fun contentAlignment(contentAlignment: String) = apply {
             this.contentAlignment = alignmentFromString(contentAlignment, Alignment.TopStart)
         }
 
+        /**
+         * Whether the incoming min constraints should be passed to content.
+         *
+         * ```
+         * <Box propagateMinConstraints="true">...</Box>
+         * ```
+         * @param value true if the incoming min constraints should be passed to content, false
+         * otherwise.
+         */
         fun propagateMinConstraints(value: String) = apply {
             this.propagateMinConstraints = value.toBoolean()
         }
 
-        fun build(): BoxDTO = BoxDTO(this)
+        override fun build(): BoxDTO = BoxDTO(this)
     }
 }
 
-object BoxDtoFactory : ComposableViewFactory<BoxDTO, BoxDTO.Builder>() {
+internal object BoxDtoFactory : ComposableViewFactory<BoxDTO, BoxDTO.Builder>() {
     /**
      * Creates a `BoxDTO` object based on the attributes of the input `Attributes` object.
      * Box co-relates to the Box composable
@@ -79,9 +101,9 @@ object BoxDtoFactory : ComposableViewFactory<BoxDTO, BoxDTO.Builder>() {
     ): BoxDTO = attributes.fold(BoxDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             "contentAlignment" -> builder.contentAlignment(attribute.value)
-            "scroll" -> builder.scrolling(attribute.value)
+            ATTR_SCROLL -> builder.scrolling(attribute.value)
             "propagateMinConstraints" -> builder.propagateMinConstraints(attribute.value)
-            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as BoxDTO.Builder
     }.build()
 }

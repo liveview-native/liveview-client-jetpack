@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_CLICK
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -42,7 +43,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
 import org.phoenixframework.liveview.ui.theme.textStyleFromString
 
 
-class TextFieldDTO private constructor(builder: Builder) :
+internal class TextFieldDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val text = builder.value
     private val onChange = builder.onChange
@@ -144,8 +145,6 @@ class TextFieldDTO private constructor(builder: Builder) :
             minLines = minLines,
             shape = shape ?: TextFieldDefaults.shape,
             colors = getTextFieldColors(colors)
-            // TODO
-            // interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
         )
 
         // Sending the updates to the server respecting phx-debounce and phx-throttle attributes
@@ -232,7 +231,7 @@ class TextFieldDTO private constructor(builder: Builder) :
         }
     }
 
-    class Builder : ChangeableDTOBuilder<String>("") {
+    internal class Builder : ChangeableDTOBuilder<TextFieldDTO, String>("") {
         var readOnly: Boolean = false
             private set
         var textStyle: String? = null
@@ -258,7 +257,7 @@ class TextFieldDTO private constructor(builder: Builder) :
 
         fun onKeyboardAction(event: String, pushEvent: PushEvent?) = apply {
             val action = {
-                pushEvent?.invoke("click", event, value, null)
+                pushEvent?.invoke(EVENT_CLICK_TYPE, event, value, null)
             }
             this.keyboardActions = KeyboardActions(
                 onDone = { action.invoke() },
@@ -364,11 +363,11 @@ class TextFieldDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = TextFieldDTO(this)
+        override fun build() = TextFieldDTO(this)
     }
 }
 
-object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO, TextFieldDTO.Builder>() {
+internal object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO, TextFieldDTO.Builder>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
@@ -378,7 +377,7 @@ object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO, TextFieldDTO.Bu
     }.also {
         attributes.fold(it) { builder, attribute ->
             when (attribute.name) {
-                "phx-click" -> builder.onKeyboardAction(attribute.value, pushEvent)
+                ATTR_CLICK -> builder.onKeyboardAction(attribute.value, pushEvent)
                 "text" -> builder.value(attribute.value)
                 "readOnly" -> builder.readOnly(attribute.value)
                 "textStyle" -> builder.textStyle(attribute.value)
@@ -393,7 +392,7 @@ object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO, TextFieldDTO.Bu
                 "autoCorrect" -> builder.autoCorrect(attribute.value)
                 "keyboardType" -> builder.keyboardType(attribute.value)
                 "imeAction" -> builder.imeAction(attribute.value)
-                else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
             } as TextFieldDTO.Builder
         }
     }.build()

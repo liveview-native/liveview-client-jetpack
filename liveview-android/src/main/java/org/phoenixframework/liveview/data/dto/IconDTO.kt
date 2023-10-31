@@ -17,7 +17,8 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
-class IconDTO private constructor(builder: Builder) : ComposableView(modifier = builder.modifier) {
+internal class IconDTO private constructor(builder: Builder) :
+    ComposableView(modifier = builder.modifier) {
     private val contentDescription: String = builder.contentDescription
     private val tint: Color? = builder.tint
     private val imageVector: ImageVector? = builder.imageVector
@@ -38,10 +39,13 @@ class IconDTO private constructor(builder: Builder) : ComposableView(modifier = 
         }
     }
 
-    open class Builder : ComposableBuilder() {
+    open class Builder : ComposableBuilder<IconDTO>() {
         var contentDescription: String = ""
+            private set
         var tint: Color? = null
+            private set
         var imageVector: ImageVector? = null
+            private set
 
         fun contentDescription(contentDescription: String) = apply {
             this.contentDescription = contentDescription
@@ -55,11 +59,11 @@ class IconDTO private constructor(builder: Builder) : ComposableView(modifier = 
             imageVector = image.toMaterialIcon()
         }
 
-        fun build() = IconDTO(this)
+        override fun build() = IconDTO(this)
     }
 }
 
-object IconDtoFactory : ComposableViewFactory<IconDTO, IconDTO.Builder>() {
+internal object IconDtoFactory : ComposableViewFactory<IconDTO, IconDTO.Builder>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
@@ -71,7 +75,7 @@ object IconDtoFactory : ComposableViewFactory<IconDTO, IconDTO.Builder>() {
             "imageVector" -> builder.imageVector(attribute.value)
             "tint" -> builder.tint(attribute.value)
             "contentDescription" -> builder.contentDescription(attribute.value)
-            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as IconDTO.Builder
     }.build()
 }

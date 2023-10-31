@@ -20,7 +20,7 @@ import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
-class ImageDTO private constructor(builder: Builder) :
+internal class ImageDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val imageResource: String = builder.imageResource
     private val contentDescription: String? = builder.contentDescription
@@ -50,13 +50,19 @@ class ImageDTO private constructor(builder: Builder) :
         )
     }
 
-    class Builder : ComposableBuilder() {
+    class Builder : ComposableBuilder<ImageDTO>() {
         var imageResource: String = ""
+            private set
         var contentDescription: String? = null
+            private set
         var shape: Shape = RoundedCornerShape(0.dp)
+            private set
         var alignment: Alignment = Alignment.Center
+            private set
         var contentScale: ContentScale = ContentScale.Fit
+            private set
         var alpha: Float = 1.0f
+            private set
 
         fun imageResource(imageResource: String) = apply {
             this.imageResource = imageResource
@@ -68,10 +74,7 @@ class ImageDTO private constructor(builder: Builder) :
 
         fun contentScale(contentScale: String) = apply {
             if (contentScale.isNotEmpty()) {
-                this.contentScale = contentScaleFromString(
-                    contentScale = contentScale,
-                    defaultValue = ContentScale.None
-                )
+                this.contentScale = contentScaleFromString(contentScale)
             }
         }
 
@@ -90,11 +93,11 @@ class ImageDTO private constructor(builder: Builder) :
             this.alpha = alpha.toFloatOrNull() ?: 1f
         }
 
-        fun build(): ImageDTO = ImageDTO(this)
+        override fun build(): ImageDTO = ImageDTO(this)
     }
 }
 
-object ImageDtoFactory : ComposableViewFactory<ImageDTO, ImageDTO.Builder>() {
+internal object ImageDtoFactory : ComposableViewFactory<ImageDTO, ImageDTO.Builder>() {
     /**
      * Creates an `ImageDTO` object based on the attributes and text of the input `Attributes` object.
      * Image co-relates to the Image composable from Compose library used to load images from the
@@ -114,7 +117,7 @@ object ImageDtoFactory : ComposableViewFactory<ImageDTO, ImageDTO.Builder>() {
             "contentScale" -> builder.contentScale(attribute.value)
             "contentDescription" -> builder.contentDescription(attribute.value)
             "shape" -> builder.shape(attribute.value)
-            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as ImageDTO.Builder
     }.build()
 }

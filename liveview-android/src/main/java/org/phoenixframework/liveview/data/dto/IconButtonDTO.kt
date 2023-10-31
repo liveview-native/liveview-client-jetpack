@@ -11,6 +11,8 @@ import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_CLICK
+import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_CLICK_TYPE
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -19,7 +21,7 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
-class IconButtonDTO private constructor(builder: Builder) :
+internal class IconButtonDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val onClick: () -> Unit = builder.onClick
     private val enabled: Boolean = builder.enabled
@@ -61,7 +63,7 @@ class IconButtonDTO private constructor(builder: Builder) :
         }
     }
 
-    class Builder : ComposableBuilder() {
+    internal class Builder : ComposableBuilder<IconButtonDTO>() {
         var onClick: () -> Unit = {}
             private set
         var enabled: Boolean = true
@@ -87,11 +89,12 @@ class IconButtonDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = IconButtonDTO(this)
+        override fun build() = IconButtonDTO(this)
     }
 }
 
-object IconButtonDtoFactory : ComposableViewFactory<IconButtonDTO, IconButtonDTO.Builder>() {
+internal object IconButtonDtoFactory :
+    ComposableViewFactory<IconButtonDTO, IconButtonDTO.Builder>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
@@ -102,12 +105,11 @@ object IconButtonDtoFactory : ComposableViewFactory<IconButtonDTO, IconButtonDTO
         when (attribute.name) {
             "enabled" -> builder.enabled(attribute.value)
             "colors" -> builder.colors(attribute.value)
-            //TODO Swift is using `phx-click`. Should Android use the same?
-            "phx-click" -> builder.onClick {
-                pushEvent?.invoke("click", attribute.value, "", null)
+            ATTR_CLICK -> builder.onClick {
+                pushEvent?.invoke(EVENT_CLICK_TYPE, attribute.value, "", null)
             }
 
-            else -> builder.processCommonAttributes(scope, attribute, pushEvent)
+            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as IconButtonDTO.Builder
     }.build()
 }

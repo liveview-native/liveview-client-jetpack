@@ -1,4 +1,4 @@
-package org.phoenixframework.liveview.domain.base
+package org.phoenixframework.liveview.domain.extensions
 
 import androidx.compose.ui.Modifier
 
