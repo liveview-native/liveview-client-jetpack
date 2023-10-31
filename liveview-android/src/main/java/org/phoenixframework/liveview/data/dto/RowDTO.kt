@@ -9,12 +9,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_SCROLL
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.optional
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -57,6 +59,16 @@ internal class RowDTO private constructor(builder: Builder) :
         var verticalAlignment: Alignment.Vertical = Alignment.Top
             private set
 
+        /**
+         * The horizontal arrangement of the Row's children
+         *
+         * ```
+         * <Row horizontalArrangement="spaceAround" >...</Column>
+         * ```
+         * @param horizontalArrangement the horizontal arrangement of the column's children. The
+         * supported values are: `start`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `end`,
+         * and `center`. An int value is also supported, which will be used to determine the space.
+         */
         fun horizontalArrangement(horizontalArrangement: String) = apply {
             if (horizontalArrangement.isNotEmpty()) {
                 this.horizontalArrangement = when (horizontalArrangement) {
@@ -65,11 +77,24 @@ internal class RowDTO private constructor(builder: Builder) :
                     "spaceBetween" -> Arrangement.SpaceBetween
                     "start" -> Arrangement.Start
                     "end" -> Arrangement.End
-                    else -> Arrangement.Center
+                    else -> if (horizontalArrangement.isNotEmptyAndIsDigitsOnly()) {
+                        Arrangement.spacedBy(horizontalArrangement.toInt().dp)
+                    } else {
+                        Arrangement.Center
+                    }
                 }
             }
         }
 
+        /**
+         * The vertical alignment of the Row's children
+         *
+         * ```
+         * <Row verticalAlignment="center" >...</Column>
+         * ```
+         * @param verticalAlignment the vertical alignment of the row's children. The
+         * supported values are: `top`, `center`, and `bottom`.
+         */
         fun verticalAlignment(verticalAlignment: String) = apply {
             if (verticalAlignment.isNotEmpty()) {
                 this.verticalAlignment = when (verticalAlignment) {
@@ -87,7 +112,7 @@ internal class RowDTO private constructor(builder: Builder) :
 internal object RowDtoFactory : ComposableViewFactory<RowDTO, RowDTO.Builder>() {
     /**
      * Creates a `RowDTO` object based on the attributes of the input `Attributes` object.
-     * Row co-relates to the Row composable
+     * RowDTO co-relates to the Row composable
      * @param attributes the `Attributes` object to create the `RowDTO` object from
      * @return a `RowDTO` object based on the attributes of the input `Attributes` object
      */

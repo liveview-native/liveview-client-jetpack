@@ -86,16 +86,17 @@ abstract class ChangeableDTOBuilder<T : ComposableView, V : Any>(defaultValue: V
      * Handle common attributes for value changeable components like `TextField`, `Slider`, etc.
      * The attributes handled are: `phx-change`, `phx-debounce`, `phx-throttle` and `enabled`.
      *
-     * @param attributes list of attributes declared for the component.
+     * @param attribute attribute to be handled.
      */
-    fun processChangeableAttributes(attributes: Array<CoreAttribute>) {
-        attributes.forEach { attribute ->
-            when (attribute.name) {
-                "phx-change" -> onChange(attribute.value)
-                "phx-debounce" -> debounce(attribute.value)
-                "phx-throttle" -> throttle(attribute.value)
-                "enabled" -> enabled(attribute.value)
-            }
+    fun handleChangeableAttribute(attribute: CoreAttribute): Boolean {
+        var result = true
+        when (attribute.name) {
+            "phx-change" -> onChange(attribute.value)
+            "phx-debounce" -> debounce(attribute.value)
+            "phx-throttle" -> throttle(attribute.value)
+            "enabled" -> enabled(attribute.value)
+            else -> result = false
         }
+        return result
     }
 }

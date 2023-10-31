@@ -9,12 +9,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_SCROLL
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.optional
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -65,7 +67,7 @@ internal class ColumnDTO private constructor(builder: Builder) :
          * ```
          * @param verticalArrangement the vertical arrangement of the column's children. The
          * supported values are: `top`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `bottom`,
-         * and `center`.
+         * and `center`. An int value is also supported, which will be used to determine the space.
          */
         fun verticalArrangement(verticalArrangement: String) = apply {
             this.verticalArrangement = when (verticalArrangement) {
@@ -74,9 +76,12 @@ internal class ColumnDTO private constructor(builder: Builder) :
                 "spaceAround" -> Arrangement.SpaceAround
                 "spaceBetween" -> Arrangement.SpaceBetween
                 "bottom" -> Arrangement.Bottom
-                else -> Arrangement.Center
+                else -> if (verticalArrangement.isNotEmptyAndIsDigitsOnly()) {
+                    Arrangement.spacedBy(verticalArrangement.toInt().dp)
+                } else {
+                    Arrangement.Center
+                }
             }
-
         }
 
         /**

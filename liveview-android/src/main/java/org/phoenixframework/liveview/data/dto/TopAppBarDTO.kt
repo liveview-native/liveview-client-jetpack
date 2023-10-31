@@ -2,7 +2,6 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
@@ -26,6 +25,15 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
+/**
+ * TopAppBar is usually used as child of a `Scaffold` and represents the title of the screen.
+ * This component can contains some specific children:
+ * - `<Title>`: the title to be displayed in the top app bar.
+ * - `<Action>`: the actions displayed at the end of the top app bar. This should typically be
+ * `IconButton`s. The default layout here is a Row, so icons inside will be placed horizontally.
+ * - `<NavIcon>`:  the navigation icon displayed at the start of the top app bar. This should
+ * typically be an `IconButton`.
+ */
 internal class TopAppBarDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
 
@@ -74,6 +82,18 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
         var colors: Map<String, String>? = null
             private set
 
+        /**
+         * Set TopAppBar colors.
+         * ```
+         * <TopAppBar
+         *   colors="{'containerColor': '#FFFF0000', 'contentColor': '#FF00FF00'}">
+         *   ...
+         * </Button>
+         * ```
+         * @param colors an JSON formatted string, containing the app bar colors. The color keys
+         * supported are: `containerColor`, `scrolledContainerColor`, `navigationIconContentColor,
+         * `titleContentColor`, and `actionIconContentColor`.
+         */
         fun colors(colors: String): Builder = apply {
             if (colors.isNotEmpty()) {
                 try {
@@ -94,33 +114,31 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultColors
         } else {
-            ButtonDefaults.buttonColors(
-                containerColor = colors["containerColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("containerColor")),
-                contentColor = colors["contentColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("contentColor")),
-                disabledContainerColor = colors["contentColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("disabledContainerColor")),
-                disabledContentColor = colors["disabledContentColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("disabledContentColor"))
-            )
+            fun value(key: String) =
+                colors[key]?.toColor()
+                    ?: Color(defaultColors.privateField(key))
+
             TopAppBarDefaults.topAppBarColors(
-                containerColor = colors["containerColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("containerColor")),
-                scrolledContainerColor = colors["scrolledContainerColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("scrolledContainerColor")),
-                navigationIconContentColor = colors["navigationIconContentColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("navigationIconContentColor")),
-                titleContentColor = colors["titleContentColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("titleContentColor")),
-                actionIconContentColor = colors["actionIconContentColor"]?.toColor()
-                    ?: Color(defaultColors.privateField("actionIconContentColor")),
+                containerColor = value("containerColor"),
+                scrolledContainerColor = value("scrolledContainerColor"),
+                navigationIconContentColor = value("navigationIconContentColor"),
+                titleContentColor = value("titleContentColor"),
+                actionIconContentColor = value("actionIconContentColor"),
             )
         }
     }
 }
 
 internal object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopAppBarDTO.Builder>() {
+
+    /**
+     * Creates a `TopAppBarDTO` object based on the attributes and text of the input `Attributes`
+     * object. TopAppBarDTO co-relates to the TopAppBar composable
+     *
+     * @param attributes the `Attributes` object to create the `TopAppBarDTO` object from
+     * @return a `TopAppBarDTO` object based on the attributes and text of the input `Attributes`
+     * object
+     */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

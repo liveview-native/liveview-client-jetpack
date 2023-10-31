@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -63,11 +64,11 @@ internal class SliderDTO private constructor(builder: Builder) : ComposableView(
             snapshotFlow { stateValue }
                 .distinctUntilChanged()
                 .drop(1) // Ignoring the first emission when the component is displayed
-                .debounce(debounce ?: 0)
+                .debounce(debounce)
                 .throttleLatest(throttle)
                 .collect { value ->
                     onChange?.let { event ->
-                        pushEvent.invoke("change", event, value, null)
+                        pushEvent.invoke(EVENT_TYPE_CHANGE, event, value, null)
                     }
                 }
         }
@@ -107,18 +108,56 @@ internal class SliderDTO private constructor(builder: Builder) : ComposableView(
         var colors: Map<String, String>? = null
             private set
 
+        /**
+         * The min value for the range of values that this slider can take. The passed value will
+         * be coerced to this range.
+         * ```
+         * <Slider minValue="0" />
+         * ```
+         * @param value a float value to set the min value accepted by the slider.
+         */
         fun minValue(value: String) = apply {
             this.minValue = value.toFloatOrNull() ?: 0f
         }
 
+        /**
+         * The max value for the range of values that this slider can take. The passed value will
+         * be coerced to this range.
+         * ```
+         * <Slider maxValue="100" />
+         * ```
+         * @param value a float value to set the max value accepted by the slider.
+         */
         fun maxValue(value: String) = apply {
             this.maxValue = value.toFloatOrNull() ?: 1f
         }
 
+        /**
+         * If greater than 0, specifies the amount of discrete allowable values, evenly distributed
+         * across the whole value range. If 0, the slider will behave continuously and allow any
+         * value from the range specified. Must not be negative.
+         * ```
+         * <Slider steps="5" />
+         * ```
+         * @param value an int value to define the number of steps the slider has.
+         */
         fun steps(value: String) = apply {
             this.steps = value.toIntOrNull() ?: 0
         }
 
+        /**
+         * Set Slider colors.
+         * ```
+         * <Slider
+         *   colors="{'thumbColor': '#FFFF0000', 'activeTrackColor': '#FF00FF00'}">
+         *   ...
+         * </Button>
+         * ```
+         * @param colors an JSON formatted string, containing the slider colors. The color keys
+         * supported are: `thumbColor`, `activeTrackColor`, `activeTickColor, `inactiveTrackColor`,
+         * `inactiveTickColor`, `disabledThumbColor`, `disabledActiveTrackColor`,
+         * `disabledActiveTickColor`, `disabledInactiveTrackColor`, and `disabledInactiveTickColor`.
+         */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
                 try {
@@ -134,23 +173,32 @@ internal class SliderDTO private constructor(builder: Builder) : ComposableView(
 }
 
 internal object SliderDtoFactory : ComposableViewFactory<SliderDTO, SliderDTO.Builder>() {
+
+    /**
+     * Creates a `SliderDTO` object based on the attributes of the input `Attributes` object.
+     * SliderDTO co-relates to the Slider composable
+     * @param attributes the `Attributes` object to create the `SliderDTO` object from
+     * @return a `SliderDTO` object based on the attributes of the input `Attributes` object
+     */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
-    ): SliderDTO = SliderDTO.Builder().apply {
-        processChangeableAttributes(attributes)
-    }.also {
+    ): SliderDTO = SliderDTO.Builder().also {
         attributes.fold(
             it
         ) { builder, attribute ->
-            when (attribute.name) {
-                "minValue" -> builder.minValue(attribute.value)
-                "maxValue" -> builder.maxValue(attribute.value)
-                "steps" -> builder.steps(attribute.value)
-                "colors" -> builder.colors(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as SliderDTO.Builder
+            if (builder.handleChangeableAttribute(attribute)) {
+                builder
+            } else {
+                when (attribute.name) {
+                    "minValue" -> builder.minValue(attribute.value)
+                    "maxValue" -> builder.maxValue(attribute.value)
+                    "steps" -> builder.steps(attribute.value)
+                    "colors" -> builder.colors(attribute.value)
+                    else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
+                } as SliderDTO.Builder
+            }
         }
     }.build()
 }

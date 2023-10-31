@@ -124,7 +124,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
          */
         fun onClick(event: String, pushEvent: PushEvent?) = apply {
             this.onClick = {
-                pushEvent?.invoke(EVENT_CLICK_TYPE, event, "", null)
+                pushEvent?.invoke(EVENT_TYPE_CLICK, event, "", null)
             }
         }
 

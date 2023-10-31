@@ -115,9 +115,9 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
          * ```
          * <AsyncImage alignment="centerStart" />
          * ```
-         * @param alignment content scale. The supported values are: `topStart`, `topCenter`,
-         * `topEnd`, `centerStart`, `center`, `centerEnd`, `bottomStart`, `bottomCenter`, and
-         * `bottomEnd`.
+         * @param alignment image alignment when the image is smaller than the available area.
+         * The supported values are: `topStart`, `topCenter`, `topEnd`, `centerStart`, `center`,
+         * `centerEnd`, `bottomStart`, `bottomCenter`, and `bottomEnd`.
          */
         fun alignment(alignment: String) = apply {
             if (alignment.isNotEmpty()) {

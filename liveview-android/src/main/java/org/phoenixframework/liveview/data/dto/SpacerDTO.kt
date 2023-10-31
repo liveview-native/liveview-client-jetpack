@@ -28,6 +28,13 @@ internal class SpacerDTO private constructor(builder: Builder) :
 }
 
 internal object SpacerDtoFactory : ComposableViewFactory<SpacerDTO, SpacerDTO.Builder>() {
+
+    /**
+     * Creates a `SpacerDTO` object based on the attributes of the input `Attributes` object.
+     * SpacerDTO co-relates to the Spacer composable
+     * @param attributes the `Attributes` object to create the `SliderDTO` object from
+     * @return a `SpacerDTO` object based on the attributes of the input `Attributes` object
+     */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

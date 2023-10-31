@@ -13,6 +13,7 @@ import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
@@ -36,9 +37,9 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
             contentPadding = PaddingValues(
-                (contentPadding[LazyComposableBuilder.LEFT] ?: 0).dp,
+                (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
                 (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
-                (contentPadding[LazyComposableBuilder.RIGHT] ?: 0).dp,
+                (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
                 (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
             ),
             content = {
@@ -58,6 +59,16 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
         var horizontalAlignment: Alignment.Horizontal = Alignment.Start
             private set
 
+        /**
+         * The vertical arrangement of the Column's children
+         *
+         * ```
+         * <LazyColumn verticalArrangement="spaceAround" >...</Column>
+         * ```
+         * @param verticalArrangement the vertical arrangement of the column's children. The
+         * supported values are: `top`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `bottom`,
+         * and `center`. An int value is also supported, which will be used to determine the space.
+         */
         fun verticalArrangement(verticalArrangement: String) = apply {
             this.verticalArrangement = when (verticalArrangement) {
                 "top" -> Arrangement.Top
@@ -65,11 +76,23 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
                 "spaceAround" -> Arrangement.SpaceAround
                 "spaceBetween" -> Arrangement.SpaceBetween
                 "bottom" -> Arrangement.Bottom
-                "center" -> Arrangement.Center
-                else -> Arrangement.spacedBy(verticalArrangement.toInt().dp)
+                else -> if (verticalArrangement.isNotEmptyAndIsDigitsOnly()) {
+                    Arrangement.spacedBy(verticalArrangement.toInt().dp)
+                } else {
+                    Arrangement.Center
+                }
             }
         }
 
+        /**
+         * The horizontal alignment of the Column's children
+         *
+         * ```
+         * <LazyColumn horizontalAlignment="center" >...</Column>
+         * ```
+         * @param horizontalAlignment the horizontal alignment of the column's children. The
+         * supported values are: `start`, `center`, and `end`.
+         */
         fun horizontalAlignment(horizontalAlignment: String) = apply {
             this.horizontalAlignment = when (horizontalAlignment) {
                 "start" -> Alignment.Start
@@ -85,23 +108,27 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
 
 internal object LazyColumnDtoFactory :
     ComposableViewFactory<LazyColumnDTO, LazyColumnDTO.Builder>() {
+    /**
+     * Creates a `LazyColumnDTO` object based on the attributes of the input `Attributes` object.
+     * Column co-relates to the LazyColumn composable
+     * @param attributes the `Attributes` object to create the `LazyColumnDTO` object from
+     * @return a `LazyColumnDTO` object based on the attributes of the input `Attributes` object
+     */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
-    ): LazyColumnDTO = attributes.fold(LazyColumnDTO.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            "horizontalAlignment" -> builder.horizontalAlignment(attribute.value)
-            "itemBottomPadding" -> builder.bottomPadding(attribute.value)
-            "itemHorizontalPadding" -> builder.horizontalPadding(attribute.value)
-            "itemLeftPadding" -> builder.leftPadding(attribute.value)
-            "itemPadding" -> builder.lazyListItemPadding(attribute.value)
-            "itemRightPadding" -> builder.rightPadding(attribute.value)
-            "itemTopPadding" -> builder.topPadding(attribute.value)
-            "itemVerticalPadding" -> builder.verticalPadding(attribute.value)
-            "reverseLayout" -> builder.reverseLayout(attribute.value)
-            "verticalArrangement" -> builder.verticalArrangement(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as LazyColumnDTO.Builder
+    ): LazyColumnDTO = LazyColumnDTO.Builder().also {
+        attributes.fold(it) { builder, attribute ->
+            if (builder.handleLazyAttribute(attribute)) {
+                builder
+            } else {
+                when (attribute.name) {
+                    "horizontalAlignment" -> builder.horizontalAlignment(attribute.value)
+                    "verticalArrangement" -> builder.verticalArrangement(attribute.value)
+                    else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
+                } as LazyColumnDTO.Builder
+            }
+        }
     }.build()
 }

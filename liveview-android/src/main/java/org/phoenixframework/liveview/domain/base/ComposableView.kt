@@ -107,7 +107,7 @@ abstract class ComposableBuilder<T : ComposableView> {
      * ```
      * @param padding int value for padding to be applied on top and bottom edges.
      */
-    internal fun verticalPadding(padding: String) = apply {
+    internal fun paddingVertical(padding: String) = apply {
         if (padding.isNotEmptyAndIsDigitsOnly()) {
             modifier = modifier.then(Modifier.padding(vertical = padding.toInt().dp))
         }
@@ -120,7 +120,7 @@ abstract class ComposableBuilder<T : ComposableView> {
      * ```
      * @param padding int value for padding to be applied on left and right edges.
      */
-    internal fun horizontalPadding(padding: String) = apply {
+    internal fun paddingHorizontal(padding: String) = apply {
         if (padding.isNotEmptyAndIsDigitsOnly()) {
             modifier = modifier.then(Modifier.padding(horizontal = padding.toInt().dp))
         }
@@ -192,7 +192,7 @@ abstract class ComposableBuilder<T : ComposableView> {
     private fun clickable(event: String, pushEvent: PushEvent?) = apply {
         modifier = modifier.then(
             Modifier.clickable {
-                pushEvent?.invoke(EVENT_CLICK_TYPE, event, "", null)
+                pushEvent?.invoke(EVENT_TYPE_CLICK, event, "", null)
             }
         )
     }
@@ -319,8 +319,8 @@ abstract class ComposableBuilder<T : ComposableView> {
             ATTR_HEIGHT -> height(attribute.value)
             ATTR_WIDTH -> width(attribute.value)
             ATTR_PADDING -> padding(attribute.value)
-            ATTR_HORIZONTAL_PADDING -> horizontalPadding(attribute.value)
-            ATTR_VERTICAL_PADDING -> verticalPadding(attribute.value)
+            ATTR_HORIZONTAL_PADDING -> paddingHorizontal(attribute.value)
+            ATTR_VERTICAL_PADDING -> paddingVertical(attribute.value)
             ATTR_CLIP -> clip(attribute.value)
             ATTR_CLICK -> clickable(attribute.value, pushEvent)
         }
@@ -380,7 +380,8 @@ abstract class ComposableBuilder<T : ComposableView> {
         internal const val FILL = "fill"
         internal const val WRAP = "wrap"
 
-        internal const val EVENT_CLICK_TYPE = "click"
+        internal const val EVENT_TYPE_CLICK = "click"
+        internal const val EVENT_TYPE_CHANGE = "change"
 
         const val ATTR_ALIGN = "align"
         const val ATTR_BACKGROUND = "background"

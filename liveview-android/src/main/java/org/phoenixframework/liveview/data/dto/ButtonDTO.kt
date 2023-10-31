@@ -118,7 +118,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
          */
         fun onClick(event: String, pushEvent: PushEvent?): Builder = apply {
             this.onClick = {
-                pushEvent?.invoke(EVENT_CLICK_TYPE, event, "", null)
+                pushEvent?.invoke(EVENT_TYPE_CLICK, event, "", null)
             }
         }
 
