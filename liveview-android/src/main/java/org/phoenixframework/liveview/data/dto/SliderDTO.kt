@@ -60,7 +60,7 @@ internal class SliderDTO private constructor(builder: Builder) : ComposableView(
             colors = getSliderColors(colors)
         )
 
-        LaunchedEffect(composableNode?.id) {
+        LaunchedEffect(composableNode) {
             snapshotFlow { stateValue }
                 .distinctUntilChanged()
                 .drop(1) // Ignoring the first emission when the component is displayed
@@ -149,9 +149,7 @@ internal class SliderDTO private constructor(builder: Builder) : ComposableView(
          * Set Slider colors.
          * ```
          * <Slider
-         *   colors="{'thumbColor': '#FFFF0000', 'activeTrackColor': '#FF00FF00'}">
-         *   ...
-         * </Button>
+         *   colors="{'thumbColor': '#FFFF0000', 'activeTrackColor': '#FF00FF00'}" />
          * ```
          * @param colors an JSON formatted string, containing the slider colors. The color keys
          * supported are: `thumbColor`, `activeTrackColor`, `activeTickColor, `inactiveTrackColor`,

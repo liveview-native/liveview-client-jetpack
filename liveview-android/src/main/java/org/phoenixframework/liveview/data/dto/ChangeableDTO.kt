@@ -9,8 +9,8 @@ import org.phoenixframework.liveview.domain.base.ComposableView
  * the properties `phx-debounce` and `phx-throttle` in order to reduce the number of socket calls
  * from the client.
  */
-abstract class ChangeableDTOBuilder<T : ComposableView, V : Any>(defaultValue: V) :
-    ComposableBuilder<T>() {
+abstract class ChangeableDTOBuilder<CV : ComposableView, T : Any>(defaultValue: T) :
+    ComposableBuilder<CV>() {
     var value = defaultValue
         private set
     var onChange: String? = null
@@ -28,7 +28,7 @@ abstract class ChangeableDTOBuilder<T : ComposableView, V : Any>(defaultValue: V
      *
      * @param value component's value.
      */
-    open fun value(value: V) = apply {
+    open fun value(value: T) = apply {
         this.value = value
     }
 

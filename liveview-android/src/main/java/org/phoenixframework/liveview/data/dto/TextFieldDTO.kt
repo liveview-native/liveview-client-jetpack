@@ -174,7 +174,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
         )
 
         // Sending the updates to the server respecting phx-debounce and phx-throttle attributes
-        LaunchedEffect(composableNode?.id) {
+        LaunchedEffect(composableNode) {
             snapshotFlow { textFieldValue }
                 .map { it.text }
                 .distinctUntilChanged()
