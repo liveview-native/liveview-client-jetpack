@@ -13,6 +13,7 @@ object ComposableTypes {
     const val image = "Image"
     const val lazyColumn = "LazyColumn"
     const val lazyRow = "LazyRow"
+    const val radioButton = "RadioButton"
     const val row = "Row"
     const val scaffold = "Scaffold"
     const val slider = "Slider"

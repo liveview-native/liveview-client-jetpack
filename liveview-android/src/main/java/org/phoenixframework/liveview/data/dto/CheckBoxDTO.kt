@@ -46,7 +46,7 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
         )
 
         LaunchedEffect(composableNode) {
-            onChange?.let { event ->
+            changeValueEventName?.let { event ->
                 snapshotFlow { stateValue }
                     .onChangeable()
                     .collect { value ->

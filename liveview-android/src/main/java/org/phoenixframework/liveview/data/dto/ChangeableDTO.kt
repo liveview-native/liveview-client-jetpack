@@ -14,7 +14,7 @@ internal abstract class ChangeableDTO<T : Any>(builder: ChangeableDTOBuilder<T>)
     ComposableView(builder.modifier) {
     protected val debounce = builder.debounce
     protected val throttle = builder.throttle
-    protected val onChange = builder.onChange
+    protected val changeValueEventName = builder.onChange
     protected val enabled = builder.enabled
     protected val value = builder.value
 

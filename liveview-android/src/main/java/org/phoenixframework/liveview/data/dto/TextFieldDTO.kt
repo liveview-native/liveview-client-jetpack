@@ -163,7 +163,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
         )
 
         LaunchedEffect(composableNode) {
-            onChange?.let { event ->
+            changeValueEventName?.let { event ->
                 snapshotFlow { textFieldValue }
                     .map { it.text }
                     .onChangeable()

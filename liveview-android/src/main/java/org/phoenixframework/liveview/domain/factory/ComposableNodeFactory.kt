@@ -13,6 +13,7 @@ import org.phoenixframework.liveview.data.dto.IconDtoFactory
 import org.phoenixframework.liveview.data.dto.ImageDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
+import org.phoenixframework.liveview.data.dto.RadioButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.RowDtoFactory
 import org.phoenixframework.liveview.data.dto.ScaffoldDtoFactory
 import org.phoenixframework.liveview.data.dto.SliderDtoFactory
@@ -47,6 +48,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.image, ImageDtoFactory)
             registerComponent(ComposableTypes.lazyColumn, LazyColumnDtoFactory)
             registerComponent(ComposableTypes.lazyRow, LazyRowDtoFactory)
+            registerComponent(ComposableTypes.radioButton, RadioButtonDtoFactory)
             registerComponent(ComposableTypes.row, RowDtoFactory)
             registerComponent(ComposableTypes.scaffold, ScaffoldDtoFactory)
             registerComponent(ComposableTypes.slider, SliderDtoFactory)

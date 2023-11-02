@@ -50,7 +50,7 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
         )
 
         LaunchedEffect(composableNode) {
-            onChange?.let { event ->
+            changeValueEventName?.let { event ->
                 snapshotFlow { stateValue }
                     .onChangeable()
                     .collect { value ->
