@@ -53,7 +53,7 @@ internal class ColumnDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder<ColumnDTO>() {
+    internal class Builder : ComposableBuilder() {
         var verticalArrangement: Arrangement.Vertical = Arrangement.Top
             private set
         var horizontalAlignment: Alignment.Horizontal = Alignment.Start
@@ -102,7 +102,7 @@ internal class ColumnDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build(): ColumnDTO = ColumnDTO(this)
+        fun build(): ColumnDTO = ColumnDTO(this)
     }
 }
 

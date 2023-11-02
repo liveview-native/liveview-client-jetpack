@@ -50,20 +50,13 @@ abstract class ComposableView(val modifier: Modifier = Modifier) {
  *  to be used in the `ComposableView` implementation. All the required information required by a
  *  `ComposableView` must be provided by the respective `ComposableBuilder`.
  */
-abstract class ComposableBuilder<T : ComposableView> {
+abstract class ComposableBuilder {
     var hasVerticalScrolling: Boolean = false
         private set
     var hasHorizontalScrolling: Boolean = false
         private set
     var modifier: Modifier = Modifier
         private set
-
-    /**
-     * All subclasses must implement this function that usually simply create the respective
-     * `ComposableView`.
-     * @return a `ComposableView` instance.
-     */
-    abstract fun build(): T
 
     /**
      * Declare the preferred size (width and height) of a Composable. You can specify the exactly
@@ -312,7 +305,7 @@ abstract class ComposableBuilder<T : ComposableView> {
         attribute: CoreAttribute,
         pushEvent: PushEvent?,
         scope: Any?,
-    ): ComposableBuilder<T> {
+    ): ComposableBuilder {
         when (attribute.name) {
             ATTR_BACKGROUND -> background(attribute.value)
             ATTR_SIZE -> size(attribute.value)
@@ -401,7 +394,7 @@ abstract class ComposableBuilder<T : ComposableView> {
 /**
  * A `ComposableViewFactory` is responsible to create a `ComposableView` using a list of attributes.
  */
-abstract class ComposableViewFactory<CV : ComposableView, CB : ComposableBuilder<CV>> {
+abstract class ComposableViewFactory<CV : ComposableView, CB : ComposableBuilder> {
 
     /**
      * Create a new instance of a `ComposableView`. Subclasses of this class must override this

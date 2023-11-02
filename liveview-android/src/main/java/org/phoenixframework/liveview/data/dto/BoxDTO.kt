@@ -50,7 +50,7 @@ internal class BoxDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder<BoxDTO>() {
+    internal class Builder : ComposableBuilder() {
         var contentAlignment: Alignment = Alignment.TopStart
             private set
         var propagateMinConstraints: Boolean = false
@@ -83,7 +83,7 @@ internal class BoxDTO private constructor(builder: Builder) :
             this.propagateMinConstraints = value.toBoolean()
         }
 
-        override fun build(): BoxDTO = BoxDTO(this)
+        fun build(): BoxDTO = BoxDTO(this)
     }
 }
 

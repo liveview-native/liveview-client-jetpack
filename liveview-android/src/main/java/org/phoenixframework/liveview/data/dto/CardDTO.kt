@@ -103,7 +103,7 @@ internal class CardDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder<CardDTO>() {
+    internal class Builder : ComposableBuilder() {
         var shape: Shape = RoundedCornerShape(0.dp)
             private set
         var cardColors: Map<String, String>? = null
@@ -164,7 +164,7 @@ internal class CardDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = CardDTO(this)
+        fun build() = CardDTO(this)
     }
 }
 

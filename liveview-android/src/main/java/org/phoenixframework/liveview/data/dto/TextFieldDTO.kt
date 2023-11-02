@@ -24,19 +24,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_CLICK
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
-import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.privateField
-import org.phoenixframework.liveview.domain.extensions.throttleLatest
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -70,12 +64,7 @@ import org.phoenixframework.liveview.ui.theme.textStyleFromString
  * ```
  */
 internal class TextFieldDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val text = builder.value
-    private val onChange = builder.onChange
-    private val debounce = builder.debounce
-    private val throttle = builder.throttle
-    private val enabled = builder.enabled
+    ChangeableDTO<String>(builder) {
     private val readOnly = builder.readOnly
     private val textStyle = builder.textStyle
     private val isError = builder.isError
@@ -116,7 +105,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
             composableNode?.children?.find { it.node?.tag == TextFieldDtoFactory.supportingText }
         }
         var textFieldValue by remember {
-            mutableStateOf(TextFieldValue(text))
+            mutableStateOf(TextFieldValue(value))
         }
         TextField(
             value = textFieldValue,
@@ -173,19 +162,15 @@ internal class TextFieldDTO private constructor(builder: Builder) :
             colors = getTextFieldColors(colors)
         )
 
-        // Sending the updates to the server respecting phx-debounce and phx-throttle attributes
         LaunchedEffect(composableNode) {
-            snapshotFlow { textFieldValue }
-                .map { it.text }
-                .distinctUntilChanged()
-                .drop(1) // Ignoring the first emission when the component is displayed
-                .debounce(debounce)
-                .throttleLatest(throttle)
-                .collect { text ->
-                    onChange?.let { event ->
-                        pushEvent.invoke(EVENT_TYPE_CHANGE, event, text, null)
+            onChange?.let { event ->
+                snapshotFlow { textFieldValue }
+                    .map { it.text }
+                    .onChangeable()
+                    .collect { value ->
+                        pushOnChangeEvent(pushEvent, event, value)
                     }
-                }
+            }
         }
     }
 
@@ -257,7 +242,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ChangeableDTOBuilder<TextFieldDTO, String>("") {
+    internal class Builder : ChangeableDTOBuilder<String>("") {
         var readOnly: Boolean = false
             private set
         var textStyle: String? = null
@@ -531,7 +516,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = TextFieldDTO(this)
+        fun build() = TextFieldDTO(this)
     }
 }
 

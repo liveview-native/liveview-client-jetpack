@@ -86,7 +86,7 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
         )
     }
 
-    internal class Builder : ComposableBuilder<ScaffoldDTO>() {
+    internal class Builder : ComposableBuilder() {
         var containerColor: Color? = null
             private set
         var contentColor: Color? = null
@@ -130,7 +130,7 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = ScaffoldDTO(this)
+        fun build() = ScaffoldDTO(this)
     }
 }
 

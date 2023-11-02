@@ -42,7 +42,7 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
         )
     }
 
-    internal class Builder : ComposableBuilder<AsyncImageDTO>() {
+    internal class Builder : ComposableBuilder() {
         var imageUrl: String = ""
             private set
         var contentDescription: String? = null
@@ -137,7 +137,7 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
             this.alpha = alpha.toFloatOrNull() ?: 1f
         }
 
-        override fun build(): AsyncImageDTO = AsyncImageDTO(this)
+        fun build(): AsyncImageDTO = AsyncImageDTO(this)
     }
 }
 

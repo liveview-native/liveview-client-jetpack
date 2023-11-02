@@ -22,8 +22,8 @@ internal class SpacerDTO private constructor(builder: Builder) :
         Spacer(modifier = modifier.paddingIfNotNull(paddingValues))
     }
 
-    internal class Builder : ComposableBuilder<SpacerDTO>() {
-        override fun build() = SpacerDTO(this)
+    internal class Builder : ComposableBuilder() {
+        fun build() = SpacerDTO(this)
     }
 }
 

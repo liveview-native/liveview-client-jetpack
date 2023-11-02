@@ -53,7 +53,7 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
         )
     }
 
-    class Builder : LazyComposableBuilder<LazyColumnDTO>() {
+    class Builder : LazyComposableBuilder() {
         var verticalArrangement: Arrangement.Vertical = Arrangement.Top
             private set
         var horizontalAlignment: Alignment.Horizontal = Alignment.Start
@@ -102,7 +102,7 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = LazyColumnDTO(this)
+        fun build() = LazyColumnDTO(this)
     }
 }
 

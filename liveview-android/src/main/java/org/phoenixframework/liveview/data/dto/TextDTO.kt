@@ -95,7 +95,7 @@ internal class TextDTO private constructor(builder: Builder) :
         return text
     }
 
-    internal class Builder : ComposableBuilder<TextDTO>() {
+    internal class Builder : ComposableBuilder() {
         var text: String = ""
             private set
         var color: Color = Color.Unspecified
@@ -316,7 +316,7 @@ internal class TextDTO private constructor(builder: Builder) :
             this.style = style
         }
 
-        override fun build() = TextDTO(this)
+        fun build() = TextDTO(this)
     }
 }
 

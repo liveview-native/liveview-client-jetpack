@@ -1,6 +1,5 @@
 package org.phoenixframework.liveview.data.dto
 
-import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
@@ -15,27 +14,16 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
-import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.privateField
-import org.phoenixframework.liveview.domain.extensions.throttleLatest
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
 internal class CheckBoxDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val debounce = builder.debounce
-    private val throttle = builder.throttle
-    private val onChange = builder.onChange
-    private val enabled = builder.enabled
-    private val value = builder.value
+    ChangeableDTO<Boolean>(builder) {
     private val colors = builder.colors?.toImmutableMap()
 
     @Composable
@@ -58,17 +46,13 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
         )
 
         LaunchedEffect(composableNode) {
-            Log.d("NGVL", "CheckBox Launch")
-            snapshotFlow { stateValue }
-                .distinctUntilChanged()
-                .drop(1) // Ignoring the first emission when the component is displayed
-                .debounce(debounce)
-                .throttleLatest(throttle)
-                .collect { value ->
-                    onChange?.let { event ->
-                        pushEvent.invoke(ComposableBuilder.EVENT_TYPE_CHANGE, event, value, null)
+            onChange?.let { event ->
+                snapshotFlow { stateValue }
+                    .onChangeable()
+                    .collect { value ->
+                        pushOnChangeEvent(pushEvent, event, value)
                     }
-                }
+            }
         }
     }
 
@@ -91,7 +75,7 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ChangeableDTOBuilder<CheckBoxDTO, Boolean>(false) {
+    internal class Builder : ChangeableDTOBuilder<Boolean>(false) {
 
         var colors: Map<String, String>? = null
             private set
@@ -116,7 +100,7 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = CheckBoxDTO(this)
+        fun build() = CheckBoxDTO(this)
     }
 }
 

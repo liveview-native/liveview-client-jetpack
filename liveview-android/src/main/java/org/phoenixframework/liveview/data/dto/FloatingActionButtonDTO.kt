@@ -73,7 +73,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder<FloatingActionButtonDTO>() {
+    internal class Builder : ComposableBuilder() {
         var onClick: () -> Unit = {}
             private set
         var containerColor: Color? = null
@@ -165,7 +165,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = FloatingActionButtonDTO(this)
+        fun build() = FloatingActionButtonDTO(this)
     }
 }
 

@@ -54,7 +54,7 @@ internal class ImageDTO private constructor(builder: Builder) :
         }
     }
 
-    class Builder : ComposableBuilder<ImageDTO>() {
+    class Builder : ComposableBuilder() {
         var imageResource: String = ""
             private set
         var contentDescription: String? = null
@@ -133,7 +133,7 @@ internal class ImageDTO private constructor(builder: Builder) :
             this.alpha = alpha.toFloatOrNull() ?: 1f
         }
 
-        override fun build(): ImageDTO = ImageDTO(this)
+        fun build(): ImageDTO = ImageDTO(this)
     }
 }
 

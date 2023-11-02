@@ -1,16 +1,40 @@
 package org.phoenixframework.liveview.data.dto
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
+import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.domain.extensions.throttleLatest
+
+internal abstract class ChangeableDTO<T : Any>(builder: ChangeableDTOBuilder<T>) :
+    ComposableView(builder.modifier) {
+    protected val debounce = builder.debounce
+    protected val throttle = builder.throttle
+    protected val onChange = builder.onChange
+    protected val enabled = builder.enabled
+    protected val value = builder.value
+
+    protected fun Flow<T>.onChangeable(): Flow<T> =
+        this.distinctUntilChanged()
+            .drop(1) // Ignoring the first emission when the component is displayed
+            .debounce(debounce)
+            .throttleLatest(throttle)
+
+    protected fun pushOnChangeEvent(pushEvent: PushEvent, event: String, value: T) {
+        pushEvent.invoke(ComposableBuilder.EVENT_TYPE_CHANGE, event, value, null)
+    }
+}
 
 /**
  * Common builder class for components that use `phx-change` attribute. These components can use
  * the properties `phx-debounce` and `phx-throttle` in order to reduce the number of socket calls
  * from the client.
  */
-abstract class ChangeableDTOBuilder<CV : ComposableView, T : Any>(defaultValue: T) :
-    ComposableBuilder<CV>() {
+internal abstract class ChangeableDTOBuilder<T : Any>(defaultValue: T) : ComposableBuilder() {
     var value = defaultValue
         private set
     var onChange: String? = null

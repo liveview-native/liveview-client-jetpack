@@ -39,7 +39,7 @@ internal class IconDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder<IconDTO>() {
+    internal class Builder : ComposableBuilder() {
         var contentDescription: String = ""
             private set
         var tint: Color? = null
@@ -84,7 +84,7 @@ internal class IconDTO private constructor(builder: Builder) :
             imageVector = getIcon(icon)
         }
 
-        override fun build() = IconDTO(this)
+        fun build() = IconDTO(this)
 
         companion object {
             private val iconCache = mutableMapOf<String, ImageVector>()

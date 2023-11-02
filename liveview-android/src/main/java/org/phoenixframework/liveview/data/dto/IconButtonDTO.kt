@@ -61,7 +61,7 @@ internal class IconButtonDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder<IconButtonDTO>() {
+    internal class Builder : ComposableBuilder() {
         var onClick: () -> Unit = {}
             private set
         var enabled: Boolean = true
@@ -118,7 +118,7 @@ internal class IconButtonDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = IconButtonDTO(this)
+        fun build() = IconButtonDTO(this)
     }
 }
 

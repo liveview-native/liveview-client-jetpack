@@ -53,7 +53,7 @@ internal class LazyRowDTO private constructor(builder: Builder) :
         )
     }
 
-    internal class Builder : LazyComposableBuilder<LazyRowDTO>() {
+    internal class Builder : LazyComposableBuilder() {
         var horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceAround
             private set
         var verticalAlignment: Alignment.Vertical = Alignment.CenterVertically
@@ -105,7 +105,7 @@ internal class LazyRowDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = LazyRowDTO(this)
+        fun build() = LazyRowDTO(this)
     }
 }
 

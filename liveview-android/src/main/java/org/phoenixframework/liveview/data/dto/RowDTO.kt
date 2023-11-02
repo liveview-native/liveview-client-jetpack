@@ -53,7 +53,7 @@ internal class RowDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder<RowDTO>() {
+    internal class Builder : ComposableBuilder() {
         var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
             private set
         var verticalAlignment: Alignment.Vertical = Alignment.Top
@@ -105,7 +105,7 @@ internal class RowDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build(): RowDTO = RowDTO(this)
+        fun build(): RowDTO = RowDTO(this)
     }
 }
 
