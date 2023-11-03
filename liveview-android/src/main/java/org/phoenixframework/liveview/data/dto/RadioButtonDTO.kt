@@ -18,9 +18,15 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
 /**
  * Material Design radio button.
- *
  * ```
- *  <RadioButton value="A" phx-change="setRadioOption" selected="true" />
+ * <Row verticalAlignment="center">
+ *   <RadioButton value="A" phx-change="setRadioOption" selected={"#{@radioOption == "A"}"} />
+ *   <Text>A</Text>
+ *   <RadioButton value="B" phx-change="setRadioOption" selected={"#{@radioOption == "B"}"} />
+ *   <Text>B</Text>
+ *   <RadioButton value="C" phx-change="setRadioOption" selected={"#{@radioOption == "C"}"} />
+ *   <Text>C</Text>
+ * </Row>
  * ```
  */
 internal class RadioButtonDTO private constructor(builder: Builder) :
@@ -36,6 +42,7 @@ internal class RadioButtonDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         RadioButton(
+            modifier = modifier,
             selected = selected,
             onClick = {
                 if (!selected) {
@@ -111,6 +118,12 @@ internal class RadioButtonDTO private constructor(builder: Builder) :
 
 internal object RadioButtonDtoFactory :
     ComposableViewFactory<RadioButtonDTO, RadioButtonDTO.Builder>() {
+    /**
+     * Creates a `RadioButtonDTO` object based on the attributes of the input `Attributes` object.
+     * RadioButtonDTO co-relates to the RadioButton composable
+     * @param attributes the `Attributes` object to create the `RadioButtonDTO` object from
+     * @return a `RadioButtonDTO` object based on the attributes of the input `Attributes` object
+     */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

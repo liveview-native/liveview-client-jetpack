@@ -22,6 +22,14 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
+/**
+ * A layout composable that places its children in a horizontal sequence.
+ * ```
+ * <Row width="fill" height="wrap" background="#FFCCCCCC">
+ *   // Children
+ * </Row>
+ * ```
+ */
 internal class RowDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement

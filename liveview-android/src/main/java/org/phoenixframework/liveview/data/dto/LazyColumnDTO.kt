@@ -18,6 +18,14 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
+/**
+ * The vertically scrolling list that only composes and lays out the currently visible items.
+ * ```
+ * <LazyColumn width="fill" verticalArrangement="center" horizontalAlignment="center">
+ *   // Children
+ * </LazyColumn>
+ * ```
+ */
 internal class LazyColumnDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
@@ -110,7 +118,7 @@ internal object LazyColumnDtoFactory :
     ComposableViewFactory<LazyColumnDTO, LazyColumnDTO.Builder>() {
     /**
      * Creates a `LazyColumnDTO` object based on the attributes of the input `Attributes` object.
-     * Column co-relates to the LazyColumn composable
+     * LazyColumnDTO co-relates to the LazyColumn composable
      * @param attributes the `Attributes` object to create the `LazyColumnDTO` object from
      * @return a `LazyColumnDTO` object based on the attributes of the input `Attributes` object
      */

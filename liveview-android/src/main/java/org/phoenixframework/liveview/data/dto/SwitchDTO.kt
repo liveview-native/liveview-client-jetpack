@@ -22,6 +22,12 @@ import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
+/**
+ * Material Design Switch.
+ * ```
+ * <Switch checked={"#{@isChecked}"} phx-change="toggleCheck" />
+ * ```
+ */
 internal class SwitchDTO private constructor(builder: Builder) :
     ChangeableDTO<Boolean>(builder) {
     private val colors = builder.colors?.toImmutableMap()
@@ -119,6 +125,12 @@ internal class SwitchDTO private constructor(builder: Builder) :
 }
 
 internal object SwitchDtoFactory : ComposableViewFactory<SwitchDTO, SwitchDTO.Builder>() {
+    /**
+     * Creates a `SwitchDTO` object based on the attributes of the input `Attributes` object.
+     * SwitchDTO co-relates to the Switch composable
+     * @param attributes the `Attributes` object to create the `SwitchDTO` object from
+     * @return a `SwitchDTO` object based on the attributes of the input `Attributes` object
+     */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

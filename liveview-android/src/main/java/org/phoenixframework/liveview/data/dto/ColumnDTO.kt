@@ -22,6 +22,14 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
+/**
+ * A layout composable that places its children in a vertical sequence.
+ * ```
+ * <Column height="200" width="200" background="#FFCCCCCC">
+ *   // Children
+ * </Column>
+ * ```
+ */
 internal class ColumnDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
@@ -109,7 +117,7 @@ internal class ColumnDTO private constructor(builder: Builder) :
 internal object ColumnDtoFactory : ComposableViewFactory<ColumnDTO, ColumnDTO.Builder>() {
     /**
      * Creates a `ColumnDTO` object based on the attributes of the input `Attributes` object.
-     * Column co-relates to the Column composable
+     * ColumnDTO co-relates to the Column composable
      * @param attributes the `Attributes` object to create the `ColumnDTO` object from
      * @return a `ColumnDTO` object based on the attributes of the input `Attributes` object
      */

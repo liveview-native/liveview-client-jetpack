@@ -19,6 +19,16 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
+/**
+ * The Box will organize the components of top of each other in a Z-order.
+ * ```
+ * <Box size="100" background="#FFFF0000">
+ *   <Icon imageVector="filled:Add" align="topStart"/>
+ *   <Text align="center">Text</Text>
+ *   <Icon imageVector="filled:Share" align="bottomEnd"/>
+ * </Box>
+ * ```
+ */
 internal class BoxDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val contentAlignment: Alignment = builder.contentAlignment
@@ -90,7 +100,7 @@ internal class BoxDTO private constructor(builder: Builder) :
 internal object BoxDtoFactory : ComposableViewFactory<BoxDTO, BoxDTO.Builder>() {
     /**
      * Creates a `BoxDTO` object based on the attributes of the input `Attributes` object.
-     * Box co-relates to the Box composable
+     * BoxDTO co-relates to the Box composable
      * @param attributes the `Attributes` object to create the `BoxDTO` object from
      * @return a `BoxDTO` object based on the attributes of the input `Attributes` object
      */

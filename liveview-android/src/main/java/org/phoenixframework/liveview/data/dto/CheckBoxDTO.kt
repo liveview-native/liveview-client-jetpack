@@ -22,6 +22,12 @@ import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
+/**
+ * Material Design checkbox.
+ * ```
+ * <CheckBox checked={"#{@isChecked}"} phx-change="toggleCheck" />
+ * ```
+ */
 internal class CheckBoxDTO private constructor(builder: Builder) :
     ChangeableDTO<Boolean>(builder) {
     private val colors = builder.colors?.toImmutableMap()
@@ -105,6 +111,12 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
 }
 
 internal object CheckBoxDtoFactory : ComposableViewFactory<CheckBoxDTO, CheckBoxDTO.Builder>() {
+    /**
+     * Creates a `CheckBoxDTO` object based on the attributes of the input `Attributes` object.
+     * CheckBoxDTO co-relates to the CheckBox composable
+     * @param attributes the `Attributes` object to create the `CheckBoxDTO` object from
+     * @return a `CheckBoxDTO` object based on the attributes of the input `Attributes` object
+     */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): CheckBoxDTO = CheckBoxDTO.Builder().also {

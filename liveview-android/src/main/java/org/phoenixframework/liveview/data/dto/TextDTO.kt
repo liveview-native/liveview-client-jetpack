@@ -31,6 +31,13 @@ import org.phoenixframework.liveview.ui.theme.textAlignFromString
 import org.phoenixframework.liveview.ui.theme.textDecorationFromString
 import org.phoenixframework.liveview.ui.theme.textStyleFromString
 
+/**
+ * High level element that displays text.
+ * ```
+ * <Text>My Text 1</Text>
+ * <Text text="My Text 2" />
+ * ```
+ */
 internal class TextDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val text: String = builder.text

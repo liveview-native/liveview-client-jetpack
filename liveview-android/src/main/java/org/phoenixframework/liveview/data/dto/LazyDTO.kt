@@ -4,6 +4,10 @@ import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 
+/**
+ * Parent class of lazy lists like LazyColumn and LazyRow. This class holds some common attributes
+ * for lazy lists.
+ */
 abstract class LazyComposableBuilder : ComposableBuilder() {
     var contentPadding: MutableMap<String, Int> = mutableMapOf()
     var reverseLayout: Boolean = false

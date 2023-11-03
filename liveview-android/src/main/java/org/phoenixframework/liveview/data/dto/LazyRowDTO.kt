@@ -18,6 +18,14 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
+/**
+ * The horizontally scrolling list that only composes and lays out the currently visible items.
+ * ```
+ * <LazyRow width="fill" horizontalArrangement="start" verticalAlignment="center" >
+ *   // Children
+ * </LazyRow>
+ * ```
+ */
 internal class LazyRowDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
@@ -112,7 +120,7 @@ internal class LazyRowDTO private constructor(builder: Builder) :
 internal object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO, LazyRowDTO.Builder>() {
     /**
      * Creates a `LazyRowDTO` object based on the attributes of the input `Attributes` object.
-     * Row co-relates to the LazyRow composable
+     * LazyRowDTO co-relates to the LazyRow composable
      * @param attributes the `Attributes` object to create the `LazyRowDTO` object from
      * @return a `LazyRowDTO` object based on the attributes of the input `Attributes` object
      */

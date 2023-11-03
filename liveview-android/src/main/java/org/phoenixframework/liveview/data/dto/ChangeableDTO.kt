@@ -10,6 +10,12 @@ import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.throttleLatest
 
+/**
+ * Common class for ComposableViews which the user can change the component value to be displayed.
+ * This class holds values like debounce and throttle times to send change value event to the
+ * server. It also contains the component value and if it is enabled or not.
+ * Examples of subclasses of this class are: `CheckBoxDTO`, `SliderDTO` and `TextFieldDTO`.
+ */
 internal abstract class ChangeableDTO<T : Any>(builder: ChangeableDTOBuilder<T>) :
     ComposableView(builder.modifier) {
     protected val debounce = builder.debounce

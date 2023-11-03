@@ -135,6 +135,12 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
 }
 
 internal object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, ScaffoldDTO.Builder>() {
+    /**
+     * Creates a `ScaffoldDTO` object based on the attributes of the input `Attributes` object.
+     * ScaffoldDTO co-relates to the Scaffold composable
+     * @param attributes the `Attributes` object to create the `ScaffoldDTO` object from
+     * @return a `ScaffoldDTO` object based on the attributes of the input `Attributes` object
+     */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

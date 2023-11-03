@@ -22,6 +22,12 @@ import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
+/**
+ * Material Design slider.
+ * ```
+ * <Slider value={"#{@sliderValue}"} phx-change="setSliderValue" minValue="0" maxValue="100" />
+ * ```
+ */
 internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<Float>(builder) {
     private val minValue = builder.minValue
     private val maxValue = builder.maxValue
