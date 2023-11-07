@@ -1,7 +1,9 @@
 package org.phoenixframework.liveview.domain.factory
 
 import org.phoenixframework.liveview.data.core.CoreNodeElement
+import org.phoenixframework.liveview.data.dto.AlertDialogDtoFactory
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
+import org.phoenixframework.liveview.data.dto.BadgeBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.BoxDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.CardDtoFactory
@@ -38,7 +40,9 @@ object ComposableNodeFactory {
 
     init {
         ComposableRegistry.run {
+            registerComponent(ComposableTypes.alertDialog, AlertDialogDtoFactory)
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
+            registerComponent(ComposableTypes.badgeBox, BadgeBoxDtoFactory)
             registerComponent(ComposableTypes.box, BoxDtoFactory)
             registerComponent(ComposableTypes.button, ButtonDtoFactory)
             registerComponent(ComposableTypes.card, CardDtoFactory)
@@ -49,7 +53,9 @@ object ComposableNodeFactory {
             )
             registerComponent(ComposableTypes.column, ColumnDtoFactory)
             registerComponent(ComposableTypes.divider, DividerDtoFactory)
+            registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.fab, FloatingActionButtonDtoFactory)
+            registerComponent(ComposableTypes.filledTonalButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.icon, IconDtoFactory)
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.image, ImageDtoFactory)
@@ -59,6 +65,7 @@ object ComposableNodeFactory {
                 ComposableTypes.linearProgressIndicator,
                 ProgressIndicatorDtoFactory
             )
+            registerComponent(ComposableTypes.outlinedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.radioButton, RadioButtonDtoFactory)
             registerComponent(ComposableTypes.row, RowDtoFactory)
             registerComponent(ComposableTypes.scaffold, ScaffoldDtoFactory)
@@ -66,6 +73,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
             registerComponent(ComposableTypes.switch, SwitchDtoFactory)
             registerComponent(ComposableTypes.text, TextDtoFactory)
+            registerComponent(ComposableTypes.textButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.textField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
         }
