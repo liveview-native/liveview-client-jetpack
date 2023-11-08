@@ -14,6 +14,15 @@ import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
+/**
+ * A composable that executes an image request asynchronously and renders the result.
+ * ```
+ * <AsyncImage
+ *  url="https://assets.dockyard.com/images/narwin-home-flare.jpg"
+ *  alpha="0.5"
+ *  contentScale="fillHeight" />
+ * ```
+ */
 internal class AsyncImageDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val imageUrl: String = builder.imageUrl
@@ -42,7 +51,7 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
         )
     }
 
-    internal class Builder : ComposableBuilder<AsyncImageDTO>() {
+    internal class Builder : ComposableBuilder() {
         var imageUrl: String = ""
             private set
         var contentDescription: String? = null
@@ -137,7 +146,7 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
             this.alpha = alpha.toFloatOrNull() ?: 1f
         }
 
-        override fun build(): AsyncImageDTO = AsyncImageDTO(this)
+        fun build(): AsyncImageDTO = AsyncImageDTO(this)
     }
 }
 
@@ -145,7 +154,7 @@ internal object AsyncImageDtoFactory :
     ComposableViewFactory<AsyncImageDTO, AsyncImageDTO.Builder>() {
     /**
      * Creates an `AsyncImageDTO` object based on the attributes and text of the input `Attributes`
-     * object. AsyncImage co-relates to the AsyncImage composable from Coil library used to load
+     * object. AsyncImageDTO co-relates to the AsyncImage composable from Coil library used to load
      * images from network.
      * @param attributes the `Attributes` object to create the `AsyncImageDTO` object from
      * @return an `AsyncImageDTO` object based on the attributes and text of the input `Attributes`

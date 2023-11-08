@@ -86,7 +86,7 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
         )
     }
 
-    internal class Builder : ComposableBuilder<ScaffoldDTO>() {
+    internal class Builder : ComposableBuilder() {
         var containerColor: Color? = null
             private set
         var contentColor: Color? = null
@@ -130,11 +130,17 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = ScaffoldDTO(this)
+        fun build() = ScaffoldDTO(this)
     }
 }
 
 internal object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, ScaffoldDTO.Builder>() {
+    /**
+     * Creates a `ScaffoldDTO` object based on the attributes of the input `Attributes` object.
+     * ScaffoldDTO co-relates to the Scaffold composable
+     * @param attributes the `Attributes` object to create the `ScaffoldDTO` object from
+     * @return a `ScaffoldDTO` object based on the attributes of the input `Attributes` object
+     */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

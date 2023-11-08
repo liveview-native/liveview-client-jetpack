@@ -17,6 +17,16 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
+/**
+ * A Material Design icon component that draws a local imageVector using tint. Icon is an
+ * opinionated component designed to be used with single-color icons so that they can be tinted
+ * correctly for the component they are placed in. For generic images that should not be tinted,
+ * and do not follow the recommended icon size, use the generic Image instead. For a clickable icon,
+ * see IconButton.
+ * ```
+ * <Icon imageVector="filled:Add" />
+ * ```
+ */
 internal class IconDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val contentDescription: String = builder.contentDescription
@@ -39,7 +49,7 @@ internal class IconDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder<IconDTO>() {
+    internal class Builder : ComposableBuilder() {
         var contentDescription: String = ""
             private set
         var tint: Color? = null
@@ -84,7 +94,7 @@ internal class IconDTO private constructor(builder: Builder) :
             imageVector = getIcon(icon)
         }
 
-        override fun build() = IconDTO(this)
+        fun build() = IconDTO(this)
 
         companion object {
             private val iconCache = mutableMapOf<String, ImageVector>()
@@ -102,7 +112,7 @@ internal class IconDTO private constructor(builder: Builder) :
 internal object IconDtoFactory : ComposableViewFactory<IconDTO, IconDTO.Builder>() {
     /**
      * Creates a `IconDTO` object based on the attributes of the input `Attributes` object.
-     * Row co-relates to the Icon composable
+     * IconDTO co-relates to the Icon composable
      * @param attributes the `Attributes` object to create the `IconDTO` object from
      * @return a `IconDTO` object based on the attributes of the input `Attributes` object
      */

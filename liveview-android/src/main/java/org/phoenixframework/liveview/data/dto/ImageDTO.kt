@@ -15,6 +15,15 @@ import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
+/**
+ * Creates a composable that lays out and draws a given Painter. This will attempt to size the
+ * composable according to the Painter's intrinsic size. However, an optional Modifier parameter
+ * can be provided to adjust sizing or draw additional content (ex. background).
+ * The image must be located at `res/drawable` folder.
+ * ```
+ * <Image resource="android_icon" />
+ * ```
+ */
 internal class ImageDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val imageResource: String = builder.imageResource
@@ -54,7 +63,7 @@ internal class ImageDTO private constructor(builder: Builder) :
         }
     }
 
-    class Builder : ComposableBuilder<ImageDTO>() {
+    class Builder : ComposableBuilder() {
         var imageResource: String = ""
             private set
         var contentDescription: String? = null
@@ -133,16 +142,16 @@ internal class ImageDTO private constructor(builder: Builder) :
             this.alpha = alpha.toFloatOrNull() ?: 1f
         }
 
-        override fun build(): ImageDTO = ImageDTO(this)
+        fun build(): ImageDTO = ImageDTO(this)
     }
 }
 
 internal object ImageDtoFactory : ComposableViewFactory<ImageDTO, ImageDTO.Builder>() {
     /**
-     * Creates an `ImageDTO` object based on the attributes and text of the input `Attributes` object.
-     * Image co-relates to the Image composable from Compose library used to load images from the
-     * project's folder.
-     * @param attributes the `Attributes` object to create the `AsyncImageDTO` object from
+     * Creates an `ImageDTO` object based on the attributes and text of the input `Attributes`
+     * object. ImageDTO co-relates to the Image composable from Compose library used to load images
+     * from the project's folder.
+     * @param attributes the `Attributes` object to create the `ImageDTO` object from
      * @return an `ImageDTO` object based on the attributes and text of the input `Attributes` object
      */
     override fun buildComposableView(

@@ -14,26 +14,21 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
-import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.privateField
-import org.phoenixframework.liveview.domain.extensions.throttleLatest
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
-internal class SliderDTO private constructor(builder: Builder) : ComposableView(builder.modifier) {
-    private val value = builder.value
-    private val enabled = builder.enabled
-    private val debounce = builder.debounce
-    private val throttle = builder.throttle
-    private val onChange = builder.onChange
+/**
+ * Material Design slider.
+ * ```
+ * <Slider value={"#{@sliderValue}"} phx-change="setSliderValue" minValue="0" maxValue="100" />
+ * ```
+ */
+internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<Float>(builder) {
     private val minValue = builder.minValue
     private val maxValue = builder.maxValue
     private val steps = builder.steps
@@ -60,17 +55,14 @@ internal class SliderDTO private constructor(builder: Builder) : ComposableView(
             colors = getSliderColors(colors)
         )
 
-        LaunchedEffect(composableNode?.id) {
-            snapshotFlow { stateValue }
-                .distinctUntilChanged()
-                .drop(1) // Ignoring the first emission when the component is displayed
-                .debounce(debounce)
-                .throttleLatest(throttle)
-                .collect { value ->
-                    onChange?.let { event ->
-                        pushEvent.invoke(EVENT_TYPE_CHANGE, event, value, null)
+        LaunchedEffect(composableNode) {
+            changeValueEventName?.let { event ->
+                snapshotFlow { stateValue }
+                    .onChangeable()
+                    .collect { value ->
+                        pushOnChangeEvent(pushEvent, event, value)
                     }
-                }
+            }
         }
     }
 
@@ -98,7 +90,7 @@ internal class SliderDTO private constructor(builder: Builder) : ComposableView(
         }
     }
 
-    internal class Builder : ChangeableDTOBuilder<SliderDTO, Float>(0f) {
+    internal class Builder : ChangeableDTOBuilder<Float>(0f) {
         var minValue = 0f
             private set
         var maxValue = 1f
@@ -149,9 +141,7 @@ internal class SliderDTO private constructor(builder: Builder) : ComposableView(
          * Set Slider colors.
          * ```
          * <Slider
-         *   colors="{'thumbColor': '#FFFF0000', 'activeTrackColor': '#FF00FF00'}">
-         *   ...
-         * </Button>
+         *   colors="{'thumbColor': '#FFFF0000', 'activeTrackColor': '#FF00FF00'}" />
          * ```
          * @param colors an JSON formatted string, containing the slider colors. The color keys
          * supported are: `thumbColor`, `activeTrackColor`, `activeTickColor, `inactiveTrackColor`,
@@ -168,7 +158,7 @@ internal class SliderDTO private constructor(builder: Builder) : ComposableView(
             }
         }
 
-        override fun build(): SliderDTO = SliderDTO(this)
+        fun build(): SliderDTO = SliderDTO(this)
     }
 }
 

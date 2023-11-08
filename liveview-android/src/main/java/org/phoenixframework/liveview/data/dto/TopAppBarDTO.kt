@@ -78,7 +78,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
         )
     }
 
-    class Builder : ComposableBuilder<TopAppBarDTO>() {
+    class Builder : ComposableBuilder() {
         var colors: Map<String, String>? = null
             private set
 
@@ -104,7 +104,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = TopAppBarDTO(this)
+        fun build() = TopAppBarDTO(this)
     }
 
     @OptIn(ExperimentalMaterial3Api::class)

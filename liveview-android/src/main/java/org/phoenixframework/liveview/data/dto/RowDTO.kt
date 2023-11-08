@@ -22,6 +22,14 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
+/**
+ * A layout composable that places its children in a horizontal sequence.
+ * ```
+ * <Row width="fill" height="wrap" background="#FFCCCCCC">
+ *   // Children
+ * </Row>
+ * ```
+ */
 internal class RowDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
@@ -53,7 +61,7 @@ internal class RowDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder<RowDTO>() {
+    internal class Builder : ComposableBuilder() {
         var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
             private set
         var verticalAlignment: Alignment.Vertical = Alignment.Top
@@ -105,7 +113,7 @@ internal class RowDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build(): RowDTO = RowDTO(this)
+        fun build(): RowDTO = RowDTO(this)
     }
 }
 

@@ -26,6 +26,14 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
+/**
+ * Material Design floating action button.
+ * ```
+ * <FloatingActionButton phx-click="fabHandleAction">
+ *   <Icon imageVector="filled:Add" />
+ * </FloatingActionButton>
+ * ```
+ */
 internal class FloatingActionButtonDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val onClick: () -> Unit = builder.onClick
@@ -73,7 +81,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder<FloatingActionButtonDTO>() {
+    internal class Builder : ComposableBuilder() {
         var onClick: () -> Unit = {}
             private set
         var containerColor: Color? = null
@@ -165,7 +173,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = FloatingActionButtonDTO(this)
+        fun build() = FloatingActionButtonDTO(this)
     }
 }
 
@@ -173,9 +181,9 @@ internal object FloatingActionButtonDtoFactory :
     ComposableViewFactory<FloatingActionButtonDTO, FloatingActionButtonDTO.Builder>() {
     /**
      * Creates an `FloatingActionButtonDTO` object based on the attributes and text of the input
-     * `Attributes` object. FloatingActionButton co-relates to the FloatingActionButton composable
-     * from Compose library.
-     * @param attributes the `Attributes` object to create the `AsyncImageDTO` object from
+     * `Attributes` object. FloatingActionButtonDTO co-relates to the FloatingActionButton
+     * composable from Compose library.
+     * @param attributes the `Attributes` object to create the `FloatingActionButtonDTO` object from
      * @return an `FloatingActionButtonDTO` object based on the attributes and text of the input
      * `Attributes` object.
      */

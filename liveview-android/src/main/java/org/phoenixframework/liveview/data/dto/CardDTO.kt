@@ -32,6 +32,18 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
+/**
+ * Material Design filled card.
+ * ```
+ * <Card
+ *   padding="16"
+ *   elevation="{'defaultElevation': '10', 'pressedElevation': '2'}"
+ *   phx-click="dec"
+ * >
+ *   <Text>Card content</Text>
+ * </Card>
+ * ```
+ */
 internal class CardDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val shape: Shape = builder.shape
@@ -103,7 +115,7 @@ internal class CardDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder<CardDTO>() {
+    internal class Builder : ComposableBuilder() {
         var shape: Shape = RoundedCornerShape(0.dp)
             private set
         var cardColors: Map<String, String>? = null
@@ -164,14 +176,14 @@ internal class CardDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = CardDTO(this)
+        fun build() = CardDTO(this)
     }
 }
 
 internal object CardDtoFactory : ComposableViewFactory<CardDTO, CardDTO.Builder>() {
     /**
      * Creates a `CardDTO` object based on the attributes of the input `Attributes` object.
-     * Card co-relates to the Card composable
+     * CardDTO co-relates to the Card composable
      * @param attributes the `Attributes` object to create the `CardDTO` object from
      * @return a `CardDTO` object based on the attributes of the input `Attributes` object
      **/

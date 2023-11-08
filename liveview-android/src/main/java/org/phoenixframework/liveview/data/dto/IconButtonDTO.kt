@@ -20,6 +20,14 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
+/**
+ * Material Design standard icon button.
+ * ```
+ * <IconButton phx-click="iconButtonHandleAction">
+ *   <Icon imageVector="filled:Add" />
+ * </IconButton>
+ * ```
+ */
 internal class IconButtonDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val onClick: () -> Unit = builder.onClick
@@ -61,7 +69,7 @@ internal class IconButtonDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder<IconButtonDTO>() {
+    internal class Builder : ComposableBuilder() {
         var onClick: () -> Unit = {}
             private set
         var enabled: Boolean = true
@@ -118,7 +126,7 @@ internal class IconButtonDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = IconButtonDTO(this)
+        fun build() = IconButtonDTO(this)
     }
 }
 
@@ -126,7 +134,7 @@ internal object IconButtonDtoFactory :
     ComposableViewFactory<IconButtonDTO, IconButtonDTO.Builder>() {
     /**
      * Creates a `IconButtonDTO` object based on the attributes of the input `Attributes` object.
-     * Row co-relates to the IconButton composable
+     * IconButtonDTO co-relates to the IconButton composable
      * @param attributes the `Attributes` object to create the `IconButtonDTO` object from
      * @return a `IconButtonDTO` object based on the attributes of the input `Attributes` object
      */

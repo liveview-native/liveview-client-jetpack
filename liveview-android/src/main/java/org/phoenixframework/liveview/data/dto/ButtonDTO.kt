@@ -25,6 +25,14 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
+/**
+ * Material Design button.
+ * ```
+ * <Button phx-click="eventHandler">
+ *   <Text>Button Text</Text>
+ * </Button>
+ * ```
+ */
 internal class ButtonDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val onClick: () -> Unit = builder.onClick
@@ -93,7 +101,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder<ButtonDTO>() {
+    internal class Builder : ComposableBuilder() {
         var onClick: () -> Unit = {}
             private set
         var enabled: Boolean = true
@@ -209,14 +217,14 @@ internal class ButtonDTO private constructor(builder: Builder) :
             }
         }
 
-        override fun build() = ButtonDTO(this)
+        fun build() = ButtonDTO(this)
     }
 }
 
 internal object ButtonDtoFactory : ComposableViewFactory<ButtonDTO, ButtonDTO.Builder>() {
     /**
      * Creates a `ButtonDTO` object based on the attributes of the input `Attributes` object.
-     * Button co-relates to the Button composable
+     * ButtonDTO co-relates to the Button composable
      * @param attributes the `Attributes` object to create the `CardDTO` object from
      * @return a `ButtonDTO` object based on the attributes of the input `Attributes` object
      **/

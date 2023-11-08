@@ -11,6 +11,13 @@ import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
+/**
+ * Component that represents an empty space layout, whose size can be defined using width, height
+ * and size attributes.
+ * ```
+ * <Spacer height="8" />
+ * ```
+ */
 internal class SpacerDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     @Composable
@@ -22,8 +29,8 @@ internal class SpacerDTO private constructor(builder: Builder) :
         Spacer(modifier = modifier.paddingIfNotNull(paddingValues))
     }
 
-    internal class Builder : ComposableBuilder<SpacerDTO>() {
-        override fun build() = SpacerDTO(this)
+    internal class Builder : ComposableBuilder() {
+        fun build() = SpacerDTO(this)
     }
 }
 
