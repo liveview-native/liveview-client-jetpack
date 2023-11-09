@@ -108,7 +108,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
             mutableStateOf(TextFieldValue(value))
         }
         TextField(
-            value = textFieldValue,
+            value = if (readOnly) TextFieldValue(value) else textFieldValue,
             onValueChange = { value ->
                 textFieldValue = value
             },
