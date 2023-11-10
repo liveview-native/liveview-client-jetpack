@@ -24,22 +24,18 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
  * Material Design dropdown menu item.
- * Menus display a list of choices on a temporary surface. It can contains the following children:
- * - `Label`: usually, the text of the menu item, but can be any composable.
- * - `LeadingIcon`: optional leading icon to be displayed at the beginning of the item's label.
- * - `TrailingIcon`: optional trailing icon to be displayed at the end of the item's text. This
+ * Menus display a list of choices on a temporary surface. The children can use the following
+ * templates:
+ * - `leadingIcon`: optional leading icon to be displayed at the beginning of the item's label.
+ * - `trailingIcon`: optional trailing icon to be displayed at the end of the item's text. This
+ * - usually, the text of the menu item, but can be any composable and no template should be
+ * assigned.
  * trailing icon slot can also accept Text to indicate a keyboard shortcut.
  * ```
  * <DropDownMenuItem phx-click="setDDOption" value="A">
- *   <Label>
- *     <Text>Option A</Text>
- *   </Label>
- *   <TrailingIcon>
- *     <Icon imageVector="filled:Add" />
- *   </TrailingIcon>
- *   <LeadingIcon>
- *       <Icon imageVector="filled:ChevronLeft"/>
- *   </LeadingIcon>
+ *   <Text>Option A</Text>
+ *   <Icon imageVector="filled:Add" template="trailingIcon" />
+ *   <Icon imageVector="filled:ChevronLeft" template="leadingIcon"/>
  * </DropDownMenuItem>
  * ```
  */
@@ -58,13 +54,13 @@ internal class DropDownMenuItemDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         val textChild = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == DropDownMenuItemDtoFactory.label }
+            composableNode?.children?.find { it.node?.template == null }
         }
         val leadingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == DropDownMenuItemDtoFactory.leadingIcon }
+            composableNode?.children?.find { it.node?.template == DropDownMenuItemDtoFactory.leadingIcon }
         }
         val trailingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == DropDownMenuItemDtoFactory.trailingIcon }
+            composableNode?.children?.find { it.node?.template == DropDownMenuItemDtoFactory.trailingIcon }
         }
         DropdownMenuItem(
             text = {
@@ -212,15 +208,6 @@ internal object DropDownMenuItemDtoFactory :
         } as DropDownMenuItemDTO.Builder
     }.build()
 
-    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
-        return mapOf(
-            label to BoxDtoFactory,
-            leadingIcon to BoxDtoFactory,
-            trailingIcon to BoxDtoFactory,
-        )
-    }
-
-    internal const val label = "Label"
     internal const val leadingIcon = TextFieldDtoFactory.leadingIcon
     internal const val trailingIcon = TextFieldDtoFactory.trailingIcon
 }

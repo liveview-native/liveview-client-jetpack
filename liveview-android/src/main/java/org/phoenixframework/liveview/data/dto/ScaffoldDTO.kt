@@ -13,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -24,23 +23,23 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 /**
  * Scaffold implements the basic material design visual layout structure.
  * This component supports the following children:
- * - a title bar using `<TopAppBar>` tag;
- * - a `<FloatingActionButton>` to define the screen main action;
+ * - a title bar can be defined using a child with `topBar` template;
+ * - a FloatingActionButton to define the screen main action can be defined using `fab` template;
  * - a `<SnackBar>` to show a snackbar.
- * Any other than those specified above will be considered the Scaffold's body.
- *
+ * - `body` will be considered the Scaffold's body.
  * ```
  * <Scaffold>
- *   <TopAppBar>
- *     <Title><Text>Screen Title</Text></Title>
+ *   <TopAppBar template="topBar">
+ *     <Text>Screen Title</Text>
  *   </TopAppBar>
- *   <FloatingActionButton phx-click="navigateToOtherScreen">
+ *   <FloatingActionButton phx-click="navigateToOtherScreen" template="fab">
  *     <Icon imageVector="filled:Add" />
  *   </FloatingActionButton>
  *   <Snackbar message="message" dismissEvent="hideDialog" />
- *   <Box>
+ *   <Box template="body">
  *       <Text>Screen Body</Text>
  *   </Box>
+ * </Scaffold>
  * ```
  */
 internal class ScaffoldDTO private constructor(builder: Builder) :
@@ -56,20 +55,16 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
         pushEvent: PushEvent,
     ) {
         val topBar = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == ComposableTypes.topAppBar }
+            composableNode?.children?.find { it.node?.template == ScaffoldDtoFactory.topBar }
         }
         val floatingActionButton = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == ComposableTypes.fab }
+            composableNode?.children?.find { it.node?.template == ScaffoldDtoFactory.fab }
         }
         val snackBar = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.tag == ScaffoldDtoFactory.snackbar }
         }
         val body = remember(composableNode?.children) {
-            composableNode?.children?.find {
-                it.node?.tag != ComposableTypes.topAppBar &&
-                        it.node?.tag != ComposableTypes.fab &&
-                        it.node?.tag != ScaffoldDtoFactory.snackbar
-            }
+            composableNode?.children?.find { it.node?.template == ScaffoldDtoFactory.body }
         }
         val containerColor = containerColor ?: MaterialTheme.colorScheme.background
 
@@ -184,4 +179,7 @@ internal object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, Scaffold
     }
 
     const val snackbar = "Snackbar"
+    const val topBar = "topBar"
+    const val fab = "fab"
+    const val body = "body"
 }

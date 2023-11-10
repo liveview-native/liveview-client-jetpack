@@ -13,6 +13,9 @@ data class CoreNodeElement internal constructor(
     val namespace: String,
     val attributes: Array<CoreAttribute>
 ) {
+    val template: String? by lazy {
+        attributes.find { it.name == "template" }?.value
+    }
 
     // The hashCode and equals functions has an important role in terms of performance.
     // They guarantee that a composable function will be called again (recomposed) or not.

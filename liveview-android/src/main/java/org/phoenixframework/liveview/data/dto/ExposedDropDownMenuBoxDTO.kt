@@ -23,30 +23,22 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * Exposed dropdown menus display the currently selected item (most often) in a text field to which
  * the menu is anchored. If the text field input is used to filter results in the menu, the
  * component is also known as "autocomplete" or a "combobox".
- * The menu items are commonly `DropDownMenuItem`, but can be any component inside of the `<Items>`
- * tag.
- * IMPORTANT: The component responsible which will be clickable to show the menu must add the
- * `menuAnchor` property, otherwise the menu will not be displayed.
+ * The first child must be the "anchor", which means the clickable component that will show the
+ * menu. This component must add the `menuAnchor` property. The second component and the following
+ * ones, will be considered menu items. The menu items are commonly `DropDownMenuItem`, but can be
+ * any component.
  * ```
  * <ExposedDropDownMenuBox horizontalPadding="16">
  *   <TextField text={"#{@ddOption}"} readOnly="true" menuAnchor/>
- *   <Items>
- *     <DropDownMenuItem phx-click="setDDOption" value="A">
- *       <Label>
- *         <Text>Option A</Text>
- *       </Label>
- *     </DropDownMenuItem>
- *     <DropDownMenuItem phx-click="setDDOption" value="B" enabled="false">
- *       <Label>
- *         <Text>Option B</Text>
- *       </Label>
- *     </DropDownMenuItem>
- *     <DropDownMenuItem phx-click="setDDOption" value="C">
- *       <Label>
- *         <Text>Option C</Text>
- *       </Label>
- *     </DropDownMenuItem>
- *   </Items>
+ *   <DropDownMenuItem phx-click="setDDOption" value="A">
+ *     <Text>Option A</Text>
+ *   </DropDownMenuItem>
+ *   <DropDownMenuItem phx-click="setDDOption" value="B" enabled="false">
+ *     <Text>Option B</Text>
+ *   </DropDownMenuItem>
+ *   <DropDownMenuItem phx-click="setDDOption" value="C">
+ *     <Text>Option C</Text>
+ *   </DropDownMenuItem>
  * </ExposedDropDownMenuBox>
  * ```
  */
@@ -60,10 +52,12 @@ internal class ExposedDropDownMenuBoxDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         val items = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == ExposedDropDownMenuBoxDtoFactory.items }
+            composableNode?.children?.let {
+                if (it.size > 1) it.copyOfRange(1, it.size) else null
+            } ?: emptyArray()
         }
         val body = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag != ExposedDropDownMenuBoxDtoFactory.items }
+            composableNode?.children?.first()
         }
         var isExpanded by remember {
             mutableStateOf(false)
@@ -74,22 +68,14 @@ internal class ExposedDropDownMenuBoxDTO private constructor(builder: Builder) :
             onExpandedChange = { isExpanded = it },
             modifier = modifier,
         ) {
-            val dropDownModifier = remember(items) {
-                object : ComposableBuilder() {}.also { builder ->
-                    items?.node?.attributes?.forEach {
-                        builder.handleCommonAttributes(it, pushEvent, this)
-                    }
-                }.modifier
-            }
             body?.let {
                 PhxLiveView(it, pushEvent, composableNode, null, this)
             }
             ExposedDropdownMenu(
                 expanded = isExpanded,
                 onDismissRequest = { isExpanded = false },
-                modifier = dropDownModifier
             ) {
-                items?.children?.forEach {
+                items.forEach {
                     PhxLiveView(it, { type, event, value, target ->
                         isExpanded = false
                         pushEvent(type, event, value, target)
@@ -129,12 +115,4 @@ internal object ExposedDropDownMenuBoxDtoFactory :
                 scope
             ) as ExposedDropDownMenuBoxDTO.Builder
         }.build()
-
-    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
-        return mapOf(
-            items to ColumnDtoFactory
-        )
-    }
-
-    const val items = "Items"
 }

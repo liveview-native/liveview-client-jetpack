@@ -122,7 +122,7 @@ internal object BadgeBoxDtoFactory : ComposableViewFactory<BadgeBoxDTO, BadgeBox
 
     override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
         return mapOf(
-            badge to BoxDtoFactory
+            badge to RowDtoFactory
         )
     }
 

@@ -32,21 +32,23 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *  // Content
  * </AlertDialog>
  * ```
- * - The second one is determining each part of the dialog: confirm button (required), dismiss
- * button, icon, title, and content.
+ * - The second one is determining each part of the dialog using the following templates:
+ *   - `confirm` for confirm button (required);
+ *   - `dismiss` for dismiss button;
+ *   - `icon` for dialog icon;
+ *   - `title` for the dialog title;
+ *   - and no template form the dialog content.
  * ```
  * <AlertDialog phx-click="dismissAction">
- *  <ConfirmButton phx-click="confirmEvent">
+ *  <Button phx-click="confirmEvent" template="confirm">
  *      <Text>Confirm</Text>
- *  </ConfirmButton>
- *  <DismissButton phx-click="dismissEvent">
+ *  </Button>
+ *  <TextButton phx-click="dismissEvent" template="dismiss">
  *      <Text>Dismiss</Text>
- *  </DismissButton>
- *  <Icon imageVector="filled:Add" />
- *  <Title>Alert Title</Title>
- *  <Content>
- *      <Text>Alert message</Text>
- *  </Content>
+ *  </TextButton>
+ *  <Icon imageVector="filled:Add" template="icon" />
+ *  <Text template="title">Alert Title</Title>
+ *  <Text>Alert message</Text>
  * </AlertDialog>
  * ```
  * An `AlertDialog` usually is wrapped by a condition in order to show it or not. And a dismiss
@@ -83,19 +85,19 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
         val dismissButton = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == AlertDialogDtoFactory.dismissButton }
+            composableNode?.children?.find { it.node?.template == AlertDialogDtoFactory.dismissButton }
         }
         val confirmButton = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == AlertDialogDtoFactory.confirmButton }
+            composableNode?.children?.find { it.node?.template == AlertDialogDtoFactory.confirmButton }
         }
         val icon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == AlertDialogDtoFactory.icon }
+            composableNode?.children?.find { it.node?.template == AlertDialogDtoFactory.icon }
         }
         val title = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == AlertDialogDtoFactory.title }
+            composableNode?.children?.find { it.node?.template == AlertDialogDtoFactory.title }
         }
         val content = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == AlertDialogDtoFactory.content }
+            composableNode?.children?.find { it.node?.template == null }
         }
 
         val predefinedDialog =
@@ -373,19 +375,8 @@ internal object AlertDialogDtoFactory :
         } as AlertDialogDTO.Builder
     }.build()
 
-    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
-        return mapOf(
-            confirmButton to BoxDtoFactory,
-            dismissButton to BoxDtoFactory,
-            icon to IconDtoFactory,
-            title to TextDtoFactory,
-            content to BoxDtoFactory,
-        )
-    }
-
-    const val confirmButton = "ConfirmButton"
-    const val dismissButton = "DismissButton"
-    const val icon = "Icon"
-    const val title = "Title"
-    const val content = "Content"
+    const val confirmButton = "confirm"
+    const val dismissButton = "dismiss"
+    const val icon = "icon"
+    const val title = "title"
 }
