@@ -1,14 +1,18 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,9 +25,11 @@ import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_SCROLL
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.optional
 import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
@@ -33,7 +39,7 @@ import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
 /**
- * Material Design filled card.
+ * Material Design Card.
  * ```
  * <Card
  *   padding="16"
@@ -42,6 +48,10 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * >
  *   <Text>Card content</Text>
  * </Card>
+ *
+ * <ElevatedCard>...</ElevatedCard>
+ *
+ * <OutlinedCard>...</OutlinedCard>
  * ```
  */
 internal class CardDTO private constructor(builder: Builder) :
@@ -49,6 +59,7 @@ internal class CardDTO private constructor(builder: Builder) :
     private val shape: Shape = builder.shape
     private val colors: ImmutableMap<String, String>? = builder.cardColors?.toImmutableMap()
     private val elevation: ImmutableMap<String, String>? = builder.elevation?.toImmutableMap()
+    private val border: BorderStroke? = builder.border
     private val hasVerticalScroll = builder.hasVerticalScrolling
     private val hasHorizontalScroll = builder.hasHorizontalScrolling
 
@@ -58,27 +69,87 @@ internal class CardDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        Card(
-            modifier = modifier
-                .paddingIfNotNull(paddingValues)
-                .optional(
-                    hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
-                )
-                .optional(
-                    hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
-                ),
-            shape = shape,
-            colors = getCardColors(colors),
-            elevation = getCardElevation(elevation),
-        ) {
-            composableNode?.children?.forEach {
-                PhxLiveView(it, pushEvent, composableNode, null, this)
-            }
+        when (composableNode?.node?.tag) {
+            ComposableTypes.card ->
+                Card(
+                    modifier = modifier
+                        .paddingIfNotNull(paddingValues)
+                        .optional(
+                            hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
+                        )
+                        .optional(
+                            hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
+                        ),
+                    shape = shape,
+                    colors = getCardColors(colors),
+                    elevation = getCardElevation(elevation),
+                ) {
+                    composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null, this)
+                    }
+                }
+
+            ComposableTypes.elevatedCard ->
+                ElevatedCard(
+                    modifier = modifier
+                        .paddingIfNotNull(paddingValues)
+                        .optional(
+                            hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
+                        )
+                        .optional(
+                            hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
+                        ),
+                    shape = shape,
+                    colors = getElevatedCardColors(colors),
+                    elevation = getElevatedCardElevation(elevation),
+                ) {
+                    composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null, this)
+                    }
+                }
+
+            ComposableTypes.outlinedCard ->
+                OutlinedCard(
+                    modifier = modifier
+                        .paddingIfNotNull(paddingValues)
+                        .optional(
+                            hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
+                        )
+                        .optional(
+                            hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
+                        ),
+                    shape = shape,
+                    colors = getOutlinedCardColors(colors),
+                    elevation = getOutlinedCardElevation(elevation),
+                    border = border ?: ButtonDefaults.outlinedButtonBorder,
+                ) {
+                    composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null, this)
+                    }
+                }
         }
     }
 
     @Composable
     private fun getCardColors(cardColors: ImmutableMap<String, String>?): CardColors {
+        val defaultValue = CardDefaults.elevatedCardColors()
+        return if (cardColors == null) {
+            defaultValue
+        } else {
+            fun value(key: String) =
+                cardColors[key]?.toColor() ?: Color(defaultValue.privateField(key))
+
+            CardDefaults.elevatedCardColors(
+                containerColor = value("containerColor"),
+                contentColor = value("contentColor"),
+                disabledContainerColor = value("disabledContainerColor"),
+                disabledContentColor = value("disabledContentColor"),
+            )
+        }
+    }
+
+    @Composable
+    private fun getElevatedCardColors(cardColors: ImmutableMap<String, String>?): CardColors {
         val defaultValue = CardDefaults.cardColors()
         return if (cardColors == null) {
             defaultValue
@@ -87,6 +158,24 @@ internal class CardDTO private constructor(builder: Builder) :
                 cardColors[key]?.toColor() ?: Color(defaultValue.privateField(key))
 
             CardDefaults.cardColors(
+                containerColor = value("containerColor"),
+                contentColor = value("contentColor"),
+                disabledContainerColor = value("disabledContainerColor"),
+                disabledContentColor = value("disabledContentColor"),
+            )
+        }
+    }
+
+    @Composable
+    private fun getOutlinedCardColors(cardColors: ImmutableMap<String, String>?): CardColors {
+        val defaultValue = CardDefaults.outlinedCardColors()
+        return if (cardColors == null) {
+            defaultValue
+        } else {
+            fun value(key: String) =
+                cardColors[key]?.toColor() ?: Color(defaultValue.privateField(key))
+
+            CardDefaults.outlinedCardColors(
                 containerColor = value("containerColor"),
                 contentColor = value("contentColor"),
                 disabledContainerColor = value("disabledContainerColor"),
@@ -115,6 +204,46 @@ internal class CardDTO private constructor(builder: Builder) :
         }
     }
 
+    @Composable
+    private fun getElevatedCardElevation(elevation: ImmutableMap<String, String>?): CardElevation {
+        val defaultValue = CardDefaults.elevatedCardElevation()
+        return if (elevation == null) {
+            defaultValue
+        } else {
+            fun value(key: String) =
+                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultValue.privateField(key))
+
+            CardDefaults.elevatedCardElevation(
+                defaultElevation = value("defaultElevation"),
+                pressedElevation = value("pressedElevation"),
+                focusedElevation = value("focusedElevation"),
+                hoveredElevation = value("hoveredElevation"),
+                draggedElevation = value("draggedElevation"),
+                disabledElevation = value("disabledElevation"),
+            )
+        }
+    }
+
+    @Composable
+    private fun getOutlinedCardElevation(elevation: ImmutableMap<String, String>?): CardElevation {
+        val defaultValue = CardDefaults.outlinedCardElevation()
+        return if (elevation == null) {
+            defaultValue
+        } else {
+            fun value(key: String) =
+                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultValue.privateField(key))
+
+            CardDefaults.outlinedCardElevation(
+                defaultElevation = value("defaultElevation"),
+                pressedElevation = value("pressedElevation"),
+                focusedElevation = value("focusedElevation"),
+                hoveredElevation = value("hoveredElevation"),
+                draggedElevation = value("draggedElevation"),
+                disabledElevation = value("disabledElevation"),
+            )
+        }
+    }
+
     internal class Builder : ComposableBuilder() {
         var shape: Shape = RoundedCornerShape(0.dp)
             private set
@@ -122,6 +251,11 @@ internal class CardDTO private constructor(builder: Builder) :
             private set
         var elevation: Map<String, String>? = null
             private set
+        var border: BorderStroke? = null
+            private set
+
+        private var borderWidth: Dp? = null
+        private var borderColor: Color? = null
 
         /**
          * Defines the shape of the card's container, border, and shadow (when using elevation).
@@ -176,7 +310,44 @@ internal class CardDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = CardDTO(this)
+        /**
+         * The border width to draw around the container of this card. This property is used just
+         * for `OutlinedCard`.
+         * ```
+         * <OutlinedCard borderWidth="2">...</OutlinedCard>
+         * ```
+         * @param borderWidth int value representing card border's width.
+         * content.
+         */
+        fun borderWidth(borderWidth: String) = apply {
+            if (borderWidth.isNotEmptyAndIsDigitsOnly()) {
+                this.borderWidth = (borderWidth.toIntOrNull() ?: 0).dp
+            }
+        }
+
+        /**
+         * The border color to draw around the container of this card. This property is used just
+         * for `OutlinedCard`.
+         * ```
+         * <OutlinedCard borderColor="#FF0000FF">...</OutlinedCard>
+         * ```
+         * @param borderColor int value representing the padding to be applied to the card's
+         * content. The color must be specified as a string in the AARRGGBB format.
+         */
+        fun borderColor(borderColor: String) = apply {
+            if (borderColor.isNotEmpty()) {
+                this.borderColor = borderColor.toColor()
+            }
+        }
+
+        fun build(): CardDTO {
+            val w = borderWidth
+            val c = borderColor
+            if (c != null && w != null) {
+                this.border = BorderStroke(w, c)
+            }
+            return CardDTO(this)
+        }
     }
 }
 
@@ -197,6 +368,8 @@ internal object CardDtoFactory : ComposableViewFactory<CardDTO, CardDTO.Builder>
             "shape" -> builder.shape(attribute.value)
             "colors" -> builder.cardColors(attribute.value)
             "elevation" -> builder.elevation(attribute.value)
+            "borderWidth" -> builder.borderWidth(attribute.value)
+            "borderColor" -> builder.borderColor(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as CardDTO.Builder
     }.build()

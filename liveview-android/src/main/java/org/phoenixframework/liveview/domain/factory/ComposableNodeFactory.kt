@@ -57,6 +57,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.divider, DividerDtoFactory)
             registerComponent(ComposableTypes.dropDownMenuItem, DropDownMenuItemDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
+            registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
             registerComponent(
                 ComposableTypes.exposedDropDownMenuBox,
                 ExposedDropDownMenuBoxDtoFactory
@@ -73,6 +74,7 @@ object ComposableNodeFactory {
                 ProgressIndicatorDtoFactory
             )
             registerComponent(ComposableTypes.outlinedButton, ButtonDtoFactory)
+            registerComponent(ComposableTypes.outlinedCard, CardDtoFactory)
             registerComponent(ComposableTypes.radioButton, RadioButtonDtoFactory)
             registerComponent(ComposableTypes.row, RowDtoFactory)
             registerComponent(ComposableTypes.scaffold, ScaffoldDtoFactory)
