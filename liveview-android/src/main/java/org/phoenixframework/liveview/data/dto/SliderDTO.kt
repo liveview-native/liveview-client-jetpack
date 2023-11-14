@@ -1,6 +1,9 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
@@ -8,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -15,17 +19,52 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.SliderDtoFactory.endThumb
+import org.phoenixframework.liveview.data.dto.SliderDtoFactory.startThumb
+import org.phoenixframework.liveview.data.dto.SliderDtoFactory.thumb
+import org.phoenixframework.liveview.data.dto.SliderDtoFactory.track
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
  * Material Design slider.
  * ```
- * <Slider value={"#{@sliderValue}"} phx-change="setSliderValue" minValue="0" maxValue="100" />
+ * // sliderValue is a float
+ * <Slider
+ *   value={"#{@sliderValue}"}
+ *   phx-change="setSliderValue"
+ *   minValue="0"
+ *   maxValue="100" />
+ * // sliderRange is an array of two positions
+ * <RangeSlider
+ *   value={"#{Enum.join(@sliderRange, ",")}"}
+ *   phx-change="setSliderRange"
+ *   minValue="0"
+ *   maxValue="100" />
+ * ```
+ * It's also possible to customize the track of both types of slider using a child with the
+ * template set as "track". The thumb of the `Slider` component can be customized using the "thumb"
+ * template.
+ * ```
+ * <Slider ...>
+ *   <Box size="40" clip="4" background="#FFFF00FF" template="thumb"/>
+ *   <Box width="fill" height="10" background="#FF0000FF" template="track"/>
+ * </Slider>
+ * ```
+ * For the `RangeSlider` component, you can customize both start and end thumbs using "startThumb"
+ * and "endThumb" templates respectively.
+ * ```
+ * <RangeSlider ...>
+ *   <Box size="40" clip="4" background="#FFFF00FF" template="startThumb"/>
+ *   <Box size="40" clip="circle" background="#FF0000FF" template="endThumb"/>
+ * </RangeSlider>
  * ```
  */
 internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<Float>(builder) {
@@ -33,35 +72,134 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
     private val maxValue = builder.maxValue
     private val steps = builder.steps
     private val colors = builder.colors?.toImmutableMap()
+    private val range = builder.range
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?,
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        var stateValue by remember {
-            mutableFloatStateOf(value)
+        val interactionSource = remember { MutableInteractionSource() }
+        val colors = getSliderColors(colors)
+        val track = remember(composableNode?.children) {
+            composableNode?.children?.find { it.node?.template == track }
         }
-        Slider(
-            value = stateValue,
-            onValueChange = {
-                stateValue = it
-            },
-            modifier = modifier,
-            enabled = enabled,
-            valueRange = minValue..maxValue,
-            steps = steps,
-            colors = getSliderColors(colors)
-        )
+        when (composableNode?.node?.tag) {
+            ComposableTypes.slider -> {
+                var stateValue by remember {
+                    mutableFloatStateOf(value)
+                }
+                val thumb = remember(composableNode.children) {
+                    composableNode.children.find { it.node?.template == thumb }
+                }
 
-        LaunchedEffect(composableNode) {
-            changeValueEventName?.let { event ->
-                snapshotFlow { stateValue }
-                    .onChangeable()
-                    .collect { value ->
-                        pushOnChangeEvent(pushEvent, event, value)
+                Slider(
+                    value = stateValue,
+                    onValueChange = {
+                        stateValue = it
+                    },
+                    modifier = modifier,
+                    enabled = enabled,
+                    valueRange = minValue..maxValue,
+                    steps = steps,
+                    colors = colors,
+                    thumb = {
+                        thumb?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        } ?: SliderDefaults.Thumb(
+                            interactionSource = interactionSource,
+                            colors = colors,
+                            enabled = enabled
+                        )
+                    },
+                    track = { positions ->
+                        track?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        } ?: SliderDefaults.Track(
+                            sliderPositions = positions,
+                            colors = colors,
+                            enabled = enabled
+                        )
                     }
+                )
+
+                LaunchedEffect(composableNode) {
+                    changeValueEventName?.let { event ->
+                        snapshotFlow { stateValue }
+                            .onChangeable()
+                            .collect { value ->
+                                pushOnChangeEvent(pushEvent, event, value)
+                            }
+                    }
+                }
+            }
+
+            ComposableTypes.rangeSlider -> {
+                val endInteractionSource = remember { MutableInteractionSource() }
+                var stateValue by remember {
+                    mutableStateOf(range)
+                }
+                val startThumb = remember(composableNode.children) {
+                    composableNode.children.find { it.node?.template == startThumb }
+                }
+                val endThumb = remember(composableNode.children) {
+                    composableNode.children.find { it.node?.template == endThumb }
+                }
+                RangeSlider(
+                    value = stateValue,
+                    onValueChange = {
+                        stateValue = it
+                    },
+                    modifier = modifier,
+                    enabled = enabled,
+                    valueRange = minValue..maxValue,
+                    steps = steps,
+                    colors = colors,
+                    track = { positions ->
+                        track?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        } ?: SliderDefaults.Track(
+                            sliderPositions = positions,
+                            colors = colors,
+                            enabled = enabled
+                        )
+                    },
+                    startThumb = {
+                        startThumb?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        } ?: SliderDefaults.Thumb(
+                            interactionSource = interactionSource,
+                            colors = colors,
+                            enabled = enabled
+                        )
+                    },
+                    endThumb = {
+                        endThumb?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        } ?: SliderDefaults.Thumb(
+                            interactionSource = endInteractionSource,
+                            colors = colors,
+                            enabled = enabled
+                        )
+                    },
+                )
+
+                LaunchedEffect(composableNode) {
+                    changeValueEventName?.let { event ->
+                        snapshotFlow { stateValue }
+                            .onTypedChangeable()
+                            .collect { value ->
+                                pushEvent(
+                                    ComposableBuilder.EVENT_TYPE_CHANGE,
+                                    event,
+                                    arrayOf(value.start, value.endInclusive),
+                                    null
+                                )
+                            }
+                    }
+                }
             }
         }
     }
@@ -98,6 +236,8 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
         var steps = 0
             private set
         var colors: Map<String, String>? = null
+            private set
+        var range: ClosedFloatingPointRange<Float> = minValue.rangeTo(maxValue)
             private set
 
         /**
@@ -158,6 +298,23 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
             }
         }
 
+        fun handleValue(stringValue: String) = apply {
+            if (stringValue.contains(',')) {
+                this.range = try {
+                    stringValue
+                        .split(',')
+                        .map { it.toFloat() }
+                        .let { list ->
+                            list[0]..list[1]
+                        }
+                } catch (e: Exception) {
+                    minValue..maxValue
+                }
+            } else {
+                this.value(stringValue.toFloat())
+            }
+        }
+
         fun build(): SliderDTO = SliderDTO(this)
     }
 }
@@ -186,9 +343,15 @@ internal object SliderDtoFactory : ComposableViewFactory<SliderDTO, SliderDTO.Bu
                     "maxValue" -> builder.maxValue(attribute.value)
                     "steps" -> builder.steps(attribute.value)
                     "colors" -> builder.colors(attribute.value)
+                    "value" -> builder.handleValue(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
                 } as SliderDTO.Builder
             }
         }
     }.build()
+
+    internal const val thumb = "thumb"
+    internal const val startThumb = "startThumb"
+    internal const val endThumb = "endThumb"
+    internal const val track = "track"
 }

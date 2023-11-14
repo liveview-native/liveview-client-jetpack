@@ -26,6 +26,7 @@ object ComposableTypes {
     const val outlinedButton = "OutlinedButton"
     const val outlinedCard = "OutlinedCard"
     const val radioButton = "RadioButton"
+    const val rangeSlider = "RangeSlider"
     const val row = "Row"
     const val scaffold = "Scaffold"
     const val slider = "Slider"
