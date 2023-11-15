@@ -3,7 +3,7 @@ package org.phoenixframework.liveview.domain.factory
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AlertDialogDtoFactory
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
-import org.phoenixframework.liveview.data.dto.BadgeBoxDtoFactory
+import org.phoenixframework.liveview.data.dto.BadgedBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.BoxDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.CardDtoFactory
@@ -44,7 +44,7 @@ object ComposableNodeFactory {
         ComposableRegistry.run {
             registerComponent(ComposableTypes.alertDialog, AlertDialogDtoFactory)
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
-            registerComponent(ComposableTypes.badgeBox, BadgeBoxDtoFactory)
+            registerComponent(ComposableTypes.badgedBox, BadgedBoxDtoFactory)
             registerComponent(ComposableTypes.box, BoxDtoFactory)
             registerComponent(ComposableTypes.button, ButtonDtoFactory)
             registerComponent(ComposableTypes.card, CardDtoFactory)

@@ -23,13 +23,13 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * It must be at most two children: a `Badge` and the content component, that can be any component.
  * Usually, the content is an `Icon` like below.
  * ```
- * <BadgeBox>
+ * <BadgedBox>
  *   <Badge><Text>+99</Text></Badge>
  *   <Icon imageVector="filled:Add" />
- * </BadgeBox>
+ * </BadgedBox>
  * ```
  */
-internal class BadgeBoxDTO private constructor(builder: Builder) :
+internal class BadgedBoxDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val contentColor = builder.contentColor
     private val containerColor = builder.containerColor
@@ -42,10 +42,10 @@ internal class BadgeBoxDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         val badge = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == BadgeBoxDtoFactory.badge }
+            composableNode?.children?.find { it.node?.tag == BadgedBoxDtoFactory.badge }
         }
         val contentChild = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag != BadgeBoxDtoFactory.badge }
+            composableNode?.children?.find { it.node?.tag != BadgedBoxDtoFactory.badge }
         }
         BadgedBox(
             badge = {
@@ -74,10 +74,10 @@ internal class BadgeBoxDTO private constructor(builder: Builder) :
             private set
 
         /**
-         * The color used for the background of the BadgeBox.
+         * The color used for the background of the BadgedBox.
          *
          * ```
-         * <BadgeBox containerColor="#FF0000FF">
+         * <BadgedBox containerColor="#FF0000FF">
          * ```
          * @param containerColor the background color in AARRGGBB format.
          */
@@ -86,10 +86,10 @@ internal class BadgeBoxDTO private constructor(builder: Builder) :
         }
 
         /**
-         * The preferred color for content inside the BadgeBox.
+         * The preferred color for content inside the BadgedBox.
          *
          * ```
-         * <BadgeBox contentColor="#FF0000FF" />
+         * <BadgedBox contentColor="#FF0000FF" />
          * ```
          * @param contentColor the content color in AARRGGBB format.
          */
@@ -97,27 +97,27 @@ internal class BadgeBoxDTO private constructor(builder: Builder) :
             this.contentColor = contentColor.toColor()
         }
 
-        fun build() = BadgeBoxDTO(this)
+        fun build() = BadgedBoxDTO(this)
     }
 }
 
-internal object BadgeBoxDtoFactory : ComposableViewFactory<BadgeBoxDTO, BadgeBoxDTO.Builder>() {
+internal object BadgedBoxDtoFactory : ComposableViewFactory<BadgedBoxDTO, BadgedBoxDTO.Builder>() {
     /**
-     * Creates a `BadgeBoxDTO` object based on the attributes of the input `Attributes` object.
-     * BadgeBoxDTO co-relates to the BadgeBox composable
-     * @param attributes the `Attributes` object to create the `BadgeBoxDTO` object from
-     * @return a `BadgeBoxDTO` object based on the attributes of the input `Attributes` object
+     * Creates a `BadgedBoxDTO` object based on the attributes of the input `Attributes` object.
+     * BadgedBoxDTO co-relates to the BadgedBox composable
+     * @param attributes the `Attributes` object to create the `BadgedBoxDTO` object from
+     * @return a `BadgedBoxDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
-    ): BadgeBoxDTO = attributes.fold(BadgeBoxDTO.Builder()) { builder, attribute ->
+    ): BadgedBoxDTO = attributes.fold(BadgedBoxDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             "containerColor" -> builder.containerColor(attribute.value)
             "contentColor" -> builder.contentColor(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as BadgeBoxDTO.Builder
+        } as BadgedBoxDTO.Builder
     }.build()
 
     override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
