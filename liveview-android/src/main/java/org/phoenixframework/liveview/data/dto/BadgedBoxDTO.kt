@@ -20,11 +20,11 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
  * Material Design badge box.
- * It must be at most two children: a `Badge` and the content component, that can be any component.
- * Usually, the content is an `Icon` like below.
+ * It must be at most two children: the one which will appear on the top-right must use the `badge`
+ * template; and the other child can be any component, but usually it is an `Icon` like below.
  * ```
  * <BadgedBox>
- *   <Badge><Text>+99</Text></Badge>
+ *   <Text template="badge">+99</Text>
  *   <Icon imageVector="filled:Add" />
  * </BadgedBox>
  * ```
@@ -42,10 +42,10 @@ internal class BadgedBoxDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         val badge = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == BadgedBoxDtoFactory.badge }
+            composableNode?.children?.find { it.node?.template == BadgedBoxDtoFactory.badge }
         }
         val contentChild = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag != BadgedBoxDtoFactory.badge }
+            composableNode?.children?.find { it.node?.template != BadgedBoxDtoFactory.badge }
         }
         BadgedBox(
             badge = {
@@ -55,14 +55,14 @@ internal class BadgedBoxDTO private constructor(builder: Builder) :
                         contentColor = contentColor
                             ?: contentColorFor(BadgeDefaults.containerColor),
                     ) {
-                        PhxLiveView(it, pushEvent, composableNode, null, scope = this)
+                        PhxLiveView(it, pushEvent, composableNode, null, this)
                     }
                 }
             },
             modifier = modifier,
         ) {
             contentChild?.let {
-                PhxLiveView(it, pushEvent, composableNode, null)
+                PhxLiveView(it, pushEvent, composableNode, null, this)
             }
         }
     }
@@ -120,11 +120,5 @@ internal object BadgedBoxDtoFactory : ComposableViewFactory<BadgedBoxDTO, Badged
         } as BadgedBoxDTO.Builder
     }.build()
 
-    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
-        return mapOf(
-            badge to RowDtoFactory
-        )
-    }
-
-    const val badge = "Badge"
+    const val badge = "badge"
 }
