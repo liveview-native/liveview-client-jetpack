@@ -25,24 +25,24 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * component is also known as "autocomplete" or a "combobox".
  * The first child must be the "anchor", which means the clickable component that will show the
  * menu. This component must add the `menuAnchor` property. The second component and the following
- * ones, will be considered menu items. The menu items are commonly `DropDownMenuItem`, but can be
+ * ones, will be considered menu items. The menu items are commonly `DropdownMenuItem`, but can be
  * any component.
  * ```
- * <ExposedDropDownMenuBox horizontalPadding="16">
+ * <ExposedDropdownMenuBox horizontalPadding="16">
  *   <TextField text={"#{@ddOption}"} readOnly="true" menuAnchor/>
- *   <DropDownMenuItem phx-click="setDDOption" value="A">
+ *   <DropdownMenuItem phx-click="setDDOption" value="A">
  *     <Text>Option A</Text>
- *   </DropDownMenuItem>
- *   <DropDownMenuItem phx-click="setDDOption" value="B" enabled="false">
+ *   </DropdownMenuItem>
+ *   <DropdownMenuItem phx-click="setDDOption" value="B" enabled="false">
  *     <Text>Option B</Text>
- *   </DropDownMenuItem>
- *   <DropDownMenuItem phx-click="setDDOption" value="C">
+ *   </DropdownMenuItem>
+ *   <DropdownMenuItem phx-click="setDDOption" value="C">
  *     <Text>Option C</Text>
- *   </DropDownMenuItem>
- * </ExposedDropDownMenuBox>
+ *   </DropdownMenuItem>
+ * </ExposedDropdownMenuBox>
  * ```
  */
-internal class ExposedDropDownMenuBoxDTO private constructor(builder: Builder) :
+internal class ExposedDropdownMenuBoxDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -87,32 +87,32 @@ internal class ExposedDropDownMenuBoxDTO private constructor(builder: Builder) :
 
     internal class Builder : ComposableBuilder() {
 
-        fun build() = ExposedDropDownMenuBoxDTO(this)
+        fun build() = ExposedDropdownMenuBoxDTO(this)
     }
 }
 
-internal object ExposedDropDownMenuBoxDtoFactory :
-    ComposableViewFactory<ExposedDropDownMenuBoxDTO, ExposedDropDownMenuBoxDTO.Builder>() {
+internal object ExposedDropdownMenuBoxDtoFactory :
+    ComposableViewFactory<ExposedDropdownMenuBoxDTO, ExposedDropdownMenuBoxDTO.Builder>() {
 
     /**
-     * Creates a `ExposedDropDownMenuBoxDTO` object based on the attributes of the input
-     * `Attributes` object. ExposedDropDownMenuBoxDTO co-relates to the ExposedDropDownMenuBox
+     * Creates a `ExposedDropdownMenuBoxDTO` object based on the attributes of the input
+     * `Attributes` object. ExposedDropdownMenuBoxDTO co-relates to the ExposedDropdownMenuBox
      * composable.
-     * @param attributes the `Attributes` object to create the `ExposedDropDownMenuBoxDTO` object
+     * @param attributes the `Attributes` object to create the `ExposedDropdownMenuBoxDTO` object
      * from
-     * @return a `ExposedDropDownMenuBoxDTO` object based on the attributes of the input
+     * @return a `ExposedDropdownMenuBoxDTO` object based on the attributes of the input
      * `Attributes` object
      */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
-    ): ExposedDropDownMenuBoxDTO =
-        attributes.fold(ExposedDropDownMenuBoxDTO.Builder()) { builder, attribute ->
+    ): ExposedDropdownMenuBoxDTO =
+        attributes.fold(ExposedDropdownMenuBoxDTO.Builder()) { builder, attribute ->
             builder.handleCommonAttributes(
                 attribute,
                 pushEvent,
                 scope
-            ) as ExposedDropDownMenuBoxDTO.Builder
+            ) as ExposedDropdownMenuBoxDTO.Builder
         }.build()
 }

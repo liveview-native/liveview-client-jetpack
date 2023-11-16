@@ -10,8 +10,8 @@ import org.phoenixframework.liveview.data.dto.CardDtoFactory
 import org.phoenixframework.liveview.data.dto.CheckBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.ColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.DividerDtoFactory
-import org.phoenixframework.liveview.data.dto.DropDownMenuItemDtoFactory
-import org.phoenixframework.liveview.data.dto.ExposedDropDownMenuBoxDtoFactory
+import org.phoenixframework.liveview.data.dto.DropdownMenuItemDtoFactory
+import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.FloatingActionButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconDtoFactory
@@ -55,12 +55,12 @@ object ComposableNodeFactory {
             )
             registerComponent(ComposableTypes.column, ColumnDtoFactory)
             registerComponent(ComposableTypes.divider, DividerDtoFactory)
-            registerComponent(ComposableTypes.dropDownMenuItem, DropDownMenuItemDtoFactory)
+            registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
             registerComponent(
-                ComposableTypes.exposedDropDownMenuBox,
-                ExposedDropDownMenuBoxDtoFactory
+                ComposableTypes.exposedDropdownMenuBox,
+                ExposedDropdownMenuBoxDtoFactory
             )
             registerComponent(ComposableTypes.fab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.filledTonalButton, ButtonDtoFactory)

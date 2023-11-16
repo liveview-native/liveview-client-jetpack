@@ -32,14 +32,14 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * assigned.
  * trailing icon slot can also accept Text to indicate a keyboard shortcut.
  * ```
- * <DropDownMenuItem phx-click="setDDOption" value="A">
+ * <DropdownMenuItem phx-click="setDDOption" value="A">
  *   <Text>Option A</Text>
  *   <Icon imageVector="filled:Add" template="trailingIcon" />
  *   <Icon imageVector="filled:ChevronLeft" template="leadingIcon"/>
- * </DropDownMenuItem>
+ * </DropdownMenuItem>
  * ```
  */
-internal class DropDownMenuItemDTO private constructor(builder: Builder) :
+internal class DropdownMenuItemDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val event = builder.clickEventName
     private val value = builder.value
@@ -57,10 +57,10 @@ internal class DropDownMenuItemDTO private constructor(builder: Builder) :
             composableNode?.children?.find { it.node?.template == null }
         }
         val leadingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == DropDownMenuItemDtoFactory.leadingIcon }
+            composableNode?.children?.find { it.node?.template == DropdownMenuItemDtoFactory.leadingIcon }
         }
         val trailingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == DropDownMenuItemDtoFactory.trailingIcon }
+            composableNode?.children?.find { it.node?.template == DropdownMenuItemDtoFactory.trailingIcon }
         }
         DropdownMenuItem(
             text = {
@@ -124,7 +124,7 @@ internal class DropDownMenuItemDTO private constructor(builder: Builder) :
         /**
          * Sets the component value. This value will be send to the server when the item is clicked.
          * ```
-         * <DropDownMenuItem value="foo">...</DropDownMenuItem>
+         * <DropdownMenuItem value="foo">...</DropdownMenuItem>
          * ```
          * @param value component's value.
          */
@@ -136,7 +136,7 @@ internal class DropDownMenuItemDTO private constructor(builder: Builder) :
          * Sets the event name to be triggered on the server when the item is clicked.
          *
          * ```
-         * <DropDownMenuItem phx-click="yourServerEventHandler">...</DropDownMenuItem>
+         * <DropdownMenuItem phx-click="yourServerEventHandler">...</DropdownMenuItem>
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
@@ -148,7 +148,7 @@ internal class DropDownMenuItemDTO private constructor(builder: Builder) :
          * A boolean value indicating if the component is enabled or not.
          *
          * ```
-         * <DropDownMenuItem enabled="true">...</DropDownMenuItem>
+         * <DropdownMenuItem enabled="true">...</DropdownMenuItem>
          * ```
          * @param enabled true if the component is enabled, false otherwise.
          */
@@ -157,9 +157,9 @@ internal class DropDownMenuItemDTO private constructor(builder: Builder) :
         }
 
         /**
-         * Set DropDownMenuItem colors.
+         * Set DropdownMenuItem colors.
          * ```
-         * <DropDownMenuItem
+         * <DropdownMenuItem
          *   colors="{'textColor': '#FFFF0000', 'trailingIconColor': '#FF00FF00'}">
          * />
          * ```
@@ -188,24 +188,24 @@ internal class DropDownMenuItemDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = DropDownMenuItemDTO(this)
+        fun build() = DropdownMenuItemDTO(this)
     }
 }
 
-internal object DropDownMenuItemDtoFactory :
-    ComposableViewFactory<DropDownMenuItemDTO, DropDownMenuItemDTO.Builder>() {
+internal object DropdownMenuItemDtoFactory :
+    ComposableViewFactory<DropdownMenuItemDTO, DropdownMenuItemDTO.Builder>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
-    ): DropDownMenuItemDTO = attributes.fold(DropDownMenuItemDTO.Builder()) { builder, attribute ->
+    ): DropdownMenuItemDTO = attributes.fold(DropdownMenuItemDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             ATTR_CLICK -> builder.clickEventName(attribute.value)
             "enabled" -> builder.enabled(attribute.value)
             "value" -> builder.value(attribute.value)
             "contentPadding" -> builder.contentPadding(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as DropDownMenuItemDTO.Builder
+        } as DropdownMenuItemDTO.Builder
     }.build()
 
     internal const val leadingIcon = TextFieldDtoFactory.leadingIcon
