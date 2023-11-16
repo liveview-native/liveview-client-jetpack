@@ -38,13 +38,13 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  * // sliderValue is a float
  * <Slider
- *   value={"#{@sliderValue}"}
+ *   value={@sliderValue}
  *   phx-change="setSliderValue"
  *   minValue="0"
  *   maxValue="100" />
  * // sliderRange is an array of two positions
  * <RangeSlider
- *   value={"#{Enum.join(@sliderRange, ",")}"}
+ *   value={Enum.join(@sliderRange, ",")}
  *   phx-change="setSliderRange"
  *   minValue="0"
  *   maxValue="100" />
