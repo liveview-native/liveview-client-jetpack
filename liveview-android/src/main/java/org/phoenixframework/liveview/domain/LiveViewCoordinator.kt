@@ -27,14 +27,25 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.lib.Document
 import org.phoenixframework.liveview.lib.Node
 import org.phoenixframework.liveview.lib.NodeRef
+import org.phoenixframework.liveview.lib.DocumentChangeHandler
+import org.phoenixframework.liveview.lib.ChangeType
 import java.net.ConnectException
 
 class LiveViewCoordinator(
     private val httpBaseUrl: String,
     private val wsBaseUrl: String,
     private val route: String?,
-) : ViewModel() {
+) : ViewModel(), DocumentChangeHandler {
     private val repository: Repository = Repository(httpBaseUrl, wsBaseUrl)
+    // This is to implement the DocumentChangeHandler interface.
+    override fun `handle`(
+        `context`: String,
+        `changeType`: ChangeType,
+        `nodeRef`: NodeRef,
+        `optionNodeRef`: NodeRef?,
+    ) {
+        println("${changeType}")
+    }
 
     private var document: Document = Document()
 
@@ -237,6 +248,8 @@ class LiveViewCoordinator(
 
     internal fun parseTemplate(s: String) {
         Log.d(TAG, "parseTemplate: $s")
+        document.mergeFragmentJson(s, this)
+        /*
         document.mergeFragmentJson(s, object : Document.Companion.Handler() {
             override fun onHandle(
                 context: Document,
@@ -266,8 +279,10 @@ class LiveViewCoordinator(
                 }
             }
         })
+        */
+        Log.d(TAG, "renderedTemplate: ${document.toString()}")
         val rootNode = ComposableTreeNode(screenId, -1, null, id = "rootNode")
-        val rootElement = document.rootNodeRef
+        val rootElement = document.root()
         // Walk through the DOM and create a ComposableTreeNode tree
         Log.i(TAG, "walkThroughDOM start")
         walkThroughDOM(document, rootElement, rootNode)
@@ -278,21 +293,21 @@ class LiveViewCoordinator(
     }
 
     private fun walkThroughDOM(document: Document, nodeRef: NodeRef, parent: ComposableTreeNode?) {
-        when (val node = document.getNode(nodeRef)) {
+        when (val node = document.get(nodeRef)) {
             is Node.Leaf,
-            is Node.Element -> {
+            is Node.NodeElement -> {
                 val composableTreeNode =
                     composableTreeNodeFromNode(screenId, node, nodeRef)
                 parent?.addNode(composableTreeNode)
 
-                val childNodeRefs = document.getChildren(nodeRef)
+                val childNodeRefs = document.children(nodeRef)
                 for (childNodeRef in childNodeRefs) {
                     walkThroughDOM(document, childNodeRef, composableTreeNode)
                 }
             }
 
             Node.Root -> {
-                val childNodeRefs = document.getChildren(nodeRef)
+                val childNodeRefs = document.children(nodeRef)
                 for (childNodeRef in childNodeRefs) {
                     walkThroughDOM(document, childNodeRef, parent)
                 }

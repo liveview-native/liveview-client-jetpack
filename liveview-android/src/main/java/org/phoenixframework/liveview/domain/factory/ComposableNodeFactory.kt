@@ -217,9 +217,9 @@ object ComposableNodeFactory {
     ): ComposableTreeNode {
         return ComposableTreeNode(
             screenId = screenId,
-            refId = nodeRef.ref,
+            refId = nodeRef.ref(),
             node = element,
-            id = "${screenId}_${nodeRef.ref}",
+            id = "${screenId}_${nodeRef.ref()}",
         )
     }
 

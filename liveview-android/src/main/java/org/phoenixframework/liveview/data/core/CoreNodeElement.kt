@@ -14,7 +14,7 @@ import org.phoenixframework.liveview.lib.Node
 @Immutable
 data class CoreNodeElement internal constructor(
     val tag: String,
-    val namespace: String,
+    val namespace: String?,
     val attributes: ImmutableList<CoreAttribute>
 ) {
     val template: String?
@@ -49,10 +49,10 @@ data class CoreNodeElement internal constructor(
 
         fun fromNodeElement(node: Node): CoreNodeElement {
             return when (node) {
-                is Node.Element -> {
+                is Node.NodeElement -> {
                     CoreNodeElement(
-                        node.tag,
-                        node.namespace,
+                        node.element.name.name,
+                        node.element.name.namespace,
                         node.attributes.map { CoreAttribute.fromAttribute(it) }.toImmutableList()
                     )
                 }
