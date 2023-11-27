@@ -20,19 +20,55 @@ import org.phoenixframework.liveview.data.repository.Repository
 import org.phoenixframework.liveview.data.service.ChannelService
 import org.phoenixframework.liveview.data.service.SocketService
 import org.phoenixframework.liveview.ui.registry.ComposableNodeFactory
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.lib.Document
 import org.phoenixframework.liveview.lib.Node
 import org.phoenixframework.liveview.lib.NodeRef
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveviewnative.core.Document
+import org.phoenixframework.liveviewnative.core.Node
+import org.phoenixframework.liveviewnative.core.NodeRef
+import org.phoenixframework.liveviewnative.core.DocumentChangeHandler
+import org.phoenixframework.liveviewnative.core.ChangeType
+import org.phoenixframework.liveviewnative.core.NodeData
+import java.net.ConnectException
 
 internal class LiveViewCoordinator(
     internal val httpBaseUrl: String,
     private val wsBaseUrl: String,
     private val route: String?,
-) : ViewModel() {
+) : ViewModel(), DocumentChangeHandler {
     private val repository: Repository = Repository(httpBaseUrl, wsBaseUrl)
+    // This is to implement the DocumentChangeHandler interface.
+    override fun `handle`(
+        `changeType`: ChangeType,
+        `nodeRef`: NodeRef,
+        `data`: NodeData,
+        `parent`: NodeRef?,
+    ) {
+        Log.d(TAG, "onHandle: $changeType")
+        Log.d(TAG, "\tnodeRef = ${nodeRef.ref()}")
+        Log.d(TAG, "\tparent = ${parent?.ref()}")
 
-    private var document: Document = Document()
+        when (changeType) {
+            ChangeType.CHANGE -> {
+                Log.i(TAG, "Changed: ${this.document.get(nodeRef)}")
+            }
+
+            ChangeType.ADD -> {
+                Log.i(TAG, "Added: ${this.document.get(nodeRef)}")
+            }
+
+            ChangeType.REMOVE -> {
+                Log.i(TAG, "Remove: ${this.document.get(nodeRef)}")
+            }
+
+            ChangeType.REPLACE -> {
+                Log.i(TAG, "Replace: ${this.document.get(nodeRef)}")
+            }
+         }
+    }
+
+    private var document: Document = Document.empty()
 
     private val _state =
         MutableStateFlow(LiveViewState(composableTreeNode = ComposableTreeNode(screenId, 0, null)))
@@ -45,6 +81,7 @@ internal class LiveViewCoordinator(
     private var reloadChannelJob: Job? = null
 
     init {
+        //document.setEventHandler(this)
         instanceCount++
     }
 
@@ -201,7 +238,7 @@ internal class LiveViewCoordinator(
                     repository.disconnectFromReloadSocket()
                     repository.leaveChannel()
                     repository.disconnectFromLiveViewSocket()
-                    document = Document()
+                    document = Document.empty()
 
                     viewModelScope.launch(Dispatchers.Main) {
                         cancelConnectionJobs()
@@ -263,67 +300,39 @@ internal class LiveViewCoordinator(
 
     internal fun parseTemplate(s: String) {
         Log.d(TAG, "parseTemplate: $s")
+
         try {
-            document.mergeFragmentJson(s, object : Document.Companion.Handler() {
-                override fun onHandle(
-                    context: Document,
-                    changeType: Document.Companion.ChangeType,
-                    nodeRef: NodeRef,
-                    parent: NodeRef?
-                ) {
-                    Log.d(TAG, "onHandle: $changeType")
-                    Log.d(TAG, "\tnodeRef = ${nodeRef.ref}")
-                    Log.d(TAG, "\tparent = ${parent?.ref}")
-                    when (changeType) {
-                        Document.Companion.ChangeType.Change -> {
-                            Log.i(TAG, "Changed: ${context.getNodeString(nodeRef)}")
-                        }
-
-                        Document.Companion.ChangeType.Add -> {
-                            Log.i(TAG, "Added: ${context.getNodeString(nodeRef)}")
-                        }
-
-                        Document.Companion.ChangeType.Remove -> {
-                            Log.i(TAG, "Remove: ${context.getNodeString(nodeRef)}")
-                        }
-
-                        Document.Companion.ChangeType.Replace -> {
-                            Log.i(TAG, "Replace: ${context.getNodeString(nodeRef)}")
-                        }
-                    }
-                }
-            })
-            val rootNode = ComposableTreeNode(screenId, -1, null, id = "rootNode")
-            val rootElement = document.rootNodeRef
-            // Walk through the DOM and create a ComposableTreeNode tree
-            Log.i(TAG, "walkThroughDOM start")
-            walkThroughDOM(document, rootElement, rootNode)
-            Log.i(TAG, "walkThroughDOM complete")
-            _state.update {
-                it.copy(composableTreeNode = rootNode)
-            }
-
+            document.mergeFragmentJson(s)
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+        val rootNode = ComposableTreeNode(screenId, -1, null, id = "rootNode")
+        val rootElement = document.root()
+        // Walk through the DOM and create a ComposableTreeNode tree
+        Log.i(TAG, "walkThroughDOM start")
+        walkThroughDOM(document, rootElement, rootNode)
+        Log.i(TAG, "walkThroughDOM complete")
+        _state.update {
+            it.copy(composableTreeNode = rootNode)
         }
     }
 
     private fun walkThroughDOM(document: Document, nodeRef: NodeRef, parent: ComposableTreeNode?) {
-        when (val node = document.getNode(nodeRef)) {
-            is Node.Leaf,
-            is Node.Element -> {
+        when (val node = document.get(nodeRef)) {
+            is NodeData.Leaf,
+            is NodeData.NodeElement -> {
                 val composableTreeNode =
                     composableTreeNodeFromNode(screenId, node, nodeRef)
                 parent?.addNode(composableTreeNode)
 
-                val childNodeRefs = document.getChildren(nodeRef)
+                val childNodeRefs = document.children(nodeRef)
                 for (childNodeRef in childNodeRefs) {
                     walkThroughDOM(document, childNodeRef, composableTreeNode)
                 }
             }
 
-            Node.Root -> {
-                val childNodeRefs = document.getChildren(nodeRef)
+            NodeData.Root -> {
+                val childNodeRefs = document.children(nodeRef)
                 for (childNodeRef in childNodeRefs) {
                     walkThroughDOM(document, childNodeRef, parent)
                 }
@@ -409,7 +418,7 @@ internal class LiveViewCoordinator(
 
         internal fun composableTreeNodeFromNode(
             screenId: String,
-            node: Node,
+            node: NodeData,
             nodeRef: NodeRef,
         ): ComposableTreeNode {
             return ComposableNodeFactory.buildComposableTreeNode(

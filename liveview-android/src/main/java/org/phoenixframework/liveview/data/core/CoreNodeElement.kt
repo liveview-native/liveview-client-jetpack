@@ -5,7 +5,8 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
-import org.phoenixframework.liveview.lib.Node
+import org.phoenixframework.liveviewnative.core.Node
+import org.phoenixframework.liveviewnative.core.NodeData
 
 /**
  * This class is abstraction of  the `Node.Element` class existing in Core-Jetpack.
@@ -14,7 +15,7 @@ import org.phoenixframework.liveview.lib.Node
 @Immutable
 data class CoreNodeElement internal constructor(
     val tag: String,
-    val namespace: String,
+    val namespace: String?,
     val attributes: ImmutableList<CoreAttribute>
 ) {
     val template: String?
@@ -47,20 +48,20 @@ data class CoreNodeElement internal constructor(
     companion object {
         internal const val TEXT_ATTRIBUTE = "text"
 
-        fun fromNodeElement(node: Node): CoreNodeElement {
+        fun fromNodeElement(node: NodeData): CoreNodeElement {
             return when (node) {
-                is Node.Element -> {
+                is NodeData.NodeElement -> {
                     CoreNodeElement(
-                        node.tag,
-                        node.namespace,
-                        node.attributes.map { CoreAttribute.fromAttribute(it) }.toImmutableList()
+                        node.element.name.name,
+                        node.element.name.namespace,
+                        node.element.attributes.map { CoreAttribute.fromAttribute(it) }.toImmutableList()
                     )
                 }
 
-                is Node.Root ->
+                is NodeData.Root ->
                     CoreNodeElement("", "", persistentListOf())
 
-                is Node.Leaf ->
+                is NodeData.Leaf ->
                     // A Leaf is considered an a Node element with a single attribute: text
                     CoreNodeElement(
                         "",

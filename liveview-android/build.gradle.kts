@@ -80,9 +80,9 @@ dependencies {
     api(libs.androidx.core.ktx)
     api(libs.androidx.lifecycle.runtime.ktx)
     api(libs.androidx.navigation.compose)
-
     api(libs.com.github.dsrees.javaphoenixclient)
     api(libs.com.github.liveview.native.core.jetpack)
+    api(libs.net.java.dev.jna)
 
     api(libs.org.jetbrains.kotlinx.collections.immutable)
     api(libs.org.jsoup)
@@ -146,6 +146,7 @@ tasks.withType<Test>().configureEach {
             val arch = System.getProperty("os.arch").replace("_", "-")
             if (dir.isDirectory && dir.name.contains(arch)) {
                 systemProperty("java.library.path", dir.absolutePath)
+                systemProperty("jna.library.path", dir.absolutePath)
                 break
             }
         }

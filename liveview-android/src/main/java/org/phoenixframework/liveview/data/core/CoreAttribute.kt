@@ -1,7 +1,7 @@
 package org.phoenixframework.liveview.data.core
 
 import androidx.compose.runtime.Immutable
-import org.phoenixframework.liveview.lib.Attribute
+import org.phoenixframework.liveviewnative.core.Attribute
 
 /**
  * This class is a copy of the `Attribute` class existing in Core-Jetpack.
@@ -19,9 +19,9 @@ data class CoreAttribute internal constructor(
          */
         internal fun fromAttribute(attribute: Attribute): CoreAttribute {
             return CoreAttribute(
-                attribute.name,
-                attribute.namespace,
-                attribute.value
+                attribute.name.name,
+                attribute.name.namespace.toString(),
+                attribute.value.toString()
             )
         }
     }
