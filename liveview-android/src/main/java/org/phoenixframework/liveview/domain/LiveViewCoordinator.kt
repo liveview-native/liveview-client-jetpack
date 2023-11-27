@@ -42,9 +42,30 @@ class LiveViewCoordinator(
         `context`: String,
         `changeType`: ChangeType,
         `nodeRef`: NodeRef,
-        `optionNodeRef`: NodeRef?,
+        `parent`: NodeRef?,
     ) {
-        println("${changeType}")
+        Log.d(TAG, "onHandle: $changeType")
+        Log.d(TAG, "\tnodeRef = ${nodeRef.ref()}")
+        Log.d(TAG, "\tparent = ${parent?.ref()}")
+        /*
+        when (changeType) {
+            ChangeType.Change -> {
+                Log.i(TAG, "Changed: ${context.getNodeString(nodeRef)}")
+            }
+
+            ChangeType.Add -> {
+                Log.i(TAG, "Added: ${context.getNodeString(nodeRef)}")
+            }
+
+            ChangeType.Remove -> {
+                Log.i(TAG, "Remove: ${context.getNodeString(nodeRef)}")
+            }
+
+            ChangeType.Replace -> {
+                Log.i(TAG, "Replace: ${context.getNodeString(nodeRef)}")
+            }
+         }
+         */
     }
 
     private var document: Document = Document()
@@ -280,7 +301,7 @@ class LiveViewCoordinator(
             }
         })
         */
-        Log.d(TAG, "renderedTemplate: ${document.toString()}")
+        Log.d(TAG, "renderedTemplate: ${document.render()}")
         val rootNode = ComposableTreeNode(screenId, -1, null, id = "rootNode")
         val rootElement = document.root()
         // Walk through the DOM and create a ComposableTreeNode tree
