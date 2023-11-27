@@ -26,8 +26,29 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.flow.map
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.Attrs.attrAutoCorrect
+import org.phoenixframework.liveview.data.dto.Attrs.attrCapitalization
+import org.phoenixframework.liveview.data.dto.Attrs.attrColors
+import org.phoenixframework.liveview.data.dto.Attrs.attrImeAction
+import org.phoenixframework.liveview.data.dto.Attrs.attrIsError
+import org.phoenixframework.liveview.data.dto.Attrs.attrKeyboardType
+import org.phoenixframework.liveview.data.dto.Attrs.attrMaxLines
+import org.phoenixframework.liveview.data.dto.Attrs.attrMinLines
+import org.phoenixframework.liveview.data.dto.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.dto.Attrs.attrReadOnly
+import org.phoenixframework.liveview.data.dto.Attrs.attrShape
+import org.phoenixframework.liveview.data.dto.Attrs.attrSingleLine
+import org.phoenixframework.liveview.data.dto.Attrs.attrStyle
+import org.phoenixframework.liveview.data.dto.Attrs.attrText
+import org.phoenixframework.liveview.data.dto.Attrs.attrVisualTransformation
+import org.phoenixframework.liveview.data.dto.Templates.templateLabel
+import org.phoenixframework.liveview.data.dto.Templates.templateLeadingIcon
+import org.phoenixframework.liveview.data.dto.Templates.templatePlaceholder
+import org.phoenixframework.liveview.data.dto.Templates.templatePrefix
+import org.phoenixframework.liveview.data.dto.Templates.templateSuffix
+import org.phoenixframework.liveview.data.dto.Templates.templateSupportingText
+import org.phoenixframework.liveview.data.dto.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.mappers.JsonParser
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_CLICK
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.privateField
@@ -84,25 +105,25 @@ internal class TextFieldDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         val label = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.label }
+            composableNode?.children?.find { it.node?.template == templateLabel }
         }
         val placeholder = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.placeholder }
+            composableNode?.children?.find { it.node?.template == templatePlaceholder }
         }
         val leadingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.leadingIcon }
+            composableNode?.children?.find { it.node?.template == templateLeadingIcon }
         }
         val trailingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.trailingIcon }
+            composableNode?.children?.find { it.node?.template == templateTrailingIcon }
         }
         val prefix = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.prefix }
+            composableNode?.children?.find { it.node?.template == templatePrefix }
         }
         val suffix = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.suffix }
+            composableNode?.children?.find { it.node?.template == templateSuffix }
         }
         val supportingText = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.supportingText }
+            composableNode?.children?.find { it.node?.template == templateSupportingText }
         }
         var textFieldValue by remember {
             mutableStateOf(TextFieldValue(value))
@@ -317,7 +338,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * Indicates if the text field's current value is in error state. If set to true, the label,
          * bottom indicator and trailing icon by default will be displayed in error color.
          * ```
-         * <TextField isError="true" />
+         * <TextField is-error="true" />
          * ```
          * @param isError true if the text field is in error state, false otherwise.
          */
@@ -331,7 +352,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * the ImeAction. Note that maxLines parameter will be ignored as the maxLines attribute
          * will be automatically set to 1.
          * ```
-         * <TextField singleLine="true" />
+         * <TextField single-line="true" />
          * ```
          * @param singleLine true if the text field is in error state, false otherwise.
          */
@@ -344,7 +365,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * The maximum height in terms of maximum number of visible lines. It is required that
          * 1 <= minLines <= maxLines. This parameter is ignored when singleLine is true.
          * ```
-         * <TextField maxLines="3" />
+         * <TextField max-lines="3" />
          * ```
          * @param maxLines maximum number of visible lines.
          */
@@ -356,7 +377,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          *  The minimum height in terms of minimum number of visible lines. It is required that
          *  1 <= minLines <= maxLines. This parameter is ignored when singleLine is true.
          * ```
-         * <TextField minLines="2" />
+         * <TextField min-lines="2" />
          * ```
          * @param minLines minimum number of visible lines.
          */
@@ -381,7 +402,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * "password" to create a password text field. By default, no visual transformation is
          * applied.
          * ```
-         * <TextField visualTransformation="password" />
+         * <TextField visual-transformation="password" />
          * ```
          * @param transformation `password` for password text fields, or `none` for a regular one
          * (default).
@@ -460,7 +481,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * Most of keyboard implementations ignore this value for KeyboardTypes such as
          * KeyboardType.Text.
          * ```
-         * <TextField autoCorrect="true" />
+         * <TextField auto-correct="true" />
          * ```
          * @param autoCorrect true to enable auto correct, false otherwise.
          */
@@ -473,7 +494,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * keyboard and shows corresponding keyboard but this is not guaranteed. For example, some
          * keyboards may send non-ASCII character even if you set KeyboardType.Ascii.
          * ```
-         * <TextField keyboardType="email" />
+         * <TextField keyboard-type="email" />
          * ```
          * @param keyboardType the keyboard type. The supported values are: `ascii`, `number`,
          * `phone`, `uri`, `email`, `password`, `numberPassword`, `decimal`, and `text` (default)
@@ -498,7 +519,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * ImeOptions.singleLine is false, the keyboard might show return key rather than the
          * action requested here.
          * ```
-         * <TextField imeAction="search" />
+         * <TextField ime-action="search" />
          * ```
          * @param imeAction IME action. Supported values are: `none`, `go`, `search`, `previous`,
          * `next`, `done`, and `default` (default).
@@ -540,32 +561,24 @@ internal object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO, TextFi
                 builder
             } else {
                 when (attribute.name) {
-                    ATTR_CLICK -> builder.onKeyboardAction(attribute.value, pushEvent)
-                    "text" -> builder.value(attribute.value)
-                    "readOnly" -> builder.readOnly(attribute.value)
-                    "textStyle" -> builder.textStyle(attribute.value)
-                    "isError" -> builder.isError(attribute.value)
-                    "visualTransformation" -> builder.visualTransformation(attribute.value)
-                    "singleLine" -> builder.singleLine(attribute.value)
-                    "maxLines" -> builder.maxLines(attribute.value)
-                    "minLines" -> builder.minLines(attribute.value)
-                    "shape" -> builder.shape(attribute.value)
-                    "colors" -> builder.colors(attribute.value)
-                    "capitalization" -> builder.capitalization(attribute.value)
-                    "autoCorrect" -> builder.autoCorrect(attribute.value)
-                    "keyboardType" -> builder.keyboardType(attribute.value)
-                    "imeAction" -> builder.imeAction(attribute.value)
+                    attrAutoCorrect -> builder.autoCorrect(attribute.value)
+                    attrCapitalization -> builder.capitalization(attribute.value)
+                    attrColors -> builder.colors(attribute.value)
+                    attrImeAction -> builder.imeAction(attribute.value)
+                    attrIsError -> builder.isError(attribute.value)
+                    attrKeyboardType -> builder.keyboardType(attribute.value)
+                    attrMaxLines -> builder.maxLines(attribute.value)
+                    attrMinLines -> builder.minLines(attribute.value)
+                    attrPhxClick -> builder.onKeyboardAction(attribute.value, pushEvent)
+                    attrReadOnly -> builder.readOnly(attribute.value)
+                    attrShape -> builder.shape(attribute.value)
+                    attrSingleLine -> builder.singleLine(attribute.value)
+                    attrStyle -> builder.textStyle(attribute.value)
+                    attrText -> builder.value(attribute.value)
+                    attrVisualTransformation -> builder.visualTransformation(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
                 } as TextFieldDTO.Builder
             }
         }
     }.build()
-
-    internal const val label = "label"
-    internal const val placeholder = "placeholder"
-    internal const val leadingIcon = "leadingIcon"
-    internal const val trailingIcon = "trailingIcon"
-    internal const val prefix = "prefix"
-    internal const val suffix = "suffix"
-    internal const val supportingText = "supportingText"
 }

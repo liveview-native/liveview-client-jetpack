@@ -14,6 +14,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
+import org.phoenixframework.liveview.data.dto.Attrs.attrColor
+import org.phoenixframework.liveview.data.dto.Attrs.attrFontFamily
+import org.phoenixframework.liveview.data.dto.Attrs.attrFontSize
+import org.phoenixframework.liveview.data.dto.Attrs.attrFontStyle
+import org.phoenixframework.liveview.data.dto.Attrs.attrFontWeight
+import org.phoenixframework.liveview.data.dto.Attrs.attrLetterSpacing
+import org.phoenixframework.liveview.data.dto.Attrs.attrLineHeight
+import org.phoenixframework.liveview.data.dto.Attrs.attrMaxLines
+import org.phoenixframework.liveview.data.dto.Attrs.attrMinLines
+import org.phoenixframework.liveview.data.dto.Attrs.attrOverflow
+import org.phoenixframework.liveview.data.dto.Attrs.attrSoftWrap
+import org.phoenixframework.liveview.data.dto.Attrs.attrStyle
+import org.phoenixframework.liveview.data.dto.Attrs.attrText
+import org.phoenixframework.liveview.data.dto.Attrs.attrTextAlign
+import org.phoenixframework.liveview.data.dto.Attrs.attrTextDecoration
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -352,21 +367,21 @@ internal object TextDtoFactory : ComposableViewFactory<TextDTO, TextDTO.Builder>
         attributes: Array<CoreAttribute>, scope: Any?, pushEvent: PushEvent?
     ): TextDTO.Builder = attributes.fold(TextDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "text" -> builder.text(attribute.value)
-            "color" -> builder.color(attribute.value)
-            "fontFamily" -> builder.fontFamily(attribute.value)
-            "fontSize" -> builder.fontSize(attribute.value)
-            "fontStyle" -> builder.fontStyle(attribute.value)
-            "fontWeight" -> builder.fontWeight(attribute.value)
-            "letterSpacing" -> builder.letterSpacing(attribute.value)
-            "textDecoration" -> builder.textDecoration(attribute.value)
-            "textAlign" -> builder.textAlign(attribute.value)
-            "lineHeight" -> builder.lineHeight(attribute.value)
-            "overflow" -> builder.overflow(attribute.value)
-            "style" -> builder.style(attribute.value)
-            "softWrap" -> builder.softWrap(attribute.value)
-            "maxLines" -> builder.maxLines(attribute.value)
-            "minLines" -> builder.minLines(attribute.value)
+            attrColor -> builder.color(attribute.value)
+            attrFontFamily -> builder.fontFamily(attribute.value)
+            attrFontSize -> builder.fontSize(attribute.value)
+            attrFontStyle -> builder.fontStyle(attribute.value)
+            attrFontWeight -> builder.fontWeight(attribute.value)
+            attrLetterSpacing -> builder.letterSpacing(attribute.value)
+            attrLineHeight -> builder.lineHeight(attribute.value)
+            attrMaxLines -> builder.maxLines(attribute.value)
+            attrMinLines -> builder.minLines(attribute.value)
+            attrOverflow -> builder.overflow(attribute.value)
+            attrSoftWrap -> builder.softWrap(attribute.value)
+            attrStyle -> builder.style(attribute.value)
+            attrText -> builder.text(attribute.value)
+            attrTextAlign -> builder.textAlign(attribute.value)
+            attrTextDecoration -> builder.textDecoration(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as TextDTO.Builder
     }

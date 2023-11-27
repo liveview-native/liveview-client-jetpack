@@ -22,9 +22,14 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.Attrs.attrBorderColor
+import org.phoenixframework.liveview.data.dto.Attrs.attrBorderWidth
+import org.phoenixframework.liveview.data.dto.Attrs.attrColors
+import org.phoenixframework.liveview.data.dto.Attrs.attrElevation
+import org.phoenixframework.liveview.data.dto.Attrs.attrScroll
+import org.phoenixframework.liveview.data.dto.Attrs.attrShape
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_SCROLL
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -314,7 +319,7 @@ internal class CardDTO private constructor(builder: Builder) :
          * The border width to draw around the container of this card. This property is used just
          * for `OutlinedCard`.
          * ```
-         * <OutlinedCard borderWidth="2">...</OutlinedCard>
+         * <OutlinedCard border-width="2">...</OutlinedCard>
          * ```
          * @param borderWidth int value representing card border's width.
          * content.
@@ -329,7 +334,7 @@ internal class CardDTO private constructor(builder: Builder) :
          * The border color to draw around the container of this card. This property is used just
          * for `OutlinedCard`.
          * ```
-         * <OutlinedCard borderColor="#FF0000FF">...</OutlinedCard>
+         * <OutlinedCard border-color="#FF0000FF">...</OutlinedCard>
          * ```
          * @param borderColor int value representing the padding to be applied to the card's
          * content. The color must be specified as a string in the AARRGGBB format.
@@ -364,12 +369,12 @@ internal object CardDtoFactory : ComposableViewFactory<CardDTO, CardDTO.Builder>
         scope: Any?,
     ): CardDTO = attributes.fold(CardDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            ATTR_SCROLL -> builder.scrolling(attribute.value)
-            "shape" -> builder.shape(attribute.value)
-            "colors" -> builder.cardColors(attribute.value)
-            "elevation" -> builder.elevation(attribute.value)
-            "borderWidth" -> builder.borderWidth(attribute.value)
-            "borderColor" -> builder.borderColor(attribute.value)
+            attrBorderColor -> builder.borderColor(attribute.value)
+            attrBorderWidth -> builder.borderWidth(attribute.value)
+            attrColors -> builder.cardColors(attribute.value)
+            attrElevation -> builder.elevation(attribute.value)
+            attrScroll -> builder.scrolling(attribute.value)
+            attrShape -> builder.shape(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as CardDTO.Builder
     }.build()

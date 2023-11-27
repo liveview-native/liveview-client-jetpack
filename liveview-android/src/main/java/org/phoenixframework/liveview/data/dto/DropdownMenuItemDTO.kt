@@ -10,9 +10,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.Attrs.attrContentPadding
+import org.phoenixframework.liveview.data.dto.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.dto.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.dto.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.dto.Templates.templateLeadingIcon
+import org.phoenixframework.liveview.data.dto.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_CLICK
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -32,10 +37,10 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * assigned.
  * trailing icon slot can also accept Text to indicate a keyboard shortcut.
  * ```
- * <DropdownMenuItem phx-click="setDDOption" value="A">
+ * <DropdownMenuItem phx-click="setDDOption" phx-value="A">
  *   <Text>Option A</Text>
- *   <Icon imageVector="filled:Add" template="trailingIcon" />
- *   <Icon imageVector="filled:ChevronLeft" template="leadingIcon"/>
+ *   <Icon image-vector="filled:Add" template="trailingIcon" />
+ *   <Icon image-vector="filled:ChevronLeft" template="leadingIcon"/>
  * </DropdownMenuItem>
  * ```
  */
@@ -57,10 +62,10 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
             composableNode?.children?.find { it.node?.template == null }
         }
         val leadingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == DropdownMenuItemDtoFactory.leadingIcon }
+            composableNode?.children?.find { it.node?.template == templateLeadingIcon }
         }
         val trailingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == DropdownMenuItemDtoFactory.trailingIcon }
+            composableNode?.children?.find { it.node?.template == templateTrailingIcon }
         }
         DropdownMenuItem(
             text = {
@@ -124,7 +129,7 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
         /**
          * Sets the component value. This value will be send to the server when the item is clicked.
          * ```
-         * <DropdownMenuItem value="foo">...</DropdownMenuItem>
+         * <DropdownMenuItem phx-value="foo">...</DropdownMenuItem>
          * ```
          * @param value component's value.
          */
@@ -200,14 +205,11 @@ internal object DropdownMenuItemDtoFactory :
         scope: Any?
     ): DropdownMenuItemDTO = attributes.fold(DropdownMenuItemDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            ATTR_CLICK -> builder.clickEventName(attribute.value)
-            "enabled" -> builder.enabled(attribute.value)
-            "value" -> builder.value(attribute.value)
-            "contentPadding" -> builder.contentPadding(attribute.value)
+            attrContentPadding -> builder.contentPadding(attribute.value)
+            attrEnabled -> builder.enabled(attribute.value)
+            attrPhxClick -> builder.clickEventName(attribute.value)
+            attrPhxValue -> builder.value(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as DropdownMenuItemDTO.Builder
     }.build()
-
-    internal const val leadingIcon = TextFieldDtoFactory.leadingIcon
-    internal const val trailingIcon = TextFieldDtoFactory.trailingIcon
 }

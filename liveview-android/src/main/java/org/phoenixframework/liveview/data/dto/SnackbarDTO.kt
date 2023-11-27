@@ -13,6 +13,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
+import org.phoenixframework.liveview.data.dto.Attrs.attrActionColor
+import org.phoenixframework.liveview.data.dto.Attrs.attrActionContentColor
+import org.phoenixframework.liveview.data.dto.Attrs.attrActionEvent
+import org.phoenixframework.liveview.data.dto.Attrs.attrActionOnNewLine
+import org.phoenixframework.liveview.data.dto.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.dto.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.dto.Attrs.attrDismissActionContentColor
+import org.phoenixframework.liveview.data.dto.Attrs.attrDismissEvent
+import org.phoenixframework.liveview.data.dto.Attrs.attrDuration
+import org.phoenixframework.liveview.data.dto.Attrs.attrLabel
+import org.phoenixframework.liveview.data.dto.Attrs.attrMessage
+import org.phoenixframework.liveview.data.dto.Attrs.attrShape
+import org.phoenixframework.liveview.data.dto.Attrs.attrWithDismissAction
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CLICK
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -30,7 +43,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  * <Snackbar
  *   message="message"
- *   dismissEvent="hideDialog"
+ *   dismiss-event="hideDialog"
  * />
  * ```
  */
@@ -111,7 +124,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
          * Whether or not action should be put on a separate line. Recommended for action with
          * long action text.
          * ```
-         * <Snackbar actionOnNewLine="true" />
+         * <Snackbar action-on-new-line="true" />
          * ```
          * @param actionOnNewLine true if action should be put on a separate line, false otherwise.
          */
@@ -136,7 +149,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * The color used for the background of this snackbar.
          * ```
-         * <Snackbar containerColor="#FFFFFFFF" />
+         * <Snackbar container-color="#FFFFFFFF" />
          * ```
          * @param containerColor the background color in AARRGGBB format.
          */
@@ -147,7 +160,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * The preferred color for content inside this snackbar.
          * ```
-         * <Snackbar contentColor="#FF000000" />
+         * <Snackbar content-color="#FF000000" />
          * ```
          * @param contentColor the content color in AARRGGBB format.
          */
@@ -158,7 +171,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * The color of the snackbar's action.
          * ```
-         * <Snackbar actionColor="#FF000000" />
+         * <Snackbar action-color="#FF000000" />
          * ```
          * @param actionColor the action color in AARRGGBB format.
          */
@@ -169,7 +182,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * The color of the snackbar's action.
          * ```
-         * <Snackbar actionContentColor="#FF00FF00" />
+         * <Snackbar action-content-color="#FF00FF00" />
          * ```
          * @param actionContentColor the action color in AARRGGBB format.
          */
@@ -180,7 +193,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * The preferred content color for the optional dismiss action inside this snackbar.
          * ```
-         * <Snackbar dismissActionContentColor="#FF00FF00" />
+         * <Snackbar dismiss-action-content-color="#FF00FF00" />
          * ```
          * @param dismissActionContentColor the color for the optional dismiss action in AARRGGBB
          * format.
@@ -233,7 +246,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
          * A boolean to show a dismiss action in the Snackbar. This is recommended to be set to
          * true better accessibility when a Snackbar duration is set `indefinite`.
          * ```
-         * <Snackbar withDismissAction="true" />
+         * <Snackbar with-dismiss-action="true" />
          * ```
          * @param withDismissAction true to show dismiss action, false otherwise.
          */
@@ -244,7 +257,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * Event name is the server to be called when the user presses the action in the snackbar.
          * ```
-         * <Snackbar actionEvent="doSomething" />
+         * <Snackbar action-event="doSomething" />
          * ```
          * @param actionEvent event name in the server to be called in the action button.
          */
@@ -256,7 +269,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
          * Event name is the server to be called when the snackbar is dismissed (both from the user
          * or after a timeout when the duration is `short` or `long`).
          * ```
-         * <Snackbar actionEvent="doSomething" />
+         * <Snackbar dismiss-event="doSomething" />
          * ```
          * @param dismissEvent event name in the server to be called when the snackbar is dismissed.
          */
@@ -338,19 +351,19 @@ internal object SnackbarDtoFactory : ComposableViewFactory<SnackbarDTO, Snackbar
         scope: Any?
     ): SnackbarDTO.Builder = attributes.fold(SnackbarDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "label" -> builder.label(attribute.value)
-            "duration" -> builder.duration(attribute.value)
-            "message" -> builder.message(attribute.value)
-            "withDismissAction" -> builder.withDismissAction(attribute.value)
-            "actionEvent" -> builder.actionEvent(attribute.value)
-            "dismissEvent" -> builder.dismissEvent(attribute.value)
-            "actionOnNewLine" -> builder.actionOnNewLine(attribute.value)
-            "shape" -> builder.shape(attribute.value)
-            "containerColor" -> builder.containerColor(attribute.value)
-            "contentColor" -> builder.contentColor(attribute.value)
-            "actionColor" -> builder.actionColor(attribute.value)
-            "actionContentColor" -> builder.actionContentColor(attribute.value)
-            "dismissActionContentColor" -> builder.dismissActionContentColor(attribute.value)
+            attrActionColor -> builder.actionColor(attribute.value)
+            attrActionEvent -> builder.actionEvent(attribute.value)
+            attrActionOnNewLine -> builder.actionOnNewLine(attribute.value)
+            attrActionContentColor -> builder.actionContentColor(attribute.value)
+            attrContainerColor -> builder.containerColor(attribute.value)
+            attrContentColor -> builder.contentColor(attribute.value)
+            attrDismissActionContentColor -> builder.dismissActionContentColor(attribute.value)
+            attrDismissEvent -> builder.dismissEvent(attribute.value)
+            attrDuration -> builder.duration(attribute.value)
+            attrLabel -> builder.label(attribute.value)
+            attrMessage -> builder.message(attribute.value)
+            attrShape -> builder.shape(attribute.value)
+            attrWithDismissAction -> builder.withDismissAction(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as SnackbarDTO.Builder
     }

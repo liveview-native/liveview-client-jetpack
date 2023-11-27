@@ -8,6 +8,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.Attrs.attrColor
+import org.phoenixframework.liveview.data.dto.Attrs.attrThickness
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -19,7 +21,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 /**
  * Material Design divider.
  * ```
- * <Divider thickness="2" verticalPadding="8" color="#FFCCCCCC" />
+ * <Divider thickness="2" vertical-padding="8" color="#FFCCCCCC" />
  * ```
  */
 internal class DividerDTO private constructor(builder: Builder) :
@@ -95,8 +97,8 @@ internal object DividerDtoFactory : ComposableViewFactory<DividerDTO, DividerDTO
             it
         ) { builder, attribute ->
             when (attribute.name) {
-                "thickness" -> builder.thickness(attribute.value)
-                "color" -> builder.color(attribute.value)
+                attrColor -> builder.color(attribute.value)
+                attrThickness -> builder.thickness(attribute.value)
                 else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
             } as DividerDTO.Builder
         }

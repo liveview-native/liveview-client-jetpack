@@ -18,9 +18,16 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.Attrs.attrBorderColor
+import org.phoenixframework.liveview.data.dto.Attrs.attrBorderWidth
+import org.phoenixframework.liveview.data.dto.Attrs.attrColors
+import org.phoenixframework.liveview.data.dto.Attrs.attrContentPadding
+import org.phoenixframework.liveview.data.dto.Attrs.attrElevation
+import org.phoenixframework.liveview.data.dto.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.dto.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.dto.Attrs.attrShape
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_CLICK
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -407,7 +414,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
         /**
          * Spacing values to apply internally between the container and the content.
          * ```
-         * <Button contentPadding="8">...</Button>
+         * <Button content-padding="8">...</Button>
          * ```
          * @param contentPadding int value representing the padding to be applied to the button's
          * content.
@@ -422,7 +429,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
          * The border width to draw around the container of this button. This property is used just
          * for `OutlineButton`.
          * ```
-         * <OutlinedButton borderWidth="2">...</OutlinedButton>
+         * <OutlinedButton border-width="2">...</OutlinedButton>
          * ```
          * @param borderWidth int value representing button border's width.
          * content.
@@ -437,7 +444,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
          * The border color to draw around the container of this button. This property is used just
          * for `OutlineButton`.
          * ```
-         * <OutlinedButton borderColor="#FF0000FF">...</OutlinedButton>
+         * <OutlinedButton border-color="#FF0000FF">...</OutlinedButton>
          * ```
          * @param borderColor int value representing the padding to be applied to the button's
          * content. The color must be specified as a string in the AARRGGBB format.
@@ -487,14 +494,14 @@ internal object ButtonDtoFactory : ComposableViewFactory<ButtonDTO, ButtonDTO.Bu
         scope: Any?,
     ): ButtonDTO = attributes.fold(ButtonDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "colors" -> builder.colors(attribute.value)
-            "contentPadding" -> builder.contentPadding(attribute.value)
-            "elevation" -> builder.elevation(attribute.value)
-            "enabled" -> builder.enabled(attribute.value)
-            "shape" -> builder.shape(attribute.value)
-            "borderWidth" -> builder.borderWidth(attribute.value)
-            "borderColor" -> builder.borderColor(attribute.value)
-            ATTR_CLICK -> builder.onClick(attribute.value, pushEvent)
+            attrBorderColor -> builder.borderColor(attribute.value)
+            attrBorderWidth -> builder.borderWidth(attribute.value)
+            attrColors -> builder.colors(attribute.value)
+            attrContentPadding -> builder.contentPadding(attribute.value)
+            attrElevation -> builder.elevation(attribute.value)
+            attrEnabled -> builder.enabled(attribute.value)
+            attrPhxClick -> builder.onClick(attribute.value, pushEvent)
+            attrShape -> builder.shape(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as ButtonDTO.Builder
     }.build()

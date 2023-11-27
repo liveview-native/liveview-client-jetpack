@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.Attrs.attrColors
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.actionTag
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.navigationIconTag
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.titleTag
@@ -37,10 +38,10 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * <TopAppBar>
  *   <Text template="title">App title</Text>
  *   <IconButton template="action" phx-click="decrement-count">
- *     <Icon imageVector="filled:Add" />
+ *     <Icon image-vector="filled:Add" />
  *   </IconButton>
  *   <IconButton template="navIcon" phx-click="reset-count">
- *     <Icon imageVector="filled:Menu" />
+ *     <Icon image-vector="filled:Menu" />
  *   </IconButton>
  * </TopAppBar>
  * ```
@@ -159,7 +160,7 @@ internal object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopApp
 
         attributes.forEach { attribute ->
             when (attribute.name) {
-                "colors" -> builder.colors(attribute.value)
+                attrColors -> builder.colors(attribute.value)
                 else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
             }
         }

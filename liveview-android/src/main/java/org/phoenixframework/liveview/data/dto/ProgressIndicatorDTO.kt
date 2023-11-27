@@ -10,6 +10,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.Attrs.attrColor
+import org.phoenixframework.liveview.data.dto.Attrs.attrStrokeCap
+import org.phoenixframework.liveview.data.dto.Attrs.attrStrokeWidth
+import org.phoenixframework.liveview.data.dto.Attrs.attrTrackColor
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -22,8 +26,8 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 /**
  * Indeterminate Material Design circular and linear progress indicator.
  * ```
- * <CircularProgressIndicator color="#FFFF0000" trackColor="#FF00FF00" strokeCap="round" />
- * <LinearProgressIndicator color="#FFFF0000" trackColor="#FF00FF00" strokeCap="butt" width="fill" />
+ * <CircularProgressIndicator color="#FFFF0000" track-color="#FF00FF00" stroke-cap="round" />
+ * <LinearProgressIndicator color="#FFFF0000" track-color="#FF00FF00" stroke-cap="butt" width="fill" />
  * ```
  */
 internal class ProgressIndicatorDTO private constructor(builder: Builder) :
@@ -89,8 +93,8 @@ internal class ProgressIndicatorDTO private constructor(builder: Builder) :
          * Color of the track behind the indicator, visible when the progress has not reached the
          * area of the overall indicator yet.
          * ```
-         * <LinearProgressIndicator trackColor='#FF00FF00' />
-         * <CircularProgressIndicator trackColor='#FF00FF00' />
+         * <LinearProgressIndicator track-color='#FF00FF00' />
+         * <CircularProgressIndicator track-color='#FF00FF00' />
          * ```
          * @param color The color to be applied to the track behind the indicator. The color must be
          * specified as a string in the AARRGGBB format.
@@ -104,8 +108,8 @@ internal class ProgressIndicatorDTO private constructor(builder: Builder) :
         /**
          * Stroke cap to use for the ends of the progress indicator.
          * ```
-         * <LinearProgressIndicator strokeCap='round' />
-         * <CircularProgressIndicator strokeCap='square' />
+         * <LinearProgressIndicator stroke-cap='round' />
+         * <CircularProgressIndicator stroke-cap='square' />
          * ```
          * @param strokeCap the supported stroke cap values are: `round`, `square` (default), and
          * `butt`.
@@ -124,7 +128,7 @@ internal class ProgressIndicatorDTO private constructor(builder: Builder) :
         /**
          * Stroke width the progress indicator
          * ```
-         * <CircularProgressIndicator strokeWidth='2' />
+         * <CircularProgressIndicator stroke-width='2' />
          * ```
          * @param strokeWidth stroke width in dp of the progress indicator
          */
@@ -155,10 +159,10 @@ internal object ProgressIndicatorDtoFactory :
     ): ProgressIndicatorDTO =
         attributes.fold(ProgressIndicatorDTO.Builder()) { builder, attribute ->
             when (attribute.name) {
-                "color" -> builder.color(attribute.value)
-                "trackColor" -> builder.trackColor(attribute.value)
-                "strokeCap" -> builder.strokeCap(attribute.value)
-                "strokeWidth" -> builder.strokeWidth(attribute.value)
+                attrColor -> builder.color(attribute.value)
+                attrStrokeCap -> builder.strokeCap(attribute.value)
+                attrStrokeWidth -> builder.strokeWidth(attribute.value)
+                attrTrackColor -> builder.trackColor(attribute.value)
                 else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
             } as ProgressIndicatorDTO.Builder
         }.build()

@@ -15,6 +15,8 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.Attrs.attrChecked
+import org.phoenixframework.liveview.data.dto.Attrs.attrColors
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -143,8 +145,8 @@ internal object SwitchDtoFactory : ComposableViewFactory<SwitchDTO, SwitchDTO.Bu
                 builder
             } else {
                 when (attribute.name) {
-                    "checked" -> builder.value(attribute.value.toBoolean())
-                    "colors" -> builder.colors(attribute.value)
+                    attrChecked -> builder.value(attribute.value.toBoolean())
+                    attrColors -> builder.colors(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
                 } as SwitchDTO.Builder
             }

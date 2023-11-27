@@ -29,14 +29,14 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * any component.
  * ```
  * <ExposedDropdownMenuBox horizontalPadding="16">
- *   <TextField text={"#{@ddOption}"} readOnly="true" menuAnchor/>
- *   <DropdownMenuItem phx-click="setDDOption" value="A">
+ *   <TextField text={"#{@ddOption}"} read-only="true" menu-anchor/>
+ *   <DropdownMenuItem phx-click="setDDOption" phx-value="A">
  *     <Text>Option A</Text>
  *   </DropdownMenuItem>
- *   <DropdownMenuItem phx-click="setDDOption" value="B" enabled="false">
+ *   <DropdownMenuItem phx-click="setDDOption" phx-value="B" enabled="false">
  *     <Text>Option B</Text>
  *   </DropdownMenuItem>
- *   <DropdownMenuItem phx-click="setDDOption" value="C">
+ *   <DropdownMenuItem phx-click="setDDOption" phx-value="C">
  *     <Text>Option C</Text>
  *   </DropdownMenuItem>
  * </ExposedDropdownMenuBox>

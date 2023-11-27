@@ -10,6 +10,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.Attrs.attrHorizontalArrangement
+import org.phoenixframework.liveview.data.dto.Attrs.attrVerticalAlignment
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -21,7 +23,7 @@ import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 /**
  * The horizontally scrolling list that only composes and lays out the currently visible items.
  * ```
- * <LazyRow width="fill" horizontalArrangement="start" verticalAlignment="center" >
+ * <LazyRow width="fill" horizontal-arrangement="start" vertical-alignment="center" >
  *   // Children
  * </LazyRow>
  * ```
@@ -71,7 +73,7 @@ internal class LazyRowDTO private constructor(builder: Builder) :
          * The horizontal arrangement of the Row's children
          *
          * ```
-         * <LazyRow horizontalArrangement="spaceAround" >...</Column>
+         * <LazyRow horizontal-arrangement="spaceAround" >...</LazyRow>
          * ```
          * @param horizontalArrangement the horizontal arrangement of the column's children. The
          * supported values are: `start`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `end`,
@@ -98,7 +100,7 @@ internal class LazyRowDTO private constructor(builder: Builder) :
          * The vertical alignment of the Row's children
          *
          * ```
-         * <LazyRow verticalAlignment="center" >...</Column>
+         * <LazyRow vertical-alignment="center" >...</LazyRow>
          * ```
          * @param verticalAlignment the vertical alignment of the row's children. The
          * supported values are: `top`, `center`, and `bottom`.
@@ -134,8 +136,8 @@ internal object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO, LazyRowDTO
                 builder
             } else {
                 when (attribute.name) {
-                    "horizontalArrangement" -> builder.horizontalArrangement(attribute.value)
-                    "verticalAlignment" -> builder.verticalAlignment(attribute.value)
+                    attrHorizontalArrangement -> builder.horizontalArrangement(attribute.value)
+                    attrVerticalAlignment -> builder.verticalAlignment(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
                 } as LazyRowDTO.Builder
             }

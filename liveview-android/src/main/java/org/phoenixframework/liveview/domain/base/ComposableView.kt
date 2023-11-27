@@ -25,6 +25,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.Attrs.attrAlign
+import org.phoenixframework.liveview.data.dto.Attrs.attrBackground
+import org.phoenixframework.liveview.data.dto.Attrs.attrClip
+import org.phoenixframework.liveview.data.dto.Attrs.attrExposedDropdownSize
+import org.phoenixframework.liveview.data.dto.Attrs.attrHeight
+import org.phoenixframework.liveview.data.dto.Attrs.attrHorizontalPadding
+import org.phoenixframework.liveview.data.dto.Attrs.attrMatchParentSize
+import org.phoenixframework.liveview.data.dto.Attrs.attrMenuAnchor
+import org.phoenixframework.liveview.data.dto.Attrs.attrPadding
+import org.phoenixframework.liveview.data.dto.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.dto.Attrs.attrSize
+import org.phoenixframework.liveview.data.dto.Attrs.attrVerticalPadding
+import org.phoenixframework.liveview.data.dto.Attrs.attrWeight
+import org.phoenixframework.liveview.data.dto.Attrs.attrWidth
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -310,26 +324,26 @@ abstract class ComposableBuilder {
         scope: Any?,
     ): ComposableBuilder {
         when (attribute.name) {
-            ATTR_BACKGROUND -> background(attribute.value)
-            ATTR_SIZE -> size(attribute.value)
-            ATTR_HEIGHT -> height(attribute.value)
-            ATTR_WIDTH -> width(attribute.value)
-            ATTR_PADDING -> padding(attribute.value)
-            ATTR_HORIZONTAL_PADDING -> paddingHorizontal(attribute.value)
-            ATTR_VERTICAL_PADDING -> paddingVertical(attribute.value)
-            ATTR_CLIP -> clip(attribute.value)
-            ATTR_CLICK -> clickable(attribute.value, pushEvent)
+            attrBackground -> background(attribute.value)
+            attrClip -> clip(attribute.value)
+            attrHeight -> height(attribute.value)
+            attrHorizontalPadding -> paddingHorizontal(attribute.value)
+            attrPadding -> padding(attribute.value)
+            attrPhxClick -> clickable(attribute.value, pushEvent)
+            attrSize -> size(attribute.value)
+            attrVerticalPadding -> paddingVertical(attribute.value)
+            attrWidth -> width(attribute.value)
         }
         when (scope) {
             is BoxScope -> {
                 when (attribute.name) {
-                    ATTR_ALIGN -> scope.run {
+                    attrAlign -> scope.run {
                         modifier = modifier.then(
                             Modifier.align(alignmentFromString(attribute.value, Alignment.TopStart))
                         )
                     }
 
-                    "matchParentSize" -> scope.run {
+                    attrMatchParentSize -> scope.run {
                         if (attribute.value.toBoolean()) {
                             modifier = modifier.then(Modifier.matchParentSize())
                         }
@@ -339,13 +353,13 @@ abstract class ComposableBuilder {
 
             is ColumnScope -> {
                 when (attribute.name) {
-                    ATTR_WEIGHT -> scope.run {
+                    attrWeight -> scope.run {
                         attribute.value.toFloatOrNull()?.let {
                             modifier = modifier.then(Modifier.weight(it))
                         }
                     }
 
-                    ATTR_ALIGN -> scope.run {
+                    attrAlign -> scope.run {
                         modifier = modifier.then(
                             Modifier.align(horizontalAlignmentFromString(attribute.value))
                         )
@@ -355,13 +369,13 @@ abstract class ComposableBuilder {
 
             is RowScope -> {
                 when (attribute.name) {
-                    ATTR_WEIGHT -> scope.run {
+                    attrWeight -> scope.run {
                         attribute.value.toFloatOrNull()?.let {
                             modifier = modifier.then(Modifier.weight(it))
                         }
                     }
 
-                    ATTR_ALIGN -> scope.run {
+                    attrAlign -> scope.run {
                         modifier = modifier.then(
                             Modifier.align(verticalAlignmentFromString(attribute.value))
                         )
@@ -371,11 +385,11 @@ abstract class ComposableBuilder {
 
             is ExposedDropdownMenuBoxScope -> {
                 when (attribute.name) {
-                    "menuAnchor" -> scope.run {
+                    attrMenuAnchor -> scope.run {
                         modifier = modifier.then(Modifier.menuAnchor())
                     }
 
-                    "exposedDropdownSize" -> scope.run {
+                    attrExposedDropdownSize -> scope.run {
                         modifier =
                             modifier.then(Modifier.exposedDropdownSize(attribute.value.toBoolean()))
                     }
@@ -391,20 +405,6 @@ abstract class ComposableBuilder {
 
         internal const val EVENT_TYPE_CLICK = "click"
         internal const val EVENT_TYPE_CHANGE = "change"
-
-        const val ATTR_ALIGN = "align"
-        const val ATTR_BACKGROUND = "background"
-        const val ATTR_CLICK = "phx-click"
-        const val ATTR_CLIP = "clip"
-        const val ATTR_HEIGHT = "height"
-        const val ATTR_HORIZONTAL_PADDING = "horizontalPadding"
-        const val ATTR_PADDING = "padding"
-        const val ATTR_SCROLL = "scroll"
-        const val ATTR_SIZE = "size"
-        const val ATTR_VALUE = "phx-value-"
-        const val ATTR_VERTICAL_PADDING = "verticalPadding"
-        const val ATTR_WEIGHT = "weight"
-        const val ATTR_WIDTH = "width"
     }
 }
 

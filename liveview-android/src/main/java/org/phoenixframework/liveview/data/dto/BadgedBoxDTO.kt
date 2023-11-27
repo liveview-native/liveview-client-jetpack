@@ -10,6 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.dto.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.dto.Templates.templateBadge
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -25,7 +28,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  * <BadgedBox>
  *   <Text template="badge">+99</Text>
- *   <Icon imageVector="filled:Add" />
+ *   <Icon image-vector="filled:Add" />
  * </BadgedBox>
  * ```
  */
@@ -42,10 +45,10 @@ internal class BadgedBoxDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         val badge = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == BadgedBoxDtoFactory.badge }
+            composableNode?.children?.find { it.node?.template == templateBadge }
         }
         val contentChild = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template != BadgedBoxDtoFactory.badge }
+            composableNode?.children?.find { it.node?.template != templateBadge }
         }
         BadgedBox(
             badge = {
@@ -77,7 +80,7 @@ internal class BadgedBoxDTO private constructor(builder: Builder) :
          * The color used for the background of the BadgedBox.
          *
          * ```
-         * <BadgedBox containerColor="#FF0000FF">
+         * <BadgedBox container-color="#FF0000FF">
          * ```
          * @param containerColor the background color in AARRGGBB format.
          */
@@ -89,7 +92,7 @@ internal class BadgedBoxDTO private constructor(builder: Builder) :
          * The preferred color for content inside the BadgedBox.
          *
          * ```
-         * <BadgedBox contentColor="#FF0000FF" />
+         * <BadgedBox content-color="#FF0000FF" />
          * ```
          * @param contentColor the content color in AARRGGBB format.
          */
@@ -114,11 +117,9 @@ internal object BadgedBoxDtoFactory : ComposableViewFactory<BadgedBoxDTO, Badged
         scope: Any?
     ): BadgedBoxDTO = attributes.fold(BadgedBoxDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "containerColor" -> builder.containerColor(attribute.value)
-            "contentColor" -> builder.contentColor(attribute.value)
+            attrContainerColor -> builder.containerColor(attribute.value)
+            attrContentColor -> builder.contentColor(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as BadgedBoxDTO.Builder
     }.build()
-
-    const val badge = "badge"
 }

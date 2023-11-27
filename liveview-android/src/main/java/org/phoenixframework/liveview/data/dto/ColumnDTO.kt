@@ -11,8 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.Attrs.attrHorizontalAlignment
+import org.phoenixframework.liveview.data.dto.Attrs.attrScroll
+import org.phoenixframework.liveview.data.dto.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_SCROLL
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -71,7 +73,7 @@ internal class ColumnDTO private constructor(builder: Builder) :
          * The vertical arrangement of the Column's children
          *
          * ```
-         * <Column verticalArrangement="spaceAround" >...</Column>
+         * <Column vertical-arrangement="spaceAround" >...</Column>
          * ```
          * @param verticalArrangement the vertical arrangement of the column's children. The
          * supported values are: `top`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `bottom`,
@@ -96,7 +98,7 @@ internal class ColumnDTO private constructor(builder: Builder) :
          * The horizontal alignment of the Column's children
          *
          * ```
-         * <Column horizontalAlignment="center" >...</Column>
+         * <Column horizontal-alignment="center" >...</Column>
          * ```
          * @param horizontalAlignment the horizontal alignment of the column's children. The
          * supported values are: `start`, `center`, and `end`.
@@ -127,9 +129,9 @@ internal object ColumnDtoFactory : ComposableViewFactory<ColumnDTO, ColumnDTO.Bu
         scope: Any?,
     ): ColumnDTO = attributes.fold(ColumnDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "verticalArrangement" -> builder.verticalArrangement(attribute.value)
-            "horizontalAlignment" -> builder.horizontalAlignment(attribute.value)
-            ATTR_SCROLL -> builder.scrolling(attribute.value)
+            attrHorizontalAlignment -> builder.horizontalAlignment(attribute.value)
+            attrVerticalArrangement -> builder.verticalArrangement(attribute.value)
+            attrScroll -> builder.scrolling(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as ColumnDTO.Builder
     }.build()

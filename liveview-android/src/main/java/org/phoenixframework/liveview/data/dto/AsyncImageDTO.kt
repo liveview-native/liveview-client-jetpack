@@ -8,6 +8,12 @@ import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.Attrs.attrAlignment
+import org.phoenixframework.liveview.data.dto.Attrs.attrAlpha
+import org.phoenixframework.liveview.data.dto.Attrs.attrContentDescription
+import org.phoenixframework.liveview.data.dto.Attrs.attrContentScale
+import org.phoenixframework.liveview.data.dto.Attrs.attrCrossFade
+import org.phoenixframework.liveview.data.dto.Attrs.attrUrl
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -20,7 +26,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * <AsyncImage
  *  url="https://assets.dockyard.com/images/narwin-home-flare.jpg"
  *  alpha="0.5"
- *  contentScale="fillHeight" />
+ *  content-scale="fillHeight" />
  * ```
  */
 internal class AsyncImageDTO private constructor(builder: Builder) :
@@ -81,7 +87,7 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
          * Sets the image content description fro accessibility purpose.
          *
          * ```
-         * <AsyncImage contentDescription="Application Logo" />
+         * <AsyncImage content-description="Application Logo" />
          * ```
          * @param contentDescription string representing the image's content description
          */
@@ -93,7 +99,7 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
          * Define if the image will have the crossfade animation after loaded.
          *
          * ```
-         * <AsyncImage crossFade="true" />
+         * <AsyncImage cross-fade="true" />
          * ```
          * @param crossFade true to enable a crossfade animation, false otherwise.
          */
@@ -107,7 +113,7 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
          * Scale parameter used to determine the aspect ratio scaling to be used if the bounds are
          * a different size from the intrinsic size.
          * ```
-         * <AsyncImage contentScale="crop" />
+         * <AsyncImage content-scale="crop" />
          * ```
          * @param contentScale content scale. The supported values are: `fit`, `crop`, `fillBounds`,
          *  `fillHeight`, `fillWidth` and `inside`.
@@ -168,12 +174,12 @@ internal object AsyncImageDtoFactory :
         AsyncImageDTO.Builder()
     ) { builder, attribute ->
         when (attribute.name) {
-            "url" -> builder.imageUrl(attribute.value)
-            "alignment" -> builder.alignment(attribute.value)
-            "alpha" -> builder.alpha(attribute.value)
-            "contentScale" -> builder.contentScale(attribute.value)
-            "contentDescription" -> builder.contentDescription(attribute.value)
-            "crossFade" -> builder.crossFade(attribute.value)
+            attrAlignment -> builder.alignment(attribute.value)
+            attrAlpha -> builder.alpha(attribute.value)
+            attrContentDescription -> builder.contentDescription(attribute.value)
+            attrContentScale -> builder.contentScale(attribute.value)
+            attrCrossFade -> builder.crossFade(attribute.value)
+            attrUrl -> builder.imageUrl(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as AsyncImageDTO.Builder
     }.build()
