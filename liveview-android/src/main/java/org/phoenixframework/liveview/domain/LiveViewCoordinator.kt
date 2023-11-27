@@ -270,37 +270,6 @@ class LiveViewCoordinator(
     internal fun parseTemplate(s: String) {
         Log.d(TAG, "parseTemplate: $s")
         document.mergeFragmentJson(s, this)
-        /*
-        document.mergeFragmentJson(s, object : Document.Companion.Handler() {
-            override fun onHandle(
-                context: Document,
-                changeType: Document.Companion.ChangeType,
-                nodeRef: NodeRef,
-                parent: NodeRef?
-            ) {
-                Log.d(TAG, "onHandle: $changeType")
-                Log.d(TAG, "\tnodeRef = ${nodeRef.ref}")
-                Log.d(TAG, "\tparent = ${parent?.ref}")
-                when (changeType) {
-                    Document.Companion.ChangeType.Change -> {
-                        Log.i(TAG, "Changed: ${context.getNodeString(nodeRef)}")
-                    }
-
-                    Document.Companion.ChangeType.Add -> {
-                        Log.i(TAG, "Added: ${context.getNodeString(nodeRef)}")
-                    }
-
-                    Document.Companion.ChangeType.Remove -> {
-                        Log.i(TAG, "Remove: ${context.getNodeString(nodeRef)}")
-                    }
-
-                    Document.Companion.ChangeType.Replace -> {
-                        Log.i(TAG, "Replace: ${context.getNodeString(nodeRef)}")
-                    }
-                }
-            }
-        })
-        */
         Log.d(TAG, "renderedTemplate: ${document.render()}")
         val rootNode = ComposableTreeNode(screenId, -1, null, id = "rootNode")
         val rootElement = document.root()
