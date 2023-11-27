@@ -4,13 +4,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -21,21 +23,23 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 /**
  * Scaffold implements the basic material design visual layout structure.
  * This component supports the following children:
- * - a title bar using `<TopAppBar>` tag;
- * - a `<FloatingActionButton>` to define the screen main action;
- * Any other than those specified above will be considered the Scaffold's body.
- *
+ * - a title bar can be defined using a child with `topBar` template;
+ * - a FloatingActionButton to define the screen main action can be defined using `fab` template;
+ * - a `<SnackBar>` to show a snackbar.
+ * - `body` will be considered the Scaffold's body.
  * ```
  * <Scaffold>
- *   <TopAppBar>
- *     <Title><Text>Screen Title</Text></Title>
+ *   <TopAppBar template="topBar">
+ *     <Text>Screen Title</Text>
  *   </TopAppBar>
- *   <FloatingActionButton phx-click="navigateToOtherScreen">
+ *   <FloatingActionButton phx-click="navigateToOtherScreen" template="fab">
  *     <Icon imageVector="filled:Add" />
  *   </FloatingActionButton>
- *   <Box>
+ *   <Snackbar message="message" dismissEvent="hideDialog" />
+ *   <Box template="body">
  *       <Text>Screen Body</Text>
  *   </Box>
+ * </Scaffold>
  * ```
  */
 internal class ScaffoldDTO private constructor(builder: Builder) :
@@ -51,18 +55,20 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
         pushEvent: PushEvent,
     ) {
         val topBar = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == ComposableTypes.topAppBar }
+            composableNode?.children?.find { it.node?.template == ScaffoldDtoFactory.topBar }
         }
         val floatingActionButton = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == ComposableTypes.fab }
+            composableNode?.children?.find { it.node?.template == ScaffoldDtoFactory.fab }
+        }
+        val snackBar = remember(composableNode?.children) {
+            composableNode?.children?.find { it.node?.tag == ScaffoldDtoFactory.snackbar }
         }
         val body = remember(composableNode?.children) {
-            composableNode?.children?.find {
-                it.node?.tag != ComposableTypes.topAppBar &&
-                        it.node?.tag != ComposableTypes.fab
-            }
+            composableNode?.children?.find { it.node?.template == ScaffoldDtoFactory.body }
         }
         val containerColor = containerColor ?: MaterialTheme.colorScheme.background
+
+        val snackbarHostState = remember { SnackbarHostState() }
         Scaffold(
             modifier = modifier,
             containerColor = containerColor,
@@ -78,12 +84,24 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
                 }
             },
             floatingActionButtonPosition = fabPosition,
+            snackbarHost = {
+                SnackbarHost(snackbarHostState) {
+                    snackBar?.let { sb ->
+                        PhxLiveView(sb, pushEvent, composableNode, null)
+                    }
+                }
+            },
             content = { contentPaddingValues ->
                 body?.let { content ->
                     PhxLiveView(content, pushEvent, composableNode, contentPaddingValues)
                 }
             }
         )
+        LaunchedEffect(snackBar?.id) {
+            if (snackBar != null) {
+                snackbarHostState.showSnackbar(SnackbarDTO.visualsFromNode(snackBar.node))
+            }
+        }
     }
 
     internal class Builder : ComposableBuilder() {
@@ -153,4 +171,15 @@ internal object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, Scaffold
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as ScaffoldDTO.Builder
     }.build()
+
+    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
+        return mapOf(
+            snackbar to SnackbarDtoFactory
+        )
+    }
+
+    const val snackbar = "Snackbar"
+    const val topBar = "topBar"
+    const val fab = "fab"
+    const val body = "body"
 }

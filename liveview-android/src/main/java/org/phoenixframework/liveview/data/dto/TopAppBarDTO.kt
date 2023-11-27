@@ -27,12 +27,23 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
  * TopAppBar is usually used as child of a `Scaffold` and represents the title of the screen.
- * This component can contains some specific children:
- * - `<Title>`: the title to be displayed in the top app bar.
- * - `<Action>`: the actions displayed at the end of the top app bar. This should typically be
+ * This component can contains the following templates for its children:
+ * - `title`: the title to be displayed in the top app bar.
+ * - `action`: the actions displayed at the end of the top app bar. This should typically be
  * `IconButton`s. The default layout here is a Row, so icons inside will be placed horizontally.
- * - `<NavIcon>`:  the navigation icon displayed at the start of the top app bar. This should
+ * - `navIcon`:  the navigation icon displayed at the start of the top app bar. This should
  * typically be an `IconButton`.
+ * ```
+ * <TopAppBar>
+ *   <Text template="title">App title</Text>
+ *   <IconButton template="action" phx-click="decrement-count">
+ *     <Icon imageVector="filled:Add" />
+ *   </IconButton>
+ *   <IconButton template="navIcon" phx-click="reset-count">
+ *     <Icon imageVector="filled:Menu" />
+ *   </IconButton>
+ * </TopAppBar>
+ * ```
  */
 internal class TopAppBarDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -47,13 +58,13 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         val title = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == titleTag }
+            composableNode?.children?.find { it.node?.template == titleTag }
         }
         val actions = remember(composableNode?.children) {
-            composableNode?.children?.filter { it.node?.tag == actionTag }
+            composableNode?.children?.filter { it.node?.template == actionTag }
         }
         val navIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == navigationIconTag }
+            composableNode?.children?.find { it.node?.template == navigationIconTag }
         }
         TopAppBar(
             colors = getTopAppBarColors(colors = colors),
@@ -155,15 +166,7 @@ internal object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopApp
         return builder.build()
     }
 
-    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
-        return mapOf(
-            titleTag to RowDtoFactory,
-            actionTag to IconButtonDtoFactory,
-            navigationIconTag to IconButtonDtoFactory,
-        )
-    }
-
-    const val titleTag = "Title"
-    const val actionTag = "Action"
-    const val navigationIconTag = "NavIcon"
+    const val titleTag = "title"
+    const val actionTag = "action"
+    const val navigationIconTag = "navIcon"
 }

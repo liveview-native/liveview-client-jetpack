@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -301,6 +303,7 @@ abstract class ComposableBuilder {
      * @param scope some attributes are composable specific, the scope determine what parent
      * composable (e.g.: `Column`, `Row`, `Box`).
      */
+    @OptIn(ExperimentalMaterial3Api::class)
     fun handleCommonAttributes(
         attribute: CoreAttribute,
         pushEvent: PushEvent?,
@@ -365,6 +368,19 @@ abstract class ComposableBuilder {
                     }
                 }
             }
+
+            is ExposedDropdownMenuBoxScope -> {
+                when (attribute.name) {
+                    "menuAnchor" -> scope.run {
+                        modifier = modifier.then(Modifier.menuAnchor())
+                    }
+
+                    "exposedDropdownSize" -> scope.run {
+                        modifier =
+                            modifier.then(Modifier.exposedDropdownSize(attribute.value.toBoolean()))
+                    }
+                }
+            }
         }
         return this
     }
@@ -385,6 +401,7 @@ abstract class ComposableBuilder {
         const val ATTR_PADDING = "padding"
         const val ATTR_SCROLL = "scroll"
         const val ATTR_SIZE = "size"
+        const val ATTR_VALUE = "phx-value-"
         const val ATTR_VERTICAL_PADDING = "verticalPadding"
         const val ATTR_WEIGHT = "weight"
         const val ATTR_WIDTH = "width"

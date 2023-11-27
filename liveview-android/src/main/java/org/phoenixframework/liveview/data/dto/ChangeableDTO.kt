@@ -24,11 +24,13 @@ internal abstract class ChangeableDTO<T : Any>(builder: ChangeableDTOBuilder<T>)
     protected val enabled = builder.enabled
     protected val value = builder.value
 
-    protected fun Flow<T>.onChangeable(): Flow<T> =
+    protected fun <TC> Flow<TC>.onTypedChangeable(): Flow<TC> =
         this.distinctUntilChanged()
             .drop(1) // Ignoring the first emission when the component is displayed
             .debounce(debounce)
             .throttleLatest(throttle)
+
+    protected fun Flow<T>.onChangeable(): Flow<T> = onTypedChangeable()
 
     protected fun pushOnChangeEvent(pushEvent: PushEvent, event: String, value: T) {
         pushEvent.invoke(ComposableBuilder.EVENT_TYPE_CHANGE, event, value, null)

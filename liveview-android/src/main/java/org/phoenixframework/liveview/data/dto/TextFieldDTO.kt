@@ -39,27 +39,27 @@ import org.phoenixframework.liveview.ui.theme.textStyleFromString
 
 /**
  * Text fields allow users to enter text into a UI. They typically appear in forms and dialogs.
- * A Text field can have a few specific children:
- * - `<Label>`: optional label to be displayed inside the text field container.
- * - `<Placeholder>`: the optional placeholder to be displayed when the text field is in focus and
+ * A Text field can have a few specific templates for its children:
+ * - `label`: optional label to be displayed inside the text field container.
+ * - `placeholder`: the optional placeholder to be displayed when the text field is in focus and
  * the input text is empty.
- * - `<LeadingIcon>`: the optional leading icon to be displayed at the beginning of the text field
+ * - `leadingIcon`: the optional leading icon to be displayed at the beginning of the text field
  * container.
- * - `<TrailingIcon>`: the optional trailing icon to be displayed at the end of the text field
+ * - `trailingIcon`: the optional trailing icon to be displayed at the end of the text field
  * container.
- * - `<Prefix>`: the optional prefix to be displayed before the input text in the text field.
- * - `<Suffix>`: the optional suffix to be displayed after the input text in the text field.
- * - `<SupportingText>`: the optional supporting text to be displayed below the text field.
+ * - `prefix`: the optional prefix to be displayed before the input text in the text field.
+ * - `suffix`: the optional suffix to be displayed after the input text in the text field.
+ * - `supportingText`: the optional supporting text to be displayed below the text field.
  *
  * ```
  * <TextField text={"#{@userName}"} phx-change="setName">
- *   <Label><Text>Label</Text></Label>
- *   <Placeholder><Text>Placeholder</Text></Placeholder>
- *   <TrailingIcon imageVector="filled:Add"/>
- *   <LeadingIcon imageVector="filled:ChevronLeft"/>
- *   <Prefix><Text>Pre</Text></Prefix>
- *   <Suffix><Text>Suf</Text></Suffix>
- *   <SupportingText>Supporting text</SupportingText>
+ *   <Text template="label">Label</Text>
+ *   <Text template="placeholder">Placeholder</Text>
+ *   <Icon template="leadingIcon" imageVector="filled:Add"/>
+ *   <Icon template="trailingIcon" imageVector="filled:ChevronLeft"/>
+ *   <Text template="prefix">Pre</Text>
+ *   <Text template="suffix">Suf</Text>
+ *   <Text template="supportingText">Supporting text</Text>
  * </TextField>
  * ```
  */
@@ -84,31 +84,31 @@ internal class TextFieldDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         val label = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == TextFieldDtoFactory.label }
+            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.label }
         }
         val placeholder = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == TextFieldDtoFactory.placeholder }
+            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.placeholder }
         }
         val leadingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == TextFieldDtoFactory.leadingIcon }
+            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.leadingIcon }
         }
         val trailingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == TextFieldDtoFactory.trailingIcon }
+            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.trailingIcon }
         }
         val prefix = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == TextFieldDtoFactory.prefix }
+            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.prefix }
         }
         val suffix = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == TextFieldDtoFactory.suffix }
+            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.suffix }
         }
         val supportingText = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == TextFieldDtoFactory.supportingText }
+            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.supportingText }
         }
         var textFieldValue by remember {
             mutableStateOf(TextFieldValue(value))
         }
         TextField(
-            value = textFieldValue,
+            value = if (readOnly) TextFieldValue(value) else textFieldValue,
             onValueChange = { value ->
                 textFieldValue = value
             },
@@ -561,23 +561,11 @@ internal object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO, TextFi
         }
     }.build()
 
-    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
-        return mapOf(
-            label to BoxDtoFactory,
-            placeholder to BoxDtoFactory,
-            leadingIcon to IconDtoFactory,
-            trailingIcon to IconDtoFactory,
-            prefix to BoxDtoFactory,
-            suffix to BoxDtoFactory,
-            supportingText to TextDtoFactory,
-        )
-    }
-
-    internal const val label = "Label"
-    internal const val placeholder = "Placeholder"
-    internal const val leadingIcon = "LeadingIcon"
-    internal const val trailingIcon = "TrailingIcon"
-    internal const val prefix = "Prefix"
-    internal const val suffix = "Suffix"
-    internal const val supportingText = "SupportingText"
+    internal const val label = "label"
+    internal const val placeholder = "placeholder"
+    internal const val leadingIcon = "leadingIcon"
+    internal const val trailingIcon = "trailingIcon"
+    internal const val prefix = "prefix"
+    internal const val suffix = "suffix"
+    internal const val supportingText = "supportingText"
 }
