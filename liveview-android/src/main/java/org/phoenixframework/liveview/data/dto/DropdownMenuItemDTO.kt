@@ -10,9 +10,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconColor
+import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_CLICK
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -26,16 +37,16 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * Material Design dropdown menu item.
  * Menus display a list of choices on a temporary surface. The children can use the following
  * templates:
- * - `leadingIcon`: optional leading icon to be displayed at the beginning of the item's label.
- * - `trailingIcon`: optional trailing icon to be displayed at the end of the item's text. This
+ * - `leading-icon`: optional leading icon to be displayed at the beginning of the item's label.
+ * - `trailing-icon`: optional trailing icon to be displayed at the end of the item's text. This
  * - usually, the text of the menu item, but can be any composable and no template should be
  * assigned.
  * trailing icon slot can also accept Text to indicate a keyboard shortcut.
  * ```
- * <DropdownMenuItem phx-click="setDDOption" value="A">
+ * <DropdownMenuItem phx-click="setDDOption" phx-value="A">
  *   <Text>Option A</Text>
- *   <Icon imageVector="filled:Add" template="trailingIcon" />
- *   <Icon imageVector="filled:ChevronLeft" template="leadingIcon"/>
+ *   <Icon image-vector="filled:Add" template="trailing-icon" />
+ *   <Icon image-vector="filled:ChevronLeft" template="leading-icon"/>
  * </DropdownMenuItem>
  * ```
  */
@@ -57,10 +68,10 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
             composableNode?.children?.find { it.node?.template == null }
         }
         val leadingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == DropdownMenuItemDtoFactory.leadingIcon }
+            composableNode?.children?.find { it.node?.template == templateLeadingIcon }
         }
         val trailingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == DropdownMenuItemDtoFactory.trailingIcon }
+            composableNode?.children?.find { it.node?.template == templateTrailingIcon }
         }
         DropdownMenuItem(
             text = {
@@ -99,12 +110,12 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
                 colors[key]?.toColor() ?: Color(defaultColors.privateField(key))
 
             MenuDefaults.itemColors(
-                textColor = value("textColor"),
-                leadingIconColor = value("leadingIconColor"),
-                trailingIconColor = value("trailingIconColor"),
-                disabledTextColor = value("disabledTextColor"),
-                disabledLeadingIconColor = value("disabledLeadingIconColor"),
-                disabledTrailingIconColor = value("disabledTrailingIconColor"),
+                textColor = value(colorAttrTextColor),
+                leadingIconColor = value(colorAttrLeadingIconColor),
+                trailingIconColor = value(colorAttrTrailingIconColor),
+                disabledTextColor = value(colorAttrDisabledTextColor),
+                disabledLeadingIconColor = value(colorAttrDisabledLeadingIconColor),
+                disabledTrailingIconColor = value(colorAttrDisabledTrailingIconColor),
             )
         }
     }
@@ -124,7 +135,7 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
         /**
          * Sets the component value. This value will be send to the server when the item is clicked.
          * ```
-         * <DropdownMenuItem value="foo">...</DropdownMenuItem>
+         * <DropdownMenuItem phx-value="foo">...</DropdownMenuItem>
          * ```
          * @param value component's value.
          */
@@ -200,14 +211,11 @@ internal object DropdownMenuItemDtoFactory :
         scope: Any?
     ): DropdownMenuItemDTO = attributes.fold(DropdownMenuItemDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            ATTR_CLICK -> builder.clickEventName(attribute.value)
-            "enabled" -> builder.enabled(attribute.value)
-            "value" -> builder.value(attribute.value)
-            "contentPadding" -> builder.contentPadding(attribute.value)
+            attrContentPadding -> builder.contentPadding(attribute.value)
+            attrEnabled -> builder.enabled(attribute.value)
+            attrPhxClick -> builder.clickEventName(attribute.value)
+            attrPhxValue -> builder.value(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as DropdownMenuItemDTO.Builder
     }.build()
-
-    internal const val leadingIcon = TextFieldDtoFactory.leadingIcon
-    internal const val trailingIcon = TextFieldDtoFactory.trailingIcon
 }

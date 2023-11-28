@@ -1,6 +1,14 @@
 package org.phoenixframework.liveview.data.dto
 
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPaddingBottom
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPaddingEnd
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPaddingHorizontal
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPaddingStart
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPaddingTop
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPaddingVertical
+import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 
@@ -8,7 +16,7 @@ import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
  * Parent class of lazy lists like LazyColumn and LazyRow. This class holds some common attributes
  * for lazy lists.
  */
-abstract class LazyComposableBuilder : ComposableBuilder() {
+internal abstract class LazyComposableBuilder : ComposableBuilder() {
     var contentPadding: MutableMap<String, Int> = mutableMapOf()
     var reverseLayout: Boolean = false
 
@@ -106,14 +114,14 @@ abstract class LazyComposableBuilder : ComposableBuilder() {
     fun handleLazyAttribute(attribute: CoreAttribute): Boolean {
         var result = true
         when (attribute.name) {
-            "reverseLayout" -> reverseLayout(attribute.value)
-            "itemPadding" -> itemPadding(attribute.value)
-            "itemPaddingHorizontal" -> itemPaddingHorizontal(attribute.value)
-            "itemPaddingVertical" -> itemPaddingVertical(attribute.value)
-            "itemPaddingStart" -> itemPaddingStart(attribute.value)
-            "itemPaddingTop" -> itemPaddingTop(attribute.value)
-            "itemPaddingEnd" -> itemPaddingEnd(attribute.value)
-            "itemPaddingBottom" -> itemPaddingBottom(attribute.value)
+            attrItemPadding -> itemPadding(attribute.value)
+            attrItemPaddingBottom -> itemPaddingBottom(attribute.value)
+            attrItemPaddingEnd -> itemPaddingEnd(attribute.value)
+            attrItemPaddingHorizontal -> itemPaddingHorizontal(attribute.value)
+            attrItemPaddingStart -> itemPaddingStart(attribute.value)
+            attrItemPaddingTop -> itemPaddingTop(attribute.value)
+            attrItemPaddingVertical -> itemPaddingVertical(attribute.value)
+            attrReverseLayout -> reverseLayout(attribute.value)
             else -> result = false
         }
         return result

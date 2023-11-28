@@ -15,6 +15,24 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedThumbColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledCheckedBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledCheckedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledCheckedThumbColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledCheckedTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedThumbColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedThumbColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedTrackColor
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -71,22 +89,22 @@ internal class SwitchDTO private constructor(builder: Builder) :
             fun value(key: String) = colors[key]?.toColor() ?: Color(defaultValue.privateField(key))
 
             SwitchDefaults.colors(
-                checkedThumbColor = value("checkedThumbColor"),
-                checkedTrackColor = value("checkedTrackColor"),
-                checkedBorderColor = value("checkedBorderColor"),
-                checkedIconColor = value("checkedIconColor"),
-                uncheckedThumbColor = value("uncheckedThumbColor"),
-                uncheckedTrackColor = value("uncheckedTrackColor"),
-                uncheckedBorderColor = value("uncheckedBorderColor"),
-                uncheckedIconColor = value("uncheckedIconColor"),
-                disabledCheckedThumbColor = value("disabledCheckedThumbColor"),
-                disabledCheckedTrackColor = value("disabledCheckedTrackColor"),
-                disabledCheckedBorderColor = value("disabledCheckedBorderColor"),
-                disabledCheckedIconColor = value("disabledCheckedIconColor"),
-                disabledUncheckedThumbColor = value("disabledUncheckedThumbColor"),
-                disabledUncheckedTrackColor = value("disabledUncheckedTrackColor"),
-                disabledUncheckedBorderColor = value("disabledUncheckedBorderColor"),
-                disabledUncheckedIconColor = value("disabledUncheckedIconColor"),
+                checkedThumbColor = value(colorAttrCheckedThumbColor),
+                checkedTrackColor = value(colorAttrCheckedTrackColor),
+                checkedBorderColor = value(colorAttrCheckedBorderColor),
+                checkedIconColor = value(colorAttrCheckedIconColor),
+                uncheckedThumbColor = value(colorAttrUncheckedThumbColor),
+                uncheckedTrackColor = value(colorAttrUncheckedTrackColor),
+                uncheckedBorderColor = value(colorAttrUncheckedBorderColor),
+                uncheckedIconColor = value(colorAttrUncheckedIconColor),
+                disabledCheckedThumbColor = value(colorAttrDisabledCheckedThumbColor),
+                disabledCheckedTrackColor = value(colorAttrDisabledCheckedTrackColor),
+                disabledCheckedBorderColor = value(colorAttrDisabledCheckedBorderColor),
+                disabledCheckedIconColor = value(colorAttrDisabledCheckedIconColor),
+                disabledUncheckedThumbColor = value(colorAttrDisabledUncheckedThumbColor),
+                disabledUncheckedTrackColor = value(colorAttrDisabledUncheckedTrackColor),
+                disabledUncheckedBorderColor = value(colorAttrDisabledUncheckedBorderColor),
+                disabledUncheckedIconColor = value(colorAttrDisabledUncheckedIconColor),
             )
         }
     }
@@ -143,8 +161,8 @@ internal object SwitchDtoFactory : ComposableViewFactory<SwitchDTO, SwitchDTO.Bu
                 builder
             } else {
                 when (attribute.name) {
-                    "checked" -> builder.value(attribute.value.toBoolean())
-                    "colors" -> builder.colors(attribute.value)
+                    attrChecked -> builder.value(attribute.value.toBoolean())
+                    attrColors -> builder.colors(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
                 } as SwitchDTO.Builder
             }

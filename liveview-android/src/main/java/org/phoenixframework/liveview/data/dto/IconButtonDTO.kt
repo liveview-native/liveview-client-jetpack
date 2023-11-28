@@ -9,9 +9,15 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_CLICK
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -24,7 +30,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * Material Design standard icon button.
  * ```
  * <IconButton phx-click="iconButtonHandleAction">
- *   <Icon imageVector="filled:Add" />
+ *   <Icon image-vector="filled:Add" />
  * </IconButton>
  * ```
  */
@@ -61,10 +67,10 @@ internal class IconButtonDTO private constructor(builder: Builder) :
                 colors[key]?.toColor() ?: Color(defaultValue.privateField(key))
 
             IconButtonDefaults.iconButtonColors(
-                containerColor = value("containerColor"),
-                contentColor = value("contentColor"),
-                disabledContainerColor = value("disabledContainerColor"),
-                disabledContentColor = value("disabledContentColor"),
+                containerColor = value(colorAttrContainerColor),
+                contentColor = value(colorAttrContentColor),
+                disabledContainerColor = value(colorAttrDisabledContainerColor),
+                disabledContentColor = value(colorAttrDisabledContentColor),
             )
         }
     }
@@ -146,9 +152,9 @@ internal object IconButtonDtoFactory :
         IconButtonDTO.Builder()
     ) { builder, attribute ->
         when (attribute.name) {
-            "enabled" -> builder.enabled(attribute.value)
-            "colors" -> builder.colors(attribute.value)
-            ATTR_CLICK -> builder.onClick(attribute.value, pushEvent)
+            attrColors -> builder.colors(attribute.value)
+            attrEnabled -> builder.enabled(attribute.value)
+            attrPhxClick -> builder.onClick(attribute.value, pushEvent)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as IconButtonDTO.Builder
     }.build()

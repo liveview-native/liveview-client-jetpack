@@ -9,6 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentDescription
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrTint
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -24,7 +27,7 @@ import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
  * and do not follow the recommended icon size, use the generic Image instead. For a clickable icon,
  * see IconButton.
  * ```
- * <Icon imageVector="filled:Add" />
+ * <Icon image-vector="filled:Add" />
  * ```
  */
 internal class IconDTO private constructor(builder: Builder) :
@@ -61,7 +64,7 @@ internal class IconDTO private constructor(builder: Builder) :
          * Sets the icon content description fro accessibility purpose.
          *
          * ```
-         * <Icon contentDescription="Save Icon" />
+         * <Icon content-description="Save Icon" />
          * ```
          * @param contentDescription string representing the icon's content description
          */
@@ -86,7 +89,7 @@ internal class IconDTO private constructor(builder: Builder) :
          * theme contains the same icons, but with a distinct visual style.
          * See all available icons [here](https://developer.android.com/reference/kotlin/androidx/compose/material/icons/package-summary).
          * ```
-         * <Icon imageVector="filled:ChevronLeft"/>
+         * <Icon image-vector="filled:ChevronLeft"/>
          * ```
          * @param icon material icon following the pattern: *theme:icon* (e.g.: `"filled:Send"`).
          */
@@ -124,9 +127,9 @@ internal object IconDtoFactory : ComposableViewFactory<IconDTO, IconDTO.Builder>
         IconDTO.Builder()
     ) { builder, attribute ->
         when (attribute.name) {
-            "imageVector" -> builder.imageVector(attribute.value)
-            "tint" -> builder.tint(attribute.value)
-            "contentDescription" -> builder.contentDescription(attribute.value)
+            attrImageVector -> builder.imageVector(attribute.value)
+            attrTint -> builder.tint(attribute.value)
+            attrContentDescription -> builder.contentDescription(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as IconDTO.Builder
     }.build()

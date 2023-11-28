@@ -12,6 +12,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrFabPosition
+import org.phoenixframework.liveview.data.dto.ScaffoldDtoFactory.tagSnackbar
+import org.phoenixframework.liveview.data.constants.Templates.templateBody
+import org.phoenixframework.liveview.data.constants.Templates.templateFab
+import org.phoenixframework.liveview.data.constants.Templates.templateTopBar
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -35,7 +42,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *   <FloatingActionButton phx-click="navigateToOtherScreen" template="fab">
  *     <Icon imageVector="filled:Add" />
  *   </FloatingActionButton>
- *   <Snackbar message="message" dismissEvent="hideDialog" />
+ *   <Snackbar message="message" dismiss-event="hideDialog" />
  *   <Box template="body">
  *       <Text>Screen Body</Text>
  *   </Box>
@@ -55,16 +62,16 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
         pushEvent: PushEvent,
     ) {
         val topBar = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == ScaffoldDtoFactory.topBar }
+            composableNode?.children?.find { it.node?.template == templateTopBar }
         }
         val floatingActionButton = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == ScaffoldDtoFactory.fab }
+            composableNode?.children?.find { it.node?.template == templateFab }
         }
         val snackBar = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == ScaffoldDtoFactory.snackbar }
+            composableNode?.children?.find { it.node?.tag == tagSnackbar }
         }
         val body = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == ScaffoldDtoFactory.body }
+            composableNode?.children?.find { it.node?.template == templateBody }
         }
         val containerColor = containerColor ?: MaterialTheme.colorScheme.background
 
@@ -165,21 +172,18 @@ internal object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, Scaffold
         scope: Any?,
     ): ScaffoldDTO = attributes.fold(ScaffoldDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "containerColor" -> builder.containerColor(attribute.value)
-            "contentColor" -> builder.contentColor(attribute.value)
-            "fabPosition" -> builder.fabPosition(attribute.value)
+            attrContainerColor -> builder.containerColor(attribute.value)
+            attrContentColor -> builder.contentColor(attribute.value)
+            attrFabPosition -> builder.fabPosition(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as ScaffoldDTO.Builder
     }.build()
 
     override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
         return mapOf(
-            snackbar to SnackbarDtoFactory
+            tagSnackbar to SnackbarDtoFactory
         )
     }
 
-    const val snackbar = "Snackbar"
-    const val topBar = "topBar"
-    const val fab = "fab"
-    const val body = "body"
+    internal const val tagSnackbar = "Snackbar"
 }

@@ -10,6 +10,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -21,7 +23,7 @@ import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 /**
  * The vertically scrolling list that only composes and lays out the currently visible items.
  * ```
- * <LazyColumn width="fill" verticalArrangement="center" horizontalAlignment="center">
+ * <LazyColumn width="fill" vertical-arrangement="center" horizontal-alignment="center">
  *   // Children
  * </LazyColumn>
  * ```
@@ -71,7 +73,7 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
          * The vertical arrangement of the Column's children
          *
          * ```
-         * <LazyColumn verticalArrangement="spaceAround" >...</Column>
+         * <LazyColumn vertical-arrangement="spaceAround" >...</LazyColumn>
          * ```
          * @param verticalArrangement the vertical arrangement of the column's children. The
          * supported values are: `top`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `bottom`,
@@ -96,7 +98,7 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
          * The horizontal alignment of the Column's children
          *
          * ```
-         * <LazyColumn horizontalAlignment="center" >...</Column>
+         * <LazyColumn horizontal-alignment="center" >...</LazyColumn>
          * ```
          * @param horizontalAlignment the horizontal alignment of the column's children. The
          * supported values are: `start`, `center`, and `end`.
@@ -132,8 +134,8 @@ internal object LazyColumnDtoFactory :
                 builder
             } else {
                 when (attribute.name) {
-                    "horizontalAlignment" -> builder.horizontalAlignment(attribute.value)
-                    "verticalArrangement" -> builder.verticalArrangement(attribute.value)
+                    attrHorizontalAlignment -> builder.horizontalAlignment(attribute.value)
+                    attrVerticalArrangement -> builder.verticalArrangement(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
                 } as LazyColumnDTO.Builder
             }

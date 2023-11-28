@@ -19,10 +19,25 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.SliderDtoFactory.endThumb
-import org.phoenixframework.liveview.data.dto.SliderDtoFactory.startThumb
-import org.phoenixframework.liveview.data.dto.SliderDtoFactory.thumb
-import org.phoenixframework.liveview.data.dto.SliderDtoFactory.track
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrMaxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrMinValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrSteps
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActiveTickColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActiveTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledActiveTickColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledActiveTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledInactiveTickColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledInactiveTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledThumbColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInactiveTickColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInactiveTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrThumbColor
+import org.phoenixframework.liveview.data.constants.Templates.templateEndThumb
+import org.phoenixframework.liveview.data.constants.Templates.templateStartThumb
+import org.phoenixframework.liveview.data.constants.Templates.templateThumb
+import org.phoenixframework.liveview.data.constants.Templates.templateTrack
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
@@ -38,16 +53,16 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  * // sliderValue is a float
  * <Slider
- *   value={@sliderValue}
+ *   phx-value={@sliderValue}
  *   phx-change="setSliderValue"
- *   minValue="0"
- *   maxValue="100" />
+ *   min-value="0"
+ *   max-value="100" />
  * // sliderRange is an array of two positions
  * <RangeSlider
- *   value={Enum.join(@sliderRange, ",")}
+ *   phx-value={Enum.join(@sliderRange, ",")}
  *   phx-change="setSliderRange"
- *   minValue="0"
- *   maxValue="100" />
+ *   min-value="0"
+ *   max-value="100" />
  * ```
  * It's also possible to customize the track of both types of slider using a child with the
  * template set as "track". The thumb of the `Slider` component can be customized using the "thumb"
@@ -58,12 +73,12 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *   <Box width="fill" height="10" background="#FF0000FF" template="track"/>
  * </Slider>
  * ```
- * For the `RangeSlider` component, you can customize both start and end thumbs using "startThumb"
- * and "endThumb" templates respectively.
+ * For the `RangeSlider` component, you can customize both start and end thumbs using "start-thumb"
+ * and "end-thumb" templates respectively.
  * ```
  * <RangeSlider ...>
- *   <Box size="40" clip="4" background="#FFFF00FF" template="startThumb"/>
- *   <Box size="40" clip="circle" background="#FF0000FF" template="endThumb"/>
+ *   <Box size="40" clip="4" background="#FFFF00FF" template="start-thumb"/>
+ *   <Box size="40" clip="circle" background="#FF0000FF" template="end-thumb"/>
  * </RangeSlider>
  * ```
  */
@@ -84,7 +99,7 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
         val interactionSource = remember { MutableInteractionSource() }
         val colors = getSliderColors(colors)
         val track = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == track }
+            composableNode?.children?.find { it.node?.template == templateTrack }
         }
         when (composableNode?.node?.tag) {
             ComposableTypes.slider -> {
@@ -92,7 +107,7 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
                     mutableFloatStateOf(value)
                 }
                 val thumb = remember(composableNode.children) {
-                    composableNode.children.find { it.node?.template == thumb }
+                    composableNode.children.find { it.node?.template == templateThumb }
                 }
 
                 Slider(
@@ -142,10 +157,10 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
                     mutableStateOf(range)
                 }
                 val startThumb = remember(composableNode.children) {
-                    composableNode.children.find { it.node?.template == startThumb }
+                    composableNode.children.find { it.node?.template == templateStartThumb }
                 }
                 val endThumb = remember(composableNode.children) {
-                    composableNode.children.find { it.node?.template == endThumb }
+                    composableNode.children.find { it.node?.template == templateEndThumb }
                 }
                 RangeSlider(
                     value = stateValue,
@@ -214,16 +229,16 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
                 ?: Color(defaultValue.privateField(key))
 
             SliderDefaults.colors(
-                thumbColor = value("thumbColor"),
-                activeTrackColor = value("activeTrackColor"),
-                activeTickColor = value("activeTickColor"),
-                inactiveTrackColor = value("inactiveTrackColor"),
-                inactiveTickColor = value("inactiveTickColor"),
-                disabledThumbColor = value("disabledThumbColor"),
-                disabledActiveTrackColor = value("disabledActiveTrackColor"),
-                disabledActiveTickColor = value("disabledActiveTickColor"),
-                disabledInactiveTrackColor = value("disabledInactiveTrackColor"),
-                disabledInactiveTickColor = value("disabledInactiveTickColor")
+                thumbColor = value(colorAttrThumbColor),
+                activeTrackColor = value(colorAttrActiveTrackColor),
+                activeTickColor = value(colorAttrActiveTickColor),
+                inactiveTrackColor = value(colorAttrInactiveTrackColor),
+                inactiveTickColor = value(colorAttrInactiveTickColor),
+                disabledThumbColor = value(colorAttrDisabledThumbColor),
+                disabledActiveTrackColor = value(colorAttrDisabledActiveTrackColor),
+                disabledActiveTickColor = value(colorAttrDisabledActiveTickColor),
+                disabledInactiveTrackColor = value(colorAttrDisabledInactiveTrackColor),
+                disabledInactiveTickColor = value(colorAttrDisabledInactiveTickColor)
             )
         }
     }
@@ -244,7 +259,7 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
          * The min value for the range of values that this slider can take. The passed value will
          * be coerced to this range.
          * ```
-         * <Slider minValue="0" />
+         * <Slider min-value="0" />
          * ```
          * @param value a float value to set the min value accepted by the slider.
          */
@@ -256,7 +271,7 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
          * The max value for the range of values that this slider can take. The passed value will
          * be coerced to this range.
          * ```
-         * <Slider maxValue="100" />
+         * <Slider max-value="100" />
          * ```
          * @param value a float value to set the max value accepted by the slider.
          */
@@ -339,19 +354,14 @@ internal object SliderDtoFactory : ComposableViewFactory<SliderDTO, SliderDTO.Bu
                 builder
             } else {
                 when (attribute.name) {
-                    "minValue" -> builder.minValue(attribute.value)
-                    "maxValue" -> builder.maxValue(attribute.value)
-                    "steps" -> builder.steps(attribute.value)
-                    "colors" -> builder.colors(attribute.value)
-                    "value" -> builder.handleValue(attribute.value)
+                    attrColors -> builder.colors(attribute.value)
+                    attrMaxValue -> builder.maxValue(attribute.value)
+                    attrMinValue -> builder.minValue(attribute.value)
+                    attrPhxValue -> builder.handleValue(attribute.value)
+                    attrSteps -> builder.steps(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
                 } as SliderDTO.Builder
             }
         }
     }.build()
-
-    internal const val thumb = "thumb"
-    internal const val startThumb = "startThumb"
-    internal const val endThumb = "endThumb"
-    internal const val track = "track"
 }

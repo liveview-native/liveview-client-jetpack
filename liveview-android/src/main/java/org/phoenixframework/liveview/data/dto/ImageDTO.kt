@@ -9,6 +9,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlpha
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentDescription
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
+import org.phoenixframework.liveview.data.constants.Attrs.attrResource
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -91,7 +96,7 @@ internal class ImageDTO private constructor(builder: Builder) :
          * Sets the image content description fro accessibility purpose.Ø
          *
          * ```
-         * <Image contentDescription="Application Image" />
+         * <Image content-description="Application Image" />
          * ```
          * @param contentDescription string representing the image's content description
          */
@@ -103,7 +108,7 @@ internal class ImageDTO private constructor(builder: Builder) :
          * Scale parameter used to determine the aspect ratio scaling to be used if the bounds are
          * a different size from the intrinsic size.
          * ```
-         * <AsyncImage contentScale="crop" />
+         * <AsyncImage content-scale="crop" />
          * ```
          * @param contentScale content scale. The supported values are: `fit`, `crop`, `fillBounds`,
          *  `fillHeight`, `fillWidth` and `inside`.
@@ -160,11 +165,11 @@ internal object ImageDtoFactory : ComposableViewFactory<ImageDTO, ImageDTO.Build
         scope: Any?,
     ): ImageDTO = attributes.fold(ImageDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "resource" -> builder.imageResource(attribute.value)
-            "alignment" -> builder.alignment(attribute.value)
-            "alpha" -> builder.alpha(attribute.value)
-            "contentScale" -> builder.contentScale(attribute.value)
-            "contentDescription" -> builder.contentDescription(attribute.value)
+            attrAlignment -> builder.alignment(attribute.value)
+            attrAlpha -> builder.alpha(attribute.value)
+            attrContentDescription -> builder.contentDescription(attribute.value)
+            attrContentScale -> builder.contentScale(attribute.value)
+            attrResource -> builder.imageResource(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as ImageDTO.Builder
     }.build()

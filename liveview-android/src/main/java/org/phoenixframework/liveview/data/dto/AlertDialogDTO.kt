@@ -13,6 +13,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrDecorFitsSystemWindows
+import org.phoenixframework.liveview.data.constants.Attrs.attrDismissOnBackPress
+import org.phoenixframework.liveview.data.constants.Attrs.attrDismissOnClickOutside
+import org.phoenixframework.liveview.data.constants.Attrs.attrIconContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrSecurePolicy
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrTextContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrTitleContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
+import org.phoenixframework.liveview.data.constants.Attrs.attrUsePlatformDefaultWidth
+import org.phoenixframework.liveview.data.constants.Templates.templateConfirmButton
+import org.phoenixframework.liveview.data.constants.Templates.templateDismissButton
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -46,7 +62,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *  <TextButton phx-click="dismissEvent" template="dismiss">
  *      <Text>Dismiss</Text>
  *  </TextButton>
- *  <Icon imageVector="filled:Add" template="icon" />
+ *  <Icon image-vector="filled:Add" template="icon" />
  *  <Text template="title">Alert Title</Title>
  *  <Text>Alert message</Text>
  * </AlertDialog>
@@ -85,16 +101,16 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
         val dismissButton = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == AlertDialogDtoFactory.dismissButton }
+            composableNode?.children?.find { it.node?.template == templateDismissButton }
         }
         val confirmButton = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == AlertDialogDtoFactory.confirmButton }
+            composableNode?.children?.find { it.node?.template == templateConfirmButton }
         }
         val icon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == AlertDialogDtoFactory.icon }
+            composableNode?.children?.find { it.node?.template == templateIcon }
         }
         val title = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == AlertDialogDtoFactory.title }
+            composableNode?.children?.find { it.node?.template == templateTitle }
         }
         val content = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == null }
@@ -181,7 +197,7 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
          * Whether the dialog can be dismissed by pressing the back button. If true, pressing the
          * back button will call `dismissEvent` event. Default value is true.
          * ```
-         * <AlertDialog dismissOnBackPress="true">...</AlertDialog>
+         * <AlertDialog dismiss-on-back-press="true">...</AlertDialog>
          * ```
          * @param dismissOnBackPress true if the dialog can be dismissed by pressing the back
          * button, false otherwise.
@@ -194,7 +210,7 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
          * Whether the dialog can be dismissed by clicking outside the dialog's bounds. If true,
          * clicking outside the dialog will call `dismissEvent` event. Default value is true.
          * ```
-         * <AlertDialog dismissOnClickOutside="true">...</AlertDialog>
+         * <AlertDialog dismiss-on-click-outside="true">...</AlertDialog>
          * ```
          * @param dismissOnClickOutside true if the dialog can be dismissed by clicking outside the
          * dialog's bounds, false otherwise.
@@ -208,7 +224,7 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
          * be treated as secure, preventing it from appearing in screenshots or from being viewed
          * on non-secure displays. Default value is `inherit`.
          * ```
-         * <AlertDialog securePolicy="inherit">...</AlertDialog>
+         * <AlertDialog secure-policy="inherit">...</AlertDialog>
          * ```
          * @param securePolicy possible values are: `secureOn`, `secureOff`, and `inherit` (default).
          */
@@ -224,7 +240,7 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
          * Whether the width of the dialog's content should be limited to the platform default,
          * which is smaller than the screen width.
          * ```
-         * <AlertDialog usePlatformDefaultWidth="true">...</AlertDialog>
+         * <AlertDialog use-platform-default-width="true">...</AlertDialog>
          * ```
          * @param usePlatformDefaultWidth true if the width of the dialog's content should be
          * limited to the platform default, false otherwise. Default value is true.
@@ -239,7 +255,7 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
          *  WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE and android:windowIsFloating is set
          *  to false for Android R and earlier.
          *  ```
-         *  <AlertDialog decorFitsSystemWindows="true">...</AlertDialog>
+         *  <AlertDialog decor-fits-system-windows="true">...</AlertDialog>
          *  ```
          *  @param decorFitsSystemWindows true to set WindowCompat.setDecorFitsSystemWindows value,
          *  false otherwise. Default value is true.
@@ -277,7 +293,7 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
         /**
          * The color used for the background of this dialog.
          * ```
-         * <AlertDialog containerColor="#FFFFFFFF" >...</AlertDialog>
+         * <AlertDialog container-color="#FFFFFFFF" >...</AlertDialog>
          * ```
          * @param containerColor the background color in AARRGGBB format.
          */
@@ -288,7 +304,7 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
         /**
          * The content color used for the icon.
          * ```
-         * <AlertDialog iconContentColor="#FF00FF00" >...</AlertDialog>
+         * <AlertDialog icon-content-color="#FF00FF00" >...</AlertDialog>
          * ```
          * @param iconContentColor the content color used for the icon in AARRGGBB format.
          */
@@ -299,7 +315,7 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
         /**
          * The content color used for the title.
          * ```
-         * <AlertDialog titleContentColor="#FFCCCCCC" >...</AlertDialog>
+         * <AlertDialog title-content-color="#FFCCCCCC" >...</AlertDialog>
          * ```
          * @param titleContentColor the content color used for the title in AARRGGBB format.
          */
@@ -310,7 +326,7 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
         /**
          * The content color used for the text.
          * ```
-         * <AlertDialog textContentColor="#FFCCCCCC" >...</AlertDialog>
+         * <AlertDialog text-content-color="#FFCCCCCC" >...</AlertDialog>
          * ```
          * @param textContentColor the content color used for the text in AARRGGBB format.
          */
@@ -323,7 +339,7 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
          * on top of the container. A higher tonal elevation value will result in a darker color in
          * light theme and lighter color in dark theme.
          * ```
-         * <AlertDialog tonalElevation="12" >...</AlertDialog>
+         * <AlertDialog tonal-elevation="12" >...</AlertDialog>
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */
@@ -359,24 +375,19 @@ internal object AlertDialogDtoFactory :
         attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): AlertDialogDTO = attributes.fold(AlertDialogDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "dismissOnBackPress" -> builder.dismissOnBackPress(attribute.value)
-            "dismissOnClickOutside" -> builder.dismissOnClickOutside(attribute.value)
-            "securePolicy" -> builder.securePolicy(attribute.value)
-            "usePlatformDefaultWidth" -> builder.usePlatformDefaultWidth(attribute.value)
-            "decorFitsSystemWindows" -> builder.decorFitsSystemWindows(attribute.value)
-            "shape" -> builder.shape(attribute.value)
-            "containerColor" -> builder.containerColor(attribute.value)
-            "iconContentColor" -> builder.iconContentColor(attribute.value)
-            "titleContentColor" -> builder.titleContentColor(attribute.value)
-            "textContentColor" -> builder.textContentColor(attribute.value)
-            "tonalElevation" -> builder.tonalElevation(attribute.value)
-            ComposableBuilder.ATTR_CLICK -> builder.onDismissRequest(attribute.value, pushEvent)
+            attrContainerColor -> builder.containerColor(attribute.value)
+            attrDecorFitsSystemWindows -> builder.decorFitsSystemWindows(attribute.value)
+            attrDismissOnBackPress -> builder.dismissOnBackPress(attribute.value)
+            attrDismissOnClickOutside -> builder.dismissOnClickOutside(attribute.value)
+            attrIconContentColor -> builder.iconContentColor(attribute.value)
+            attrPhxClick -> builder.onDismissRequest(attribute.value, pushEvent)
+            attrSecurePolicy -> builder.securePolicy(attribute.value)
+            attrTextContentColor -> builder.textContentColor(attribute.value)
+            attrTitleContentColor -> builder.titleContentColor(attribute.value)
+            attrTonalElevation -> builder.tonalElevation(attribute.value)
+            attrUsePlatformDefaultWidth -> builder.usePlatformDefaultWidth(attribute.value)
+            attrShape -> builder.shape(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as AlertDialogDTO.Builder
     }.build()
-
-    const val confirmButton = "confirm"
-    const val dismissButton = "dismiss"
-    const val icon = "icon"
-    const val title = "title"
 }

@@ -12,9 +12,15 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.actionTag
-import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.navigationIconTag
-import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.titleTag
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActionIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrNavigationIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrScrolledContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTitleContentColor
+import org.phoenixframework.liveview.data.constants.Templates.templateAction
+import org.phoenixframework.liveview.data.constants.Templates.templateNavigationIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -31,16 +37,16 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * - `title`: the title to be displayed in the top app bar.
  * - `action`: the actions displayed at the end of the top app bar. This should typically be
  * `IconButton`s. The default layout here is a Row, so icons inside will be placed horizontally.
- * - `navIcon`:  the navigation icon displayed at the start of the top app bar. This should
+ * - `navigation-icon`:  the navigation icon displayed at the start of the top app bar. This should
  * typically be an `IconButton`.
  * ```
  * <TopAppBar>
  *   <Text template="title">App title</Text>
  *   <IconButton template="action" phx-click="decrement-count">
- *     <Icon imageVector="filled:Add" />
+ *     <Icon image-vector="filled:Add" />
  *   </IconButton>
- *   <IconButton template="navIcon" phx-click="reset-count">
- *     <Icon imageVector="filled:Menu" />
+ *   <IconButton template="navigation-icon" phx-click="reset-count">
+ *     <Icon image-vector="filled:Menu" />
  *   </IconButton>
  * </TopAppBar>
  * ```
@@ -58,13 +64,13 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         val title = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == titleTag }
+            composableNode?.children?.find { it.node?.template == templateTitle }
         }
         val actions = remember(composableNode?.children) {
-            composableNode?.children?.filter { it.node?.template == actionTag }
+            composableNode?.children?.filter { it.node?.template == templateAction }
         }
         val navIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == navigationIconTag }
+            composableNode?.children?.find { it.node?.template == templateNavigationIcon }
         }
         TopAppBar(
             colors = getTopAppBarColors(colors = colors),
@@ -130,11 +136,11 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
                     ?: Color(defaultColors.privateField(key))
 
             TopAppBarDefaults.topAppBarColors(
-                containerColor = value("containerColor"),
-                scrolledContainerColor = value("scrolledContainerColor"),
-                navigationIconContentColor = value("navigationIconContentColor"),
-                titleContentColor = value("titleContentColor"),
-                actionIconContentColor = value("actionIconContentColor"),
+                containerColor = value(colorAttrContainerColor),
+                scrolledContainerColor = value(colorAttrScrolledContainerColor),
+                navigationIconContentColor = value(colorAttrNavigationIconContentColor),
+                titleContentColor = value(colorAttrTitleContentColor),
+                actionIconContentColor = value(colorAttrActionIconContentColor),
             )
         }
     }
@@ -159,14 +165,10 @@ internal object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopApp
 
         attributes.forEach { attribute ->
             when (attribute.name) {
-                "colors" -> builder.colors(attribute.value)
+                attrColors -> builder.colors(attribute.value)
                 else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
             }
         }
         return builder.build()
     }
-
-    const val titleTag = "title"
-    const val actionTag = "action"
-    const val navigationIconTag = "navIcon"
 }

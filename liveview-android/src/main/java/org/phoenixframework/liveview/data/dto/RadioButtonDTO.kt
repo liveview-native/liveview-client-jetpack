@@ -9,6 +9,13 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSelectedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUnselectedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedColor
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -20,11 +27,11 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * Material Design radio button.
  * ```
  * <Row verticalAlignment="center">
- *   <RadioButton value="A" phx-change="setRadioOption" selected={"#{@radioOption == "A"}"} />
+ *   <RadioButton phx-value="A" phx-change="setRadioOption" selected={"#{@radioOption == "A"}"} />
  *   <Text>A</Text>
- *   <RadioButton value="B" phx-change="setRadioOption" selected={"#{@radioOption == "B"}"} />
+ *   <RadioButton phx-value="B" phx-change="setRadioOption" selected={"#{@radioOption == "B"}"} />
  *   <Text>B</Text>
- *   <RadioButton value="C" phx-change="setRadioOption" selected={"#{@radioOption == "C"}"} />
+ *   <RadioButton phx-value="C" phx-change="setRadioOption" selected={"#{@radioOption == "C"}"} />
  *   <Text>C</Text>
  * </Row>
  * ```
@@ -65,10 +72,10 @@ internal class RadioButtonDTO private constructor(builder: Builder) :
             fun value(key: String) = colors[key]?.toColor() ?: Color(defaultValue.privateField(key))
 
             RadioButtonDefaults.colors(
-                selectedColor = value("selectedColor"),
-                unselectedColor = value("unselectedColor"),
-                disabledSelectedColor = value("disabledSelectedColor"),
-                disabledUnselectedColor = value("disabledUnselectedColor"),
+                selectedColor = value(colorAttrSelectedColor),
+                unselectedColor = value(colorAttrUnselectedColor),
+                disabledSelectedColor = value(colorAttrDisabledSelectedColor),
+                disabledUnselectedColor = value(colorAttrDisabledUnselectedColor),
             )
         }
     }
@@ -136,9 +143,9 @@ internal object RadioButtonDtoFactory :
                 builder
             } else {
                 when (attribute.name) {
-                    "value" -> builder.value(attribute.value)
-                    "selected" -> builder.selected(attribute.value)
-                    "colors" -> builder.colors(attribute.value)
+                    attrColors -> builder.colors(attribute.value)
+                    attrPhxValue -> builder.value(attribute.value)
+                    attrSelected -> builder.selected(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
                 } as RadioButtonDTO.Builder
             }

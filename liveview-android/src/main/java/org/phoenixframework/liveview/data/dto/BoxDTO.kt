@@ -9,8 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrPropagateMinConstraints
+import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_SCROLL
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -23,9 +25,9 @@ import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
  * The Box will organize the components of top of each other in a Z-order.
  * ```
  * <Box size="100" background="#FFFF0000">
- *   <Icon imageVector="filled:Add" align="topStart"/>
+ *   <Icon image-vector="filled:Add" align="topStart"/>
  *   <Text align="center">Text</Text>
- *   <Icon imageVector="filled:Share" align="bottomEnd"/>
+ *   <Icon image-vector="filled:Share" align="bottomEnd"/>
  * </Box>
  * ```
  */
@@ -70,7 +72,7 @@ internal class BoxDTO private constructor(builder: Builder) :
          * The default alignment inside the Box.
          *
          * ```
-         * <Box contentAlignment="bottomEnd">...</Box>
+         * <Box content-alignment="bottomEnd">...</Box>
          * ```
          * @param contentAlignment children's alignment inside the Box. Supported values:
          * `topStart`, `topCenter`, `topEnd`, `centerStart`, `center`, `centerEnd`, `bottomStart`,
@@ -84,7 +86,7 @@ internal class BoxDTO private constructor(builder: Builder) :
          * Whether the incoming min constraints should be passed to content.
          *
          * ```
-         * <Box propagateMinConstraints="true">...</Box>
+         * <Box propagate-min-constraints="true">...</Box>
          * ```
          * @param value true if the incoming min constraints should be passed to content, false
          * otherwise.
@@ -110,9 +112,9 @@ internal object BoxDtoFactory : ComposableViewFactory<BoxDTO, BoxDTO.Builder>() 
         scope: Any?,
     ): BoxDTO = attributes.fold(BoxDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            "contentAlignment" -> builder.contentAlignment(attribute.value)
-            ATTR_SCROLL -> builder.scrolling(attribute.value)
-            "propagateMinConstraints" -> builder.propagateMinConstraints(attribute.value)
+            attrContentAlignment -> builder.contentAlignment(attribute.value)
+            attrPropagateMinConstraints -> builder.propagateMinConstraints(attribute.value)
+            attrScroll -> builder.scrolling(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as BoxDTO.Builder
     }.build()

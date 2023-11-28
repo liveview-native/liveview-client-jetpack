@@ -5,6 +5,10 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxDebounce
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxThrottle
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -123,10 +127,10 @@ internal abstract class ChangeableDTOBuilder<T : Any>(defaultValue: T) : Composa
     fun handleChangeableAttribute(attribute: CoreAttribute): Boolean {
         var result = true
         when (attribute.name) {
-            "phx-change" -> onChange(attribute.value)
-            "phx-debounce" -> debounce(attribute.value)
-            "phx-throttle" -> throttle(attribute.value)
-            "enabled" -> enabled(attribute.value)
+            attrEnabled -> enabled(attribute.value)
+            attrPhxChange -> onChange(attribute.value)
+            attrPhxDebounce -> debounce(attribute.value)
+            attrPhxThrottle -> throttle(attribute.value)
             else -> result = false
         }
         return result

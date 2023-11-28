@@ -14,9 +14,17 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrElevation
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDefaultElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrFocusedElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_CLICK
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -30,7 +38,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * Material Design floating action button.
  * ```
  * <FloatingActionButton phx-click="fabHandleAction">
- *   <Icon imageVector="filled:Add" />
+ *   <Icon image-vector="filled:Add" />
  * </FloatingActionButton>
  * ```
  */
@@ -73,10 +81,10 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
                 elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultValue.privateField(key))
 
             FloatingActionButtonDefaults.elevation(
-                defaultElevation = value("defaultElevation"),
-                pressedElevation = value("pressedElevation"),
-                focusedElevation = value("focusedElevation"),
-                hoveredElevation = value("hoveredElevation"),
+                defaultElevation = value(elevationAttrDefaultElevation),
+                pressedElevation = value(elevationAttrPressedElevation),
+                focusedElevation = value(elevationAttrFocusedElevation),
+                hoveredElevation = value(elevationAttrHoveredElevation),
             )
         }
     }
@@ -97,7 +105,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
          * The color used for the background of this FAB.
          *
          * ```
-         * <FloatingActionButton containerColor="#FF0000FF" />
+         * <FloatingActionButton container-color="#FF0000FF" />
          * ```
          * @param color the background color in AARRGGBB format.
          */
@@ -111,7 +119,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
          * The preferred color for content inside this FAB.
          *
          * ```
-         * <FloatingActionButton contentColor="#FF0000FF" />
+         * <FloatingActionButton content-color="#FF0000FF" />
          * ```
          * @param color the content color in AARRGGBB format.
          */
@@ -195,11 +203,11 @@ internal object FloatingActionButtonDtoFactory :
         FloatingActionButtonDTO.Builder()
     ) { builder, attribute ->
         when (attribute.name) {
-            "shape" -> builder.shape(attribute.value)
-            "containerColor" -> builder.containerColor(attribute.value)
-            "contentColor" -> builder.contentColor(attribute.value)
-            "elevation" -> builder.elevation(attribute.value)
-            ATTR_CLICK -> builder.onClick(attribute.value, pushEvent)
+            attrContainerColor -> builder.containerColor(attribute.value)
+            attrContentColor -> builder.contentColor(attribute.value)
+            attrElevation -> builder.elevation(attribute.value)
+            attrPhxClick -> builder.onClick(attribute.value, pushEvent)
+            attrShape -> builder.shape(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as FloatingActionButtonDTO.Builder
     }.build()

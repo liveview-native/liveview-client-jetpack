@@ -26,8 +26,73 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.flow.map
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrAutoCorrect
+import org.phoenixframework.liveview.data.constants.Attrs.attrCapitalization
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrImeAction
+import org.phoenixframework.liveview.data.constants.Attrs.attrIsError
+import org.phoenixframework.liveview.data.constants.Attrs.attrKeyboardType
+import org.phoenixframework.liveview.data.constants.Attrs.attrMaxLines
+import org.phoenixframework.liveview.data.constants.Attrs.attrMinLines
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrReadOnly
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrSingleLine
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.data.constants.Attrs.attrText
+import org.phoenixframework.liveview.data.constants.Attrs.attrVisualTransformation
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCursorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledIndicatorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledPlaceholderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledPrefixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSuffixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSupportingTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorCursorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorIndicatorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorPlaceholderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorPrefixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorSuffixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorSupportingTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedIndicatorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedPlaceholderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedPrefixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedSuffixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedSupportingTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectionBackgroundColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectionHandleColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedIndicatorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedPlaceholderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedPrefixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedSuffixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedSupportingTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedTrailingIconColor
+import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
+import org.phoenixframework.liveview.data.constants.Templates.templatePlaceholder
+import org.phoenixframework.liveview.data.constants.Templates.templatePrefix
+import org.phoenixframework.liveview.data.constants.Templates.templateSuffix
+import org.phoenixframework.liveview.data.constants.Templates.templateSupportingText
+import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.mappers.JsonParser
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.ATTR_CLICK
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.privateField
@@ -43,23 +108,23 @@ import org.phoenixframework.liveview.ui.theme.textStyleFromString
  * - `label`: optional label to be displayed inside the text field container.
  * - `placeholder`: the optional placeholder to be displayed when the text field is in focus and
  * the input text is empty.
- * - `leadingIcon`: the optional leading icon to be displayed at the beginning of the text field
+ * - `leading-icon`: the optional leading icon to be displayed at the beginning of the text field
  * container.
- * - `trailingIcon`: the optional trailing icon to be displayed at the end of the text field
+ * - `trailing-icon`: the optional trailing icon to be displayed at the end of the text field
  * container.
  * - `prefix`: the optional prefix to be displayed before the input text in the text field.
  * - `suffix`: the optional suffix to be displayed after the input text in the text field.
- * - `supportingText`: the optional supporting text to be displayed below the text field.
+ * - `supporting-text`: the optional supporting text to be displayed below the text field.
  *
  * ```
  * <TextField text={"#{@userName}"} phx-change="setName">
  *   <Text template="label">Label</Text>
  *   <Text template="placeholder">Placeholder</Text>
- *   <Icon template="leadingIcon" imageVector="filled:Add"/>
- *   <Icon template="trailingIcon" imageVector="filled:ChevronLeft"/>
+ *   <Icon template="leading-icon" imageVector="filled:Add"/>
+ *   <Icon template="trailing-icon" imageVector="filled:ChevronLeft"/>
  *   <Text template="prefix">Pre</Text>
  *   <Text template="suffix">Suf</Text>
- *   <Text template="supportingText">Supporting text</Text>
+ *   <Text template="supporting-text">Supporting text</Text>
  * </TextField>
  * ```
  */
@@ -84,25 +149,25 @@ internal class TextFieldDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         val label = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.label }
+            composableNode?.children?.find { it.node?.template == templateLabel }
         }
         val placeholder = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.placeholder }
+            composableNode?.children?.find { it.node?.template == templatePlaceholder }
         }
         val leadingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.leadingIcon }
+            composableNode?.children?.find { it.node?.template == templateLeadingIcon }
         }
         val trailingIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.trailingIcon }
+            composableNode?.children?.find { it.node?.template == templateTrailingIcon }
         }
         val prefix = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.prefix }
+            composableNode?.children?.find { it.node?.template == templatePrefix }
         }
         val suffix = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.suffix }
+            composableNode?.children?.find { it.node?.template == templateSuffix }
         }
         val supportingText = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == TextFieldDtoFactory.supportingText }
+            composableNode?.children?.find { it.node?.template == templateSupportingText }
         }
         var textFieldValue by remember {
             mutableStateOf(TextFieldValue(value))
@@ -184,60 +249,60 @@ internal class TextFieldDTO private constructor(builder: Builder) :
                 ?: Color(defaultValue.privateField(key))
 
             TextFieldDefaults.colors(
-                focusedTextColor = value("focusedTextColor"),
-                unfocusedTextColor = value("unfocusedTextColor"),
-                disabledTextColor = value("disabledTextColor"),
-                errorTextColor = value("errorTextColor"),
-                focusedContainerColor = value("focusedContainerColor"),
-                unfocusedContainerColor = value("unfocusedContainerColor"),
-                disabledContainerColor = value("disabledContainerColor"),
-                errorContainerColor = value("errorContainerColor"),
-                cursorColor = value("cursorColor"),
-                errorCursorColor = value("errorCursorColor"),
+                focusedTextColor = value(colorAttrFocusedTextColor),
+                unfocusedTextColor = value(colorAttrUnfocusedTextColor),
+                disabledTextColor = value(colorAttrDisabledTextColor),
+                errorTextColor = value(colorAttrErrorTextColor),
+                focusedContainerColor = value(colorAttrFocusedContainerColor),
+                unfocusedContainerColor = value(colorAttrUnfocusedContainerColor),
+                disabledContainerColor = value(colorAttrDisabledContainerColor),
+                errorContainerColor = value(colorAttrErrorContainerColor),
+                cursorColor = value(colorAttrCursorColor),
+                errorCursorColor = value(colorAttrErrorCursorColor),
                 selectionColors = TextSelectionColors(
-                    textFieldColors["selectionHandleColor"]?.toColor()
+                    textFieldColors[colorAttrSelectionHandleColor]?.toColor()
                         ?: Color(
                             defaultValue.privateField<TextSelectionColors>("textSelectionColors")
                                 .privateField("handleColor")
                         ),
-                    textFieldColors["selectionBackgroundColor"]?.toColor()
+                    textFieldColors[colorAttrSelectionBackgroundColor]?.toColor()
                         ?: Color(
                             defaultValue.privateField<TextSelectionColors>("textSelectionColors")
                                 .privateField("backgroundColor")
                         ),
                 ),
-                focusedIndicatorColor = value("focusedIndicatorColor"),
-                unfocusedIndicatorColor = value("unfocusedIndicatorColor"),
-                disabledIndicatorColor = value("disabledIndicatorColor"),
-                errorIndicatorColor = value("errorIndicatorColor"),
-                focusedLeadingIconColor = value("focusedLeadingIconColor"),
-                unfocusedLeadingIconColor = value("unfocusedLeadingIconColor"),
-                disabledLeadingIconColor = value("disabledLeadingIconColor"),
-                errorLeadingIconColor = value("errorLeadingIconColor"),
-                focusedTrailingIconColor = value("focusedTrailingIconColor"),
-                unfocusedTrailingIconColor = value("unfocusedTrailingIconColor"),
-                disabledTrailingIconColor = value("disabledTrailingIconColor"),
-                errorTrailingIconColor = value("errorTrailingIconColor"),
-                focusedLabelColor = value("focusedLabelColor"),
-                unfocusedLabelColor = value("unfocusedLabelColor"),
-                disabledLabelColor = value("disabledLabelColor"),
-                errorLabelColor = value("errorLabelColor"),
-                focusedPlaceholderColor = value("focusedPlaceholderColor"),
-                unfocusedPlaceholderColor = value("unfocusedPlaceholderColor"),
-                disabledPlaceholderColor = value("disabledPlaceholderColor"),
-                errorPlaceholderColor = value("errorPlaceholderColor"),
-                focusedSupportingTextColor = value("focusedSupportingTextColor"),
-                unfocusedSupportingTextColor = value("unfocusedSupportingTextColor"),
-                disabledSupportingTextColor = value("disabledSupportingTextColor"),
-                errorSupportingTextColor = value("errorSupportingTextColor"),
-                focusedPrefixColor = value("focusedPrefixColor"),
-                unfocusedPrefixColor = value("unfocusedPrefixColor"),
-                disabledPrefixColor = value("disabledPrefixColor"),
-                errorPrefixColor = value("errorPrefixColor"),
-                focusedSuffixColor = value("focusedSuffixColor"),
-                unfocusedSuffixColor = value("unfocusedSuffixColor"),
-                disabledSuffixColor = value("disabledSuffixColor"),
-                errorSuffixColor = value("errorSuffixColor"),
+                focusedIndicatorColor = value(colorAttrFocusedIndicatorColor),
+                unfocusedIndicatorColor = value(colorAttrUnfocusedIndicatorColor),
+                disabledIndicatorColor = value(colorAttrDisabledIndicatorColor),
+                errorIndicatorColor = value(colorAttrErrorIndicatorColor),
+                focusedLeadingIconColor = value(colorAttrFocusedLeadingIconColor),
+                unfocusedLeadingIconColor = value(colorAttrUnfocusedLeadingIconColor),
+                disabledLeadingIconColor = value(colorAttrDisabledLeadingIconColor),
+                errorLeadingIconColor = value(colorAttrErrorLeadingIconColor),
+                focusedTrailingIconColor = value(colorAttrFocusedTrailingIconColor),
+                unfocusedTrailingIconColor = value(colorAttrUnfocusedTrailingIconColor),
+                disabledTrailingIconColor = value(colorAttrDisabledTrailingIconColor),
+                errorTrailingIconColor = value(colorAttrErrorTrailingIconColor),
+                focusedLabelColor = value(colorAttrFocusedLabelColor),
+                unfocusedLabelColor = value(colorAttrUnfocusedLabelColor),
+                disabledLabelColor = value(colorAttrDisabledLabelColor),
+                errorLabelColor = value(colorAttrErrorLabelColor),
+                focusedPlaceholderColor = value(colorAttrFocusedPlaceholderColor),
+                unfocusedPlaceholderColor = value(colorAttrUnfocusedPlaceholderColor),
+                disabledPlaceholderColor = value(colorAttrDisabledPlaceholderColor),
+                errorPlaceholderColor = value(colorAttrErrorPlaceholderColor),
+                focusedSupportingTextColor = value(colorAttrFocusedSupportingTextColor),
+                unfocusedSupportingTextColor = value(colorAttrUnfocusedSupportingTextColor),
+                disabledSupportingTextColor = value(colorAttrDisabledSupportingTextColor),
+                errorSupportingTextColor = value(colorAttrErrorSupportingTextColor),
+                focusedPrefixColor = value(colorAttrFocusedPrefixColor),
+                unfocusedPrefixColor = value(colorAttrUnfocusedPrefixColor),
+                disabledPrefixColor = value(colorAttrDisabledPrefixColor),
+                errorPrefixColor = value(colorAttrErrorPrefixColor),
+                focusedSuffixColor = value(colorAttrFocusedSuffixColor),
+                unfocusedSuffixColor = value(colorAttrUnfocusedSuffixColor),
+                disabledSuffixColor = value(colorAttrDisabledSuffixColor),
+                errorSuffixColor = value(colorAttrErrorSuffixColor),
             )
         }
     }
@@ -317,7 +382,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * Indicates if the text field's current value is in error state. If set to true, the label,
          * bottom indicator and trailing icon by default will be displayed in error color.
          * ```
-         * <TextField isError="true" />
+         * <TextField is-error="true" />
          * ```
          * @param isError true if the text field is in error state, false otherwise.
          */
@@ -331,7 +396,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * the ImeAction. Note that maxLines parameter will be ignored as the maxLines attribute
          * will be automatically set to 1.
          * ```
-         * <TextField singleLine="true" />
+         * <TextField single-line="true" />
          * ```
          * @param singleLine true if the text field is in error state, false otherwise.
          */
@@ -344,7 +409,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * The maximum height in terms of maximum number of visible lines. It is required that
          * 1 <= minLines <= maxLines. This parameter is ignored when singleLine is true.
          * ```
-         * <TextField maxLines="3" />
+         * <TextField max-lines="3" />
          * ```
          * @param maxLines maximum number of visible lines.
          */
@@ -356,7 +421,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          *  The minimum height in terms of minimum number of visible lines. It is required that
          *  1 <= minLines <= maxLines. This parameter is ignored when singleLine is true.
          * ```
-         * <TextField minLines="2" />
+         * <TextField min-lines="2" />
          * ```
          * @param minLines minimum number of visible lines.
          */
@@ -381,7 +446,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * "password" to create a password text field. By default, no visual transformation is
          * applied.
          * ```
-         * <TextField visualTransformation="password" />
+         * <TextField visual-transformation="password" />
          * ```
          * @param transformation `password` for password text fields, or `none` for a regular one
          * (default).
@@ -460,7 +525,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * Most of keyboard implementations ignore this value for KeyboardTypes such as
          * KeyboardType.Text.
          * ```
-         * <TextField autoCorrect="true" />
+         * <TextField auto-correct="true" />
          * ```
          * @param autoCorrect true to enable auto correct, false otherwise.
          */
@@ -473,7 +538,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * keyboard and shows corresponding keyboard but this is not guaranteed. For example, some
          * keyboards may send non-ASCII character even if you set KeyboardType.Ascii.
          * ```
-         * <TextField keyboardType="email" />
+         * <TextField keyboard-type="email" />
          * ```
          * @param keyboardType the keyboard type. The supported values are: `ascii`, `number`,
          * `phone`, `uri`, `email`, `password`, `numberPassword`, `decimal`, and `text` (default)
@@ -498,7 +563,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * ImeOptions.singleLine is false, the keyboard might show return key rather than the
          * action requested here.
          * ```
-         * <TextField imeAction="search" />
+         * <TextField ime-action="search" />
          * ```
          * @param imeAction IME action. Supported values are: `none`, `go`, `search`, `previous`,
          * `next`, `done`, and `default` (default).
@@ -540,32 +605,24 @@ internal object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO, TextFi
                 builder
             } else {
                 when (attribute.name) {
-                    ATTR_CLICK -> builder.onKeyboardAction(attribute.value, pushEvent)
-                    "text" -> builder.value(attribute.value)
-                    "readOnly" -> builder.readOnly(attribute.value)
-                    "textStyle" -> builder.textStyle(attribute.value)
-                    "isError" -> builder.isError(attribute.value)
-                    "visualTransformation" -> builder.visualTransformation(attribute.value)
-                    "singleLine" -> builder.singleLine(attribute.value)
-                    "maxLines" -> builder.maxLines(attribute.value)
-                    "minLines" -> builder.minLines(attribute.value)
-                    "shape" -> builder.shape(attribute.value)
-                    "colors" -> builder.colors(attribute.value)
-                    "capitalization" -> builder.capitalization(attribute.value)
-                    "autoCorrect" -> builder.autoCorrect(attribute.value)
-                    "keyboardType" -> builder.keyboardType(attribute.value)
-                    "imeAction" -> builder.imeAction(attribute.value)
+                    attrAutoCorrect -> builder.autoCorrect(attribute.value)
+                    attrCapitalization -> builder.capitalization(attribute.value)
+                    attrColors -> builder.colors(attribute.value)
+                    attrImeAction -> builder.imeAction(attribute.value)
+                    attrIsError -> builder.isError(attribute.value)
+                    attrKeyboardType -> builder.keyboardType(attribute.value)
+                    attrMaxLines -> builder.maxLines(attribute.value)
+                    attrMinLines -> builder.minLines(attribute.value)
+                    attrPhxClick -> builder.onKeyboardAction(attribute.value, pushEvent)
+                    attrReadOnly -> builder.readOnly(attribute.value)
+                    attrShape -> builder.shape(attribute.value)
+                    attrSingleLine -> builder.singleLine(attribute.value)
+                    attrStyle -> builder.textStyle(attribute.value)
+                    attrText -> builder.value(attribute.value)
+                    attrVisualTransformation -> builder.visualTransformation(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
                 } as TextFieldDTO.Builder
             }
         }
     }.build()
-
-    internal const val label = "label"
-    internal const val placeholder = "placeholder"
-    internal const val leadingIcon = "leadingIcon"
-    internal const val trailingIcon = "trailingIcon"
-    internal const val prefix = "prefix"
-    internal const val suffix = "suffix"
-    internal const val supportingText = "supportingText"
 }
