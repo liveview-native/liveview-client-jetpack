@@ -26,28 +26,72 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.flow.map
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrAutoCorrect
-import org.phoenixframework.liveview.data.dto.Attrs.attrCapitalization
-import org.phoenixframework.liveview.data.dto.Attrs.attrColors
-import org.phoenixframework.liveview.data.dto.Attrs.attrImeAction
-import org.phoenixframework.liveview.data.dto.Attrs.attrIsError
-import org.phoenixframework.liveview.data.dto.Attrs.attrKeyboardType
-import org.phoenixframework.liveview.data.dto.Attrs.attrMaxLines
-import org.phoenixframework.liveview.data.dto.Attrs.attrMinLines
-import org.phoenixframework.liveview.data.dto.Attrs.attrPhxClick
-import org.phoenixframework.liveview.data.dto.Attrs.attrReadOnly
-import org.phoenixframework.liveview.data.dto.Attrs.attrShape
-import org.phoenixframework.liveview.data.dto.Attrs.attrSingleLine
-import org.phoenixframework.liveview.data.dto.Attrs.attrStyle
-import org.phoenixframework.liveview.data.dto.Attrs.attrText
-import org.phoenixframework.liveview.data.dto.Attrs.attrVisualTransformation
-import org.phoenixframework.liveview.data.dto.Templates.templateLabel
-import org.phoenixframework.liveview.data.dto.Templates.templateLeadingIcon
-import org.phoenixframework.liveview.data.dto.Templates.templatePlaceholder
-import org.phoenixframework.liveview.data.dto.Templates.templatePrefix
-import org.phoenixframework.liveview.data.dto.Templates.templateSuffix
-import org.phoenixframework.liveview.data.dto.Templates.templateSupportingText
-import org.phoenixframework.liveview.data.dto.Templates.templateTrailingIcon
+import org.phoenixframework.liveview.data.constants.Attrs.attrAutoCorrect
+import org.phoenixframework.liveview.data.constants.Attrs.attrCapitalization
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrImeAction
+import org.phoenixframework.liveview.data.constants.Attrs.attrIsError
+import org.phoenixframework.liveview.data.constants.Attrs.attrKeyboardType
+import org.phoenixframework.liveview.data.constants.Attrs.attrMaxLines
+import org.phoenixframework.liveview.data.constants.Attrs.attrMinLines
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrReadOnly
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrSingleLine
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.data.constants.Attrs.attrText
+import org.phoenixframework.liveview.data.constants.Attrs.attrVisualTransformation
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCursorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledIndicatorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledPlaceholderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledPrefixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSuffixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSupportingTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorCursorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorIndicatorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorPlaceholderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorPrefixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorSuffixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorSupportingTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedIndicatorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedPlaceholderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedPrefixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedSuffixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedSupportingTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectionBackgroundColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectionHandleColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedIndicatorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedPlaceholderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedPrefixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedSuffixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedSupportingTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedTrailingIconColor
+import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
+import org.phoenixframework.liveview.data.constants.Templates.templatePlaceholder
+import org.phoenixframework.liveview.data.constants.Templates.templatePrefix
+import org.phoenixframework.liveview.data.constants.Templates.templateSuffix
+import org.phoenixframework.liveview.data.constants.Templates.templateSupportingText
+import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -205,60 +249,60 @@ internal class TextFieldDTO private constructor(builder: Builder) :
                 ?: Color(defaultValue.privateField(key))
 
             TextFieldDefaults.colors(
-                focusedTextColor = value("focusedTextColor"),
-                unfocusedTextColor = value("unfocusedTextColor"),
-                disabledTextColor = value("disabledTextColor"),
-                errorTextColor = value("errorTextColor"),
-                focusedContainerColor = value("focusedContainerColor"),
-                unfocusedContainerColor = value("unfocusedContainerColor"),
-                disabledContainerColor = value("disabledContainerColor"),
-                errorContainerColor = value("errorContainerColor"),
-                cursorColor = value("cursorColor"),
-                errorCursorColor = value("errorCursorColor"),
+                focusedTextColor = value(colorAttrFocusedTextColor),
+                unfocusedTextColor = value(colorAttrUnfocusedTextColor),
+                disabledTextColor = value(colorAttrDisabledTextColor),
+                errorTextColor = value(colorAttrErrorTextColor),
+                focusedContainerColor = value(colorAttrFocusedContainerColor),
+                unfocusedContainerColor = value(colorAttrUnfocusedContainerColor),
+                disabledContainerColor = value(colorAttrDisabledContainerColor),
+                errorContainerColor = value(colorAttrErrorContainerColor),
+                cursorColor = value(colorAttrCursorColor),
+                errorCursorColor = value(colorAttrErrorCursorColor),
                 selectionColors = TextSelectionColors(
-                    textFieldColors["selectionHandleColor"]?.toColor()
+                    textFieldColors[colorAttrSelectionHandleColor]?.toColor()
                         ?: Color(
                             defaultValue.privateField<TextSelectionColors>("textSelectionColors")
                                 .privateField("handleColor")
                         ),
-                    textFieldColors["selectionBackgroundColor"]?.toColor()
+                    textFieldColors[colorAttrSelectionBackgroundColor]?.toColor()
                         ?: Color(
                             defaultValue.privateField<TextSelectionColors>("textSelectionColors")
                                 .privateField("backgroundColor")
                         ),
                 ),
-                focusedIndicatorColor = value("focusedIndicatorColor"),
-                unfocusedIndicatorColor = value("unfocusedIndicatorColor"),
-                disabledIndicatorColor = value("disabledIndicatorColor"),
-                errorIndicatorColor = value("errorIndicatorColor"),
-                focusedLeadingIconColor = value("focusedLeadingIconColor"),
-                unfocusedLeadingIconColor = value("unfocusedLeadingIconColor"),
-                disabledLeadingIconColor = value("disabledLeadingIconColor"),
-                errorLeadingIconColor = value("errorLeadingIconColor"),
-                focusedTrailingIconColor = value("focusedTrailingIconColor"),
-                unfocusedTrailingIconColor = value("unfocusedTrailingIconColor"),
-                disabledTrailingIconColor = value("disabledTrailingIconColor"),
-                errorTrailingIconColor = value("errorTrailingIconColor"),
-                focusedLabelColor = value("focusedLabelColor"),
-                unfocusedLabelColor = value("unfocusedLabelColor"),
-                disabledLabelColor = value("disabledLabelColor"),
-                errorLabelColor = value("errorLabelColor"),
-                focusedPlaceholderColor = value("focusedPlaceholderColor"),
-                unfocusedPlaceholderColor = value("unfocusedPlaceholderColor"),
-                disabledPlaceholderColor = value("disabledPlaceholderColor"),
-                errorPlaceholderColor = value("errorPlaceholderColor"),
-                focusedSupportingTextColor = value("focusedSupportingTextColor"),
-                unfocusedSupportingTextColor = value("unfocusedSupportingTextColor"),
-                disabledSupportingTextColor = value("disabledSupportingTextColor"),
-                errorSupportingTextColor = value("errorSupportingTextColor"),
-                focusedPrefixColor = value("focusedPrefixColor"),
-                unfocusedPrefixColor = value("unfocusedPrefixColor"),
-                disabledPrefixColor = value("disabledPrefixColor"),
-                errorPrefixColor = value("errorPrefixColor"),
-                focusedSuffixColor = value("focusedSuffixColor"),
-                unfocusedSuffixColor = value("unfocusedSuffixColor"),
-                disabledSuffixColor = value("disabledSuffixColor"),
-                errorSuffixColor = value("errorSuffixColor"),
+                focusedIndicatorColor = value(colorAttrFocusedIndicatorColor),
+                unfocusedIndicatorColor = value(colorAttrUnfocusedIndicatorColor),
+                disabledIndicatorColor = value(colorAttrDisabledIndicatorColor),
+                errorIndicatorColor = value(colorAttrErrorIndicatorColor),
+                focusedLeadingIconColor = value(colorAttrFocusedLeadingIconColor),
+                unfocusedLeadingIconColor = value(colorAttrUnfocusedLeadingIconColor),
+                disabledLeadingIconColor = value(colorAttrDisabledLeadingIconColor),
+                errorLeadingIconColor = value(colorAttrErrorLeadingIconColor),
+                focusedTrailingIconColor = value(colorAttrFocusedTrailingIconColor),
+                unfocusedTrailingIconColor = value(colorAttrUnfocusedTrailingIconColor),
+                disabledTrailingIconColor = value(colorAttrDisabledTrailingIconColor),
+                errorTrailingIconColor = value(colorAttrErrorTrailingIconColor),
+                focusedLabelColor = value(colorAttrFocusedLabelColor),
+                unfocusedLabelColor = value(colorAttrUnfocusedLabelColor),
+                disabledLabelColor = value(colorAttrDisabledLabelColor),
+                errorLabelColor = value(colorAttrErrorLabelColor),
+                focusedPlaceholderColor = value(colorAttrFocusedPlaceholderColor),
+                unfocusedPlaceholderColor = value(colorAttrUnfocusedPlaceholderColor),
+                disabledPlaceholderColor = value(colorAttrDisabledPlaceholderColor),
+                errorPlaceholderColor = value(colorAttrErrorPlaceholderColor),
+                focusedSupportingTextColor = value(colorAttrFocusedSupportingTextColor),
+                unfocusedSupportingTextColor = value(colorAttrUnfocusedSupportingTextColor),
+                disabledSupportingTextColor = value(colorAttrDisabledSupportingTextColor),
+                errorSupportingTextColor = value(colorAttrErrorSupportingTextColor),
+                focusedPrefixColor = value(colorAttrFocusedPrefixColor),
+                unfocusedPrefixColor = value(colorAttrUnfocusedPrefixColor),
+                disabledPrefixColor = value(colorAttrDisabledPrefixColor),
+                errorPrefixColor = value(colorAttrErrorPrefixColor),
+                focusedSuffixColor = value(colorAttrFocusedSuffixColor),
+                unfocusedSuffixColor = value(colorAttrUnfocusedSuffixColor),
+                disabledSuffixColor = value(colorAttrDisabledSuffixColor),
+                errorSuffixColor = value(colorAttrErrorSuffixColor),
             )
         }
     }

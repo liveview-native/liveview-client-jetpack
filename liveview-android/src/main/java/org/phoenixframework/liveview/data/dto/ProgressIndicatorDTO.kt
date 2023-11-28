@@ -10,10 +10,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrColor
-import org.phoenixframework.liveview.data.dto.Attrs.attrStrokeCap
-import org.phoenixframework.liveview.data.dto.Attrs.attrStrokeWidth
-import org.phoenixframework.liveview.data.dto.Attrs.attrTrackColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrStrokeCap
+import org.phoenixframework.liveview.data.constants.Attrs.attrStrokeWidth
+import org.phoenixframework.liveview.data.constants.Attrs.attrTrackColor
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView

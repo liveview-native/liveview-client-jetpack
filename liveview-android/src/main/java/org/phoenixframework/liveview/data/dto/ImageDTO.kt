@@ -9,11 +9,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrAlignment
-import org.phoenixframework.liveview.data.dto.Attrs.attrAlpha
-import org.phoenixframework.liveview.data.dto.Attrs.attrContentDescription
-import org.phoenixframework.liveview.data.dto.Attrs.attrContentScale
-import org.phoenixframework.liveview.data.dto.Attrs.attrResource
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlpha
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentDescription
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
+import org.phoenixframework.liveview.data.constants.Attrs.attrResource
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory

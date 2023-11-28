@@ -14,11 +14,15 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrContainerColor
-import org.phoenixframework.liveview.data.dto.Attrs.attrContentColor
-import org.phoenixframework.liveview.data.dto.Attrs.attrElevation
-import org.phoenixframework.liveview.data.dto.Attrs.attrPhxClick
-import org.phoenixframework.liveview.data.dto.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrElevation
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDefaultElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrFocusedElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -77,10 +81,10 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
                 elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultValue.privateField(key))
 
             FloatingActionButtonDefaults.elevation(
-                defaultElevation = value("defaultElevation"),
-                pressedElevation = value("pressedElevation"),
-                focusedElevation = value("focusedElevation"),
-                hoveredElevation = value("hoveredElevation"),
+                defaultElevation = value(elevationAttrDefaultElevation),
+                pressedElevation = value(elevationAttrPressedElevation),
+                focusedElevation = value(elevationAttrFocusedElevation),
+                hoveredElevation = value(elevationAttrHoveredElevation),
             )
         }
     }

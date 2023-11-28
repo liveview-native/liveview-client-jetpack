@@ -9,9 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrContentDescription
-import org.phoenixframework.liveview.data.dto.Attrs.attrImageVector
-import org.phoenixframework.liveview.data.dto.Attrs.attrTint
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentDescription
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrTint
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory

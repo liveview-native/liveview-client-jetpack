@@ -10,12 +10,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrContentPadding
-import org.phoenixframework.liveview.data.dto.Attrs.attrEnabled
-import org.phoenixframework.liveview.data.dto.Attrs.attrPhxClick
-import org.phoenixframework.liveview.data.dto.Attrs.attrPhxValue
-import org.phoenixframework.liveview.data.dto.Templates.templateLeadingIcon
-import org.phoenixframework.liveview.data.dto.Templates.templateTrailingIcon
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconColor
+import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -104,12 +110,12 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
                 colors[key]?.toColor() ?: Color(defaultColors.privateField(key))
 
             MenuDefaults.itemColors(
-                textColor = value("textColor"),
-                leadingIconColor = value("leadingIconColor"),
-                trailingIconColor = value("trailingIconColor"),
-                disabledTextColor = value("disabledTextColor"),
-                disabledLeadingIconColor = value("disabledLeadingIconColor"),
-                disabledTrailingIconColor = value("disabledTrailingIconColor"),
+                textColor = value(colorAttrTextColor),
+                leadingIconColor = value(colorAttrLeadingIconColor),
+                trailingIconColor = value(colorAttrTrailingIconColor),
+                disabledTextColor = value(colorAttrDisabledTextColor),
+                disabledLeadingIconColor = value(colorAttrDisabledLeadingIconColor),
+                disabledTrailingIconColor = value(colorAttrDisabledTrailingIconColor),
             )
         }
     }

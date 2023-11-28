@@ -12,10 +12,15 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrColors
-import org.phoenixframework.liveview.data.dto.Templates.templateAction
-import org.phoenixframework.liveview.data.dto.Templates.templateNavigationIcon
-import org.phoenixframework.liveview.data.dto.Templates.templateTitle
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActionIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrNavigationIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrScrolledContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTitleContentColor
+import org.phoenixframework.liveview.data.constants.Templates.templateAction
+import org.phoenixframework.liveview.data.constants.Templates.templateNavigationIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -131,11 +136,11 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
                     ?: Color(defaultColors.privateField(key))
 
             TopAppBarDefaults.topAppBarColors(
-                containerColor = value("containerColor"),
-                scrolledContainerColor = value("scrolledContainerColor"),
-                navigationIconContentColor = value("navigationIconContentColor"),
-                titleContentColor = value("titleContentColor"),
-                actionIconContentColor = value("actionIconContentColor"),
+                containerColor = value(colorAttrContainerColor),
+                scrolledContainerColor = value(colorAttrScrolledContainerColor),
+                navigationIconContentColor = value(colorAttrNavigationIconContentColor),
+                titleContentColor = value(colorAttrTitleContentColor),
+                actionIconContentColor = value(colorAttrActionIconContentColor),
             )
         }
     }

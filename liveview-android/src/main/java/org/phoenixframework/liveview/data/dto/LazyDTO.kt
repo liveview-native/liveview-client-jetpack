@@ -1,14 +1,14 @@
 package org.phoenixframework.liveview.data.dto
 
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrItemPadding
-import org.phoenixframework.liveview.data.dto.Attrs.attrItemPaddingBottom
-import org.phoenixframework.liveview.data.dto.Attrs.attrItemPaddingEnd
-import org.phoenixframework.liveview.data.dto.Attrs.attrItemPaddingHorizontal
-import org.phoenixframework.liveview.data.dto.Attrs.attrItemPaddingStart
-import org.phoenixframework.liveview.data.dto.Attrs.attrItemPaddingTop
-import org.phoenixframework.liveview.data.dto.Attrs.attrItemPaddingVertical
-import org.phoenixframework.liveview.data.dto.Attrs.attrReverseLayout
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPaddingBottom
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPaddingEnd
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPaddingHorizontal
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPaddingStart
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPaddingTop
+import org.phoenixframework.liveview.data.constants.Attrs.attrItemPaddingVertical
+import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 

@@ -10,8 +10,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrHorizontalArrangement
-import org.phoenixframework.liveview.data.dto.Attrs.attrVerticalAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
+import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent

@@ -9,9 +9,13 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrColors
-import org.phoenixframework.liveview.data.dto.Attrs.attrPhxValue
-import org.phoenixframework.liveview.data.dto.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSelectedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUnselectedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedColor
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -68,10 +72,10 @@ internal class RadioButtonDTO private constructor(builder: Builder) :
             fun value(key: String) = colors[key]?.toColor() ?: Color(defaultValue.privateField(key))
 
             RadioButtonDefaults.colors(
-                selectedColor = value("selectedColor"),
-                unselectedColor = value("unselectedColor"),
-                disabledSelectedColor = value("disabledSelectedColor"),
-                disabledUnselectedColor = value("disabledUnselectedColor"),
+                selectedColor = value(colorAttrSelectedColor),
+                unselectedColor = value(colorAttrUnselectedColor),
+                disabledSelectedColor = value(colorAttrDisabledSelectedColor),
+                disabledUnselectedColor = value(colorAttrDisabledUnselectedColor),
             )
         }
     }

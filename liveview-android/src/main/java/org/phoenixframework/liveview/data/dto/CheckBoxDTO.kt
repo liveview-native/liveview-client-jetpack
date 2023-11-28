@@ -15,8 +15,14 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrChecked
-import org.phoenixframework.liveview.data.dto.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckmarkColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledCheckedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledIndeterminateColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedColor
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -73,12 +79,12 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
             fun value(key: String) = colors[key]?.toColor() ?: Color(defaultValue.privateField(key))
 
             CheckboxDefaults.colors(
-                checkedColor = value("checkedColor"),
-                uncheckedColor = value("uncheckedColor"),
-                checkmarkColor = value("checkmarkColor"),
-                disabledCheckedColor = value("disabledCheckedColor"),
-                disabledUncheckedColor = value("disabledUncheckedColor"),
-                disabledIndeterminateColor = value("disabledIndeterminateColor"),
+                checkedColor = value(colorAttrCheckedColor),
+                uncheckedColor = value(colorAttrUncheckedColor),
+                checkmarkColor = value(colorAttrCheckmarkColor),
+                disabledCheckedColor = value(colorAttrDisabledCheckedColor),
+                disabledUncheckedColor = value(colorAttrDisabledUncheckedColor),
+                disabledIndeterminateColor = value(colorAttrDisabledIndeterminateColor),
             )
         }
     }
@@ -92,7 +98,7 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
          * Set CheckBox colors.
          * ```
          * <CheckBox
-         *   colors="{'thumbColor': '#FFFF0000', 'activeTrackColor': '#FF00FF00'}"/>
+         *   colors="{'checkedColor': '#FFFF0000', 'uncheckedColor': '#FF00FF00'}"/>
          * ```
          * @param colors an JSON formatted string, containing the checkbox colors. The color keys
          * supported are: `checkedColor`, `uncheckedColor`, `checkmarkColor, `disabledCheckedColor`,

@@ -10,9 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrContainerColor
-import org.phoenixframework.liveview.data.dto.Attrs.attrContentColor
-import org.phoenixframework.liveview.data.dto.Templates.templateBadge
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Templates.templateBadge
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory

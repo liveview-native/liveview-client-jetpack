@@ -9,9 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrContentAlignment
-import org.phoenixframework.liveview.data.dto.Attrs.attrPropagateMinConstraints
-import org.phoenixframework.liveview.data.dto.Attrs.attrScroll
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrPropagateMinConstraints
+import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory

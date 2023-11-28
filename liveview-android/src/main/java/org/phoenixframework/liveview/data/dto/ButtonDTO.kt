@@ -18,14 +18,23 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrBorderColor
-import org.phoenixframework.liveview.data.dto.Attrs.attrBorderWidth
-import org.phoenixframework.liveview.data.dto.Attrs.attrColors
-import org.phoenixframework.liveview.data.dto.Attrs.attrContentPadding
-import org.phoenixframework.liveview.data.dto.Attrs.attrElevation
-import org.phoenixframework.liveview.data.dto.Attrs.attrEnabled
-import org.phoenixframework.liveview.data.dto.Attrs.attrPhxClick
-import org.phoenixframework.liveview.data.dto.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorderColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorderWidth
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrElevation
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDefaultElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDisabledElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrFocusedElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
@@ -181,11 +190,11 @@ internal class ButtonDTO private constructor(builder: Builder) :
                 elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
 
             ButtonDefaults.buttonElevation(
-                defaultElevation = value(ELEVATION_DEFAULT),
-                pressedElevation = value(ELEVATION_PRESSED),
-                focusedElevation = value(ELEVATION_FOCUSED),
-                hoveredElevation = value(ELEVATION_HOVERED),
-                disabledElevation = value(ELEVATION_DISABLED)
+                defaultElevation = value(elevationAttrDefaultElevation),
+                pressedElevation = value(elevationAttrPressedElevation),
+                focusedElevation = value(elevationAttrFocusedElevation),
+                hoveredElevation = value(elevationAttrHoveredElevation),
+                disabledElevation = value(elevationAttrDisabledElevation)
             )
         }
     }
@@ -200,11 +209,11 @@ internal class ButtonDTO private constructor(builder: Builder) :
                 elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
 
             ButtonDefaults.elevatedButtonElevation(
-                defaultElevation = value(ELEVATION_DEFAULT),
-                pressedElevation = value(ELEVATION_PRESSED),
-                focusedElevation = value(ELEVATION_FOCUSED),
-                hoveredElevation = value(ELEVATION_HOVERED),
-                disabledElevation = value(ELEVATION_DISABLED)
+                defaultElevation = value(elevationAttrDefaultElevation),
+                pressedElevation = value(elevationAttrPressedElevation),
+                focusedElevation = value(elevationAttrFocusedElevation),
+                hoveredElevation = value(elevationAttrHoveredElevation),
+                disabledElevation = value(elevationAttrDisabledElevation)
             )
         }
     }
@@ -220,10 +229,10 @@ internal class ButtonDTO private constructor(builder: Builder) :
                 colors[key]?.toColor() ?: Color(defaultColors.privateField(key))
 
             ButtonDefaults.buttonColors(
-                containerColor = value(COLOR_CONTAINER),
-                contentColor = value(COLOR_CONTENT),
-                disabledContainerColor = value(COLOR_CONTAINER_DISABLED),
-                disabledContentColor = value(COLOR_CONTENT_DISABLED)
+                containerColor = value(colorAttrContainerColor),
+                contentColor = value(colorAttrContentColor),
+                disabledContainerColor = value(colorAttrDisabledContainerColor),
+                disabledContentColor = value(colorAttrDisabledContentColor)
             )
         }
     }
@@ -239,10 +248,10 @@ internal class ButtonDTO private constructor(builder: Builder) :
                 colors[key]?.toColor() ?: Color(defaultColors.privateField(key))
 
             ButtonDefaults.elevatedButtonColors(
-                containerColor = value(COLOR_CONTAINER),
-                contentColor = value(COLOR_CONTENT),
-                disabledContainerColor = value(COLOR_CONTAINER_DISABLED),
-                disabledContentColor = value(COLOR_CONTENT_DISABLED)
+                containerColor = value(colorAttrContainerColor),
+                contentColor = value(colorAttrContentColor),
+                disabledContainerColor = value(colorAttrDisabledContainerColor),
+                disabledContentColor = value(colorAttrDisabledContentColor)
             )
         }
     }
@@ -258,10 +267,10 @@ internal class ButtonDTO private constructor(builder: Builder) :
                 colors[key]?.toColor() ?: Color(defaultColors.privateField(key))
 
             ButtonDefaults.filledTonalButtonColors(
-                containerColor = value(COLOR_CONTAINER),
-                contentColor = value(COLOR_CONTENT),
-                disabledContainerColor = value(COLOR_CONTAINER_DISABLED),
-                disabledContentColor = value(COLOR_CONTENT_DISABLED)
+                containerColor = value(colorAttrContainerColor),
+                contentColor = value(colorAttrContentColor),
+                disabledContainerColor = value(colorAttrDisabledContainerColor),
+                disabledContentColor = value(colorAttrDisabledContentColor)
             )
         }
     }
@@ -277,10 +286,10 @@ internal class ButtonDTO private constructor(builder: Builder) :
                 colors[key]?.toColor() ?: Color(defaultColors.privateField(key))
 
             ButtonDefaults.outlinedButtonColors(
-                containerColor = value(COLOR_CONTAINER),
-                contentColor = value(COLOR_CONTENT),
-                disabledContainerColor = value(COLOR_CONTAINER_DISABLED),
-                disabledContentColor = value(COLOR_CONTENT_DISABLED)
+                containerColor = value(colorAttrContainerColor),
+                contentColor = value(colorAttrContentColor),
+                disabledContainerColor = value(colorAttrDisabledContainerColor),
+                disabledContentColor = value(colorAttrDisabledContentColor)
             )
         }
     }
@@ -296,10 +305,10 @@ internal class ButtonDTO private constructor(builder: Builder) :
                 colors[key]?.toColor() ?: Color(defaultColors.privateField(key))
 
             ButtonDefaults.textButtonColors(
-                containerColor = value(COLOR_CONTAINER),
-                contentColor = value(COLOR_CONTENT),
-                disabledContainerColor = value(COLOR_CONTAINER_DISABLED),
-                disabledContentColor = value(COLOR_CONTENT_DISABLED)
+                containerColor = value(colorAttrContainerColor),
+                contentColor = value(colorAttrContentColor),
+                disabledContainerColor = value(colorAttrDisabledContainerColor),
+                disabledContentColor = value(colorAttrDisabledContentColor)
             )
         }
     }
@@ -463,21 +472,6 @@ internal class ButtonDTO private constructor(builder: Builder) :
             }
             return ButtonDTO(this)
         }
-    }
-
-    companion object {
-        // Elevation keys to be used in the elevation property
-        private const val ELEVATION_DEFAULT = "defaultElevation"
-        private const val ELEVATION_PRESSED = "pressedElevation"
-        private const val ELEVATION_FOCUSED = "focusedElevation"
-        private const val ELEVATION_HOVERED = "hoveredElevation"
-        private const val ELEVATION_DISABLED = "disabledElevation"
-
-        // Colors keys be used in the colors property
-        private const val COLOR_CONTAINER = "containerColor"
-        private const val COLOR_CONTENT = "contentColor"
-        private const val COLOR_CONTAINER_DISABLED = "disabledContainerColor"
-        private const val COLOR_CONTENT_DISABLED = "disabledContentColor"
     }
 }
 

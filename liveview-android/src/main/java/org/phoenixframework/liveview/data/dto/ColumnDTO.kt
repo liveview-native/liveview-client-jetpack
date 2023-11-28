@@ -11,9 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrHorizontalAlignment
-import org.phoenixframework.liveview.data.dto.Attrs.attrScroll
-import org.phoenixframework.liveview.data.dto.Attrs.attrVerticalArrangement
+import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
+import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory

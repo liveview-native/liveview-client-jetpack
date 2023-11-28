@@ -9,9 +9,13 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrColors
-import org.phoenixframework.liveview.data.dto.Attrs.attrEnabled
-import org.phoenixframework.liveview.data.dto.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -63,10 +67,10 @@ internal class IconButtonDTO private constructor(builder: Builder) :
                 colors[key]?.toColor() ?: Color(defaultValue.privateField(key))
 
             IconButtonDefaults.iconButtonColors(
-                containerColor = value("containerColor"),
-                contentColor = value("contentColor"),
-                disabledContainerColor = value("disabledContainerColor"),
-                disabledContentColor = value("disabledContentColor"),
+                containerColor = value(colorAttrContainerColor),
+                contentColor = value(colorAttrContentColor),
+                disabledContainerColor = value(colorAttrDisabledContainerColor),
+                disabledContentColor = value(colorAttrDisabledContentColor),
             )
         }
     }

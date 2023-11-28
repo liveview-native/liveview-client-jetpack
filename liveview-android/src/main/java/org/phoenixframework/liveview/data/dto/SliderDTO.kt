@@ -19,15 +19,25 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrColors
-import org.phoenixframework.liveview.data.dto.Attrs.attrMaxValue
-import org.phoenixframework.liveview.data.dto.Attrs.attrMinValue
-import org.phoenixframework.liveview.data.dto.Attrs.attrPhxValue
-import org.phoenixframework.liveview.data.dto.Attrs.attrSteps
-import org.phoenixframework.liveview.data.dto.Templates.templateEndThumb
-import org.phoenixframework.liveview.data.dto.Templates.templateStartThumb
-import org.phoenixframework.liveview.data.dto.Templates.templateThumb
-import org.phoenixframework.liveview.data.dto.Templates.templateTrack
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrMaxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrMinValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrSteps
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActiveTickColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActiveTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledActiveTickColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledActiveTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledInactiveTickColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledInactiveTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledThumbColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInactiveTickColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInactiveTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrThumbColor
+import org.phoenixframework.liveview.data.constants.Templates.templateEndThumb
+import org.phoenixframework.liveview.data.constants.Templates.templateStartThumb
+import org.phoenixframework.liveview.data.constants.Templates.templateThumb
+import org.phoenixframework.liveview.data.constants.Templates.templateTrack
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
@@ -219,16 +229,16 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
                 ?: Color(defaultValue.privateField(key))
 
             SliderDefaults.colors(
-                thumbColor = value("thumbColor"),
-                activeTrackColor = value("activeTrackColor"),
-                activeTickColor = value("activeTickColor"),
-                inactiveTrackColor = value("inactiveTrackColor"),
-                inactiveTickColor = value("inactiveTickColor"),
-                disabledThumbColor = value("disabledThumbColor"),
-                disabledActiveTrackColor = value("disabledActiveTrackColor"),
-                disabledActiveTickColor = value("disabledActiveTickColor"),
-                disabledInactiveTrackColor = value("disabledInactiveTrackColor"),
-                disabledInactiveTickColor = value("disabledInactiveTickColor")
+                thumbColor = value(colorAttrThumbColor),
+                activeTrackColor = value(colorAttrActiveTrackColor),
+                activeTickColor = value(colorAttrActiveTickColor),
+                inactiveTrackColor = value(colorAttrInactiveTrackColor),
+                inactiveTickColor = value(colorAttrInactiveTickColor),
+                disabledThumbColor = value(colorAttrDisabledThumbColor),
+                disabledActiveTrackColor = value(colorAttrDisabledActiveTrackColor),
+                disabledActiveTickColor = value(colorAttrDisabledActiveTickColor),
+                disabledInactiveTrackColor = value(colorAttrDisabledInactiveTrackColor),
+                disabledInactiveTickColor = value(colorAttrDisabledInactiveTickColor)
             )
         }
     }

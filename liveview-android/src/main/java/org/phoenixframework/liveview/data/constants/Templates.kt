@@ -1,4 +1,4 @@
-package org.phoenixframework.liveview.data.dto
+package org.phoenixframework.liveview.data.constants
 
 object Templates {
     const val templateAction = "action"

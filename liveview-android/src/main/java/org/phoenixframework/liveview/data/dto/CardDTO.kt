@@ -22,12 +22,22 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrBorderColor
-import org.phoenixframework.liveview.data.dto.Attrs.attrBorderWidth
-import org.phoenixframework.liveview.data.dto.Attrs.attrColors
-import org.phoenixframework.liveview.data.dto.Attrs.attrElevation
-import org.phoenixframework.liveview.data.dto.Attrs.attrScroll
-import org.phoenixframework.liveview.data.dto.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorderColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorderWidth
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrElevation
+import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDefaultElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDisabledElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDraggedElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrFocusedElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
+import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
@@ -145,10 +155,10 @@ internal class CardDTO private constructor(builder: Builder) :
                 cardColors[key]?.toColor() ?: Color(defaultValue.privateField(key))
 
             CardDefaults.elevatedCardColors(
-                containerColor = value("containerColor"),
-                contentColor = value("contentColor"),
-                disabledContainerColor = value("disabledContainerColor"),
-                disabledContentColor = value("disabledContentColor"),
+                containerColor = value( colorAttrContainerColor),
+                contentColor = value(colorAttrContentColor),
+                disabledContainerColor = value(colorAttrDisabledContainerColor),
+                disabledContentColor = value(colorAttrDisabledContentColor),
             )
         }
     }
@@ -163,10 +173,10 @@ internal class CardDTO private constructor(builder: Builder) :
                 cardColors[key]?.toColor() ?: Color(defaultValue.privateField(key))
 
             CardDefaults.cardColors(
-                containerColor = value("containerColor"),
-                contentColor = value("contentColor"),
-                disabledContainerColor = value("disabledContainerColor"),
-                disabledContentColor = value("disabledContentColor"),
+                containerColor = value( colorAttrContainerColor),
+                contentColor = value(colorAttrContentColor),
+                disabledContainerColor = value(colorAttrDisabledContainerColor),
+                disabledContentColor = value(colorAttrDisabledContentColor),
             )
         }
     }
@@ -181,10 +191,10 @@ internal class CardDTO private constructor(builder: Builder) :
                 cardColors[key]?.toColor() ?: Color(defaultValue.privateField(key))
 
             CardDefaults.outlinedCardColors(
-                containerColor = value("containerColor"),
-                contentColor = value("contentColor"),
-                disabledContainerColor = value("disabledContainerColor"),
-                disabledContentColor = value("disabledContentColor"),
+                containerColor = value( colorAttrContainerColor),
+                contentColor = value(colorAttrContentColor),
+                disabledContainerColor = value(colorAttrDisabledContainerColor),
+                disabledContentColor = value(colorAttrDisabledContentColor),
             )
         }
     }
@@ -199,12 +209,12 @@ internal class CardDTO private constructor(builder: Builder) :
                 elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultValue.privateField(key))
 
             CardDefaults.cardElevation(
-                defaultElevation = value("defaultElevation"),
-                pressedElevation = value("pressedElevation"),
-                focusedElevation = value("focusedElevation"),
-                hoveredElevation = value("hoveredElevation"),
-                draggedElevation = value("draggedElevation"),
-                disabledElevation = value("disabledElevation"),
+                defaultElevation = value(elevationAttrDefaultElevation),
+                pressedElevation = value(elevationAttrPressedElevation),
+                focusedElevation = value(elevationAttrFocusedElevation),
+                hoveredElevation = value(elevationAttrHoveredElevation),
+                draggedElevation = value(elevationAttrDraggedElevation),
+                disabledElevation = value(elevationAttrDisabledElevation),
             )
         }
     }
@@ -219,12 +229,12 @@ internal class CardDTO private constructor(builder: Builder) :
                 elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultValue.privateField(key))
 
             CardDefaults.elevatedCardElevation(
-                defaultElevation = value("defaultElevation"),
-                pressedElevation = value("pressedElevation"),
-                focusedElevation = value("focusedElevation"),
-                hoveredElevation = value("hoveredElevation"),
-                draggedElevation = value("draggedElevation"),
-                disabledElevation = value("disabledElevation"),
+                defaultElevation = value(elevationAttrDefaultElevation),
+                pressedElevation = value(elevationAttrPressedElevation),
+                focusedElevation = value(elevationAttrFocusedElevation),
+                hoveredElevation = value(elevationAttrHoveredElevation),
+                draggedElevation = value(elevationAttrDraggedElevation),
+                disabledElevation = value(elevationAttrDisabledElevation),
             )
         }
     }
@@ -239,12 +249,12 @@ internal class CardDTO private constructor(builder: Builder) :
                 elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultValue.privateField(key))
 
             CardDefaults.outlinedCardElevation(
-                defaultElevation = value("defaultElevation"),
-                pressedElevation = value("pressedElevation"),
-                focusedElevation = value("focusedElevation"),
-                hoveredElevation = value("hoveredElevation"),
-                draggedElevation = value("draggedElevation"),
-                disabledElevation = value("disabledElevation"),
+                defaultElevation = value(elevationAttrDefaultElevation),
+                pressedElevation = value(elevationAttrPressedElevation),
+                focusedElevation = value(elevationAttrFocusedElevation),
+                hoveredElevation = value(elevationAttrHoveredElevation),
+                draggedElevation = value(elevationAttrDraggedElevation),
+                disabledElevation = value(elevationAttrDisabledElevation),
             )
         }
     }

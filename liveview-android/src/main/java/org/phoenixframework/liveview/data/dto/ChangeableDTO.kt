@@ -5,10 +5,10 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.Attrs.attrEnabled
-import org.phoenixframework.liveview.data.dto.Attrs.attrPhxChange
-import org.phoenixframework.liveview.data.dto.Attrs.attrPhxDebounce
-import org.phoenixframework.liveview.data.dto.Attrs.attrPhxThrottle
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxDebounce
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxThrottle
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.PushEvent
