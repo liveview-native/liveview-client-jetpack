@@ -13,9 +13,9 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.dto.Attrs.attrColors
-import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.actionTag
-import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.navigationIconTag
-import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory.titleTag
+import org.phoenixframework.liveview.data.dto.Templates.templateAction
+import org.phoenixframework.liveview.data.dto.Templates.templateNavigationIcon
+import org.phoenixframework.liveview.data.dto.Templates.templateTitle
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -32,7 +32,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * - `title`: the title to be displayed in the top app bar.
  * - `action`: the actions displayed at the end of the top app bar. This should typically be
  * `IconButton`s. The default layout here is a Row, so icons inside will be placed horizontally.
- * - `navIcon`:  the navigation icon displayed at the start of the top app bar. This should
+ * - `navigation-icon`:  the navigation icon displayed at the start of the top app bar. This should
  * typically be an `IconButton`.
  * ```
  * <TopAppBar>
@@ -40,7 +40,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *   <IconButton template="action" phx-click="decrement-count">
  *     <Icon image-vector="filled:Add" />
  *   </IconButton>
- *   <IconButton template="navIcon" phx-click="reset-count">
+ *   <IconButton template="navigation-icon" phx-click="reset-count">
  *     <Icon image-vector="filled:Menu" />
  *   </IconButton>
  * </TopAppBar>
@@ -59,13 +59,13 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         val title = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == titleTag }
+            composableNode?.children?.find { it.node?.template == templateTitle }
         }
         val actions = remember(composableNode?.children) {
-            composableNode?.children?.filter { it.node?.template == actionTag }
+            composableNode?.children?.filter { it.node?.template == templateAction }
         }
         val navIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == navigationIconTag }
+            composableNode?.children?.find { it.node?.template == templateNavigationIcon }
         }
         TopAppBar(
             colors = getTopAppBarColors(colors = colors),
@@ -166,8 +166,4 @@ internal object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopApp
         }
         return builder.build()
     }
-
-    const val titleTag = "title"
-    const val actionTag = "action"
-    const val navigationIconTag = "navIcon"
 }

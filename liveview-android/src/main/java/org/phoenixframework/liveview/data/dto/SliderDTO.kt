@@ -63,12 +63,12 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *   <Box width="fill" height="10" background="#FF0000FF" template="track"/>
  * </Slider>
  * ```
- * For the `RangeSlider` component, you can customize both start and end thumbs using "startThumb"
- * and "endThumb" templates respectively.
+ * For the `RangeSlider` component, you can customize both start and end thumbs using "start-thumb"
+ * and "end-thumb" templates respectively.
  * ```
  * <RangeSlider ...>
- *   <Box size="40" clip="4" background="#FFFF00FF" template="startThumb"/>
- *   <Box size="40" clip="circle" background="#FF0000FF" template="endThumb"/>
+ *   <Box size="40" clip="4" background="#FFFF00FF" template="start-thumb"/>
+ *   <Box size="40" clip="circle" background="#FF0000FF" template="end-thumb"/>
  * </RangeSlider>
  * ```
  */

@@ -15,9 +15,9 @@ import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.dto.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.dto.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.dto.Attrs.attrFabPosition
+import org.phoenixframework.liveview.data.dto.ScaffoldDtoFactory.tagSnackbar
 import org.phoenixframework.liveview.data.dto.Templates.templateBody
 import org.phoenixframework.liveview.data.dto.Templates.templateFab
-import org.phoenixframework.liveview.data.dto.Templates.templateSnackbar
 import org.phoenixframework.liveview.data.dto.Templates.templateTopBar
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -68,7 +68,7 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
             composableNode?.children?.find { it.node?.template == templateFab }
         }
         val snackBar = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == templateSnackbar }
+            composableNode?.children?.find { it.node?.tag == tagSnackbar }
         }
         val body = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateBody }
@@ -181,7 +181,9 @@ internal object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, Scaffold
 
     override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
         return mapOf(
-            templateSnackbar to SnackbarDtoFactory
+            tagSnackbar to SnackbarDtoFactory
         )
     }
+
+    internal const val tagSnackbar = "Snackbar"
 }

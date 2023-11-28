@@ -31,16 +31,16 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * Material Design dropdown menu item.
  * Menus display a list of choices on a temporary surface. The children can use the following
  * templates:
- * - `leadingIcon`: optional leading icon to be displayed at the beginning of the item's label.
- * - `trailingIcon`: optional trailing icon to be displayed at the end of the item's text. This
+ * - `leading-icon`: optional leading icon to be displayed at the beginning of the item's label.
+ * - `trailing-icon`: optional trailing icon to be displayed at the end of the item's text. This
  * - usually, the text of the menu item, but can be any composable and no template should be
  * assigned.
  * trailing icon slot can also accept Text to indicate a keyboard shortcut.
  * ```
  * <DropdownMenuItem phx-click="setDDOption" phx-value="A">
  *   <Text>Option A</Text>
- *   <Icon image-vector="filled:Add" template="trailingIcon" />
- *   <Icon image-vector="filled:ChevronLeft" template="leadingIcon"/>
+ *   <Icon image-vector="filled:Add" template="trailing-icon" />
+ *   <Icon image-vector="filled:ChevronLeft" template="leading-icon"/>
  * </DropdownMenuItem>
  * ```
  */

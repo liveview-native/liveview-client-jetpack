@@ -64,23 +64,23 @@ import org.phoenixframework.liveview.ui.theme.textStyleFromString
  * - `label`: optional label to be displayed inside the text field container.
  * - `placeholder`: the optional placeholder to be displayed when the text field is in focus and
  * the input text is empty.
- * - `leadingIcon`: the optional leading icon to be displayed at the beginning of the text field
+ * - `leading-icon`: the optional leading icon to be displayed at the beginning of the text field
  * container.
- * - `trailingIcon`: the optional trailing icon to be displayed at the end of the text field
+ * - `trailing-icon`: the optional trailing icon to be displayed at the end of the text field
  * container.
  * - `prefix`: the optional prefix to be displayed before the input text in the text field.
  * - `suffix`: the optional suffix to be displayed after the input text in the text field.
- * - `supportingText`: the optional supporting text to be displayed below the text field.
+ * - `supporting-text`: the optional supporting text to be displayed below the text field.
  *
  * ```
  * <TextField text={"#{@userName}"} phx-change="setName">
  *   <Text template="label">Label</Text>
  *   <Text template="placeholder">Placeholder</Text>
- *   <Icon template="leadingIcon" imageVector="filled:Add"/>
- *   <Icon template="trailingIcon" imageVector="filled:ChevronLeft"/>
+ *   <Icon template="leading-icon" imageVector="filled:Add"/>
+ *   <Icon template="trailing-icon" imageVector="filled:ChevronLeft"/>
  *   <Text template="prefix">Pre</Text>
  *   <Text template="suffix">Suf</Text>
- *   <Text template="supportingText">Supporting text</Text>
+ *   <Text template="supporting-text">Supporting text</Text>
  * </TextField>
  * ```
  */
