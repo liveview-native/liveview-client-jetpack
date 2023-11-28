@@ -75,6 +75,7 @@ object ComposableNodeFactory {
             )
             registerComponent(ComposableTypes.outlinedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedCard, CardDtoFactory)
+            registerComponent(ComposableTypes.outlinedTextField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.radioButton, RadioButtonDtoFactory)
             registerComponent(ComposableTypes.rangeSlider, SliderDtoFactory)
             registerComponent(ComposableTypes.row, RowDtoFactory)

@@ -5,6 +5,8 @@ import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
@@ -25,7 +27,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.flow.map
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrAutoCorrect
 import org.phoenixframework.liveview.data.constants.Attrs.attrCapitalization
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -42,6 +43,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.constants.Attrs.attrVisualTransformation
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCursorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledBorderColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledIndicatorColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLabelColor
@@ -52,6 +54,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabled
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSupportingTextColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTextColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorBorderColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorCursorColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorIndicatorColor
@@ -63,6 +66,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorSuf
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorSupportingTextColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorTextColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedBorderColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedIndicatorColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedLabelColor
@@ -75,6 +79,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedT
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrFocusedTrailingIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectionBackgroundColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectionHandleColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedBorderColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedIndicatorColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedLabelColor
@@ -92,7 +97,9 @@ import org.phoenixframework.liveview.data.constants.Templates.templatePrefix
 import org.phoenixframework.liveview.data.constants.Templates.templateSuffix
 import org.phoenixframework.liveview.data.constants.Templates.templateSupportingText
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.privateField
@@ -127,9 +134,9 @@ import org.phoenixframework.liveview.ui.theme.textStyleFromString
  *   <Text template="supporting-text">Supporting text</Text>
  * </TextField>
  * ```
+ * You can instantiate both `TextField` and `OutlinedTextField`.
  */
-internal class TextFieldDTO private constructor(builder: Builder) :
-    ChangeableDTO<String>(builder) {
+internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDTO<String>(builder) {
     private val readOnly = builder.readOnly
     private val textStyle = builder.textStyle
     private val isError = builder.isError
@@ -144,9 +151,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
 
     @Composable
     override fun Compose(
-        composableNode: ComposableTreeNode?,
-        paddingValues: PaddingValues?,
-        pushEvent: PushEvent
+        composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
         val label = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateLabel }
@@ -172,69 +177,127 @@ internal class TextFieldDTO private constructor(builder: Builder) :
         var textFieldValue by remember {
             mutableStateOf(TextFieldValue(value))
         }
-        TextField(
-            value = if (readOnly) TextFieldValue(value) else textFieldValue,
-            onValueChange = { value ->
-                textFieldValue = value
-            },
-            modifier = modifier,
-            enabled = enabled,
-            readOnly = readOnly,
-            textStyle = textStyleFromString(textStyle),
-            label = label?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            placeholder = placeholder?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            leadingIcon = leadingIcon?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            trailingIcon = trailingIcon?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            prefix = prefix?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            suffix = suffix?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            supportingText = supportingText?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            isError = isError,
-            visualTransformation = visualTransformation,
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            singleLine = singleLine,
-            maxLines = maxLines,
-            minLines = minLines,
-            shape = shape ?: TextFieldDefaults.shape,
-            colors = getTextFieldColors(colors)
-        )
+        when (composableNode?.node?.tag) {
+            ComposableTypes.outlinedTextField -> {
+                OutlinedTextField(
+                    value = if (readOnly) TextFieldValue(value) else textFieldValue,
+                    onValueChange = { value ->
+                        textFieldValue = value
+                    },
+                    modifier = modifier,
+                    enabled = enabled,
+                    readOnly = readOnly,
+                    textStyle = textStyleFromString(textStyle),
+                    label = label?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    placeholder = placeholder?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    leadingIcon = leadingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    trailingIcon = trailingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    prefix = prefix?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    suffix = suffix?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    supportingText = supportingText?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    isError = isError,
+                    visualTransformation = visualTransformation,
+                    keyboardOptions = keyboardOptions,
+                    keyboardActions = keyboardActions,
+                    singleLine = singleLine,
+                    maxLines = maxLines,
+                    minLines = minLines,
+                    shape = shape ?: TextFieldDefaults.shape,
+                    colors = getOutlinedTextFieldColors(colors)
+                )
+            }
+
+            ComposableTypes.textField -> {
+                TextField(
+                    value = if (readOnly) TextFieldValue(value) else textFieldValue,
+                    onValueChange = { value ->
+                        textFieldValue = value
+                    },
+                    modifier = modifier,
+                    enabled = enabled,
+                    readOnly = readOnly,
+                    textStyle = textStyleFromString(textStyle),
+                    label = label?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    placeholder = placeholder?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    leadingIcon = leadingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    trailingIcon = trailingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    prefix = prefix?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    suffix = suffix?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    supportingText = supportingText?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    isError = isError,
+                    visualTransformation = visualTransformation,
+                    keyboardOptions = keyboardOptions,
+                    keyboardActions = keyboardActions,
+                    singleLine = singleLine,
+                    maxLines = maxLines,
+                    minLines = minLines,
+                    shape = shape ?: TextFieldDefaults.shape,
+                    colors = getTextFieldColors(colors)
+                )
+            }
+        }
 
         LaunchedEffect(composableNode) {
             changeValueEventName?.let { event ->
-                snapshotFlow { textFieldValue }
-                    .map { it.text }
-                    .onChangeable()
-                    .collect { value ->
-                        pushOnChangeEvent(pushEvent, event, value)
-                    }
+                snapshotFlow { textFieldValue }.map { it.text }.onChangeable().collect { value ->
+                    pushOnChangeEvent(pushEvent, event, value)
+                }
             }
         }
     }
@@ -245,8 +308,8 @@ internal class TextFieldDTO private constructor(builder: Builder) :
         return if (textFieldColors == null) {
             defaultValue
         } else {
-            fun value(key: String) = textFieldColors[key]?.toColor()
-                ?: Color(defaultValue.privateField(key))
+            fun value(key: String) =
+                textFieldColors[key]?.toColor() ?: Color(defaultValue.privateField(key))
 
             TextFieldDefaults.colors(
                 focusedTextColor = value(colorAttrFocusedTextColor),
@@ -260,21 +323,90 @@ internal class TextFieldDTO private constructor(builder: Builder) :
                 cursorColor = value(colorAttrCursorColor),
                 errorCursorColor = value(colorAttrErrorCursorColor),
                 selectionColors = TextSelectionColors(
-                    textFieldColors[colorAttrSelectionHandleColor]?.toColor()
-                        ?: Color(
-                            defaultValue.privateField<TextSelectionColors>("textSelectionColors")
-                                .privateField("handleColor")
-                        ),
-                    textFieldColors[colorAttrSelectionBackgroundColor]?.toColor()
-                        ?: Color(
-                            defaultValue.privateField<TextSelectionColors>("textSelectionColors")
-                                .privateField("backgroundColor")
-                        ),
+                    textFieldColors[colorAttrSelectionHandleColor]?.toColor() ?: Color(
+                        defaultValue.privateField<TextSelectionColors>("textSelectionColors")
+                            .privateField("handleColor")
+                    ),
+                    textFieldColors[colorAttrSelectionBackgroundColor]?.toColor() ?: Color(
+                        defaultValue.privateField<TextSelectionColors>("textSelectionColors")
+                            .privateField("backgroundColor")
+                    ),
                 ),
                 focusedIndicatorColor = value(colorAttrFocusedIndicatorColor),
                 unfocusedIndicatorColor = value(colorAttrUnfocusedIndicatorColor),
                 disabledIndicatorColor = value(colorAttrDisabledIndicatorColor),
                 errorIndicatorColor = value(colorAttrErrorIndicatorColor),
+                focusedLeadingIconColor = value(colorAttrFocusedLeadingIconColor),
+                unfocusedLeadingIconColor = value(colorAttrUnfocusedLeadingIconColor),
+                disabledLeadingIconColor = value(colorAttrDisabledLeadingIconColor),
+                errorLeadingIconColor = value(colorAttrErrorLeadingIconColor),
+                focusedTrailingIconColor = value(colorAttrFocusedTrailingIconColor),
+                unfocusedTrailingIconColor = value(colorAttrUnfocusedTrailingIconColor),
+                disabledTrailingIconColor = value(colorAttrDisabledTrailingIconColor),
+                errorTrailingIconColor = value(colorAttrErrorTrailingIconColor),
+                focusedLabelColor = value(colorAttrFocusedLabelColor),
+                unfocusedLabelColor = value(colorAttrUnfocusedLabelColor),
+                disabledLabelColor = value(colorAttrDisabledLabelColor),
+                errorLabelColor = value(colorAttrErrorLabelColor),
+                focusedPlaceholderColor = value(colorAttrFocusedPlaceholderColor),
+                unfocusedPlaceholderColor = value(colorAttrUnfocusedPlaceholderColor),
+                disabledPlaceholderColor = value(colorAttrDisabledPlaceholderColor),
+                errorPlaceholderColor = value(colorAttrErrorPlaceholderColor),
+                focusedSupportingTextColor = value(colorAttrFocusedSupportingTextColor),
+                unfocusedSupportingTextColor = value(colorAttrUnfocusedSupportingTextColor),
+                disabledSupportingTextColor = value(colorAttrDisabledSupportingTextColor),
+                errorSupportingTextColor = value(colorAttrErrorSupportingTextColor),
+                focusedPrefixColor = value(colorAttrFocusedPrefixColor),
+                unfocusedPrefixColor = value(colorAttrUnfocusedPrefixColor),
+                disabledPrefixColor = value(colorAttrDisabledPrefixColor),
+                errorPrefixColor = value(colorAttrErrorPrefixColor),
+                focusedSuffixColor = value(colorAttrFocusedSuffixColor),
+                unfocusedSuffixColor = value(colorAttrUnfocusedSuffixColor),
+                disabledSuffixColor = value(colorAttrDisabledSuffixColor),
+                errorSuffixColor = value(colorAttrErrorSuffixColor),
+            )
+        }
+    }
+
+    @Composable
+    private fun getOutlinedTextFieldColors(textFieldColors: ImmutableMap<String, String>?): TextFieldColors {
+        val defaultValue = OutlinedTextFieldDefaults.colors()
+        return if (textFieldColors == null) {
+            defaultValue
+        } else {
+            fun value(key: String) =
+                textFieldColors[key]?.toColor() ?: Color(defaultValue.privateField(key))
+
+            OutlinedTextFieldDefaults.colors(
+                focusedTextColor = value(colorAttrFocusedTextColor),
+                unfocusedTextColor = value(colorAttrUnfocusedTextColor),
+                disabledTextColor = value(colorAttrDisabledTextColor),
+                errorTextColor = value(colorAttrErrorTextColor),
+                focusedContainerColor = value(colorAttrFocusedContainerColor),
+                unfocusedContainerColor = value(colorAttrUnfocusedContainerColor),
+                disabledContainerColor = value(colorAttrDisabledContainerColor),
+                errorContainerColor = value(colorAttrErrorContainerColor),
+                cursorColor = value(colorAttrCursorColor),
+                errorCursorColor = value(colorAttrErrorCursorColor),
+                selectionColors = TextSelectionColors(
+                    textFieldColors[colorAttrSelectionHandleColor]?.toColor() ?: Color(
+                        defaultValue.privateField<TextSelectionColors>("textSelectionColors")
+                            .privateField("handleColor")
+                    ),
+                    textFieldColors[colorAttrSelectionBackgroundColor]?.toColor() ?: Color(
+                        defaultValue.privateField<TextSelectionColors>("textSelectionColors")
+                            .privateField("backgroundColor")
+                    ),
+                ),
+                focusedBorderColor = textFieldColors[colorAttrFocusedBorderColor]?.toColor()
+                    ?: Color(defaultValue.privateField(colorAttrFocusedIndicatorColor)),
+                unfocusedBorderColor = textFieldColors[colorAttrUnfocusedBorderColor]?.toColor()
+                    ?: Color(defaultValue.privateField(colorAttrUnfocusedIndicatorColor)),
+                disabledBorderColor = textFieldColors[colorAttrDisabledBorderColor]?.toColor()
+                    ?: Color(defaultValue.privateField(colorAttrDisabledIndicatorColor)),
+                errorBorderColor = textFieldColors[colorAttrErrorBorderColor]?.toColor() ?: Color(
+                    defaultValue.privateField(colorAttrErrorIndicatorColor)
+                ),
                 focusedLeadingIconColor = value(colorAttrFocusedLeadingIconColor),
                 unfocusedLeadingIconColor = value(colorAttrUnfocusedLeadingIconColor),
                 disabledLeadingIconColor = value(colorAttrDisabledLeadingIconColor),
@@ -470,9 +602,8 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * supported are: `focusedTextColor`, `unfocusedTextColor`, `disabledTextColor,
          * `errorTextColor`, `focusedContainerColor`, `unfocusedContainerColor`,
          * `disabledContainerColor`, `errorContainerColor`, `cursorColor`, `errorCursorColor`,
-         * `selectionHandleColor`, `selectionBackgroundColor`, `focusedIndicatorColor`,
-         * `unfocusedIndicatorColor`, `disabledIndicatorColor`, `errorIndicatorColor`,
-         * `focusedLeadingIconColor`, `unfocusedLeadingIconColor`, `disabledLeadingIconColor`,
+         * `selectionHandleColor`, `selectionBackgroundColor`, `focusedLeadingIconColor`,
+         * `unfocusedLeadingIconColor`, `disabledLeadingIconColor`,
          * `errorLeadingIconColor`, `focusedTrailingIconColor`, `unfocusedTrailingIconColor`,
          * `disabledTrailingIconColor`, `errorTrailingIconColor`, `focusedLabelColor`,
          * `unfocusedLabelColor`, `disabledLabelColor`, `errorLabelColor`, `focusedPlaceholderColor`,
@@ -480,7 +611,11 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * `focusedSupportingTextColor`, `unfocusedSupportingTextColor`,
          * `disabledSupportingTextColor`, `errorSupportingTextColor`, `focusedPrefixColor`,
          * `unfocusedPrefixColor`, `disabledPrefixColor`, `errorPrefixColor`, `focusedSuffixColor`,
-         * `unfocusedSuffixColor`, `disabledSuffixColor`, and `errorSuffixColor`
+         * `unfocusedSuffixColor`, `disabledSuffixColor`, and `errorSuffixColor`.
+         * - `TextField` specific are: `focusedIndicatorColor`, `unfocusedIndicatorColor`,
+         * `disabledIndicatorColor`, and `errorIndicatorColor`.
+         * - `OutlinedTextField` specific are: `focusedBorderColor`, `unfocusedBorderColor,
+         * `disabledBorderColor`, and `errorBorderColor`
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
@@ -504,17 +639,13 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          */
         fun capitalization(capitalization: String) = apply {
             keyboardOptions = when (capitalization) {
-                "characters" ->
-                    keyboardOptions.copy(capitalization = KeyboardCapitalization.Characters)
+                "characters" -> keyboardOptions.copy(capitalization = KeyboardCapitalization.Characters)
 
-                "words" ->
-                    keyboardOptions.copy(capitalization = KeyboardCapitalization.Words)
+                "words" -> keyboardOptions.copy(capitalization = KeyboardCapitalization.Words)
 
-                "sentences" ->
-                    keyboardOptions.copy(capitalization = KeyboardCapitalization.Sentences)
+                "sentences" -> keyboardOptions.copy(capitalization = KeyboardCapitalization.Sentences)
 
-                else ->
-                    keyboardOptions.copy(capitalization = KeyboardCapitalization.None)
+                else -> keyboardOptions.copy(capitalization = KeyboardCapitalization.None)
             }
         }
 
@@ -596,9 +727,7 @@ internal object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO, TextFi
      * object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
+        attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): TextFieldDTO = TextFieldDTO.Builder().also {
         attributes.fold(it) { builder, attribute ->
             if (builder.handleChangeableAttribute(attribute)) {

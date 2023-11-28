@@ -25,6 +25,7 @@ object ComposableTypes {
     const val linearProgressIndicator = "LinearProgressIndicator"
     const val outlinedButton = "OutlinedButton"
     const val outlinedCard = "OutlinedCard"
+    const val outlinedTextField = "OutlinedTextField"
     const val radioButton = "RadioButton"
     const val rangeSlider = "RangeSlider"
     const val row = "Row"
