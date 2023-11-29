@@ -6,6 +6,7 @@ object Templates {
     const val templateBody = "body"
     const val templateConfirmButton = "confirm"
     const val templateDismissButton = "dismiss"
+    const val templateDrawerContent = "drawerContent"
     const val templateEndThumb = "endThumb"
     const val templateFab = "fab"
     const val templateIcon = "icon"

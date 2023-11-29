@@ -38,6 +38,7 @@ object Attrs {
     const val attrFontSize = "font-size"
     const val attrFontStyle = "font-style"
     const val attrFontWeight = "font-weight"
+    const val attrGesturesEnabled = "gestures-enabled"
     const val attrHeight = "height"
     const val attrHorizontalAlignment = "horizontal-alignment"
     const val attrHorizontalArrangement = "horizontal-arrangement"
@@ -46,6 +47,7 @@ object Attrs {
     const val attrImageVector = "image-vector"
     const val attrImeAction = "imeAction"
     const val attrIsError = "is-error"
+    const val attrIsOpen = "is-open"
     const val attrItemPadding = "item-padding"
     const val attrItemPaddingBottom = "item-padding-bottom"
     const val attrItemPaddingEnd = "item-padding-end"
@@ -72,10 +74,13 @@ object Attrs {
     const val attrPhxThrottle = "phx-throttle"
     const val attrPhxValue = "phx-value"
     const val attrPropagateMinConstraints = "propagate-min-constraints"
+    const val attrOnClose = "on-close"
+    const val attrOnOpen = "on-open"
     const val attrReadOnly = "read-only"
     const val attrResource = "resource"
     const val attrReverseLayout = "reverse-layout"
     const val attrScroll = "scroll"
+    const val attrScrimColor = "scrim-color"
     const val attrSecurePolicy = "secure-policy"
     const val attrSelected = "selected"
     const val attrShape = "shape"
@@ -128,12 +133,22 @@ object ColorAttrs {
     const val colorAttrLeadingIconColor = "leadingIconColor"
     const val colorAttrTrailingIconColor = "trailingIconColor"
 
+    // NavigationDrawerItem colors
+    const val colorAttrSelectedContainerColor = "selectedContainerColor"
+    const val colorAttrUnselectedContainerColor = "selectedContainerColor"
+    const val colorAttrSelectedIconColor = "selectedIconColor"
+    const val colorAttrUnselectedIconColor = "unselectedIconColor"
+    const val colorAttrSelectedTextColor = "selectedTextColor"
+    const val colorAttrUnselectedTextColor = "unselectedTextColor"
+    const val colorAttrSelectedBadgeColor = "selectedBadgeColor"
+    const val colorAttrUnselectedBadgeColor = "unselectedBadgeColor"
+
     // RadioButton colors
     const val colorAttrSelectedColor = "selectedColor"
     const val colorAttrUnselectedColor = "unselectedColor"
     const val colorAttrDisabledSelectedColor = "disabledSelectedColor"
     const val colorAttrDisabledUnselectedColor = "disabledUnselectedColor"
-    
+
     // Slider colors
     const val colorAttrThumbColor = "thumbColor"
     const val colorAttrActiveTrackColor = "activeTrackColor"
