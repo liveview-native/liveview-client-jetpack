@@ -12,7 +12,9 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +23,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorderColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorderWidth
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -30,14 +31,13 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDefaultElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDisabledElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDraggedElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrFocusedElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
@@ -93,7 +93,8 @@ internal class CardDTO private constructor(builder: Builder) :
                             hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
                         )
                         .optional(
-                            hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
+                            hasHorizontalScroll,
+                            Modifier.horizontalScroll(rememberScrollState())
                         ),
                     shape = shape,
                     colors = getCardColors(colors),
@@ -151,14 +152,14 @@ internal class CardDTO private constructor(builder: Builder) :
         return if (cardColors == null) {
             defaultValue
         } else {
-            fun value(key: String) =
-                cardColors[key]?.toColor() ?: Color(defaultValue.privateField(key))
-
-            CardDefaults.elevatedCardColors(
-                containerColor = value( colorAttrContainerColor),
-                contentColor = value(colorAttrContentColor),
-                disabledContainerColor = value(colorAttrDisabledContainerColor),
-                disabledContentColor = value(colorAttrDisabledContentColor),
+            val containerColor =
+                cardColors[colorAttrContainerColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.surfaceVariant
+            val contentColor =
+                cardColors[colorAttrContentColor]?.toColor() ?: contentColorFor(containerColor)
+            CardDefaults.cardColors(
+                containerColor = containerColor,
+                contentColor = contentColor,
             )
         }
     }
@@ -169,14 +170,13 @@ internal class CardDTO private constructor(builder: Builder) :
         return if (cardColors == null) {
             defaultValue
         } else {
-            fun value(key: String) =
-                cardColors[key]?.toColor() ?: Color(defaultValue.privateField(key))
-
-            CardDefaults.cardColors(
-                containerColor = value( colorAttrContainerColor),
-                contentColor = value(colorAttrContentColor),
-                disabledContainerColor = value(colorAttrDisabledContainerColor),
-                disabledContentColor = value(colorAttrDisabledContentColor),
+            val containerColor =
+                cardColors[colorAttrContainerColor]?.toColor() ?: MaterialTheme.colorScheme.surface
+            val contentColor =
+                cardColors[colorAttrContentColor]?.toColor() ?: contentColorFor(containerColor)
+            CardDefaults.elevatedCardColors(
+                containerColor = containerColor,
+                contentColor = contentColor,
             )
         }
     }
@@ -187,14 +187,13 @@ internal class CardDTO private constructor(builder: Builder) :
         return if (cardColors == null) {
             defaultValue
         } else {
-            fun value(key: String) =
-                cardColors[key]?.toColor() ?: Color(defaultValue.privateField(key))
-
+            val containerColor =
+                cardColors[colorAttrContainerColor]?.toColor() ?: MaterialTheme.colorScheme.surface
+            val contentColor =
+                cardColors[colorAttrContentColor]?.toColor() ?: contentColorFor(containerColor)
             CardDefaults.outlinedCardColors(
-                containerColor = value( colorAttrContainerColor),
-                contentColor = value(colorAttrContentColor),
-                disabledContainerColor = value(colorAttrDisabledContainerColor),
-                disabledContentColor = value(colorAttrDisabledContentColor),
+                containerColor = containerColor,
+                contentColor = contentColor,
             )
         }
     }
@@ -292,8 +291,7 @@ internal class CardDTO private constructor(builder: Builder) :
          *   colors="{'containerColor': '#FFFF0000', 'contentColor': '#FF00FF00'}">
          * ```
          * @param colors an JSON formatted string, containing the card colors. The color keys
-         * supported are: `containerColor`, `contentColor`, `disabledContainerColor, and
-         * `disabledContentColor`
+         * supported are: `containerColor` and `contentColor`
          */
         fun cardColors(colors: String) = apply {
             if (colors.isNotEmpty()) {

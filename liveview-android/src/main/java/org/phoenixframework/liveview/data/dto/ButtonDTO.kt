@@ -8,6 +8,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -17,7 +18,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorderColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorderWidth
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -35,7 +35,10 @@ import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttr
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrFocusedElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
+import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -225,14 +228,22 @@ internal class ButtonDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultColors
         } else {
-            fun value(key: String) =
-                colors[key]?.toColor() ?: Color(defaultColors.privateField(key))
-
+            // TODO ButtonDefaults properties are private and need Composer parameter to be called
+            //   via reflection. So the default values are being get from the theme, but using the
+            //   same values declared in the ButtonDefaults declaration. This comment also to the
+            //   ElevatedButton, FilledTonalButton, FilledTonalButton, and OutlineButton
             ButtonDefaults.buttonColors(
-                containerColor = value(colorAttrContainerColor),
-                contentColor = value(colorAttrContentColor),
-                disabledContainerColor = value(colorAttrDisabledContainerColor),
-                disabledContentColor = value(colorAttrDisabledContentColor)
+                containerColor = colors[colorAttrContainerColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.primary,
+                contentColor = colors[colorAttrContentColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onPrimary,
+                disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
+                    ?: colors[colorAttrContainerColor]?.toColor()
+                        ?.copy(alpha = disabledContainerAlpha)
+                    ?: MaterialTheme.colorScheme.primary.copy(alpha = disabledContainerAlpha),
+                disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
+                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onPrimary.copy(alpha = disabledContentAlpha),
             )
         }
     }
@@ -244,14 +255,18 @@ internal class ButtonDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultColors
         } else {
-            fun value(key: String) =
-                colors[key]?.toColor() ?: Color(defaultColors.privateField(key))
-
             ButtonDefaults.elevatedButtonColors(
-                containerColor = value(colorAttrContainerColor),
-                contentColor = value(colorAttrContentColor),
-                disabledContainerColor = value(colorAttrDisabledContainerColor),
-                disabledContentColor = value(colorAttrDisabledContentColor)
+                containerColor = colors[colorAttrContainerColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.surface,
+                contentColor = colors[colorAttrContentColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.primary,
+                disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
+                    ?: colors[colorAttrContainerColor]?.toColor()
+                        ?.copy(alpha = disabledContainerAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContainerAlpha),
+                disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
+                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
             )
         }
     }
@@ -263,14 +278,18 @@ internal class ButtonDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultColors
         } else {
-            fun value(key: String) =
-                colors[key]?.toColor() ?: Color(defaultColors.privateField(key))
-
             ButtonDefaults.filledTonalButtonColors(
-                containerColor = value(colorAttrContainerColor),
-                contentColor = value(colorAttrContentColor),
-                disabledContainerColor = value(colorAttrDisabledContainerColor),
-                disabledContentColor = value(colorAttrDisabledContentColor)
+                containerColor = colors[colorAttrContainerColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = colors[colorAttrContentColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSecondaryContainer,
+                disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
+                    ?: colors[colorAttrContainerColor]?.toColor()
+                        ?.copy(alpha = disabledContainerAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContainerAlpha),
+                disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
+                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
             )
         }
     }
@@ -282,14 +301,17 @@ internal class ButtonDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultColors
         } else {
-            fun value(key: String) =
-                colors[key]?.toColor() ?: Color(defaultColors.privateField(key))
-
             ButtonDefaults.outlinedButtonColors(
-                containerColor = value(colorAttrContainerColor),
-                contentColor = value(colorAttrContentColor),
-                disabledContainerColor = value(colorAttrDisabledContainerColor),
-                disabledContentColor = value(colorAttrDisabledContentColor)
+                containerColor = colors[colorAttrContainerColor]?.toColor() ?: Color.Transparent,
+                contentColor = colors[colorAttrContentColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.primary,
+                disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
+                    ?: colors[colorAttrContainerColor]?.toColor()
+                        ?.copy(alpha = disabledContainerAlpha)
+                    ?: Color.Transparent,
+                disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
+                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
             )
         }
     }
@@ -301,14 +323,17 @@ internal class ButtonDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultColors
         } else {
-            fun value(key: String) =
-                colors[key]?.toColor() ?: Color(defaultColors.privateField(key))
-
             ButtonDefaults.textButtonColors(
-                containerColor = value(colorAttrContainerColor),
-                contentColor = value(colorAttrContentColor),
-                disabledContainerColor = value(colorAttrDisabledContainerColor),
-                disabledContentColor = value(colorAttrDisabledContentColor)
+                containerColor = colors[colorAttrContainerColor]?.toColor() ?: Color.Transparent,
+                contentColor = colors[colorAttrContentColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.primary,
+                disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
+                    ?: colors[colorAttrContainerColor]?.toColor()
+                        ?.copy(alpha = disabledContainerAlpha)
+                    ?: Color.Transparent,
+                disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
+                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
             )
         }
     }
@@ -329,7 +354,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
         var border: BorderStroke? = null
             private set
 
-        private var borderWidth: Dp? = null
+        private var borderWidth: Dp = 1.dp
         private var borderColor: Color? = null
 
         /**
@@ -467,7 +492,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
         fun build(): ButtonDTO {
             val w = borderWidth
             val c = borderColor
-            if (c != null && w != null) {
+            if (c != null) {
                 this.border = BorderStroke(w, c)
             }
             return ButtonDTO(this)

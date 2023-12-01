@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -11,10 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedColor
@@ -23,10 +22,11 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabled
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledIndeterminateColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedColor
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
@@ -76,15 +76,23 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultValue
         } else {
-            fun value(key: String) = colors[key]?.toColor() ?: Color(defaultValue.privateField(key))
-
             CheckboxDefaults.colors(
-                checkedColor = value(colorAttrCheckedColor),
-                uncheckedColor = value(colorAttrUncheckedColor),
-                checkmarkColor = value(colorAttrCheckmarkColor),
-                disabledCheckedColor = value(colorAttrDisabledCheckedColor),
-                disabledUncheckedColor = value(colorAttrDisabledUncheckedColor),
-                disabledIndeterminateColor = value(colorAttrDisabledIndeterminateColor),
+                checkedColor = colors[colorAttrCheckedColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.primary,
+                uncheckedColor = colors[colorAttrUncheckedColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                checkmarkColor = colors[colorAttrCheckmarkColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onPrimary,
+                disabledCheckedColor = colors[colorAttrDisabledCheckedColor]?.toColor()
+                    ?: colors[colorAttrCheckedColor]?.toColor()?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                disabledUncheckedColor = colors[colorAttrDisabledUncheckedColor]?.toColor()
+                    ?: colors[colorAttrUncheckedColor]?.toColor()
+                        ?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                disabledIndeterminateColor = colors[colorAttrDisabledIndeterminateColor]?.toColor()
+                    ?: colors[colorAttrDisabledCheckedColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
             )
         }
     }

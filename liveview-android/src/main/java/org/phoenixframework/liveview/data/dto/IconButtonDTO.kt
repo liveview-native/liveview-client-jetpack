@@ -4,11 +4,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
@@ -16,12 +16,13 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContaine
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -63,14 +64,16 @@ internal class IconButtonDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultValue
         } else {
-            fun value(key: String) =
-                colors[key]?.toColor() ?: Color(defaultValue.privateField(key))
-
             IconButtonDefaults.iconButtonColors(
-                containerColor = value(colorAttrContainerColor),
-                contentColor = value(colorAttrContentColor),
-                disabledContainerColor = value(colorAttrDisabledContainerColor),
-                disabledContentColor = value(colorAttrDisabledContentColor),
+                containerColor = colors[colorAttrContainerColor]?.toColor() ?: Color.Transparent,
+                contentColor = colors[colorAttrContentColor]?.toColor()
+                    ?: LocalContentColor.current,
+                disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
+                    ?: Color.Transparent,
+                disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
+                    ?: (colors[colorAttrContentColor]?.toColor() ?: LocalContentColor.current).copy(
+                        alpha = disabledContentAlpha
+                    ),
             )
         }
     }

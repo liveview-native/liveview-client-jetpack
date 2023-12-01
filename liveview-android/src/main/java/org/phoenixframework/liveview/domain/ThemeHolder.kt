@@ -18,4 +18,7 @@ object ThemeHolder {
             _themeData.value = themeData.toImmutableMap()
         }
     }
+
+    const val disabledContainerAlpha = .12f
+    const val disabledContentAlpha = .38f
 }

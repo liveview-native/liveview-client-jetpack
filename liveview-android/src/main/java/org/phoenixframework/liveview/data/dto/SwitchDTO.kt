@@ -1,6 +1,7 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
@@ -12,9 +13,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedBorderColor
@@ -33,10 +34,12 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnchecke
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedThumbColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedTrackColor
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
+import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
@@ -86,25 +89,46 @@ internal class SwitchDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultValue
         } else {
-            fun value(key: String) = colors[key]?.toColor() ?: Color(defaultValue.privateField(key))
-
             SwitchDefaults.colors(
-                checkedThumbColor = value(colorAttrCheckedThumbColor),
-                checkedTrackColor = value(colorAttrCheckedTrackColor),
-                checkedBorderColor = value(colorAttrCheckedBorderColor),
-                checkedIconColor = value(colorAttrCheckedIconColor),
-                uncheckedThumbColor = value(colorAttrUncheckedThumbColor),
-                uncheckedTrackColor = value(colorAttrUncheckedTrackColor),
-                uncheckedBorderColor = value(colorAttrUncheckedBorderColor),
-                uncheckedIconColor = value(colorAttrUncheckedIconColor),
-                disabledCheckedThumbColor = value(colorAttrDisabledCheckedThumbColor),
-                disabledCheckedTrackColor = value(colorAttrDisabledCheckedTrackColor),
-                disabledCheckedBorderColor = value(colorAttrDisabledCheckedBorderColor),
-                disabledCheckedIconColor = value(colorAttrDisabledCheckedIconColor),
-                disabledUncheckedThumbColor = value(colorAttrDisabledUncheckedThumbColor),
-                disabledUncheckedTrackColor = value(colorAttrDisabledUncheckedTrackColor),
-                disabledUncheckedBorderColor = value(colorAttrDisabledUncheckedBorderColor),
-                disabledUncheckedIconColor = value(colorAttrDisabledUncheckedIconColor),
+                checkedThumbColor = colors[colorAttrCheckedThumbColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onPrimary,
+                checkedTrackColor = colors[colorAttrCheckedTrackColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.primary,
+                checkedBorderColor = colors[colorAttrCheckedBorderColor]?.toColor()
+                    ?: Color.Transparent,
+                checkedIconColor = colors[colorAttrCheckedIconColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onPrimaryContainer,
+                uncheckedThumbColor = colors[colorAttrUncheckedThumbColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.outline,
+                uncheckedTrackColor = colors[colorAttrUncheckedTrackColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.surfaceVariant,
+                uncheckedBorderColor = colors[colorAttrUncheckedBorderColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.outline,
+                uncheckedIconColor = colors[colorAttrUncheckedIconColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.surfaceVariant,
+                disabledCheckedThumbColor = colors[colorAttrDisabledCheckedThumbColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.surface.copy(alpha = 1.0f)
+                        .compositeOver(MaterialTheme.colorScheme.surface),
+                disabledCheckedTrackColor = colors[colorAttrDisabledCheckedTrackColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContainerAlpha)
+                        .compositeOver(MaterialTheme.colorScheme.surface),
+                disabledCheckedBorderColor = colors[colorAttrDisabledCheckedBorderColor]?.toColor()
+                    ?: Color.Transparent,
+                disabledCheckedIconColor = colors[colorAttrDisabledCheckedIconColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha)
+                        .compositeOver(MaterialTheme.colorScheme.surface),
+                disabledUncheckedThumbColor = colors[colorAttrDisabledUncheckedThumbColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha)
+                        .compositeOver(MaterialTheme.colorScheme.surface),
+                disabledUncheckedTrackColor = colors[colorAttrDisabledUncheckedTrackColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.surfaceVariant.copy(alpha = disabledContainerAlpha)
+                        .compositeOver(MaterialTheme.colorScheme.surface),
+                disabledUncheckedBorderColor = colors[colorAttrDisabledUncheckedBorderColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContainerAlpha)
+                        .compositeOver(MaterialTheme.colorScheme.surface),
+                disabledUncheckedIconColor = colors[colorAttrDisabledUncheckedIconColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.surfaceVariant.copy(alpha = disabledContentAlpha)
+                        .compositeOver(MaterialTheme.colorScheme.surface),
             )
         }
     }

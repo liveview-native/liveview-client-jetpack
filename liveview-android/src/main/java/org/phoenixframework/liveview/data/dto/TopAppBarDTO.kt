@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
@@ -11,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActionIconContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
@@ -21,6 +21,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTitleCon
 import org.phoenixframework.liveview.data.constants.Templates.templateAction
 import org.phoenixframework.liveview.data.constants.Templates.templateNavigationIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -131,16 +132,17 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultColors
         } else {
-            fun value(key: String) =
-                colors[key]?.toColor()
-                    ?: Color(defaultColors.privateField(key))
-
             TopAppBarDefaults.topAppBarColors(
-                containerColor = value(colorAttrContainerColor),
-                scrolledContainerColor = value(colorAttrScrolledContainerColor),
-                navigationIconContentColor = value(colorAttrNavigationIconContentColor),
-                titleContentColor = value(colorAttrTitleContentColor),
-                actionIconContentColor = value(colorAttrActionIconContentColor),
+                containerColor = colors[colorAttrContainerColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.surface,
+                scrolledContainerColor = colors[colorAttrScrolledContainerColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.surface,
+                navigationIconContentColor = colors[colorAttrNavigationIconContentColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurface,
+                titleContentColor = colors[colorAttrTitleContentColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurface,
+                actionIconContentColor = colors[colorAttrActionIconContentColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }

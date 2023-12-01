@@ -2,14 +2,14 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.MenuItemColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
@@ -22,13 +22,14 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTextColo
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconColor
 import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -106,16 +107,24 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultColors
         } else {
-            fun value(key: String) =
-                colors[key]?.toColor() ?: Color(defaultColors.privateField(key))
-
             MenuDefaults.itemColors(
-                textColor = value(colorAttrTextColor),
-                leadingIconColor = value(colorAttrLeadingIconColor),
-                trailingIconColor = value(colorAttrTrailingIconColor),
-                disabledTextColor = value(colorAttrDisabledTextColor),
-                disabledLeadingIconColor = value(colorAttrDisabledLeadingIconColor),
-                disabledTrailingIconColor = value(colorAttrDisabledTrailingIconColor),
+                textColor = colors[colorAttrTextColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurface,
+                leadingIconColor = colors[colorAttrLeadingIconColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                trailingIconColor = colors[colorAttrTrailingIconColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledTextColor = colors[colorAttrDisabledTextColor]?.toColor()
+                    ?: colors[colorAttrTextColor]?.toColor()?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                disabledLeadingIconColor = colors[colorAttrDisabledLeadingIconColor]?.toColor()
+                    ?: colors[colorAttrLeadingIconColor]?.toColor()
+                        ?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                disabledTrailingIconColor = colors[colorAttrDisabledTrailingIconColor]?.toColor()
+                    ?: colors[colorAttrTrailingIconColor]?.toColor()
+                        ?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
             )
         }
     }
@@ -211,6 +220,7 @@ internal object DropdownMenuItemDtoFactory :
         scope: Any?
     ): DropdownMenuItemDTO = attributes.fold(DropdownMenuItemDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
+            attrColors -> builder.colors(attribute.value)
             attrContentPadding -> builder.contentPadding(attribute.value)
             attrEnabled -> builder.enabled(attribute.value)
             attrPhxClick -> builder.clickEventName(attribute.value)
