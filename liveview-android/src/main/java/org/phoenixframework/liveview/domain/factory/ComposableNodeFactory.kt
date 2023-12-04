@@ -62,6 +62,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
+            registerComponent(ComposableTypes.extendedFab, FloatingActionButtonDtoFactory)
             registerComponent(
                 ComposableTypes.exposedDropdownMenuBox,
                 ExposedDropdownMenuBoxDtoFactory

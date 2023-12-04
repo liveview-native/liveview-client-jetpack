@@ -32,6 +32,7 @@ object Attrs {
     const val attrDuration = "duration"
     const val attrElevation = "elevation"
     const val attrEnabled = "enabled"
+    const val attrExpanded = "expanded"
     const val attrExposedDropdownSize = "exposed-dropdown-size"
     const val attrFabPosition = "fab-position"
     const val attrFontFamily = "font-family"

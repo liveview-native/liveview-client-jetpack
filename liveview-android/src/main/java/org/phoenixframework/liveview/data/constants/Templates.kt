@@ -19,6 +19,7 @@ object Templates {
     const val templateStartThumb = "startThumb"
     const val templateSuffix = "suffix"
     const val templateSupportingText = "supportingText"
+    const val templateText = "text"
     const val templateThumb = "thumb"
     const val templateTitle = "title"
     const val templateTrack = "track"

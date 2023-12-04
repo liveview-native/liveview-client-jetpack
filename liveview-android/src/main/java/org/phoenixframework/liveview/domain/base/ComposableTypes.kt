@@ -15,6 +15,7 @@ object ComposableTypes {
     const val elevatedButton = "ElevatedButton"
     const val elevatedCard = "ElevatedCard"
     const val exposedDropdownMenuBox = "ExposedDropdownMenuBox"
+    const val extendedFab = "ExtendedFloatingActionButton"
     const val fab = "FloatingActionButton"
     const val filledTonalButton = "FilledTonalButton"
     const val icon = "Icon"
