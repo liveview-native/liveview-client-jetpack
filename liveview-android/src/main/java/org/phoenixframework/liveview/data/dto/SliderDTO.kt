@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
@@ -15,10 +16,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrMinValue
@@ -38,12 +38,14 @@ import org.phoenixframework.liveview.data.constants.Templates.templateEndThumb
 import org.phoenixframework.liveview.data.constants.Templates.templateStartThumb
 import org.phoenixframework.liveview.data.constants.Templates.templateThumb
 import org.phoenixframework.liveview.data.constants.Templates.templateTrack
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
+import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -225,20 +227,39 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
         return if (sliderColors == null) {
             defaultValue
         } else {
-            fun value(key: String) = sliderColors[key]?.toColor()
-                ?: Color(defaultValue.privateField(key))
-
             SliderDefaults.colors(
-                thumbColor = value(colorAttrThumbColor),
-                activeTrackColor = value(colorAttrActiveTrackColor),
-                activeTickColor = value(colorAttrActiveTickColor),
-                inactiveTrackColor = value(colorAttrInactiveTrackColor),
-                inactiveTickColor = value(colorAttrInactiveTickColor),
-                disabledThumbColor = value(colorAttrDisabledThumbColor),
-                disabledActiveTrackColor = value(colorAttrDisabledActiveTrackColor),
-                disabledActiveTickColor = value(colorAttrDisabledActiveTickColor),
-                disabledInactiveTrackColor = value(colorAttrDisabledInactiveTrackColor),
-                disabledInactiveTickColor = value(colorAttrDisabledInactiveTickColor)
+                thumbColor = sliderColors[colorAttrThumbColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.primary,
+                activeTrackColor = sliderColors[colorAttrActiveTrackColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.primary,
+                activeTickColor = sliderColors[colorAttrActiveTickColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.38f),
+                inactiveTrackColor = sliderColors[colorAttrInactiveTrackColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.surfaceVariant,
+                inactiveTickColor = sliderColors[colorAttrInactiveTickColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+                disabledThumbColor = sliderColors[colorAttrDisabledThumbColor]?.toColor()
+                    ?: sliderColors[colorAttrThumbColor]?.toColor()
+                        ?.copy(alpha = disabledContentAlpha)
+                        ?.compositeOver(MaterialTheme.colorScheme.surface)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha)
+                        .compositeOver(MaterialTheme.colorScheme.surface),
+                disabledActiveTrackColor = sliderColors[colorAttrDisabledActiveTrackColor]?.toColor()
+                    ?: sliderColors[colorAttrActiveTrackColor]?.toColor()
+                        ?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                disabledActiveTickColor = sliderColors[colorAttrDisabledActiveTickColor]?.toColor()
+                    ?: sliderColors[colorAttrActiveTickColor]?.toColor()
+                        ?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                disabledInactiveTrackColor = sliderColors[colorAttrDisabledInactiveTrackColor]?.toColor()
+                    ?: sliderColors[colorAttrInactiveTrackColor]?.toColor()
+                        ?.copy(alpha = disabledContainerAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContainerAlpha),
+                disabledInactiveTickColor = sliderColors[colorAttrDisabledInactiveTickColor]?.toColor()
+                    ?: sliderColors[colorAttrInactiveTickColor]?.toColor()
+                        ?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
             )
         }
     }

@@ -1,14 +1,13 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
@@ -16,10 +15,11 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabled
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUnselectedColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedColor
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
@@ -69,13 +69,18 @@ internal class RadioButtonDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultValue
         } else {
-            fun value(key: String) = colors[key]?.toColor() ?: Color(defaultValue.privateField(key))
-
             RadioButtonDefaults.colors(
-                selectedColor = value(colorAttrSelectedColor),
-                unselectedColor = value(colorAttrUnselectedColor),
-                disabledSelectedColor = value(colorAttrDisabledSelectedColor),
-                disabledUnselectedColor = value(colorAttrDisabledUnselectedColor),
+                selectedColor = colors[colorAttrSelectedColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.primary,
+                unselectedColor = colors[colorAttrUnselectedColor]?.toColor()
+                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledSelectedColor = colors[colorAttrDisabledSelectedColor]?.toColor()
+                    ?: colors[colorAttrSelectedColor]?.toColor()?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                disabledUnselectedColor = colors[colorAttrDisabledUnselectedColor]?.toColor()
+                    ?: colors[colorAttrUnselectedColor]?.toColor()
+                        ?.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
             )
         }
     }

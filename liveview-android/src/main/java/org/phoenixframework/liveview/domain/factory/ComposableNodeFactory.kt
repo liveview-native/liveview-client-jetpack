@@ -18,6 +18,9 @@ import org.phoenixframework.liveview.data.dto.IconDtoFactory
 import org.phoenixframework.liveview.data.dto.ImageDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
+import org.phoenixframework.liveview.data.dto.ModalDrawerSheetDtoFactory
+import org.phoenixframework.liveview.data.dto.ModalNavigationDrawerDtoFactory
+import org.phoenixframework.liveview.data.dto.NavigationDrawerItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ProgressIndicatorDtoFactory
 import org.phoenixframework.liveview.data.dto.RadioButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.RowDtoFactory
@@ -73,8 +76,15 @@ object ComposableNodeFactory {
                 ComposableTypes.linearProgressIndicator,
                 ProgressIndicatorDtoFactory
             )
+            registerComponent(ComposableTypes.modalDrawerSheet, ModalDrawerSheetDtoFactory)
+            registerComponent(
+                ComposableTypes.modalNavigationDrawer,
+                ModalNavigationDrawerDtoFactory
+            )
+            registerComponent(ComposableTypes.navigationDrawerItem, NavigationDrawerItemDtoFactory)
             registerComponent(ComposableTypes.outlinedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedCard, CardDtoFactory)
+            registerComponent(ComposableTypes.outlinedTextField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.radioButton, RadioButtonDtoFactory)
             registerComponent(ComposableTypes.rangeSlider, SliderDtoFactory)
             registerComponent(ComposableTypes.row, RowDtoFactory)
