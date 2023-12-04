@@ -71,6 +71,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.icon, IconDtoFactory)
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.image, ImageDtoFactory)
+            registerComponent(ComposableTypes.largeFab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.lazyColumn, LazyColumnDtoFactory)
             registerComponent(ComposableTypes.lazyRow, LazyRowDtoFactory)
             registerComponent(
@@ -92,6 +93,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.row, RowDtoFactory)
             registerComponent(ComposableTypes.scaffold, ScaffoldDtoFactory)
             registerComponent(ComposableTypes.slider, SliderDtoFactory)
+            registerComponent(ComposableTypes.smallFab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
             registerComponent(ComposableTypes.switch, SwitchDtoFactory)
             registerComponent(ComposableTypes.text, TextDtoFactory)

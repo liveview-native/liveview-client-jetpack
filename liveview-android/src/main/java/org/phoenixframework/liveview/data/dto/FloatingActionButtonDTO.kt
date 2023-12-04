@@ -5,6 +5,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.FloatingActionButtonElevation
+import androidx.compose.material3.LargeFloatingActionButton
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -24,6 +26,7 @@ import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttr
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -40,6 +43,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *   <Icon image-vector="filled:Add" />
  * </FloatingActionButton>
  * ```
+ * You can also declare a `SmallFloatingActionButton` and `LargeFloatingActionButton`. 
  */
 internal class FloatingActionButtonDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -56,17 +60,48 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
         pushEvent: PushEvent,
     ) {
         val containerColor = containerColor ?: FloatingActionButtonDefaults.containerColor
-        FloatingActionButton(
-            onClick = onClick,
-            modifier = modifier,
-            shape = shape,
-            containerColor = containerColor,
-            contentColor = contentColor ?: contentColorFor(containerColor),
-            elevation = getFabElevation(elevation),
-        ) {
-            composableNode?.children?.forEach {
-                PhxLiveView(it, pushEvent, composableNode, null)
-            }
+        when (composableNode?.node?.tag) {
+            ComposableTypes.fab ->
+                FloatingActionButton(
+                    onClick = onClick,
+                    modifier = modifier,
+                    shape = shape,
+                    containerColor = containerColor,
+                    contentColor = contentColor ?: contentColorFor(containerColor),
+                    elevation = getFabElevation(elevation),
+                ) {
+                    composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                }
+
+            ComposableTypes.smallFab ->
+                SmallFloatingActionButton(
+                    onClick = onClick,
+                    modifier = modifier,
+                    shape = shape,
+                    containerColor = containerColor,
+                    contentColor = contentColor ?: contentColorFor(containerColor),
+                    elevation = getFabElevation(elevation),
+                ) {
+                    composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                }
+
+            ComposableTypes.largeFab ->
+                LargeFloatingActionButton(
+                    onClick = onClick,
+                    modifier = modifier,
+                    shape = shape,
+                    containerColor = containerColor,
+                    contentColor = contentColor ?: contentColorFor(containerColor),
+                    elevation = getFabElevation(elevation),
+                ) {
+                    composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                }
         }
     }
 
