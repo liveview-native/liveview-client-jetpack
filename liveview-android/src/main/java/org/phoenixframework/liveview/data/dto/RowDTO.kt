@@ -9,16 +9,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.optional
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -81,18 +79,7 @@ internal class RowDTO private constructor(builder: Builder) :
          */
         fun horizontalArrangement(horizontalArrangement: String) = apply {
             if (horizontalArrangement.isNotEmpty()) {
-                this.horizontalArrangement = when (horizontalArrangement) {
-                    "spaceEvenly" -> Arrangement.SpaceEvenly
-                    "spaceAround" -> Arrangement.SpaceAround
-                    "spaceBetween" -> Arrangement.SpaceBetween
-                    "start" -> Arrangement.Start
-                    "end" -> Arrangement.End
-                    else -> if (horizontalArrangement.isNotEmptyAndIsDigitsOnly()) {
-                        Arrangement.spacedBy(horizontalArrangement.toInt().dp)
-                    } else {
-                        Arrangement.Center
-                    }
-                }
+                this.horizontalArrangement = horizontalArrangementFromString(horizontalArrangement)
             }
         }
 
@@ -107,11 +94,7 @@ internal class RowDTO private constructor(builder: Builder) :
          */
         fun verticalAlignment(verticalAlignment: String) = apply {
             if (verticalAlignment.isNotEmpty()) {
-                this.verticalAlignment = when (verticalAlignment) {
-                    "top" -> Alignment.Top
-                    "center" -> Alignment.CenterVertically
-                    else -> Alignment.Bottom
-                }
+                this.verticalAlignment = verticalAlignmentFromString(verticalAlignment)
             }
         }
 

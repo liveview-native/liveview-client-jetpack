@@ -23,6 +23,7 @@ object ComposableTypes {
     const val lazyColumn = "LazyColumn"
     const val lazyRow = "LazyRow"
     const val linearProgressIndicator = "LinearProgressIndicator"
+    const val modalBottomSheet = "ModalBottomSheet"
     const val modalDrawerSheet = "ModalDrawerSheet"
     const val modalNavigationDrawer = "ModalNavigationDrawer"
     const val navigationDrawerItem = "NavigationDrawerItem"

@@ -24,7 +24,6 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselect
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedTextColor
 import org.phoenixframework.liveview.data.constants.Templates
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -147,9 +146,7 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
          * @param pushEvent function responsible to dispatch the server call.
          */
         fun onClick(event: String, pushEvent: PushEvent?) = apply {
-            this.onClick = {
-                pushEvent?.invoke(EVENT_TYPE_CLICK, event, "", null)
-            }
+            this.onClick = onClickFromString(pushEvent, event)
         }
 
         /**
@@ -189,11 +186,7 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                try {
-                    this.colors = JsonParser.parse(colors)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                this.colors = colorsFromString(colors)
             }
         }
 

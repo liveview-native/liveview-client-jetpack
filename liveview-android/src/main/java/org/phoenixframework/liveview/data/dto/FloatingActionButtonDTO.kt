@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrElevation
@@ -23,7 +22,7 @@ import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttr
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrFocusedElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
-import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -139,9 +138,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
          * @param pushEvent function responsible to dispatch the server call.
          */
         fun onClick(event: String, pushEvent: PushEvent?) = apply {
-            this.onClick = {
-                pushEvent?.invoke(EVENT_TYPE_CLICK, event, "", null)
-            }
+            this.onClick = onClickFromString(pushEvent, event)
         }
 
         /**
@@ -173,11 +170,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
          */
         fun elevation(elevations: String) = apply {
             if (elevations.isNotEmpty()) {
-                try {
-                    this.elevation = JsonParser.parse(elevations)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                this.elevation = elevationsFromString(elevations)
             }
         }
 

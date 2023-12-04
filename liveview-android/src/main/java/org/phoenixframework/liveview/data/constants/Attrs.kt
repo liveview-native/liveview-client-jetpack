@@ -74,6 +74,7 @@ object Attrs {
     const val attrPhxThrottle = "phx-throttle"
     const val attrPhxValue = "phx-value"
     const val attrPropagateMinConstraints = "propagate-min-constraints"
+    const val attrOnChanged = "on-changed"
     const val attrOnClose = "on-close"
     const val attrOnOpen = "on-open"
     const val attrReadOnly = "read-only"
@@ -84,8 +85,10 @@ object Attrs {
     const val attrSecurePolicy = "secure-policy"
     const val attrSelected = "selected"
     const val attrShape = "shape"
+    const val attrSheetValue = "sheet-value"
     const val attrSingleLine = "single-line"
     const val attrSize = "size"
+    const val attrSkipPartiallyExpanded = "skip-partially-expanded"
     const val attrSoftWrap = "soft-wrap"
     const val attrSteps = "steps"
     const val attrStrokeCap = "stroke-cap"
@@ -109,6 +112,7 @@ object Attrs {
     const val attrWeight = "weight"
     const val attrWidth = "width"
     const val attrWithDismissAction = "with-dismiss-action"
+    const val attrWindowInsets = "window-insets"
 }
 
 object ColorAttrs {

@@ -9,16 +9,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.optional
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -80,18 +78,7 @@ internal class ColumnDTO private constructor(builder: Builder) :
          * and `center`. An int value is also supported, which will be used to determine the space.
          */
         fun verticalArrangement(verticalArrangement: String) = apply {
-            this.verticalArrangement = when (verticalArrangement) {
-                "top" -> Arrangement.Top
-                "spacedEvenly" -> Arrangement.SpaceEvenly
-                "spaceAround" -> Arrangement.SpaceAround
-                "spaceBetween" -> Arrangement.SpaceBetween
-                "bottom" -> Arrangement.Bottom
-                else -> if (verticalArrangement.isNotEmptyAndIsDigitsOnly()) {
-                    Arrangement.spacedBy(verticalArrangement.toInt().dp)
-                } else {
-                    Arrangement.Center
-                }
-            }
+            this.verticalArrangement = verticalArrangementFromString(verticalArrangement)
         }
 
         /**
@@ -104,12 +91,7 @@ internal class ColumnDTO private constructor(builder: Builder) :
          * supported values are: `start`, `center`, and `end`.
          */
         fun horizontalAlignment(horizontalAlignment: String) = apply {
-            this.horizontalAlignment = when (horizontalAlignment) {
-                "start" -> Alignment.Start
-                "center" -> Alignment.CenterHorizontally
-                "end" -> Alignment.End
-                else -> Alignment.Start
-            }
+            this.horizontalAlignment = horizontalAlignmentFromString(horizontalAlignment)
         }
 
         fun build(): ColumnDTO = ColumnDTO(this)

@@ -9,13 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
@@ -81,18 +80,7 @@ internal class LazyRowDTO private constructor(builder: Builder) :
          */
         fun horizontalArrangement(horizontalArrangement: String) = apply {
             if (horizontalArrangement.isNotEmpty()) {
-                this.horizontalArrangement = when (horizontalArrangement) {
-                    "spacedEvenly" -> Arrangement.SpaceEvenly
-                    "spaceAround" -> Arrangement.SpaceAround
-                    "spaceBetween" -> Arrangement.SpaceBetween
-                    "start" -> Arrangement.Start
-                    "end" -> Arrangement.End
-                    else -> if (horizontalArrangement.isNotEmptyAndIsDigitsOnly()) {
-                        Arrangement.spacedBy(horizontalArrangement.toInt().dp)
-                    } else {
-                        Arrangement.Center
-                    }
-                }
+                this.horizontalArrangement = horizontalArrangementFromString(horizontalArrangement)
             }
         }
 
@@ -107,11 +95,7 @@ internal class LazyRowDTO private constructor(builder: Builder) :
          */
         fun verticalAlignment(verticalAlignment: String) = apply {
             if (verticalAlignment.isNotEmpty()) {
-                this.verticalAlignment = when (verticalAlignment) {
-                    "top" -> Alignment.Top
-                    "center" -> Alignment.CenterVertically
-                    else -> Alignment.Bottom
-                }
+                this.verticalAlignment = verticalAlignmentFromString(verticalAlignment)
             }
         }
 

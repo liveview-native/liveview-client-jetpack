@@ -36,7 +36,6 @@ import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttr
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
@@ -367,9 +366,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
          * @param pushEvent function responsible to dispatch the server call.
          */
         fun onClick(event: String, pushEvent: PushEvent?): Builder = apply {
-            this.onClick = {
-                pushEvent?.invoke(EVENT_TYPE_CLICK, event, "", null)
-            }
+            this.onClick = onClickFromString(pushEvent, event)
         }
 
         /**
@@ -415,11 +412,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String): Builder = apply {
             if (colors.isNotEmpty()) {
-                try {
-                    this.colors = JsonParser.parse(colors)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                this.colors = colorsFromString(colors)
             }
         }
 
@@ -437,11 +430,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
          */
         fun elevation(elevations: String): Builder = apply {
             if (elevations.isNotEmpty()) {
-                try {
-                    this.elevations = JsonParser.parse(elevations)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                this.elevations = elevationsFromString(elevations)
             }
         }
 

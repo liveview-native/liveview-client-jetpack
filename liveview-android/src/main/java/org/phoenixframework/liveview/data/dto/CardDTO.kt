@@ -38,7 +38,6 @@ import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttr
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -268,7 +267,7 @@ internal class CardDTO private constructor(builder: Builder) :
         var border: BorderStroke? = null
             private set
 
-        private var borderWidth: Dp? = null
+        private var borderWidth: Dp = 1.0.dp
         private var borderColor: Color? = null
 
         /**
@@ -295,11 +294,7 @@ internal class CardDTO private constructor(builder: Builder) :
          */
         fun cardColors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                try {
-                    this.cardColors = JsonParser.parse(colors)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                this.cardColors = colorsFromString(colors)
             }
         }
 
@@ -315,11 +310,7 @@ internal class CardDTO private constructor(builder: Builder) :
          */
         fun elevation(elevations: String) = apply {
             if (elevations.isNotEmpty()) {
-                try {
-                    this.elevation = JsonParser.parse(elevations)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                this.elevation = elevationsFromString(elevations)
             }
         }
 
@@ -356,7 +347,7 @@ internal class CardDTO private constructor(builder: Builder) :
         fun build(): CardDTO {
             val w = borderWidth
             val c = borderColor
-            if (c != null && w != null) {
+            if (c != null) {
                 this.border = BorderStroke(w, c)
             }
             return CardDTO(this)
