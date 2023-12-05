@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangem
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -22,14 +24,19 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 /**
- * A lazy vertical grid layout. It composes only visible rows of the grid.
+ * A lazy grid layout. It could be vertical, using `LazyVerticalGrid`, or horizontal using
+ * `LazyHorizontalGrid`. It composes only visible elements of the grid.
  * ```
  * <LazyVerticalGrid columns="{'type': 'fixed', 'count': '3'}">
  *   // Children
  * </LazyVerticalGrid>
+ *
+ * <LazyHorizontalGrid columns="{'type': 'fixed', 'count': '3'}">
+ *   // Children
+ * </LazyHorizontalGrid>
  * ```
  */
-internal class LazyVerticalGridDTO private constructor(builder: Builder) :
+internal class LazyGridDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
 
     private val verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
@@ -41,31 +48,61 @@ internal class LazyVerticalGridDTO private constructor(builder: Builder) :
 
     @Composable
     override fun Compose(
-        composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
+        composableNode: ComposableTreeNode?,
+        paddingValues: PaddingValues?,
+        pushEvent: PushEvent
     ) {
-        LazyVerticalGrid(
-            columns = gridCells,
-            modifier = modifier.paddingIfNotNull(paddingValues),
-            contentPadding = PaddingValues(
-                (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
-                (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
-                (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
-                (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
-            ),
-            reverseLayout = reverseLayout,
-            verticalArrangement = verticalArrangement,
-            horizontalArrangement = horizontalArrangement,
-            // TODO flingBehavior = ,
-            userScrollEnabled = userScrollEnabled,
-            content = {
-                items(
-                    composableNode?.children ?: emptyArray(),
-                    key = { item -> item.id },
-                ) { item ->
-                    PhxLiveView(item, pushEvent, composableNode, null, this)
-                }
-            },
-        )
+        when (composableNode?.node?.tag) {
+            ComposableTypes.lazyHorizontalGrid ->
+                LazyHorizontalGrid(
+                    rows = gridCells,
+                    modifier = modifier.paddingIfNotNull(paddingValues),
+                    contentPadding = PaddingValues(
+                        (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
+                        (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
+                        (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
+                        (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
+                    ),
+                    reverseLayout = reverseLayout,
+                    verticalArrangement = verticalArrangement,
+                    horizontalArrangement = horizontalArrangement,
+                    // TODO flingBehavior = ,
+                    userScrollEnabled = userScrollEnabled,
+                    content = {
+                        items(
+                            composableNode.children,
+                            key = { item -> item.id },
+                        ) { item ->
+                            PhxLiveView(item, pushEvent, composableNode, null, this)
+                        }
+                    },
+                )
+
+            ComposableTypes.lazyVerticalGrid ->
+                LazyVerticalGrid(
+                    columns = gridCells,
+                    modifier = modifier.paddingIfNotNull(paddingValues),
+                    contentPadding = PaddingValues(
+                        (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
+                        (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
+                        (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
+                        (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
+                    ),
+                    reverseLayout = reverseLayout,
+                    verticalArrangement = verticalArrangement,
+                    horizontalArrangement = horizontalArrangement,
+                    // TODO flingBehavior = ,
+                    userScrollEnabled = userScrollEnabled,
+                    content = {
+                        items(
+                            composableNode.children,
+                            key = { item -> item.id },
+                        ) { item ->
+                            PhxLiveView(item, pushEvent, composableNode, null, this)
+                        }
+                    },
+                )
+        }
     }
 
     internal class Builder : LazyComposableBuilder() {
@@ -137,22 +174,22 @@ internal class LazyVerticalGridDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = LazyVerticalGridDTO(this)
+        fun build() = LazyGridDTO(this)
     }
 }
 
-internal object LazyVerticalGridDtoFactory :
-    ComposableViewFactory<LazyVerticalGridDTO, LazyVerticalGridDTO.Builder>() {
+internal object LazyGridDtoFactory :
+    ComposableViewFactory<LazyGridDTO, LazyGridDTO.Builder>() {
     /**
-     * Creates a `LazyVerticalGridDTO` object based on the attributes of the input `Attributes`
-     * object. LazyVerticalGridDTO co-relates to the LazyVerticalGrid composable.
+     * Creates a `LazyGridDTO` object based on the attributes of the input `Attributes` object.
+     * LazyGridDTO co-relates to the LazyHorizontalGrid or LazyVerticalGrid composable depending of
+     * the tag used.
      * @param attributes the `Attributes` object to create the `LazyVerticalGridDTO` object from
-     * @return a `LazyVerticalGridDTO` object based on the attributes of the input `Attributes`
-     * object
+     * @return a `LazyGridDTO` object based on the attributes of the input `Attributes` object.
      */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): LazyVerticalGridDTO = LazyVerticalGridDTO.Builder().also {
+    ): LazyGridDTO = LazyGridDTO.Builder().also {
         attributes.fold(it) { builder, attribute ->
             if (builder.handleLazyAttribute(attribute)) {
                 builder
@@ -162,7 +199,7 @@ internal object LazyVerticalGridDtoFactory :
                     attrHorizontalArrangement -> builder.horizontalArrangement(attribute.value)
                     attrVerticalArrangement -> builder.verticalArrangement(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-                } as LazyVerticalGridDTO.Builder
+                } as LazyGridDTO.Builder
             }
         }
     }.build()

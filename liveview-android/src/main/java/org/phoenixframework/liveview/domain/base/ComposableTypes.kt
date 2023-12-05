@@ -23,6 +23,7 @@ object ComposableTypes {
     const val image = "Image"
     const val largeFab = "LargeFloatingActionButton"
     const val lazyColumn = "LazyColumn"
+    const val lazyHorizontalGrid = "LazyHorizontalGrid"
     const val lazyRow = "LazyRow"
     const val lazyVerticalGrid = "LazyVerticalGrid"
     const val linearProgressIndicator = "LinearProgressIndicator"
