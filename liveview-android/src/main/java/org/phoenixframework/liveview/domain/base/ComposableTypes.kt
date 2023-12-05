@@ -24,6 +24,7 @@ object ComposableTypes {
     const val largeFab = "LargeFloatingActionButton"
     const val lazyColumn = "LazyColumn"
     const val lazyRow = "LazyRow"
+    const val lazyVerticalGrid = "LazyVerticalGrid"
     const val linearProgressIndicator = "LinearProgressIndicator"
     const val modalBottomSheet = "ModalBottomSheet"
     const val modalDrawerSheet = "ModalDrawerSheet"

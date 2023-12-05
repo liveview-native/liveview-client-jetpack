@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
+import org.phoenixframework.liveview.data.constants.Attrs.attrAspectRatio
 import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
 import org.phoenixframework.liveview.data.constants.Attrs.attrClip
 import org.phoenixframework.liveview.data.constants.Attrs.attrExposedDropdownSize
@@ -238,6 +240,21 @@ abstract class ComposableBuilder {
     }
 
     /**
+     * Attempts to size the content to match a specified aspect ratio by trying to match one of the
+     * incoming constraints.
+     *
+     * ```
+     * <Composable aspect-ratio={"#{4/3}"} />
+     * ```
+     * @param aspectRatio a floating number representing the aspect ratio.
+     */
+    private fun aspectRatio(aspectRatio: String) = apply {
+        if (aspectRatio.isNotEmpty()) {
+            modifier = modifier.then(Modifier.aspectRatio(aspectRatio.toFloat()))
+        }
+    }
+
+    /**
      * Handle the properties that are common for most of composables.
      * @param attribute a `CoreAttribute` to be handled.
      * @param pushEvent function responsible to dispatch the server call.
@@ -251,6 +268,7 @@ abstract class ComposableBuilder {
         scope: Any?,
     ): ComposableBuilder {
         when (attribute.name) {
+            attrAspectRatio -> aspectRatio(attribute.value)
             attrBackground -> background(attribute.value)
             attrClip -> clip(attribute.value)
             attrHeight -> height(attribute.value)

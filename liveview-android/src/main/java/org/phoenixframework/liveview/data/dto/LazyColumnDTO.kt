@@ -33,6 +33,7 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
     private val horizontalAlignment: Alignment.Horizontal = builder.horizontalAlignment
     private val contentPadding: ImmutableMap<String, Int> = builder.contentPadding.toImmutableMap()
     private val reverseLayout: Boolean = builder.reverseLayout
+    private val userScrollEnabled: Boolean = builder.userScrollEnabled
 
     @Composable
     override fun Compose(
@@ -51,6 +52,8 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
                 (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
                 (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
             ),
+            // TODO flingBehavior = ,
+            userScrollEnabled = userScrollEnabled,
             content = {
                 items(
                     composableNode?.children ?: emptyArray(),

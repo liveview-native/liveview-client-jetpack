@@ -18,6 +18,7 @@ import org.phoenixframework.liveview.data.dto.IconDtoFactory
 import org.phoenixframework.liveview.data.dto.ImageDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
+import org.phoenixframework.liveview.data.dto.LazyVerticalGridDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalBottomSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalDrawerSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalNavigationDrawerDtoFactory
@@ -75,6 +76,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.largeFab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.lazyColumn, LazyColumnDtoFactory)
             registerComponent(ComposableTypes.lazyRow, LazyRowDtoFactory)
+            registerComponent(ComposableTypes.lazyVerticalGrid, LazyVerticalGridDtoFactory)
             registerComponent(
                 ComposableTypes.linearProgressIndicator,
                 ProgressIndicatorDtoFactory
