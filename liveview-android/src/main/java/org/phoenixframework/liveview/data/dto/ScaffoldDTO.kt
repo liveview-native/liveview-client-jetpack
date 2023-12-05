@@ -11,14 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrFabPosition
-import org.phoenixframework.liveview.data.dto.ScaffoldDtoFactory.tagSnackbar
 import org.phoenixframework.liveview.data.constants.Templates.templateBody
+import org.phoenixframework.liveview.data.constants.Templates.templateBottomBar
 import org.phoenixframework.liveview.data.constants.Templates.templateFab
 import org.phoenixframework.liveview.data.constants.Templates.templateTopBar
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.ScaffoldDtoFactory.tagSnackbar
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -31,6 +32,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * Scaffold implements the basic material design visual layout structure.
  * This component supports the following children:
  * - a title bar can be defined using a child with `topBar` template;
+ * - a bottom bar can be defined using a child with `bottomBar` template;
  * - a FloatingActionButton to define the screen main action can be defined using `fab` template;
  * - a `<SnackBar>` to show a snackbar.
  * - `body` will be considered the Scaffold's body.
@@ -39,6 +41,9 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *   <TopAppBar template="topBar">
  *     <Text>Screen Title</Text>
  *   </TopAppBar>
+ *   <BottomAppBar template="bottomBar">
+ *     // Bottom App Bar items
+ *   </BottomAppBar>
  *   <FloatingActionButton phx-click="navigateToOtherScreen" template="fab">
  *     <Icon imageVector="filled:Add" />
  *   </FloatingActionButton>
@@ -64,6 +69,9 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
         val topBar = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateTopBar }
         }
+        val bottomBar = remember(composableNode?.children) {
+            composableNode?.children?.find { it.node?.template == templateBottomBar }
+        }
         val floatingActionButton = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateFab }
         }
@@ -83,6 +91,11 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
             topBar = {
                 topBar?.let { appBar ->
                     PhxLiveView(appBar, pushEvent, composableNode, null)
+                }
+            },
+            bottomBar = {
+                bottomBar?.let { bottomBar ->
+                    PhxLiveView(bottomBar, pushEvent, composableNode, null)
                 }
             },
             floatingActionButton = {

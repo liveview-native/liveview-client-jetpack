@@ -4,6 +4,7 @@ import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AlertDialogDtoFactory
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
 import org.phoenixframework.liveview.data.dto.BadgedBoxDtoFactory
+import org.phoenixframework.liveview.data.dto.BottomAppBarDtoFactory
 import org.phoenixframework.liveview.data.dto.BoxDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.CardDtoFactory
@@ -51,6 +52,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
             registerComponent(ComposableTypes.badgedBox, BadgedBoxDtoFactory)
             registerComponent(ComposableTypes.box, BoxDtoFactory)
+            registerComponent(ComposableTypes.bottomAppBar, BottomAppBarDtoFactory)
             registerComponent(ComposableTypes.button, ButtonDtoFactory)
             registerComponent(ComposableTypes.card, CardDtoFactory)
             registerComponent(ComposableTypes.checkbox, CheckBoxDtoFactory)

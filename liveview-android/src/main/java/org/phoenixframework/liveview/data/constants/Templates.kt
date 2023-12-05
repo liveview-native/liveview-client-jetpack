@@ -4,6 +4,7 @@ object Templates {
     const val templateAction = "action"
     const val templateBadge = "badge"
     const val templateBody = "body"
+    const val templateBottomBar = "bottomBar"
     const val templateConfirmButton = "confirm"
     const val templateDismissButton = "dismiss"
     const val templateDragHandle = "dragHandle"

@@ -5,6 +5,7 @@ object ComposableTypes {
     const val asyncImage = "AsyncImage"
     const val badgedBox = "BadgedBox"
     const val box = "Box"
+    const val bottomAppBar = "BottomAppBar"
     const val button = "Button"
     const val card = "Card"
     const val checkbox = "CheckBox"
