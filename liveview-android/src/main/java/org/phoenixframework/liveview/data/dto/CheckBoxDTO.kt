@@ -23,7 +23,6 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabled
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedColor
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -114,11 +113,7 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                try {
-                    this.colors = JsonParser.parse(colors)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                this.colors = colorsFromString(colors)
             }
         }
 

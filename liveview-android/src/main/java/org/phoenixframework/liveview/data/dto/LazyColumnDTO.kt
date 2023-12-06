@@ -9,13 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
@@ -34,6 +33,7 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
     private val horizontalAlignment: Alignment.Horizontal = builder.horizontalAlignment
     private val contentPadding: ImmutableMap<String, Int> = builder.contentPadding.toImmutableMap()
     private val reverseLayout: Boolean = builder.reverseLayout
+    private val userScrollEnabled: Boolean = builder.userScrollEnabled
 
     @Composable
     override fun Compose(
@@ -52,6 +52,8 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
                 (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
                 (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
             ),
+            // TODO flingBehavior = ,
+            userScrollEnabled = userScrollEnabled,
             content = {
                 items(
                     composableNode?.children ?: emptyArray(),
@@ -80,18 +82,7 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
          * and `center`. An int value is also supported, which will be used to determine the space.
          */
         fun verticalArrangement(verticalArrangement: String) = apply {
-            this.verticalArrangement = when (verticalArrangement) {
-                "top" -> Arrangement.Top
-                "spaceEvenly" -> Arrangement.SpaceEvenly
-                "spaceAround" -> Arrangement.SpaceAround
-                "spaceBetween" -> Arrangement.SpaceBetween
-                "bottom" -> Arrangement.Bottom
-                else -> if (verticalArrangement.isNotEmptyAndIsDigitsOnly()) {
-                    Arrangement.spacedBy(verticalArrangement.toInt().dp)
-                } else {
-                    Arrangement.Center
-                }
-            }
+            this.verticalArrangement = verticalArrangementFromString(verticalArrangement)
         }
 
         /**
@@ -104,12 +95,7 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
          * supported values are: `start`, `center`, and `end`.
          */
         fun horizontalAlignment(horizontalAlignment: String) = apply {
-            this.horizontalAlignment = when (horizontalAlignment) {
-                "start" -> Alignment.Start
-                "center" -> Alignment.CenterHorizontally
-                "end" -> Alignment.End
-                else -> Alignment.Start
-            }
+            this.horizontalAlignment = horizontalAlignmentFromString(horizontalAlignment)
         }
 
         fun build() = LazyColumnDTO(this)

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,10 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
+import org.phoenixframework.liveview.data.constants.Attrs.attrAspectRatio
 import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
 import org.phoenixframework.liveview.data.constants.Attrs.attrClip
 import org.phoenixframework.liveview.data.constants.Attrs.attrExposedDropdownSize
@@ -39,6 +39,10 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.alignmentFromString
+import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
+import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -236,79 +240,19 @@ abstract class ComposableBuilder {
     }
 
     /**
-     * Returns an `Alignment` object from a String.
-     * @param alignment string to be converted to an `Alignment`.
-     * @param defaultValue default value to be used in case of [alignment] does not match with
-     * any supported value.
+     * Attempts to size the content to match a specified aspect ratio by trying to match one of the
+     * incoming constraints.
+     *
+     * ```
+     * <Composable aspect-ratio={"#{4/3}"} />
+     * ```
+     * @param aspectRatio a floating number representing the aspect ratio.
      */
-    protected fun alignmentFromString(alignment: String, defaultValue: Alignment): Alignment =
-        when (alignment) {
-            "topStart" -> Alignment.TopStart
-            "topCenter" -> Alignment.TopCenter
-            "topEnd" -> Alignment.TopEnd
-            "centerStart" -> Alignment.CenterStart
-            "center" -> Alignment.Center
-            "centerEnd" -> Alignment.CenterEnd
-            "bottomStart" -> Alignment.BottomStart
-            "bottomCenter" -> Alignment.BottomCenter
-            "bottomEnd" -> Alignment.BottomEnd
-            else -> defaultValue
+    private fun aspectRatio(aspectRatio: String) = apply {
+        if (aspectRatio.isNotEmpty()) {
+            modifier = modifier.then(Modifier.aspectRatio(aspectRatio.toFloat()))
         }
-
-    /**
-     * Returns an `Alignment.Vertical` object from a String.
-     * @param alignment string to be converted to an `Alignment.Vertical`.
-     * @param defaultValue default value to be used in case of [alignment] does not match with
-     * any supported value.
-     */
-    private fun verticalAlignmentFromString(
-        alignment: String,
-        defaultValue: Alignment.Vertical = Alignment.Top
-    ): Alignment.Vertical =
-        when (alignment) {
-            "top" -> Alignment.Top
-            "center" -> Alignment.CenterVertically
-            "bottom" -> Alignment.Bottom
-            else -> defaultValue
-        }
-
-    /**
-     * Returns an `Alignment.Horizontal` object from a String.
-     * @param alignment string to be converted to an `Alignment.Horizontal`.
-     * @param defaultValue default value to be used in case of [alignment] does not match with
-     * any supported value.
-     */
-    private fun horizontalAlignmentFromString(
-        alignment: String,
-        defaultValue: Alignment.Horizontal = Alignment.Start
-    ): Alignment.Horizontal =
-        when (alignment) {
-            "start" -> Alignment.Start
-            "center" -> Alignment.CenterHorizontally
-            "end" -> Alignment.End
-            else -> defaultValue
-        }
-
-    /**
-     * Returns an `ContentScale` object from a String.
-     * @param contentScale string to be converted to an `ContentScale`.
-     * @param defaultValue default value to be used in case of [contentScale] does not match with
-     * any supported value.
-     */
-    protected fun contentScaleFromString(
-        contentScale: String,
-        defaultValue: ContentScale = ContentScale.None
-    ): ContentScale =
-        when (contentScale) {
-            "crop" -> ContentScale.Crop
-            "fillBounds" -> ContentScale.FillBounds
-            "fillHeight" -> ContentScale.FillHeight
-            "fillWidth" -> ContentScale.FillWidth
-            "fit" -> ContentScale.Fit
-            "inside" -> ContentScale.Inside
-            "none" -> ContentScale.None
-            else -> defaultValue
-        }
+    }
 
     /**
      * Handle the properties that are common for most of composables.
@@ -324,6 +268,7 @@ abstract class ComposableBuilder {
         scope: Any?,
     ): ComposableBuilder {
         when (attribute.name) {
+            attrAspectRatio -> aspectRatio(attribute.value)
             attrBackground -> background(attribute.value)
             attrClip -> clip(attribute.value)
             attrHeight -> height(attribute.value)

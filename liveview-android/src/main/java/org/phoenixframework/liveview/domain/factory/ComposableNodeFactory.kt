@@ -4,6 +4,7 @@ import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AlertDialogDtoFactory
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
 import org.phoenixframework.liveview.data.dto.BadgedBoxDtoFactory
+import org.phoenixframework.liveview.data.dto.BottomAppBarDtoFactory
 import org.phoenixframework.liveview.data.dto.BoxDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.CardDtoFactory
@@ -18,6 +19,8 @@ import org.phoenixframework.liveview.data.dto.IconDtoFactory
 import org.phoenixframework.liveview.data.dto.ImageDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
+import org.phoenixframework.liveview.data.dto.LazyGridDtoFactory
+import org.phoenixframework.liveview.data.dto.ModalBottomSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalDrawerSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalNavigationDrawerDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerItemDtoFactory
@@ -49,6 +52,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
             registerComponent(ComposableTypes.badgedBox, BadgedBoxDtoFactory)
             registerComponent(ComposableTypes.box, BoxDtoFactory)
+            registerComponent(ComposableTypes.bottomAppBar, BottomAppBarDtoFactory)
             registerComponent(ComposableTypes.button, ButtonDtoFactory)
             registerComponent(ComposableTypes.card, CardDtoFactory)
             registerComponent(ComposableTypes.checkbox, CheckBoxDtoFactory)
@@ -61,6 +65,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
+            registerComponent(ComposableTypes.extendedFab, FloatingActionButtonDtoFactory)
             registerComponent(
                 ComposableTypes.exposedDropdownMenuBox,
                 ExposedDropdownMenuBoxDtoFactory
@@ -70,12 +75,16 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.icon, IconDtoFactory)
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.image, ImageDtoFactory)
+            registerComponent(ComposableTypes.largeFab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.lazyColumn, LazyColumnDtoFactory)
+            registerComponent(ComposableTypes.lazyHorizontalGrid, LazyGridDtoFactory)
             registerComponent(ComposableTypes.lazyRow, LazyRowDtoFactory)
+            registerComponent(ComposableTypes.lazyVerticalGrid, LazyGridDtoFactory)
             registerComponent(
                 ComposableTypes.linearProgressIndicator,
                 ProgressIndicatorDtoFactory
             )
+            registerComponent(ComposableTypes.modalBottomSheet, ModalBottomSheetDtoFactory)
             registerComponent(ComposableTypes.modalDrawerSheet, ModalDrawerSheetDtoFactory)
             registerComponent(
                 ComposableTypes.modalNavigationDrawer,
@@ -90,6 +99,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.row, RowDtoFactory)
             registerComponent(ComposableTypes.scaffold, ScaffoldDtoFactory)
             registerComponent(ComposableTypes.slider, SliderDtoFactory)
+            registerComponent(ComposableTypes.smallFab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
             registerComponent(ComposableTypes.switch, SwitchDtoFactory)
             registerComponent(ComposableTypes.text, TextDtoFactory)

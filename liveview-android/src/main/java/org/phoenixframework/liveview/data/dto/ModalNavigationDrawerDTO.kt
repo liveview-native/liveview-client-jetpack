@@ -74,9 +74,6 @@ internal class ModalNavigationDrawerDTO private constructor(builder: Builder) :
                     true
                 }
             )
-        val drawerIsOpen = remember(composableNode) {
-            composableNode?.node?.attributes?.find { it.name == attrIsOpen }?.value.toBoolean()
-        }
         ModalNavigationDrawer(
             drawerContent = {
                 drawerContent?.let {
@@ -94,7 +91,7 @@ internal class ModalNavigationDrawerDTO private constructor(builder: Builder) :
             }
         )
         LaunchedEffect(composableNode) {
-            if (drawerIsOpen) {
+            if (isOpen) {
                 drawerState.open()
             } else {
                 drawerState.close()

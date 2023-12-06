@@ -2,29 +2,35 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.FloatingActionButtonElevation
+import androidx.compose.material3.LargeFloatingActionButton
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrElevation
+import org.phoenixframework.liveview.data.constants.Attrs.attrExpanded
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDefaultElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrFocusedElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
-import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.data.constants.Templates
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -41,6 +47,15 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *   <Icon image-vector="filled:Add" />
  * </FloatingActionButton>
  * ```
+ * You can also declare a `SmallFloatingActionButton`, `LargeFloatingActionButton`, and
+ * `ExtendedFloatingActionButton`. The last one, can have two children using the templates: `icon`
+ * and `text`.
+ * ```
+ * <ExtendedFloatingActionButton phx-click="fabAction" >
+ *   <Icon image-vector="filled:Add" template="icon"/>
+ *   <Text template="text">Increment</Text>
+ * </ExtendedFloatingActionButton>
+ * ```
  */
 internal class FloatingActionButtonDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -49,6 +64,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
     private val containerColor: Color? = builder.containerColor
     private val contentColor: Color? = builder.contentColor
     private val elevation: ImmutableMap<String, String>? = builder.elevation?.toImmutableMap()
+    private val expanded: Boolean = builder.expanded
 
     @Composable
     override fun Compose(
@@ -57,16 +73,75 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
         pushEvent: PushEvent,
     ) {
         val containerColor = containerColor ?: FloatingActionButtonDefaults.containerColor
-        FloatingActionButton(
-            onClick = onClick,
-            modifier = modifier,
-            shape = shape,
-            containerColor = containerColor,
-            contentColor = contentColor ?: contentColorFor(containerColor),
-            elevation = getFabElevation(elevation),
-        ) {
-            composableNode?.children?.forEach {
-                PhxLiveView(it, pushEvent, composableNode, null)
+        when (composableNode?.node?.tag) {
+            ComposableTypes.fab ->
+                FloatingActionButton(
+                    onClick = onClick,
+                    modifier = modifier,
+                    shape = shape,
+                    containerColor = containerColor,
+                    contentColor = contentColor ?: contentColorFor(containerColor),
+                    elevation = getFabElevation(elevation),
+                ) {
+                    composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                }
+
+            ComposableTypes.smallFab ->
+                SmallFloatingActionButton(
+                    onClick = onClick,
+                    modifier = modifier,
+                    shape = shape,
+                    containerColor = containerColor,
+                    contentColor = contentColor ?: contentColorFor(containerColor),
+                    elevation = getFabElevation(elevation),
+                ) {
+                    composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                }
+
+            ComposableTypes.largeFab ->
+                LargeFloatingActionButton(
+                    onClick = onClick,
+                    modifier = modifier,
+                    shape = shape,
+                    containerColor = containerColor,
+                    contentColor = contentColor ?: contentColorFor(containerColor),
+                    elevation = getFabElevation(elevation),
+                ) {
+                    composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                }
+
+            ComposableTypes.extendedFab -> {
+                val text = remember(composableNode.children) {
+                    composableNode.children.find { it.node?.template == Templates.templateText }
+                }
+                val icon = remember(composableNode.children) {
+                    composableNode.children.find { it.node?.template == Templates.templateIcon }
+                }
+                ExtendedFloatingActionButton(
+                    text = {
+                        text?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    icon = {
+                        icon?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    onClick = onClick,
+                    modifier = modifier,
+                    expanded = expanded,
+                    shape = shape,
+                    containerColor = containerColor,
+                    contentColor = contentColor ?: contentColorFor(containerColor),
+                    elevation = getFabElevation(elevation),
+                )
             }
         }
     }
@@ -99,6 +174,8 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
         var shape: Shape = CircleShape
             private set
         var elevation: Map<String, String>? = null
+            private set
+        var expanded: Boolean = true
             private set
 
         /**
@@ -139,9 +216,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
          * @param pushEvent function responsible to dispatch the server call.
          */
         fun onClick(event: String, pushEvent: PushEvent?) = apply {
-            this.onClick = {
-                pushEvent?.invoke(EVENT_TYPE_CLICK, event, "", null)
-            }
+            this.onClick = onClickFromString(pushEvent, event)
         }
 
         /**
@@ -173,11 +248,24 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
          */
         fun elevation(elevations: String) = apply {
             if (elevations.isNotEmpty()) {
-                try {
-                    this.elevation = JsonParser.parse(elevations)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                this.elevation = elevationsFromString(elevations)
+            }
+        }
+
+        /**
+         * Controls the expansion state of this FAB. In an expanded state, the FAB will show both
+         * the icon and text. In a collapsed state, the FAB will show only the icon.
+         * ```
+         * <ExpandedFloatingActionButton
+         *   expanded="true">
+         *   ...
+         * </ExpandedFloatingActionButton>
+         * ```
+         * @param expanded true if the FAB is expanded, false otherwise.
+         */
+        fun expanded(expanded: String) = apply {
+            if (expanded.isNotEmpty()) {
+                this.expanded = expanded.toBoolean()
             }
         }
 
@@ -206,6 +294,7 @@ internal object FloatingActionButtonDtoFactory :
             attrContainerColor -> builder.containerColor(attribute.value)
             attrContentColor -> builder.contentColor(attribute.value)
             attrElevation -> builder.elevation(attribute.value)
+            attrExpanded -> builder.expanded(attribute.value)
             attrPhxClick -> builder.onClick(attribute.value, pushEvent)
             attrShape -> builder.shape(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)

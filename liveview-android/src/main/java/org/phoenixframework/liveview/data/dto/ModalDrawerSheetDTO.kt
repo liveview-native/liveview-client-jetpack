@@ -1,6 +1,7 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -14,6 +15,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
+import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -39,6 +41,7 @@ internal class ModalDrawerSheetDTO private constructor(builder: Builder) :
     private val containerColor = builder.drawerContainerColor
     private val contentColor = builder.drawerContentColor
     private val tonalElevation = builder.drawerTonalElevation
+    private val windowsInsets = builder.windowInsets
 
     @Composable
     override fun Compose(
@@ -54,7 +57,7 @@ internal class ModalDrawerSheetDTO private constructor(builder: Builder) :
                 containerColor ?: MaterialTheme.colorScheme.surface
             ),
             drawerTonalElevation = tonalElevation ?: DrawerDefaults.ModalDrawerElevation,
-            // TODO windowInsets = ,
+            windowInsets = windowsInsets ?: DrawerDefaults.windowInsets,
             content = {
                 composableNode?.children?.forEach {
                     PhxLiveView(it, pushEvent, composableNode, null, this)
@@ -71,6 +74,8 @@ internal class ModalDrawerSheetDTO private constructor(builder: Builder) :
         var drawerContentColor: Color? = null
             private set
         var drawerTonalElevation: Dp? = null
+            private set
+        var windowInsets: WindowInsets? = null
             private set
 
         /**
@@ -121,6 +126,22 @@ internal class ModalDrawerSheetDTO private constructor(builder: Builder) :
             }
         }
 
+        /**
+         * Window insets to be passed to the bottom sheet window via PaddingValues params.
+         * ```
+         * <ModalBottomSheet window-insets="{'bottom': '100'}" >
+         * ```
+         * @param insets the space, in Dp, at the each border of the window that the inset
+         * represents. The supported values are: `left`, `top`, `bottom`, and `right`.
+         */
+        fun windowInsets(insets: String) = apply {
+            try {
+                this.windowInsets = windowInsetsFromString(insets)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
         fun build() = ModalDrawerSheetDTO(this)
     }
 }
@@ -145,6 +166,7 @@ internal object ModalDrawerSheetDtoFactory :
                 attrContentColor -> builder.drawerContentColor(attribute.value)
                 attrShape -> builder.drawerShape(attribute.value)
                 attrTonalElevation -> builder.drawerTonalElevation(attribute.value)
+                attrWindowInsets -> builder.windowInsets(attribute.value)
                 else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
             } as ModalDrawerSheetDTO.Builder
         }.build()

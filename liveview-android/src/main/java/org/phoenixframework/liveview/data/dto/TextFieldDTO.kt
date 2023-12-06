@@ -100,7 +100,6 @@ import org.phoenixframework.liveview.data.constants.Templates.templateSuffix
 import org.phoenixframework.liveview.data.constants.Templates.templateSupportingText
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
 import org.phoenixframework.liveview.domain.base.ComposableTypes
@@ -687,11 +686,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                try {
-                    this.colors = JsonParser.parse(colors)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                this.colors = colorsFromString(colors)
             }
         }
 

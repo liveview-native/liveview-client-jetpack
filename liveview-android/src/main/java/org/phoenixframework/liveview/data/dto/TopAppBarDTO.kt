@@ -22,12 +22,10 @@ import org.phoenixframework.liveview.data.constants.Templates.templateAction
 import org.phoenixframework.liveview.data.constants.Templates.templateNavigationIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -114,11 +112,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String): Builder = apply {
             if (colors.isNotEmpty()) {
-                try {
-                    this.colors = JsonParser.parse(colors)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                this.colors = colorsFromString(colors)
             }
         }
 
