@@ -43,6 +43,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.dto.alignmentFromString
 import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
+import org.phoenixframework.liveview.data.dto.onClickFromString
 import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.toColor
@@ -208,7 +209,7 @@ abstract class ComposableBuilder {
     private fun clickable(event: String, pushEvent: PushEvent?) = apply {
         modifier = modifier.then(
             Modifier.clickable {
-                pushEvent?.invoke(EVENT_TYPE_CLICK, event, value ?: "", null)
+                onClickFromString(pushEvent, event, value?.toString() ?: "").invoke()
             }
         )
     }

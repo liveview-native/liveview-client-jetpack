@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrDecorFitsSystemWindows
 import org.phoenixframework.liveview.data.constants.Attrs.attrDismissOnBackPress
@@ -29,6 +28,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateConfirmBut
 import org.phoenixframework.liveview.data.constants.Templates.templateDismissButton
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -94,6 +94,7 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
     private val titleContentColor = builder.titleContentColor
     private val textContentColor = builder.textContentColor
     private val tonalElevation = builder.tonalElevation
+    private val value = builder.value
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -121,7 +122,11 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
 
         if (predefinedDialog) {
             AlertDialog(
-                onDismissRequest = dismissEvent,
+                onDismissRequest = dismissEvent?.let {
+                    onClickFromString(pushEvent, it, value?.toString() ?: "")
+                } ?: {
+                    // Do nothing
+                },
                 confirmButton = {
                     confirmButton?.let {
                         PhxLiveView(it, pushEvent, composableNode, null)
@@ -158,7 +163,11 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
             )
         } else {
             AlertDialog(
-                onDismissRequest = dismissEvent,
+                onDismissRequest = dismissEvent?.let {
+                    onClickFromString(pushEvent, it, value?.toString() ?: "")
+                } ?: {
+                    // Do nothing
+                },
                 modifier = modifier,
                 properties = dialogProperties,
             ) {
@@ -170,7 +179,7 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
     }
 
     internal class Builder : ComposableBuilder() {
-        var dismissEvent: () -> Unit = {}
+        var dismissEvent: String? = null
             private set
         var dialogProperties: DialogProperties = DialogProperties()
             private set
@@ -272,10 +281,8 @@ internal class AlertDialogDTO private constructor(builder: Builder) :
          * @param dismissEventName event name to be called on the server in order to dismiss the
          * alert dialog.
          */
-        fun onDismissRequest(dismissEventName: String, pushEvent: PushEvent?) = apply {
-            this.dismissEvent = {
-                pushEvent?.invoke(EVENT_TYPE_CLICK, dismissEventName, "", null)
-            }
+        fun onDismissRequest(dismissEventName: String) = apply {
+            this.dismissEvent = dismissEventName
         }
 
         /**
@@ -380,7 +387,7 @@ internal object AlertDialogDtoFactory :
             attrDismissOnBackPress -> builder.dismissOnBackPress(attribute.value)
             attrDismissOnClickOutside -> builder.dismissOnClickOutside(attribute.value)
             attrIconContentColor -> builder.iconContentColor(attribute.value)
-            attrPhxClick -> builder.onDismissRequest(attribute.value, pushEvent)
+            attrPhxClick -> builder.onDismissRequest(attribute.value)
             attrSecurePolicy -> builder.securePolicy(attribute.value)
             attrTextContentColor -> builder.textContentColor(attribute.value)
             attrTitleContentColor -> builder.titleContentColor(attribute.value)

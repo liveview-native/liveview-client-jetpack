@@ -78,9 +78,7 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
                     PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
-            onClick = {
-                pushEvent.invoke(ComposableBuilder.EVENT_TYPE_CLICK, event, value ?: "", null)
-            },
+            onClick = onClickFromString(pushEvent, event, value?.toString() ?: ""),
             modifier = modifier,
             leadingIcon = leadingIcon?.let {
                 {
