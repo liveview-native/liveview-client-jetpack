@@ -8,6 +8,7 @@ object Attrs {
     const val attrAlign = "align"
     const val attrAlignment = "alignment"
     const val attrAlpha = "alpha"
+    const val alwaysShowLabel = "always-show-label"
     const val attrAspectRatio = "aspect-ratio"
     const val attrAutoCorrect = "auto-correct"
     const val attrBackground = "background"
@@ -237,6 +238,10 @@ object ColorAttrs {
     const val colorAttrNavigationIconContentColor = "navigationIconContentColor"
     const val colorAttrTitleContentColor = "titleContentColor"
     const val colorAttrActionIconContentColor = "actionIconContentColor"
+
+    // NavigationBarItem
+    const val colorAttrIndicatorColor = "indicatorColor"
+    const val colorAttrDisabledIconColor = "disabledIconColor"
 }
 
 object ElevationAttrs {

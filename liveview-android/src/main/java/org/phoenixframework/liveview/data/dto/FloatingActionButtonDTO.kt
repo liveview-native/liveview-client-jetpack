@@ -59,12 +59,13 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  */
 internal class FloatingActionButtonDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
-    private val onClick: () -> Unit = builder.onClick
+    private val onClick: String = builder.onClick
     private val shape: Shape = builder.shape
     private val containerColor: Color? = builder.containerColor
     private val contentColor: Color? = builder.contentColor
     private val elevation: ImmutableMap<String, String>? = builder.elevation?.toImmutableMap()
     private val expanded: Boolean = builder.expanded
+    private val value: Any? = builder.value
 
     @Composable
     override fun Compose(
@@ -76,7 +77,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
         when (composableNode?.node?.tag) {
             ComposableTypes.fab ->
                 FloatingActionButton(
-                    onClick = onClick,
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
                     shape = shape,
                     containerColor = containerColor,
@@ -90,7 +91,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
 
             ComposableTypes.smallFab ->
                 SmallFloatingActionButton(
-                    onClick = onClick,
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
                     shape = shape,
                     containerColor = containerColor,
@@ -104,7 +105,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
 
             ComposableTypes.largeFab ->
                 LargeFloatingActionButton(
-                    onClick = onClick,
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
                     shape = shape,
                     containerColor = containerColor,
@@ -134,7 +135,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    onClick = onClick,
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
                     expanded = expanded,
                     shape = shape,
@@ -165,7 +166,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
     }
 
     internal class Builder : ComposableBuilder() {
-        var onClick: () -> Unit = {}
+        var onClick: String = ""
             private set
         var containerColor: Color? = null
             private set
@@ -213,10 +214,9 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
          * <FloatingActionButton phx-click="yourServerEventHandler">...</FloatingActionButton>
          * ```
          * @param event event name defined on the server to handle the button's click.
-         * @param pushEvent function responsible to dispatch the server call.
          */
-        fun onClick(event: String, pushEvent: PushEvent?) = apply {
-            this.onClick = onClickFromString(pushEvent, event)
+        fun onClick(event: String) = apply {
+            this.onClick = event
         }
 
         /**
@@ -295,7 +295,7 @@ internal object FloatingActionButtonDtoFactory :
             attrContentColor -> builder.contentColor(attribute.value)
             attrElevation -> builder.elevation(attribute.value)
             attrExpanded -> builder.expanded(attribute.value)
-            attrPhxClick -> builder.onClick(attribute.value, pushEvent)
+            attrPhxClick -> builder.onClick(attribute.value)
             attrShape -> builder.shape(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as FloatingActionButtonDTO.Builder

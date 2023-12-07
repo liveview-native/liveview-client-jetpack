@@ -540,7 +540,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          */
         fun onKeyboardAction(event: String, pushEvent: PushEvent?) = apply {
             val action = {
-                pushEvent?.invoke(EVENT_TYPE_CLICK, event, value, null)
+                onClickFromString(pushEvent, event, value?.toString() ?: "")
             }
             this.keyboardActions = KeyboardActions(
                 onDone = { action.invoke() },

@@ -31,6 +31,7 @@ object ComposableTypes {
     const val modalBottomSheet = "ModalBottomSheet"
     const val modalDrawerSheet = "ModalDrawerSheet"
     const val modalNavigationDrawer = "ModalNavigationDrawer"
+    const val navigationBar = "NavigationBar"
     const val navigationDrawerItem = "NavigationDrawerItem"
     const val outlinedButton = "OutlinedButton"
     const val outlinedCard = "OutlinedCard"

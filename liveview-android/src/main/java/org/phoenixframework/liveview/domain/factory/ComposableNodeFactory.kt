@@ -23,6 +23,7 @@ import org.phoenixframework.liveview.data.dto.LazyGridDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalBottomSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalDrawerSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalNavigationDrawerDtoFactory
+import org.phoenixframework.liveview.data.dto.NavigationBarDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ProgressIndicatorDtoFactory
 import org.phoenixframework.liveview.data.dto.RadioButtonDtoFactory
@@ -90,6 +91,7 @@ object ComposableNodeFactory {
                 ComposableTypes.modalNavigationDrawer,
                 ModalNavigationDrawerDtoFactory
             )
+            registerComponent(ComposableTypes.navigationBar, NavigationBarDtoFactory)
             registerComponent(ComposableTypes.navigationDrawerItem, NavigationDrawerItemDtoFactory)
             registerComponent(ComposableTypes.outlinedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedCard, CardDtoFactory)

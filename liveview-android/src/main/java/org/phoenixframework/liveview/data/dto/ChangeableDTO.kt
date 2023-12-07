@@ -4,11 +4,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxDebounce
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxThrottle
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -26,7 +26,7 @@ internal abstract class ChangeableDTO<T : Any>(builder: ChangeableDTOBuilder<T>)
     protected val throttle = builder.throttle
     protected val changeValueEventName = builder.onChange
     protected val enabled = builder.enabled
-    protected val value = builder.value
+    protected val value = builder.value as T
 
     protected fun <TC> Flow<TC>.onTypedChangeable(): Flow<TC> =
         this.distinctUntilChanged()
@@ -47,8 +47,6 @@ internal abstract class ChangeableDTO<T : Any>(builder: ChangeableDTOBuilder<T>)
  * from the client.
  */
 internal abstract class ChangeableDTOBuilder<T : Any>(defaultValue: T) : ComposableBuilder() {
-    var value = defaultValue
-        private set
     var onChange: String? = null
         private set
     var debounce: Long = 300
@@ -58,14 +56,8 @@ internal abstract class ChangeableDTOBuilder<T : Any>(defaultValue: T) : Composa
     var enabled: Boolean = true
         private set
 
-    /**
-     * Sets the component value. For a `TextField`, it's a string representing the text. For a
-     * `Slider`, the value is a float.
-     *
-     * @param value component's value.
-     */
-    open fun value(value: T) = apply {
-        this.value = value
+    init {
+        value(defaultValue)
     }
 
     /**
