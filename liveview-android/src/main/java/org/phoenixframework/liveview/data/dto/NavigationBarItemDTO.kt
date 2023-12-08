@@ -26,6 +26,20 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
+/**
+ * Material Design navigation bar item.
+ * Navigation bars offer a persistent and convenient way to switch between primary destinations in
+ * an app.
+ * This component can has two children templates:
+ * - `label` for the item text.
+ * - `icon` for the item icon.
+ * ```
+ * <NavigationBarItem selected="true" phx-click="selectTab1">
+ *   <Icon image-vector="filled:HorizontalDistribute" template="icon"/>
+ *   <Text template="label">Tab 1</Text>
+ * </NavigationBarItem>
+ * ```
+ */
 internal class NavigationBarItemDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val rowScope = builder.rowScope
