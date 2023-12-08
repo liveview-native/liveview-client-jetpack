@@ -22,11 +22,28 @@ import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
-import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
+/**
+ * Material Design bottom app bar.
+ * A bottom app bar displays navigation and key actions at the bottom of mobile screens.
+ * ```
+ * <BottomAppBar template="bottomBar">
+ *   <IconButton phx-click="horizontalGrid" template="action">
+ *     <Icon image-vector="filled:HorizontalDistribute" />
+ *   </IconButton>
+ *   <IconButton phx-click="verticalGrid" template="action">
+ *     <Icon image-vector="filled:VerticalDistribute" />
+ *   </IconButton>
+ *   <FloatingActionButton phx-click="someAction" template="fab">
+ *     <Icon image-vector="filled:Add"/>
+ *   </FloatingActionButton>
+ * </BottomAppBar>
+ * ```
+ */
 internal class BottomAppBarDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
 
@@ -154,6 +171,12 @@ internal class BottomAppBarDTO private constructor(builder: Builder) :
 
 internal object BottomAppBarDtoFactory :
     ComposableViewFactory<BottomAppBarDTO, BottomAppBarDTO.Builder>() {
+    /**
+     * Creates a `BottomAppBarDTO` object based on the attributes of the input `Attributes` object.
+     * BottomAppBarDTO co-relates to the BottomAppBar composable
+     * @param attributes the `Attributes` object to create the `BottomAppBarDTO` object from
+     * @return a `BottomAppBarDTO` object based on the attributes of the input `Attributes` object
+     */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
