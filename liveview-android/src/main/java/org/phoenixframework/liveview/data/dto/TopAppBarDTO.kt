@@ -100,7 +100,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
                     },
                     windowInsets = windowsInsets ?: TopAppBarDefaults.windowInsets,
                     colors = getTopAppBarColors(colors = colors),
-                    // TODO scrollBehavior = ,
+                    scrollBehavior = LocalAppScrollBehavior.current,
                 )
 
             ComposableTypes.centerAlignedTopAppBar ->
@@ -125,7 +125,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
                     },
                     windowInsets = windowsInsets ?: TopAppBarDefaults.windowInsets,
                     colors = getCenterTopAppBarColors(colors = colors),
-                    // TODO scrollBehavior = ,
+                    scrollBehavior = LocalAppScrollBehavior.current,
                 )
 
             ComposableTypes.mediumTopAppBar ->
@@ -150,7 +150,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
                     },
                     windowInsets = windowsInsets ?: TopAppBarDefaults.windowInsets,
                     colors = getMediumTopAppBarColors(colors = colors),
-                    // TODO scrollBehavior = ,
+                    scrollBehavior = LocalAppScrollBehavior.current,
                 )
 
             ComposableTypes.largeTopAppBar ->
@@ -175,7 +175,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
                     },
                     windowInsets = windowsInsets ?: TopAppBarDefaults.windowInsets,
                     colors = getLargeTopAppBarColors(colors = colors),
-                    // TODO scrollBehavior = ,
+                    scrollBehavior = LocalAppScrollBehavior.current,
                 )
         }
     }
@@ -278,7 +278,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
          * Set TopAppBar colors.
          * ```
          * <TopAppBar
-         *   colors="{'containerColor': '#FFFF0000', 'contentColor': '#FF00FF00'}">
+         *   colors="{'containerColor': '#FFFF0000', 'titleContentColor': '#FF00FF00'}">
          *   ...
          * </Button>
          * ```

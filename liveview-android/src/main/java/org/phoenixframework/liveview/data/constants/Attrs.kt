@@ -105,6 +105,7 @@ object Attrs {
     const val attrTint = "tint"
     const val attrTitleContentColor = "title-content-color"
     const val attrTonalElevation = "tonal-elevation"
+    const val attrTopBarScrollBehavior = "top-bar-scroll-behavior"
     const val attrTrackColor = "track-color"
     const val attrUrl = "url"
     const val attrUserScrollEnabled = "user-scroll-enabled"
