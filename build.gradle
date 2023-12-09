@@ -11,7 +11,7 @@ buildscript {
         kotlin_compiler_ext_version = '1.4.3'
 
         // plugins
-        gradle_plugin_version = '8.1.0'
+        gradle_plugin_version = '8.1.4'
         kotlin_version = '1.8.10'
 
         // libs
