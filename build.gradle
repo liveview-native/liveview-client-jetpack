@@ -4,7 +4,7 @@ buildscript {
         compile_sdk_version = 34
         min_sdk_version = 23
         target_sdk_version = 34
-        instrumentation_runner_class = 'androidx.test.runner.AndroidJUnitRunner'
+        instrumentation_runner_class = 'com.dockyard.liveviewtest.liveview.runner.LiveViewTestRunner'
         source_compatibility_version = JavaVersion.VERSION_1_8
         target_compatibility_version = JavaVersion.VERSION_1_8
         jvm_target_version = '1.8'
@@ -13,6 +13,7 @@ buildscript {
         // plugins
         gradle_plugin_version = '8.1.4'
         kotlin_version = '1.8.10'
+        shot_version = '6.0.0'
 
         // libs
         activity_compose_version = '1.7.2'
@@ -36,10 +37,12 @@ buildscript {
         junit_version = '4.13.2'
         ext_junit_version = '1.1.5'
         espresso_core_version = '3.5.1'
+        ui_test_junit_version = '1.5.4'
     }
 
     dependencies {
         classpath "com.android.tools.build:gradle:$gradle_plugin_version"
+        classpath "com.karumi:shot:$shot_version"
     }
 }
 plugins {

@@ -97,6 +97,7 @@ object Attrs {
     const val attrStrokeCap = "stroke-cap"
     const val attrStrokeWidth = "stroke-width"
     const val attrStyle = "style"
+    const val attrTestTag = "test-tag"
     const val attrText = "text"
     const val attrTextAlign = "text-align"
     const val attrTextContentColor = "text-content-color"

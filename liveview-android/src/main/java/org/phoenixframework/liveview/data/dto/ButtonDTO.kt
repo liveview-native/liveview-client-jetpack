@@ -106,6 +106,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
                     shape = shape ?: ButtonDefaults.shape,
                     colors = getButtonColors(colors),
                     elevation = getButtonElevation(elevation),
+                    border = border,
                     contentPadding = contentPadding ?: ButtonDefaults.ContentPadding,
                 ) {
                     composableNode.children.forEach {
@@ -174,7 +175,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
                     colors = getTextButtonColors(colors),
                     elevation = getButtonElevation(elevation),
                     border = border,
-                    contentPadding = contentPadding ?: ButtonDefaults.ContentPadding,
+                    contentPadding = contentPadding ?: ButtonDefaults.TextButtonContentPadding,
                 ) {
                     composableNode.children.forEach {
                         PhxLiveView(it, pushEvent, composableNode, null, this)

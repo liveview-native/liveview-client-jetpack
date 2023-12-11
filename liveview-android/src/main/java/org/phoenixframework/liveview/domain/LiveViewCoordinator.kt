@@ -101,7 +101,7 @@ class LiveViewCoordinator(
         }
     }
 
-    private fun parseTemplate(s: String) {
+    internal fun parseTemplate(s: String) {
         Log.d(TAG, "parseTemplate: $s")
         document.mergeFragmentJson(s, object : Document.Companion.Handler() {
             override fun onHandle(
