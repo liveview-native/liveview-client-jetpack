@@ -107,7 +107,7 @@ internal fun horizontalAlignmentFromString(
 internal fun verticalArrangementFromString(verticalArrangement: String) =
     when (verticalArrangement) {
         "top" -> Arrangement.Top
-        "spacedEvenly" -> Arrangement.SpaceEvenly
+        "spaceEvenly" -> Arrangement.SpaceEvenly
         "spaceAround" -> Arrangement.SpaceAround
         "spaceBetween" -> Arrangement.SpaceBetween
         "bottom" -> Arrangement.Bottom

@@ -25,7 +25,7 @@ abstract class LiveViewComposableTest : ScreenshotTest {
             httpBaseUrl = "",
             wsBaseUrl = "",
             onNavigate = { _, _ -> }
-        )
+        ),
     ) {
         composeRule.setContent {
             val state by coordinator.composableTree.collectAsState()
