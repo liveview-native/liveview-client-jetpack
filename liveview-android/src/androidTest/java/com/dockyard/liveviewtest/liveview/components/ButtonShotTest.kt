@@ -3,10 +3,13 @@ package com.dockyard.liveviewtest.liveview.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
@@ -31,7 +34,7 @@ class ButtonShotTest : LiveViewComposableTest() {
     }
 
     @Test
-    fun checkASimpleButtonDisabledTest() {
+    fun checkSimpleButtonDisabledTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Button(onClick = {}, enabled = false) {
@@ -47,7 +50,7 @@ class ButtonShotTest : LiveViewComposableTest() {
     }
 
     @Test
-    fun checkAButtonWithCustomColorsTest() {
+    fun checkButtonWithCustomColorsTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Button(
@@ -70,7 +73,7 @@ class ButtonShotTest : LiveViewComposableTest() {
     }
 
     @Test
-    fun checkAButtonWithBorderShapeAndPaddingTest() {
+    fun checkButtonWithBorderShapeAndPaddingTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Button(
@@ -92,6 +95,70 @@ class ButtonShotTest : LiveViewComposableTest() {
                   border-width="2" border-color="#FFFF0000" shape="circle" content-padding="8">
                   <Text>Button</Text>
                 </Button>
+                """.templateToTest()
+        )
+    }
+
+    @Test
+    fun checkSimpleElevatedButtonTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                ElevatedButton(onClick = {}) {
+                    Text(text = "Elevated Button")
+                }
+            },
+            template = """
+                <ElevatedButton phx-click="">
+                  <Text>Elevated Button</Text>
+                </ElevatedButton>
+                """.templateToTest()
+        )
+    }
+
+    @Test
+    fun checkSimpleFilledTonalButtonTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                FilledTonalButton(onClick = {}) {
+                    Text(text = "Filled Tonal Button")
+                }
+            },
+            template = """
+                <FilledTonalButton phx-click="">
+                  <Text>Filled Tonal Button</Text>
+                </FilledTonalButton>
+                """.templateToTest()
+        )
+    }
+
+    @Test
+    fun checkSimpleOutlinedButtonTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                OutlinedButton(onClick = {}) {
+                    Text(text = "Outlined Button")
+                }
+            },
+            template = """
+                <OutlinedButton phx-click="">
+                  <Text>Outlined Button</Text>
+                </OutlinedButton>
+                """.templateToTest()
+        )
+    }
+
+    @Test
+    fun checkSimpleTextButtonTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                TextButton(onClick = {}) {
+                    Text(text = "Text Button")
+                }
+            },
+            template = """
+                <TextButton phx-click="">
+                  <Text>Text Button</Text>
+                </TextButton>
                 """.templateToTest()
         )
     }

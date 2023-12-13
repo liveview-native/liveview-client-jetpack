@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -70,7 +69,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  */
 internal class CardDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
-    private val shape: Shape = builder.shape
+    private val shape: Shape? = builder.shape
     private val colors: ImmutableMap<String, String>? = builder.cardColors?.toImmutableMap()
     private val elevation: ImmutableMap<String, String>? = builder.elevation?.toImmutableMap()
     private val border: BorderStroke? = builder.border
@@ -95,7 +94,7 @@ internal class CardDTO private constructor(builder: Builder) :
                             hasHorizontalScroll,
                             Modifier.horizontalScroll(rememberScrollState())
                         ),
-                    shape = shape,
+                    shape = shape ?: CardDefaults.shape,
                     colors = getCardColors(colors),
                     elevation = getCardElevation(elevation),
                 ) {
@@ -114,7 +113,7 @@ internal class CardDTO private constructor(builder: Builder) :
                         .optional(
                             hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
                         ),
-                    shape = shape,
+                    shape = shape ?: CardDefaults.elevatedShape,
                     colors = getElevatedCardColors(colors),
                     elevation = getElevatedCardElevation(elevation),
                 ) {
@@ -133,7 +132,7 @@ internal class CardDTO private constructor(builder: Builder) :
                         .optional(
                             hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
                         ),
-                    shape = shape,
+                    shape = CardDefaults.outlinedShape,
                     colors = getOutlinedCardColors(colors),
                     elevation = getOutlinedCardElevation(elevation),
                     border = border ?: ButtonDefaults.outlinedButtonBorder,
@@ -147,7 +146,7 @@ internal class CardDTO private constructor(builder: Builder) :
 
     @Composable
     private fun getCardColors(cardColors: ImmutableMap<String, String>?): CardColors {
-        val defaultValue = CardDefaults.elevatedCardColors()
+        val defaultValue = CardDefaults.cardColors()
         return if (cardColors == null) {
             defaultValue
         } else {
@@ -165,7 +164,7 @@ internal class CardDTO private constructor(builder: Builder) :
 
     @Composable
     private fun getElevatedCardColors(cardColors: ImmutableMap<String, String>?): CardColors {
-        val defaultValue = CardDefaults.cardColors()
+        val defaultValue = CardDefaults.elevatedCardColors()
         return if (cardColors == null) {
             defaultValue
         } else {
@@ -258,7 +257,7 @@ internal class CardDTO private constructor(builder: Builder) :
     }
 
     internal class Builder : ComposableBuilder() {
-        var shape: Shape = RoundedCornerShape(0.dp)
+        var shape: Shape? = null
             private set
         var cardColors: Map<String, String>? = null
             private set
