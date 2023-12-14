@@ -141,7 +141,7 @@ internal fun horizontalAlignmentFromString(horizontalAlignment: String) =
  */
 internal fun horizontalArrangementFromString(horizontalArrangement: String) =
     when (horizontalArrangement) {
-        "spacedEvenly" -> Arrangement.SpaceEvenly
+        "spaceEvenly" -> Arrangement.SpaceEvenly
         "spaceAround" -> Arrangement.SpaceAround
         "spaceBetween" -> Arrangement.SpaceBetween
         "start" -> Arrangement.Start

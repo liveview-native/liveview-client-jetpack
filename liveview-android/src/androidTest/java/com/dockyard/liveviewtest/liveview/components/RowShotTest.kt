@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,9 +16,9 @@ import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 
-class ColumnShotTest : LiveViewComposableTest() {
+class RowShotTest : LiveViewComposableTest() {
     @Composable
-    private fun VerticalTestContent() {
+    private fun HorizontalTestContent() {
         Box(Modifier.background(Color.Red)) {
             Text(text = "Red")
         }
@@ -32,150 +31,141 @@ class ColumnShotTest : LiveViewComposableTest() {
     }
 
     private val contentHeight = 150
-    private val verticalContentTestTemplate = """
+    private val horizontalContentTestTemplate = """
             <Box background="#FFFF0000"><Text>Red</Text></Box>
             <Box background="#FF00FF00"><Text>Green</Text></Box>
             <Box background="#FF0000FF"><Text>Blue</Text></Box>
             """
 
     @Test
-    fun simpleColumnTest() {
-        compareNativeComposableWithTemplate(
-            nativeComposable = {
-                Column {
-                    Box(Modifier.background(Color.Red)) {
-                        Text(text = "Red")
-                    }
-                    Box(Modifier.background(Color.Green)) {
-                        Text(text = "Green")
-                    }
-                    Box(Modifier.background(Color.Blue)) {
-                        Text(text = "Blue")
-                    }
-                }
-            }, template = """
-                <Column>
-                    <Box background="#FFFF0000"><Text>Red</Text></Box>
-                    <Box background="#FF00FF00"><Text>Green</Text></Box>
-                    <Box background="#FF0000FF"><Text>Blue</Text></Box>
-                </Column>
-                """.templateToTest()
-        )
-    }
-
-    @Test
-    fun columnWithVerticalArrangementTest() {
+    fun simpleRowTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Row {
-                    Column(
-                        modifier = Modifier.height(contentHeight.dp),
-                        verticalArrangement = Arrangement.Bottom
-                    ) {
-                        VerticalTestContent()
-                    }
-                    Column(
-                        modifier = Modifier.height(contentHeight.dp),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        VerticalTestContent()
-                    }
-                    Column(
-                        modifier = Modifier.height(contentHeight.dp),
-                        verticalArrangement = Arrangement.SpaceAround
-                    ) {
-                        VerticalTestContent()
-                    }
-                    Column(
-                        modifier = Modifier.height(contentHeight.dp),
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        VerticalTestContent()
-                    }
-                    Column(
-                        modifier = Modifier.height(contentHeight.dp),
-                        verticalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        VerticalTestContent()
-                    }
+                    HorizontalTestContent()
                 }
             }, template = """
                 <Row>
-                  <Column height="$contentHeight" vertical-arrangement="bottom">
-                    $verticalContentTestTemplate
-                  </Column>
-                  <Column height="$contentHeight" vertical-arrangement="center">
-                    $verticalContentTestTemplate
-                  </Column>
-                  <Column height="$contentHeight" vertical-arrangement="spaceAround">
-                    $verticalContentTestTemplate
-                  </Column>
-                  <Column height="$contentHeight" vertical-arrangement="spaceBetween">
-                    $verticalContentTestTemplate
-                  </Column>
-                  <Column height="$contentHeight" vertical-arrangement="spaceEvenly">
-                    $verticalContentTestTemplate
-                  </Column>
+                    $horizontalContentTestTemplate
                 </Row>
                 """.templateToTest()
         )
     }
 
     @Test
-    fun columnWithHorizontalAlignmentTest() {
+    fun rowWithHorizontalArrangementTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
-                Row(Modifier.fillMaxWidth()) {
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(contentHeight.dp),
-                        horizontalAlignment = Alignment.Start
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
                     ) {
-                        VerticalTestContent()
+                        HorizontalTestContent()
                     }
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(contentHeight.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        VerticalTestContent()
+                        HorizontalTestContent()
                     }
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(contentHeight.dp),
-                        horizontalAlignment = Alignment.End
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        VerticalTestContent()
+                        HorizontalTestContent()
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        HorizontalTestContent()
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        HorizontalTestContent()
+                    }
+                }
+            }, template = """
+                <Column>
+                  <Row width="fill" horizontal-arrangement="end">
+                    $horizontalContentTestTemplate
+                  </Row>
+                  <Row width="fill" horizontal-arrangement="center">
+                    $horizontalContentTestTemplate
+                  </Row>
+                  <Row width="fill" horizontal-arrangement="spaceAround">
+                    $horizontalContentTestTemplate
+                  </Row>
+                  <Row width="fill" horizontal-arrangement="spaceBetween">
+                    $horizontalContentTestTemplate
+                  </Row>
+                  <Row width="fill" horizontal-arrangement="spaceEvenly">
+                    $horizontalContentTestTemplate
+                  </Row>
+                </Row>
+                """.templateToTest()
+        )
+    }
+
+    @Test
+    fun rowWithVerticalAlignmentTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Column(Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(contentHeight.dp),
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        HorizontalTestContent()
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(contentHeight.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        HorizontalTestContent()
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(contentHeight.dp),
+                        verticalAlignment = Alignment.Bottom
+                    ) {
+                        HorizontalTestContent()
                     }
                 }
 
             },
             template = """
-                <Row width="fill">
-                  <Column weight="1" height="$contentHeight" horizontal-alignment="start">
-                    $verticalContentTestTemplate
-                  </Column>
-                  <Column weight="1" height="$contentHeight" horizontal-alignment="center">
-                    $verticalContentTestTemplate
-                  </Column>
-                  <Column weight="1" height="$contentHeight" horizontal-alignment="end">
-                    $verticalContentTestTemplate
-                  </Column>
+                <Column width="fill">
+                  <Row width="fill" height="$contentHeight" vertical-alignment="top">
+                    $horizontalContentTestTemplate
+                  </Row>
+                  <Row width="fill" height="$contentHeight" vertical-alignment="center">
+                    $horizontalContentTestTemplate
+                  </Row>
+                  <Row width="fill" height="$contentHeight" vertical-alignment="bottom">
+                    $horizontalContentTestTemplate
+                  </Row>
                 </Row>
                 """.templateToTest()
         )
     }
 
     @Test
-    fun columnUsingWeightTest() {
+    fun rowUsingWeightTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
-                Column(
+                Row(
                     Modifier
-                        .size(200.dp)
+                        .height(200.dp)
+                        .fillMaxWidth()
                         .background(Color.LightGray)
                 ) {
                     Box(
@@ -208,7 +198,7 @@ class ColumnShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column height="200" width="200" background="#FFCCCCCC">
+                <Row height="200" width="fill" background="#FFCCCCCC">
                   <Box background="#FFFF0000" width="fill" weight="25" content-alignment="center">
                     <Text>25%</Text>
                   </Box>
@@ -224,21 +214,24 @@ class ColumnShotTest : LiveViewComposableTest() {
     }
 
     @Test
-    fun columnWithIndividualAlignmentTest() {
+    fun rowWithIndividualAlignmentTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
-                Column(Modifier.size(100.dp)) {
-                    Text(text = "Start", Modifier.align(Alignment.Start))
-                    Text(text = "Center", Modifier.align(Alignment.CenterHorizontally))
-                    Text(text = "End", Modifier.align(Alignment.End))
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)) {
+                    Text(text = "Top", Modifier.align(Alignment.Top))
+                    Text(text = "Center", Modifier.align(Alignment.CenterVertically))
+                    Text(text = "Bottom", Modifier.align(Alignment.Bottom))
                 }
             },
             template = """
-                <Column size="100">
-                  <Text align="start">Start</Text>
+                <Row width="fill" height="200">
+                  <Text align="top">Top</Text>
                   <Text align="center">Center</Text>
-                  <Text align="end">End</Text>
-                </Column>
+                  <Text align="bottom">Bottom</Text>
+                </Row>
                 """.templateToTest()
         )
     }

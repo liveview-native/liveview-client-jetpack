@@ -145,7 +145,7 @@ object ColorAttrs {
 
     // NavigationDrawerItem colors
     const val colorAttrSelectedContainerColor = "selectedContainerColor"
-    const val colorAttrUnselectedContainerColor = "selectedContainerColor"
+    const val colorAttrUnselectedContainerColor = "unselectedContainerColor"
     const val colorAttrSelectedIconColor = "selectedIconColor"
     const val colorAttrUnselectedIconColor = "unselectedIconColor"
     const val colorAttrSelectedTextColor = "selectedTextColor"

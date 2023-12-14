@@ -117,7 +117,7 @@ internal class NavigationBarItemDTO private constructor(builder: Builder) :
     }
 
     internal class Builder(val rowScope: RowScope) : ComposableBuilder() {
-        var alwaysShowLabel: Boolean = false
+        var alwaysShowLabel: Boolean = true
             private set
         var colors: Map<String, String>? = null
             private set
