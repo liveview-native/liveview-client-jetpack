@@ -81,13 +81,14 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  */
 internal class ButtonDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
-    private val onClick: () -> Unit = builder.onClick
+    private val onClick: String = builder.onClick
     private val enabled: Boolean = builder.enabled
     private val shape: Shape? = builder.shape
     private val colors: ImmutableMap<String, String>? = builder.colors?.toImmutableMap()
     private val elevation: ImmutableMap<String, String>? = builder.elevations?.toImmutableMap()
     private val contentPadding: PaddingValues? = builder.contentPadding
     private val border: BorderStroke? = builder.border
+    private val value: Any? = builder.value
 
     @Composable
     override fun Compose(
@@ -99,7 +100,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
             // Filled Button
             ComposableTypes.button ->
                 Button(
-                    onClick = onClick,
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.shape,
@@ -115,7 +116,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
             // Elevated Button
             ComposableTypes.elevatedButton ->
                 ElevatedButton(
-                    onClick = onClick,
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.elevatedShape,
@@ -132,7 +133,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
             // Filled Tonal Button
             ComposableTypes.filledTonalButton ->
                 FilledTonalButton(
-                    onClick = onClick,
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.filledTonalShape,
@@ -149,7 +150,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
             // Outlined Button
             ComposableTypes.outlinedButton ->
                 OutlinedButton(
-                    onClick = onClick,
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.outlinedShape,
@@ -166,7 +167,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
             // Text Button
             ComposableTypes.textButton ->
                 TextButton(
-                    onClick = onClick,
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.textShape,
@@ -338,7 +339,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
     }
 
     internal class Builder : ComposableBuilder() {
-        var onClick: () -> Unit = {}
+        var onClick: String = ""
             private set
         var enabled: Boolean = true
             private set
@@ -363,10 +364,9 @@ internal class ButtonDTO private constructor(builder: Builder) :
          * <Button phx-click="yourServerEventHandler">...</Button>
          * ```
          * @param event event name defined on the server to handle the button's click.
-         * @param pushEvent function responsible to dispatch the server call.
          */
-        fun onClick(event: String, pushEvent: PushEvent?): Builder = apply {
-            this.onClick = onClickFromString(pushEvent, event)
+        fun onClick(event: String): Builder = apply {
+            this.onClick = event
         }
 
         /**
@@ -508,7 +508,7 @@ internal object ButtonDtoFactory : ComposableViewFactory<ButtonDTO, ButtonDTO.Bu
             attrContentPadding -> builder.contentPadding(attribute.value)
             attrElevation -> builder.elevation(attribute.value)
             attrEnabled -> builder.enabled(attribute.value)
-            attrPhxClick -> builder.onClick(attribute.value, pushEvent)
+            attrPhxClick -> builder.onClick(attribute.value)
             attrShape -> builder.shape(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as ButtonDTO.Builder

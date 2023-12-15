@@ -56,6 +56,7 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
     private val shape = builder.shape
     private val selected = builder.selected
     private val colors = builder.colors?.toImmutableMap()
+    private val value = builder.value
 
     @Composable
     override fun Compose(
@@ -80,7 +81,7 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
                 }
             },
             selected = selected,
-            onClick = onClick,
+            onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
             icon = ndiIcon?.let {
                 {
                     PhxLiveView(it, pushEvent, composableNode, null)
@@ -124,7 +125,7 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
     }
 
     internal class Builder : ComposableBuilder() {
-        var onClick: () -> Unit = {}
+        var onClick: String = ""
             private set
 
         var shape: Shape? = null
@@ -143,10 +144,9 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
          * <NavigationDrawerItem phx-click="yourServerEventHandler">...</NavigationDrawerItem>
          * ```
          * @param event event name defined on the server to handle the button's click.
-         * @param pushEvent function responsible to dispatch the server call.
          */
-        fun onClick(event: String, pushEvent: PushEvent?) = apply {
-            this.onClick = onClickFromString(pushEvent, event)
+        fun onClick(event: String) = apply {
+            this.onClick = event
         }
 
         /**
@@ -211,7 +211,7 @@ internal object NavigationDrawerItemDtoFactory :
         attributes.fold(NavigationDrawerItemDTO.Builder()) { builder, attribute ->
             when (attribute.name) {
                 attrColors -> builder.colors(attribute.value)
-                attrPhxClick -> builder.onClick(attribute.value, pushEvent)
+                attrPhxClick -> builder.onClick(attribute.value)
                 attrSelected -> builder.selected(attribute.value)
                 attrShape -> builder.shape(attribute.value)
                 else -> builder.handleCommonAttributes(attribute, pushEvent, scope)

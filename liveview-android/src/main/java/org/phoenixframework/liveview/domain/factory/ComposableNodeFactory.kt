@@ -18,11 +18,12 @@ import org.phoenixframework.liveview.data.dto.IconButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconDtoFactory
 import org.phoenixframework.liveview.data.dto.ImageDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyColumnDtoFactory
-import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyGridDtoFactory
+import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalBottomSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalDrawerSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalNavigationDrawerDtoFactory
+import org.phoenixframework.liveview.data.dto.NavigationBarDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ProgressIndicatorDtoFactory
 import org.phoenixframework.liveview.data.dto.RadioButtonDtoFactory
@@ -55,6 +56,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.bottomAppBar, BottomAppBarDtoFactory)
             registerComponent(ComposableTypes.button, ButtonDtoFactory)
             registerComponent(ComposableTypes.card, CardDtoFactory)
+            registerComponent(ComposableTypes.centerAlignedTopAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.checkbox, CheckBoxDtoFactory)
             registerComponent(
                 ComposableTypes.circularProgressIndicator,
@@ -76,6 +78,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.image, ImageDtoFactory)
             registerComponent(ComposableTypes.largeFab, FloatingActionButtonDtoFactory)
+            registerComponent(ComposableTypes.largeTopAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.lazyColumn, LazyColumnDtoFactory)
             registerComponent(ComposableTypes.lazyHorizontalGrid, LazyGridDtoFactory)
             registerComponent(ComposableTypes.lazyRow, LazyRowDtoFactory)
@@ -84,12 +87,14 @@ object ComposableNodeFactory {
                 ComposableTypes.linearProgressIndicator,
                 ProgressIndicatorDtoFactory
             )
+            registerComponent(ComposableTypes.mediumTopAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.modalBottomSheet, ModalBottomSheetDtoFactory)
             registerComponent(ComposableTypes.modalDrawerSheet, ModalDrawerSheetDtoFactory)
             registerComponent(
                 ComposableTypes.modalNavigationDrawer,
                 ModalNavigationDrawerDtoFactory
             )
+            registerComponent(ComposableTypes.navigationBar, NavigationBarDtoFactory)
             registerComponent(ComposableTypes.navigationDrawerItem, NavigationDrawerItemDtoFactory)
             registerComponent(ComposableTypes.outlinedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedCard, CardDtoFactory)

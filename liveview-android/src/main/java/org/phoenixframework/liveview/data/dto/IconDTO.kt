@@ -8,17 +8,17 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentDescription
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
 import org.phoenixframework.liveview.data.constants.Attrs.attrTint
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 /**
  * A Material Design icon component that draws a local imageVector using tint. Icon is an

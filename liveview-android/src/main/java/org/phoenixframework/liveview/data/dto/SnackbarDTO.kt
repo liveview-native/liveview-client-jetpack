@@ -11,8 +11,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.constants.Attrs.attrActionColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrActionContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrActionEvent
@@ -26,8 +24,9 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrLabel
 import org.phoenixframework.liveview.data.constants.Attrs.attrMessage
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrWithDismissAction
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CLICK
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -91,7 +90,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
             onDispose {
                 if (!snackbarData.dismissWasCalled) {
                     dismissEvent?.let {
-                        pushEvent(EVENT_TYPE_CLICK, it, "", null)
+                        onClickFromString(pushEvent, it).invoke()
                     }
                 }
             }
@@ -292,14 +291,14 @@ internal class SnackbarDTO private constructor(builder: Builder) :
 
         override fun dismiss() {
             dismissEventName?.let {
-                pushEvent(EVENT_TYPE_CLICK, it, "", null)
+                onClickFromString(pushEvent, it).invoke()
                 dismissWasCalled = true
             }
         }
 
         override fun performAction() {
             actionEventName?.let {
-                pushEvent(EVENT_TYPE_CLICK, it, "", null)
+                onClickFromString(pushEvent, it).invoke()
             }
         }
     }

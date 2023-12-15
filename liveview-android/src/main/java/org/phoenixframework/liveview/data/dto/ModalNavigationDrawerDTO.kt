@@ -17,7 +17,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrScrimColor
 import org.phoenixframework.liveview.data.constants.Templates
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CLICK
+import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -67,9 +67,9 @@ internal class ModalNavigationDrawerDTO private constructor(builder: Builder) :
                 initialValue = if (isOpen) DrawerValue.Open else DrawerValue.Closed,
                 confirmStateChange = { drawerValue ->
                     if (drawerValue == DrawerValue.Open) {
-                        pushEvent(EVENT_TYPE_CLICK, onOpen, "", null)
+                        pushEvent(EVENT_TYPE_CHANGE, onOpen, "", null)
                     } else {
-                        pushEvent(EVENT_TYPE_CLICK, onClose, "", null)
+                        pushEvent(EVENT_TYPE_CHANGE, onClose, "", null)
                     }
                     true
                 }

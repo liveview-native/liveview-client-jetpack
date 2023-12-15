@@ -36,9 +36,10 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  */
 internal class IconButtonDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
-    private val onClick: () -> Unit = builder.onClick
+    private val onClick: String = builder.onClick
     private val enabled: Boolean = builder.enabled
     private val colors: ImmutableMap<String, String>? = builder.colors?.toImmutableMap()
+    private val value: Any? = builder.value
 
     @Composable
     override fun Compose(
@@ -47,7 +48,7 @@ internal class IconButtonDTO private constructor(builder: Builder) :
         pushEvent: PushEvent,
     ) {
         IconButton(
-            onClick = onClick,
+            onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
             enabled = enabled,
             colors = getIconButtonColors(colors),
         ) {
@@ -78,7 +79,7 @@ internal class IconButtonDTO private constructor(builder: Builder) :
     }
 
     internal class Builder : ComposableBuilder() {
-        var onClick: () -> Unit = {}
+        var onClick: String = ""
             private set
         var enabled: Boolean = true
             private set
@@ -92,10 +93,9 @@ internal class IconButtonDTO private constructor(builder: Builder) :
          * <IconButton phx-click="yourServerEventHandler">...</IconButton>
          * ```
          * @param event event name defined on the server to handle the button's click.
-         * @param pushEvent function responsible to dispatch the server call.
          */
-        fun onClick(event: String, pushEvent: PushEvent?) = apply {
-            this.onClick = onClickFromString(pushEvent, event)
+        fun onClick(event: String) = apply {
+            this.onClick = event
         }
 
         /**
@@ -150,7 +150,7 @@ internal object IconButtonDtoFactory :
         when (attribute.name) {
             attrColors -> builder.colors(attribute.value)
             attrEnabled -> builder.enabled(attribute.value)
-            attrPhxClick -> builder.onClick(attribute.value, pushEvent)
+            attrPhxClick -> builder.onClick(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as IconButtonDTO.Builder
     }.build()

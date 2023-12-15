@@ -18,9 +18,9 @@ import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.optional
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
-import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 /**
  * A layout composable that places its children in a horizontal sequence.

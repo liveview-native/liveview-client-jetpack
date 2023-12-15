@@ -8,18 +8,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrPropagateMinConstraints
 import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.optional
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
-import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 /**
  * The Box will organize the components of top of each other in a Z-order.

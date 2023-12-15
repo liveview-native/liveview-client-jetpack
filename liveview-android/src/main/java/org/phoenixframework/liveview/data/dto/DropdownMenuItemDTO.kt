@@ -13,7 +13,6 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLeadingIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTextColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTrailingIconColor
@@ -79,9 +78,7 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
                     PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
-            onClick = {
-                pushEvent.invoke(ComposableBuilder.EVENT_TYPE_CLICK, event, value, null)
-            },
+            onClick = onClickFromString(pushEvent, event, value?.toString() ?: ""),
             modifier = modifier,
             leadingIcon = leadingIcon?.let {
                 {
@@ -129,8 +126,6 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
     }
 
     internal class Builder : ComposableBuilder() {
-        var value: String = ""
-            private set
         var clickEventName: String = ""
             private set
         var enabled: Boolean = true
@@ -139,17 +134,6 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
             private set
         var contentPadding: PaddingValues? = null
             private set
-
-        /**
-         * Sets the component value. This value will be send to the server when the item is clicked.
-         * ```
-         * <DropdownMenuItem phx-value="foo">...</DropdownMenuItem>
-         * ```
-         * @param value component's value.
-         */
-        fun value(value: String) = apply {
-            this.value = value
-        }
 
         /**
          * Sets the event name to be triggered on the server when the item is clicked.
@@ -219,7 +203,6 @@ internal object DropdownMenuItemDtoFactory :
             attrContentPadding -> builder.contentPadding(attribute.value)
             attrEnabled -> builder.enabled(attribute.value)
             attrPhxClick -> builder.clickEventName(attribute.value)
-            attrPhxValue -> builder.value(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as DropdownMenuItemDTO.Builder
     }.build()

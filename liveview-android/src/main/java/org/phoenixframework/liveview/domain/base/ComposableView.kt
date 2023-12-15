@@ -35,6 +35,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrMatchParentSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrMenuAnchor
 import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
@@ -42,6 +43,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.dto.alignmentFromString
 import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
+import org.phoenixframework.liveview.data.dto.onClickFromString
 import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.toColor
@@ -76,6 +78,8 @@ abstract class ComposableBuilder {
     var hasHorizontalScrolling: Boolean = false
         private set
     var modifier: Modifier = Modifier
+        private set
+    var value: Any? = null
         private set
 
     /**
@@ -205,9 +209,21 @@ abstract class ComposableBuilder {
     private fun clickable(event: String, pushEvent: PushEvent?) = apply {
         modifier = modifier.then(
             Modifier.clickable {
-                pushEvent?.invoke(EVENT_TYPE_CLICK, event, "", null)
+                onClickFromString(pushEvent, event, value?.toString() ?: "").invoke()
             }
         )
+    }
+
+    /**
+     * Sets the phx-value binding.
+     *
+     * ```
+     * <Composable phx-value="someValue" />
+     * ```
+     * @param value event name defined on the server to handle the composable's click.
+     */
+    internal fun value(value: Any?) = apply {
+        this.value = value
     }
 
     /**
@@ -275,6 +291,7 @@ abstract class ComposableBuilder {
             attrHorizontalPadding -> paddingHorizontal(attribute.value)
             attrPadding -> padding(attribute.value)
             attrPhxClick -> clickable(attribute.value, pushEvent)
+            attrPhxValue -> value(attribute.value)
             attrSize -> size(attribute.value)
             attrVerticalPadding -> paddingVertical(attribute.value)
             attrWidth -> width(attribute.value)

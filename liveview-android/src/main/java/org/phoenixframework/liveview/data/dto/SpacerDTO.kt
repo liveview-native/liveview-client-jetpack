@@ -8,8 +8,8 @@ import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.ui.phx_components.paddingIfNotNull
 
 /**
  * Component that represents an empty space layout, whose size can be defined using width, height
