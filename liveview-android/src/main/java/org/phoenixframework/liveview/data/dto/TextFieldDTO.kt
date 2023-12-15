@@ -38,11 +38,11 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrKeyboardType
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxLines
 import org.phoenixframework.liveview.data.constants.Attrs.attrMinLines
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrReadOnly
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrSingleLine
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
-import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.constants.Attrs.attrVisualTransformation
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCursorColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledBorderColor
@@ -232,7 +232,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
                     singleLine = singleLine,
                     maxLines = maxLines,
                     minLines = minLines,
-                    shape = shape ?: TextFieldDefaults.shape,
+                    shape = shape ?: OutlinedTextFieldDefaults.shape,
                     colors = getOutlinedTextFieldColors(colors)
                 )
             }
@@ -806,11 +806,11 @@ internal object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO, TextFi
                     attrMaxLines -> builder.maxLines(attribute.value)
                     attrMinLines -> builder.minLines(attribute.value)
                     attrPhxClick -> builder.onKeyboardAction(attribute.value, pushEvent)
+                    attrPhxValue -> builder.value(attribute.value)
                     attrReadOnly -> builder.readOnly(attribute.value)
                     attrShape -> builder.shape(attribute.value)
                     attrSingleLine -> builder.singleLine(attribute.value)
                     attrStyle -> builder.textStyle(attribute.value)
-                    attrText -> builder.value(attribute.value)
                     attrVisualTransformation -> builder.visualTransformation(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
                 } as TextFieldDTO.Builder
