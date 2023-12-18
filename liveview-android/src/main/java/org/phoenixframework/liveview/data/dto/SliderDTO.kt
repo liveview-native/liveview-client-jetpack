@@ -175,6 +175,7 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
                     colors = colors,
                     track = { positions ->
                         track?.let {
+                            //TODO how to pass the positions to the child?
                             PhxLiveView(it, pushEvent, composableNode, null)
                         } ?: SliderDefaults.Track(
                             sliderPositions = positions,
@@ -184,6 +185,7 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
                     },
                     startThumb = {
                         startThumb?.let {
+                            //TODO how to pass the positions to the child?
                             PhxLiveView(it, pushEvent, composableNode, null)
                         } ?: SliderDefaults.Thumb(
                             interactionSource = interactionSource,

@@ -112,3 +112,9 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 tasks.register('deleteScreenshots', Delete) {
     delete(files("${project.projectDir}/screenshots/"))
 }
+
+// Runnning screenshot tests
+// Recording the image references
+// ./gradlew executeScreenshotTests -Precord -Pandroid.testInstrumentationRunnerArguments.record=true
+// Testing
+// ./gradlew executeScreenshotTests
