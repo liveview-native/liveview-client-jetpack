@@ -12,6 +12,7 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColumns
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
+import org.phoenixframework.liveview.data.constants.Attrs.attrRows
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
@@ -31,7 +32,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *   // Children
  * </LazyVerticalGrid>
  *
- * <LazyHorizontalGrid columns="{'type': 'fixed', 'count': '3'}">
+ * <LazyHorizontalGrid rows="{'type': 'fixed', 'count': '3'}">
  *   // Children
  * </LazyHorizontalGrid>
  * ```
@@ -195,7 +196,7 @@ internal object LazyGridDtoFactory :
                 builder
             } else {
                 when (attribute.name) {
-                    attrColumns -> builder.columns(attribute.value)
+                    attrColumns, attrRows -> builder.columns(attribute.value)
                     attrHorizontalArrangement -> builder.horizontalArrangement(attribute.value)
                     attrVerticalArrangement -> builder.verticalArrangement(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)

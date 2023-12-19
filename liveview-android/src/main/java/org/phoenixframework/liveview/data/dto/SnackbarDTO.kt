@@ -14,13 +14,13 @@ import androidx.compose.ui.graphics.Shape
 import org.phoenixframework.liveview.data.constants.Attrs.attrActionColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrActionContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrActionEvent
+import org.phoenixframework.liveview.data.constants.Attrs.attrActionLabel
 import org.phoenixframework.liveview.data.constants.Attrs.attrActionOnNewLine
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrDismissActionContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrDismissEvent
 import org.phoenixframework.liveview.data.constants.Attrs.attrDuration
-import org.phoenixframework.liveview.data.constants.Attrs.attrLabel
 import org.phoenixframework.liveview.data.constants.Attrs.attrMessage
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrWithDismissAction
@@ -204,11 +204,11 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * Optional action label to show as button in the Snackbar.
          * ```
-         * <Snackbar label="Action" />
+         * <Snackbar action-label="Action" />
          * ```
          * @param label action label to show as button in the Snackbar
          */
-        fun label(label: String) = apply {
+        fun actionLabel(label: String) = apply {
             this.visuals = visuals.copy(snackbarLabel = label)
         }
 
@@ -352,6 +352,7 @@ internal object SnackbarDtoFactory : ComposableViewFactory<SnackbarDTO, Snackbar
         when (attribute.name) {
             attrActionColor -> builder.actionColor(attribute.value)
             attrActionEvent -> builder.actionEvent(attribute.value)
+            attrActionLabel -> builder.actionLabel(attribute.value)
             attrActionOnNewLine -> builder.actionOnNewLine(attribute.value)
             attrActionContentColor -> builder.actionContentColor(attribute.value)
             attrContainerColor -> builder.containerColor(attribute.value)
@@ -359,7 +360,6 @@ internal object SnackbarDtoFactory : ComposableViewFactory<SnackbarDTO, Snackbar
             attrDismissActionContentColor -> builder.dismissActionContentColor(attribute.value)
             attrDismissEvent -> builder.dismissEvent(attribute.value)
             attrDuration -> builder.duration(attribute.value)
-            attrLabel -> builder.label(attribute.value)
             attrMessage -> builder.message(attribute.value)
             attrShape -> builder.shape(attribute.value)
             attrWithDismissAction -> builder.withDismissAction(attribute.value)
