@@ -1,22 +1,22 @@
 defmodule LiveViewNativeJetpack.Platform do
   defstruct [
     :app_name,
+    :os_name,
+    :os_version,
+    :simulator_opts,
+    :user_interface_idiom,
     custom_modifiers: []
   ]
 
-  defimpl LiveViewNativePlatform do
+  defimpl LiveViewNativePlatform.Kit do
     require Logger
 
-    def context(struct) do
-      LiveViewNativePlatform.Context.define(:jetpack,
+    def compile(struct) do
+      LiveViewNativePlatform.Env.define(:jetpack,
         custom_modifiers: struct.custom_modifiers,
         render_macro: :sigil_JETPACK,
         otp_app: :live_view_native_jetpack
       )
-    end
-
-    def start_simulator(_struct, _opts \\ []) do
-      raise "TODO: Implement this"
     end
   end
 end

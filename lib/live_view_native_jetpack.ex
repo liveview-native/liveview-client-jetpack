@@ -1,3 +1,8 @@
 defmodule LiveViewNativeJetpack do
-  use LiveViewNativePlatform.Platform
+  use LiveViewNativePlatform
+
+  def platforms,
+    do: [
+      LiveViewNativeJetpack.Platform
+    ]
 end

@@ -5,7 +5,7 @@ defmodule LiveViewNativeJetpack.MixProject do
     [
       app: :live_view_native_jetpack,
       version: "0.0.1",
-      elixir: "~> 1.13",
+      elixir: "~> 1.14",
       description: "LiveView Native platform for Jetpack Compose",
       package: package(),
       start_permanent: Mix.env() == :prod,
@@ -25,7 +25,7 @@ defmodule LiveViewNativeJetpack.MixProject do
     [
       {:jason, "~> 1.2"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:live_view_native_platform, "~> 0.0.7"}
+      {:live_view_native_platform, "~> 0.1"}
     ]
   end
 
