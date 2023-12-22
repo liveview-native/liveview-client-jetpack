@@ -47,6 +47,8 @@ object ComposableTypes {
     const val smallFab = "SmallFloatingActionButton"
     const val spacer = "Spacer"
     const val switch = "Switch"
+    const val tab = "Tab"
+    const val tabRow = "TabRow"
     const val text = "Text"
     const val textButton = "TextButton"
     const val textField = "TextField"
