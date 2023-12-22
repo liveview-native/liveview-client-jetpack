@@ -85,6 +85,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.lazyHorizontalGrid, LazyGridDtoFactory)
             registerComponent(ComposableTypes.lazyRow, LazyRowDtoFactory)
             registerComponent(ComposableTypes.lazyVerticalGrid, LazyGridDtoFactory)
+            registerComponent(ComposableTypes.leadingIconTab, TabDtoFactory)
             registerComponent(
                 ComposableTypes.linearProgressIndicator,
                 ProgressIndicatorDtoFactory
@@ -105,6 +106,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.rangeSlider, SliderDtoFactory)
             registerComponent(ComposableTypes.row, RowDtoFactory)
             registerComponent(ComposableTypes.scaffold, ScaffoldDtoFactory)
+            registerComponent(ComposableTypes.scrollableTabRow, TabRowDtoFactory)
             registerComponent(ComposableTypes.slider, SliderDtoFactory)
             registerComponent(ComposableTypes.smallFab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)

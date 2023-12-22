@@ -43,6 +43,7 @@ object Attrs {
     const val attrDrawerContentColor = "drawer-content-color"
     const val attrDrawerShape = "drawer-shape"
     const val attrDuration = "duration"
+    const val attrEdgePadding = "edge-padding"
     const val attrElevation = "elevation"
     const val attrEnabled = "enabled"
     const val attrExpanded = "expanded"

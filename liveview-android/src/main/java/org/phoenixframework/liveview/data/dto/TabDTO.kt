@@ -1,6 +1,7 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.LeadingIconTab
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Tab
 import androidx.compose.runtime.Composable
@@ -14,6 +15,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrUnselectedContentC
 import org.phoenixframework.liveview.data.constants.Templates
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -24,6 +26,27 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 /**
  * Material Design tab.
  * Usually, this component is declared inside of a TabRow.
+ * This component supports the following children:
+ * - a text can be defined using a child with `text` template;
+ * - a icon bar can be defined using a child with `bottomBar` template;
+ * ```
+ * <Tab selected="true" phx-click="selectTab" phx-value="0">
+ *   <Text template="text">Tab Title</Text>
+ *   <Icon template="icon" image-vector="filled:Add"/>
+ * </Tab>
+ * ```
+ * The code above shows the icon on top of the title. In order to have the icon on the left of the
+ * title, use `LeadingIconTab`.
+ *
+ * A custom content can be set to a tab defining children without any template.
+ * ```
+ * <Tab selected="true" phx-click="selectTab" phx-value="0">
+ *   <Row>
+ *     <Icon template="icon" image-vector="filled:Add"/>
+ *     <Text>Tab Title</Text>
+ *   </Row>
+ * </Tab>
+ * ```
  */
 internal class TabDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -45,24 +68,63 @@ internal class TabDTO private constructor(builder: Builder) :
             composableNode?.children?.find { it.node?.template == Templates.templateIcon }
         }
         val selectedColor = selectedContentColor ?: LocalContentColor.current
-        Tab(
-            selected = selected,
-            onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
-            modifier = modifier,
-            enabled = enabled,
-            text = text?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
+        when (composableNode?.node?.tag) {
+            ComposableTypes.tab ->
+                if (text == null && icon == null) {
+                    Tab(
+                        selected = selected,
+                        onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                        modifier = modifier,
+                        enabled = enabled,
+                        selectedContentColor = selectedColor,
+                        unselectedContentColor = unselectedContentColor ?: selectedColor,
+                    ) {
+                        composableNode.children.forEach {
+                            PhxLiveView(it, pushEvent, composableNode, null, this)
+                        }
+                    }
+
+                } else {
+                    Tab(
+                        selected = selected,
+                        onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                        modifier = modifier,
+                        enabled = enabled,
+                        text = text?.let {
+                            {
+                                PhxLiveView(it, pushEvent, composableNode, null)
+                            }
+                        },
+                        icon = icon?.let {
+                            {
+                                PhxLiveView(it, pushEvent, composableNode, null)
+                            }
+                        },
+                        selectedContentColor = selectedColor,
+                        unselectedContentColor = unselectedContentColor ?: selectedColor,
+                    )
                 }
-            },
-            icon = icon?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            selectedContentColor = selectedColor,
-            unselectedContentColor = unselectedContentColor ?: selectedColor,
-        )
+
+            ComposableTypes.leadingIconTab ->
+                LeadingIconTab(
+                    selected = selected,
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    text = text?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    } ?: {},
+                    icon = icon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    } ?: {},
+                    modifier = modifier,
+                    enabled = enabled,
+                    selectedContentColor = selectedColor,
+                    unselectedContentColor = unselectedContentColor ?: selectedColor,
+                )
+        }
     }
 
     internal class Builder : ComposableBuilder() {
@@ -118,10 +180,10 @@ internal class TabDTO private constructor(builder: Builder) :
          * ```
          * <Tab selected-content-color="#FFFFFFFF" />
          * ```
-         * @param contentColor the background color in AARRGGBB format.
+         * @param selectedContentColor the background color in AARRGGBB format.
          */
-        fun selectedContentColor(contentColor: String) = apply {
-            this.selectedContentColor = contentColor.toColor()
+        fun selectedContentColor(selectedContentColor: String) = apply {
+            this.selectedContentColor = selectedContentColor.toColor()
         }
 
         /**
@@ -129,10 +191,10 @@ internal class TabDTO private constructor(builder: Builder) :
          * ```
          * <Tab unselected-content-color="#FF000000" />
          * ```
-         * @param contentColor the content color in AARRGGBB format.
+         * @param unselectedContentColor the content color in AARRGGBB format.
          */
-        fun unselectedContentColor(contentColor: String) = apply {
-            this.unselectedContentColor = contentColor.toColor()
+        fun unselectedContentColor(unselectedContentColor: String) = apply {
+            this.unselectedContentColor = unselectedContentColor.toColor()
         }
 
         fun build() = TabDTO(this)

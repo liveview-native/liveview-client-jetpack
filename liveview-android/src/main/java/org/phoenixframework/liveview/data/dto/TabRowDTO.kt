@@ -2,17 +2,22 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrEdgePadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelectedTabIndex
 import org.phoenixframework.liveview.data.constants.Templates
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -20,12 +25,30 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
+/**
+ * Material Design fixed tabs and scrollable tabs.
+ * In order to create fixed tabs use the `TabRow` tag.
+ * ```
+ * <TabRow selected-tab-index="0">
+ *   <Tab ...>
+ *   <Tab ...>
+ * </TabRow>
+ * ```
+ * For scrollable tabs, use `ScrollableTabRow`.
+ * ```
+ * <ScrollableTabRow selected-tab-index="0">
+ *   <Tab ...>
+ *   <Tab ...>
+ * </ScrollableTabRow>
+ * ```
+ */
 internal class TabRowDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
 
     private val selectedTabIndex = builder.selectedTabIndex
     private val contentColor = builder.contentColor
     private val containerColor = builder.containerColor
+    private val edgePadding = builder.edgePadding
 
     @Composable
     override fun Compose(
@@ -39,25 +62,50 @@ internal class TabRowDTO private constructor(builder: Builder) :
         val tabs = remember(composableNode?.children) {
             composableNode?.children?.filter { it.node?.template != Templates.templateDivider }
         }
-        TabRow(
-            selectedTabIndex = selectedTabIndex,
-            modifier = modifier,
-            contentColor = contentColor ?: TabRowDefaults.contentColor,
-            containerColor = containerColor ?: TabRowDefaults.containerColor,
-//            indicator = { tabPositions ->
-//                // TODO How to pass the tab positions
-//            },
-            divider = {
-                divider?.let {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                } ?: Divider()
-            },
-            tabs = {
-                tabs?.forEach {
-                    PhxLiveView(it, pushEvent, composableNode, null, this)
-                }
-            }
-        )
+        when (composableNode?.node?.tag) {
+            ComposableTypes.tabRow ->
+                TabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    modifier = modifier,
+                    contentColor = contentColor ?: TabRowDefaults.contentColor,
+                    containerColor = containerColor ?: TabRowDefaults.containerColor,
+                    //indicator = { tabPositions ->
+                    // TODO How to pass the tab positions?
+                    //},
+                    divider = {
+                        divider?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        } ?: Divider()
+                    },
+                    tabs = {
+                        tabs?.forEach {
+                            PhxLiveView(it, pushEvent, composableNode, null, this)
+                        }
+                    }
+                )
+
+            ComposableTypes.scrollableTabRow ->
+                ScrollableTabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    modifier = modifier,
+                    contentColor = contentColor ?: TabRowDefaults.contentColor,
+                    containerColor = containerColor ?: TabRowDefaults.containerColor,
+                    edgePadding = edgePadding ?: 52.dp,
+                    //indicator = { tabPositions ->
+                    // TODO How to pass the tab positions?
+                    //},
+                    divider = {
+                        divider?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        } ?: Divider()
+                    },
+                    tabs = {
+                        tabs?.forEach {
+                            PhxLiveView(it, pushEvent, composableNode, null, this)
+                        }
+                    }
+                )
+        }
     }
 
     internal class Builder : ComposableBuilder() {
@@ -66,6 +114,8 @@ internal class TabRowDTO private constructor(builder: Builder) :
         var containerColor: Color? = null
             private set
         var contentColor: Color? = null
+            private set
+        var edgePadding: Dp? = null
             private set
 
         /**
@@ -101,6 +151,18 @@ internal class TabRowDTO private constructor(builder: Builder) :
             this.contentColor = contentColor.toColor()
         }
 
+        /**
+         * The padding between the starting and ending edge of the scrollable tab row, and the tabs
+         * inside the row. This padding helps inform the user that this tab row can be scrolled.
+         * ```
+         * <TabRow selected-tab-index="0" />
+         * ```
+         * @param padding current selected tab index.
+         */
+        fun edgePadding(padding: String) = apply {
+            this.edgePadding = padding.toIntOrNull()?.dp
+        }
+
         fun build() = TabRowDTO(this)
     }
 }
@@ -118,9 +180,10 @@ internal object TabRowDtoFactory : ComposableViewFactory<TabRowDTO, TabRowDTO.Bu
         scope: Any?,
     ): TabRowDTO = attributes.fold(TabRowDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            attrSelectedTabIndex -> builder.selectedTabIndex(attribute.value)
-            attrContentColor -> builder.contentColor(attribute.value)
             attrContainerColor -> builder.containerColor(attribute.value)
+            attrContentColor -> builder.contentColor(attribute.value)
+            attrEdgePadding -> builder.edgePadding(attribute.value)
+            attrSelectedTabIndex -> builder.selectedTabIndex(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as TabRowDTO.Builder
     }.build()
