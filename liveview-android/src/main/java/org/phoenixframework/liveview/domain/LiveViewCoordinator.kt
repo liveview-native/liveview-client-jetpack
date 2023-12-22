@@ -47,25 +47,24 @@ class LiveViewCoordinator(
         Log.d(TAG, "onHandle: $changeType")
         Log.d(TAG, "\tnodeRef = ${nodeRef.ref()}")
         Log.d(TAG, "\tparent = ${parent?.ref()}")
-        /*
+
         when (changeType) {
-            ChangeType.Change -> {
-                Log.i(TAG, "Changed: ${context.getNodeString(nodeRef)}")
+            ChangeType.CHANGE -> {
+                Log.i(TAG, "Changed: ${this.document.get(nodeRef)}")
             }
 
-            ChangeType.Add -> {
-                Log.i(TAG, "Added: ${context.getNodeString(nodeRef)}")
+            ChangeType.ADD -> {
+                Log.i(TAG, "Added: ${this.document.get(nodeRef)}")
             }
 
-            ChangeType.Remove -> {
-                Log.i(TAG, "Remove: ${context.getNodeString(nodeRef)}")
+            ChangeType.REMOVE -> {
+                Log.i(TAG, "Remove: ${this.document.get(nodeRef)}")
             }
 
-            ChangeType.Replace -> {
-                Log.i(TAG, "Replace: ${context.getNodeString(nodeRef)}")
+            ChangeType.REPLACE -> {
+                Log.i(TAG, "Replace: ${this.document.get(nodeRef)}")
             }
          }
-         */
     }
 
     private var document: Document = Document()
