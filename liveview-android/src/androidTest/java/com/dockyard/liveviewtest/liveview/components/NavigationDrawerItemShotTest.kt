@@ -43,7 +43,7 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                     <Text template="label">Option 2</Text>
                   </NavigationDrawerItem>                   
                 </ModalDrawerSheet>               
-                """.templateToTest()
+                """
         )
     }
 
@@ -85,7 +85,7 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:ExitToApp" template="icon" />
                   </NavigationDrawerItem>                   
                 </ModalDrawerSheet>               
-                """.templateToTest()
+                """
         )
     }
 
@@ -135,7 +135,7 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                     <Text template="badge">None</Text>
                   </NavigationDrawerItem>                   
                 </ModalDrawerSheet>               
-                """.templateToTest()
+                """
         )
     }
 
@@ -152,7 +152,7 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
             'selectedBadgeColor': '#FFFFFF00',
             'unselectedBadgeColor': '#FFFF00FF'
             }
-            """.trimIndent().trim().replace("\n", "")
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val colors = NavigationDrawerItemDefaults.colors(
@@ -209,7 +209,7 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                     <Text template="badge">None</Text>
                   </NavigationDrawerItem>                   
                 </ModalDrawerSheet>               
-                """.templateToTest()
+                """
         )
     }
 }

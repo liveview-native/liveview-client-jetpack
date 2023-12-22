@@ -36,7 +36,7 @@ class SpacerShotTest : LiveViewComposableTest() {
                     </Column>
                     <Text>Right</Text>
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 }

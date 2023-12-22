@@ -77,7 +77,7 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                     </IconButton>
                   </TopAppBar>                                                     
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -90,7 +90,7 @@ class TopAppBarShotTest : LiveViewComposableTest() {
             'titleContentColor': '#FFFFFFFF',
             'actionIconContentColor': '#FF00FFFF'
             }
-            """.trimIndent().trim().replace("\n", "")
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val colors = TopAppBarDefaults.topAppBarColors(
@@ -126,7 +126,7 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Add" />
                   </IconButton>
                 </TopAppBar>                   
-                """.templateToTest(),
+                """
         )
     }
 
@@ -188,7 +188,7 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                     </IconButton>
                   </CenterAlignedTopAppBar>                                                     
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -201,7 +201,7 @@ class TopAppBarShotTest : LiveViewComposableTest() {
             'titleContentColor': '#FFFFFFFF',
             'actionIconContentColor': '#FF00FFFF'
             }
-            """.trimIndent().trim().replace("\n", "")
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -237,7 +237,7 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Add" />
                   </IconButton>
                 </CenterAlignedTopAppBar>                   
-                """.templateToTest(),
+                """
         )
     }
 
@@ -299,7 +299,7 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                     </IconButton>
                   </MediumTopAppBar>                                                     
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -312,7 +312,7 @@ class TopAppBarShotTest : LiveViewComposableTest() {
             'titleContentColor': '#FFFFFFFF',
             'actionIconContentColor': '#FF00FFFF'
             }
-            """.trimIndent().trim().replace("\n", "")
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val colors = TopAppBarDefaults.mediumTopAppBarColors(
@@ -348,7 +348,7 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Add" />
                   </IconButton>
                 </MediumTopAppBar>                   
-                """.templateToTest(),
+                """
         )
     }
 
@@ -410,7 +410,7 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                     </IconButton>
                   </LargeTopAppBar>                                                     
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -423,7 +423,7 @@ class TopAppBarShotTest : LiveViewComposableTest() {
             'titleContentColor': '#FFFFFFFF',
             'actionIconContentColor': '#FF00FFFF'
             }
-            """.trimIndent().trim().replace("\n", "")
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val colors = TopAppBarDefaults.largeTopAppBarColors(
@@ -459,7 +459,7 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Add" />
                   </IconButton>
                 </LargeTopAppBar>                   
-                """.templateToTest(),
+                """
         )
     }
 }

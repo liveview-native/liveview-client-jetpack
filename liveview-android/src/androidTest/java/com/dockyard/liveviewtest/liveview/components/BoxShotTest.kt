@@ -50,7 +50,7 @@ class BoxShotTest : LiveViewComposableTest() {
                 <Text align="center">Text</Text>
                 <Icon image-vector="filled:Share" align="bottomEnd"/>
               </Box>                
-            """.templateToTest()
+            """
         )
     }
 
@@ -87,7 +87,7 @@ class BoxShotTest : LiveViewComposableTest() {
                 <Text align="center">Text Center</Text>
                 <Icon image-vector="filled:Share" align="bottomStart"/>
               </Box>                
-            """.templateToTest()
+            """
         )
     }
 }

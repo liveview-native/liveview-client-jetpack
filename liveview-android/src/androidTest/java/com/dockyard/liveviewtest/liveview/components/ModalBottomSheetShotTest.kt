@@ -49,7 +49,7 @@ class ModalBottomSheetShotTest : LiveViewComposableTest() {
                     </Box>
                   </ModalBottomSheet>                
                 </Box>
-                """.templateToTest()
+                """
         )
     }
 }

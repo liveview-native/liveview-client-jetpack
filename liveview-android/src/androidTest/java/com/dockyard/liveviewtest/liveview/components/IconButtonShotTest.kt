@@ -34,7 +34,7 @@ class IconButtonShotTest : LiveViewComposableTest() {
                         <Icon image-vector="filled:AccountCircle" />
                     </IconButton>                    
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 
@@ -73,7 +73,7 @@ class IconButtonShotTest : LiveViewComposableTest() {
                         <Icon image-vector="filled:AccountCircle" />
                     </IconButton>                    
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 }

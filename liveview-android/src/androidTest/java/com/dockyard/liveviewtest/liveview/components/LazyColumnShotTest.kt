@@ -48,7 +48,7 @@ class LazyColumnShotTest : LiveViewComposableTest() {
                 <LazyColumn>
                   ${rowsForTemplate(rowCount)}
                 </LazyColumn>
-                """.templateToTest()
+                """
         )
     }
 
@@ -69,7 +69,7 @@ class LazyColumnShotTest : LiveViewComposableTest() {
                 <LazyColumn reverse-layout="true">
                   ${rowsForTemplate(rowCount)}
                 </LazyColumn>
-                """.templateToTest()
+                """
         )
     }
 
@@ -93,7 +93,7 @@ class LazyColumnShotTest : LiveViewComposableTest() {
                 <LazyColumn size="fill" vertical-arrangement="spaceAround">
                   ${rowsForTemplate(rowCount)}
                 </LazyColumn>
-                """.templateToTest()
+                """
         )
     }
 
@@ -117,7 +117,7 @@ class LazyColumnShotTest : LiveViewComposableTest() {
                 <LazyColumn width="fill" horizontal-alignment="end">
                   ${rowsForTemplate(rowCount, false)}
                 </LazyColumn>
-                """.templateToTest()
+                """
         )
     }
 }

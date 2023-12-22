@@ -58,7 +58,7 @@ class AlertDialogShotTest : LiveViewComposableTest() {
                   <Text template="title">Alert Title</Title>
                   <Text>Alert message</Text>
                 </AlertDialog>    
-                """.templateToTest()
+                """
         )
     }
 
@@ -112,7 +112,7 @@ class AlertDialogShotTest : LiveViewComposableTest() {
                   <Text template="title">Alert Title</Title>
                   <Text>Alert message</Text>
                 </AlertDialog>    
-                """.templateToTest()
+                """
         )
     }
 }

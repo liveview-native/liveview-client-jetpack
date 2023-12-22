@@ -36,7 +36,7 @@ class CardShotTest : LiveViewComposableTest() {
                     <Text>Card Content 2</Text>
                   </Row>
                 </Card>                
-                """.templateToTest()
+                """
         )
     }
 
@@ -64,7 +64,7 @@ class CardShotTest : LiveViewComposableTest() {
                     <Text>Card Content 2</Text>
                   </Row>
                 </Card>                
-                """.templateToTest()
+                """
         )
     }
 
@@ -84,7 +84,7 @@ class CardShotTest : LiveViewComposableTest() {
                 <ElevatedCard>
                   <Text padding="48" font-size="24">Elevated Card</Text>
                 </ElevatedCard>
-                """.templateToTest()
+                """
         )
     }
 
@@ -104,7 +104,7 @@ class CardShotTest : LiveViewComposableTest() {
                 <OutlinedCard>
                   <Text padding="32" font-size="16">Oulined Card</Text>
                 </OutlinedCard>
-                """.templateToTest()
+                """
         )
     }
 
@@ -126,7 +126,7 @@ class CardShotTest : LiveViewComposableTest() {
                 <OutlinedCard border-width="2" border-color="#FF0000FF">
                   <Text padding="32" font-size="24">Oulined Card</Text>
                 </OutlinedCard>
-                """.templateToTest()
+                """
         )
     }
 }

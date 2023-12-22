@@ -58,7 +58,7 @@ class ModalNavigationDrawerShotTest : LiveViewComposableTest() {
                     <Text>Screen Content</Text>
                   </Box>
                 </ModalNavigationDrawer>
-                """.templateToTest()
+                """
         )
     }
 
@@ -108,7 +108,7 @@ class ModalNavigationDrawerShotTest : LiveViewComposableTest() {
                     <Text>Screen Content</Text>
                   </Box>
                 </ModalNavigationDrawer>
-                """.templateToTest()
+                """
         )
     }
 }

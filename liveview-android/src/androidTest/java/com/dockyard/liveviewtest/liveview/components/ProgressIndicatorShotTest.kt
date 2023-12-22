@@ -22,7 +22,7 @@ class ProgressIndicatorShotTest: LiveViewComposableTest() {
                   <CircularProgressIndicator />
                   <LinearProgressIndicator />
                 </Column>
-                """.templateToTest(),
+                """,
         )
     }
 }

@@ -45,7 +45,7 @@ class BadgeBoxShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Add" />
                   </BadgedBox>                
                 </Box>  
-                """.templateToTest(),
+                """
         )
     }
 }

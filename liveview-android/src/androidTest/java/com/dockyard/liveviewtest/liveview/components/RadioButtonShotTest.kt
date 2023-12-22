@@ -26,7 +26,7 @@ class RadioButtonShotTest : LiveViewComposableTest() {
                   <RadioButton selected="true" enabled="false" />
                   <RadioButton selected="false" enabled="false" />
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 
@@ -39,7 +39,7 @@ class RadioButtonShotTest : LiveViewComposableTest() {
             'disabledSelectedColor': '#FF444444', 
             'disabledUnselectedColor': '#FFCCCCCC'
             }
-            """.trimIndent().trim().replace("\n", "")
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val colors = RadioButtonDefaults.colors(
@@ -61,7 +61,7 @@ class RadioButtonShotTest : LiveViewComposableTest() {
                   <RadioButton selected="true" enabled="false" colors="$colorsForTemplate"/>
                   <RadioButton selected="false" enabled="false" colors="$colorsForTemplate"/>
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 }

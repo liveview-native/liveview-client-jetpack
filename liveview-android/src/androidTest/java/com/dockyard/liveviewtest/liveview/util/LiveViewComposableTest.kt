@@ -32,7 +32,7 @@ abstract class LiveViewComposableTest : ScreenshotTest {
             if (LiveViewTestRunner.isRecording) {
                 nativeComposable()
             } else {
-                val json = "{\"s\": [\"$template\"]}"
+                val json = "{\"s\": [\"${template.templateToTest()}\"]}"
                 coordinator.parseTemplate(json)
                 Log.d("NGVL", "json=[$json]")
                 if (state.children.isNotEmpty()) {
@@ -55,7 +55,11 @@ abstract class LiveViewComposableTest : ScreenshotTest {
             compareScreenshot(composeRule)
     }
 
-    fun String.templateToTest() =
+    private fun String.templateToTest() =
         this.trimIndent().trimMargin().trimEnd().replace("\"", "\\\"").lines().joinToString("")
+
+    protected fun String.toJsonForTemplate() =
+        this.trimIndent().trim().replace("\n", "")
+
 }
 

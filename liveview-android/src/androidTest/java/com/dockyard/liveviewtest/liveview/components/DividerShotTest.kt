@@ -28,7 +28,7 @@ class DividerShotTest : LiveViewComposableTest() {
                     <Divider />
                     <Text>Line 2</Text>
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -48,7 +48,7 @@ class DividerShotTest : LiveViewComposableTest() {
                     <Divider thickness="2" color="#FFFF0000" />
                     <Text>Line 2</Text>
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 }

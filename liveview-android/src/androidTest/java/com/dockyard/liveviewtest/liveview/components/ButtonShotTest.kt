@@ -29,7 +29,7 @@ class ButtonShotTest : LiveViewComposableTest() {
                 <Button phx-click="">
                   <Text>Ok</Text>
                 </Button>
-                """.templateToTest()
+                """
         )
     }
 
@@ -45,7 +45,7 @@ class ButtonShotTest : LiveViewComposableTest() {
                 <Button phx-click="" enabled="false">
                   <Text>Ok</Text>
                 </Button>
-                """.templateToTest()
+                """
         )
     }
 
@@ -68,7 +68,7 @@ class ButtonShotTest : LiveViewComposableTest() {
                   colors="{'containerColor': '#FFFF00FF', 'contentColor': '#FFFFFFFF'}">
                   <Text>Button</Text>
                 </Button>
-                """.templateToTest()
+                """
         )
     }
 
@@ -95,7 +95,7 @@ class ButtonShotTest : LiveViewComposableTest() {
                   border-width="2" border-color="#FFFF0000" shape="circle" content-padding="8">
                   <Text>Button</Text>
                 </Button>
-                """.templateToTest()
+                """
         )
     }
 
@@ -111,7 +111,7 @@ class ButtonShotTest : LiveViewComposableTest() {
                 <ElevatedButton phx-click="">
                   <Text>Elevated Button</Text>
                 </ElevatedButton>
-                """.templateToTest()
+                """
         )
     }
 
@@ -127,7 +127,7 @@ class ButtonShotTest : LiveViewComposableTest() {
                 <FilledTonalButton phx-click="">
                   <Text>Filled Tonal Button</Text>
                 </FilledTonalButton>
-                """.templateToTest()
+                """
         )
     }
 
@@ -143,7 +143,7 @@ class ButtonShotTest : LiveViewComposableTest() {
                 <OutlinedButton phx-click="">
                   <Text>Outlined Button</Text>
                 </OutlinedButton>
-                """.templateToTest()
+                """
         )
     }
 
@@ -159,7 +159,7 @@ class ButtonShotTest : LiveViewComposableTest() {
                 <TextButton phx-click="">
                   <Text>Text Button</Text>
                 </TextButton>
-                """.templateToTest()
+                """
         )
     }
 }

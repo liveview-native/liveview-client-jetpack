@@ -48,7 +48,7 @@ class RowShotTest : LiveViewComposableTest() {
                 <Row>
                     $horizontalContentTestTemplate
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 
@@ -106,7 +106,7 @@ class RowShotTest : LiveViewComposableTest() {
                     $horizontalContentTestTemplate
                   </Row>
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 
@@ -154,7 +154,7 @@ class RowShotTest : LiveViewComposableTest() {
                     $horizontalContentTestTemplate
                   </Row>
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 
@@ -209,7 +209,7 @@ class RowShotTest : LiveViewComposableTest() {
                     <Text>40%</Text>
                   </Box>
                 </Column>                
-                """.templateToTest()
+                """
         )
     }
 
@@ -232,7 +232,7 @@ class RowShotTest : LiveViewComposableTest() {
                   <Text align="center">Center</Text>
                   <Text align="bottom">Bottom</Text>
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 }

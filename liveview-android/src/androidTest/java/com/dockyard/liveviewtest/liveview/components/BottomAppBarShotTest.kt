@@ -57,7 +57,7 @@ class BottomAppBarShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Add"/>
                   </FloatingActionButton>
                 </BottomAppBar>
-                """.templateToTest()
+                """
         )
     }
 
@@ -110,7 +110,7 @@ class BottomAppBarShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Delete"/>
                   </FloatingActionButton>
                 </BottomAppBar>
-                """.templateToTest()
+                """
         )
     }
 }

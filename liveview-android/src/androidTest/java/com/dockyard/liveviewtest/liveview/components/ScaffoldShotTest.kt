@@ -45,7 +45,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                     <Text>Scaffold Body</Text> 
                   </Box>
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 
@@ -73,7 +73,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                     <Text>Scaffold Body</Text> 
                   </Box>
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 
@@ -110,7 +110,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                     <Text>Scaffold Body</Text> 
                   </Box>
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 
@@ -179,7 +179,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                     <Text>Scaffold Body</Text> 
                   </Box>
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 
@@ -224,7 +224,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                     <Text>Scaffold Body</Text> 
                   </Box>
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 
@@ -270,7 +270,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                     <Text>Scaffold Body</Text> 
                   </Box>
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 
@@ -347,7 +347,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                     <Text>Scaffold Body</Text> 
                   </Box>
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 
@@ -425,7 +425,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                     <Text>Scaffold Body</Text> 
                   </Box>
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 }

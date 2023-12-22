@@ -42,7 +42,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                     <TextField phx-value="Text 5" phx-change="" is-error="true" />
                     <TextField phx-value="Text 6" phx-change="" visual-transformation="password" />
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -182,7 +182,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                     <Text template="supportingText">Supporting</Text>
                   </Text>                                                                
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -218,7 +218,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                 'errorPrefixColor': '#FF0000FF',
                 'errorSuffixColor': '#FF000000' 
             }            
-            """.trimIndent().trim().replace("\n", "")
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val colors = TextFieldDefaults.colors(
@@ -348,7 +348,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                     <Text template="supportingText">Supporting</Text>
                   </Text>                                                                                               
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -377,7 +377,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                     <OutlinedTextField phx-value="Text 5" phx-change="" is-error="true" />
                     <OutlinedTextField phx-value="Text 6" phx-change="" visual-transformation="password" />
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -517,7 +517,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                     <Text template="supportingText">Supporting</Text>
                   </OutlinedTextField>                                                                
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -553,7 +553,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                 'errorPrefixColor': '#FF0000FF',
                 'errorSuffixColor': '#FF000000' 
             }            
-            """.trimIndent().trim().replace("\n", "")
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val colors = OutlinedTextFieldDefaults.colors(
@@ -679,7 +679,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                     <Text template="supportingText">Supporting</Text>
                   </OutlinedTextField>                                                                                               
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 }

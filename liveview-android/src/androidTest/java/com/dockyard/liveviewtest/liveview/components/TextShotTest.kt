@@ -58,7 +58,7 @@ class TextShotTest : LiveViewComposableTest() {
                       All of above
                     </Text>  
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -90,7 +90,7 @@ class TextShotTest : LiveViewComposableTest() {
                     <Text font-weight="extraBold">Text Extra Bold weight</Text>
                     <Text font-weight="black">Text Black weight</Text>
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -128,7 +128,7 @@ class TextShotTest : LiveViewComposableTest() {
                     <Text width="fill" text-align="center">Text Center</Text>
                     <Text width="fill" text-align="justify">$lorenIpsum</Text>
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -148,7 +148,7 @@ class TextShotTest : LiveViewComposableTest() {
                     <Text max-lines="3" overflow="ellipsis">$lorenIpsum</Text>
                     <Text max-lines="4" overflow="visible">$lorenIpsum</Text>
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -166,7 +166,7 @@ class TextShotTest : LiveViewComposableTest() {
                     <Text max-lines="3" line-height="16">$lorenIpsum</Text>
                     <Text max-lines="3" line-height="20">$lorenIpsum</Text>
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 

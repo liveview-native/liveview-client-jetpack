@@ -35,7 +35,7 @@ class SnackbarShotTest : LiveViewComposableTest() {
                 <Scaffold>
                     <Snackbar message="Hello World" dismiss-event="" />
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 
@@ -61,7 +61,7 @@ class SnackbarShotTest : LiveViewComposableTest() {
                 <Scaffold>
                     <Snackbar message="Hello World" shape="circle" dismiss-event="" />
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 
@@ -88,7 +88,7 @@ class SnackbarShotTest : LiveViewComposableTest() {
                 <Scaffold>
                     <Snackbar message="Snackbar Message" action-label="Dismiss" dismiss-event="" />
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 
@@ -116,7 +116,7 @@ class SnackbarShotTest : LiveViewComposableTest() {
                 <Scaffold>
                     <Snackbar message="Snackbar Message" action-label="Action" with-dismiss-action="true" dismiss-event="" />
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 
@@ -160,7 +160,7 @@ class SnackbarShotTest : LiveViewComposableTest() {
                       action-color="#FFFF00FF" 
                       dismiss-event="" />
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 
@@ -208,7 +208,7 @@ class SnackbarShotTest : LiveViewComposableTest() {
                       dismiss-action-content-color="#FF00FF00"
                       dismiss-event="" />
                 </Scaffold>
-                """.templateToTest()
+                """
         )
     }
 }

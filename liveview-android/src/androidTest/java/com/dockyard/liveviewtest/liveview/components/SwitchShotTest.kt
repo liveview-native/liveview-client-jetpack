@@ -32,7 +32,7 @@ class SwitchShotTest : LiveViewComposableTest() {
                   <Switch checked="true" enabled="false" />
                   <Switch checked="false" enabled="false" />                  
                 </Row>  
-                """.templateToTest()
+                """
         )
     }
 
@@ -75,7 +75,7 @@ class SwitchShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Cancel" template="thumb" />
                   </Switch>                  
                 </Row>  
-                """.templateToTest()
+                """
         )
     }
 
@@ -100,7 +100,7 @@ class SwitchShotTest : LiveViewComposableTest() {
             'disabledUncheckedBorderColor': '#FF00FF00', 
             'disabledUncheckedIconColor': '#FF888888'    
             }
-            """.trimIndent().trim().replace("\n", "")
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val colors = SwitchDefaults.colors(
@@ -162,7 +162,7 @@ class SwitchShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Cancel" template="thumb" />
                   </Switch>                  
                 </Row>  
-                """.templateToTest()
+                """
 
         )
     }

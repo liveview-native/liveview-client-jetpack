@@ -43,7 +43,7 @@ class SliderShotTest : LiveViewComposableTest() {
                     <Slider phx-value="40" phx-change="" min-value="0" max-value="100" />
                     <Slider phx-value="40" phx-change="" steps="5" min-value="0" max-value="100" />
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -62,7 +62,7 @@ class SliderShotTest : LiveViewComposableTest() {
                 'disabledInactiveTrackColor': '#FFCCCCCC',
                 'disabledInactiveTickColor': '#FFFFFFFF'
             }
-            """.trimIndent().trim().replace("\n", "")
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val colors = SliderDefaults.colors(
@@ -97,7 +97,7 @@ class SliderShotTest : LiveViewComposableTest() {
                   <Slider phx-value="0.5" phx-change="" colors="$colorsForTemplate" enabled="false"/> 
                   <Slider phx-value="0.5" phx-change="" colors="$colorsForTemplate" steps="4" enabled="false"/> 
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -165,7 +165,7 @@ class SliderShotTest : LiveViewComposableTest() {
                     <Box width="fill" height="10" clip="4" background="#FF00FF00" template="track"/>
                   </Slider>
                 <Column>                                
-                """.templateToTest()
+                """
         )
     }
 
@@ -198,7 +198,7 @@ class SliderShotTest : LiveViewComposableTest() {
                     <RangeSlider phx-value="30,50" phx-change="" min-value="0" max-value="100" />
                     <RangeSlider phx-value="40,70" phx-change="" steps="5" min-value="0" max-value="100" />
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -217,7 +217,7 @@ class SliderShotTest : LiveViewComposableTest() {
                 'disabledInactiveTrackColor': '#FFCCCCCC',
                 'disabledInactiveTickColor': '#FFFFFFFF'
             }
-            """.trimIndent().trim().replace("\n", "")
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val colors = SliderDefaults.colors(
@@ -257,7 +257,7 @@ class SliderShotTest : LiveViewComposableTest() {
                   <RangeSlider phx-value="0.5,0.9" phx-change="" colors="$colorsForTemplate" enabled="false"/> 
                   <RangeSlider phx-value="0.3,0.8" phx-change="" colors="$colorsForTemplate" steps="4" enabled="false"/> 
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -343,7 +343,7 @@ class SliderShotTest : LiveViewComposableTest() {
                     <Box width="fill" height="10" clip="4" background="#FF00FF00" template="track"/>
                   </RangeSlider>
                 <Column>                                
-                """.templateToTest()
+                """
         )
     }
 }

@@ -40,7 +40,7 @@ class ModalDrawerSheetShotTest : LiveViewComposableTest() {
                     </NavigationDrawerItem>    
                     <Text>Option 3</Text>                
                 </ModalDrawerSheet>
-                """.templateToTest()
+                """
         )
     }
 
@@ -78,7 +78,7 @@ class ModalDrawerSheetShotTest : LiveViewComposableTest() {
                     </NavigationDrawerItem>  
                     <Text>Option 3</Text>                  
                 </ModalDrawerSheet>                
-                """.templateToTest()
+                """
         )
     }
 }

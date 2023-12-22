@@ -64,7 +64,7 @@ class NavigationBarItemShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Add" template="icon"/>
                   </NavigationBarItem>                      
                 </NavigationBar>
-                """.templateToTest()
+                """
         )
     }
 
@@ -126,7 +126,7 @@ class NavigationBarItemShotTest : LiveViewComposableTest() {
                     <Text template="label">Settings</Text>
                   </NavigationBarItem>                      
                 </NavigationBar>
-                """.templateToTest()
+                """
         )
     }
 
@@ -191,7 +191,7 @@ class NavigationBarItemShotTest : LiveViewComposableTest() {
                     <Text template="label">Settings</Text>
                   </NavigationBarItem>                      
                 </NavigationBar>
-                """.templateToTest()
+                """
         )
     }
 
@@ -207,7 +207,7 @@ class NavigationBarItemShotTest : LiveViewComposableTest() {
             'disabledIconColor': '#FFCCCCCC',
             'disabledTextColor': '#FF888888'
             }
-            """.trimIndent().trim().replace("\n", "")
+            """.toJsonForTemplate()
 
         compareNativeComposableWithTemplate(
             nativeComposable = {
@@ -295,7 +295,7 @@ class NavigationBarItemShotTest : LiveViewComposableTest() {
                     <Text template="label">Exit</Text>
                   </NavigationBarItem>                                     
                 </NavigationBar>
-                """.templateToTest()
+                """
         )
     }
 }

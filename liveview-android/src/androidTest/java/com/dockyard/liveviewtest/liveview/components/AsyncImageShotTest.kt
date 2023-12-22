@@ -28,7 +28,7 @@ class AsyncImageShotTest : LiveViewComposableTest() {
                 <Box width="fill">
                   <AsyncImage url="$url" alpha="0.5" content-scale="fillHeight" />
                 </Box>    
-                """.templateToTest()
+                """
         )
     }
 }

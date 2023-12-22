@@ -27,7 +27,7 @@ class DropdownMenuItemShotTest : LiveViewComposableTest() {
                 <DropdownMenuItem>
                     <Text>Simple Menu Item</Text>
                 </DropdownMenuItem>
-                """.templateToTest()
+                """
         )
     }
 
@@ -54,7 +54,7 @@ class DropdownMenuItemShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Add" template="trailingIcon" />
                     <Icon image-vector="filled:ChevronLeft" template="leadingIcon"/>                    
                 </DropdownMenuItem>
-                """.templateToTest()
+                """
         )
     }
 
@@ -86,7 +86,7 @@ class DropdownMenuItemShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Add" template="trailingIcon" />
                     <Icon image-vector="filled:ChevronLeft" template="leadingIcon"/>                    
                 </DropdownMenuItem>
-                """.templateToTest()
+                """
         )
     }
 
@@ -119,7 +119,7 @@ class DropdownMenuItemShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Add" template="trailingIcon" />
                     <Icon image-vector="filled:ChevronLeft" template="leadingIcon"/>                    
                 </DropdownMenuItem>
-                """.templateToTest()
+                """
         )
     }
 }

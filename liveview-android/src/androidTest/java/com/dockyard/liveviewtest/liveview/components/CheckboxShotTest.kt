@@ -26,7 +26,7 @@ class CheckboxShotTest : LiveViewComposableTest() {
                     <CheckBox checked="true" phx-change="" enabled="false" />
                     <CheckBox checked="false" phx-change="" enabled="false" />
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 
@@ -68,7 +68,7 @@ class CheckboxShotTest : LiveViewComposableTest() {
                   <CheckBox checked="true" phx-change="" colors="$colors" enabled="false" />
                   <CheckBox checked="false" phx-change="" colors="$colors" enabled="false" />
                 </Row>  
-                """.templateToTest()
+                """
         )
     }
 }

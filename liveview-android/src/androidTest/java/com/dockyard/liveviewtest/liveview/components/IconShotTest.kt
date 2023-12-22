@@ -28,7 +28,7 @@ class IconShotTest : LiveViewComposableTest() {
                   <Icon image-vector="filled:Image" />
                   <Icon image-vector="filled:Image" tint="#FFFF0000" />
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 }

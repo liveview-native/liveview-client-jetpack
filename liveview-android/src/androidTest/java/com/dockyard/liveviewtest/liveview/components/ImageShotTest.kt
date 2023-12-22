@@ -26,7 +26,7 @@ class ImageShotTest : LiveViewComposableTest() {
             },
             template = """
                 <Image resource="android_icon" />
-                """.templateToTest()
+                """
         )
     }
 
@@ -68,7 +68,7 @@ class ImageShotTest : LiveViewComposableTest() {
                     <Image resource="android_icon" weight="1" width="fill" alignment="topCenter"/>
                     <Image resource="android_icon" weight="1" width="fill" alignment="topEnd"/>
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -103,7 +103,7 @@ class ImageShotTest : LiveViewComposableTest() {
                     <Image resource="narwin" size="200" content-scale="fit"/>
                     <Image resource="narwin" size="200" content-scale="inside"/>
                 </Column>                
-                """.templateToTest()
+                """
         )
     }
 
@@ -138,7 +138,7 @@ class ImageShotTest : LiveViewComposableTest() {
                     <Image resource="narwin" size="200" content-scale="fillWidth"/>
                     <Image resource="narwin" size="200" content-scale="fillBounds"/>
                 </Column>                
-                """.templateToTest()
+                """
         )
     }
 }

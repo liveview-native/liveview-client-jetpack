@@ -54,7 +54,7 @@ class LazyGridShotTest : LiveViewComposableTest() {
                 <LazyVerticalGrid columns="{'type': 'fixed', 'count': '3'}">
                   ${cellsForTemplate(cellCount)}
                 </LazyVerticalGrid>
-                """.templateToTest()
+                """
         )
     }
 
@@ -82,7 +82,7 @@ class LazyGridShotTest : LiveViewComposableTest() {
                 <LazyVerticalGrid reverse-layout="true" columns="{'type': 'fixed', 'count': '3'}">
                   ${cellsForTemplate(cellCount)}
                 </LazyVerticalGrid>
-                """.templateToTest()
+                """
         )
     }
 
@@ -114,7 +114,7 @@ class LazyGridShotTest : LiveViewComposableTest() {
                   columns="{'type': 'fixed', 'count': '3'}">
                   ${cellsForTemplate(cellCount)}
                 </LazyVerticalGrid>
-                """.templateToTest()
+                """
         )
     }
 
@@ -148,7 +148,7 @@ class LazyGridShotTest : LiveViewComposableTest() {
                   columns="{'type': 'adaptive', 'minSize': '100'}">
                   ${cellsForTemplate(cellCount)}
                 </LazyVerticalGrid>
-                """.templateToTest()
+                """
         )
     }
 
@@ -174,7 +174,7 @@ class LazyGridShotTest : LiveViewComposableTest() {
                 <LazyHorizontalGrid rows="{'type': 'fixed', 'count': '3'}">
                   ${cellsForTemplate(cellCount)}
                 </LazyHorizontalGrid>
-                """.templateToTest()
+                """
         )
     }
 
@@ -202,7 +202,7 @@ class LazyGridShotTest : LiveViewComposableTest() {
                 <LazyHorizontalGrid reverse-layout="true" rows="{'type': 'fixed', 'count': '3'}">
                   ${cellsForTemplate(cellCount)}
                 </LazyHorizontalGrid>
-                """.templateToTest()
+                """
         )
     }
 
@@ -234,7 +234,7 @@ class LazyGridShotTest : LiveViewComposableTest() {
                   columns="{'type': 'fixed', 'count': '3'}">
                   ${cellsForTemplate(cellCount)}
                 </LazyHorizontalGrid>
-                """.templateToTest()
+                """
         )
     }
 
@@ -268,7 +268,7 @@ class LazyGridShotTest : LiveViewComposableTest() {
                   columns="{'type': 'adaptive', 'minSize': '100'}">
                   ${cellsForTemplate(cellCount)}
                 </LazyHorizontalGrid>
-                """.templateToTest()
+                """
         )
     }
 }

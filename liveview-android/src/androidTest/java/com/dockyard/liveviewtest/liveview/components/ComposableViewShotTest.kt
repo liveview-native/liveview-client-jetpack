@@ -54,7 +54,7 @@ class ComposableViewShotTest: LiveViewComposableTest() {
                     <Box size="40" background="system-transparent" />
                     <Box size="40" background="invalid-color" />
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 
@@ -98,7 +98,7 @@ class ComposableViewShotTest: LiveViewComposableTest() {
                     <Box size="40" background="#00FFFF" />
                     <Box size="40" background="invalid-color" />
                 </Column>
-                """.templateToTest()
+                """
         )
     }
 }

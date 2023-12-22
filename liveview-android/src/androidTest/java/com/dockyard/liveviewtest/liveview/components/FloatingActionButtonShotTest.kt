@@ -74,7 +74,7 @@ class FloatingActionButtonShotTest : LiveViewComposableTest() {
                     <Text template="text">Share</Text>
                   </ExtendedFloatingActionButton>                  
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 
@@ -151,7 +151,7 @@ class FloatingActionButtonShotTest : LiveViewComposableTest() {
                     <Text template="text">Share</Text>
                   </ExtendedFloatingActionButton>                  
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 
@@ -233,7 +233,7 @@ class FloatingActionButtonShotTest : LiveViewComposableTest() {
                     <Text template="text">Share</Text>
                   </ExtendedFloatingActionButton>                  
                 </Row>
-                """.templateToTest()
+                """
         )
     }
 }

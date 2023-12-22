@@ -59,7 +59,7 @@ class ExposedDropdownMenuBoxShotTest : LiveViewComposableTest() {
                     <Text>Option C</Text>
                   </DropdownMenuItem>
                 </ExposedDropdownMenuBox>  
-                """.templateToTest(),
+                """,
         )
     }
 }

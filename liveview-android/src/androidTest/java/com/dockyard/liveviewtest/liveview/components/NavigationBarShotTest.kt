@@ -69,7 +69,7 @@ class NavigationBarShotTest : LiveViewComposableTest() {
                     <Text template="label">Tab 3</Text>
                   </NavigationBarItem>
                 </NavigationBar>                
-                """.templateToTest()
+                """
         )
     }
 
@@ -132,7 +132,7 @@ class NavigationBarShotTest : LiveViewComposableTest() {
                     <Text template="label">Tab 3</Text>
                   </NavigationBarItem>
                 </NavigationBar>                
-                """.templateToTest()
+                """
         )
     }
 }
