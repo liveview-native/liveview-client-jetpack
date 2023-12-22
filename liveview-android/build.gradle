@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'shot'
 }
 
 android {
@@ -11,6 +12,8 @@ android {
         targetSdk target_sdk_version
 
         testInstrumentationRunner instrumentation_runner_class
+        testApplicationId "org.phoenixframework.liveview.android.test"
+
         vectorDrawables {
             useSupportLibrary true
         }
@@ -77,6 +80,7 @@ dependencies {
 
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_test_junit_version"
 
     testImplementation "junit:junit:$junit_version"
 
@@ -104,3 +108,13 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         }
     }
 }
+
+tasks.register('deleteScreenshots', Delete) {
+    delete(files("${project.projectDir}/screenshots/"))
+}
+
+// Runnning screenshot tests
+// Recording the image references
+// ./gradlew executeScreenshotTests -Precord -Pandroid.testInstrumentationRunnerArguments.record=true
+// Testing
+// ./gradlew executeScreenshotTests

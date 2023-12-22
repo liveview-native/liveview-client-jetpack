@@ -6,7 +6,6 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -88,7 +87,7 @@ internal fun textStyleFromData(textStyleData: Map<String, Any>): TextStyle {
         color = textStyleData["color"]?.toString()?.toColor() ?: Color.Unspecified,
         fontSize = textStyleData["fontSize"]?.let { fontSizeFromString(it.toString()) }
             ?: TextUnit.Unspecified,
-        fontWeight = fontWeightFromString(textStyleData["fontSize"]?.toString()),
+        fontWeight = fontWeightFromString(textStyleData["fontWeight"]?.toString()),
         fontStyle = fontStyleFromString(textStyleData["fontStyle"]?.toString()),
         letterSpacing = textStyleData["letterSpacing"]?.let { letterSpacingFromString(it.toString()) }
             ?: TextUnit.Unspecified,
@@ -119,15 +118,33 @@ internal fun fontSizeFromString(fontSize: String): TextUnit {
 
 internal fun fontWeightFromString(fontWeight: String?): FontWeight? {
     return when (fontWeight) {
+        "thin",
         "W100" -> FontWeight(100)
+
+        "extraLight",
         "W200" -> FontWeight(200)
+
+        "light",
         "W300" -> FontWeight(300)
+
+        "normal",
         "W400" -> FontWeight(400)
+
+        "medium",
         "W500" -> FontWeight(500)
+
+        "semiBold",
         "W600" -> FontWeight(600)
+
+        "bold",
         "W700" -> FontWeight(700)
+
+        "extraBold",
         "W800" -> FontWeight(800)
+
+        "black",
         "W900" -> FontWeight(900)
+
         else -> null
     }
 }
@@ -149,7 +166,7 @@ internal fun textDecorationFromString(textDecoration: String?): TextDecoration {
         // Draws a horizontal line below the text.
         "underline" -> TextDecoration.Underline
         // Draws a horizontal line over the text.
-        "line-through" -> TextDecoration.LineThrough
+        "lineThrough" -> TextDecoration.LineThrough
         else -> TextDecoration.None
     }
 }

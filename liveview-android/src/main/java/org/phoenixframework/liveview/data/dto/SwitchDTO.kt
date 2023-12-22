@@ -34,6 +34,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnchecke
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedThumbColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedTrackColor
+import org.phoenixframework.liveview.data.constants.Templates
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
@@ -41,6 +42,7 @@ import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
  * Material Design Switch.
@@ -58,6 +60,9 @@ internal class SwitchDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val thumbContent = remember(composableNode?.children) {
+            composableNode?.children?.find { it.node?.template == Templates.templateThumb }
+        }
         var stateValue by remember(composableNode) {
             mutableStateOf(value)
         }
@@ -68,6 +73,11 @@ internal class SwitchDTO private constructor(builder: Builder) :
             },
             modifier = modifier,
             enabled = enabled,
+            thumbContent = thumbContent?.let {
+                {
+                    PhxLiveView(it, pushEvent, composableNode, null)
+                }
+            },
             colors = getSwitchColors(colors),
         )
 

@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrAspectRatio
@@ -37,6 +38,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrTestTag
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
@@ -271,6 +273,17 @@ abstract class ComposableBuilder {
     }
 
     /**
+     * Tag used during the UI tests. It must be unique in the UI tree.
+     * ```
+     * <Composable test-tag="myTag" />
+     * ```
+     * @param testTag tag used during the UI tests.
+     */
+    private fun testTag(testTag: String) = apply {
+        modifier = modifier.then(Modifier.testTag(testTag))
+    }
+
+    /**
      * Handle the properties that are common for most of composables.
      * @param attribute a `CoreAttribute` to be handled.
      * @param pushEvent function responsible to dispatch the server call.
@@ -293,6 +306,7 @@ abstract class ComposableBuilder {
             attrPhxClick -> clickable(attribute.value, pushEvent)
             attrPhxValue -> value(attribute.value)
             attrSize -> size(attribute.value)
+            attrTestTag -> testTag(attribute.value)
             attrVerticalPadding -> paddingVertical(attribute.value)
             attrWidth -> width(attribute.value)
         }

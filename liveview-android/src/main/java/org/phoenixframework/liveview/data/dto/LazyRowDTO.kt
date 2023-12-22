@@ -65,7 +65,7 @@ internal class LazyRowDTO private constructor(builder: Builder) :
     }
 
     internal class Builder : LazyComposableBuilder() {
-        var horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceAround
+        var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
             private set
         var verticalAlignment: Alignment.Vertical = Alignment.CenterVertically
             private set

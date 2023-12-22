@@ -1,12 +1,12 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemColors
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
@@ -92,7 +92,7 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
                     PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
-            shape = shape ?: RectangleShape,
+            shape = shape ?: CircleShape,
             colors = getNavigationDrawerItemColors(colors),
         )
     }

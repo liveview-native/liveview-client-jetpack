@@ -11,9 +11,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
 import org.phoenixframework.liveview.data.core.CoreAttribute
@@ -81,7 +81,7 @@ internal class ModalDrawerSheetDTO private constructor(builder: Builder) :
         /**
          * Defines the shape of this drawer's container.
          * ```
-         * <ModalDrawerSheet shape="8">...</ModalDrawerSheet>
+         * <ModalDrawerSheet drawer-shape="8">...</ModalDrawerSheet>
          * ```
          * @param shape drawer's container's shape. Supported values are: `circle`,
          * `rectangle`, or an integer representing the curve size applied to all four corners.
@@ -93,7 +93,7 @@ internal class ModalDrawerSheetDTO private constructor(builder: Builder) :
         /**
          * The color used for the background of this drawer.
          * ```
-         * <ModalDrawerSheet container-color="#FFFFFF00">...</ModalDrawerSheet>
+         * <ModalDrawerSheet drawer-container-color="#FFFFFF00">...</ModalDrawerSheet>
          * ```
          * @param color container color in AARRGGBB format.
          */
@@ -104,7 +104,7 @@ internal class ModalDrawerSheetDTO private constructor(builder: Builder) :
         /**
          * The preferred color for content inside this drawer..
          * ```
-         * <ModalDrawerSheet content-color="#FFCCCCCC">...</ModalDrawerSheet>
+         * <ModalDrawerSheet drawer-content-color="#FFCCCCCC">...</ModalDrawerSheet>
          * ```
          * @param color content color in AARRGGBB format.
          */
@@ -162,9 +162,9 @@ internal object ModalDrawerSheetDtoFactory :
     ): ModalDrawerSheetDTO =
         attributes.fold(ModalDrawerSheetDTO.Builder()) { builder, attribute ->
             when (attribute.name) {
-                attrContainerColor -> builder.drawerContainerColor(attribute.value)
-                attrContentColor -> builder.drawerContentColor(attribute.value)
-                attrShape -> builder.drawerShape(attribute.value)
+                attrDrawerContainerColor -> builder.drawerContainerColor(attribute.value)
+                attrDrawerContentColor -> builder.drawerContentColor(attribute.value)
+                attrDrawerShape -> builder.drawerShape(attribute.value)
                 attrTonalElevation -> builder.drawerTonalElevation(attribute.value)
                 attrWindowInsets -> builder.windowInsets(attribute.value)
                 else -> builder.handleCommonAttributes(attribute, pushEvent, scope)

@@ -34,5 +34,7 @@ internal fun shapeFromString(
     shape.isNotEmptyAndIsDigitsOnly() -> RoundedCornerShape(shape.toInt().dp)
     shape.isNotEmpty() && shape == "circle" -> CircleShape
     shape.isNotEmpty() && shape == "rectangle" -> RoundedCornerShape(0.dp)
+    // TODO add support for RoundedCornerShape specifying the 4 corners
+    //  (topLeft, topRight, bottomLeft, bottomRight)
     else -> default
 }

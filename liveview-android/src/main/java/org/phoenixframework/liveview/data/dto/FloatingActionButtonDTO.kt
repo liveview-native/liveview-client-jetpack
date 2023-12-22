@@ -60,7 +60,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
 internal class FloatingActionButtonDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
     private val onClick: String = builder.onClick
-    private val shape: Shape = builder.shape
+    private val shape: Shape? = builder.shape
     private val containerColor: Color? = builder.containerColor
     private val contentColor: Color? = builder.contentColor
     private val elevation: ImmutableMap<String, String>? = builder.elevation?.toImmutableMap()
@@ -79,7 +79,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
                 FloatingActionButton(
                     onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
-                    shape = shape,
+                    shape = shape ?: FloatingActionButtonDefaults.shape,
                     containerColor = containerColor,
                     contentColor = contentColor ?: contentColorFor(containerColor),
                     elevation = getFabElevation(elevation),
@@ -93,7 +93,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
                 SmallFloatingActionButton(
                     onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
-                    shape = shape,
+                    shape = shape ?: FloatingActionButtonDefaults.smallShape,
                     containerColor = containerColor,
                     contentColor = contentColor ?: contentColorFor(containerColor),
                     elevation = getFabElevation(elevation),
@@ -107,7 +107,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
                 LargeFloatingActionButton(
                     onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
-                    shape = shape,
+                    shape = shape ?: FloatingActionButtonDefaults.largeShape,
                     containerColor = containerColor,
                     contentColor = contentColor ?: contentColorFor(containerColor),
                     elevation = getFabElevation(elevation),
@@ -138,7 +138,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
                     onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
                     expanded = expanded,
-                    shape = shape,
+                    shape = shape ?: FloatingActionButtonDefaults.extendedFabShape,
                     containerColor = containerColor,
                     contentColor = contentColor ?: contentColorFor(containerColor),
                     elevation = getFabElevation(elevation),
@@ -172,7 +172,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
             private set
         var contentColor: Color? = null
             private set
-        var shape: Shape = CircleShape
+        var shape: Shape? = null
             private set
         var elevation: Map<String, String>? = null
             private set

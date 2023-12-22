@@ -12,8 +12,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
-import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrFontFamily
 import org.phoenixframework.liveview.data.constants.Attrs.attrFontSize
@@ -29,6 +27,8 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextDecoration
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -213,11 +213,11 @@ internal class TextDTO private constructor(builder: Builder) :
         /**
          * Sets the font weight for a given text.
          *
-         * @param fontWeight The font weight to be applied. Accepted values are "W100" for Thin,
-         *   "W200" for ExtraLight, "W300" for Light, "W400" for Normal (regular/plain), "W500" for
-         *   Medium, "W600" for SemiBold, "W700" for Bold, "W800" for ExtraBold, and "W900" for
-         *   Black. If an empty string or any other value is provided, the font weight will be set
-         *   to Normal.
+         * @param fontWeight The font weight to be applied. Accepted values are "W100" (or "thin"),
+         *   "W200" (or "extraLight"), "W300" (or "light"), "W400" (or "normal"), "W500" (or
+         *   "medium"), "W600" (or "semiBold"), "W700" (or "bold"), "W800" (or "extraBold"), and
+         *   "W900" (or "black"). If an empty string or any other value is provided, the font weight
+         *   will be set to Normal.
          */
         fun fontWeight(fontWeight: String) = apply {
             if (fontWeight.isNotEmpty()) {
