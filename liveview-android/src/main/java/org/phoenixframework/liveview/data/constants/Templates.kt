@@ -12,6 +12,7 @@ object Templates {
     const val templateDrawerContent = "drawerContent"
     const val templateEndThumb = "endThumb"
     const val templateFab = "fab"
+    const val templateHeadline = "headline"
     const val templateIcon = "icon"
     const val templateLabel = "label"
     const val templateLeadingIcon = "leadingIcon"

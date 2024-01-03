@@ -173,7 +173,7 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         /**
          * Function in the server to be called when the bottom sheet state changes.
          * ```
-         * <ModalBottomSheet on-change="updateBottomSheet" >...</ModalBottomSheet>
+         * <ModalBottomSheet on-changed="updateBottomSheet" >...</ModalBottomSheet>
          * ```
          * @param onChanged the name of the function to be called in the server when the bottom
          * sheet is expanded.

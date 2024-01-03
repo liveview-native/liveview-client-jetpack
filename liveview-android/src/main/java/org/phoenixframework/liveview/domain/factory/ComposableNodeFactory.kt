@@ -11,6 +11,7 @@ import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.CardDtoFactory
 import org.phoenixframework.liveview.data.dto.CheckBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.ColumnDtoFactory
+import org.phoenixframework.liveview.data.dto.DatePickerDtoFactory
 import org.phoenixframework.liveview.data.dto.DividerDtoFactory
 import org.phoenixframework.liveview.data.dto.DropdownMenuItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxDtoFactory
@@ -67,6 +68,7 @@ object ComposableNodeFactory {
                 ProgressIndicatorDtoFactory
             )
             registerComponent(ComposableTypes.column, ColumnDtoFactory)
+            registerComponent(ComposableTypes.datePicker, DatePickerDtoFactory)
             registerComponent(ComposableTypes.divider, DividerDtoFactory)
             registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)

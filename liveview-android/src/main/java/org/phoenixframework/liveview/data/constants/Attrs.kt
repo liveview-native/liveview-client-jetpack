@@ -61,6 +61,9 @@ object Attrs {
     const val attrIconContentColor = "icon-content-color"
     const val attrImageVector = "image-vector"
     const val attrImeAction = "imeAction"
+    const val attrInitialSelectedDateMillis = "initial-selected-date-millis"
+    const val attrInitialDisplayedMonthMillis = "initial-displayed-month-millis"
+    const val attrInitialDisplayMode = "initial-display-mode"
     const val attrIsError = "is-error"
     const val attrIsOpen = "is-open"
     const val attrKeyboardType = "keyboard-type"
@@ -105,6 +108,7 @@ object Attrs {
     const val attrSheetSwipeEnabled = "sheet-swipe-enabled"
     const val attrSheetTonalElevation = "sheet-tonal-elevation"
     const val attrSheetValue = "sheet-value"
+    const val attrShowModeToggle = "show-mode-toggle"
     const val attrSingleLine = "single-line"
     const val attrSize = "size"
     const val attrSkipPartiallyExpanded = "skip-partially-expanded"
@@ -136,6 +140,7 @@ object Attrs {
     const val attrWidth = "width"
     const val attrWithDismissAction = "with-dismiss-action"
     const val attrWindowInsets = "window-insets"
+    const val attrYearRange = "year-range"
 }
 
 object ColorAttrs {
@@ -261,6 +266,25 @@ object ColorAttrs {
     // NavigationBarItem
     const val colorAttrIndicatorColor = "indicatorColor"
     const val colorAttrDisabledIconColor = "disabledIconColor"
+
+    // DatePicker
+    const val colorAttrHeadlineContentColor = "headlineContentColor"
+    const val colorAttrWeekdayContentColor = "weekdayContentColor"
+    const val colorAttrSubheadContentColor = "subheadContentColor"
+    const val colorAttrYearContentColor = "yearContentColor"
+    const val colorAttrCurrentYearContentColor = "currentYearContentColor"
+    const val colorAttrSelectedYearContentColor = "selectedYearContentColor"
+    const val colorAttrSelectedYearContainerColor = "selectedYearContainerColor"
+    const val colorAttrDayContentColor = "dayContentColor"
+    const val colorAttrDisabledDayContentColor = "disabledDayContentColor"
+    const val colorAttrSelectedDayContentColor = "selectedDayContentColor"
+    const val colorAttrDisabledSelectedDayContentColor = "disabledSelectedDayContentColor"
+    const val colorAttrSelectedDayContainerColor = "selectedDayContainerColor"
+    const val colorAttrDisabledSelectedDayContainerColor = "disabledSelectedDayContainerColor"
+    const val colorAttrTodayContentColor = "todayContentColor"
+    const val colorAttrTodayBorderColor = "todayDateBorderColor"
+    const val colorAttrDayInSelectionRangeContentColor = "dayInSelectionRangeContentColor"
+    const val colorAttrDayInSelectionRangeContainerColor = "dayInSelectionRangeContainerColor"
 }
 
 object ElevationAttrs {

@@ -13,6 +13,7 @@ object ComposableTypes {
     const val checkbox = "CheckBox"
     const val circularProgressIndicator = "CircularProgressIndicator"
     const val column = "Column"
+    const val datePicker = "DatePicker"
     const val divider = "Divider"
     const val dropdownMenuItem = "DropdownMenuItem"
     const val elevatedButton = "ElevatedButton"
