@@ -18,6 +18,7 @@ object Templates {
     const val templateNavigationIcon = "navigationIcon"
     const val templatePlaceholder = "placeholder"
     const val templatePrefix = "prefix"
+    const val templateSheetContent = "sheetContent"
     const val templateStartThumb = "startThumb"
     const val templateSuffix = "suffix"
     const val templateSupportingText = "supportingText"

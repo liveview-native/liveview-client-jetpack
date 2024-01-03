@@ -31,11 +31,26 @@ import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.pushNewValue
 import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.domain.extensions.toSheetValue
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
+/**
+ * Material Design modal bottom sheet.
+ * Use the sheet-value property to determine if the bottom sheet is hidden, partially expanded, or
+ * expanded. You must have to define the `on-changed` event in order to keep the `sheet-value` in
+ * sync with the server.
+ * ```
+ * <ModalBottomSheet on-changed="updateSheetState" sheet-value="expanded">
+ *   <Box content-alignment="center" width="fill" height="200">
+ *     <Text>BottomSheet Content</Text>
+ *   </Box>
+ * </ModalBottomSheet>
+ * ```
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class ModalBottomSheetDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
@@ -65,13 +80,13 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         val sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = skipPartiallyExpanded,
             confirmValueChange = { sheetValue ->
-                triggerSheetValueChange(pushEvent, sheetValue)
+                sheetValue.pushNewValue(pushEvent, onChanged)
                 true
             }
         )
         ModalBottomSheet(
             onDismissRequest = {
-                // Do nothing
+                // TODO Do nothing
             },
             modifier = modifier,
             sheetState = sheetState,
@@ -82,11 +97,11 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
             ),
             tonalElevation = tonalElevation ?: BottomSheetDefaults.Elevation,
             scrimColor = scrimColor ?: BottomSheetDefaults.ScrimColor,
-            dragHandle = dragHandle?.let {
-                {
+            dragHandle = {
+                dragHandle?.let {
                     PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            } ?: { BottomSheetDefaults.DragHandle() },
+                } ?: BottomSheetDefaults.DragHandle()
+            },
             windowInsets = windowsInsets ?: BottomSheetDefaults.windowInsets,
             content = {
                 content?.let {
@@ -96,31 +111,15 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         )
         LaunchedEffect(composableNode) {
             when (sheetValue) {
-                SheetValue.Hidden -> {
+                SheetValue.Hidden ->
                     sheetState.hide()
-                }
 
-                SheetValue.PartiallyExpanded -> {
+                SheetValue.PartiallyExpanded ->
                     sheetState.partialExpand()
-                }
 
-                SheetValue.Expanded -> {
+                SheetValue.Expanded ->
                     sheetState.expand()
-                }
             }
-        }
-    }
-
-    private fun triggerSheetValueChange(pushEvent: PushEvent, sheetValue: SheetValue) {
-        when (sheetValue) {
-            SheetValue.Expanded ->
-                pushEvent(ComposableBuilder.EVENT_TYPE_CHANGE, onChanged, "expanded", null)
-
-            SheetValue.PartiallyExpanded ->
-                pushEvent(ComposableBuilder.EVENT_TYPE_CHANGE, onChanged, "partiallyExpanded", null)
-
-            SheetValue.Hidden ->
-                pushEvent(ComposableBuilder.EVENT_TYPE_CHANGE, onChanged, "hidden", null)
         }
     }
 
@@ -168,11 +167,7 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
          * values are: `expanded`, `partiallyExpanded`, and `hidden`.
          */
         fun sheetValue(sheetValue: String) = apply {
-            this.sheetValue = when (sheetValue) {
-                "expanded" -> SheetValue.Expanded
-                "partiallyExpanded" -> SheetValue.PartiallyExpanded
-                else -> SheetValue.Hidden
-            }
+            this.sheetValue = sheetValue.toSheetValue() ?: SheetValue.Hidden
         }
 
         /**

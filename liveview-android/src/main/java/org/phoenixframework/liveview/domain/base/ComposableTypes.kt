@@ -6,6 +6,7 @@ object ComposableTypes {
     const val badgedBox = "BadgedBox"
     const val box = "Box"
     const val bottomAppBar = "BottomAppBar"
+    const val bottomSheetScaffold = "BottomSheetScaffold"
     const val button = "Button"
     const val card = "Card"
     const val centerAlignedTopAppBar = "CenterAlignedTopAppBar"
