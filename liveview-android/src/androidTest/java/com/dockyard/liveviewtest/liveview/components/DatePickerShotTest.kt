@@ -148,11 +148,11 @@ class DatePickerShotTest : LiveViewComposableTest() {
         }.timeInMillis
         val colorsForTemplate = """
             {            
-            'containerColor': 'system-cyan',
+            'containerColor': 'system-yellow',
             'titleContentColor': 'system-red',
             'headlineContentColor': 'system-blue',
             'weekdayContentColor': 'system-yellow',
-            'subheadContentColor': 'system-magenta',
+            'subheadContentColor': 'system-red',
             'yearContentColor': 'system-green',
             'currentYearContentColor': 'system-black',
             'selectedYearContentColor': 'system-white',
@@ -161,7 +161,7 @@ class DatePickerShotTest : LiveViewComposableTest() {
             'selectedDayContentColor': 'system-yellow',
             'selectedDayContainerColor': 'system-red',
             'todayContentColor': 'system-blue',
-            'todayDateBorderColor': 'system-magenta'
+            'todayDateBorderColor': 'system-red'
             }
             """.toJsonForTemplate()
 
@@ -172,11 +172,11 @@ class DatePickerShotTest : LiveViewComposableTest() {
                         initialSelectedDateMillis = todayMoreOrLessOneDay,
                     ),
                     colors = DatePickerDefaults.colors(
-                        containerColor = Color.Cyan,
+                        containerColor = Color.Yellow,
                         titleContentColor = Color.Red,
                         headlineContentColor = Color.Blue,
                         weekdayContentColor = Color.Yellow,
-                        subheadContentColor = Color.Magenta,
+                        subheadContentColor = Color.Red,
                         yearContentColor = Color.Green,
                         currentYearContentColor = Color.Black,
                         selectedYearContentColor = Color.White,
@@ -185,7 +185,7 @@ class DatePickerShotTest : LiveViewComposableTest() {
                         selectedDayContentColor = Color.Yellow,
                         selectedDayContainerColor = Color.Red,
                         todayContentColor = Color.Blue,
-                        todayDateBorderColor = Color.Magenta,
+                        todayDateBorderColor = Color.Red,
                     )
                 )
             },
@@ -193,6 +193,7 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 <DatePicker initial-selected-date-millis="$todayMoreOrLessOneDay" 
                     colors="$colorsForTemplate" />
                 """,
+            delayBeforeScreenshot = 500, // Wait the button animation finishes.
             onBeforeScreenShot = { rule ->
                 if (showContainer) {
                     val formattedDate =
@@ -201,6 +202,7 @@ class DatePickerShotTest : LiveViewComposableTest() {
                                 timeZone = TimeZone.getTimeZone("UTC")
                             }
                             .format(Date(todayMoreOrLessOneDay))
+                    // Clicking on the year selection button in order to show the container
                     rule.onNodeWithText(formattedDate).performClick()
                 }
             }

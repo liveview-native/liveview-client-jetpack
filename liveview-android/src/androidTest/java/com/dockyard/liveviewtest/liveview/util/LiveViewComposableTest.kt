@@ -44,12 +44,12 @@ abstract class LiveViewComposableTest : ScreenshotTest {
             }
         }
 
+        // Do some action on the UI before capture the screenshot
+        onBeforeScreenShot?.invoke(composeRule)
+
         if (delayBeforeScreenshot > 0) {
             Thread.sleep(delayBeforeScreenshot)
         }
-
-        // Do some action on the UI before capture the screenshot
-        onBeforeScreenShot?.invoke(composeRule)
 
         // https://github.com/pedrovgs/Shot/issues/305
         if (testTag != null)
