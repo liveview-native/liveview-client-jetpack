@@ -14,6 +14,7 @@ object ComposableTypes {
     const val circularProgressIndicator = "CircularProgressIndicator"
     const val column = "Column"
     const val datePicker = "DatePicker"
+    const val datePickerDialog = "DatePickerDialog"
     const val divider = "Divider"
     const val dropdownMenuItem = "DropdownMenuItem"
     const val elevatedButton = "ElevatedButton"

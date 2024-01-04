@@ -193,7 +193,7 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 <DatePicker initial-selected-date-millis="$todayMoreOrLessOneDay" 
                     colors="$colorsForTemplate" />
                 """,
-            delayBeforeScreenshot = 500, // Wait the button animation finishes.
+            delayBeforeScreenshot = 800, // Wait the button animation finishes.
             onBeforeScreenShot = { rule ->
                 if (showContainer) {
                     val formattedDate =

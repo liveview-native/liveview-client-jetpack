@@ -3,19 +3,16 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrInitialDisplayMode
@@ -24,7 +21,6 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrInitialSelectedDat
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.Attrs.attrShowModeToggle
 import org.phoenixframework.liveview.data.constants.Attrs.attrYearRange
-import org.phoenixframework.liveview.data.constants.ColorAttrs
 import org.phoenixframework.liveview.data.constants.Templates.templateHeadline
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.core.CoreAttribute
@@ -32,7 +28,6 @@ import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
@@ -96,58 +91,6 @@ internal class DatePickerDTO private constructor(builder: Builder) :
             state.selectedDateMillis?.let {
                 pushEvent.invoke(ComposableBuilder.EVENT_TYPE_CHANGE, onChanged, it, null)
             }
-        }
-    }
-
-    @Composable
-    private fun getDatePickerColors(colors: ImmutableMap<String, String>?): DatePickerColors {
-        val defaultValue = DatePickerDefaults.colors()
-        return if (colors == null) {
-            defaultValue
-        } else {
-            DatePickerDefaults.colors(
-                containerColor = colors[ColorAttrs.colorAttrContainerColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.surface,
-                titleContentColor = colors[ColorAttrs.colorAttrTitleContentColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                headlineContentColor = colors[ColorAttrs.colorAttrHeadlineContentColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                weekdayContentColor = colors[ColorAttrs.colorAttrWeekdayContentColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface,
-                subheadContentColor = colors[ColorAttrs.colorAttrSubheadContentColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                yearContentColor = colors[ColorAttrs.colorAttrYearContentColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                currentYearContentColor = colors[ColorAttrs.colorAttrCurrentYearContentColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.primary,
-                selectedYearContentColor = colors[ColorAttrs.colorAttrSelectedYearContentColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onPrimary,
-                selectedYearContainerColor = colors[ColorAttrs.colorAttrSelectedYearContainerColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.primary,
-                dayContentColor = colors[ColorAttrs.colorAttrDayContentColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface,
-                disabledDayContentColor = colors[ColorAttrs.colorAttrDisabledDayContentColor]?.toColor()
-                    ?: (colors[ColorAttrs.colorAttrDayContentColor]?.toColor()
-                        ?: MaterialTheme.colorScheme.onSurface).copy(alpha = 0.38f),
-                selectedDayContentColor = colors[ColorAttrs.colorAttrSelectedDayContentColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onPrimary,
-                disabledSelectedDayContentColor = colors[ColorAttrs.colorAttrDisabledSelectedDayContentColor]?.toColor()
-                    ?: (colors[ColorAttrs.colorAttrSelectedDayContentColor]?.toColor()
-                        ?: MaterialTheme.colorScheme.onPrimary).copy(alpha = 0.38f),
-                selectedDayContainerColor = colors[ColorAttrs.colorAttrSelectedDayContainerColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.primary,
-                disabledSelectedDayContainerColor = colors[ColorAttrs.colorAttrDisabledSelectedDayContainerColor]?.toColor()
-                    ?: (colors[ColorAttrs.colorAttrSelectedDayContainerColor]?.toColor()
-                        ?: MaterialTheme.colorScheme.primary).copy(alpha = 0.38f),
-                todayContentColor = colors[ColorAttrs.colorAttrTodayContentColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.primary,
-                todayDateBorderColor = colors[ColorAttrs.colorAttrTodayBorderColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.primary,
-                dayInSelectionRangeContentColor = colors[ColorAttrs.colorAttrDayInSelectionRangeContentColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSecondaryContainer,
-                dayInSelectionRangeContainerColor = colors[ColorAttrs.colorAttrDayInSelectionRangeContainerColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.secondaryContainer,
-            )
         }
     }
 
@@ -261,7 +204,7 @@ internal class DatePickerDTO private constructor(builder: Builder) :
          * Set DatePicker colors.
          * ```
          * <DatePicker
-         *   colors="{'checkedThumbColor': '#FFFF0000', 'checkedTrackColor': '#FF00FF00'}"/>
+         *   colors="{'containerColor': '#FFFF0000', 'titleContentColor': '#FF00FF00'}"/>
          * ```
          * @param colors an JSON formatted string, containing the checkbox colors. The color keys
          * supported are: `containerColor`, `titleContentColor`, `headlineContentColor`,
