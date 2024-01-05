@@ -62,6 +62,8 @@ object Attrs {
     const val attrImageVector = "image-vector"
     const val attrImeAction = "imeAction"
     const val attrInitialSelectedDateMillis = "initial-selected-date-millis"
+    const val attrInitialSelectedStartDateMillis = "initial-selected-start-date-millis"
+    const val attrInitialSelectedEndDateMillis = "initial-selected-end-date-millis"
     const val attrInitialDisplayedMonthMillis = "initial-displayed-month-millis"
     const val attrInitialDisplayMode = "initial-display-mode"
     const val attrIsError = "is-error"

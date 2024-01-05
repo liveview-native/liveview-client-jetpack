@@ -15,6 +15,7 @@ object ComposableTypes {
     const val column = "Column"
     const val datePicker = "DatePicker"
     const val datePickerDialog = "DatePickerDialog"
+    const val dateRangePicker = "DateRangePicker"
     const val divider = "Divider"
     const val dropdownMenuItem = "DropdownMenuItem"
     const val elevatedButton = "ElevatedButton"

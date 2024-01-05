@@ -71,6 +71,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.column, ColumnDtoFactory)
             registerComponent(ComposableTypes.datePicker, DatePickerDtoFactory)
             registerComponent(ComposableTypes.datePickerDialog, DatePickerDialogDtoFactory)
+            registerComponent(ComposableTypes.dateRangePicker, DatePickerDtoFactory)
             registerComponent(ComposableTypes.divider, DividerDtoFactory)
             registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)

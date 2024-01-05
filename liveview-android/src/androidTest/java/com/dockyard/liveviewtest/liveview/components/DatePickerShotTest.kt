@@ -5,10 +5,12 @@ import android.icu.util.Calendar
 import android.icu.util.TimeZone
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -19,9 +21,22 @@ import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 class DatePickerShotTest : LiveViewComposableTest() {
     private val jun9th2023 = 1686279600000L
+    private val jun22nd2023 = 1687402800000L
 
     @Test
     fun simpleDatePickerTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                DatePicker(state = rememberDatePickerState())
+            },
+            template = """  
+                <DatePicker />
+                """
+        )
+    }
+
+    @Test
+    fun datePickerSelectedTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 DatePicker(state = rememberDatePickerState(initialSelectedDateMillis = jun9th2023))
@@ -144,7 +159,6 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 else ->
                     set(Calendar.DAY_OF_MONTH, 10)
             }
-            add(Calendar.YEAR, -1)
         }.timeInMillis
         val colorsForTemplate = """
             {            
@@ -206,6 +220,213 @@ class DatePickerShotTest : LiveViewComposableTest() {
                     rule.onNodeWithText(formattedDate).performClick()
                 }
             }
+        )
+    }
+
+    @Test
+    fun simpleDateRangePickerTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                DateRangePicker(state = rememberDateRangePickerState())
+            },
+            template = """  
+                <DateRangePicker />
+                """
+        )
+    }
+
+    @Test
+    fun dateRangePickerPartiallySelectedTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                DateRangePicker(
+                    state = rememberDateRangePickerState(initialSelectedStartDateMillis = jun9th2023)
+                )
+            },
+            template = """  
+                <DateRangePicker initial-selected-start-date-millis="$jun9th2023"/>
+                """
+        )
+    }
+
+    @Test
+    fun dateRangePickerSelectedTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                DateRangePicker(
+                    state = rememberDateRangePickerState(
+                        initialSelectedStartDateMillis = jun9th2023,
+                        initialSelectedEndDateMillis = jun22nd2023,
+                    )
+                )
+            },
+            template = """  
+                <DateRangePicker 
+                  initial-selected-start-date-millis="$jun9th2023"
+                  initial-selected-end-date-millis="$jun22nd2023" />
+                """
+        )
+    }
+
+    @Test
+    fun dateRangePickerInitialDisplayAsInputTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                DateRangePicker(
+                    state = rememberDateRangePickerState(
+                        initialSelectedStartDateMillis = jun9th2023,
+                        initialSelectedEndDateMillis = jun22nd2023,
+                        initialDisplayMode = DisplayMode.Input
+                    ),
+                )
+            },
+            template = """  
+                <DateRangePicker 
+                  initial-selected-start-date-millis="$jun9th2023" 
+                  initial-selected-end-date-millis="$jun22nd2023" 
+                  initial-display-mode="input"/>
+                """
+        )
+    }
+
+    @Test
+    fun dateRangePickerHideToggleTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                DateRangePicker(
+                    state = rememberDateRangePickerState(
+                        initialSelectedStartDateMillis = jun9th2023,
+                        initialDisplayMode = DisplayMode.Input
+                    ),
+                    showModeToggle = false
+                )
+            },
+            template = """  
+                <DateRangePicker initial-selected-start-date-millis="$jun9th2023" 
+                  initial-display-mode="input" show-mode-toggle="false" />
+                """
+        )
+    }
+
+    @Test
+    fun dateRangePickerWithCustomTitleTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                DateRangePicker(
+                    state = rememberDateRangePickerState(
+                        initialSelectedStartDateMillis = jun9th2023,
+                    ),
+                    title = {
+                        Text(text = "Select a date range", color = Color.Red)
+                    }
+                )
+            },
+            template = """
+                <DateRangePicker initial-selected-start-date-millis="$jun9th2023">
+                    <Text template="title" color="system-red">Select a date range</Text>
+                </DateRangePicker>
+                """
+        )
+    }
+
+    @Test
+    fun dateRangePickerWithCustomHeadlineTest() {
+        val formatter =
+            SimpleDateFormat("dd/MM/yyyy")
+                .apply {
+                    timeZone = TimeZone.getTimeZone("UTC")
+                }
+
+        val startDate = formatter.format(Date(jun9th2023))
+        val endDate = formatter.format(Date(jun22nd2023))
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                DateRangePicker(
+                    state = rememberDateRangePickerState(
+                        initialSelectedStartDateMillis = jun9th2023,
+                        initialSelectedEndDateMillis = jun22nd2023,
+                    ),
+                    title = {
+                        Text(text = "Select a date range", color = Color.Red)
+                    },
+                    headline = {
+                        Text(text = "$startDate | $endDate", color = Color.Blue)
+                    }
+                )
+            },
+            template = """
+                <DateRangePicker initial-selected-start-date-millis="$jun9th2023"
+                  initial-selected-end-date-millis="$jun22nd2023">
+                    <Text template="title" color="system-red">Select a date range</Text>
+                    <Text template="headline" color="system-blue">$startDate | $endDate</Text>
+                </DateRangePicker>
+                """
+        )
+    }
+
+    @Test
+    fun dateRangePickerWithCustomColorsTest() {
+        // Using a day in the same month in order to check the today and selected UI element
+        val startDate = Calendar.getInstance().apply {
+            set(Calendar.DAY_OF_MONTH, 10)
+        }.timeInMillis
+        val endDate = Calendar.getInstance().apply {
+            set(Calendar.DAY_OF_MONTH, 20)
+        }.timeInMillis
+        val colorsForTemplate = """
+            {            
+            'containerColor': 'system-yellow',
+            'titleContentColor': 'system-red',
+            'headlineContentColor': 'system-blue',
+            'weekdayContentColor': 'system-yellow',
+            'subheadContentColor': 'system-red',
+            'yearContentColor': 'system-green',
+            'currentYearContentColor': 'system-black',
+            'selectedYearContentColor': 'system-white',
+            'selectedYearContainerColor': 'system-dark-gray',
+            'dayContentColor': 'system-gray',
+            'selectedDayContentColor': 'system-yellow',
+            'selectedDayContainerColor': 'system-red',
+            'todayContentColor': 'system-blue',
+            'todayDateBorderColor': 'system-red',
+            'dayInSelectionRangeContentColor': 'system-white',
+            'dayInSelectionRangeContainerColor': 'system-dark-gray'            
+            }
+            """.toJsonForTemplate()
+
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                DateRangePicker(
+                    state = rememberDateRangePickerState(
+                        initialSelectedStartDateMillis = startDate,
+                        initialSelectedEndDateMillis = endDate
+                    ),
+                    colors = DatePickerDefaults.colors(
+                        containerColor = Color.Yellow,
+                        titleContentColor = Color.Red,
+                        headlineContentColor = Color.Blue,
+                        weekdayContentColor = Color.Yellow,
+                        subheadContentColor = Color.Red,
+                        yearContentColor = Color.Green,
+                        currentYearContentColor = Color.Black,
+                        selectedYearContentColor = Color.White,
+                        selectedYearContainerColor = Color.DarkGray,
+                        dayContentColor = Color.Gray,
+                        selectedDayContentColor = Color.Yellow,
+                        selectedDayContainerColor = Color.Red,
+                        todayContentColor = Color.Blue,
+                        todayDateBorderColor = Color.Red,
+                        dayInSelectionRangeContentColor = Color.White,
+                        dayInSelectionRangeContainerColor = Color.DarkGray,
+                    )
+                )
+            },
+            template = """  
+                <DateRangePicker 
+                  initial-selected-start-date-millis="$startDate"
+                  initial-selected-end-date-millis="$endDate"
+                  colors="$colorsForTemplate" />
+                """,
         )
     }
 }
