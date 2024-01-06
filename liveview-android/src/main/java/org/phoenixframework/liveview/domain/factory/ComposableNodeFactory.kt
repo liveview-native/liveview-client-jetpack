@@ -5,11 +5,14 @@ import org.phoenixframework.liveview.data.dto.AlertDialogDtoFactory
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
 import org.phoenixframework.liveview.data.dto.BadgedBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.BottomAppBarDtoFactory
+import org.phoenixframework.liveview.data.dto.BottomSheetScaffoldDtoFactory
 import org.phoenixframework.liveview.data.dto.BoxDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.CardDtoFactory
 import org.phoenixframework.liveview.data.dto.CheckBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.ColumnDtoFactory
+import org.phoenixframework.liveview.data.dto.DatePickerDialogDtoFactory
+import org.phoenixframework.liveview.data.dto.DatePickerDtoFactory
 import org.phoenixframework.liveview.data.dto.DividerDtoFactory
 import org.phoenixframework.liveview.data.dto.DropdownMenuItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxDtoFactory
@@ -56,6 +59,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.badgedBox, BadgedBoxDtoFactory)
             registerComponent(ComposableTypes.box, BoxDtoFactory)
             registerComponent(ComposableTypes.bottomAppBar, BottomAppBarDtoFactory)
+            registerComponent(ComposableTypes.bottomSheetScaffold, BottomSheetScaffoldDtoFactory)
             registerComponent(ComposableTypes.button, ButtonDtoFactory)
             registerComponent(ComposableTypes.card, CardDtoFactory)
             registerComponent(ComposableTypes.centerAlignedTopAppBar, TopAppBarDtoFactory)
@@ -65,6 +69,9 @@ object ComposableNodeFactory {
                 ProgressIndicatorDtoFactory
             )
             registerComponent(ComposableTypes.column, ColumnDtoFactory)
+            registerComponent(ComposableTypes.datePicker, DatePickerDtoFactory)
+            registerComponent(ComposableTypes.datePickerDialog, DatePickerDialogDtoFactory)
+            registerComponent(ComposableTypes.dateRangePicker, DatePickerDtoFactory)
             registerComponent(ComposableTypes.divider, DividerDtoFactory)
             registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)

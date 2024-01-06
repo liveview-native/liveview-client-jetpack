@@ -1,9 +1,9 @@
 package com.dockyard.liveviewtest.liveview.util
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.dockyard.liveviewtest.liveview.runner.LiveViewTestRunner
@@ -26,6 +26,7 @@ abstract class LiveViewComposableTest : ScreenshotTest {
             wsBaseUrl = "",
             onNavigate = { _, _ -> }
         ),
+        onBeforeScreenShot: ((ComposeContentTestRule) -> Unit)? = null
     ) {
         composeRule.setContent {
             val state by coordinator.composableTree.collectAsState()
@@ -34,7 +35,6 @@ abstract class LiveViewComposableTest : ScreenshotTest {
             } else {
                 val json = "{\"s\": [\"${template.templateToTest()}\"]}"
                 coordinator.parseTemplate(json)
-                Log.d("NGVL", "json=[$json]")
                 if (state.children.isNotEmpty()) {
                     PhxLiveView(
                         composableNode = state.children.first(),
@@ -43,6 +43,9 @@ abstract class LiveViewComposableTest : ScreenshotTest {
                 }
             }
         }
+
+        // Do some action on the UI before capture the screenshot
+        onBeforeScreenShot?.invoke(composeRule)
 
         if (delayBeforeScreenshot > 0) {
             Thread.sleep(delayBeforeScreenshot)
