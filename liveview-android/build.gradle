@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'shot'
+    id 'io.github.takahirom.roborazzi'
 }
 
 android {
@@ -25,6 +25,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    // Runnning screenshot tests
+    // Recording the image references
+    // ./gradlew recordRoborazzi -PisRecordingShotTest=true
+    // Testing
+    // ./gradlew verifyRoborazzi
+    // This param must be passed via command line in order to generated the reference images for
+    // screen shot tests.
+    buildTypes.each{
+        it.buildConfigField 'boolean', 'IS_RECORDING_SHOT_TEST', isRecordingShotTest
+    }
+
     compileOptions {
         sourceCompatibility source_compatibility_version
         targetCompatibility target_compatibility_version
@@ -34,6 +45,7 @@ android {
     }
     buildFeatures {
         compose true
+        buildConfig true
     }
     composeOptions {
         kotlinCompilerExtensionVersion kotlin_compiler_ext_version
@@ -41,6 +53,11 @@ android {
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
         }
     }
     namespace 'org.phoenixframework.liveview'
@@ -78,13 +95,14 @@ dependencies {
     api "io.coil-kt:coil-compose:$coil_version"
     api "io.coil-kt:coil-svg:$coil_version"
 
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
-    androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$ui_test_junit_version"
-
     testImplementation "junit:junit:$junit_version"
+    testImplementation "org.robolectric:robolectric:$robolectric_version"
+    testImplementation "androidx.test.ext:junit:$ext_junit_version"
+    testImplementation "androidx.compose.ui:ui-test-junit4-android:$ui_test_junit_version"
 
-
+    testImplementation "io.github.takahirom.roborazzi:roborazzi:$roborazzi_version"
+    testImplementation "io.github.takahirom.roborazzi:roborazzi-compose:$roborazzi_version"
+    testImplementation "io.github.takahirom.roborazzi:roborazzi-junit-rule:$roborazzi_version"
 }
 
 // ./gradlew assembleRelease -PcomposeCompilerReports=true
@@ -112,9 +130,3 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 tasks.register('deleteScreenshots', Delete) {
     delete(files("${project.projectDir}/screenshots/"))
 }
-
-// Runnning screenshot tests
-// Recording the image references
-// ./gradlew executeScreenshotTests -Precord -Pandroid.testInstrumentationRunnerArguments.record=true
-// Testing
-// ./gradlew executeScreenshotTests
