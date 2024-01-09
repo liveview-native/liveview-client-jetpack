@@ -16,7 +16,7 @@ buildscript {
 
         // libs
         activity_compose_version = '1.8.1'
-        coil_version = '2.4.0'
+        coil_version = '2.5.0'
         commons_text_version = '1.10.0'
         commons_math_version = '3.6.1'
         compose_bom_version = '2023.10.01'
