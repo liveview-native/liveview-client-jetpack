@@ -9,22 +9,22 @@ import androidx.compose.material3.TextField
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
-import org.junit.Ignore
 import org.junit.Test
 
 // FIXME seems like popups like Menus cannot be captured
 //  https://github.com/pedrovgs/Shot/issues/275
+//  Check setting the expanded property to true and verify if the test passes
 class ExposedDropdownMenuBoxShotTest : LiveViewComposableTest() {
     @OptIn(ExperimentalMaterial3Api::class)
-    @Ignore("Seems like popups like Menus cannot be captured")
     @Test
     fun simpleExposedDropdownMenuBoxTest() {
         val testTag = "combobox"
         compareNativeComposableWithTemplate(
+            testTag = testTag,
             nativeComposable = {
                 Box {
                     ExposedDropdownMenuBox(
-                        expanded = true,
+                        expanded = false,
                         onExpandedChange = {},
                         modifier = Modifier.testTag(testTag)
 
@@ -47,18 +47,20 @@ class ExposedDropdownMenuBoxShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <ExposedDropdownMenuBox test-tag="$testTag">
-                  <TextField text="Choose an option" read-only="true" menu-anchor/>
-                  <DropdownMenuItem phx-click="setDDOption" phx-value="A">
-                    <Text>Option A</Text>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem phx-click="setDDOption" phx-value="B">
-                    <Text>Option B</Text>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem phx-click="setDDOption" phx-value="C">
-                    <Text>Option C</Text>
-                  </DropdownMenuItem>
-                </ExposedDropdownMenuBox>  
+                <Box>
+                  <ExposedDropdownMenuBox test-tag="$testTag" expanded="false">
+                    <TextField phx-value="Choose an option" read-only="true" menu-anchor/>
+                    <DropdownMenuItem phx-click="setDDOption" phx-value="A">
+                      <Text>Option A</Text>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem phx-click="setDDOption" phx-value="B">
+                      <Text>Option B</Text>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem phx-click="setDDOption" phx-value="C">
+                      <Text>Option C</Text>
+                    </DropdownMenuItem>
+                  </ExposedDropdownMenuBox>  
+                </Box>
                 """,
         )
     }

@@ -30,11 +30,6 @@ abstract class LiveViewComposableTest {
     val composeRule = createAndroidComposeRule<ComponentActivity>()
     val isRecording = IS_RECORDING_SHOT_TEST
 
-    @Before
-    fun bla() {
-        println(">>>>>$isRecording")
-    }
-
     fun compareNativeComposableWithTemplate(
         nativeComposable: @Composable () -> Unit,
         template: String,
