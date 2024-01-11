@@ -29,6 +29,7 @@ internal val provider: GoogleFont.Provider by lazy {
     )
 }
 
+@Suppress("UNCHECKED_CAST")
 internal fun typographyFromThemeData(fontData: Map<String, Any>): Typography {
     val default = Typography(
         bodyLarge = TextStyle(
@@ -96,9 +97,9 @@ internal fun textStyleFromData(textStyleData: Map<String, Any>): TextStyle {
         textAlign = textAlignFromString(textStyleData["textAlign"]?.toString()),
         lineHeight = textStyleData["textAlign"]?.let { lineHeightFromString(it.toString()) }
             ?: TextUnit.Unspecified,
-        lineBreak = textStyleData["lineBreak"]?.let { lineBreakFromString(it.toString()) },
-        hyphens = textStyleData["hyphens"]?.let { hyphensFromString(it.toString()) },
-        textDirection = textStyleData["textDirection"]?.let { textDirectionFromString(it.toString()) },
+        lineBreak = lineBreakFromString((textStyleData["lineBreak"] ?: "").toString()),
+        hyphens = hyphensFromString((textStyleData["hyphens"] ?: "").toString()),
+        textDirection = textDirectionFromString((textStyleData["textDirection"] ?: "").toString()),
         fontFeatureSettings = textStyleData["fontFeatureSettings"]?.toString(),
     )
     //TODO Support these complex types
@@ -187,31 +188,31 @@ internal fun lineHeightFromString(lineHeight: String): TextUnit {
     return (lineHeight.toInt()).sp
 }
 
-internal fun lineBreakFromString(lineBreak: String): LineBreak? {
+internal fun lineBreakFromString(lineBreak: String): LineBreak {
     return when (lineBreak) {
         "simple" -> LineBreak.Simple
         "paragraph" -> LineBreak.Paragraph
         "heading" -> LineBreak.Heading
-        else -> null
+        else -> LineBreak.Simple
     }
 }
 
-internal fun hyphensFromString(hyphens: String): Hyphens? {
+internal fun hyphensFromString(hyphens: String): Hyphens {
     return when (hyphens) {
         "none" -> Hyphens.None
         "auto" -> Hyphens.Auto
-        else -> null
+        else -> Hyphens.Unspecified
     }
 }
 
-internal fun textDirectionFromString(textDirection: String): TextDirection? {
+internal fun textDirectionFromString(textDirection: String): TextDirection {
     return when (textDirection) {
         "ltr" -> TextDirection.Ltr
         "rtl" -> TextDirection.Rtl
         "content" -> TextDirection.Content
         "contentOrRtl" -> TextDirection.ContentOrRtl
         "contentOrLtr" -> TextDirection.ContentOrLtr
-        else -> null
+        else -> TextDirection.Unspecified
     }
 }
 

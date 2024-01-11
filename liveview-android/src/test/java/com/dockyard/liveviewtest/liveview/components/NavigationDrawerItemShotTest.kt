@@ -1,8 +1,8 @@
 package com.dockyard.liveviewtest.liveview.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
@@ -67,7 +67,10 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                             Text(text = "Option 2")
                         },
                         icon = {
-                            Icon(imageVector = Icons.Filled.ExitToApp, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                                contentDescription = ""
+                            )
                         },
                         selected = false,
                         onClick = { }
@@ -82,7 +85,7 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                   </NavigationDrawerItem> 
                   <NavigationDrawerItem selected="false" phx-click="">
                     <Text template="label">Option 2</Text>
-                    <Icon image-vector="filled:ExitToApp" template="icon" />
+                    <Icon image-vector="autoMirrored.filled:ExitToApp" template="icon" />
                   </NavigationDrawerItem>                   
                 </ModalDrawerSheet>               
                 """
@@ -112,7 +115,10 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                             Text(text = "Option 2")
                         },
                         icon = {
-                            Icon(imageVector = Icons.Filled.ExitToApp, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                                contentDescription = ""
+                            )
                         },
                         badge = {
                             Text(text = "None")
@@ -131,7 +137,7 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                   </NavigationDrawerItem> 
                   <NavigationDrawerItem selected="false" phx-click="">
                     <Text template="label">Option 2</Text>
-                    <Icon image-vector="filled:ExitToApp" template="icon" />
+                    <Icon image-vector="autoMirrored.filled:ExitToApp" template="icon" />
                     <Text template="badge">None</Text>
                   </NavigationDrawerItem>                   
                 </ModalDrawerSheet>               
@@ -185,7 +191,10 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                             Text(text = "Option 2")
                         },
                         icon = {
-                            Icon(imageVector = Icons.Filled.ExitToApp, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                                contentDescription = ""
+                            )
                         },
                         badge = {
                             Text(text = "None")
@@ -205,7 +214,7 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                   </NavigationDrawerItem> 
                   <NavigationDrawerItem selected="false" phx-click="" colors="$templateColors">
                     <Text template="label">Option 2</Text>
-                    <Icon image-vector="filled:ExitToApp" template="icon" />
+                    <Icon image-vector="autoMirrored.filled:ExitToApp" template="icon" />
                     <Text template="badge">None</Text>
                   </NavigationDrawerItem>                   
                 </ModalDrawerSheet>               

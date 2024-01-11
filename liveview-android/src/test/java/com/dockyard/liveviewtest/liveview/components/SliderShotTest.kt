@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.RangeSliderState
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.SliderState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -18,19 +21,26 @@ import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 
+@OptIn(ExperimentalMaterial3Api::class)
 class SliderShotTest : LiveViewComposableTest() {
     @Test
     fun simpleSliderTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Column {
-                    Slider(value = 0f, onValueChange = {})
-                    Slider(value = .5f, onValueChange = {})
-                    Slider(value = 1f, onValueChange = {})
-                    Slider(value = .6f, onValueChange = {}, enabled = false)
-                    Slider(value = .2f, onValueChange = {}, steps = 5)
-                    Slider(value = 40f, onValueChange = {}, valueRange = 0f..100f)
-                    Slider(value = 40f, onValueChange = {}, steps = 5, valueRange = 0f..100f)
+                    Slider(state = remember { SliderState(value = 0f) })
+                    Slider(state = remember { SliderState(value = 0.5f) })
+                    Slider(state = remember { SliderState(value = 1f) })
+                    Slider(state = remember { SliderState(value = 0.6f) }, enabled = false)
+                    Slider(state = remember { SliderState(value = 0.2f, steps = 5) })
+                    Slider(state = remember { SliderState(value = 40f, valueRange = 0f..100f) })
+                    Slider(state = remember {
+                        SliderState(
+                            value = 40f,
+                            steps = 5,
+                            valueRange = 0f..100f
+                        )
+                    })
                 }
             },
             template = """
@@ -78,14 +88,29 @@ class SliderShotTest : LiveViewComposableTest() {
                     disabledInactiveTickColor = Color.White
                 )
                 Column {
-                    Slider(value = 0.5f, onValueChange = {}, colors = colors)
-                    Slider(value = 0.5f, onValueChange = {}, colors = colors, steps = 4)
-                    Slider(value = 0.5f, onValueChange = {}, colors = colors, enabled = false)
                     Slider(
-                        value = 0.5f,
-                        onValueChange = {},
+                        state = remember {
+                            SliderState(value = 0.5f)
+                        },
                         colors = colors,
-                        steps = 4,
+                    )
+                    Slider(
+                        remember {
+                            SliderState(value = 0.5f, steps = 4)
+                        },
+                        colors = colors,
+                    )
+                    Slider(
+                        remember {
+                            SliderState(value = 0.5f)
+                        },
+                        colors = colors, enabled = false,
+                    )
+                    Slider(
+                        remember {
+                            SliderState(value = 0.5f, steps = 4)
+                        },
+                        colors = colors,
                         enabled = false
                     )
                 }
@@ -174,18 +199,36 @@ class SliderShotTest : LiveViewComposableTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Column {
-                    RangeSlider(value = 0f..0.3f, onValueChange = {})
-                    RangeSlider(value = 0.7f..1.0f, onValueChange = {})
-                    RangeSlider(value = 0.4f..0.6f, onValueChange = {})
-                    RangeSlider(value = 0.4f..0.6f, onValueChange = {}, enabled = false)
-                    RangeSlider(value = 0.4f..0.6f, onValueChange = {}, steps = 5)
-                    RangeSlider(value = 30f..50f, onValueChange = {}, valueRange = 0f..100f)
-                    RangeSlider(
-                        value = 40f..70f,
-                        onValueChange = {},
-                        steps = 5,
-                        valueRange = 0f..100f
-                    )
+                    RangeSlider(state = remember {
+                        RangeSliderState(activeRangeStart = 0f, activeRangeEnd = 0.3f)
+                    })
+                    RangeSlider(state = remember {
+                        RangeSliderState(activeRangeStart = 0.7f, activeRangeEnd = 1f)
+                    })
+                    RangeSlider(state = remember {
+                        RangeSliderState(activeRangeStart = 0.4f, activeRangeEnd = 0.6f)
+                    })
+                    RangeSlider(state = remember {
+                        RangeSliderState(activeRangeStart = 0.4f, activeRangeEnd = 0.6f)
+                    }, enabled = false)
+                    RangeSlider(state = remember {
+                        RangeSliderState(activeRangeStart = 0.4f, activeRangeEnd = 0.6f, steps = 5)
+                    })
+                    RangeSlider(state = remember {
+                        RangeSliderState(
+                            activeRangeStart = 30f,
+                            activeRangeEnd = 50f,
+                            valueRange = 0f..100f
+                        )
+                    })
+                    RangeSlider(state = remember {
+                        RangeSliderState(
+                            activeRangeStart = 40f,
+                            activeRangeEnd = 70f,
+                            steps = 5,
+                            valueRange = 0f..100f
+                        )
+                    })
                 }
             },
             template = """
@@ -233,19 +276,38 @@ class SliderShotTest : LiveViewComposableTest() {
                     disabledInactiveTickColor = Color.White
                 )
                 Column {
-                    RangeSlider(value = 0.1f..0.6f, onValueChange = {}, colors = colors)
-                    RangeSlider(value = 0.4f..0.7f, onValueChange = {}, colors = colors, steps = 4)
+                    RangeSlider(state = remember {
+                        RangeSliderState(
+                            activeRangeStart = 0.1f,
+                            activeRangeEnd = 0.6f,
+                        )
+                    }, colors = colors)
+                    RangeSlider(state = remember {
+                        RangeSliderState(
+                            activeRangeStart = 0.4f,
+                            activeRangeEnd = 0.7f,
+                            steps = 4,
+                        )
+                    }, colors = colors)
                     RangeSlider(
-                        value = 0.5f..0.9f,
-                        onValueChange = {},
+                        state = remember {
+                            RangeSliderState(
+                                activeRangeStart = 0.5f,
+                                activeRangeEnd = 0.9f,
+                            )
+                        },
                         colors = colors,
                         enabled = false
                     )
                     RangeSlider(
-                        value = 0.3f..0.8f,
-                        onValueChange = {},
+                        state = remember {
+                            RangeSliderState(
+                                activeRangeStart = 0.3f,
+                                activeRangeEnd = 0.8f,
+                                steps = 4,
+                            )
+                        },
                         colors = colors,
-                        steps = 4,
                         enabled = false
                     )
                 }

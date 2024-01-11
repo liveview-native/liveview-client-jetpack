@@ -5,7 +5,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
@@ -135,7 +134,7 @@ internal class CardDTO private constructor(builder: Builder) :
                     shape = CardDefaults.outlinedShape,
                     colors = getOutlinedCardColors(colors),
                     elevation = getOutlinedCardElevation(elevation),
-                    border = border ?: ButtonDefaults.outlinedButtonBorder,
+                    border = border ?: CardDefaults.outlinedCardBorder(),
                 ) {
                     composableNode.children.forEach {
                         PhxLiveView(it, pushEvent, composableNode, null, this)

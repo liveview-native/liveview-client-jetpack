@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.DateRangePickerDefaults
 import androidx.compose.material3.DisplayMode
@@ -46,7 +45,15 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * Material Design date picker.
  * You can use a `DatePicker` or `DateRangePicker`.
  * ```
- *
+ * <DatePicker
+ *   phx-change="selectDate"
+ *   initial-selected-date-millis="1705028400000"
+ * />
+ * <DateRangePicker
+ *   phx-change="selectDateRange"
+ *   initial-selected-start-date-millis={"#{Enum.at(@dateRange,0)}"}
+ *   initial-selected-end-date-millis={"#{Enum.at(@dateRange,1)}"}
+ * />
  * ```
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,7 +101,7 @@ internal class DatePickerDTO private constructor(builder: Builder) :
             yearRange = yearRange ?: DatePickerDefaults.YearRange,
             initialDisplayMode = initialDisplayMode ?: DisplayMode.Picker,
         )
-        val dateFormatter = remember { DatePickerFormatter() }
+        val dateFormatter = remember { DatePickerDefaults.dateFormatter() }
         DatePicker(
             state = state,
             modifier = modifier,
@@ -105,16 +112,18 @@ internal class DatePickerDTO private constructor(builder: Builder) :
                 title?.let {
                     PhxLiveView(it, pushEvent, composableNode, null)
                 } ?: DatePickerDefaults.DatePickerTitle(
-                    state, modifier = Modifier.padding(start = 24.dp, end = 12.dp, top = 16.dp),
+                    displayMode = state.displayMode,
+                    modifier = Modifier.padding(start = 24.dp, end = 12.dp, top = 16.dp)
                 )
             },
             headline = {
                 headline?.let {
                     PhxLiveView(it, pushEvent, composableNode, null)
                 } ?: DatePickerDefaults.DatePickerHeadline(
-                    state,
-                    dateFormatter,
-                    modifier = Modifier.padding(start = 24.dp, end = 12.dp, bottom = 12.dp),
+                    selectedDateMillis = state.selectedDateMillis,
+                    displayMode = state.displayMode,
+                    dateFormatter = dateFormatter,
+                    modifier = Modifier.padding(start = 24.dp, end = 12.dp, bottom = 12.dp)
                 )
             },
             showModeToggle = showModeToggle,
@@ -142,7 +151,7 @@ internal class DatePickerDTO private constructor(builder: Builder) :
             yearRange = yearRange ?: DatePickerDefaults.YearRange,
             initialDisplayMode = initialDisplayMode ?: DisplayMode.Picker,
         )
-        val dateFormatter = remember { DatePickerFormatter() }
+        val dateFormatter = remember { DatePickerDefaults.dateFormatter() }
         DateRangePicker(
             state = state,
             modifier = modifier,
@@ -153,16 +162,19 @@ internal class DatePickerDTO private constructor(builder: Builder) :
                 title?.let {
                     PhxLiveView(it, pushEvent, composableNode, null)
                 } ?: DateRangePickerDefaults.DateRangePickerTitle(
-                    state, modifier = Modifier.padding(start = 64.dp, end = 12.dp),
+                    displayMode = state.displayMode,
+                    modifier = Modifier.padding(start = 64.dp, end = 12.dp)
                 )
             },
             headline = {
                 headline?.let {
                     PhxLiveView(it, pushEvent, composableNode, null)
                 } ?: DateRangePickerDefaults.DateRangePickerHeadline(
-                    state,
+                    selectedStartDateMillis = state.selectedStartDateMillis,
+                    selectedEndDateMillis = state.selectedEndDateMillis,
+                    displayMode = state.displayMode,
                     dateFormatter,
-                    modifier = Modifier.padding(start = 64.dp, end = 12.dp, bottom = 12.dp),
+                    modifier = Modifier.padding(start = 64.dp, end = 12.dp, bottom = 12.dp)
                 )
             },
             showModeToggle = showModeToggle,

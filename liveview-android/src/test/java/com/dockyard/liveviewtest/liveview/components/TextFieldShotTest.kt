@@ -3,8 +3,8 @@ package com.dockyard.liveviewtest.liveview.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -84,7 +84,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                     )
                     TextField(
@@ -96,7 +99,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                         prefix = {
                             Text(text = "Pre")
@@ -111,7 +117,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                         prefix = {
                             Text(text = "Pre")
@@ -129,7 +138,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                         prefix = {
                             Text(text = "Pre")
@@ -158,25 +170,25 @@ class TextFieldShotTest : LiveViewComposableTest() {
                   <TextField phx-value="Text 4" phx-change="">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" /> 
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" /> 
                   </Text>                        
                   <TextField phx-value="Text 5" phx-change="">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" />
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
                     <Text template="prefix">Pre</Text>
                   </Text>  
                   <TextField phx-value="Text 6" phx-change="">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" />
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
                     <Text template="prefix">Pre</Text>
                     <Text template="suffix">Suf</Text>
                   </Text>   
                   <TextField phx-value="Text 7" phx-change="">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" />
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
                     <Text template="prefix">Pre</Text>
                     <Text template="suffix">Suf</Text>
                     <Text template="supportingText">Supporting</Text>
@@ -260,7 +272,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                         prefix = {
                             Text(text = "Pre")
@@ -284,7 +299,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                         prefix = {
                             Text(text = "Pre")
@@ -308,7 +326,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                         prefix = {
                             Text(text = "Pre")
@@ -326,7 +347,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                   <TextField phx-value="Text 1" phx-change="" colors="$colorsForTemplate">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" />
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
                     <Text template="prefix">Pre</Text>
                     <Text template="suffix">Suf</Text>
                     <Text template="supportingText">Supporting</Text>
@@ -334,7 +355,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                   <TextField phx-value="Text 2" phx-change="" enabled="false" colors="$colorsForTemplate">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" />
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
                     <Text template="prefix">Pre</Text>
                     <Text template="suffix">Suf</Text>
                     <Text template="supportingText">Supporting</Text>
@@ -342,7 +363,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                   <TextField phx-value="Text 3" phx-change="" is-error="true" colors="$colorsForTemplate">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" />
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
                     <Text template="prefix">Pre</Text>
                     <Text template="suffix">Suf</Text>
                     <Text template="supportingText">Supporting</Text>
@@ -419,7 +440,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                     )
                     OutlinedTextField(
@@ -431,7 +455,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                         prefix = {
                             Text(text = "Pre")
@@ -446,7 +473,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                         prefix = {
                             Text(text = "Pre")
@@ -464,7 +494,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                         prefix = {
                             Text(text = "Pre")
@@ -493,25 +526,25 @@ class TextFieldShotTest : LiveViewComposableTest() {
                   <OutlinedTextField phx-value="Text 4" phx-change="">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" /> 
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" /> 
                   </OutlinedTextField>                        
                   <OutlinedTextField phx-value="Text 5" phx-change="">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" />
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
                     <Text template="prefix">Pre</Text>
                   </OutlinedTextField>  
                   <OutlinedTextField phx-value="Text 6" phx-change="">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" />
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
                     <Text template="prefix">Pre</Text>
                     <Text template="suffix">Suf</Text>
                   </OutlinedTextField>   
                   <OutlinedTextField phx-value="Text 7" phx-change="">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" />
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
                     <Text template="prefix">Pre</Text>
                     <Text template="suffix">Suf</Text>
                     <Text template="supportingText">Supporting</Text>
@@ -595,7 +628,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                         prefix = {
                             Text(text = "Pre")
@@ -618,7 +654,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                         prefix = {
                             Text(text = "Pre")
@@ -640,7 +679,10 @@ class TextFieldShotTest : LiveViewComposableTest() {
                             Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "")
                         },
                         trailingIcon = {
-                            Icon(imageVector = Icons.Filled.Send, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Send,
+                                contentDescription = ""
+                            )
                         },
                         prefix = {
                             Text(text = "Pre")
@@ -657,7 +699,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                   <OutlinedTextField phx-value="Text 1" phx-change="" colors="$colorsForTemplate">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" />
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
                     <Text template="prefix">Pre</Text>
                     <Text template="suffix">Suf</Text>
                     <Text template="supportingText">Supporting</Text>
@@ -665,7 +707,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                   <OutlinedTextField phx-value="Text 2" phx-change="" enabled="false" colors="$colorsForTemplate">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" />
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
                     <Text template="prefix">Pre</Text>
                     <Text template="suffix">Suf</Text>
                     <Text template="supportingText">Supporting</Text>
@@ -673,7 +715,7 @@ class TextFieldShotTest : LiveViewComposableTest() {
                   <OutlinedTextField phx-value="Text 3" phx-change="" is-error="true" colors="$colorsForTemplate">
                     <Text template="label">Label</Text>
                     <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="filled:Send" />
+                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
                     <Text template="prefix">Pre</Text>
                     <Text template="suffix">Suf</Text>
                     <Text template="supportingText">Supporting</Text>

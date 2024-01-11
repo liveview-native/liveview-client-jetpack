@@ -72,7 +72,6 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.datePicker, DatePickerDtoFactory)
             registerComponent(ComposableTypes.datePickerDialog, DatePickerDialogDtoFactory)
             registerComponent(ComposableTypes.dateRangePicker, DatePickerDtoFactory)
-            registerComponent(ComposableTypes.divider, DividerDtoFactory)
             registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
@@ -83,6 +82,7 @@ object ComposableNodeFactory {
             )
             registerComponent(ComposableTypes.fab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.filledTonalButton, ButtonDtoFactory)
+            registerComponent(ComposableTypes.horizontalDivider, DividerDtoFactory)
             registerComponent(ComposableTypes.icon, IconDtoFactory)
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.image, ImageDtoFactory)
@@ -124,6 +124,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.textButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.textField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
+            registerComponent(ComposableTypes.verticalDivider, DividerDtoFactory)
         }
     }
 

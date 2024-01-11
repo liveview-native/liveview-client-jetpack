@@ -16,7 +16,6 @@ object ComposableTypes {
     const val datePicker = "DatePicker"
     const val datePickerDialog = "DatePickerDialog"
     const val dateRangePicker = "DateRangePicker"
-    const val divider = "Divider"
     const val dropdownMenuItem = "DropdownMenuItem"
     const val elevatedButton = "ElevatedButton"
     const val elevatedCard = "ElevatedCard"
@@ -24,6 +23,7 @@ object ComposableTypes {
     const val extendedFab = "ExtendedFloatingActionButton"
     const val fab = "FloatingActionButton"
     const val filledTonalButton = "FilledTonalButton"
+    const val horizontalDivider = "HorizontalDivider"
     const val icon = "Icon"
     const val iconButton = "IconButton"
     const val image = "Image"
@@ -59,4 +59,5 @@ object ComposableTypes {
     const val textButton = "TextButton"
     const val textField = "TextField"
     const val topAppBar = "TopAppBar"
+    const val verticalDivider = "VerticalDivider"
 }

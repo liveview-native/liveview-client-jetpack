@@ -102,11 +102,11 @@ internal class IconDTO private constructor(builder: Builder) :
         companion object {
             private val iconCache = mutableMapOf<String, ImageVector>()
 
-            fun getIcon(icon: String): ImageVector {
+            fun getIcon(icon: String): ImageVector? {
                 if (!iconCache.containsKey(icon)) {
                     icon.toMaterialIcon()?.let { iconCache[icon] = it }
                 }
-                return iconCache[icon]!!
+                return iconCache[icon]
             }
         }
     }
@@ -139,8 +139,8 @@ private fun String.toMaterialIcon(): ImageVector? = try {
     val imageParameters = split(":")
     val themePackage = imageParameters.first()
     val action = imageParameters.last()
-
-    val iconClass = Class.forName("androidx.compose.material.icons.${themePackage}.${action}Kt")
+    val clazzName = "androidx.compose.material.icons.${themePackage.lowercase()}.${action}Kt"
+    val iconClass = Class.forName(clazzName)
     val method = iconClass.declaredMethods.first()
 
     val theme: Any = when (themePackage) {
@@ -149,10 +149,15 @@ private fun String.toMaterialIcon(): ImageVector? = try {
         "outlined" -> Icons.Outlined
         "sharp" -> Icons.Sharp
         "twoTone" -> Icons.TwoTone
-        else -> Icons.Default
+        "autoMirrored.filled" -> Icons.AutoMirrored.Filled
+        "autoMirrored.rounded" -> Icons.AutoMirrored.Rounded
+        "autoMirrored.outlined" -> Icons.AutoMirrored.Outlined
+        "autoMirrored.sharp" -> Icons.AutoMirrored.Sharp
+        "autoMirrored.twoTone" -> Icons.AutoMirrored.TwoTone
+        else -> Icons.Filled
     }
     method.invoke(null, theme) as ImageVector
 } catch (e: Throwable) {
-    Log.e("IconDTO", e.message ?: "Icon not found")
+    Log.e("IconDTO", e.message ?: "Icon [$this] not found")
     null
 }

@@ -5,16 +5,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.RangeSliderState
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.SliderState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.compositeOver
 import kotlinx.collections.immutable.ImmutableMap
@@ -104,22 +102,21 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
         }
         when (composableNode?.node?.tag) {
             ComposableTypes.slider -> {
-                var stateValue by remember {
-                    mutableFloatStateOf(value)
+                val sliderState = remember {
+                    SliderState(
+                        value = value,
+                        valueRange = minValue..maxValue,
+                        steps = steps,
+                    )
                 }
                 val thumb = remember(composableNode.children) {
                     composableNode.children.find { it.node?.template == templateThumb }
                 }
 
                 Slider(
-                    value = stateValue,
-                    onValueChange = {
-                        stateValue = it
-                    },
+                    state = sliderState,
                     modifier = modifier,
                     enabled = enabled,
-                    valueRange = minValue..maxValue,
-                    steps = steps,
                     colors = colors,
                     thumb = {
                         thumb?.let {
@@ -132,18 +129,19 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
                     },
                     track = { positions ->
                         track?.let {
+                            //TODO how to pass the positions to the child?
                             PhxLiveView(it, pushEvent, composableNode, null)
                         } ?: SliderDefaults.Track(
-                            sliderPositions = positions,
                             colors = colors,
-                            enabled = enabled
+                            enabled = enabled,
+                            sliderState = sliderState,
                         )
                     }
                 )
 
                 LaunchedEffect(composableNode) {
                     changeValueEventName?.let { event ->
-                        snapshotFlow { stateValue }
+                        snapshotFlow { sliderState.value }
                             .onChangeable()
                             .collect { value ->
                                 pushOnChangeEvent(pushEvent, event, value)
@@ -154,8 +152,13 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
 
             ComposableTypes.rangeSlider -> {
                 val endInteractionSource = remember { MutableInteractionSource() }
-                var stateValue by remember {
-                    mutableStateOf(range)
+                val rangeSliderState = remember {
+                    RangeSliderState(
+                        activeRangeStart = range.start,
+                        activeRangeEnd = range.endInclusive,
+                        steps = steps,
+                        valueRange = minValue..maxValue,
+                    )
                 }
                 val startThumb = remember(composableNode.children) {
                     composableNode.children.find { it.node?.template == templateStartThumb }
@@ -164,23 +167,18 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
                     composableNode.children.find { it.node?.template == templateEndThumb }
                 }
                 RangeSlider(
-                    value = stateValue,
-                    onValueChange = {
-                        stateValue = it
-                    },
+                    state = rangeSliderState,
                     modifier = modifier,
                     enabled = enabled,
-                    valueRange = minValue..maxValue,
-                    steps = steps,
                     colors = colors,
                     track = { positions ->
                         track?.let {
                             //TODO how to pass the positions to the child?
                             PhxLiveView(it, pushEvent, composableNode, null)
                         } ?: SliderDefaults.Track(
-                            sliderPositions = positions,
                             colors = colors,
-                            enabled = enabled
+                            enabled = enabled,
+                            rangeSliderState = rangeSliderState
                         )
                     },
                     startThumb = {
@@ -206,7 +204,9 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
 
                 LaunchedEffect(composableNode) {
                     changeValueEventName?.let { event ->
-                        snapshotFlow { stateValue }
+                        snapshotFlow {
+                            rangeSliderState.activeRangeStart..rangeSliderState.activeRangeEnd
+                        }
                             .onTypedChangeable()
                             .collect { value ->
                                 pushEvent(
