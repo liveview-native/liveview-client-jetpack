@@ -12,7 +12,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -25,3 +25,12 @@ jobs:
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
       with:
         arguments: build
+    - name: test
+      run: |
+        # Create screenshots
+        ./gradlew app:recordRoborazziDebug --stacktrace        
+    - name: verify test
+      id: verify-test
+      run: |
+        # If there is a difference between the screenshots, the test will fail.
+        ./gradlew app:verifyRoborazziDebug --stacktrace
