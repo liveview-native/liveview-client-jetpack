@@ -3,7 +3,6 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AlertDialogDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -74,8 +73,6 @@ internal class AlertDialogDTO private constructor(builder: Builder) : DialogDTO(
     private val titleContentColor = builder.titleContentColor
     private val textContentColor = builder.textContentColor
 
-
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
@@ -96,65 +93,46 @@ internal class AlertDialogDTO private constructor(builder: Builder) : DialogDTO(
             composableNode?.children?.find { it.node?.template == null }
         }
 
-        val predefinedDialog =
-            dismissButton != null || confirmButton != null || icon != null || title != null || content != null
-
-        if (predefinedDialog) {
-            AlertDialog(
-                onDismissRequest = dismissEvent?.let {
-                    onClickFromString(pushEvent, it, value?.toString() ?: "")
-                } ?: {
-                    // Do nothing
-                },
-                confirmButton = {
-                    confirmButton?.let {
-                        PhxLiveView(it, pushEvent, composableNode, null)
-                    }
-                },
-                modifier = modifier,
-                dismissButton = dismissButton?.let {
-                    {
-                        PhxLiveView(dismissButton, pushEvent, composableNode, null)
-                    }
-                },
-                icon = icon?.let {
-                    {
-                        PhxLiveView(icon, pushEvent, composableNode, null)
-                    }
-                },
-                title = title?.let {
-                    {
-                        PhxLiveView(title, pushEvent, composableNode, null)
-                    }
-                },
-                text = content?.let {
-                    {
-                        PhxLiveView(content, pushEvent, composableNode, null)
-                    }
-                },
-                shape = shape ?: AlertDialogDefaults.shape,
-                containerColor = containerColor ?: AlertDialogDefaults.containerColor,
-                iconContentColor = iconContentColor ?: AlertDialogDefaults.iconContentColor,
-                titleContentColor = titleContentColor ?: AlertDialogDefaults.titleContentColor,
-                textContentColor = textContentColor ?: AlertDialogDefaults.textContentColor,
-                tonalElevation = tonalElevation ?: AlertDialogDefaults.TonalElevation,
-                properties = dialogProperties,
-            )
-        } else {
-            AlertDialog(
-                onDismissRequest = dismissEvent?.let {
-                    onClickFromString(pushEvent, it, value?.toString() ?: "")
-                } ?: {
-                    // Do nothing
-                },
-                modifier = modifier,
-                properties = dialogProperties,
-            ) {
-                composableNode?.children?.forEach {
-                    PhxLiveView(it, pushEvent, composableNode, null, this)
+        AlertDialog(
+            onDismissRequest = dismissEvent?.let {
+                onClickFromString(pushEvent, it, value?.toString() ?: "")
+            } ?: {
+                // Do nothing
+            },
+            confirmButton = {
+                confirmButton?.let {
+                    PhxLiveView(it, pushEvent, composableNode, null)
                 }
-            }
-        }
+            },
+            modifier = modifier,
+            dismissButton = dismissButton?.let {
+                {
+                    PhxLiveView(dismissButton, pushEvent, composableNode, null)
+                }
+            },
+            icon = icon?.let {
+                {
+                    PhxLiveView(icon, pushEvent, composableNode, null)
+                }
+            },
+            title = title?.let {
+                {
+                    PhxLiveView(title, pushEvent, composableNode, null)
+                }
+            },
+            text = content?.let {
+                {
+                    PhxLiveView(content, pushEvent, composableNode, null)
+                }
+            },
+            shape = shape ?: AlertDialogDefaults.shape,
+            containerColor = containerColor ?: AlertDialogDefaults.containerColor,
+            iconContentColor = iconContentColor ?: AlertDialogDefaults.iconContentColor,
+            titleContentColor = titleContentColor ?: AlertDialogDefaults.titleContentColor,
+            textContentColor = textContentColor ?: AlertDialogDefaults.textContentColor,
+            tonalElevation = tonalElevation ?: AlertDialogDefaults.TonalElevation,
+            properties = dialogProperties,
+        )
     }
 
     internal class Builder : DialogDTO.Builder() {

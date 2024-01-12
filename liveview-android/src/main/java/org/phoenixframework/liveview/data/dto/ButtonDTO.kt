@@ -229,10 +229,6 @@ internal class ButtonDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultColors
         } else {
-            // TODO ButtonDefaults properties are private and need Composer parameter to be called
-            //   via reflection. So the default values are being get from the theme, but using the
-            //   same values declared in the ButtonDefaults declaration. This comment also to the
-            //   ElevatedButton, FilledTonalButton, FilledTonalButton, and OutlineButton
             ButtonDefaults.buttonColors(
                 containerColor = colors[colorAttrContainerColor]?.toColor()
                     ?: MaterialTheme.colorScheme.primary,
