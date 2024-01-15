@@ -15,14 +15,12 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.constants.Attrs.attrBorderColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrBorderWidth
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
@@ -41,7 +39,6 @@ import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.optional
 import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.domain.extensions.privateField
@@ -265,9 +262,6 @@ internal class CardDTO private constructor(builder: Builder) :
         var border: BorderStroke? = null
             private set
 
-        private var borderWidth: Dp = 1.0.dp
-        private var borderColor: Color? = null
-
         /**
          * Defines the shape of the card's container, border, and shadow (when using elevation).
          *
@@ -313,43 +307,20 @@ internal class CardDTO private constructor(builder: Builder) :
         }
 
         /**
-         * The border width to draw around the container of this card. This property is used just
-         * for `OutlinedCard`.
+         * The border to draw around the container of this card. This property is used just for
+         * `OutlineCard`.
          * ```
-         * <OutlinedCard border-width="2">...</OutlinedCard>
+         * <OutlinedCard border="{'width': '2', 'color': '#FF0000FF'}">...</OutlinedCard>
          * ```
-         * @param borderWidth int value representing card border's width.
-         * content.
+         * @param border a JSON representing the border object. The `width` key is an int value
+         * representing card border's width content. The `color` key must be specified as a string
+         * in the AARRGGBB format
          */
-        fun borderWidth(borderWidth: String) = apply {
-            if (borderWidth.isNotEmptyAndIsDigitsOnly()) {
-                this.borderWidth = (borderWidth.toIntOrNull() ?: 0).dp
-            }
+        fun border(border: String) = apply {
+            this.border = borderFromString(border)
         }
 
-        /**
-         * The border color to draw around the container of this card. This property is used just
-         * for `OutlinedCard`.
-         * ```
-         * <OutlinedCard border-color="#FF0000FF">...</OutlinedCard>
-         * ```
-         * @param borderColor int value representing the padding to be applied to the card's
-         * content. The color must be specified as a string in the AARRGGBB format.
-         */
-        fun borderColor(borderColor: String) = apply {
-            if (borderColor.isNotEmpty()) {
-                this.borderColor = borderColor.toColor()
-            }
-        }
-
-        fun build(): CardDTO {
-            val w = borderWidth
-            val c = borderColor
-            if (c != null) {
-                this.border = BorderStroke(w, c)
-            }
-            return CardDTO(this)
-        }
+        fun build() = CardDTO(this)
     }
 }
 
@@ -366,8 +337,7 @@ internal object CardDtoFactory : ComposableViewFactory<CardDTO, CardDTO.Builder>
         scope: Any?,
     ): CardDTO = attributes.fold(CardDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            attrBorderColor -> builder.borderColor(attribute.value)
-            attrBorderWidth -> builder.borderWidth(attribute.value)
+            attrBorder -> builder.border(attribute.value)
             attrColors -> builder.cardColors(attribute.value)
             attrElevation -> builder.elevation(attribute.value)
             attrScroll -> builder.scrolling(attribute.value)

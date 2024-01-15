@@ -11,15 +11,11 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.constants.Attrs.attrBorderColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrBorderWidth
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
@@ -46,7 +42,6 @@ import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -196,35 +191,17 @@ internal class SegmentedButtonDTO private constructor(builder: Builder) :
         var shape: Shape = RectangleShape
             private set
 
-        private var borderWidth: Dp = 1.dp
-        private var borderColor: Color? = null
-
         /**
-         * The border width to draw around the container of this button.
+         * The border to draw around the container of this `SegmentedButton`.
          * ```
-         * <SegmentedButton border-width="2">...</SegmentedButton>
+         * <SegmentedButton border="{'width': 2, 'color': '#FF0000FF'}">...</SegmentedButton>
          * ```
-         * @param borderWidth int value representing button border's width.
-         * content.
+         * @param border a JSON representing the border object. The `width` key is an int value
+         * representing butotn border's width content. The `color` key must be specified as a string
+         * in the AARRGGBB format
          */
-        fun borderWidth(borderWidth: String) = apply {
-            if (borderWidth.isNotEmptyAndIsDigitsOnly()) {
-                this.borderWidth = (borderWidth.toIntOrNull() ?: 0).dp
-            }
-        }
-
-        /**
-         * The border color to draw around the container of this button.
-         * ```
-         * <SegmentedButton border-color="#FF0000FF">...</SegmentedButton>
-         * ```
-         * @param borderColor int value representing the padding to be applied to the button's
-         * content. The color must be specified as a string in the AARRGGBB format.
-         */
-        fun borderColor(borderColor: String) = apply {
-            if (borderColor.isNotEmpty()) {
-                this.borderColor = borderColor.toColor()
-            }
+        fun border(border: String) = apply {
+            this.border = borderFromString(border)
         }
 
         /**
@@ -303,14 +280,7 @@ internal class SegmentedButtonDTO private constructor(builder: Builder) :
             this.shape = shapeFromString(shape)
         }
 
-        fun build(): SegmentedButtonDTO {
-            val w = borderWidth
-            val c = borderColor
-            if (c != null) {
-                this.border = BorderStroke(w, c)
-            }
-            return SegmentedButtonDTO(this)
-        }
+        fun build() = SegmentedButtonDTO(this)
     }
 }
 
@@ -321,8 +291,7 @@ internal object SegmentedButtonDtoFactory :
     ): SegmentedButtonDTO =
         attributes.fold(SegmentedButtonDTO.Builder(scope)) { builder, attribute ->
             when (attribute.name) {
-                attrBorderColor -> builder.borderColor(attribute.value)
-                attrBorderWidth -> builder.borderWidth(attribute.value)
+                attrBorder -> builder.border(attribute.value)
                 attrColors -> builder.colors(attribute.value)
                 attrEnabled -> builder.enabled(attribute.value)
                 attrPhxClick, attrPhxChange -> builder.onClick(attribute.value)

@@ -184,15 +184,15 @@ class SegmentedButtonShotTest : LiveViewComposableTest() {
             template = """
                 <SingleChoiceSegmentedButtonRow>
                   <SegmentedButton selected="false" phx-click="" 
-                    shape="8" border-width="2" border-color="system-magenta">
+                    shape="8" border="{'width': '2', 'color': 'system-magenta'}">
                     <Text template="label">Option 1</Text>
                   </SegmentedButton>
                   <SegmentedButton selected="true" phx-click="" shape="8" 
-                    border-width="2" border-color="system-magenta">
+                    border="{'width': '2', 'color': 'system-magenta'}">
                     <Text template="label">Option 2</Text>
                   </SegmentedButton>
                   <SegmentedButton selected="false" phx-click="" shape="8" 
-                    border-width="2" border-color="system-magenta">
+                    border="{'width': '2', 'color': 'system-magenta'}">
                     <Text template="label">Option 3</Text>
                   </SegmentedButton>
                 </SingleChoiceSegmentedButtonRow>            
@@ -236,16 +236,16 @@ class SegmentedButtonShotTest : LiveViewComposableTest() {
             template = """
                 <SingleChoiceSegmentedButtonRow>
                   <SegmentedButton selected="false" phx-click="" 
-                    shape="8" border-width="2" border-color="system-magenta">
+                    shape="8" border="{'width': '2', 'color': 'system-magenta'}">
                     <Text template="label">Option 1</Text>
                   </SegmentedButton>
                   <SegmentedButton selected="true" phx-click="" shape="8" 
-                    border-width="2" border-color="system-magenta">
+                    border="{'width': '2', 'color': 'system-magenta'}">
                     <Text template="label">Option 2</Text>
                     <Icon template="icon" image-vector="outlined:CheckCircle" />
                   </SegmentedButton>
                   <SegmentedButton selected="false" phx-click="" shape="8" 
-                    border-width="2" border-color="system-magenta">
+                    border="{'width': '2', 'color': 'system-magenta'}">
                     <Text template="label">Option 3</Text>
                   </SegmentedButton>
                 </SingleChoiceSegmentedButtonRow>            
