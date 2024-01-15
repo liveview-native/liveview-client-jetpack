@@ -301,6 +301,10 @@ object ColorAttrs {
     const val colorAttrDisabledInactiveContainerColor = "disabledInactiveContainerColor"
     const val colorAttrDisabledInactiveContentColor = "disabledInactiveContentColor"
     const val colorAttrDisabledInactiveBorderColor = "disabledInactiveBorderColor"
+
+    // IconToggleButton
+    const val colorAttrCheckedContainerColor = "checkedContainerColor"
+    const val colorAttrCheckedContentColor = "checkedContentColor"
 }
 
 object ElevationAttrs {

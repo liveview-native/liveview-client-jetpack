@@ -19,6 +19,7 @@ import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.FloatingActionButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconDtoFactory
+import org.phoenixframework.liveview.data.dto.IconToggleButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.ImageDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyGridDtoFactory
@@ -84,11 +85,17 @@ object ComposableNodeFactory {
             )
             registerComponent(ComposableTypes.fab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.filledIconButton, IconButtonDtoFactory)
+            registerComponent(ComposableTypes.filledIconToggleButton, IconToggleButtonDtoFactory)
             registerComponent(ComposableTypes.filledTonalButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.filledTonalIconButton, IconButtonDtoFactory)
+            registerComponent(
+                ComposableTypes.filledTonalIconToggleButton,
+                IconToggleButtonDtoFactory
+            )
             registerComponent(ComposableTypes.horizontalDivider, DividerDtoFactory)
             registerComponent(ComposableTypes.icon, IconDtoFactory)
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
+            registerComponent(ComposableTypes.iconToggleButton, IconToggleButtonDtoFactory)
             registerComponent(ComposableTypes.image, ImageDtoFactory)
             registerComponent(ComposableTypes.largeFab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.largeTopAppBar, TopAppBarDtoFactory)
@@ -117,6 +124,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.outlinedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedCard, CardDtoFactory)
             registerComponent(ComposableTypes.outlinedIconButton, IconButtonDtoFactory)
+            registerComponent(ComposableTypes.outlinedIconToggleButton, IconToggleButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedTextField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.radioButton, RadioButtonDtoFactory)
             registerComponent(ComposableTypes.rangeSlider, SliderDtoFactory)
