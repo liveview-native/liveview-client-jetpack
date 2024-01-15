@@ -9,7 +9,6 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -109,18 +108,6 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
                 }
             }
         )
-        LaunchedEffect(composableNode) {
-            when (sheetValue) {
-                SheetValue.Hidden ->
-                    sheetState.hide()
-
-                SheetValue.PartiallyExpanded ->
-                    sheetState.partialExpand()
-
-                SheetValue.Expanded ->
-                    sheetState.expand()
-            }
-        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)

@@ -2,7 +2,7 @@ package com.dockyard.liveviewtest.liveview.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
@@ -85,7 +85,7 @@ class TabShotTest : LiveViewComposableTest() {
                         text = { Text("Tab 2") },
                         icon = {
                             Icon(
-                                imageVector = Icons.Filled.ExitToApp,
+                                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                                 contentDescription = ""
                             )
                         },
@@ -104,7 +104,7 @@ class TabShotTest : LiveViewComposableTest() {
                     </Tab>      
                     <Tab selected="false" enabled="false" phx-click="">
                         <Text template="text">Tab 2</Text>
-                        <Icon template="icon" image-vector="filled:ExitToApp" />
+                        <Icon template="icon" image-vector="autoMirrored.filled:ExitToApp" />
                     </Tab>                                    
                 </TabRow>
                 """
@@ -146,7 +146,7 @@ class TabShotTest : LiveViewComposableTest() {
                         text = { Text("Tab 2") },
                         icon = {
                             Icon(
-                                imageVector = Icons.Filled.ExitToApp,
+                                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                                 contentDescription = ""
                             )
                         },
@@ -170,7 +170,7 @@ class TabShotTest : LiveViewComposableTest() {
                     <Tab selected="true" enabled="false" phx-click=""
                         selected-content-color="system-red" unselected-content-color="system-gray">
                         <Text template="text">Tab 2</Text>
-                        <Icon template="icon" image-vector="filled:ExitToApp" />
+                        <Icon template="icon" image-vector="autoMirrored.filled:ExitToApp" />
                     </Tab>                                    
                 </TabRow>
                 """
@@ -217,7 +217,7 @@ class TabShotTest : LiveViewComposableTest() {
                         Row {
                             Text("Tab 2")
                             Icon(
-                                imageVector = Icons.Filled.ExitToApp,
+                                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                                 contentDescription = ""
                             )
                         }
@@ -244,7 +244,7 @@ class TabShotTest : LiveViewComposableTest() {
                         selected-content-color="system-red" unselected-content-color="system-gray">
                         <Row>
                             <Text>Tab 2</Text>
-                            <Icon image-vector="filled:ExitToApp" />
+                            <Icon image-vector="autoMirrored.filled:ExitToApp" />
                         </Row>  
                     </Tab>                                    
                 </TabRow>
@@ -287,7 +287,7 @@ class TabShotTest : LiveViewComposableTest() {
                         text = { Text("Tab 2") },
                         icon = {
                             Icon(
-                                imageVector = Icons.Filled.ExitToApp,
+                                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                                 contentDescription = ""
                             )
                         },
@@ -311,7 +311,7 @@ class TabShotTest : LiveViewComposableTest() {
                     <LeadingIconTab selected="true" enabled="false" phx-click=""
                         selected-content-color="system-red" unselected-content-color="system-gray">
                         <Text template="text">Tab 2</Text>
-                        <Icon template="icon" image-vector="filled:ExitToApp" />
+                        <Icon template="icon" image-vector="autoMirrored.filled:ExitToApp" />
                     </LeadingIconTab>                                    
                 </TabRow>
                 """

@@ -174,9 +174,18 @@ internal fun onClickFromString(
     pushEvent?.invoke(ComposableBuilder.EVENT_TYPE_CLICK, event, value, target)
 }
 
+private val colorsCache = mutableMapOf<Int, Map<String, String>>()
 internal fun colorsFromString(colors: String): Map<String, String>? {
     return try {
-        JsonParser.parse(colors)
+        val key = colors.hashCode()
+        if (!colorsCache.containsKey(key)) {
+            val newMap: Map<String, String>? = JsonParser.parse(colors)
+            if (newMap != null) {
+                colorsCache[colors.hashCode()] = newMap
+            }
+        }
+        colorsCache[key]
+
     } catch (e: Exception) {
         e.printStackTrace()
         null

@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -16,6 +17,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateDismissBut
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.toColor
@@ -27,9 +29,9 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * There are two ways to create a dialog:
  * - The first one is defining the content of the dialog by hand.
  * ```
- * <AlertDialog phx-click="dismissAction">
+ * <BasicAlertDialog phx-click="dismissAction">
  *  // Content
- * </AlertDialog>
+ * </BasicAlertDialog>
  * ```
  * - The second one is determining each part of the dialog using the following templates:
  *   - `confirm` for confirm button (required);
@@ -74,85 +76,85 @@ internal class AlertDialogDTO private constructor(builder: Builder) : DialogDTO(
     private val titleContentColor = builder.titleContentColor
     private val textContentColor = builder.textContentColor
 
-
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
-        val dismissButton = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == templateDismissButton }
-        }
-        val confirmButton = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == templateConfirmButton }
-        }
-        val icon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == templateIcon }
-        }
-        val title = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == templateTitle }
-        }
-        val content = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == null }
-        }
-
-        val predefinedDialog =
-            dismissButton != null || confirmButton != null || icon != null || title != null || content != null
-
-        if (predefinedDialog) {
-            AlertDialog(
-                onDismissRequest = dismissEvent?.let {
-                    onClickFromString(pushEvent, it, value?.toString() ?: "")
-                } ?: {
-                    // Do nothing
-                },
-                confirmButton = {
-                    confirmButton?.let {
-                        PhxLiveView(it, pushEvent, composableNode, null)
-                    }
-                },
-                modifier = modifier,
-                dismissButton = dismissButton?.let {
-                    {
-                        PhxLiveView(dismissButton, pushEvent, composableNode, null)
-                    }
-                },
-                icon = icon?.let {
-                    {
-                        PhxLiveView(icon, pushEvent, composableNode, null)
-                    }
-                },
-                title = title?.let {
-                    {
-                        PhxLiveView(title, pushEvent, composableNode, null)
-                    }
-                },
-                text = content?.let {
-                    {
-                        PhxLiveView(content, pushEvent, composableNode, null)
-                    }
-                },
-                shape = shape ?: AlertDialogDefaults.shape,
-                containerColor = containerColor ?: AlertDialogDefaults.containerColor,
-                iconContentColor = iconContentColor ?: AlertDialogDefaults.iconContentColor,
-                titleContentColor = titleContentColor ?: AlertDialogDefaults.titleContentColor,
-                textContentColor = textContentColor ?: AlertDialogDefaults.textContentColor,
-                tonalElevation = tonalElevation ?: AlertDialogDefaults.TonalElevation,
-                properties = dialogProperties,
-            )
-        } else {
-            AlertDialog(
-                onDismissRequest = dismissEvent?.let {
-                    onClickFromString(pushEvent, it, value?.toString() ?: "")
-                } ?: {
-                    // Do nothing
-                },
-                modifier = modifier,
-                properties = dialogProperties,
-            ) {
-                composableNode?.children?.forEach {
-                    PhxLiveView(it, pushEvent, composableNode, null, this)
+        when (composableNode?.node?.tag) {
+            ComposableTypes.alertDialog -> {
+                val dismissButton = remember(composableNode.children) {
+                    composableNode.children.find { it.node?.template == templateDismissButton }
                 }
+                val confirmButton = remember(composableNode.children) {
+                    composableNode.children.find { it.node?.template == templateConfirmButton }
+                }
+                val icon = remember(composableNode.children) {
+                    composableNode.children.find { it.node?.template == templateIcon }
+                }
+                val title = remember(composableNode.children) {
+                    composableNode.children.find { it.node?.template == templateTitle }
+                }
+                val content = remember(composableNode.children) {
+                    composableNode.children.find { it.node?.template == null }
+                }
+                AlertDialog(
+                    onDismissRequest = dismissEvent?.let {
+                        onClickFromString(pushEvent, it, value?.toString() ?: "")
+                    } ?: {
+                        // Do nothing
+                    },
+                    confirmButton = {
+                        confirmButton?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    modifier = modifier,
+                    dismissButton = dismissButton?.let {
+                        {
+                            PhxLiveView(dismissButton, pushEvent, composableNode, null)
+                        }
+                    },
+                    icon = icon?.let {
+                        {
+                            PhxLiveView(icon, pushEvent, composableNode, null)
+                        }
+                    },
+                    title = title?.let {
+                        {
+                            PhxLiveView(title, pushEvent, composableNode, null)
+                        }
+                    },
+                    text = content?.let {
+                        {
+                            PhxLiveView(content, pushEvent, composableNode, null)
+                        }
+                    },
+                    shape = shape ?: AlertDialogDefaults.shape,
+                    containerColor = containerColor ?: AlertDialogDefaults.containerColor,
+                    iconContentColor = iconContentColor ?: AlertDialogDefaults.iconContentColor,
+                    titleContentColor = titleContentColor ?: AlertDialogDefaults.titleContentColor,
+                    textContentColor = textContentColor ?: AlertDialogDefaults.textContentColor,
+                    tonalElevation = tonalElevation ?: AlertDialogDefaults.TonalElevation,
+                    properties = dialogProperties,
+                )
+            }
+
+            ComposableTypes.basicAlertDialog -> {
+                BasicAlertDialog(
+                    onDismissRequest = dismissEvent?.let {
+                        onClickFromString(pushEvent, it, value?.toString() ?: "")
+                    } ?: {
+                        // Do nothing
+                    },
+                    modifier = modifier,
+                    properties = dialogProperties,
+                    content = {
+                        composableNode.children.forEach {
+                            PhxLiveView(it, pushEvent, composableNode, null, this)
+                        }
+                    }
+                )
             }
         }
     }

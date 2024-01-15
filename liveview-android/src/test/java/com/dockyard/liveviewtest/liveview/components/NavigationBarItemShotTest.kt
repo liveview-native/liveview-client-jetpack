@@ -1,9 +1,9 @@
 package com.dockyard.liveviewtest.liveview.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.HorizontalDistribute
 import androidx.compose.material.icons.filled.Settings
@@ -266,7 +266,7 @@ class NavigationBarItemShotTest : LiveViewComposableTest() {
                         selected = false, onClick = {},
                         icon = {
                             Icon(
-                                imageVector = Icons.Filled.ExitToApp,
+                                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                                 contentDescription = ""
                             )
                         },
@@ -291,7 +291,7 @@ class NavigationBarItemShotTest : LiveViewComposableTest() {
                     <Text template="label">Settings</Text>
                   </NavigationBarItem>     
                   <NavigationBarItem selected="false" enabled="false" phx-click="" phx-value="3" colors="$templateColors">
-                    <Icon image-vector="filled:ExitToApp" template="icon"/>
+                    <Icon image-vector="autoMirrored.filled:ExitToApp" template="icon"/>
                     <Text template="label">Exit</Text>
                   </NavigationBarItem>                                     
                 </NavigationBar>

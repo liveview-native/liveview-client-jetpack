@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
+import org.junit.Ignore
 import org.junit.Test
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -412,17 +413,22 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
         )
     }
 
+    @Ignore(
+        "BottomSheetScaffold is not accepting Hidden as initial values. " +
+                "See: https://issuetracker.google.com/issues/299973349"
+    )
     @Test
     fun bssWithSheetHiddenTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
+                val state = rememberBottomSheetScaffoldState(
+                    bottomSheetState = rememberStandardBottomSheetState(
+                        initialValue = SheetValue.Hidden,
+                        skipHiddenState = false,
+                    )
+                )
                 BottomSheetScaffold(
-                    scaffoldState = rememberBottomSheetScaffoldState(
-                        bottomSheetState = rememberStandardBottomSheetState(
-                            initialValue = SheetValue.Hidden,
-                            skipHiddenState = false,
-                        )
-                    ),
+                    scaffoldState = state,
                     sheetShape = RoundedCornerShape(24.dp),
                     sheetPeekHeight = 60.dp,
                     sheetContainerColor = Color.Yellow,

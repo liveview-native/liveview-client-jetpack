@@ -1,16 +1,18 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrThickness
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -21,7 +23,8 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 /**
  * Material Design divider.
  * ```
- * <Divider thickness="2" vertical-padding="8" color="#FFCCCCCC" />
+ * <HorizontalDivider thickness="2" vertical-padding="8" color="#FFCCCCCC" />
+ * <VerticalDivider thickness="2" vertical-padding="8" color="#FFCCCCCC" />
  * ```
  */
 internal class DividerDTO private constructor(builder: Builder) :
@@ -35,11 +38,23 @@ internal class DividerDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        Divider(
-            modifier = modifier,
-            thickness = thickness ?: DividerDefaults.Thickness,
-            color = color ?: DividerDefaults.color
-        )
+        when (composableNode?.node?.tag) {
+            ComposableTypes.horizontalDivider -> {
+                HorizontalDivider(
+                    modifier = modifier,
+                    thickness = thickness ?: DividerDefaults.Thickness,
+                    color = color ?: DividerDefaults.color
+                )
+            }
+
+            ComposableTypes.verticalDivider -> {
+                VerticalDivider(
+                    modifier = modifier,
+                    thickness = thickness ?: DividerDefaults.Thickness,
+                    color = color ?: DividerDefaults.color
+                )
+            }
+        }
     }
 
     internal class Builder : ComposableBuilder() {
@@ -52,7 +67,7 @@ internal class DividerDTO private constructor(builder: Builder) :
         /**
          * Thickness of the divider line.
          * ```
-         * <Divider thickness='2' />
+         * <HorizontalDivider thickness='2' />
          * ```
          * @param thickness int value representing the thickness of the divider line.
          */
@@ -66,7 +81,7 @@ internal class DividerDTO private constructor(builder: Builder) :
          * Color of the track behind the indicator, visible when the progress has not reached the
          * area of the overall indicator yet.
          * ```
-         * <Divider color='#FF00FF00' />
+         * <HorizontalDivider color='#FF00FF00' />
          * ```
          * @param color The color to be applied to the track behind the indicator. The color must be
          * specified as a string in the AARRGGBB format.
@@ -84,7 +99,7 @@ internal class DividerDTO private constructor(builder: Builder) :
 internal object DividerDtoFactory : ComposableViewFactory<DividerDTO, DividerDTO.Builder>() {
     /**
      * Creates a `DividerDTO` object based on the attributes of the input `Attributes` object.
-     * DividerDTO co-relates to the Divider composable
+     * DividerDTO co-relates to the HorizontalDivider and VerticalDivider composables.
      * @param attributes the `Attributes` object to create the `DividerDTO` object from
      * @return a `DividerDTO` object based on the attributes of the input `Attributes` object
      */

@@ -115,6 +115,7 @@ object Attrs {
     const val attrSize = "size"
     const val attrSkipPartiallyExpanded = "skip-partially-expanded"
     const val attrSoftWrap = "soft-wrap"
+    const val attrSpace = "space"
     const val attrSteps = "steps"
     const val attrStrokeCap = "stroke-cap"
     const val attrStrokeWidth = "stroke-width"
@@ -287,6 +288,20 @@ object ColorAttrs {
     const val colorAttrTodayBorderColor = "todayDateBorderColor"
     const val colorAttrDayInSelectionRangeContentColor = "dayInSelectionRangeContentColor"
     const val colorAttrDayInSelectionRangeContainerColor = "dayInSelectionRangeContainerColor"
+
+    // SegmentedButton
+    const val colorAttrActiveContainerColor = "activeContainerColor"
+    const val colorAttrActiveContentColor = "activeContentColor"
+    const val colorAttrActiveBorderColor = "activeBorderColor"
+    const val colorAttrInactiveContainerColor = "inactiveContainerColor"
+    const val colorAttrInactiveContentColor = "inactiveContentColor"
+    const val colorAttrInactiveBorderColor = "inactiveBorderColor"
+    const val colorAttrDisabledActiveContainerColor = "disabledActiveContainerColor"
+    const val colorAttrDisabledActiveContentColor = "disabledActiveContentColor"
+    const val colorAttrDisabledActiveBorderColor = "disabledActiveBorderColor"
+    const val colorAttrDisabledInactiveContainerColor = "disabledInactiveContainerColor"
+    const val colorAttrDisabledInactiveContentColor = "disabledInactiveContentColor"
+    const val colorAttrDisabledInactiveBorderColor = "disabledInactiveBorderColor"
 }
 
 object ElevationAttrs {

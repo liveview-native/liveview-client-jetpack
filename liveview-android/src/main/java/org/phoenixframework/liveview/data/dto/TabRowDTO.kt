@@ -1,7 +1,7 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -67,15 +67,15 @@ internal class TabRowDTO private constructor(builder: Builder) :
                 TabRow(
                     selectedTabIndex = selectedTabIndex,
                     modifier = modifier,
-                    contentColor = contentColor ?: TabRowDefaults.contentColor,
-                    containerColor = containerColor ?: TabRowDefaults.containerColor,
+                    containerColor = containerColor ?: TabRowDefaults.primaryContainerColor,
+                    contentColor = contentColor ?: TabRowDefaults.primaryContentColor,
                     //indicator = { tabPositions ->
                     // TODO How to pass the tab positions?
                     //},
                     divider = {
                         divider?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
-                        } ?: Divider()
+                        } ?: HorizontalDivider()
                     },
                     tabs = {
                         tabs?.forEach {
@@ -88,16 +88,16 @@ internal class TabRowDTO private constructor(builder: Builder) :
                 ScrollableTabRow(
                     selectedTabIndex = selectedTabIndex,
                     modifier = modifier,
-                    contentColor = contentColor ?: TabRowDefaults.contentColor,
-                    containerColor = containerColor ?: TabRowDefaults.containerColor,
-                    edgePadding = edgePadding ?: 52.dp,
+                    containerColor = containerColor ?: TabRowDefaults.primaryContainerColor,
+                    contentColor = contentColor ?: TabRowDefaults.primaryContentColor,
+                    edgePadding = edgePadding ?: TabRowDefaults.ScrollableTabRowEdgeStartPadding,
                     //indicator = { tabPositions ->
                     // TODO How to pass the tab positions?
                     //},
                     divider = {
                         divider?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
-                        } ?: Divider()
+                        } ?: HorizontalDivider()
                     },
                     tabs = {
                         tabs?.forEach {

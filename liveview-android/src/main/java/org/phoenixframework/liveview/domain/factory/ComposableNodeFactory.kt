@@ -32,6 +32,7 @@ import org.phoenixframework.liveview.data.dto.ProgressIndicatorDtoFactory
 import org.phoenixframework.liveview.data.dto.RadioButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.RowDtoFactory
 import org.phoenixframework.liveview.data.dto.ScaffoldDtoFactory
+import org.phoenixframework.liveview.data.dto.SegmentedButtonRowDtoFactory
 import org.phoenixframework.liveview.data.dto.SliderDtoFactory
 import org.phoenixframework.liveview.data.dto.SpacerDtoFactory
 import org.phoenixframework.liveview.data.dto.SwitchDtoFactory
@@ -57,6 +58,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.alertDialog, AlertDialogDtoFactory)
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
             registerComponent(ComposableTypes.badgedBox, BadgedBoxDtoFactory)
+            registerComponent(ComposableTypes.basicAlertDialog, AlertDialogDtoFactory)
             registerComponent(ComposableTypes.box, BoxDtoFactory)
             registerComponent(ComposableTypes.bottomAppBar, BottomAppBarDtoFactory)
             registerComponent(ComposableTypes.bottomSheetScaffold, BottomSheetScaffoldDtoFactory)
@@ -72,7 +74,6 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.datePicker, DatePickerDtoFactory)
             registerComponent(ComposableTypes.datePickerDialog, DatePickerDialogDtoFactory)
             registerComponent(ComposableTypes.dateRangePicker, DatePickerDtoFactory)
-            registerComponent(ComposableTypes.divider, DividerDtoFactory)
             registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
@@ -83,6 +84,7 @@ object ComposableNodeFactory {
             )
             registerComponent(ComposableTypes.fab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.filledTonalButton, ButtonDtoFactory)
+            registerComponent(ComposableTypes.horizontalDivider, DividerDtoFactory)
             registerComponent(ComposableTypes.icon, IconDtoFactory)
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.image, ImageDtoFactory)
@@ -104,6 +106,10 @@ object ComposableNodeFactory {
                 ComposableTypes.modalNavigationDrawer,
                 ModalNavigationDrawerDtoFactory
             )
+            registerComponent(
+                ComposableTypes.multiChoiceSegmentedButtonRow,
+                SegmentedButtonRowDtoFactory
+            )
             registerComponent(ComposableTypes.navigationBar, NavigationBarDtoFactory)
             registerComponent(ComposableTypes.navigationDrawerItem, NavigationDrawerItemDtoFactory)
             registerComponent(ComposableTypes.outlinedButton, ButtonDtoFactory)
@@ -114,6 +120,10 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.row, RowDtoFactory)
             registerComponent(ComposableTypes.scaffold, ScaffoldDtoFactory)
             registerComponent(ComposableTypes.scrollableTabRow, TabRowDtoFactory)
+            registerComponent(
+                ComposableTypes.singleChoiceSegmentedButtonRow,
+                SegmentedButtonRowDtoFactory
+            )
             registerComponent(ComposableTypes.slider, SliderDtoFactory)
             registerComponent(ComposableTypes.smallFab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
@@ -124,6 +134,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.textButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.textField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
+            registerComponent(ComposableTypes.verticalDivider, DividerDtoFactory)
         }
     }
 
