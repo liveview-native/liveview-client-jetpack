@@ -83,7 +83,9 @@ object ComposableNodeFactory {
                 ExposedDropdownMenuBoxDtoFactory
             )
             registerComponent(ComposableTypes.fab, FloatingActionButtonDtoFactory)
+            registerComponent(ComposableTypes.filledIconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.filledTonalButton, ButtonDtoFactory)
+            registerComponent(ComposableTypes.filledTonalIconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.horizontalDivider, DividerDtoFactory)
             registerComponent(ComposableTypes.icon, IconDtoFactory)
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
@@ -114,6 +116,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.navigationDrawerItem, NavigationDrawerItemDtoFactory)
             registerComponent(ComposableTypes.outlinedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedCard, CardDtoFactory)
+            registerComponent(ComposableTypes.outlinedIconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedTextField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.radioButton, RadioButtonDtoFactory)
             registerComponent(ComposableTypes.rangeSlider, SliderDtoFactory)
