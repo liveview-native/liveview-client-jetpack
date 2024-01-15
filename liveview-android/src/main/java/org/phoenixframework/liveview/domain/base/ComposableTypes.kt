@@ -4,6 +4,7 @@ object ComposableTypes {
     const val alertDialog = "AlertDialog"
     const val asyncImage = "AsyncImage"
     const val badgedBox = "BadgedBox"
+    const val basicAlertDialog = "BasicAlertDialog"
     const val box = "Box"
     const val bottomAppBar = "BottomAppBar"
     const val bottomSheetScaffold = "BottomSheetScaffold"

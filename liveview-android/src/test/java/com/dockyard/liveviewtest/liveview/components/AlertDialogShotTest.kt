@@ -1,10 +1,14 @@
 package com.dockyard.liveviewtest.liveview.components
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -15,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 
+@OptIn(ExperimentalMaterial3Api::class)
 class AlertDialogShotTest : LiveViewComposableTest() {
     @Test
     fun simpleDialogTest() {
@@ -112,6 +117,45 @@ class AlertDialogShotTest : LiveViewComposableTest() {
                   <Text template="title">Alert Title</Title>
                   <Text>Alert message</Text>
                 </AlertDialog>    
+                """
+        )
+    }
+
+    @Test
+    fun basicAlertDialogTest() {
+        val testTag = "basicDialog"
+        compareNativeComposableWithTemplate(
+            testTag = testTag,
+            nativeComposable = {
+                BasicAlertDialog(
+                    modifier = Modifier.testTag(testTag),
+                    onDismissRequest = {},
+                ) {
+                    Column {
+                        Text(text = "Title")
+                        Text(text = "Message")
+                        Row {
+                            Button(onClick = {}) {
+                                Text(text = "Cancel")
+                            }
+                            Button(onClick = {}) {
+                                Text(text = "Ok")
+                            }
+                        }
+                    }
+                }
+            },
+            template = """
+                <BasicAlertDialog test-tag="$testTag">
+                  <Column>               
+                    <Text>Title</Text>
+                    <Text>Message</Text>
+                    <Row>
+                      <Button><Text>Cancel</Text></Button>
+                      <Button><Text>Ok</Text></Button>
+                    </Row>
+                  </Column>  
+                </BasicAlertDialog>
                 """
         )
     }

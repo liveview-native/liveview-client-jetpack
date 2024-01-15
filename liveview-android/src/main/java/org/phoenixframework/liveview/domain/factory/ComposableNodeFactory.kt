@@ -58,6 +58,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.alertDialog, AlertDialogDtoFactory)
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
             registerComponent(ComposableTypes.badgedBox, BadgedBoxDtoFactory)
+            registerComponent(ComposableTypes.basicAlertDialog, AlertDialogDtoFactory)
             registerComponent(ComposableTypes.box, BoxDtoFactory)
             registerComponent(ComposableTypes.bottomAppBar, BottomAppBarDtoFactory)
             registerComponent(ComposableTypes.bottomSheetScaffold, BottomSheetScaffoldDtoFactory)
