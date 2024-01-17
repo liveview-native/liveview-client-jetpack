@@ -28,6 +28,8 @@ object ComposableTypes {
     const val filledIconToggleButton = "FilledIconToggleButton"
     const val filledTonalIconButton = "FilledTonalIconButton"
     const val filledTonalIconToggleButton = "FilledTonalIconToggleButton"
+    const val flowColumn = "FlowColumn"
+    const val flowRow = "FlowRow"
     const val horizontalDivider = "HorizontalDivider"
     const val horizontalPager = "HorizontalPager"
     const val icon = "Icon"

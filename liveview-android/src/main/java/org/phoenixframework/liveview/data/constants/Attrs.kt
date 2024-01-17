@@ -74,6 +74,8 @@ object Attrs {
     const val attrLetterSpacing = "letter-spacing"
     const val attrLineHeight = "line-height"
     const val attrMatchParentSize = "match-parent-size"
+    const val attrMaxItemsInEachColumn = "max-items-in-each-column"
+    const val attrMaxItemsInEachRow = "max-items-in-each-row"
     const val attrMaxLines = "max-lines"
     const val attrMaxValue = "max-value"
     const val attrMenuAnchor = "menu-anchor"

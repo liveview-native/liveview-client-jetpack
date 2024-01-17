@@ -17,6 +17,7 @@ import org.phoenixframework.liveview.data.dto.DividerDtoFactory
 import org.phoenixframework.liveview.data.dto.DropdownMenuItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.FloatingActionButtonDtoFactory
+import org.phoenixframework.liveview.data.dto.FlowLayoutDtoFactory
 import org.phoenixframework.liveview.data.dto.IconButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconDtoFactory
 import org.phoenixframework.liveview.data.dto.IconToggleButtonDtoFactory
@@ -93,6 +94,8 @@ object ComposableNodeFactory {
                 ComposableTypes.filledTonalIconToggleButton,
                 IconToggleButtonDtoFactory
             )
+            registerComponent(ComposableTypes.flowColumn, FlowLayoutDtoFactory)
+            registerComponent(ComposableTypes.flowRow, FlowLayoutDtoFactory)
             registerComponent(ComposableTypes.horizontalDivider, DividerDtoFactory)
             registerComponent(ComposableTypes.horizontalPager, PagerDtoFactory)
             registerComponent(ComposableTypes.icon, IconDtoFactory)
