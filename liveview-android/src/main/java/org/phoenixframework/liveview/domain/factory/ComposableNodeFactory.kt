@@ -29,6 +29,7 @@ import org.phoenixframework.liveview.data.dto.ModalDrawerSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalNavigationDrawerDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationBarDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerItemDtoFactory
+import org.phoenixframework.liveview.data.dto.PagerDtoFactory
 import org.phoenixframework.liveview.data.dto.ProgressIndicatorDtoFactory
 import org.phoenixframework.liveview.data.dto.RadioButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.RowDtoFactory
@@ -93,6 +94,7 @@ object ComposableNodeFactory {
                 IconToggleButtonDtoFactory
             )
             registerComponent(ComposableTypes.horizontalDivider, DividerDtoFactory)
+            registerComponent(ComposableTypes.horizontalPager, PagerDtoFactory)
             registerComponent(ComposableTypes.icon, IconDtoFactory)
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.iconToggleButton, IconToggleButtonDtoFactory)
@@ -146,6 +148,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.textField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.verticalDivider, DividerDtoFactory)
+            registerComponent(ComposableTypes.verticalPager, PagerDtoFactory)
         }
     }
 

@@ -29,6 +29,7 @@ object ComposableTypes {
     const val filledTonalIconButton = "FilledTonalIconButton"
     const val filledTonalIconToggleButton = "FilledTonalIconToggleButton"
     const val horizontalDivider = "HorizontalDivider"
+    const val horizontalPager = "HorizontalPager"
     const val icon = "Icon"
     const val iconButton = "IconButton"
     const val iconToggleButton = "IconToggleButton"
@@ -70,4 +71,5 @@ object ComposableTypes {
     const val textField = "TextField"
     const val topAppBar = "TopAppBar"
     const val verticalDivider = "VerticalDivider"
+    const val verticalPager = "VerticalPager"
 }
