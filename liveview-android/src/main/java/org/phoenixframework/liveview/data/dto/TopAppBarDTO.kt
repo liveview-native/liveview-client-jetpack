@@ -280,7 +280,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
          * <TopAppBar
          *   colors="{'containerColor': '#FFFF0000', 'titleContentColor': '#FF00FF00'}">
          *   ...
-         * </Button>
+         * </TopAppBar>
          * ```
          * @param colors an JSON formatted string, containing the app bar colors. The color keys
          * supported are: `containerColor`, `scrolledContainerColor`, `navigationIconContentColor,
