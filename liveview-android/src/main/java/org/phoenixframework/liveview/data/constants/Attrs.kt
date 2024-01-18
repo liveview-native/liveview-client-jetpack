@@ -117,6 +117,7 @@ object Attrs {
     const val attrSheetSwipeEnabled = "sheet-swipe-enabled"
     const val attrSheetTonalElevation = "sheet-tonal-elevation"
     const val attrSheetValue = "sheet-value"
+    const val attrShadowElevation = "shadow-elevation"
     const val attrShowModeToggle = "show-mode-toggle"
     const val attrSingleLine = "single-line"
     const val attrSize = "size"
@@ -313,6 +314,12 @@ object ColorAttrs {
     // IconToggleButton
     const val colorAttrCheckedContainerColor = "checkedContainerColor"
     const val colorAttrCheckedContentColor = "checkedContentColor"
+
+    // ListItem
+    const val colorAttrHeadlineColor = "headlineColor"
+    const val colorAttrOverlineColor = "overlineColor"
+    const val colorAttrSupportingColor = "supportingColor"
+    const val colorAttrDisabledHeadlineColor = "disabledHeadlineColor"
 }
 
 object ElevationAttrs {

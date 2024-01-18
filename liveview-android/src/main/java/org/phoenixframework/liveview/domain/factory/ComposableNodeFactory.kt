@@ -25,6 +25,7 @@ import org.phoenixframework.liveview.data.dto.ImageDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyGridDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
+import org.phoenixframework.liveview.data.dto.ListItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalBottomSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalDrawerSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalNavigationDrawerDtoFactory
@@ -113,6 +114,7 @@ object ComposableNodeFactory {
                 ComposableTypes.linearProgressIndicator,
                 ProgressIndicatorDtoFactory
             )
+            registerComponent(ComposableTypes.listItem, ListItemDtoFactory)
             registerComponent(ComposableTypes.mediumTopAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.modalBottomSheet, ModalBottomSheetDtoFactory)
             registerComponent(ComposableTypes.modalDrawerSheet, ModalDrawerSheetDtoFactory)
