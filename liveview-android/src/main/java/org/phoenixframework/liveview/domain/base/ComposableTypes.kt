@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.domain.base
 object ComposableTypes {
     const val alertDialog = "AlertDialog"
     const val asyncImage = "AsyncImage"
+    const val backHandler = "BackHandler"
     const val badgedBox = "BadgedBox"
     const val basicAlertDialog = "BasicAlertDialog"
     const val box = "Box"

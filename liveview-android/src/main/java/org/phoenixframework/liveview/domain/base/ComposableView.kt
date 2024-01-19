@@ -417,6 +417,7 @@ abstract class ComposableBuilder {
 
         internal const val EVENT_TYPE_CLICK = "click"
         internal const val EVENT_TYPE_CHANGE = "change"
+        internal const val EVENT_TYPE_KEY_UP = "keyup"
     }
 }
 

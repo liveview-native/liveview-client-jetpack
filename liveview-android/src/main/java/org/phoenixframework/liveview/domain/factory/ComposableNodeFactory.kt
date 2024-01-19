@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.domain.factory
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AlertDialogDtoFactory
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
+import org.phoenixframework.liveview.data.dto.BackHandlerDtoFactory
 import org.phoenixframework.liveview.data.dto.BadgedBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.BottomAppBarDtoFactory
 import org.phoenixframework.liveview.data.dto.BottomSheetScaffoldDtoFactory
@@ -62,6 +63,7 @@ object ComposableNodeFactory {
         ComposableRegistry.run {
             registerComponent(ComposableTypes.alertDialog, AlertDialogDtoFactory)
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
+            registerComponent(ComposableTypes.backHandler, BackHandlerDtoFactory)
             registerComponent(ComposableTypes.badgedBox, BadgedBoxDtoFactory)
             registerComponent(ComposableTypes.basicAlertDialog, AlertDialogDtoFactory)
             registerComponent(ComposableTypes.box, BoxDtoFactory)

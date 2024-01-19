@@ -94,6 +94,7 @@ object Attrs {
     const val attrPhxChange = "phx-change"
     const val attrPhxClick = "phx-click"
     const val attrPhxDebounce = "phx-debounce"
+    const val attrPhxKeyUp = "phx-keyup"
     const val attrPhxThrottle = "phx-throttle"
     const val attrPhxValue = "phx-value"
     const val attrPropagateMinConstraints = "propagate-min-constraints"
