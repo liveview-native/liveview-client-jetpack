@@ -3,6 +3,10 @@ package com.dockyard.liveviewtest.liveview.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,16 +15,18 @@ import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 
-class ComposableViewShotTest: LiveViewComposableTest() {
+class ComposableViewShotTest : LiveViewComposableTest() {
     @Test
     fun systemColorsShotTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 @Composable
                 fun boxWithColor(color: Color) {
-                    Box(modifier = Modifier
-                        .size(40.dp)
-                        .background(color))
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(color)
+                    )
                 }
                 Column {
                     boxWithColor(color = Color.Red)
@@ -64,9 +70,11 @@ class ComposableViewShotTest: LiveViewComposableTest() {
             nativeComposable = {
                 @Composable
                 fun boxWithColor(color: Color) {
-                    Box(modifier = Modifier
-                        .size(40.dp)
-                        .background(color))
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(color)
+                    )
                 }
                 Column {
                     boxWithColor(color = Color.Red)
@@ -98,6 +106,50 @@ class ComposableViewShotTest: LiveViewComposableTest() {
                     <Box size="40" background="#00FFFF" />
                     <Box size="40" background="invalid-color" />
                 </Column>
+                """
+        )
+    }
+
+    @Test
+    fun percentageHeightAndWidthTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Row(
+                    Modifier
+                        .fillMaxHeight(0.5f)
+                        .fillMaxWidth()
+                ) {
+                    Box(
+                        Modifier
+                            .fillMaxWidth(0.1f)
+                            .fillMaxHeight(0.7f)
+                            .background(Color.Red))
+                    Box(Modifier
+                        .fillMaxWidth(0.15f)
+                        .fillMaxHeight(0.5f)
+                        .background(Color.Green))
+                    Box(Modifier
+                        .fillMaxWidth(0.25f)
+                        .fillMaxHeight(0.4f)
+                        .background(Color.Blue))
+                    Box(Modifier
+                        .fillMaxWidth(0.35f)
+                        .fillMaxHeight(0.2f)
+                        .background(Color.Cyan))
+                    Box(Modifier
+                        .fillMaxWidth(0.15f)
+                        .fillMaxHeight(0.1f)
+                        .background(Color.Yellow))
+                }
+            },
+            template = """
+                <Row height="50%" width="fill">
+                    <Box width="10%" height="70%" background="system-red"/>
+                    <Box width="15%" height="50%" background="system-green"/>
+                    <Box width="25%" height="40%" background="system-blue"/>
+                    <Box width="35%" height="20%" background="system-cyan"/>
+                    <Box width="15%" height="10%" background="system-yellow"/>
+                </Row>
                 """
         )
     }
