@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.data.dto
 import android.text.format.DateFormat
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerColors
 import androidx.compose.material3.TimePickerDefaults
@@ -37,6 +38,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorTimeSelector
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -44,7 +46,7 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
 /**
- * Material Design time picker.
+ * Material Design time picker and time input.
  *
  * ```
  * def mount(_params, _session, socket) do
@@ -56,6 +58,11 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * end
  *
  * <TimePicker
+ *   initial-hour={"#{Map.get(@selectedTimeMap, "hour")}"}
+ *   initial-minute={"#{Map.get(@selectedTimeMap, "minute")}"}
+ *   phx-change="onTimeChange" />
+ *
+ * <TimeInput
  *   initial-hour={"#{Map.get(@selectedTimeMap, "hour")}"}
  *   initial-minute={"#{Map.get(@selectedTimeMap, "minute")}"}
  *   phx-change="onTimeChange" />
@@ -83,12 +90,21 @@ internal class TimePickerDTO private constructor(builder: Builder) :
             initialMinute = initialMinute,
             is24Hour = is24Hour ?: DateFormat.is24HourFormat(LocalContext.current),
         )
-        TimePicker(
-            state = state,
-            modifier = modifier,
-            colors = getTimePickerColors(colors),
-            layoutType = layoutType ?: TimePickerDefaults.layoutType(),
-        )
+        when (composableNode?.node?.tag) {
+            ComposableTypes.timePicker ->
+                TimePicker(
+                    state = state,
+                    modifier = modifier,
+                    colors = getTimePickerColors(colors),
+                    layoutType = layoutType ?: TimePickerDefaults.layoutType(),
+                )
+            ComposableTypes.timeInput ->
+                TimeInput(
+                    state = state,
+                    modifier = modifier,
+                    colors = getTimePickerColors(colors)
+                )
+        }
         LaunchedEffect(state.hour, state.minute, state.is24hour) {
             val map = mapOf(
                 "hour" to state.hour,

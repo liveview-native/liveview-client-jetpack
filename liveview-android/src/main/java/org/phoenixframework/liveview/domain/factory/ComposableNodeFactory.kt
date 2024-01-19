@@ -152,6 +152,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.text, TextDtoFactory)
             registerComponent(ComposableTypes.textButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.textField, TextFieldDtoFactory)
+            registerComponent(ComposableTypes.timeInput, TimePickerDtoFactory)
             registerComponent(ComposableTypes.timePicker, TimePickerDtoFactory)
             registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.verticalDivider, DividerDtoFactory)
