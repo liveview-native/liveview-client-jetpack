@@ -13,8 +13,8 @@ object Attrs {
     const val attrAspectRatio = "aspect-ratio"
     const val attrAutoCorrect = "auto-correct"
     const val attrBackground = "background"
-    const val attrBorderColor = "border-color"
-    const val attrBorderWidth = "border-width"
+    const val attrBeyondBoundsPageCount = "beyond-bounds-page-count"
+    const val attrBorder = "border"
     const val attrCapitalization = "capitalization"
     const val attrChecked = "checked"
     const val attrClip = "clip"
@@ -34,6 +34,7 @@ object Attrs {
     const val attrContentPaddingVertical = "content-padding-vertical"
     const val attrContentScale = "content-scale"
     const val attrCrossFade = "cross-fade"
+    const val attrCurrentPage = "current-page"
     const val attrDecorFitsSystemWindows = "decor-fits-system-windows"
     const val attrDismissActionContentColor = "dismiss-action-content-color"
     const val attrDismissEvent = "dismiss-event"
@@ -61,6 +62,7 @@ object Attrs {
     const val attrIconContentColor = "icon-content-color"
     const val attrImageVector = "image-vector"
     const val attrImeAction = "imeAction"
+    const val attrInitialPageOffsetFraction = "initial-page-offset-fraction"
     const val attrInitialSelectedDateMillis = "initial-selected-date-millis"
     const val attrInitialSelectedStartDateMillis = "initial-selected-start-date-millis"
     const val attrInitialSelectedEndDateMillis = "initial-selected-end-date-millis"
@@ -80,6 +82,9 @@ object Attrs {
     const val attrMinValue = "min-value"
     const val attrOverflow = "overflow"
     const val attrPadding = "padding"
+    const val attrPageCount = "page-count"
+    const val attrPageSize = "page-size"
+    const val attrPageSpacing = "page-spacing"
     const val attrPhxChange = "phx-change"
     const val attrPhxClick = "phx-click"
     const val attrPhxDebounce = "phx-debounce"
@@ -302,6 +307,10 @@ object ColorAttrs {
     const val colorAttrDisabledInactiveContainerColor = "disabledInactiveContainerColor"
     const val colorAttrDisabledInactiveContentColor = "disabledInactiveContentColor"
     const val colorAttrDisabledInactiveBorderColor = "disabledInactiveBorderColor"
+
+    // IconToggleButton
+    const val colorAttrCheckedContainerColor = "checkedContainerColor"
+    const val colorAttrCheckedContentColor = "checkedContentColor"
 }
 
 object ElevationAttrs {

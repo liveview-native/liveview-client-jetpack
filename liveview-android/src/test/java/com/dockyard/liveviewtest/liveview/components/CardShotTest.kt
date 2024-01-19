@@ -123,7 +123,7 @@ class CardShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <OutlinedCard border-width="2" border-color="#FF0000FF">
+                <OutlinedCard border="{'width': '2', 'color': '#FF0000FF'}">
                   <Text padding="32" font-size="24">Oulined Card</Text>
                 </OutlinedCard>
                 """

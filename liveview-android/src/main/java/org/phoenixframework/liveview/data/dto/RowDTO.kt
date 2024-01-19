@@ -71,9 +71,9 @@ internal class RowDTO private constructor(builder: Builder) :
          * The horizontal arrangement of the Row's children
          *
          * ```
-         * <Row horizontal-arrangement="spaceAround" >...</Column>
+         * <Row horizontal-arrangement="spaceAround" >...</Row>
          * ```
-         * @param horizontalArrangement the horizontal arrangement of the column's children. The
+         * @param horizontalArrangement the horizontal arrangement of the row's children. The
          * supported values are: `start`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `end`,
          * and `center`. An int value is also supported, which will be used to determine the space.
          */
@@ -87,7 +87,7 @@ internal class RowDTO private constructor(builder: Builder) :
          * The vertical alignment of the Row's children
          *
          * ```
-         * <Row vertical-alignment="center" >...</Column>
+         * <Row vertical-alignment="center" >...</Row>
          * ```
          * @param verticalAlignment the vertical alignment of the row's children. The
          * supported values are: `top`, `center`, and `bottom`.

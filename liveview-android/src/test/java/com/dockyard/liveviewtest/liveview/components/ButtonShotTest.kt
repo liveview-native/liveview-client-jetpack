@@ -92,7 +92,7 @@ class ButtonShotTest : LiveViewComposableTest() {
             template = """
                 <Button phx-click=""
                   colors="{'containerColor': '#FF00FFFF', 'contentColor': '#FFFFFF00'}"
-                  border-width="2" border-color="#FFFF0000" shape="circle" content-padding="8">
+                  border="{'width': '2', 'color': '#FFFF0000'}" shape="circle" content-padding="8">
                   <Text>Button</Text>
                 </Button>
                 """

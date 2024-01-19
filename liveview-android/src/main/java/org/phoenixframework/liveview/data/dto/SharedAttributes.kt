@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.ui.Alignment
@@ -9,6 +10,7 @@ import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.toColor
 
 /**
  * Returns a `WindowInsets` object from a String.
@@ -195,6 +197,26 @@ internal fun colorsFromString(colors: String): Map<String, String>? {
 internal fun elevationsFromString(colors: String): Map<String, String>? {
     return try {
         JsonParser.parse(colors)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+val borderCache = mutableMapOf<Int, BorderStroke>()
+internal fun borderFromString(border: String): BorderStroke? {
+    return try {
+        val key = border.hashCode()
+        if (!borderCache.containsKey(key)) {
+            val map = JsonParser.parse<Map<String, Any>>(border)
+            if (map != null) {
+                borderCache[key] = BorderStroke(
+                    (map["width"].toString().toIntOrNull() ?: 1).dp,
+                    map["color"].toString().toColor()
+                )
+            }
+        }
+        borderCache[key]
     } catch (e: Exception) {
         e.printStackTrace()
         null

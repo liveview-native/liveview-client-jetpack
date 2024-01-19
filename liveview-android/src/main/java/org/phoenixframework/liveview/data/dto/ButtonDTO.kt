@@ -18,8 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.constants.Attrs.attrBorderColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrBorderWidth
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrElevation
@@ -43,7 +42,6 @@ import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -351,9 +349,6 @@ internal class ButtonDTO private constructor(builder: Builder) :
         var border: BorderStroke? = null
             private set
 
-        private var borderWidth: Dp = 1.dp
-        private var borderColor: Color? = null
-
         /**
          * Sets the event name to be triggered on the server when the button is clicked.
          *
@@ -446,43 +441,20 @@ internal class ButtonDTO private constructor(builder: Builder) :
         }
 
         /**
-         * The border width to draw around the container of this button. This property is used just
-         * for `OutlineButton`.
+         * The border to draw around the container of this button. This property is used just for
+         * `OutlineButton`.
          * ```
-         * <OutlinedButton border-width="2">...</OutlinedButton>
+         * <OutlinedButton border="{'width': '2', 'color': '#FF0000FF'}">...</OutlinedButton>
          * ```
-         * @param borderWidth int value representing button border's width.
-         * content.
+         * @param border a JSON representing the border object. The `width` key is an int value
+         * representing button border's width content. The `color` key must be specified as a string
+         * in the AARRGGBB format
          */
-        fun borderWidth(borderWidth: String): Builder = apply {
-            if (borderWidth.isNotEmptyAndIsDigitsOnly()) {
-                this.borderWidth = (borderWidth.toIntOrNull() ?: 0).dp
-            }
+        fun border(border: String): Builder = apply {
+            this.border = borderFromString(border)
         }
 
-        /**
-         * The border color to draw around the container of this button. This property is used just
-         * for `OutlineButton`.
-         * ```
-         * <OutlinedButton border-color="#FF0000FF">...</OutlinedButton>
-         * ```
-         * @param borderColor int value representing the padding to be applied to the button's
-         * content. The color must be specified as a string in the AARRGGBB format.
-         */
-        fun borderColor(borderColor: String): Builder = apply {
-            if (borderColor.isNotEmpty()) {
-                this.borderColor = borderColor.toColor()
-            }
-        }
-
-        fun build(): ButtonDTO {
-            val w = borderWidth
-            val c = borderColor
-            if (c != null) {
-                this.border = BorderStroke(w, c)
-            }
-            return ButtonDTO(this)
-        }
+        fun build() = ButtonDTO(this)
     }
 }
 
@@ -499,8 +471,7 @@ internal object ButtonDtoFactory : ComposableViewFactory<ButtonDTO, ButtonDTO.Bu
         scope: Any?,
     ): ButtonDTO = attributes.fold(ButtonDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
-            attrBorderColor -> builder.borderColor(attribute.value)
-            attrBorderWidth -> builder.borderWidth(attribute.value)
+            attrBorder -> builder.border(attribute.value)
             attrColors -> builder.colors(attribute.value)
             attrContentPadding -> builder.contentPadding(attribute.value)
             attrElevation -> builder.elevation(attribute.value)

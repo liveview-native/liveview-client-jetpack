@@ -19,6 +19,7 @@ import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.FloatingActionButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconDtoFactory
+import org.phoenixframework.liveview.data.dto.IconToggleButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.ImageDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyGridDtoFactory
@@ -28,6 +29,7 @@ import org.phoenixframework.liveview.data.dto.ModalDrawerSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalNavigationDrawerDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationBarDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerItemDtoFactory
+import org.phoenixframework.liveview.data.dto.PagerDtoFactory
 import org.phoenixframework.liveview.data.dto.ProgressIndicatorDtoFactory
 import org.phoenixframework.liveview.data.dto.RadioButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.RowDtoFactory
@@ -83,10 +85,19 @@ object ComposableNodeFactory {
                 ExposedDropdownMenuBoxDtoFactory
             )
             registerComponent(ComposableTypes.fab, FloatingActionButtonDtoFactory)
+            registerComponent(ComposableTypes.filledIconButton, IconButtonDtoFactory)
+            registerComponent(ComposableTypes.filledIconToggleButton, IconToggleButtonDtoFactory)
             registerComponent(ComposableTypes.filledTonalButton, ButtonDtoFactory)
+            registerComponent(ComposableTypes.filledTonalIconButton, IconButtonDtoFactory)
+            registerComponent(
+                ComposableTypes.filledTonalIconToggleButton,
+                IconToggleButtonDtoFactory
+            )
             registerComponent(ComposableTypes.horizontalDivider, DividerDtoFactory)
+            registerComponent(ComposableTypes.horizontalPager, PagerDtoFactory)
             registerComponent(ComposableTypes.icon, IconDtoFactory)
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
+            registerComponent(ComposableTypes.iconToggleButton, IconToggleButtonDtoFactory)
             registerComponent(ComposableTypes.image, ImageDtoFactory)
             registerComponent(ComposableTypes.largeFab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.largeTopAppBar, TopAppBarDtoFactory)
@@ -114,6 +125,8 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.navigationDrawerItem, NavigationDrawerItemDtoFactory)
             registerComponent(ComposableTypes.outlinedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedCard, CardDtoFactory)
+            registerComponent(ComposableTypes.outlinedIconButton, IconButtonDtoFactory)
+            registerComponent(ComposableTypes.outlinedIconToggleButton, IconToggleButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedTextField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.radioButton, RadioButtonDtoFactory)
             registerComponent(ComposableTypes.rangeSlider, SliderDtoFactory)
@@ -135,6 +148,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.textField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.verticalDivider, DividerDtoFactory)
+            registerComponent(ComposableTypes.verticalPager, PagerDtoFactory)
         }
     }
 
