@@ -1,0 +1,1 @@
+<Text>Template Jetpack Render <%= @count %></Text>
