@@ -13,6 +13,6 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
-rootProject.name = "LiveViewTest"
+rootProject.name = "LiveView Native Client Jetpack"
 include ':liveview-android'
 include ':liveviewsample'
