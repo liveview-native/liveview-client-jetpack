@@ -62,11 +62,10 @@ android {
 
 dependencies {
     // These dependencies are used internally, and not exposed to consumers on their own compile classpath.
-    //implementation(platform("androidx.compose:compose-bom:$compose_bom_version"))
     implementation(platform(libs.androidx.compose.bom))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.material:material-icons-core")
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.material.icons.extended)
 
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.text.google.fonts)
@@ -112,16 +111,18 @@ dependencies {
 // https://developer.android.com/jetpack/compose/performance/stability/diagnose
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
+        val prefix = "plugin:androidx.compose.compiler.plugins.kotlin"
+        val output = "${project.buildDir.absolutePath}/compose_compiler"
         if (project.findProperty("composeCompilerReports") == "true") {
             freeCompilerArgs += listOf(
                 "-P",
-                "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=${project.buildDir.absolutePath}/compose_compiler"
+                "$prefix:reportsDestination=$output"
             )
         }
         if (project.findProperty("composeCompilerMetrics") == "true") {
             freeCompilerArgs += listOf(
                 "-P",
-                "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=${project.buildDir.absolutePath}/compose_compiler"
+                "$prefix:metricsDestination=$output"
             )
         }
     }
