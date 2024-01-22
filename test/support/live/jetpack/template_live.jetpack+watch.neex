@@ -1,0 +1,1 @@
+<Text>Watch Target Template Jetpack Render <%= @count %></Text>
