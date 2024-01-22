@@ -1,7 +1,9 @@
 package com.dockyard.liveviewtest.liveview.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
@@ -38,14 +40,17 @@ class DividerShotTest : LiveViewComposableTest() {
     fun simpleVerticalDividerTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
-                Row(Modifier.width(100.dp)) {
+                Row(
+                    Modifier
+                        .width(100.dp)
+                        .height(IntrinsicSize.Min)) {
                     Text(text = "Cell 1")
                     VerticalDivider()
                     Text(text = "Cell 2")
                 }
             },
             template = """
-                <Row width="100">
+                <Row width="100" height="intrinsicMin">
                     <Text>Cell 1</Text>
                     <VerticalDivider />
                     <Text>Cell 2</Text>
@@ -78,14 +83,17 @@ class DividerShotTest : LiveViewComposableTest() {
     fun customVerticalDividerTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
-                Row(Modifier.width(100.dp)) {
+                Row(
+                    Modifier
+                        .width(100.dp)
+                        .height(IntrinsicSize.Min)) {
                     Text(text = "Cell 1")
                     VerticalDivider(thickness = 2.dp, color = Color.Red)
                     Text(text = "Cell 2")
                 }
             },
             template = """
-                <Row width="100">
+                <Row width="100" height="intrinsicMin">
                     <Text>Cell 1</Text>
                     <VerticalDivider thickness="2" color="#FFFF0000" />
                     <Text>Cell 2</Text>

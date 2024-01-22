@@ -62,6 +62,8 @@ object Attrs {
     const val attrIconContentColor = "icon-content-color"
     const val attrImageVector = "image-vector"
     const val attrImeAction = "imeAction"
+    const val attrInitialHour = "initial-hour"
+    const val attrInitialMinute = "initial-minute"
     const val attrInitialPageOffsetFraction = "initial-page-offset-fraction"
     const val attrInitialSelectedDateMillis = "initial-selected-date-millis"
     const val attrInitialSelectedStartDateMillis = "initial-selected-start-date-millis"
@@ -70,10 +72,14 @@ object Attrs {
     const val attrInitialDisplayMode = "initial-display-mode"
     const val attrIsError = "is-error"
     const val attrIsOpen = "is-open"
+    const val attrIs24Hour = "is-24-hour"
     const val attrKeyboardType = "keyboard-type"
+    const val attrLayoutType = "layout-type"
     const val attrLetterSpacing = "letter-spacing"
     const val attrLineHeight = "line-height"
     const val attrMatchParentSize = "match-parent-size"
+    const val attrMaxItemsInEachColumn = "max-items-in-each-column"
+    const val attrMaxItemsInEachRow = "max-items-in-each-row"
     const val attrMaxLines = "max-lines"
     const val attrMaxValue = "max-value"
     const val attrMenuAnchor = "menu-anchor"
@@ -88,6 +94,7 @@ object Attrs {
     const val attrPhxChange = "phx-change"
     const val attrPhxClick = "phx-click"
     const val attrPhxDebounce = "phx-debounce"
+    const val attrPhxKeyUp = "phx-keyup"
     const val attrPhxThrottle = "phx-throttle"
     const val attrPhxValue = "phx-value"
     const val attrPropagateMinConstraints = "propagate-min-constraints"
@@ -115,6 +122,7 @@ object Attrs {
     const val attrSheetSwipeEnabled = "sheet-swipe-enabled"
     const val attrSheetTonalElevation = "sheet-tonal-elevation"
     const val attrSheetValue = "sheet-value"
+    const val attrShadowElevation = "shadow-elevation"
     const val attrShowModeToggle = "show-mode-toggle"
     const val attrSingleLine = "single-line"
     const val attrSize = "size"
@@ -311,6 +319,27 @@ object ColorAttrs {
     // IconToggleButton
     const val colorAttrCheckedContainerColor = "checkedContainerColor"
     const val colorAttrCheckedContentColor = "checkedContentColor"
+
+    // ListItem
+    const val colorAttrHeadlineColor = "headlineColor"
+    const val colorAttrOverlineColor = "overlineColor"
+    const val colorAttrSupportingColor = "supportingColor"
+    const val colorAttrDisabledHeadlineColor = "disabledHeadlineColor"
+
+    // TimePicker
+    const val colorAttrClockDialColor = "clockDialColor"
+    const val colorClockDialSelectedContentColor = "clockDialSelectedContentColor"
+    const val colorClockDialUnselectedContentColor = "clockDialUnselectedContentColor"
+    const val colorSelectorColor = "selectorColor"
+    const val colorPeriodSelectorBorderColor = "periodSelectorBorderColor"
+    const val colorPeriodSelectorSelectedContainerColor = "periodSelectorSelectedContainerColor"
+    const val colorPeriodSelectorUnselectedContainerColor = "periodSelectorUnselectedContainerColor"
+    const val colorPeriodSelectorSelectedContentColor = "periodSelectorSelectedContentColor"
+    const val colorPeriodSelectorUnselectedContentColor = "periodSelectorUnselectedContentColor"
+    const val colorTimeSelectorSelectedContainerColor = "timeSelectorSelectedContainerColor"
+    const val colorTimeSelectorUnselectedContainerColor = "timeSelectorUnselectedContainerColor"
+    const val colorTimeSelectorSelectedContentColor = "timeSelectorSelectedContentColor"
+    const val colorTimeSelectorUnselectedContentColor = "timeSelectorUnselectedContentColor"
 }
 
 object ElevationAttrs {

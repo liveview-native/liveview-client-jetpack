@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.domain.factory
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AlertDialogDtoFactory
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
+import org.phoenixframework.liveview.data.dto.BackHandlerDtoFactory
 import org.phoenixframework.liveview.data.dto.BadgedBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.BottomAppBarDtoFactory
 import org.phoenixframework.liveview.data.dto.BottomSheetScaffoldDtoFactory
@@ -17,6 +18,7 @@ import org.phoenixframework.liveview.data.dto.DividerDtoFactory
 import org.phoenixframework.liveview.data.dto.DropdownMenuItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.FloatingActionButtonDtoFactory
+import org.phoenixframework.liveview.data.dto.FlowLayoutDtoFactory
 import org.phoenixframework.liveview.data.dto.IconButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.IconDtoFactory
 import org.phoenixframework.liveview.data.dto.IconToggleButtonDtoFactory
@@ -24,6 +26,7 @@ import org.phoenixframework.liveview.data.dto.ImageDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyGridDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
+import org.phoenixframework.liveview.data.dto.ListItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalBottomSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalDrawerSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalNavigationDrawerDtoFactory
@@ -42,6 +45,7 @@ import org.phoenixframework.liveview.data.dto.TabDtoFactory
 import org.phoenixframework.liveview.data.dto.TabRowDtoFactory
 import org.phoenixframework.liveview.data.dto.TextDtoFactory
 import org.phoenixframework.liveview.data.dto.TextFieldDtoFactory
+import org.phoenixframework.liveview.data.dto.TimePickerDtoFactory
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -59,6 +63,7 @@ object ComposableNodeFactory {
         ComposableRegistry.run {
             registerComponent(ComposableTypes.alertDialog, AlertDialogDtoFactory)
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
+            registerComponent(ComposableTypes.backHandler, BackHandlerDtoFactory)
             registerComponent(ComposableTypes.badgedBox, BadgedBoxDtoFactory)
             registerComponent(ComposableTypes.basicAlertDialog, AlertDialogDtoFactory)
             registerComponent(ComposableTypes.box, BoxDtoFactory)
@@ -93,6 +98,8 @@ object ComposableNodeFactory {
                 ComposableTypes.filledTonalIconToggleButton,
                 IconToggleButtonDtoFactory
             )
+            registerComponent(ComposableTypes.flowColumn, FlowLayoutDtoFactory)
+            registerComponent(ComposableTypes.flowRow, FlowLayoutDtoFactory)
             registerComponent(ComposableTypes.horizontalDivider, DividerDtoFactory)
             registerComponent(ComposableTypes.horizontalPager, PagerDtoFactory)
             registerComponent(ComposableTypes.icon, IconDtoFactory)
@@ -110,6 +117,7 @@ object ComposableNodeFactory {
                 ComposableTypes.linearProgressIndicator,
                 ProgressIndicatorDtoFactory
             )
+            registerComponent(ComposableTypes.listItem, ListItemDtoFactory)
             registerComponent(ComposableTypes.mediumTopAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.modalBottomSheet, ModalBottomSheetDtoFactory)
             registerComponent(ComposableTypes.modalDrawerSheet, ModalDrawerSheetDtoFactory)
@@ -146,6 +154,8 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.text, TextDtoFactory)
             registerComponent(ComposableTypes.textButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.textField, TextFieldDtoFactory)
+            registerComponent(ComposableTypes.timeInput, TimePickerDtoFactory)
+            registerComponent(ComposableTypes.timePicker, TimePickerDtoFactory)
             registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.verticalDivider, DividerDtoFactory)
             registerComponent(ComposableTypes.verticalPager, PagerDtoFactory)

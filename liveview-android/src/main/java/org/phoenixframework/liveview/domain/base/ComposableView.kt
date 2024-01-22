@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
@@ -149,10 +150,13 @@ abstract class ComposableBuilder {
      * Declare the preferred height of the content to be exactly [height] dp, or:
      * - use `fill` to occupy the max available height;
      * - or use `wrap` to occupy just the minimum height requested by the children.
+     * - use `intrinsicMin` to use the minimum intrinsic size.
+     * - use `intrinsicMax` to use the maximum intrinsic size.
      * ```
      * <ComposableView height="fill" />
-     * // or
      * <ComposableView height="16" />
+     * <ComposableView height="intrinsicMin" />
+     * <ComposableView height="75%" />
      * ```
      * @param height int value for preferred component height.
      */
@@ -161,18 +165,40 @@ abstract class ComposableBuilder {
             height.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.height(height.toInt().dp))
             height == FILL -> modifier.then(Modifier.fillMaxHeight())
             height == WRAP -> modifier.then(Modifier.wrapContentHeight())
+            height == INTRINSIC_MIN -> modifier.then(Modifier.height(IntrinsicSize.Min))
+            height == INTRINSIC_MAX -> modifier.then(Modifier.height(IntrinsicSize.Max))
+            height.endsWith('%') -> {
+                handleFraction(height)?.let {
+                    modifier.then(Modifier.fillMaxHeight(it))
+                } ?: modifier
+            }
+
             else -> modifier
         }
+    }
+
+    private fun handleFraction(value: String): Float? {
+        if (value.length > 1) {
+            // Value without the '%' sign
+            val percentageStr = value.substring(0, value.lastIndex)
+            if (percentageStr.isNotEmptyAndIsDigitsOnly()) {
+                return percentageStr.toFloat() / 100f
+            }
+        }
+        return null
     }
 
     /**
      * Declare the preferred width of the content to be exactly [width] dp, or:
      * - use `fill` to occupy the max available width;
-     * - or use `wrap` to occupy just the minimum width requested by the children.
+     * - use `wrap` to occupy just the minimum width requested by the children.
+     * - use `intrinsicMin` to use the minimum intrinsic size.
+     * - use `intrinsicMax` to use the maximum intrinsic size.
      * ```
      * <ComposableView width="fill" />
-     * // or
      * <ComposableView width="16" />
+     * <ComposableView width="intrinsicMin" />
+     * <ComposableView width="75%" />
      * ```
      * @param width int value for preferred component width.
      */
@@ -181,6 +207,14 @@ abstract class ComposableBuilder {
             width.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.width(width.toInt().dp))
             width == FILL -> modifier.then(Modifier.fillMaxWidth())
             width == WRAP -> modifier.then(Modifier.wrapContentWidth())
+            width == INTRINSIC_MIN -> modifier.then(Modifier.width(IntrinsicSize.Min))
+            width == INTRINSIC_MAX -> modifier.then(Modifier.width(IntrinsicSize.Max))
+            width.endsWith('%') -> {
+                handleFraction(width)?.let {
+                    modifier.then(Modifier.fillMaxWidth(it))
+                } ?: modifier
+            }
+
             else -> modifier
         }
     }
@@ -378,9 +412,12 @@ abstract class ComposableBuilder {
     companion object {
         internal const val FILL = "fill"
         internal const val WRAP = "wrap"
+        internal const val INTRINSIC_MIN = "intrinsicMin"
+        internal const val INTRINSIC_MAX = "intrinsicMax"
 
         internal const val EVENT_TYPE_CLICK = "click"
         internal const val EVENT_TYPE_CHANGE = "change"
+        internal const val EVENT_TYPE_KEY_UP = "keyup"
     }
 }
 
