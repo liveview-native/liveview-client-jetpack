@@ -1,4 +1,4 @@
-defmodule LiveViewNativeJetpack.MixProject do
+defmodule LiveViewNative.Jetpack.MixProject do
   use Mix.Project
 
   @version "0.3.0-alpha.1"
