@@ -25,7 +25,7 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    // Runnning screenshot tests
+    // Running screenshot tests
     // Recording the image references
     // ./gradlew recordRoborazziDebug -PisRecordingShotTest=true
     // Testing
@@ -81,11 +81,8 @@ dependencies {
     api(libs.androidx.navigation.compose)
 
     api(libs.com.github.dsrees.javaphoenixclient)
-    api(libs.com.google.guava)
     api(libs.com.github.liveview.native.core.jetpack)
 
-    api(libs.org.apache.commons.math3)
-    api(libs.org.apache.commons.text)
     api(libs.org.jetbrains.kotlinx.collections.immutable)
     api(libs.org.jsoup)
 
@@ -141,13 +138,13 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 tasks.withType<Test>().configureEach {
     doFirst {
         val jniLibsForDesktopDir = File("${projectDir}/src/test/jniLibs")
-        val archTypesSubdirs = jniLibsForDesktopDir.listFiles()
+        val archTypesSubdirs = jniLibsForDesktopDir.listFiles() ?: emptyArray()
         for (dir in archTypesSubdirs) {
             // Selecting the proper JNI lib file for run the unit tests
             // in according to the architecture. e.g.: darwin-aarch64, darwin-x86-64
             val arch = System.getProperty("os.arch").replace("_", "-")
-            if (dir.isDirectory() && dir.name.contains(arch)) {
-                systemProperty("java.library.path", dir.getAbsolutePath())
+            if (dir.isDirectory && dir.name.contains(arch)) {
+                systemProperty("java.library.path", dir.absolutePath)
                 break
             }
         }
