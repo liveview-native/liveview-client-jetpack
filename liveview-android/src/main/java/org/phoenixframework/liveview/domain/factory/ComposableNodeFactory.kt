@@ -28,8 +28,8 @@ import org.phoenixframework.liveview.data.dto.LazyGridDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
 import org.phoenixframework.liveview.data.dto.ListItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalBottomSheetDtoFactory
-import org.phoenixframework.liveview.data.dto.ModalDrawerSheetDtoFactory
-import org.phoenixframework.liveview.data.dto.ModalNavigationDrawerDtoFactory
+import org.phoenixframework.liveview.data.dto.DrawerSheetDtoFactory
+import org.phoenixframework.liveview.data.dto.NavigationDrawerDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationBarDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerItemDtoFactory
 import org.phoenixframework.liveview.data.dto.PagerDtoFactory
@@ -81,6 +81,8 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.datePicker, DatePickerDtoFactory)
             registerComponent(ComposableTypes.datePickerDialog, DatePickerDialogDtoFactory)
             registerComponent(ComposableTypes.dateRangePicker, DatePickerDtoFactory)
+            registerComponent(ComposableTypes.dismissibleNavigationDrawer, NavigationDrawerDtoFactory)
+            registerComponent(ComposableTypes.dismissibleDrawerSheet, DrawerSheetDtoFactory)
             registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
@@ -120,10 +122,10 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.listItem, ListItemDtoFactory)
             registerComponent(ComposableTypes.mediumTopAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.modalBottomSheet, ModalBottomSheetDtoFactory)
-            registerComponent(ComposableTypes.modalDrawerSheet, ModalDrawerSheetDtoFactory)
+            registerComponent(ComposableTypes.modalDrawerSheet, DrawerSheetDtoFactory)
             registerComponent(
                 ComposableTypes.modalNavigationDrawer,
-                ModalNavigationDrawerDtoFactory
+                NavigationDrawerDtoFactory
             )
             registerComponent(
                 ComposableTypes.multiChoiceSegmentedButtonRow,
@@ -136,6 +138,8 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.outlinedIconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedIconToggleButton, IconToggleButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedTextField, TextFieldDtoFactory)
+            registerComponent(ComposableTypes.permanentDrawerSheet, DrawerSheetDtoFactory)
+            registerComponent(ComposableTypes.permanentNavigationDrawer, NavigationDrawerDtoFactory)
             registerComponent(ComposableTypes.radioButton, RadioButtonDtoFactory)
             registerComponent(ComposableTypes.rangeSlider, SliderDtoFactory)
             registerComponent(ComposableTypes.row, RowDtoFactory)

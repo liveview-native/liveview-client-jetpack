@@ -2,12 +2,14 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.material3.DismissibleDrawerSheet
 import androidx.compose.material3.DrawerDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -18,6 +20,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -28,13 +31,22 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
 /**
- * Content inside of a modal navigation drawer.
+ * Content inside of a navigation drawer. It could be Modal, Dismissible, or Permanent.
  * ```
  * <ModalNavigationDrawer ...>
  *   <ModalDrawerSheet template="drawerContent">
+ * </ModalNavigationDrawer>
+ *
+ * <DismissibleNavigationDrawer ...>
+ *   <DismissibleDrawerSheet template="drawerContent">
+ * </DismissibleNavigationDrawer>
+ *
+ * <PermanentNavigationDrawer ...>
+ *   <PermanentDrawerSheet template="drawerContent">
+ * </PermanentNavigationDrawer>
  * ```
  */
-internal class ModalDrawerSheetDTO private constructor(builder: Builder) :
+internal class DrawerSheetDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
 
     private val drawerShape = builder.drawerShape
@@ -49,21 +61,60 @@ internal class ModalDrawerSheetDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        ModalDrawerSheet(
-            modifier = modifier,
-            drawerShape = drawerShape ?: DrawerDefaults.shape,
-            drawerContainerColor = containerColor ?: MaterialTheme.colorScheme.surface,
-            drawerContentColor = contentColor ?: contentColorFor(
-                containerColor ?: MaterialTheme.colorScheme.surface
-            ),
-            drawerTonalElevation = tonalElevation ?: DrawerDefaults.ModalDrawerElevation,
-            windowInsets = windowsInsets ?: DrawerDefaults.windowInsets,
-            content = {
-                composableNode?.children?.forEach {
-                    PhxLiveView(it, pushEvent, composableNode, null, this)
-                }
-            }
-        )
+        when (composableNode?.node?.tag) {
+            ComposableTypes.modalDrawerSheet ->
+                ModalDrawerSheet(
+                    modifier = modifier,
+                    drawerShape = drawerShape ?: DrawerDefaults.shape,
+                    drawerContainerColor = containerColor ?: DrawerDefaults.containerColor,
+                    drawerContentColor = contentColor ?: contentColorFor(
+                        containerColor ?: DrawerDefaults.containerColor
+                    ),
+                    drawerTonalElevation = tonalElevation ?: DrawerDefaults.ModalDrawerElevation,
+                    windowInsets = windowsInsets ?: DrawerDefaults.windowInsets,
+                    content = {
+                        composableNode.children.forEach {
+                            PhxLiveView(it, pushEvent, composableNode, null, this)
+                        }
+                    }
+                )
+
+            ComposableTypes.dismissibleDrawerSheet ->
+                DismissibleDrawerSheet(
+                    modifier = modifier,
+                    drawerShape = drawerShape ?: RectangleShape,
+                    drawerContainerColor = containerColor ?: DrawerDefaults.containerColor,
+                    drawerContentColor = contentColor ?: contentColorFor(
+                        containerColor ?: DrawerDefaults.containerColor
+                    ),
+                    drawerTonalElevation = tonalElevation
+                        ?: DrawerDefaults.DismissibleDrawerElevation,
+                    windowInsets = windowsInsets ?: DrawerDefaults.windowInsets,
+                    content = {
+                        composableNode.children.forEach {
+                            PhxLiveView(it, pushEvent, composableNode, null, this)
+                        }
+                    }
+                )
+
+            ComposableTypes.permanentDrawerSheet ->
+                PermanentDrawerSheet(
+                    modifier = modifier,
+                    drawerShape = drawerShape ?: RectangleShape,
+                    drawerContainerColor = containerColor ?: DrawerDefaults.containerColor,
+                    drawerContentColor = contentColor ?: contentColorFor(
+                        containerColor ?: DrawerDefaults.containerColor
+                    ),
+                    drawerTonalElevation = tonalElevation
+                        ?: DrawerDefaults.PermanentDrawerElevation,
+                    windowInsets = windowsInsets ?: DrawerDefaults.windowInsets,
+                    content = {
+                        composableNode.children.forEach {
+                            PhxLiveView(it, pushEvent, composableNode, null, this)
+                        }
+                    }
+                )
+        }
     }
 
     internal class Builder : ComposableBuilder() {
@@ -142,25 +193,26 @@ internal class ModalDrawerSheetDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = ModalDrawerSheetDTO(this)
+        fun build() = DrawerSheetDTO(this)
     }
 }
 
-internal object ModalDrawerSheetDtoFactory :
-    ComposableViewFactory<ModalDrawerSheetDTO, ModalDrawerSheetDTO.Builder>() {
+internal object DrawerSheetDtoFactory :
+    ComposableViewFactory<DrawerSheetDTO, DrawerSheetDTO.Builder>() {
     /**
-     * Creates a `ModalDrawerSheetDTO` object based on the attributes of the input `Attributes`
-     * object. ModalDrawerSheetDTO co-relates to the ModalDrawerSheet composable.
-     * @param attributes the `Attributes` object to create the `ModalDrawerSheetDTO` object from
-     * @return a `ModalDrawerSheetDTO` object based on the attributes of the input `Attributes`
+     * Creates a `DrawerSheetDTO` object based on the attributes of the input `Attributes`
+     * object. DrawerSheetDTO co-relates to the ModalDrawerSheet, DismissibleDrawerSheet, or
+     * PermanentDrawerSheet composable.
+     * @param attributes the `Attributes` object to create the `DrawerSheetDTO` object from
+     * @return a `DrawerSheetDTO` object based on the attributes of the input `Attributes`
      * object
      */
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
-    ): ModalDrawerSheetDTO =
-        attributes.fold(ModalDrawerSheetDTO.Builder()) { builder, attribute ->
+    ): DrawerSheetDTO =
+        attributes.fold(DrawerSheetDTO.Builder()) { builder, attribute ->
             when (attribute.name) {
                 attrDrawerContainerColor -> builder.drawerContainerColor(attribute.value)
                 attrDrawerContentColor -> builder.drawerContentColor(attribute.value)
@@ -168,6 +220,6 @@ internal object ModalDrawerSheetDtoFactory :
                 attrTonalElevation -> builder.drawerTonalElevation(attribute.value)
                 attrWindowInsets -> builder.windowInsets(attribute.value)
                 else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as ModalDrawerSheetDTO.Builder
+            } as DrawerSheetDTO.Builder
         }.build()
 }
