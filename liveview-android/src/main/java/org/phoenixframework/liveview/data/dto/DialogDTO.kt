@@ -84,11 +84,7 @@ internal abstract class DialogDTO(builder: Builder) :
          * @param securePolicy possible values are: `secureOn`, `secureOff`, and `inherit` (default).
          */
         private fun securePolicy(securePolicy: String) = apply {
-            this.securePolicy = when (securePolicy) {
-                "secureOn" -> SecureFlagPolicy.SecureOn
-                "secureOff" -> SecureFlagPolicy.SecureOff
-                else -> SecureFlagPolicy.Inherit
-            }
+            this.securePolicy = secureFlagPolicyFromString(securePolicy)
         }
 
         /**

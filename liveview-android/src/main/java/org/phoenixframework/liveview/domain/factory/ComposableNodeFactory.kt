@@ -29,6 +29,7 @@ import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
 import org.phoenixframework.liveview.data.dto.ListItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalBottomSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.DrawerSheetDtoFactory
+import org.phoenixframework.liveview.data.dto.DropdownMenuDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationBarDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerItemDtoFactory
@@ -83,6 +84,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.dateRangePicker, DatePickerDtoFactory)
             registerComponent(ComposableTypes.dismissibleNavigationDrawer, NavigationDrawerDtoFactory)
             registerComponent(ComposableTypes.dismissibleDrawerSheet, DrawerSheetDtoFactory)
+            registerComponent(ComposableTypes.dropdownMenu, DropdownMenuDtoFactory)
             registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)

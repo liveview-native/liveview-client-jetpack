@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.SecureFlagPolicy
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -220,5 +221,13 @@ internal fun borderFromString(border: String): BorderStroke? {
     } catch (e: Exception) {
         e.printStackTrace()
         null
+    }
+}
+
+internal fun secureFlagPolicyFromString(securePolicy: String): SecureFlagPolicy {
+    return when (securePolicy) {
+        "secureOn" -> SecureFlagPolicy.SecureOn
+        "secureOff" -> SecureFlagPolicy.SecureOff
+        else -> SecureFlagPolicy.Inherit
     }
 }
