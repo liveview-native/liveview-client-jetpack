@@ -11,6 +11,7 @@ import org.phoenixframework.liveview.data.dto.BoxDtoFactory
 import org.phoenixframework.liveview.data.dto.ButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.CardDtoFactory
 import org.phoenixframework.liveview.data.dto.CheckBoxDtoFactory
+import org.phoenixframework.liveview.data.dto.ChipDtoFactory
 import org.phoenixframework.liveview.data.dto.ColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.DatePickerDialogDtoFactory
 import org.phoenixframework.liveview.data.dto.DatePickerDtoFactory
@@ -64,6 +65,7 @@ object ComposableNodeFactory {
     init {
         ComposableRegistry.run {
             registerComponent(ComposableTypes.alertDialog, AlertDialogDtoFactory)
+            registerComponent(ComposableTypes.assistChip, ChipDtoFactory)
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
             registerComponent(ComposableTypes.backHandler, BackHandlerDtoFactory)
             registerComponent(ComposableTypes.badgedBox, BadgedBoxDtoFactory)
