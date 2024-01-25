@@ -1,7 +1,7 @@
 defmodule LiveViewNative.Jetpack.MixProject do
   use Mix.Project
 
-  @version "0.3.0-alpha.2"
+  @version "0.3.0-alpha.3"
 
   def project do
     [
@@ -29,11 +29,11 @@ defmodule LiveViewNative.Jetpack.MixProject do
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:floki, ">= 0.30.0", only: :test},
       # {:live_view_native, path: "../live_view_native", override: true},
-      {:live_view_native, github: "liveview-native/live_view_native", override: true},
+      {:live_view_native, github: "liveview-native/live_view_native", tag: "0.3.0-alpha.3"},
       # {:live_view_native_stylesheet, path: "../live_view_native_stylesheet", override: true},
-      {:live_view_native_stylesheet, github: "liveview-native/live_view_native_stylesheet"},
+      {:live_view_native_stylesheet, github: "liveview-native/live_view_native_stylesheet", tag: "0.3.0-alpha.3"},
       # {:live_view_native_test, path: "../live_view_native_test", only: :test, override: true},
-      {:live_view_native_test, github: "liveview-native/live_view_native_test", only: :test},
+      {:live_view_native_test, github: "liveview-native/live_view_native_test", tag: "0.3.0-alpha.3", only: :test},
       {:jason, "~> 1.2"},
       {:nimble_parsec, "~> 1.3"},
     ]
