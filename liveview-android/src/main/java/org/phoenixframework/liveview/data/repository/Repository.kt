@@ -11,7 +11,6 @@ import okhttp3.Request
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import org.phoenixframework.liveview.data.dto.PhoenixLiveViewPayload
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.data.service.ChannelService
 import org.phoenixframework.liveview.data.service.SocketService

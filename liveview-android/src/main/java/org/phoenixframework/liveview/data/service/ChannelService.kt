@@ -4,7 +4,7 @@ import android.util.Log
 import org.phoenixframework.Channel
 import org.phoenixframework.Message
 import org.phoenixframework.Payload
-import org.phoenixframework.liveview.data.dto.PhoenixLiveViewPayload
+import org.phoenixframework.liveview.data.repository.PhoenixLiveViewPayload
 
 class ChannelService(
     private val socketService: SocketService

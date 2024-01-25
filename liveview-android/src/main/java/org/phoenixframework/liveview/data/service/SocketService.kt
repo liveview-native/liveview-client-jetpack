@@ -9,7 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.phoenixframework.Channel
 import org.phoenixframework.Socket
-import org.phoenixframework.liveview.data.dto.PhoenixLiveViewPayload
+import org.phoenixframework.liveview.data.repository.PhoenixLiveViewPayload
 import java.util.UUID
 
 object SocketService {
