@@ -41,6 +41,7 @@ import org.phoenixframework.liveview.data.dto.ScaffoldDtoFactory
 import org.phoenixframework.liveview.data.dto.SegmentedButtonRowDtoFactory
 import org.phoenixframework.liveview.data.dto.SliderDtoFactory
 import org.phoenixframework.liveview.data.dto.SpacerDtoFactory
+import org.phoenixframework.liveview.data.dto.SurfaceDtoFactory
 import org.phoenixframework.liveview.data.dto.SwitchDtoFactory
 import org.phoenixframework.liveview.data.dto.TabDtoFactory
 import org.phoenixframework.liveview.data.dto.TabRowDtoFactory
@@ -154,6 +155,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.slider, SliderDtoFactory)
             registerComponent(ComposableTypes.smallFab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
+            registerComponent(ComposableTypes.surface, SurfaceDtoFactory)
             registerComponent(ComposableTypes.switch, SwitchDtoFactory)
             registerComponent(ComposableTypes.tab, TabDtoFactory)
             registerComponent(ComposableTypes.tabRow, TabRowDtoFactory)
