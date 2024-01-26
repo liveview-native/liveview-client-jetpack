@@ -163,6 +163,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.slider, SliderDtoFactory)
             registerComponent(ComposableTypes.smallFab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
+            registerComponent(ComposableTypes.suggestionChip, ChipDtoFactory)
             registerComponent(ComposableTypes.surface, SurfaceDtoFactory)
             registerComponent(ComposableTypes.switch, SwitchDtoFactory)
             registerComponent(ComposableTypes.tab, TabDtoFactory)

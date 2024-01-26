@@ -350,6 +350,9 @@ object ColorAttrs {
     const val colorAttrTrailingIconContentColor = "trailingIconContentColor"
     const val colorAttrDisabledLeadingIconContentColor = "disabledLeadingIconContentColor"
     const val colorAttrDisabledTrailingIconContentColor = "disabledTrailingIconContentColor"
+    // Suggestion Chips
+    const val colorAttrIconContentColor = "iconContentColor"
+    const val colorAttrDisabledIconContentColor = "disabledIconContentColor"
     // Filter Chip
     const val colorAttrIconColor = "iconColor"
     const val colorAttrDisabledSelectedContainerColor = "disabledSelectedContainerColor"

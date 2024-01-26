@@ -13,6 +13,8 @@ import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -328,6 +330,113 @@ class ChipShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
                     <Text template="label">Chip 10</Text>
                   </ElevatedAssistChip>                                                                                
+                </FlowRow>            
+                """
+        )
+    }
+
+    @Test
+    fun suggestionChipTest() {
+        val colorsForTemplate = """
+            {
+                'containerColor': 'system-blue',
+                'labelColor': 'system-yellow',
+                'iconContentColor': 'system-white',
+                'disabledContainerColor': 'system-light-gray',
+                'disabledLabelColor': 'system-gray',
+                'disabledIconContentColor': 'system-dark-gray'
+            }
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                val colors = SuggestionChipDefaults.suggestionChipColors(
+                    containerColor = Color.Blue,
+                    labelColor = Color.Yellow,
+                    iconContentColor = Color.White,
+                    disabledContainerColor = Color.LightGray,
+                    disabledLabelColor = Color.Gray,
+                    disabledIconContentColor = Color.DarkGray,
+                )
+                FlowRow {
+                    SuggestionChip(onClick = {}, label = { Text("Chip 1") })
+                    SuggestionChip(onClick = {}, label = { Text("Chip 2") }, enabled = false)
+                    SuggestionChip(
+                        onClick = {}, label = { Text("Chip 3") },
+                        icon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    SuggestionChip(
+                        onClick = {}, label = { Text("Chip 4") }, enabled = false,
+                        icon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    SuggestionChip(
+                        onClick = {}, label = { Text("Chip 5") }, shape = RectangleShape,
+                        icon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    SuggestionChip(
+                        onClick = {},
+                        label = { Text("Chip 6") },
+                        border = BorderStroke(2.dp, Color.Red),
+                        icon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    SuggestionChip(
+                        onClick = {},
+                        label = { Text("Chip 7") },
+                        icon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                    SuggestionChip(
+                        onClick = {},
+                        label = { Text("Chip 8") },
+                        icon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        enabled = false,
+                        colors = colors
+                    )
+                }
+            },
+            template = """
+                <FlowRow>
+                  <SuggestionChip phx-click="">
+                    <Text template="label">Chip 1</Text>
+                  </SuggestionChip>     
+                  <SuggestionChip phx-click="" enabled="false">
+                    <Text template="label">Chip 2</Text>
+                  </SuggestionChip>      
+                  <SuggestionChip phx-click="">
+                    <Icon image-vector="filled:Check" template="icon"/>
+                    <Text template="label">Chip 3</Text>
+                  </SuggestionChip>    
+                  <SuggestionChip phx-click="" enabled="false">
+                    <Icon image-vector="filled:Check" template="icon"/>
+                    <Text template="label">Chip 4</Text>
+                  </SuggestionChip>                                                          
+                  <SuggestionChip phx-click="" shape="rect">
+                    <Icon image-vector="filled:Check" template="icon"/>
+                    <Text template="label">Chip 5</Text>
+                  </SuggestionChip>    
+                  <SuggestionChip phx-click="" border="{'width': '2', 'color': 'system-red'}">
+                    <Icon image-vector="filled:Check" template="icon"/>
+                    <Text template="label">Chip 6</Text>
+                  </SuggestionChip> 
+                  <SuggestionChip phx-click="" colors="$colorsForTemplate">
+                    <Icon image-vector="filled:Check" template="icon"/>
+                    <Text template="label">Chip 7</Text>
+                  </SuggestionChip>   
+                  <SuggestionChip phx-click="" colors="$colorsForTemplate" enabled="false">
+                    <Icon image-vector="filled:Check" template="icon"/>
+                    <Text template="label">Chip 8</Text>
+                  </SuggestionChip>                                                                                
                 </FlowRow>            
                 """
         )

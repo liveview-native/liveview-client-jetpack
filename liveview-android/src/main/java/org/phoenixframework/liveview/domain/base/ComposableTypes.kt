@@ -76,6 +76,7 @@ object ComposableTypes {
     const val slider = "Slider"
     const val smallFab = "SmallFloatingActionButton"
     const val spacer = "Spacer"
+    const val suggestionChip = "SuggestionChip"
     const val surface = "Surface"
     const val switch = "Switch"
     const val tab = "Tab"
