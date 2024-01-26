@@ -23,6 +23,7 @@ object ComposableTypes {
     const val dismissibleNavigationDrawer = "DismissibleNavigationDrawer"
     const val dropdownMenu = "DropdownMenu"
     const val dropdownMenuItem = "DropdownMenuItem"
+    const val elevatedAssistChip = "ElevatedAssistChip"
     const val elevatedButton = "ElevatedButton"
     const val elevatedCard = "ElevatedCard"
     const val exposedDropdownMenuBox = "ExposedDropdownMenuBox"

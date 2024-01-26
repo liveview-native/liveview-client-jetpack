@@ -16,6 +16,8 @@ import org.phoenixframework.liveview.data.dto.ColumnDtoFactory
 import org.phoenixframework.liveview.data.dto.DatePickerDialogDtoFactory
 import org.phoenixframework.liveview.data.dto.DatePickerDtoFactory
 import org.phoenixframework.liveview.data.dto.DividerDtoFactory
+import org.phoenixframework.liveview.data.dto.DrawerSheetDtoFactory
+import org.phoenixframework.liveview.data.dto.DropdownMenuDtoFactory
 import org.phoenixframework.liveview.data.dto.DropdownMenuItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.FloatingActionButtonDtoFactory
@@ -29,10 +31,8 @@ import org.phoenixframework.liveview.data.dto.LazyGridDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
 import org.phoenixframework.liveview.data.dto.ListItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalBottomSheetDtoFactory
-import org.phoenixframework.liveview.data.dto.DrawerSheetDtoFactory
-import org.phoenixframework.liveview.data.dto.DropdownMenuDtoFactory
-import org.phoenixframework.liveview.data.dto.NavigationDrawerDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationBarDtoFactory
+import org.phoenixframework.liveview.data.dto.NavigationDrawerDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerItemDtoFactory
 import org.phoenixframework.liveview.data.dto.PagerDtoFactory
 import org.phoenixframework.liveview.data.dto.ProgressIndicatorDtoFactory
@@ -85,10 +85,14 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.datePicker, DatePickerDtoFactory)
             registerComponent(ComposableTypes.datePickerDialog, DatePickerDialogDtoFactory)
             registerComponent(ComposableTypes.dateRangePicker, DatePickerDtoFactory)
-            registerComponent(ComposableTypes.dismissibleNavigationDrawer, NavigationDrawerDtoFactory)
+            registerComponent(
+                ComposableTypes.dismissibleNavigationDrawer,
+                NavigationDrawerDtoFactory
+            )
             registerComponent(ComposableTypes.dismissibleDrawerSheet, DrawerSheetDtoFactory)
             registerComponent(ComposableTypes.dropdownMenu, DropdownMenuDtoFactory)
             registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
+            registerComponent(ComposableTypes.elevatedAssistChip, ChipDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
             registerComponent(ComposableTypes.extendedFab, FloatingActionButtonDtoFactory)

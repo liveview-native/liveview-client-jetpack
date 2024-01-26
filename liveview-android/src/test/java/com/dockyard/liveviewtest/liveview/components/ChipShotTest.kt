@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
@@ -169,6 +170,161 @@ class ChipShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
                     <Text template="label">Chip 10</Text>
                   </AssistChip>                                                                                
+                </FlowRow>            
+                """
+        )
+    }
+
+    @Test
+    fun elevatedAssistChipTest() {
+        val colorsForTemplate = """
+            {
+                'containerColor': 'system-blue',
+                'labelColor': 'system-yellow',
+                'leadingIconContentColor': 'system-white',
+                'trailingIconContentColor': 'system-cyan',
+                'disabledContainerColor': 'system-light-gray',
+                'disabledLabelColor': 'system-gray',
+                'disabledLeadingIconContentColor': 'system-dark-gray',
+                'disabledTrailingIconContentColor': 'system-black'
+            }
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                val colors = AssistChipDefaults.assistChipColors(
+                    containerColor = Color.Blue,
+                    labelColor = Color.Yellow,
+                    leadingIconContentColor = Color.White,
+                    trailingIconContentColor = Color.Cyan,
+                    disabledContainerColor = Color.LightGray,
+                    disabledLabelColor = Color.Gray,
+                    disabledLeadingIconContentColor = Color.DarkGray,
+                    disabledTrailingIconContentColor = Color.Black,
+                )
+                FlowRow {
+                    ElevatedAssistChip(onClick = {}, label = { Text("Chip 1") })
+                    ElevatedAssistChip(onClick = {}, label = { Text("Chip 2") }, enabled = false)
+                    ElevatedAssistChip(
+                        onClick = {}, label = { Text("Chip 3") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    ElevatedAssistChip(
+                        onClick = {}, label = { Text("Chip 4") }, enabled = false,
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    ElevatedAssistChip(
+                        onClick = {}, label = { Text("Chip 5") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    ElevatedAssistChip(
+                        onClick = {}, label = { Text("Chip 6") }, enabled = false,
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    ElevatedAssistChip(
+                        onClick = {}, label = { Text("Chip 7") }, shape = RectangleShape,
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    ElevatedAssistChip(
+                        onClick = {},
+                        label = { Text("Chip 8") },
+                        border = BorderStroke(2.dp, Color.Red),
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    ElevatedAssistChip(
+                        onClick = {},
+                        label = { Text("Chip 9") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                    ElevatedAssistChip(
+                        onClick = {},
+                        label = { Text("Chip 10") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        enabled = false,
+                        colors = colors
+                    )
+                }
+            },
+            template = """
+                <FlowRow>
+                  <ElevatedAssistChip phx-click="">
+                    <Text template="label">Chip 1</Text>
+                  </ElevatedAssistChip>     
+                  <ElevatedAssistChip phx-click="" enabled="false">
+                    <Text template="label">Chip 2</Text>
+                  </ElevatedAssistChip>      
+                  <ElevatedAssistChip phx-click="">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 3</Text>
+                  </ElevatedAssistChip>    
+                  <ElevatedAssistChip phx-click="" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 4</Text>
+                  </ElevatedAssistChip>                                                         
+                  <ElevatedAssistChip phx-click="">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 5</Text>
+                  </ElevatedAssistChip>
+                  <ElevatedAssistChip phx-click="" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 6</Text>
+                  </ElevatedAssistChip>   
+                  <ElevatedAssistChip phx-click="" shape="rect">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 7</Text>
+                  </ElevatedAssistChip>    
+                  <ElevatedAssistChip phx-click="" border="{'width': '2', 'color': 'system-red'}">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 8</Text>
+                  </ElevatedAssistChip> 
+                  <ElevatedAssistChip phx-click="" colors="$colorsForTemplate">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 9</Text>
+                  </ElevatedAssistChip>   
+                  <ElevatedAssistChip phx-click="" colors="$colorsForTemplate" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 10</Text>
+                  </ElevatedAssistChip>                                                                                
                 </FlowRow>            
                 """
         )

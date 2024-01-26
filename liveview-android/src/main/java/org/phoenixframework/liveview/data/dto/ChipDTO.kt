@@ -6,6 +6,7 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ChipColors
 import androidx.compose.material3.ChipElevation
+import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -39,6 +40,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIco
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -88,31 +90,61 @@ internal class ChipDTO private constructor(builder: Builder) :
             composableNode?.children?.find { it.node?.template == templateTrailingIcon }
         }
 
-        AssistChip(
-            onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
-            label = {
-                label?.let {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            modifier = modifier,
-            enabled = enabled,
-            leadingIcon = leadingIcon?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            trailingIcon = trailingIcon?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            shape = shape ?: AssistChipDefaults.shape,
-            colors = getAssistChipColors(colors),
-            elevation = getAssistChipElevation(elevation),
-            border = border ?: AssistChipDefaults.assistChipBorder(enabled),
-            // TODO interactionSource: MutableInteractionSource
-        )
+        when (composableNode?.node?.tag) {
+            ComposableTypes.assistChip ->
+                AssistChip(
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    label = {
+                        label?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    modifier = modifier,
+                    enabled = enabled,
+                    leadingIcon = leadingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    trailingIcon = trailingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    shape = shape ?: AssistChipDefaults.shape,
+                    colors = getAssistChipColors(colors),
+                    elevation = getAssistChipElevation(elevation),
+                    border = border ?: AssistChipDefaults.assistChipBorder(enabled),
+                    // TODO interactionSource: MutableInteractionSource
+                )
+
+            ComposableTypes.elevatedAssistChip ->
+                ElevatedAssistChip(
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    label = {
+                        label?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    modifier = modifier,
+                    enabled = enabled,
+                    leadingIcon = leadingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    trailingIcon = trailingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    shape = shape ?: AssistChipDefaults.shape,
+                    colors = getElevatedAssistChipColors(colors),
+                    elevation = getElevatedAssistChipElevation(elevation),
+                    border = border,
+                    // TODO interactionSource: MutableInteractionSource
+                )
+        }
     }
 
     @Composable
@@ -142,6 +174,32 @@ internal class ChipDTO private constructor(builder: Builder) :
     }
 
     @Composable
+    private fun getElevatedAssistChipColors(colors: ImmutableMap<String, String>?): ChipColors {
+        val defaultColors = AssistChipDefaults.elevatedAssistChipColors()
+
+        return if (colors == null) {
+            defaultColors
+        } else {
+            AssistChipDefaults.elevatedAssistChipColors(
+                containerColor = colors[colorAttrContainerColor]?.toColor() ?: Color.Unspecified,
+                labelColor = colors[colorAttrLabelColor]?.toColor() ?: Color.Unspecified,
+                leadingIconContentColor = colors[colorAttrLeadingIconContentColor]?.toColor()
+                    ?: Color.Unspecified,
+                trailingIconContentColor = colors[colorAttrTrailingIconContentColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledLabelColor = colors[colorAttrDisabledLabelColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledLeadingIconContentColor = colors[colorAttrDisabledLeadingIconContentColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledTrailingIconContentColor = colors[colorAttrDisabledTrailingIconContentColor]?.toColor()
+                    ?: Color.Unspecified,
+            )
+        }
+    }
+
+    @Composable
     private fun getAssistChipElevation(elevation: Map<String, String>?): ChipElevation {
         val defaultElevation = AssistChipDefaults.assistChipElevation()
         return if (elevation == null) {
@@ -151,6 +209,27 @@ internal class ChipDTO private constructor(builder: Builder) :
                 elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
 
             AssistChipDefaults.assistChipElevation(
+                elevation = value(elevationAttrElevation),
+                pressedElevation = value(elevationAttrPressedElevation),
+                focusedElevation = value(elevationAttrFocusedElevation),
+                hoveredElevation = value(elevationAttrHoveredElevation),
+                draggedElevation = value(elevationAttrDraggedElevation),
+                disabledElevation = value(elevationAttrDisabledElevation),
+            )
+        }
+    }
+
+
+    @Composable
+    private fun getElevatedAssistChipElevation(elevation: Map<String, String>?): ChipElevation {
+        val defaultElevation = AssistChipDefaults.elevatedAssistChipElevation()
+        return if (elevation == null) {
+            defaultElevation
+        } else {
+            fun value(key: String) =
+                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
+
+            AssistChipDefaults.elevatedAssistChipElevation(
                 elevation = value(elevationAttrElevation),
                 pressedElevation = value(elevationAttrPressedElevation),
                 focusedElevation = value(elevationAttrFocusedElevation),
