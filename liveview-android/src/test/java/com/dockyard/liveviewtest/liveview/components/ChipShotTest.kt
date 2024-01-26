@@ -9,6 +9,9 @@ import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ElevatedAssistChip
+import androidx.compose.material3.ElevatedFilterChip
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
@@ -325,6 +328,588 @@ class ChipShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
                     <Text template="label">Chip 10</Text>
                   </ElevatedAssistChip>                                                                                
+                </FlowRow>            
+                """
+        )
+    }
+
+    @Test
+    fun filterChipTest() {
+        val colorsForTemplate = """
+            {                
+            'containerColor': 'system-blue',
+            'labelColor': 'system-yellow',
+            'iconColor': 'system-white',
+            'disabledContainerColor': 'system-light-gray',
+            'disabledLabelColor': 'system-gray',
+            'disabledLeadingIconColor': 'system-dark-gray',
+            'disabledTrailingIconColor': 'system-black',
+            'selectedContainerColor': 'system-red',
+            'disabledSelectedContainerColor': 'system-magenta',
+            'selectedLabelColor': 'system-green',
+            'selectedLeadingIconColor': 'system-yellow',
+            'selectedTrailingIconColor': 'system-white'                
+            }
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                val colors = FilterChipDefaults.filterChipColors(
+                    containerColor = Color.Blue,
+                    labelColor = Color.Yellow,
+                    iconColor = Color.White,
+                    disabledContainerColor = Color.LightGray,
+                    disabledLabelColor = Color.Gray,
+                    disabledLeadingIconColor = Color.DarkGray,
+                    disabledTrailingIconColor = Color.Black,
+                    selectedContainerColor = Color.Red,
+                    disabledSelectedContainerColor = Color.Magenta,
+                    selectedLabelColor = Color.Green,
+                    selectedLeadingIconColor = Color.Yellow,
+                    selectedTrailingIconColor = Color.White
+                )
+
+                FlowRow {
+                    FilterChip(onClick = {}, selected = false, label = { Text("Chip 1") })
+                    FilterChip(onClick = {}, selected = true, label = { Text("Chip 2") })
+                    FilterChip(
+                        onClick = {},
+                        selected = false,
+                        enabled = false,
+                        label = { Text("Chip 3") },
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = true,
+                        enabled = false,
+                        label = { Text("Chip 4") },
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = false,
+                        label = { Text("Chip 5") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = true,
+                        label = { Text("Chip 6") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = false,
+                        enabled = false,
+                        label = { Text("Chip 7") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = true,
+                        enabled = false,
+                        label = { Text("Chip 8") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = false,
+                        label = { Text("Chip 9") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = true,
+                        label = { Text("Chip 10") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = false,
+                        shape = RectangleShape,
+                        label = { Text("Chip 11") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = true,
+                        shape = RectangleShape,
+                        label = { Text("Chip 12") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = false,
+                        label = { Text("Chip 13") },
+                        border = BorderStroke(2.dp, Color.Red),
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = true,
+                        label = { Text("Chip 14") },
+                        border = BorderStroke(2.dp, Color.Red),
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = false,
+                        label = { Text("Chip 15") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = false,
+                        enabled = false,
+                        label = { Text("Chip 16") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = true,
+                        label = { Text("Chip 17") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                    FilterChip(
+                        onClick = {},
+                        selected = true,
+                        enabled = false,
+                        label = { Text("Chip 18") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                }
+            },
+            template = """
+                <FlowRow>
+                  <FilterChip phx-click="" selected="false">
+                    <Text template="label">Chip 1</Text>
+                  </FilterChip>   
+                  <FilterChip phx-click="" selected="true">
+                    <Text template="label">Chip 2</Text>
+                  </FilterChip>                    
+                  <FilterChip phx-click="" selected="false" enabled="false">
+                    <Text template="label">Chip 3</Text>
+                  </FilterChip>     
+                  <FilterChip phx-click="" selected="true" enabled="false">
+                    <Text template="label">Chip 4</Text>
+                  </FilterChip>                     
+                  <FilterChip phx-click="" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 5</Text>
+                  </FilterChip> 
+                  <FilterChip phx-click="" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 6</Text>
+                  </FilterChip>                         
+                  <FilterChip phx-click="" selected="false" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 7</Text>
+                  </FilterChip>    
+                  <FilterChip phx-click="" selected="true" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 8</Text>
+                  </FilterChip>                                                                        
+                  <FilterChip phx-click="" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 9</Text>
+                  </FilterChip>
+                  <FilterChip phx-click="" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 10</Text>
+                  </FilterChip>   
+                  <FilterChip phx-click="" shape="rect" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 11</Text>
+                  </FilterChip>  
+                  <FilterChip phx-click="" shape="rect" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 12</Text>
+                  </FilterChip>                     
+                  <FilterChip phx-click="" border="{'width': '2', 'color': 'system-red'}" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 13</Text>
+                  </FilterChip> 
+                  <FilterChip phx-click="" border="{'width': '2', 'color': 'system-red'}" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 14</Text>
+                  </FilterChip>   
+                  <FilterChip phx-click="" colors="$colorsForTemplate" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 15</Text>
+                  </FilterChip>                                   
+                  <FilterChip phx-click="" colors="$colorsForTemplate" selected="false" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 16</Text>
+                  </FilterChip>   
+                  <FilterChip phx-click="" colors="$colorsForTemplate" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 17</Text>
+                  </FilterChip>    
+                  <FilterChip phx-click="" colors="$colorsForTemplate" selected="true" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 18</Text>
+                  </FilterChip>                                                                                                
+                </FlowRow>            
+                """
+        )
+    }
+
+    @Test
+    fun elevatedFilterChipTest() {
+        val colorsForTemplate = """
+            {                
+            'containerColor': 'system-blue',
+            'labelColor': 'system-yellow',
+            'iconColor': 'system-white',
+            'disabledContainerColor': 'system-light-gray',
+            'disabledLabelColor': 'system-gray',
+            'disabledLeadingIconColor': 'system-dark-gray',
+            'disabledTrailingIconColor': 'system-black',
+            'selectedContainerColor': 'system-red',
+            'disabledSelectedContainerColor': 'system-magenta',
+            'selectedLabelColor': 'system-green',
+            'selectedLeadingIconColor': 'system-yellow',
+            'selectedTrailingIconColor': 'system-white'                
+            }
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                val colors = FilterChipDefaults.elevatedFilterChipColors(
+                    containerColor = Color.Blue,
+                    labelColor = Color.Yellow,
+                    iconColor = Color.White,
+                    disabledContainerColor = Color.LightGray,
+                    disabledLabelColor = Color.Gray,
+                    disabledLeadingIconColor = Color.DarkGray,
+                    disabledTrailingIconColor = Color.Black,
+                    selectedContainerColor = Color.Red,
+                    disabledSelectedContainerColor = Color.Magenta,
+                    selectedLabelColor = Color.Green,
+                    selectedLeadingIconColor = Color.Yellow,
+                    selectedTrailingIconColor = Color.White
+                )
+
+                FlowRow {
+                    ElevatedFilterChip(onClick = {}, selected = false, label = { Text("Chip 1") })
+                    ElevatedFilterChip(onClick = {}, selected = true, label = { Text("Chip 2") })
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = false,
+                        enabled = false,
+                        label = { Text("Chip 3") },
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = true,
+                        enabled = false,
+                        label = { Text("Chip 4") },
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = false,
+                        label = { Text("Chip 5") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = true,
+                        label = { Text("Chip 6") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = false,
+                        enabled = false,
+                        label = { Text("Chip 7") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = true,
+                        enabled = false,
+                        label = { Text("Chip 8") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = false,
+                        label = { Text("Chip 9") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = true,
+                        label = { Text("Chip 10") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = false,
+                        shape = RectangleShape,
+                        label = { Text("Chip 11") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = true,
+                        shape = RectangleShape,
+                        label = { Text("Chip 12") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = false,
+                        label = { Text("Chip 13") },
+                        border = BorderStroke(2.dp, Color.Red),
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = true,
+                        label = { Text("Chip 14") },
+                        border = BorderStroke(2.dp, Color.Red),
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = false,
+                        label = { Text("Chip 15") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = false,
+                        enabled = false,
+                        label = { Text("Chip 16") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = true,
+                        label = { Text("Chip 17") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                    ElevatedFilterChip(
+                        onClick = {},
+                        selected = true,
+                        enabled = false,
+                        label = { Text("Chip 18") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                }
+            },
+            template = """
+                <FlowRow>
+                  <ElevatedFilterChip phx-click="" selected="false">
+                    <Text template="label">Chip 1</Text>
+                  </ElevatedFilterChip>   
+                  <ElevatedFilterChip phx-click="" selected="true">
+                    <Text template="label">Chip 2</Text>
+                  </ElevatedFilterChip>                    
+                  <ElevatedFilterChip phx-click="" selected="false" enabled="false">
+                    <Text template="label">Chip 3</Text>
+                  </ElevatedFilterChip>     
+                  <ElevatedFilterChip phx-click="" selected="true" enabled="false">
+                    <Text template="label">Chip 4</Text>
+                  </ElevatedFilterChip>                     
+                  <ElevatedFilterChip phx-click="" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 5</Text>
+                  </ElevatedFilterChip> 
+                  <ElevatedFilterChip phx-click="" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 6</Text>
+                  </ElevatedFilterChip>                         
+                  <ElevatedFilterChip phx-click="" selected="false" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 7</Text>
+                  </ElevatedFilterChip>    
+                  <ElevatedFilterChip phx-click="" selected="true" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 8</Text>
+                  </ElevatedFilterChip>                                                                        
+                  <ElevatedFilterChip phx-click="" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 9</Text>
+                  </ElevatedFilterChip>
+                  <ElevatedFilterChip phx-click="" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 10</Text>
+                  </ElevatedFilterChip>   
+                  <ElevatedFilterChip phx-click="" shape="rect" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 11</Text>
+                  </ElevatedFilterChip>  
+                  <ElevatedFilterChip phx-click="" shape="rect" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 12</Text>
+                  </ElevatedFilterChip>                     
+                  <ElevatedFilterChip phx-click="" border="{'width': '2', 'color': 'system-red'}" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 13</Text>
+                  </ElevatedFilterChip> 
+                  <ElevatedFilterChip phx-click="" border="{'width': '2', 'color': 'system-red'}" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 14</Text>
+                  </ElevatedFilterChip>   
+                  <ElevatedFilterChip phx-click="" colors="$colorsForTemplate" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 15</Text>
+                  </ElevatedFilterChip>                                   
+                  <ElevatedFilterChip phx-click="" colors="$colorsForTemplate" selected="false" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 16</Text>
+                  </ElevatedFilterChip>   
+                  <ElevatedFilterChip phx-click="" colors="$colorsForTemplate" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 17</Text>
+                  </ElevatedFilterChip>    
+                  <ElevatedFilterChip phx-click="" colors="$colorsForTemplate" selected="true" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 18</Text>
+                  </ElevatedFilterChip>                                                                                                
                 </FlowRow>            
                 """
         )

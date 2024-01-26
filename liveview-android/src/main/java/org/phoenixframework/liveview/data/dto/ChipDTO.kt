@@ -7,6 +7,11 @@ import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ChipColors
 import androidx.compose.material3.ChipElevation
 import androidx.compose.material3.ElevatedAssistChip
+import androidx.compose.material3.ElevatedFilterChip
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.SelectableChipColors
+import androidx.compose.material3.SelectableChipElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -20,14 +25,23 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLeadingIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLeadingIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSelectedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTrailingIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTrailingIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrLabelColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrLeadingIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedTrailingIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconContentColor
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDisabledElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDraggedElevation
@@ -51,7 +65,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
 /**
- * Material Design assist chip.
+ * Material Design chips. They could be: `AssistChip`, `ElevatedAssistChip`, `FilterChip`,
+ * `ElevatedFilterChip`.ifo
  *
  * ```
  * <FlowRow>
@@ -60,6 +75,11 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *     <Icon image-vector="filled:CheckCircleOutline" template="trailingIcon"/>
  *     <Text template="label">AssitChip</Text>
  *   </AssistChip>
+ *   <FilterChip phx-click="" selected="true">
+ *     <Icon image-vector="filled:Check" template="leadingIcon"/>
+ *     <Icon image-vector="filled:CheckCircleOutline" template="trailingIcon"/>
+ *     <Text template="label">Filter Chip 1</Text>
+ *   </FilterChip>
  * </FlowRow>
  * ```
  */
@@ -71,7 +91,8 @@ internal class ChipDTO private constructor(builder: Builder) :
     private val elevation = builder.elevations?.toImmutableMap()
     private val enabled = builder.enabled
     private val onClick: String = builder.onClick
-    private val value: Any? = builder.value
+    private val value = builder.value
+    private val selected = builder.selected
     private val shape = builder.shape
 
     @Composable
@@ -144,6 +165,62 @@ internal class ChipDTO private constructor(builder: Builder) :
                     border = border,
                     // TODO interactionSource: MutableInteractionSource
                 )
+
+            ComposableTypes.filterChip ->
+                FilterChip(
+                    selected = selected,
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    label = {
+                        label?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    modifier = modifier,
+                    enabled = enabled,
+                    leadingIcon = leadingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    trailingIcon = trailingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    shape = shape ?: FilterChipDefaults.shape,
+                    colors = getFilterChipColors(colors),
+                    elevation = getFilterChipElevation(elevation),
+                    border = border ?: FilterChipDefaults.filterChipBorder(enabled, selected),
+                    // TODO interactionSource: MutableInteractionSource
+                )
+
+            ComposableTypes.elevatedFilterChip ->
+                ElevatedFilterChip(
+                    selected = selected,
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    label = {
+                        label?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    modifier = modifier,
+                    enabled = enabled,
+                    leadingIcon = leadingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    trailingIcon = trailingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    shape = shape ?: FilterChipDefaults.shape,
+                    colors = getElevatedFilterChipColors(colors),
+                    elevation = getElevatedFilterChipElevation(elevation),
+                    border = border,
+                    // TODO interactionSource: MutableInteractionSource
+                )
         }
     }
 
@@ -200,6 +277,72 @@ internal class ChipDTO private constructor(builder: Builder) :
     }
 
     @Composable
+    private fun getFilterChipColors(colors: ImmutableMap<String, String>?): SelectableChipColors {
+        val defaultColors = FilterChipDefaults.filterChipColors()
+
+        return if (colors == null) {
+            defaultColors
+        } else {
+            FilterChipDefaults.filterChipColors(
+                containerColor = colors[colorAttrContainerColor]?.toColor() ?: Color.Unspecified,
+                labelColor = colors[colorAttrLabelColor]?.toColor() ?: Color.Unspecified,
+                iconColor = colors[colorAttrIconColor]?.toColor() ?: Color.Unspecified,
+                disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledLabelColor = colors[colorAttrDisabledLabelColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledLeadingIconColor = colors[colorAttrDisabledLeadingIconColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledTrailingIconColor = colors[colorAttrDisabledTrailingIconColor]?.toColor()
+                    ?: Color.Unspecified,
+                selectedContainerColor = colors[colorAttrSelectedContainerColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledSelectedContainerColor = colors[colorAttrDisabledSelectedContainerColor]?.toColor()
+                    ?: Color.Unspecified,
+                selectedLabelColor = colors[colorAttrSelectedLabelColor]?.toColor()
+                    ?: Color.Unspecified,
+                selectedLeadingIconColor = colors[colorAttrSelectedLeadingIconColor]?.toColor()
+                    ?: Color.Unspecified,
+                selectedTrailingIconColor = colors[colorAttrSelectedTrailingIconColor]?.toColor()
+                    ?: Color.Unspecified,
+            )
+        }
+    }
+
+    @Composable
+    private fun getElevatedFilterChipColors(colors: ImmutableMap<String, String>?): SelectableChipColors {
+        val defaultColors = FilterChipDefaults.elevatedFilterChipColors()
+
+        return if (colors == null) {
+            defaultColors
+        } else {
+            FilterChipDefaults.elevatedFilterChipColors(
+                containerColor = colors[colorAttrContainerColor]?.toColor() ?: Color.Unspecified,
+                labelColor = colors[colorAttrLabelColor]?.toColor() ?: Color.Unspecified,
+                iconColor = colors[colorAttrIconColor]?.toColor() ?: Color.Unspecified,
+                disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledLabelColor = colors[colorAttrDisabledLabelColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledLeadingIconColor = colors[colorAttrDisabledLeadingIconColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledTrailingIconColor = colors[colorAttrDisabledTrailingIconColor]?.toColor()
+                    ?: Color.Unspecified,
+                selectedContainerColor = colors[colorAttrSelectedContainerColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledSelectedContainerColor = colors[colorAttrDisabledSelectedContainerColor]?.toColor()
+                    ?: Color.Unspecified,
+                selectedLabelColor = colors[colorAttrSelectedLabelColor]?.toColor()
+                    ?: Color.Unspecified,
+                selectedLeadingIconColor = colors[colorAttrSelectedLeadingIconColor]?.toColor()
+                    ?: Color.Unspecified,
+                selectedTrailingIconColor = colors[colorAttrSelectedTrailingIconColor]?.toColor()
+                    ?: Color.Unspecified,
+            )
+        }
+    }
+
+    @Composable
     private fun getAssistChipElevation(elevation: Map<String, String>?): ChipElevation {
         val defaultElevation = AssistChipDefaults.assistChipElevation()
         return if (elevation == null) {
@@ -218,7 +361,6 @@ internal class ChipDTO private constructor(builder: Builder) :
             )
         }
     }
-
 
     @Composable
     private fun getElevatedAssistChipElevation(elevation: Map<String, String>?): ChipElevation {
@@ -240,6 +382,46 @@ internal class ChipDTO private constructor(builder: Builder) :
         }
     }
 
+    @Composable
+    private fun getFilterChipElevation(elevation: Map<String, String>?): SelectableChipElevation {
+        val defaultElevation = FilterChipDefaults.filterChipElevation()
+        return if (elevation == null) {
+            defaultElevation
+        } else {
+            fun value(key: String) =
+                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
+
+            FilterChipDefaults.filterChipElevation(
+                elevation = value(elevationAttrElevation),
+                pressedElevation = value(elevationAttrPressedElevation),
+                focusedElevation = value(elevationAttrFocusedElevation),
+                hoveredElevation = value(elevationAttrHoveredElevation),
+                draggedElevation = value(elevationAttrDraggedElevation),
+                disabledElevation = value(elevationAttrDisabledElevation),
+            )
+        }
+    }
+
+    @Composable
+    private fun getElevatedFilterChipElevation(elevation: Map<String, String>?): SelectableChipElevation {
+        val defaultElevation = FilterChipDefaults.elevatedFilterChipElevation()
+        return if (elevation == null) {
+            defaultElevation
+        } else {
+            fun value(key: String) =
+                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
+
+            FilterChipDefaults.elevatedFilterChipElevation(
+                elevation = value(elevationAttrElevation),
+                pressedElevation = value(elevationAttrPressedElevation),
+                focusedElevation = value(elevationAttrFocusedElevation),
+                hoveredElevation = value(elevationAttrHoveredElevation),
+                draggedElevation = value(elevationAttrDraggedElevation),
+                disabledElevation = value(elevationAttrDisabledElevation),
+            )
+        }
+    }
+
     internal class Builder : ComposableBuilder() {
         var border: BorderStroke? = null
             private set
@@ -250,6 +432,8 @@ internal class ChipDTO private constructor(builder: Builder) :
         var enabled: Boolean = true
             private set
         var onClick: String = ""
+            private set
+        var selected: Boolean = false
             private set
         var shape: Shape? = null
             private set
@@ -331,6 +515,17 @@ internal class ChipDTO private constructor(builder: Builder) :
         }
 
         /**
+         * Whether this chip is selected or not.
+         * ```
+         * <FilterChip selected="true">...</FilterChip>
+         * ```
+         * @param selected true if the chip is selected, false otherwise.
+         */
+        fun selected(selected: String) = apply {
+            this.selected = selected.toBoolean()
+        }
+
+        /**
          * Defines the shape of this chip's container.
          * ```
          * <AssistChip shape="16" >...</AssistChip>
@@ -358,6 +553,7 @@ internal object ChipDtoFactory : ComposableViewFactory<ChipDTO, ChipDTO.Builder>
             attrElevation -> builder.elevation(attribute.value)
             attrEnabled -> builder.enabled(attribute.value)
             attrPhxClick -> builder.onClick(attribute.value)
+            attrSelected -> builder.selected(attribute.value)
             attrShape -> builder.shape(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as ChipDTO.Builder

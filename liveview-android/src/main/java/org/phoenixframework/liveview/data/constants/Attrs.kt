@@ -344,12 +344,18 @@ object ColorAttrs {
     const val colorTimeSelectorUnselectedContainerColor = "timeSelectorUnselectedContainerColor"
     const val colorTimeSelectorSelectedContentColor = "timeSelectorSelectedContentColor"
     const val colorTimeSelectorUnselectedContentColor = "timeSelectorUnselectedContentColor"
-    // Chips
+    // Assist Chips
     const val colorAttrLabelColor = "labelColor"
     const val colorAttrLeadingIconContentColor = "leadingIconContentColor"
     const val colorAttrTrailingIconContentColor = "trailingIconContentColor"
     const val colorAttrDisabledLeadingIconContentColor = "disabledLeadingIconContentColor"
     const val colorAttrDisabledTrailingIconContentColor = "disabledTrailingIconContentColor"
+    // Filter Chip
+    const val colorAttrIconColor = "iconColor"
+    const val colorAttrDisabledSelectedContainerColor = "disabledSelectedContainerColor"
+    const val colorAttrSelectedLabelColor = "selectedLabelColor"
+    const val colorAttrSelectedLeadingIconColor = "selectedLeadingIconColor"
+    const val colorAttrSelectedTrailingIconColor = "selectedTrailingIconColor"
 }
 
 object ElevationAttrs {

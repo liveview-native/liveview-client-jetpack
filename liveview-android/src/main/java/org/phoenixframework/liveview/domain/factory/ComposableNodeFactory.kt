@@ -95,6 +95,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.elevatedAssistChip, ChipDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
+            registerComponent(ComposableTypes.elevatedFilterChip, ChipDtoFactory)
             registerComponent(ComposableTypes.extendedFab, FloatingActionButtonDtoFactory)
             registerComponent(
                 ComposableTypes.exposedDropdownMenuBox,
@@ -109,6 +110,7 @@ object ComposableNodeFactory {
                 ComposableTypes.filledTonalIconToggleButton,
                 IconToggleButtonDtoFactory
             )
+            registerComponent(ComposableTypes.filterChip, ChipDtoFactory)
             registerComponent(ComposableTypes.flowColumn, FlowLayoutDtoFactory)
             registerComponent(ComposableTypes.flowRow, FlowLayoutDtoFactory)
             registerComponent(ComposableTypes.horizontalDivider, DividerDtoFactory)
