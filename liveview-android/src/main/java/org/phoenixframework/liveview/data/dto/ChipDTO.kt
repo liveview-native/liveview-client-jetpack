@@ -8,6 +8,7 @@ import androidx.compose.material3.ChipColors
 import androidx.compose.material3.ChipElevation
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ElevatedFilterChip
+import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.SelectableChipColors
@@ -198,6 +199,28 @@ internal class ChipDTO private constructor(builder: Builder) :
                     // TODO interactionSource: MutableInteractionSource
                 )
 
+            ComposableTypes.elevatedSuggestionChip ->
+                ElevatedSuggestionChip(
+                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    label = {
+                        label?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    modifier = modifier,
+                    enabled = enabled,
+                    icon = leadingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    shape = shape ?: SuggestionChipDefaults.shape,
+                    colors = getElevatedSuggestionChipColors(colors),
+                    elevation = getElevatedSuggestionChipElevation(elevation),
+                    border = border,
+                    // TODO interactionSource: MutableInteractionSource
+                )
+
             ComposableTypes.filterChip ->
                 FilterChip(
                     selected = selected,
@@ -331,6 +354,28 @@ internal class ChipDTO private constructor(builder: Builder) :
     }
 
     @Composable
+    private fun getElevatedSuggestionChipColors(colors: ImmutableMap<String, String>?): ChipColors {
+        val defaultColors = SuggestionChipDefaults.elevatedSuggestionChipColors()
+
+        return if (colors == null) {
+            defaultColors
+        } else {
+            SuggestionChipDefaults.elevatedSuggestionChipColors(
+                containerColor = colors[colorAttrContainerColor]?.toColor() ?: Color.Unspecified,
+                labelColor = colors[colorAttrLabelColor]?.toColor() ?: Color.Unspecified,
+                iconContentColor = colors[colorAttrIconContentColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledLabelColor = colors[colorAttrDisabledLabelColor]?.toColor()
+                    ?: Color.Unspecified,
+                disabledIconContentColor = colors[colorAttrDisabledIconContentColor]?.toColor()
+                    ?: Color.Unspecified,
+            )
+        }
+    }
+
+    @Composable
     private fun getFilterChipColors(colors: ImmutableMap<String, String>?): SelectableChipColors {
         val defaultColors = FilterChipDefaults.filterChipColors()
 
@@ -446,6 +491,26 @@ internal class ChipDTO private constructor(builder: Builder) :
                 elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
 
             SuggestionChipDefaults.suggestionChipElevation(
+                elevation = value(elevationAttrElevation),
+                pressedElevation = value(elevationAttrPressedElevation),
+                focusedElevation = value(elevationAttrFocusedElevation),
+                hoveredElevation = value(elevationAttrHoveredElevation),
+                draggedElevation = value(elevationAttrDraggedElevation),
+                disabledElevation = value(elevationAttrDisabledElevation),
+            )
+        }
+    }
+
+    @Composable
+    private fun getElevatedSuggestionChipElevation(elevation: Map<String, String>?): ChipElevation {
+        val defaultElevation = SuggestionChipDefaults.elevatedSuggestionChipElevation()
+        return if (elevation == null) {
+            defaultElevation
+        } else {
+            fun value(key: String) =
+                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
+
+            SuggestionChipDefaults.elevatedSuggestionChipElevation(
                 elevation = value(elevationAttrElevation),
                 pressedElevation = value(elevationAttrPressedElevation),
                 focusedElevation = value(elevationAttrFocusedElevation),

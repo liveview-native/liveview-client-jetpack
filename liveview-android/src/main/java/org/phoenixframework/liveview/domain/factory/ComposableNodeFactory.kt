@@ -96,6 +96,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
             registerComponent(ComposableTypes.elevatedFilterChip, ChipDtoFactory)
+            registerComponent(ComposableTypes.elevatedSuggestionChip, ChipDtoFactory)
             registerComponent(ComposableTypes.extendedFab, FloatingActionButtonDtoFactory)
             registerComponent(
                 ComposableTypes.exposedDropdownMenuBox,

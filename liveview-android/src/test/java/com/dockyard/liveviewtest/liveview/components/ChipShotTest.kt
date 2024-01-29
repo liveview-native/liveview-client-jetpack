@@ -10,6 +10,7 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ElevatedFilterChip
+import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -437,6 +438,117 @@ class ChipShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:Check" template="icon"/>
                     <Text template="label">Chip 8</Text>
                   </SuggestionChip>                                                                                
+                </FlowRow>            
+                """
+        )
+    }
+
+    @Test
+    fun elevatedSuggestionChipTest() {
+        val colorsForTemplate = """
+            {
+                'containerColor': 'system-blue',
+                'labelColor': 'system-yellow',
+                'iconContentColor': 'system-white',
+                'disabledContainerColor': 'system-light-gray',
+                'disabledLabelColor': 'system-gray',
+                'disabledIconContentColor': 'system-dark-gray'
+            }
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                val colors = SuggestionChipDefaults.elevatedSuggestionChipColors(
+                    containerColor = Color.Blue,
+                    labelColor = Color.Yellow,
+                    iconContentColor = Color.White,
+                    disabledContainerColor = Color.LightGray,
+                    disabledLabelColor = Color.Gray,
+                    disabledIconContentColor = Color.DarkGray,
+                )
+                FlowRow {
+                    ElevatedSuggestionChip(onClick = {}, label = { Text("Chip 1") })
+                    ElevatedSuggestionChip(
+                        onClick = {},
+                        label = { Text("Chip 2") },
+                        enabled = false
+                    )
+                    ElevatedSuggestionChip(
+                        onClick = {}, label = { Text("Chip 3") },
+                        icon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    ElevatedSuggestionChip(
+                        onClick = {}, label = { Text("Chip 4") }, enabled = false,
+                        icon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    ElevatedSuggestionChip(
+                        onClick = {}, label = { Text("Chip 5") }, shape = RectangleShape,
+                        icon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    ElevatedSuggestionChip(
+                        onClick = {},
+                        label = { Text("Chip 6") },
+                        border = BorderStroke(2.dp, Color.Red),
+                        icon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    ElevatedSuggestionChip(
+                        onClick = {},
+                        label = { Text("Chip 7") },
+                        icon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                    ElevatedSuggestionChip(
+                        onClick = {},
+                        label = { Text("Chip 8") },
+                        icon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        enabled = false,
+                        colors = colors
+                    )
+                }
+            },
+            template = """
+                <FlowRow>
+                  <ElevatedSuggestionChip phx-click="">
+                    <Text template="label">Chip 1</Text>
+                  </ElevatedSuggestionChip>     
+                  <ElevatedSuggestionChip phx-click="" enabled="false">
+                    <Text template="label">Chip 2</Text>
+                  </ElevatedSuggestionChip>      
+                  <ElevatedSuggestionChip phx-click="">
+                    <Icon image-vector="filled:Check" template="icon"/>
+                    <Text template="label">Chip 3</Text>
+                  </ElevatedSuggestionChip>    
+                  <ElevatedSuggestionChip phx-click="" enabled="false">
+                    <Icon image-vector="filled:Check" template="icon"/>
+                    <Text template="label">Chip 4</Text>
+                  </ElevatedSuggestionChip>                                                          
+                  <ElevatedSuggestionChip phx-click="" shape="rect">
+                    <Icon image-vector="filled:Check" template="icon"/>
+                    <Text template="label">Chip 5</Text>
+                  </ElevatedSuggestionChip>    
+                  <ElevatedSuggestionChip phx-click="" border="{'width': '2', 'color': 'system-red'}">
+                    <Icon image-vector="filled:Check" template="icon"/>
+                    <Text template="label">Chip 6</Text>
+                  </ElevatedSuggestionChip> 
+                  <ElevatedSuggestionChip phx-click="" colors="$colorsForTemplate">
+                    <Icon image-vector="filled:Check" template="icon"/>
+                    <Text template="label">Chip 7</Text>
+                  </ElevatedSuggestionChip>   
+                  <ElevatedSuggestionChip phx-click="" colors="$colorsForTemplate" enabled="false">
+                    <Icon image-vector="filled:Check" template="icon"/>
+                    <Text template="label">Chip 8</Text>
+                  </ElevatedSuggestionChip>                                                                                
                 </FlowRow>            
                 """
         )
