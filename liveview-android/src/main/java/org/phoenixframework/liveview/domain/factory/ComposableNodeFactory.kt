@@ -120,6 +120,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.iconToggleButton, IconToggleButtonDtoFactory)
             registerComponent(ComposableTypes.image, ImageDtoFactory)
+            registerComponent(ComposableTypes.inputChip, ChipDtoFactory)
             registerComponent(ComposableTypes.largeFab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.largeTopAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.lazyColumn, LazyColumnDtoFactory)

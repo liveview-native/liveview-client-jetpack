@@ -2,6 +2,7 @@ package org.phoenixframework.liveview.data.constants
 
 object Templates {
     const val templateAction = "action"
+    const val templateAvatar = "avatar"
     const val templateBadge = "badge"
     const val templateBody = "body"
     const val templateBottomBar = "bottomBar"

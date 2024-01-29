@@ -45,6 +45,7 @@ object ComposableTypes {
     const val iconButton = "IconButton"
     const val iconToggleButton = "IconToggleButton"
     const val image = "Image"
+    const val inputChip = "InputChip"
     const val largeFab = "LargeFloatingActionButton"
     const val largeTopAppBar = "LargeTopAppBar"
     const val lazyColumn = "LazyColumn"

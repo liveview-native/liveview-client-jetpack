@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.sharp.Person
+import androidx.compose.material.icons.sharp.PersonAdd
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ElevatedAssistChip
@@ -14,6 +16,8 @@ import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.InputChip
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
@@ -1131,6 +1135,428 @@ class ChipShotTest : LiveViewComposableTest() {
                     <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
                     <Text template="label">Chip 18</Text>
                   </ElevatedFilterChip>                                                                                                
+                </FlowRow>            
+                """
+        )
+    }
+
+
+    @Test
+    fun inputChipTest() {
+        val colorsForTemplate = """
+            {                
+            'containerColor': 'system-blue',
+            'labelColor': 'system-yellow',
+            'leadingIconColor': 'system-white',
+            'trailingIconColor': 'system-red',
+            'disabledContainerColor': 'system-light-gray',
+            'disabledLabelColor': 'system-gray',
+            'disabledLeadingIconColor': 'system-dark-gray',
+            'disabledTrailingIconColor': 'system-black',
+            'selectedContainerColor': 'system-red',
+            'disabledSelectedContainerColor': 'system-magenta',
+            'selectedLabelColor': 'system-green',
+            'selectedLeadingIconColor': 'system-yellow',
+            'selectedTrailingIconColor': 'system-white'                
+            }
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                val colors = InputChipDefaults.inputChipColors(
+                    containerColor = Color.Blue,
+                    labelColor = Color.Yellow,
+                    leadingIconColor = Color.White,
+                    trailingIconColor = Color.Red,
+                    disabledContainerColor = Color.LightGray,
+                    disabledLabelColor = Color.Gray,
+                    disabledLeadingIconColor = Color.DarkGray,
+                    disabledTrailingIconColor = Color.Black,
+                    selectedContainerColor = Color.Red,
+                    disabledSelectedContainerColor = Color.Magenta,
+                    selectedLabelColor = Color.Green,
+                    selectedLeadingIconColor = Color.Yellow,
+                    selectedTrailingIconColor = Color.White
+                )
+
+                FlowRow {
+                    InputChip(onClick = {}, selected = false, label = { Text("Chip 1") })
+                    InputChip(onClick = {}, selected = true, label = { Text("Chip 2") })
+                    InputChip(
+                        onClick = {},
+                        selected = false,
+                        enabled = false,
+                        label = { Text("Chip 3") },
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = true,
+                        enabled = false,
+                        label = { Text("Chip 4") },
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = false,
+                        label = { Text("Chip 5") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = true,
+                        label = { Text("Chip 6") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = false,
+                        enabled = false,
+                        label = { Text("Chip 7") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = true,
+                        enabled = false,
+                        label = { Text("Chip 8") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = false,
+                        label = { Text("Chip 9") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = true,
+                        label = { Text("Chip 10") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = false,
+                        shape = RectangleShape,
+                        label = { Text("Chip 11") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = true,
+                        shape = RectangleShape,
+                        label = { Text("Chip 12") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = false,
+                        label = { Text("Chip 13") },
+                        border = BorderStroke(2.dp, Color.Red),
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = true,
+                        label = { Text("Chip 14") },
+                        border = BorderStroke(2.dp, Color.Red),
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        }
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = false,
+                        label = { Text("Chip 15") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = false,
+                        enabled = false,
+                        label = { Text("Chip 16") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = true,
+                        label = { Text("Chip 17") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                    InputChip(
+                        onClick = {},
+                        selected = true,
+                        enabled = false,
+                        label = { Text("Chip 18") },
+                        leadingIcon = {
+                            Icon(imageVector = Icons.Filled.Check, contentDescription = "")
+                        },
+                        trailingIcon = {
+                            Icon(imageVector = Icons.Filled.ChevronRight, contentDescription = "")
+                        },
+                        colors = colors
+                    )
+                    InputChip(
+                        selected = true,
+                        onClick = { },
+                        label = { Text("Chip 19") },
+                        avatar = {
+                            Icon(
+                                imageVector = Icons.Sharp.Person,
+                                contentDescription = ""
+                            )
+                        },
+                    )
+                    InputChip(
+                        selected = false,
+                        onClick = { },
+                        label = { Text("Chip 20") },
+                        avatar = {
+                            Icon(
+                                imageVector = Icons.Sharp.PersonAdd,
+                                contentDescription = ""
+                            )
+                        },
+                    )
+                    InputChip(
+                        selected = true,
+                        enabled = false,
+                        onClick = { },
+                        label = { Text("Chip 21") },
+                        avatar = {
+                            Icon(
+                                imageVector = Icons.Sharp.Person,
+                                contentDescription = ""
+                            )
+                        },
+                    )
+                    InputChip(
+                        selected = false,
+                        enabled = false,
+                        onClick = { },
+                        label = { Text("Chip 22") },
+                        avatar = {
+                            Icon(
+                                imageVector = Icons.Sharp.PersonAdd,
+                                contentDescription = ""
+                            )
+                        },
+                    )
+                    InputChip(
+                        selected = true,
+                        onClick = { },
+                        label = { Text("Chip 23") },
+                        avatar = {
+                            Icon(
+                                imageVector = Icons.Sharp.Person,
+                                contentDescription = ""
+                            )
+                        },
+                        colors = colors,
+                    )
+                    InputChip(
+                        selected = false,
+                        onClick = { },
+                        label = { Text("Chip 24") },
+                        avatar = {
+                            Icon(
+                                imageVector = Icons.Sharp.PersonAdd,
+                                contentDescription = ""
+                            )
+                        },
+                        colors = colors,
+                    )
+                    InputChip(
+                        selected = true,
+                        enabled = false,
+                        onClick = { },
+                        label = { Text("Chip 25") },
+                        avatar = {
+                            Icon(
+                                imageVector = Icons.Sharp.Person,
+                                contentDescription = ""
+                            )
+                        },
+                        colors = colors,
+                    )
+                    InputChip(
+                        selected = false,
+                        enabled = false,
+                        onClick = { },
+                        label = { Text("Chip 26") },
+                        avatar = {
+                            Icon(
+                                imageVector = Icons.Sharp.PersonAdd,
+                                contentDescription = ""
+                            )
+                        },
+                        colors = colors,
+                    )
+                }
+            },
+            template = """
+                <FlowRow>
+                  <InputChip phx-click="" selected="false">
+                    <Text template="label">Chip 1</Text>
+                  </InputChip>   
+                  <InputChip phx-click="" selected="true">
+                    <Text template="label">Chip 2</Text>
+                  </InputChip>                    
+                  <InputChip phx-click="" selected="false" enabled="false">
+                    <Text template="label">Chip 3</Text>
+                  </InputChip>     
+                  <InputChip phx-click="" selected="true" enabled="false">
+                    <Text template="label">Chip 4</Text>
+                  </InputChip>                     
+                  <InputChip phx-click="" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 5</Text>
+                  </InputChip> 
+                  <InputChip phx-click="" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 6</Text>
+                  </InputChip>                         
+                  <InputChip phx-click="" selected="false" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 7</Text>
+                  </InputChip>    
+                  <InputChip phx-click="" selected="true" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Text template="label">Chip 8</Text>
+                  </InputChip>                                                                        
+                  <InputChip phx-click="" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 9</Text>
+                  </InputChip>
+                  <InputChip phx-click="" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 10</Text>
+                  </InputChip>   
+                  <InputChip phx-click="" shape="rect" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 11</Text>
+                  </InputChip>  
+                  <InputChip phx-click="" shape="rect" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 12</Text>
+                  </InputChip>                     
+                  <InputChip phx-click="" border="{'width': '2', 'color': 'system-red'}" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 13</Text>
+                  </InputChip> 
+                  <InputChip phx-click="" border="{'width': '2', 'color': 'system-red'}" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 14</Text>
+                  </InputChip>   
+                  <InputChip phx-click="" colors="$colorsForTemplate" selected="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 15</Text>
+                  </InputChip>                                   
+                  <InputChip phx-click="" colors="$colorsForTemplate" selected="false" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 16</Text>
+                  </InputChip>   
+                  <InputChip phx-click="" colors="$colorsForTemplate" selected="true">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 17</Text>
+                  </InputChip>    
+                  <InputChip phx-click="" colors="$colorsForTemplate" selected="true" enabled="false">
+                    <Icon image-vector="filled:Check" template="leadingIcon"/>
+                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
+                    <Text template="label">Chip 18</Text>
+                  </InputChip>     
+                  <InputChip phx-click="" selected="true">
+                    <Icon image-vector="sharp:Person" template="avatar"/>
+                    <Text template="label">Chip 19</Text>
+                  </InputChip>    
+                  <InputChip phx-click="" selected="false">
+                    <Icon image-vector="sharp:PersonAdd" template="avatar"/>
+                    <Text template="label">Chip 20</Text>
+                  </InputChip>    
+                  <InputChip phx-click="" selected="true" enabled="false">
+                    <Icon image-vector="sharp:Person" template="avatar"/>
+                    <Text template="label">Chip 21</Text>
+                  </InputChip>    
+                  <InputChip phx-click="" selected="false" enabled="false">
+                    <Icon image-vector="sharp:PersonAdd" template="avatar"/>
+                    <Text template="label">Chip 22</Text>
+                  </InputChip>    
+                  <InputChip phx-click="" colors="$colorsForTemplate" selected="true" >
+                    <Icon image-vector="sharp:Person" template="avatar"/>
+                    <Text template="label">Chip 23</Text>
+                  </InputChip>    
+                  <InputChip phx-click="" colors="$colorsForTemplate" selected="false">
+                    <Icon image-vector="sharp:PersonAdd" template="avatar"/>
+                    <Text template="label">Chip 24</Text>
+                  </InputChip>    
+                  <InputChip phx-click="" colors="$colorsForTemplate" selected="true" enabled="false">
+                    <Icon image-vector="sharp:Person" template="avatar"/>
+                    <Text template="label">Chip 25</Text>
+                  </InputChip>    
+                  <InputChip phx-click="" colors="$colorsForTemplate" selected="false" enabled="false">
+                    <Icon image-vector="sharp:PersonAdd" template="avatar"/>
+                    <Text template="label">Chip 26</Text>
+                  </InputChip>                                                                                                                                                             
                 </FlowRow>            
                 """
         )
