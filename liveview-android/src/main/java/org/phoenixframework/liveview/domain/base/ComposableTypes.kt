@@ -74,6 +74,7 @@ object ComposableTypes {
     const val row = "Row"
     const val scaffold = "Scaffold"
     const val scrollableTabRow = "ScrollableTabRow"
+    const val searchBar = "SearchBar"
     const val singleChoiceSegmentedButtonRow = "SingleChoiceSegmentedButtonRow"
     const val slider = "Slider"
     const val smallFab = "SmallFloatingActionButton"

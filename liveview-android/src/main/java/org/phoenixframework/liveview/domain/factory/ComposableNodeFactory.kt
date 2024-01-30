@@ -39,6 +39,7 @@ import org.phoenixframework.liveview.data.dto.ProgressIndicatorDtoFactory
 import org.phoenixframework.liveview.data.dto.RadioButtonDtoFactory
 import org.phoenixframework.liveview.data.dto.RowDtoFactory
 import org.phoenixframework.liveview.data.dto.ScaffoldDtoFactory
+import org.phoenixframework.liveview.data.dto.SearchBarDtoFactory
 import org.phoenixframework.liveview.data.dto.SegmentedButtonRowDtoFactory
 import org.phoenixframework.liveview.data.dto.SliderDtoFactory
 import org.phoenixframework.liveview.data.dto.SpacerDtoFactory
@@ -158,6 +159,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.row, RowDtoFactory)
             registerComponent(ComposableTypes.scaffold, ScaffoldDtoFactory)
             registerComponent(ComposableTypes.scrollableTabRow, TabRowDtoFactory)
+            registerComponent(ComposableTypes.searchBar, SearchBarDtoFactory)
             registerComponent(
                 ComposableTypes.singleChoiceSegmentedButtonRow,
                 SegmentedButtonRowDtoFactory
