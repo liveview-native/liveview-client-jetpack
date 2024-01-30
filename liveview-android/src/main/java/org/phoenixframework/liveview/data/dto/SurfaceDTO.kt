@@ -61,12 +61,12 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * </Surface>
  *
  * <Surface shape="12" color="system-blue" content-color="system-white"
- *   selected={"#{@isSelected}"} phx-click="selectItem"} >
+ *   selected={"#{@isSelected}"} phx-click="selectItem"}>
  *   <Text padding="32">Selectable Surface</Text>
  * </Surface>
  *
  * <Surface shape="12" color="system-blue" content-color="system-white"
- *   checked={"#{@isChecked}"} phx-change="toggleCheck"} >
+ *   checked={"#{@isChecked}"} phx-change="toggleCheck"}>
  *   <Text padding="32">Checkable Surface</Text>
  * </Surface>
  * ```

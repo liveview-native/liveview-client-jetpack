@@ -32,16 +32,16 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * You must use the `expanded` property to show/hide the `DropdownMenu` and define the dismiss
  * event to hide it:
  * ```
- * def handle_event("showPopup", _params, socket) do
+ * def handle_event("showPopup", _, socket) do
  *   {:noreply, assign(socket, :showPopup, true)}
  * end
  *
- * def handle_event("hidePopup", _params, socket) do
+ * def handle_event("hidePopup", _, socket) do
  *   {:noreply, assign(socket, :showPopup, false)}
  * end
  *
- * def handle_event("onMenuOptionClick", _params, socket) do
- *   {:noreply, socket |> assign(:menuOption, _params) |> assign(:showPopup, false) }
+ * def handle_event("onMenuOptionClick", value, socket) do
+ *   {:noreply, socket |> assign(:menuOption, value) |> assign(:showPopup, false) }
  * end
  *
  * // render function...
