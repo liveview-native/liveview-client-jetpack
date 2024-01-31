@@ -21,6 +21,7 @@ object ComposableTypes {
     const val dateRangePicker = "DateRangePicker"
     const val dismissibleDrawerSheet = "DismissibleDrawerSheet"
     const val dismissibleNavigationDrawer = "DismissibleNavigationDrawer"
+    const val dockedSearchBar = "DockedSearchBar"
     const val dropdownMenu = "DropdownMenu"
     const val dropdownMenuItem = "DropdownMenuItem"
     const val elevatedAssistChip = "ElevatedAssistChip"

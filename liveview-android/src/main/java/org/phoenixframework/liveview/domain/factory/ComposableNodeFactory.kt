@@ -91,6 +91,7 @@ object ComposableNodeFactory {
                 NavigationDrawerDtoFactory
             )
             registerComponent(ComposableTypes.dismissibleDrawerSheet, DrawerSheetDtoFactory)
+            registerComponent(ComposableTypes.dockedSearchBar, SearchBarDtoFactory)
             registerComponent(ComposableTypes.dropdownMenu, DropdownMenuDtoFactory)
             registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
             registerComponent(ComposableTypes.elevatedAssistChip, ChipDtoFactory)

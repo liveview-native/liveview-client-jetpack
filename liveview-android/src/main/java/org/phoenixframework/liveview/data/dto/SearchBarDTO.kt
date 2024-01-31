@@ -2,6 +2,7 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
@@ -39,6 +40,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIc
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_SUBMIT
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
@@ -64,6 +66,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *   <Text template="content">Searching by: <%= @queryText %></Text>
  * </SearchBar>
  * ```
+ * You can also use a  DockedSearchBar using the same parameters.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class SearchBarDTO private constructor(builder: Builder) :
@@ -102,54 +105,116 @@ internal class SearchBarDTO private constructor(builder: Builder) :
         var activeState by remember {
             mutableStateOf(active)
         }
-        SearchBar(
-            query = queryStateValue,
-            onQueryChange = { q ->
-                queryStateValue = q
-            },
-            onSearch = { query ->
-                onSubmit.let { onSubmitEvent ->
-                    if (onSubmitEvent.isNotBlank())
-                        pushEvent.invoke(EVENT_TYPE_SUBMIT, onSubmitEvent, query, null)
-                }
-            },
-            active = activeState,
-            onActiveChange = { actv ->
-                activeState = actv
-                onActiveChanged.let { onActiveChangedEvent ->
-                    if (onActiveChangedEvent.isNotBlank())
-                        pushEvent.invoke(EVENT_TYPE_CHANGE, onActiveChangedEvent, actv, null)
-                }
-            },
-            modifier = modifier,
-            enabled = enabled,
-            placeholder = placeholder?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            leadingIcon = leadingIcon?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            trailingIcon = trailingIcon?.let {
-                {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            },
-            shape = shape ?: SearchBarDefaults.inputFieldShape,
-            colors = getSearchBarColors(colors),
-            tonalElevation = tonalElevation ?: SearchBarDefaults.TonalElevation,
-            shadowElevation = shadowElevation ?: SearchBarDefaults.ShadowElevation,
-            windowInsets = windowsInsets ?: SearchBarDefaults.windowInsets,
-            // TODO interactionSource: MutableInteractionSource,
-            content = {
-                content?.let {
-                    PhxLiveView(it, pushEvent, composableNode, null)
-                }
-            }
-        )
+        when (composableNode?.node?.tag) {
+            ComposableTypes.dockedSearchBar ->
+                DockedSearchBar(
+                    query = queryStateValue,
+                    onQueryChange = { q ->
+                        queryStateValue = q
+                    },
+                    onSearch = { query ->
+                        onSubmit.let { onSubmitEvent ->
+                            if (onSubmitEvent.isNotBlank())
+                                pushEvent.invoke(EVENT_TYPE_SUBMIT, onSubmitEvent, query, null)
+                        }
+                    },
+                    active = activeState,
+                    onActiveChange = { actv ->
+                        activeState = actv
+                        onActiveChanged.let { onActiveChangedEvent ->
+                            if (onActiveChangedEvent.isNotBlank())
+                                pushEvent.invoke(
+                                    EVENT_TYPE_CHANGE,
+                                    onActiveChangedEvent,
+                                    actv,
+                                    null
+                                )
+                        }
+                    },
+                    modifier = modifier,
+                    enabled = enabled,
+                    placeholder = placeholder?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    leadingIcon = leadingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    trailingIcon = trailingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    shape = shape ?: SearchBarDefaults.dockedShape,
+                    colors = getSearchBarColors(colors),
+                    tonalElevation = tonalElevation ?: SearchBarDefaults.TonalElevation,
+                    shadowElevation = shadowElevation ?: SearchBarDefaults.ShadowElevation,
+                    // TODO interactionSource: MutableInteractionSource,
+                    content = {
+                        content?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    }
+                )
+
+            ComposableTypes.searchBar ->
+                SearchBar(
+                    query = queryStateValue,
+                    onQueryChange = { q ->
+                        queryStateValue = q
+                    },
+                    onSearch = { query ->
+                        onSubmit.let { onSubmitEvent ->
+                            if (onSubmitEvent.isNotBlank())
+                                pushEvent.invoke(EVENT_TYPE_SUBMIT, onSubmitEvent, query, null)
+                        }
+                    },
+                    active = activeState,
+                    onActiveChange = { actv ->
+                        activeState = actv
+                        onActiveChanged.let { onActiveChangedEvent ->
+                            if (onActiveChangedEvent.isNotBlank())
+                                pushEvent.invoke(
+                                    EVENT_TYPE_CHANGE,
+                                    onActiveChangedEvent,
+                                    actv,
+                                    null
+                                )
+                        }
+                    },
+                    modifier = modifier,
+                    enabled = enabled,
+                    placeholder = placeholder?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    leadingIcon = leadingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    trailingIcon = trailingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    shape = shape ?: SearchBarDefaults.inputFieldShape,
+                    colors = getSearchBarColors(colors),
+                    tonalElevation = tonalElevation ?: SearchBarDefaults.TonalElevation,
+                    shadowElevation = shadowElevation ?: SearchBarDefaults.ShadowElevation,
+                    windowInsets = windowsInsets ?: SearchBarDefaults.windowInsets,
+                    // TODO interactionSource: MutableInteractionSource,
+                    content = {
+                        content?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    }
+                )
+        }
 
         LaunchedEffect(composableNode) {
             changeValueEventName?.let { event ->
