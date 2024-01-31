@@ -28,8 +28,9 @@ import org.phoenixframework.liveview.data.dto.LazyGridDtoFactory
 import org.phoenixframework.liveview.data.dto.LazyRowDtoFactory
 import org.phoenixframework.liveview.data.dto.ListItemDtoFactory
 import org.phoenixframework.liveview.data.dto.ModalBottomSheetDtoFactory
-import org.phoenixframework.liveview.data.dto.ModalDrawerSheetDtoFactory
-import org.phoenixframework.liveview.data.dto.ModalNavigationDrawerDtoFactory
+import org.phoenixframework.liveview.data.dto.DrawerSheetDtoFactory
+import org.phoenixframework.liveview.data.dto.DropdownMenuDtoFactory
+import org.phoenixframework.liveview.data.dto.NavigationDrawerDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationBarDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerItemDtoFactory
 import org.phoenixframework.liveview.data.dto.PagerDtoFactory
@@ -40,6 +41,7 @@ import org.phoenixframework.liveview.data.dto.ScaffoldDtoFactory
 import org.phoenixframework.liveview.data.dto.SegmentedButtonRowDtoFactory
 import org.phoenixframework.liveview.data.dto.SliderDtoFactory
 import org.phoenixframework.liveview.data.dto.SpacerDtoFactory
+import org.phoenixframework.liveview.data.dto.SurfaceDtoFactory
 import org.phoenixframework.liveview.data.dto.SwitchDtoFactory
 import org.phoenixframework.liveview.data.dto.TabDtoFactory
 import org.phoenixframework.liveview.data.dto.TabRowDtoFactory
@@ -81,6 +83,9 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.datePicker, DatePickerDtoFactory)
             registerComponent(ComposableTypes.datePickerDialog, DatePickerDialogDtoFactory)
             registerComponent(ComposableTypes.dateRangePicker, DatePickerDtoFactory)
+            registerComponent(ComposableTypes.dismissibleNavigationDrawer, NavigationDrawerDtoFactory)
+            registerComponent(ComposableTypes.dismissibleDrawerSheet, DrawerSheetDtoFactory)
+            registerComponent(ComposableTypes.dropdownMenu, DropdownMenuDtoFactory)
             registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
             registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
@@ -120,10 +125,10 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.listItem, ListItemDtoFactory)
             registerComponent(ComposableTypes.mediumTopAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.modalBottomSheet, ModalBottomSheetDtoFactory)
-            registerComponent(ComposableTypes.modalDrawerSheet, ModalDrawerSheetDtoFactory)
+            registerComponent(ComposableTypes.modalDrawerSheet, DrawerSheetDtoFactory)
             registerComponent(
                 ComposableTypes.modalNavigationDrawer,
-                ModalNavigationDrawerDtoFactory
+                NavigationDrawerDtoFactory
             )
             registerComponent(
                 ComposableTypes.multiChoiceSegmentedButtonRow,
@@ -136,6 +141,8 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.outlinedIconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedIconToggleButton, IconToggleButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedTextField, TextFieldDtoFactory)
+            registerComponent(ComposableTypes.permanentDrawerSheet, DrawerSheetDtoFactory)
+            registerComponent(ComposableTypes.permanentNavigationDrawer, NavigationDrawerDtoFactory)
             registerComponent(ComposableTypes.radioButton, RadioButtonDtoFactory)
             registerComponent(ComposableTypes.rangeSlider, SliderDtoFactory)
             registerComponent(ComposableTypes.row, RowDtoFactory)
@@ -148,6 +155,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.slider, SliderDtoFactory)
             registerComponent(ComposableTypes.smallFab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
+            registerComponent(ComposableTypes.surface, SurfaceDtoFactory)
             registerComponent(ComposableTypes.switch, SwitchDtoFactory)
             registerComponent(ComposableTypes.tab, TabDtoFactory)
             registerComponent(ComposableTypes.tabRow, TabRowDtoFactory)
