@@ -44,6 +44,7 @@ import org.phoenixframework.liveview.data.dto.SegmentedButtonRowDtoFactory
 import org.phoenixframework.liveview.data.dto.SliderDtoFactory
 import org.phoenixframework.liveview.data.dto.SpacerDtoFactory
 import org.phoenixframework.liveview.data.dto.SurfaceDtoFactory
+import org.phoenixframework.liveview.data.dto.SwipeToDismissBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.SwitchDtoFactory
 import org.phoenixframework.liveview.data.dto.TabDtoFactory
 import org.phoenixframework.liveview.data.dto.TabRowDtoFactory
@@ -170,6 +171,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
             registerComponent(ComposableTypes.suggestionChip, ChipDtoFactory)
             registerComponent(ComposableTypes.surface, SurfaceDtoFactory)
+            registerComponent(ComposableTypes.swipeToDismissBox, SwipeToDismissBoxDtoFactory)
             registerComponent(ComposableTypes.switch, SwitchDtoFactory)
             registerComponent(ComposableTypes.tab, TabDtoFactory)
             registerComponent(ComposableTypes.tabRow, TabRowDtoFactory)

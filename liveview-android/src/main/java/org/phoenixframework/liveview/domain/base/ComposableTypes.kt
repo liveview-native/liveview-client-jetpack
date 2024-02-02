@@ -82,6 +82,7 @@ object ComposableTypes {
     const val spacer = "Spacer"
     const val suggestionChip = "SuggestionChip"
     const val surface = "Surface"
+    const val swipeToDismissBox = "SwipeToDismissBox"
     const val switch = "Switch"
     const val tab = "Tab"
     const val tabRow = "TabRow"
