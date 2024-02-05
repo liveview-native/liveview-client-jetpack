@@ -91,6 +91,7 @@ object ComposableTypes {
     const val textField = "TextField"
     const val timeInput = "TimeInput"
     const val timePicker = "TimePicker"
+    const val tooltipBox = "TooltipBox"
     const val topAppBar = "TopAppBar"
     const val verticalDivider = "VerticalDivider"
     const val verticalPager = "VerticalPager"

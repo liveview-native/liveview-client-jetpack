@@ -33,6 +33,7 @@ object Templates {
     const val templateText = "text"
     const val templateThumb = "thumb"
     const val templateTitle = "title"
+    const val templateTooltip = "tooltip"
     const val templateTrack = "track"
     const val templateTrailingContent = "trailingContent"
     const val templateTrailingIcon = "trailingIcon"

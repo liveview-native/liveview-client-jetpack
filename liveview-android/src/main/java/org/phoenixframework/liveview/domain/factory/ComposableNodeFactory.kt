@@ -51,6 +51,7 @@ import org.phoenixframework.liveview.data.dto.TabRowDtoFactory
 import org.phoenixframework.liveview.data.dto.TextDtoFactory
 import org.phoenixframework.liveview.data.dto.TextFieldDtoFactory
 import org.phoenixframework.liveview.data.dto.TimePickerDtoFactory
+import org.phoenixframework.liveview.data.dto.TooltipBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -180,6 +181,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.textField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.timeInput, TimePickerDtoFactory)
             registerComponent(ComposableTypes.timePicker, TimePickerDtoFactory)
+            registerComponent(ComposableTypes.tooltipBox, TooltipBoxDtoFactory)
             registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.verticalDivider, DividerDtoFactory)
             registerComponent(ComposableTypes.verticalPager, PagerDtoFactory)
