@@ -72,6 +72,7 @@ object ComposableTypes {
     const val permanentNavigationDrawer = "PermanentNavigationDrawer"
     const val radioButton = "RadioButton"
     const val rangeSlider = "RangeSlider"
+    const val richTooltip = "RichTooltip"
     const val row = "Row"
     const val scaffold = "Scaffold"
     const val scrollableTabRow = "ScrollableTabRow"
