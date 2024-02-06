@@ -6,6 +6,7 @@ object Attrs {
     const val attrActionEvent = "action-event"
     const val attrActionLabel = "action-label"
     const val attrActionOnNewLine = "action-on-new-line"
+    const val attrActive = "active"
     const val attrAlign = "align"
     const val attrAlignment = "alignment"
     const val attrAlpha = "alpha"
@@ -98,9 +99,11 @@ object Attrs {
     const val attrPhxClick = "phx-click"
     const val attrPhxDebounce = "phx-debounce"
     const val attrPhxKeyUp = "phx-keyup"
+    const val attrPhxSubmit = "phx-submit"
     const val attrPhxThrottle = "phx-throttle"
     const val attrPhxValue = "phx-value"
     const val attrPropagateMinConstraints = "propagate-min-constraints"
+    const val attrOnActiveChanged = "on-active-changed"
     const val attrOnChanged = "on-changed"
     const val attrOnClose = "on-close"
     const val attrOnOpen = "on-open"
@@ -344,9 +347,28 @@ object ColorAttrs {
     const val colorTimeSelectorUnselectedContainerColor = "timeSelectorUnselectedContainerColor"
     const val colorTimeSelectorSelectedContentColor = "timeSelectorSelectedContentColor"
     const val colorTimeSelectorUnselectedContentColor = "timeSelectorUnselectedContentColor"
+    // Assist Chips
+    const val colorAttrLabelColor = "labelColor"
+    const val colorAttrLeadingIconContentColor = "leadingIconContentColor"
+    const val colorAttrTrailingIconContentColor = "trailingIconContentColor"
+    const val colorAttrDisabledLeadingIconContentColor = "disabledLeadingIconContentColor"
+    const val colorAttrDisabledTrailingIconContentColor = "disabledTrailingIconContentColor"
+    // Suggestion Chips
+    const val colorAttrIconContentColor = "iconContentColor"
+    const val colorAttrDisabledIconContentColor = "disabledIconContentColor"
+    // Filter Chip
+    const val colorAttrIconColor = "iconColor"
+    const val colorAttrDisabledSelectedContainerColor = "disabledSelectedContainerColor"
+    const val colorAttrSelectedLabelColor = "selectedLabelColor"
+    const val colorAttrSelectedLeadingIconColor = "selectedLeadingIconColor"
+    const val colorAttrSelectedTrailingIconColor = "selectedTrailingIconColor"
+    // SearchBar
+    const val colorAttrDividerColor = "dividerColor"
+    const val colorAttrInputFieldColor = "inputFieldColors"
 }
 
 object ElevationAttrs {
+    const val elevationAttrElevation = "elevation"
     const val elevationAttrDefaultElevation = "defaultElevation"
     const val elevationAttrDisabledElevation = "disabledElevation"
     const val elevationAttrDraggedElevation = "draggedElevation"

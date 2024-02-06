@@ -305,107 +305,6 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
     }
 
     @Composable
-    private fun getTextFieldColors(textFieldColors: ImmutableMap<String, String>?): TextFieldColors {
-        val defaultValue = TextFieldDefaults.colors()
-        return if (textFieldColors == null) {
-            defaultValue
-        } else {
-            TextFieldDefaults.colors(
-                focusedTextColor = textFieldColors[colorAttrFocusedTextColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface,
-                unfocusedTextColor = textFieldColors[colorAttrUnfocusedTextColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface,
-                disabledTextColor = textFieldColors[colorAttrDisabledTextColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
-                errorTextColor = textFieldColors[colorAttrErrorTextColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface,
-                focusedContainerColor = textFieldColors[colorAttrFocusedContainerColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.surfaceVariant,
-                unfocusedContainerColor = textFieldColors[colorAttrUnfocusedContainerColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.surfaceVariant,
-                disabledContainerColor = textFieldColors[colorAttrDisabledContainerColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.surfaceVariant,
-                errorContainerColor = textFieldColors[colorAttrErrorContainerColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.surfaceVariant,
-                cursorColor = textFieldColors[colorAttrCursorColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.primary,
-                errorCursorColor = textFieldColors[colorAttrErrorCursorColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.error,
-                selectionColors = TextSelectionColors(
-                    textFieldColors[colorAttrSelectionHandleColor]?.toColor()
-                        ?: LocalTextSelectionColors.current.handleColor,
-                    textFieldColors[colorAttrSelectionBackgroundColor]?.toColor()
-                        ?: LocalTextSelectionColors.current.backgroundColor,
-                ),
-                focusedIndicatorColor = textFieldColors[colorAttrFocusedIndicatorColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.primary,
-                unfocusedIndicatorColor = textFieldColors[colorAttrUnfocusedIndicatorColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledIndicatorColor = textFieldColors[colorAttrDisabledIndicatorColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
-                errorIndicatorColor = textFieldColors[colorAttrErrorIndicatorColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.error,
-                focusedLeadingIconColor = textFieldColors[colorAttrFocusedLeadingIconColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                unfocusedLeadingIconColor = textFieldColors[colorAttrUnfocusedLeadingIconColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledLeadingIconColor = textFieldColors[colorAttrDisabledLeadingIconColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
-                errorLeadingIconColor = textFieldColors[colorAttrErrorLeadingIconColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                focusedTrailingIconColor = textFieldColors[colorAttrFocusedTrailingIconColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                unfocusedTrailingIconColor = textFieldColors[colorAttrUnfocusedTrailingIconColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledTrailingIconColor = textFieldColors[colorAttrDisabledTrailingIconColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
-                errorTrailingIconColor = textFieldColors[colorAttrErrorTrailingIconColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.error,
-                focusedLabelColor = textFieldColors[colorAttrFocusedLabelColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.primary,
-                unfocusedLabelColor = textFieldColors[colorAttrUnfocusedLabelColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledLabelColor = textFieldColors[colorAttrDisabledLabelColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
-                errorLabelColor = textFieldColors[colorAttrErrorLabelColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.error,
-                focusedPlaceholderColor = textFieldColors[colorAttrFocusedPlaceholderColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                unfocusedPlaceholderColor = textFieldColors[colorAttrUnfocusedPlaceholderColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledPlaceholderColor = textFieldColors[colorAttrDisabledPlaceholderColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
-                errorPlaceholderColor = textFieldColors[colorAttrErrorPlaceholderColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                focusedSupportingTextColor = textFieldColors[colorAttrFocusedSupportingTextColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                unfocusedSupportingTextColor = textFieldColors[colorAttrUnfocusedSupportingTextColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledSupportingTextColor = textFieldColors[colorAttrDisabledSupportingTextColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
-                errorSupportingTextColor = textFieldColors[colorAttrErrorSupportingTextColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.error,
-                focusedPrefixColor = textFieldColors[colorAttrFocusedPrefixColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                unfocusedPrefixColor = textFieldColors[colorAttrUnfocusedPrefixColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledPrefixColor = textFieldColors[colorAttrDisabledPrefixColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = disabledContentAlpha),
-                errorPrefixColor = textFieldColors[colorAttrErrorPrefixColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                focusedSuffixColor = textFieldColors[colorAttrFocusedSuffixColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                unfocusedSuffixColor = textFieldColors[colorAttrUnfocusedSuffixColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledSuffixColor = textFieldColors[colorAttrDisabledSuffixColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = disabledContentAlpha),
-                errorSuffixColor = textFieldColors[colorAttrErrorSuffixColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-    }
-
-    @Composable
     private fun getOutlinedTextFieldColors(textFieldColors: ImmutableMap<String, String>?): TextFieldColors {
         val defaultValue = OutlinedTextFieldDefaults.colors()
         return if (textFieldColors == null) {
@@ -503,6 +402,109 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
                 errorSuffixColor = textFieldColors[colorAttrErrorSuffixColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        }
+    }
+
+    companion object {
+        @Composable
+        fun getTextFieldColors(textFieldColors: ImmutableMap<String, String>?): TextFieldColors {
+            val defaultValue = TextFieldDefaults.colors()
+            return if (textFieldColors == null) {
+                defaultValue
+            } else {
+                TextFieldDefaults.colors(
+                    focusedTextColor = textFieldColors[colorAttrFocusedTextColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = textFieldColors[colorAttrUnfocusedTextColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurface,
+                    disabledTextColor = textFieldColors[colorAttrDisabledTextColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    errorTextColor = textFieldColors[colorAttrErrorTextColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurface,
+                    focusedContainerColor = textFieldColors[colorAttrFocusedContainerColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.surfaceVariant,
+                    unfocusedContainerColor = textFieldColors[colorAttrUnfocusedContainerColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.surfaceVariant,
+                    disabledContainerColor = textFieldColors[colorAttrDisabledContainerColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.surfaceVariant,
+                    errorContainerColor = textFieldColors[colorAttrErrorContainerColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.surfaceVariant,
+                    cursorColor = textFieldColors[colorAttrCursorColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.primary,
+                    errorCursorColor = textFieldColors[colorAttrErrorCursorColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.error,
+                    selectionColors = TextSelectionColors(
+                        textFieldColors[colorAttrSelectionHandleColor]?.toColor()
+                            ?: LocalTextSelectionColors.current.handleColor,
+                        textFieldColors[colorAttrSelectionBackgroundColor]?.toColor()
+                            ?: LocalTextSelectionColors.current.backgroundColor,
+                    ),
+                    focusedIndicatorColor = textFieldColors[colorAttrFocusedIndicatorColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.primary,
+                    unfocusedIndicatorColor = textFieldColors[colorAttrUnfocusedIndicatorColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledIndicatorColor = textFieldColors[colorAttrDisabledIndicatorColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    errorIndicatorColor = textFieldColors[colorAttrErrorIndicatorColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.error,
+                    focusedLeadingIconColor = textFieldColors[colorAttrFocusedLeadingIconColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedLeadingIconColor = textFieldColors[colorAttrUnfocusedLeadingIconColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledLeadingIconColor = textFieldColors[colorAttrDisabledLeadingIconColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    errorLeadingIconColor = textFieldColors[colorAttrErrorLeadingIconColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTrailingIconColor = textFieldColors[colorAttrFocusedTrailingIconColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedTrailingIconColor = textFieldColors[colorAttrUnfocusedTrailingIconColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledTrailingIconColor = textFieldColors[colorAttrDisabledTrailingIconColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    errorTrailingIconColor = textFieldColors[colorAttrErrorTrailingIconColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.error,
+                    focusedLabelColor = textFieldColors[colorAttrFocusedLabelColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = textFieldColors[colorAttrUnfocusedLabelColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledLabelColor = textFieldColors[colorAttrDisabledLabelColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    errorLabelColor = textFieldColors[colorAttrErrorLabelColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.error,
+                    focusedPlaceholderColor = textFieldColors[colorAttrFocusedPlaceholderColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedPlaceholderColor = textFieldColors[colorAttrUnfocusedPlaceholderColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledPlaceholderColor = textFieldColors[colorAttrDisabledPlaceholderColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    errorPlaceholderColor = textFieldColors[colorAttrErrorPlaceholderColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedSupportingTextColor = textFieldColors[colorAttrFocusedSupportingTextColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedSupportingTextColor = textFieldColors[colorAttrUnfocusedSupportingTextColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledSupportingTextColor = textFieldColors[colorAttrDisabledSupportingTextColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    errorSupportingTextColor = textFieldColors[colorAttrErrorSupportingTextColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.error,
+                    focusedPrefixColor = textFieldColors[colorAttrFocusedPrefixColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedPrefixColor = textFieldColors[colorAttrUnfocusedPrefixColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledPrefixColor = textFieldColors[colorAttrDisabledPrefixColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = disabledContentAlpha),
+                    errorPrefixColor = textFieldColors[colorAttrErrorPrefixColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedSuffixColor = textFieldColors[colorAttrFocusedSuffixColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedSuffixColor = textFieldColors[colorAttrUnfocusedSuffixColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledSuffixColor = textFieldColors[colorAttrDisabledSuffixColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = disabledContentAlpha),
+                    errorSuffixColor = textFieldColors[colorAttrErrorSuffixColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 
