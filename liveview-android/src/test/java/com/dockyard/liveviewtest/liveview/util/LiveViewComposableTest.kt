@@ -9,9 +9,10 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.captureRoboImage
-import org.junit.Before
+import com.github.takahirom.roborazzi.captureScreenRoboImage
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.BuildConfig.IS_RECORDING_SHOT_TEST
@@ -25,15 +26,17 @@ import org.robolectric.annotation.GraphicsMode
 // Enable Robolectric Native Graphics (RNG)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = RobolectricDeviceQualifiers.Pixel5)
+@OptIn(ExperimentalRoborazziApi::class)
 abstract class LiveViewComposableTest {
     @get:Rule
     val composeRule = createAndroidComposeRule<ComponentActivity>()
-    val isRecording = IS_RECORDING_SHOT_TEST
+    private val isRecording = IS_RECORDING_SHOT_TEST
 
     fun compareNativeComposableWithTemplate(
         nativeComposable: @Composable () -> Unit,
         template: String,
         testTag: String? = null,
+        captureScreenImage: Boolean = false,
         delayBeforeScreenshot: Long = 0,
         coordinator: LiveViewCoordinator = LiveViewCoordinator(
             httpBaseUrl = "",
@@ -65,11 +68,16 @@ abstract class LiveViewComposableTest {
             Thread.sleep(delayBeforeScreenshot)
         }
 
-        // https://github.com/pedrovgs/Shot/issues/305
-        if (testTag != null)
-            composeRule.onNodeWithTag(testTag, useUnmergedTree = true).captureRoboImage()
-        else
-            composeRule.onRoot().captureRoboImage()
+        when {
+            captureScreenImage ->
+                captureScreenRoboImage()
+
+            testTag != null ->
+                composeRule.onNodeWithTag(testTag, useUnmergedTree = true).captureRoboImage()
+
+            else ->
+                composeRule.onRoot().captureRoboImage()
+        }
     }
 
     private fun String.templateToTest() =

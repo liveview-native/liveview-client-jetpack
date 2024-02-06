@@ -34,6 +34,8 @@ import org.phoenixframework.liveview.data.dto.ModalBottomSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationBarDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerItemDtoFactory
+import org.phoenixframework.liveview.data.dto.NavigationRailDtoFactory
+import org.phoenixframework.liveview.data.dto.NavigationRailItemDtoFactory
 import org.phoenixframework.liveview.data.dto.PagerDtoFactory
 import org.phoenixframework.liveview.data.dto.ProgressIndicatorDtoFactory
 import org.phoenixframework.liveview.data.dto.RadioButtonDtoFactory
@@ -44,12 +46,15 @@ import org.phoenixframework.liveview.data.dto.SegmentedButtonRowDtoFactory
 import org.phoenixframework.liveview.data.dto.SliderDtoFactory
 import org.phoenixframework.liveview.data.dto.SpacerDtoFactory
 import org.phoenixframework.liveview.data.dto.SurfaceDtoFactory
+import org.phoenixframework.liveview.data.dto.SwipeToDismissBoxDtoFactory
 import org.phoenixframework.liveview.data.dto.SwitchDtoFactory
 import org.phoenixframework.liveview.data.dto.TabDtoFactory
 import org.phoenixframework.liveview.data.dto.TabRowDtoFactory
 import org.phoenixframework.liveview.data.dto.TextDtoFactory
 import org.phoenixframework.liveview.data.dto.TextFieldDtoFactory
 import org.phoenixframework.liveview.data.dto.TimePickerDtoFactory
+import org.phoenixframework.liveview.data.dto.TooltipBoxDtoFactory
+import org.phoenixframework.liveview.data.dto.TooltipDtoFactory
 import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -148,6 +153,8 @@ object ComposableNodeFactory {
             )
             registerComponent(ComposableTypes.navigationBar, NavigationBarDtoFactory)
             registerComponent(ComposableTypes.navigationDrawerItem, NavigationDrawerItemDtoFactory)
+            registerComponent(ComposableTypes.navigationRail, NavigationRailDtoFactory)
+            registerComponent(ComposableTypes.navigationRailItem, NavigationRailItemDtoFactory)
             registerComponent(ComposableTypes.outlinedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedCard, CardDtoFactory)
             registerComponent(ComposableTypes.outlinedIconButton, IconButtonDtoFactory)
@@ -157,6 +164,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.permanentNavigationDrawer, NavigationDrawerDtoFactory)
             registerComponent(ComposableTypes.radioButton, RadioButtonDtoFactory)
             registerComponent(ComposableTypes.rangeSlider, SliderDtoFactory)
+            registerComponent(ComposableTypes.richTooltip, TooltipDtoFactory)
             registerComponent(ComposableTypes.row, RowDtoFactory)
             registerComponent(ComposableTypes.scaffold, ScaffoldDtoFactory)
             registerComponent(ComposableTypes.scrollableTabRow, TabRowDtoFactory)
@@ -170,6 +178,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
             registerComponent(ComposableTypes.suggestionChip, ChipDtoFactory)
             registerComponent(ComposableTypes.surface, SurfaceDtoFactory)
+            registerComponent(ComposableTypes.swipeToDismissBox, SwipeToDismissBoxDtoFactory)
             registerComponent(ComposableTypes.switch, SwitchDtoFactory)
             registerComponent(ComposableTypes.tab, TabDtoFactory)
             registerComponent(ComposableTypes.tabRow, TabRowDtoFactory)
@@ -178,6 +187,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.textField, TextFieldDtoFactory)
             registerComponent(ComposableTypes.timeInput, TimePickerDtoFactory)
             registerComponent(ComposableTypes.timePicker, TimePickerDtoFactory)
+            registerComponent(ComposableTypes.tooltipBox, TooltipBoxDtoFactory)
             registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.verticalDivider, DividerDtoFactory)
             registerComponent(ComposableTypes.verticalPager, PagerDtoFactory)

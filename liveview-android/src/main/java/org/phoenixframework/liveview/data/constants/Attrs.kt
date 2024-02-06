@@ -17,6 +17,7 @@ object Attrs {
     const val attrBeyondBoundsPageCount = "beyond-bounds-page-count"
     const val attrBorder = "border"
     const val attrCapitalization = "capitalization"
+    const val attrCaretProperties = "caret-properties"
     const val attrChecked = "checked"
     const val attrClip = "clip"
     const val attrClippingEnabled = "clipping-enabled"
@@ -49,6 +50,9 @@ object Attrs {
     const val attrEdgePadding = "edge-padding"
     const val attrElevation = "elevation"
     const val attrEnabled = "enabled"
+    const val attrEnableDismissFromEndToStart = "enable-dismiss-from-end-to-start"
+    const val attrEnableDismissFromStartToEnd = "enable-dismiss-from-start-to-end"
+    const val attrEnableUserInput = "enable-user-input"
     const val attrExcludeFromSystemGesture = "exclude-from-system-gesture"
     const val attrExpanded = "expanded"
     const val attrExposedDropdownSize = "exposed-dropdown-size"
@@ -74,7 +78,10 @@ object Attrs {
     const val attrInitialSelectedEndDateMillis = "initial-selected-end-date-millis"
     const val attrInitialDisplayedMonthMillis = "initial-displayed-month-millis"
     const val attrInitialDisplayMode = "initial-display-mode"
+    const val attrInitialIsVisible = "initial-is-visible"
+    const val attrInitialValue = "initial-value"
     const val attrIsError = "is-error"
+    const val attrIsPersistent = "is-persistent"
     const val attrIsOpen = "is-open"
     const val attrIs24Hour = "is-24-hour"
     const val attrKeyboardType = "keyboard-type"
@@ -107,6 +114,7 @@ object Attrs {
     const val attrOnChanged = "on-changed"
     const val attrOnClose = "on-close"
     const val attrOnOpen = "on-open"
+    const val attrOnValueChanged = "on-value-changed"
     const val attrOffset = "offset"
     const val attrReadOnly = "read-only"
     const val attrResource = "resource"
@@ -136,6 +144,7 @@ object Attrs {
     const val attrSkipPartiallyExpanded = "skip-partially-expanded"
     const val attrSoftWrap = "soft-wrap"
     const val attrSpace = "space"
+    const val attrSpacingBetweenTooltipAndAnchor = "spacing-between-tooltip-and-anchor"
     const val attrSteps = "steps"
     const val attrStrokeCap = "stroke-cap"
     const val attrStrokeWidth = "stroke-width"
@@ -365,6 +374,8 @@ object ColorAttrs {
     // SearchBar
     const val colorAttrDividerColor = "dividerColor"
     const val colorAttrInputFieldColor = "inputFieldColors"
+    // RichTooltip
+    const val colorAttrActionContentColor = "actionContentColor"
 }
 
 object ElevationAttrs {

@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.data.constants
 object Templates {
     const val templateAction = "action"
     const val templateAvatar = "avatar"
+    const val templateBackgroundContent = "backgroundContent"
     const val templateBadge = "badge"
     const val templateBody = "body"
     const val templateBottomBar = "bottomBar"
@@ -14,6 +15,7 @@ object Templates {
     const val templateDrawerContent = "drawerContent"
     const val templateEndThumb = "endThumb"
     const val templateFab = "fab"
+    const val templateHeader = "header"
     const val templateHeadline = "headline"
     const val templateHeadlineContent = "headlineContent"
     const val templateIcon = "icon"
@@ -32,6 +34,7 @@ object Templates {
     const val templateText = "text"
     const val templateThumb = "thumb"
     const val templateTitle = "title"
+    const val templateTooltip = "tooltip"
     const val templateTrack = "track"
     const val templateTrailingContent = "trailingContent"
     const val templateTrailingIcon = "trailingIcon"
