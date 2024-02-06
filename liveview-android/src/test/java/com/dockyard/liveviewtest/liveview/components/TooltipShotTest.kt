@@ -14,26 +14,21 @@ import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
-import org.junit.Ignore
 import org.junit.Test
 
 @OptIn(ExperimentalMaterial3Api::class)
 class TooltipShotTest : LiveViewComposableTest() {
-    @Ignore("See https://github.com/takahirom/roborazzi/issues/258")
     @Test
     fun simpleTooltipBoxTest() {
-        val testTag = "tooltipSimple"
         compareNativeComposableWithTemplate(
-            testTag = testTag,
+            captureScreenImage = true,
             nativeComposable = {
                 Box(
                     Modifier
                         .size(200.dp)
-                        .background(Color.Green)
-                        .testTag(testTag)
+                        .background(Color.Green),
                 ) {
                     TooltipBox(
                         positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
@@ -50,7 +45,7 @@ class TooltipShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Box size="200" background="system-green" test-tag="$testTag">
+                <Box size="200" background="system-green">
                   <TooltipBox initial-is-visible="true" is-persistent="true">
                     <PlainTooltip template="tooltip">
                       <Text>Tooltip</Text>

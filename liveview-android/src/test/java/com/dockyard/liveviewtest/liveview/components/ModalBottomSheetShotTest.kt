@@ -14,20 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
-import org.junit.Ignore
 import org.junit.Test
 
-// FIXME Seems like there are issues with BottomSheet
-//  https://github.com/pedrovgs/Shot/issues?q=is%3Aissue+BottomSheet
+@OptIn(ExperimentalMaterial3Api::class)
 class ModalBottomSheetShotTest : LiveViewComposableTest() {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Ignore("Seems like there are issues with BottomSheet")
     @Test
     fun simpleModalBottomSheetTest() {
         val testTag = "sheet"
         compareNativeComposableWithTemplate(
             testTag = testTag,
             delayBeforeScreenshot = 1000,
+            captureScreenImage = true,
             nativeComposable = {
                 Box(
                     modifier = Modifier
