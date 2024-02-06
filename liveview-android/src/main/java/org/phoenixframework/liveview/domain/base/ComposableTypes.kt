@@ -63,6 +63,8 @@ object ComposableTypes {
     const val multiChoiceSegmentedButtonRow = "MultiChoiceSegmentedButtonRow"
     const val navigationBar = "NavigationBar"
     const val navigationDrawerItem = "NavigationDrawerItem"
+    const val navigationRail = "NavigationRail"
+    const val navigationRailItem = "NavigationRailItem"
     const val outlinedButton = "OutlinedButton"
     const val outlinedCard = "OutlinedCard"
     const val outlinedIconButton = "OutlinedIconButton"

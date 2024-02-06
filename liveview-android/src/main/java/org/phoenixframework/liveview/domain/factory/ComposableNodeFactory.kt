@@ -34,6 +34,8 @@ import org.phoenixframework.liveview.data.dto.ModalBottomSheetDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationBarDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerDtoFactory
 import org.phoenixframework.liveview.data.dto.NavigationDrawerItemDtoFactory
+import org.phoenixframework.liveview.data.dto.NavigationRailDtoFactory
+import org.phoenixframework.liveview.data.dto.NavigationRailItemDtoFactory
 import org.phoenixframework.liveview.data.dto.PagerDtoFactory
 import org.phoenixframework.liveview.data.dto.ProgressIndicatorDtoFactory
 import org.phoenixframework.liveview.data.dto.RadioButtonDtoFactory
@@ -151,6 +153,8 @@ object ComposableNodeFactory {
             )
             registerComponent(ComposableTypes.navigationBar, NavigationBarDtoFactory)
             registerComponent(ComposableTypes.navigationDrawerItem, NavigationDrawerItemDtoFactory)
+            registerComponent(ComposableTypes.navigationRail, NavigationRailDtoFactory)
+            registerComponent(ComposableTypes.navigationRailItem, NavigationRailItemDtoFactory)
             registerComponent(ComposableTypes.outlinedButton, ButtonDtoFactory)
             registerComponent(ComposableTypes.outlinedCard, CardDtoFactory)
             registerComponent(ComposableTypes.outlinedIconButton, IconButtonDtoFactory)
