@@ -1,4 +1,5 @@
 defmodule LiveViewNative.Jetpack do
+  @moduledoc false
   use LiveViewNative,
     format: :jetpack,
     component: LiveViewNative.Jetpack.Component,
