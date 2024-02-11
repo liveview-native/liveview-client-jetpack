@@ -1,6 +1,6 @@
 defmodule LiveViewNative.Jetpack.RulesParser.Parser.Annotations do
   alias LiveViewNative.Jetpack.RulesParser.Parser.Context
-  # Helpers
+  @moduledoc false
 
   def context_to_annotation(%Context{annotations: true} = context, line) do
     source = Enum.at(context.source_lines, line - context.source_line, "")

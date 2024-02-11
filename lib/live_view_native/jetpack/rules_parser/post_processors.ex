@@ -1,4 +1,5 @@
 defmodule LiveViewNative.Jetpack.RulesParser.PostProcessors do
+  @moduledoc false
   import LiveViewNative.Jetpack.RulesParser.Parser.Annotations
 
   def to_attr_ast(rest, [attr, "attr"], context, {line, _}, _byte_offset) when is_binary(attr) do

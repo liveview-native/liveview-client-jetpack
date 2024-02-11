@@ -1,4 +1,5 @@
 defmodule LiveViewNative.Jetpack.RulesParser.Parser.Context do
+  @moduledoc false
   defstruct [
     :file,
     :annotations,
