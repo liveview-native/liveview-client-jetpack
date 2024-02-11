@@ -1,4 +1,5 @@
 defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
+  @moduledoc false
   import NimbleParsec
   import LiveViewNative.Jetpack.RulesParser.Tokens
   import LiveViewNative.Jetpack.RulesParser.Expressions

@@ -1,4 +1,5 @@
 defmodule LiveViewNative.Jetpack.RulesParser.Parser do
+  @moduledoc false
   import NimbleParsec
   alias LiveViewNative.Jetpack.RulesParser.Parser.Context
   alias LiveViewNative.Jetpack.RulesParser.Parser.Error

@@ -1,4 +1,5 @@
 defmodule LiveViewNative.Jetpack.RulesParser do
+  @moduledoc false
   alias LiveViewNative.Jetpack.RulesParser.Modifiers
   alias LiveViewNative.Jetpack.RulesParser.Parser
 

@@ -1,4 +1,5 @@
 defmodule LiveViewNative.Jetpack.RulesParser.Parser.Error do
+  @moduledoc false
   alias LiveViewNative.Jetpack.RulesParser.Parser.Context
 
   defstruct([
