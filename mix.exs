@@ -2,28 +2,31 @@ defmodule LiveViewNative.Jetpack.MixProject do
   use Mix.Project
 
   @version "0.3.0-alpha.3"
+  @source_url "https://github.com/liveview-native/liveview-client-jetpack"
 
   def project do
     [
       app: :live_view_native_jetpack,
       version: @version,
-      elixir: "~> 1.13",
-      description: "LiveView Native platform for Jetpack Compose",
-      elixirc_paths: elixirc_paths(Mix.env()),
-      package: package(),
+      elixir: "~> 1.15",
+      description: description(),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package(),
+      elixirc_paths: elixirc_paths(Mix.env()),
+      docs: docs()
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
   def application do
     [
       extra_applications: [:logger]
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
+
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
@@ -35,24 +38,29 @@ defmodule LiveViewNative.Jetpack.MixProject do
       # {:live_view_native_test, path: "../live_view_native_test", only: :test, override: true},
       {:live_view_native_test, github: "liveview-native/live_view_native_test", tag: "0.3.0-alpha.3", only: :test},
       {:jason, "~> 1.2"},
-      {:nimble_parsec, "~> 1.3"},
+      {:nimble_parsec, "~> 1.3"}
     ]
   end
 
-  @source_url "https://github.com/liveview-native/liveview-client-jetpack"
+  defp docs do
+    [
+      extras: ["README.md"],
+      main: "readme",
+      source_url: @source_url,
+      source_ref: "v#{@version}"
+    ]
+  end
 
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_), do: ["lib"]
+  defp description, do: "LiveView Native Jetpack Compose client"
 
-  # Hex package configuration
   defp package do
     %{
-      maintainers: ["DockYard"],
+      maintainers: ["Brian Cardarella"],
       licenses: ["MIT"],
       links: %{
-        "GitHub" => @source_url
-      },
-      source_url: @source_url
+        "GitHub" => @source_url,
+        "Built by DockYard, Expert Elixir & Phoenix Consultants" => "https://dockyard.com/phoenix-consulting"
+      }
     }
   end
 end
