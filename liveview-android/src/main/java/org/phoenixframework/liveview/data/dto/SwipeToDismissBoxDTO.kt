@@ -11,6 +11,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrEnableDismissFromE
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnableDismissFromStartToEnd
 import org.phoenixframework.liveview.data.constants.Attrs.attrInitialValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrOnValueChanged
+import org.phoenixframework.liveview.data.constants.SwipeToDismissBoxValues
 import org.phoenixframework.liveview.data.constants.Templates.templateBackgroundContent
 import org.phoenixframework.liveview.data.constants.Templates.templateContent
 import org.phoenixframework.liveview.data.core.CoreAttribute
@@ -25,12 +26,12 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * A composable that can be dismissed by swiping left or right.
  *
  * ```
- * <SwipeToDismissBox on-value-changed="onSwipeChanged">
+ * <SwipeToDismissBox onValueChanged="onSwipeChanged">
  *   <ListItem template="content">
  *     <Text template="headlineContent">Headline</Text>
  *   </ListItem>
  *   <Box background="system-red" padding="12" template="backgroundContent" width="fill">
- *     <Icon image-vector="filled:Delete" />
+ *     <Icon imageVector="filled:Delete" />
  *   </Box>
  * </SwipeToDismissBox>
  * ```
@@ -106,18 +107,18 @@ internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
             private set
 
         /**
-         * The initial value of the state. The supported values are: `StartToEnd`, `EndToStart`,
-         * and `Settled` (default).
+         * The initial value of the state. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.SwipeToDismissBoxValues].
          * ```
-         * <SwipeToDismissBox initial-value="Settle">...</SwipeToDismissBox>
+         * <SwipeToDismissBox initialValue="Settle">...</SwipeToDismissBox>
          * ```
          * @param value initial value of the swipe to dismiss.
          */
         fun initialValue(value: String) = apply {
             this.initialValue = when (value) {
-                "StartToEnd" -> SwipeToDismissBoxValue.StartToEnd
-                "EndToStart" -> SwipeToDismissBoxValue.EndToStart
-                "Settled" -> SwipeToDismissBoxValue.Settled
+                SwipeToDismissBoxValues.startToEnd -> SwipeToDismissBoxValue.StartToEnd
+                SwipeToDismissBoxValues.endToStart -> SwipeToDismissBoxValue.EndToStart
+                SwipeToDismissBoxValues.settled -> SwipeToDismissBoxValue.Settled
                 else -> null
             }
         }
@@ -125,7 +126,7 @@ internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
         /**
          * Whether SwipeToDismissBox can be dismissed from start to end.
          * ```
-         * <SwipeToDismissBox enable-dismiss-from-start-to-end="false">...</SwipeToDismissBox>
+         * <SwipeToDismissBox enableDismissFromStartToEnd="false">...</SwipeToDismissBox>
          * ```
          * @param value true if the SwipeToDismissBox can be dismissed from start to end, false
          * otherwise.
@@ -137,7 +138,7 @@ internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
         /**
          * Whether SwipeToDismissBox can be dismissed from end to start.
          * ```
-         * <SwipeToDismissBox enable-dismiss-from-end-to-start="false">...</SwipeToDismissBox>
+         * <SwipeToDismissBox enableDismissFromEndToStart="false">...</SwipeToDismissBox>
          * ```
          * @param value true if the SwipeToDismissBox can be dismissed from end to start, false
          * otherwise.
@@ -149,7 +150,7 @@ internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
         /**
          * Callback called when the SwipeToDismissBox is dismissed.
          * ```
-         * <SwipeToDismissBox on-value-changed="callback">...</SwipeToDismissBox>
+         * <SwipeToDismissBox onValueChanged="callback">...</SwipeToDismissBox>
          * ```
          * @param value callback function name called in the server when the swipe is dismissed.
          */

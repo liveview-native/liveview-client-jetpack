@@ -71,11 +71,11 @@ internal class RowDTO private constructor(builder: Builder) :
          * The horizontal arrangement of the Row's children
          *
          * ```
-         * <Row horizontal-arrangement="spaceAround" >...</Row>
+         * <Row horizontalArrangement="spaceAround" >...</Row>
          * ```
-         * @param horizontalArrangement the horizontal arrangement of the row's children. The
-         * supported values are: `start`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `end`,
-         * and `center`. An int value is also supported, which will be used to determine the space.
+         * @param horizontalArrangement the horizontal arrangement of the row's children. See the
+         * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
+         * An int value is also supported, which will be used to determine the space.
          */
         fun horizontalArrangement(horizontalArrangement: String) = apply {
             if (horizontalArrangement.isNotEmpty()) {
@@ -87,10 +87,10 @@ internal class RowDTO private constructor(builder: Builder) :
          * The vertical alignment of the Row's children
          *
          * ```
-         * <Row vertical-alignment="center" >...</Row>
+         * <Row verticalAlignment="center" >...</Row>
          * ```
-         * @param verticalAlignment the vertical alignment of the row's children. The
-         * supported values are: `top`, `center`, and `bottom`.
+         * @param verticalAlignment the vertical alignment of the row's children. See the
+         * supported values at [org.phoenixframework.liveview.data.constants.VerticalAlignmentValues].
          */
         fun verticalAlignment(verticalAlignment: String) = apply {
             if (verticalAlignment.isNotEmpty()) {

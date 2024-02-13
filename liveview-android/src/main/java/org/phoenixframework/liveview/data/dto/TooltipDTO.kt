@@ -16,7 +16,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
+import org.phoenixframework.liveview.data.constants.Attrs.attrCaretHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrCaretProperties
+import org.phoenixframework.liveview.data.constants.Attrs.attrCaretWidth
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
@@ -30,6 +32,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -52,7 +55,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *   <ElevatedCard template="content"><Text padding="16">Elevated Card</Text></ElevatedCard>
  * </TooltipBox>
  *
- * <TooltipBox initial-is-visible="true" is-persistent="true">
+ * <TooltipBox initialIsVisible="true" isPersistent="true">
  *   <RichTooltip template="tooltip">
  *     <Text template="title">Title</Text>
  *     <Text template="text">Text</Text>
@@ -82,7 +85,7 @@ internal class TooltipDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         when (composableNode?.node?.tag) {
-            TooltipBoxDtoFactory.plainTooltip -> {
+            ComposableTypes.plainTooltip -> {
                 if (scope is CaretScope) {
                     scope.PlainTooltip(
                         modifier = modifier,
@@ -102,7 +105,7 @@ internal class TooltipDTO private constructor(builder: Builder) :
                 }
             }
 
-            TooltipBoxDtoFactory.richTooltip -> {
+            ComposableTypes.richTooltip -> {
                 val title = remember(composableNode.children) {
                     composableNode.children.find { it.node?.template == templateTitle }
                 }
@@ -176,7 +179,7 @@ internal class TooltipDTO private constructor(builder: Builder) :
         /**
          * RichTooltipColors that will be applied to the tooltip's container and content.
          * ```
-         * <RichTooltip colors="{'containerColor': 'system-red', 'content-color': 'system-white'}">
+         * <RichTooltip colors="{'containerColor': 'system-red', 'contentColor': 'system-white'}">
          *   ...</RichTooltip>
          * ```
          * @param colors an JSON formatted string, containing the rich tooltip colors. The color
@@ -194,15 +197,15 @@ internal class TooltipDTO private constructor(builder: Builder) :
          * specific dimension.
          * ```
          * <PlainTooltip
-         *   caret-properties="{'caretHeight': '100', 'caretWidth': '200'}">...</PlainTooltip>
+         *   caretProperties="{'caretHeight': '100', 'caretWidth': '200'}">...</PlainTooltip>
          * ```
          */
         fun caretProperties(value: String) = apply {
             try {
                 JsonParser.parse<Map<String, String>>(value)?.let { map ->
                     this.caretProperties = CaretProperties(
-                        caretHeight = map["caretHeight"].toString().toInt().dp,
-                        caretWidth = map["caretWidth"].toString().toInt().dp,
+                        caretHeight = map[attrCaretHeight].toString().toInt().dp,
+                        caretWidth = map[attrCaretWidth].toString().toInt().dp,
                     )
                 }
             } catch (_: Exception) {
@@ -212,9 +215,10 @@ internal class TooltipDTO private constructor(builder: Builder) :
         /**
          * Color used for the background of this PlainTooltip.
          * ```
-         * <PlainTooltip container-color="system-red">...</PlainTooltip>
+         * <PlainTooltip containerColor="system-red">...</PlainTooltip>
          * ```
-         * @param color container color in AARRGGBB format or one of the system colors.
+         * @param color container color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun containerColor(color: String) = apply {
             if (color.isNotEmpty()) {
@@ -225,9 +229,10 @@ internal class TooltipDTO private constructor(builder: Builder) :
         /**
          * Preferred color for content inside this PlainTooltip.
          * ```
-         * <PlainTooltip container-color="system-white">...</PlainTooltip>
+         * <PlainTooltip containerColor="system-white">...</PlainTooltip>
          * ```
-         * @param color content color in AARRGGBB format or one of the system colors.
+         * @param color content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun contentColor(color: String) = apply {
             if (color.isNotEmpty()) {
@@ -238,7 +243,7 @@ internal class TooltipDTO private constructor(builder: Builder) :
         /**
          * The shadow elevation of the tooltip.
          * ```
-         * <PlainTooltip shadow-elevation="12">...</PlainTooltip>
+         * <PlainTooltip shadowElevation="12">...</PlainTooltip>
          * ```
          * @param shadowElevation int value indicating the shadow elevation.
          */
@@ -253,8 +258,9 @@ internal class TooltipDTO private constructor(builder: Builder) :
          * ```
          * <PlainTooltip shape="circle">...</PlainTooltip>
          * ```
-         * @param shape tooltip's shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied for all four corners.
+         * @param shape tooltip's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * representing the curve size applied for all four corners.
          */
         fun shape(shape: String) = apply {
             if (shape.isNotEmpty()) {
@@ -265,7 +271,7 @@ internal class TooltipDTO private constructor(builder: Builder) :
         /**
          * the tonal elevation of the tooltip.
          * ```
-         * <PlainTooltip tonal-elevation="24">...</PlainTooltip>
+         * <PlainTooltip tonalElevation="24">...</PlainTooltip>
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */

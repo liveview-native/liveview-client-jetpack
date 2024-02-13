@@ -29,14 +29,14 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * Material Design fixed tabs and scrollable tabs.
  * In order to create fixed tabs use the `TabRow` tag.
  * ```
- * <TabRow selected-tab-index="0">
+ * <TabRow selectedTabIndex="0">
  *   <Tab ...>
  *   <Tab ...>
  * </TabRow>
  * ```
  * For scrollable tabs, use `ScrollableTabRow`.
  * ```
- * <ScrollableTabRow selected-tab-index="0">
+ * <ScrollableTabRow selectedTabIndex="0">
  *   <Tab ...>
  *   <Tab ...>
  * </ScrollableTabRow>
@@ -121,7 +121,7 @@ internal class TabRowDTO private constructor(builder: Builder) :
         /**
          * The index of the currently selected tab.
          * ```
-         * <TabRow selected-tab-index="0" />
+         * <TabRow selectedTabIndex="0" />
          * ```
          * @param index current selected tab index.
          */
@@ -132,9 +132,10 @@ internal class TabRowDTO private constructor(builder: Builder) :
         /**
          * The color used for the background of this tab row.
          * ```
-         * <TabRow container-color="#FFFFFFFF" />
+         * <TabRow containerColor="#FFFFFFFF" />
          * ```
-         * @param containerColor the background color in AARRGGBB format.
+         * @param containerColor the background color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun containerColor(containerColor: String) = apply {
             this.containerColor = containerColor.toColor()
@@ -143,9 +144,10 @@ internal class TabRowDTO private constructor(builder: Builder) :
         /**
          * The preferred color for content inside this tab row.
          * ```
-         * <TabRow content-color="#FF000000" />
+         * <TabRow contentColor="#FF000000" />
          * ```
-         * @param contentColor the content color in AARRGGBB format.
+         * @param contentColor the content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun contentColor(contentColor: String) = apply {
             this.contentColor = contentColor.toColor()
@@ -155,7 +157,7 @@ internal class TabRowDTO private constructor(builder: Builder) :
          * The padding between the starting and ending edge of the scrollable tab row, and the tabs
          * inside the row. This padding helps inform the user that this tab row can be scrolled.
          * ```
-         * <TabRow selected-tab-index="0" />
+         * <TabRow selectedTabIndex="0" />
          * ```
          * @param padding current selected tab index.
          */

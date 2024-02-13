@@ -82,24 +82,24 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  * <FlowRow>
  *   <AssistChip phx-click="chipAction">
- *     <Icon image-vector="filled:Check" template="leadingIcon"/>
- *     <Icon image-vector="filled:CheckCircleOutline" template="trailingIcon"/>
+ *     <Icon imageVector="filled:Check" template="leadingIcon"/>
+ *     <Icon imageVector="filled:CheckCircleOutline" template="trailingIcon"/>
  *     <Text template="label">AssistChip</Text>
  *   </AssistChip>
  *   <SuggestionChip phx-click="">`
- *     <Icon image-vector="filled:Check" template="leadingIcon"/>
- *     <Icon image-vector="filled:CheckCircleOutline" template="trailingIcon"/>
+ *     <Icon imageVector="filled:Check" template="leadingIcon"/>
+ *     <Icon imageVector="filled:CheckCircleOutline" template="trailingIcon"/>
  *     <Text template="label">Filter Chip 1</Text>
  *   </SuggestionChip>
  *   <FilterChip phx-click="" selected="true">
- *     <Icon image-vector="filled:Check" template="leadingIcon"/>
- *     <Icon image-vector="filled:CheckCircleOutline" template="trailingIcon"/>
+ *     <Icon imageVector="filled:Check" template="leadingIcon"/>
+ *     <Icon imageVector="filled:CheckCircleOutline" template="trailingIcon"/>
  *     <Text template="label">Filter Chip 1</Text>
  *   </FilterChip>
  *   <InputChip phx-click="" selected="true">
- *     <Icon image-vector="filled:Check" template="leadingIcon"/>
- *     <Icon image-vector="filled:CheckCircleOutline" template="trailingIcon"/>
- *     <Icon image-vector="sharp:PersonAdd" template="avatar"/>
+ *     <Icon imageVector="filled:Check" template="leadingIcon"/>
+ *     <Icon imageVector="filled:CheckCircleOutline" template="trailingIcon"/>
+ *     <Icon imageVector="sharp:PersonAdd" template="avatar"/>
  *     <Text template="label">Filter Chip 1</Text>
  *   </InputChip>
  * </FlowRow>
@@ -686,8 +686,9 @@ internal class ChipDTO private constructor(builder: Builder) :
          * <AssistChip border="{'width': '2', 'color': '#FF0000FF'}">...</AssistChip>
          * ```
          * @param border a JSON representing the border object. The `width` key is an int value
-         * representing chip border's width content. The `color` key must be specified as a string
-         * in the AARRGGBB format.
+         * representing chip border's width content. The color value must be specified as a
+         * string in the AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun border(border: String) = apply {
             if (border.isNotEmpty()) {
@@ -706,7 +707,9 @@ internal class ChipDTO private constructor(builder: Builder) :
          * @param colors an JSON formatted string, containing the chip colors. The color keys
          * supported are: `containerColor`, `labelColor`, `leadingIconContentColor`,
          * `trailingIconContentColor`, `disabledContainerColor`, `disabledLabelColor`,
-         * `disabledLeadingIconContentColor`, and `disabledTrailingIconContentColor`.
+         * `disabledLeadingIconContentColor`, and `disabledTrailingIconContentColor`. The color
+         * value must be specified as a string in the AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
@@ -772,7 +775,8 @@ internal class ChipDTO private constructor(builder: Builder) :
          * ```
          * <AssistChip shape="16" >...</AssistChip>
          * ```
-         * @param shape chip's shape. Supported values are: `circle`, `rectangle`, or an integer
+         * @param shape chip's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
          * representing the curve size applied for all four corners.
          */
         fun shape(shape: String) = apply {

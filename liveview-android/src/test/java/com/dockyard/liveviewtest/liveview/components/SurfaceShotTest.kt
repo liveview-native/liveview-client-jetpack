@@ -11,6 +11,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
+import org.phoenixframework.liveview.data.constants.Attrs.attrColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrShadowElevation
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.surface
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class SurfaceShotTest : LiveViewComposableTest() {
     @Test
@@ -64,33 +78,33 @@ class SurfaceShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                  <Surface>
-                    <Text padding="16">Surface 1</Text>
-                  </Surface>
-                  <Surface color="system-blue">
-                    <Text padding="16">Surface 2</Text>
-                  </Surface>
-                  <Surface color="system-blue" content-color="system-yellow">
-                    <Text padding="16">Surface 3</Text>
-                  </Surface>
-                  <Surface color="system-blue" content-color="system-yellow" shape="12">
-                    <Text padding="16">Surface 4</Text>
-                  </Surface>    
-                  <Surface color="system-blue" content-color="system-yellow" shape="12" 
-                    border="{'width': '2', 'color': 'system-green'}">
-                    <Text padding="16">Surface 5</Text>
-                  </Surface>     
-                  <Surface color="system-blue" content-color="system-yellow" shape="12" 
-                    border="{'width': '2', 'color': 'system-green'}" tonal-elevation="4">
-                    <Text padding="16">Surface 6</Text>
-                  </Surface> 
-                  <Surface color="system-blue" content-color="system-yellow" shape="12" 
-                    border="{'width': '2', 'color': 'system-green'}" tonal-elevation="4"
-                    shadow-elevation="8">
-                    <Text padding="16">Surface 7</Text>
-                  </Surface>                                                                                                
-                </Column>
+                <$column>
+                  <$surface>
+                    <$text $attrPadding="16">Surface 1</$text>
+                  </$surface>
+                  <$surface $attrColor="$Blue">
+                    <$text $attrPadding="16">Surface 2</$text>
+                  </$surface>
+                  <$surface $attrColor="$Blue" $attrContentColor="$Yellow">
+                    <$text $attrPadding="16">Surface 3</$text>
+                  </$surface>
+                  <$surface $attrColor="$Blue" $attrContentColor="$Yellow" $attrShape="12">
+                    <$text $attrPadding="16">Surface 4</$text>
+                  </$surface>    
+                  <$surface $attrColor="$Blue" $attrContentColor="$Yellow" $attrShape="12" 
+                    $attrBorder="{'$attrWidth': '2', '$attrColor': '$Green'}">
+                    <$text $attrPadding="16">Surface 5</$text>
+                  </$surface>     
+                  <$surface $attrColor="$Blue" $attrContentColor="$Yellow" $attrShape="12" 
+                    $attrBorder="{'$attrWidth': '2', '$attrColor': '$Green'}" $attrTonalElevation="4">
+                    <$text $attrPadding="16">Surface 6</$text>
+                  </$surface> 
+                  <$surface $attrColor="$Blue" $attrContentColor="$Yellow" $attrShape="12" 
+                    $attrBorder="{'$attrWidth': '2', '$attrColor': '$Green'}" $attrTonalElevation="4"
+                    $attrShadowElevation="8">
+                    <$text $attrPadding="16">Surface 7</$text>
+                  </$surface>                                                                                                
+                </$column>
                 """
         )
     }

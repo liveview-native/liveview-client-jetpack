@@ -12,6 +12,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.AlignmentValues
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
+import org.phoenixframework.liveview.data.constants.Attrs.attrResource
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ContentScaleValues
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.image
 import org.phoenixframework.liveview.test.R
 
 class ImageShotTest : LiveViewComposableTest() {
@@ -25,7 +36,7 @@ class ImageShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <Image resource="android_icon" />
+                <$image $attrResource="android_icon" />
                 """
         )
     }
@@ -63,11 +74,14 @@ class ImageShotTest : LiveViewComposableTest() {
 
             },
             template = """
-                <Column size="fill">
-                    <Image resource="android_icon" weight="1" width="fill" alignment="topStart"/>
-                    <Image resource="android_icon" weight="1" width="fill" alignment="topCenter"/>
-                    <Image resource="android_icon" weight="1" width="fill" alignment="topEnd"/>
-                </Column>
+                <$column $attrSize="fill">
+                  <$image $attrResource="android_icon" $attrWeight="1" $attrWidth="$fill" 
+                    $attrAlignment="${AlignmentValues.topStart}"/>
+                  <$image $attrResource="android_icon" $attrWeight="1" $attrWidth="$fill" 
+                    $attrAlignment="${AlignmentValues.topCenter}"/>
+                  <$image $attrResource="android_icon" $attrWeight="1" $attrWidth="$fill" 
+                    $attrAlignment="${AlignmentValues.topEnd}"/>
+                </$column>
                 """
         )
     }
@@ -98,11 +112,14 @@ class ImageShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                    <Image resource="narwin" size="200" content-scale="crop"/>
-                    <Image resource="narwin" size="200" content-scale="fit"/>
-                    <Image resource="narwin" size="200" content-scale="inside"/>
-                </Column>                
+                <$column>
+                  <$image $attrResource="narwin" $attrSize="200" 
+                    $attrContentScale="${ContentScaleValues.crop}"/>
+                  <$image $attrResource="narwin" $attrSize="200" 
+                    $attrContentScale="${ContentScaleValues.fit}"/>
+                  <$image $attrResource="narwin" $attrSize="200" 
+                    $attrContentScale="${ContentScaleValues.inside}"/>
+                </$column>                
                 """
         )
     }
@@ -133,11 +150,14 @@ class ImageShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                    <Image resource="narwin" size="200" content-scale="fillHeight"/>
-                    <Image resource="narwin" size="200" content-scale="fillWidth"/>
-                    <Image resource="narwin" size="200" content-scale="fillBounds"/>
-                </Column>                
+                <$column>
+                  <$image $attrResource="narwin" $attrSize="200" 
+                    $attrContentScale="${ContentScaleValues.fillHeight}"/>
+                  <$image $attrResource="narwin" $attrSize="200" 
+                    $attrContentScale="${ContentScaleValues.fillWidth}"/>
+                  <$image $attrResource="narwin" $attrSize="200" 
+                    $attrContentScale="${ContentScaleValues.fillBounds}"/>
+                </$column>                
                 """
         )
     }

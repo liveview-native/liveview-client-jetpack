@@ -92,6 +92,9 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocuse
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedSupportingTextColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedTextColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ImeActionValues
+import org.phoenixframework.liveview.data.constants.KeyboardCapitalizationValues
+import org.phoenixframework.liveview.data.constants.KeyboardTypeValues
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
 import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
 import org.phoenixframework.liveview.data.constants.Templates.templatePlaceholder
@@ -99,6 +102,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templatePrefix
 import org.phoenixframework.liveview.data.constants.Templates.templateSuffix
 import org.phoenixframework.liveview.data.constants.Templates.templateSupportingText
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
+import org.phoenixframework.liveview.data.constants.VisualTransformationValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
@@ -567,13 +571,11 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
 
         /**
          * The style to be applied to the input text. Use the material design text styles.
-         * M3 has five distinct type styles: Display, headline, title, body, and label. These styles
-         * can be used in 4 sizes: small, medium and large. So you must use style+size (e.g.:
-         * `displayLarge`, `headlineMedium`, `titleSmall`, etc.).
+         * See the available values at [org.phoenixframework.liveview.data.constants.TextStyleValues].
          * ```
          * <TextField style="labelSmall" />
          * ```
-         * @param textStyle style to be applied to the text field
+         * @param textStyle style to be applied to the text field.
          */
         fun textStyle(textStyle: String) = apply {
             this.textStyle = textStyle
@@ -583,7 +585,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          * Indicates if the text field's current value is in error state. If set to true, the label,
          * bottom indicator and trailing icon by default will be displayed in error color.
          * ```
-         * <TextField is-error="true" />
+         * <TextField isError="true" />
          * ```
          * @param isError true if the text field is in error state, false otherwise.
          */
@@ -597,7 +599,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          * the ImeAction. Note that maxLines parameter will be ignored as the maxLines attribute
          * will be automatically set to 1.
          * ```
-         * <TextField single-line="true" />
+         * <TextField singleLine="true" />
          * ```
          * @param singleLine true if the text field is in error state, false otherwise.
          */
@@ -610,7 +612,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          * The maximum height in terms of maximum number of visible lines. It is required that
          * 1 <= minLines <= maxLines. This parameter is ignored when singleLine is true.
          * ```
-         * <TextField max-lines="3" />
+         * <TextField maxLines="3" />
          * ```
          * @param maxLines maximum number of visible lines.
          */
@@ -622,7 +624,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          *  The minimum height in terms of minimum number of visible lines. It is required that
          *  1 <= minLines <= maxLines. This parameter is ignored when singleLine is true.
          * ```
-         * <TextField min-lines="2" />
+         * <TextField minLines="2" />
          * ```
          * @param minLines minimum number of visible lines.
          */
@@ -635,8 +637,9 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          * ```
          * <TextField shape="rectangle" />
          * ```
-         * @param shape text field container's shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied to all four corners.
+         * @param shape text field container's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * representing the curve size applied to all four corners.
          */
         fun shape(shape: String) = apply {
             this.shape = shapeFromString(shape)
@@ -647,14 +650,16 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          * "password" to create a password text field. By default, no visual transformation is
          * applied.
          * ```
-         * <TextField visual-transformation="password" />
+         * <TextField visualTransformation="password" />
          * ```
          * @param transformation `password` for password text fields, or `none` for a regular one
          * (default).
          */
         fun visualTransformation(transformation: String) = apply {
             when (transformation) {
-                "password" -> this.visualTransformation = PasswordVisualTransformation()
+                VisualTransformationValues.password ->
+                    this.visualTransformation = PasswordVisualTransformation()
+
                 else -> VisualTransformation.None
             }
         }
@@ -699,16 +704,19 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          * ```
          * <TextField capitalization="words" />
          * ```
-         * @param capitalization capitalization type. supported values are: `characters`, `words`,
-         * `sentences`, and `none` (default).
+         * @param capitalization capitalization type. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.KeyboardCapitalizationValues].
          */
         fun capitalization(capitalization: String) = apply {
             keyboardOptions = when (capitalization) {
-                "characters" -> keyboardOptions.copy(capitalization = KeyboardCapitalization.Characters)
+                KeyboardCapitalizationValues.characters ->
+                    keyboardOptions.copy(capitalization = KeyboardCapitalization.Characters)
 
-                "words" -> keyboardOptions.copy(capitalization = KeyboardCapitalization.Words)
+                KeyboardCapitalizationValues.words ->
+                    keyboardOptions.copy(capitalization = KeyboardCapitalization.Words)
 
-                "sentences" -> keyboardOptions.copy(capitalization = KeyboardCapitalization.Sentences)
+                KeyboardCapitalizationValues.sentences ->
+                    keyboardOptions.copy(capitalization = KeyboardCapitalization.Sentences)
 
                 else -> keyboardOptions.copy(capitalization = KeyboardCapitalization.None)
             }
@@ -721,7 +729,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          * Most of keyboard implementations ignore this value for KeyboardTypes such as
          * KeyboardType.Text.
          * ```
-         * <TextField auto-correct="true" />
+         * <TextField autoCorrect="true" />
          * ```
          * @param autoCorrect true to enable auto correct, false otherwise.
          */
@@ -734,21 +742,21 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          * keyboard and shows corresponding keyboard but this is not guaranteed. For example, some
          * keyboards may send non-ASCII character even if you set KeyboardType.Ascii.
          * ```
-         * <TextField keyboard-type="email" />
+         * <TextField keyboardType="email" />
          * ```
-         * @param keyboardType the keyboard type. The supported values are: `ascii`, `number`,
-         * `phone`, `uri`, `email`, `password`, `numberPassword`, `decimal`, and `text` (default)
+         * @param keyboardType the keyboard type. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.KeyboardTypeValues]
          */
         fun keyboardType(keyboardType: String) = apply {
             keyboardOptions = when (keyboardType) {
-                "ascii" -> keyboardOptions.copy(keyboardType = KeyboardType.Ascii)
-                "number" -> keyboardOptions.copy(keyboardType = KeyboardType.Number)
-                "phone" -> keyboardOptions.copy(keyboardType = KeyboardType.Phone)
-                "uri" -> keyboardOptions.copy(keyboardType = KeyboardType.Uri)
-                "email" -> keyboardOptions.copy(keyboardType = KeyboardType.Email)
-                "password" -> keyboardOptions.copy(keyboardType = KeyboardType.Password)
-                "numberPassword" -> keyboardOptions.copy(keyboardType = KeyboardType.NumberPassword)
-                "decimal" -> keyboardOptions.copy(keyboardType = KeyboardType.Decimal)
+                KeyboardTypeValues.ascii -> keyboardOptions.copy(keyboardType = KeyboardType.Ascii)
+                KeyboardTypeValues.number -> keyboardOptions.copy(keyboardType = KeyboardType.Number)
+                KeyboardTypeValues.phone -> keyboardOptions.copy(keyboardType = KeyboardType.Phone)
+                KeyboardTypeValues.uri -> keyboardOptions.copy(keyboardType = KeyboardType.Uri)
+                KeyboardTypeValues.email -> keyboardOptions.copy(keyboardType = KeyboardType.Email)
+                KeyboardTypeValues.password -> keyboardOptions.copy(keyboardType = KeyboardType.Password)
+                KeyboardTypeValues.numberPassword -> keyboardOptions.copy(keyboardType = KeyboardType.NumberPassword)
+                KeyboardTypeValues.decimal -> keyboardOptions.copy(keyboardType = KeyboardType.Decimal)
                 else -> keyboardOptions.copy(keyboardType = KeyboardType.Text)
             }
         }
@@ -759,20 +767,20 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          * ImeOptions.singleLine is false, the keyboard might show return key rather than the
          * action requested here.
          * ```
-         * <TextField ime-action="search" />
+         * <TextField imeAction="search" />
          * ```
-         * @param imeAction IME action. Supported values are: `none`, `go`, `search`, `previous`,
-         * `next`, `done`, and `default` (default).
+         * @param imeAction IME action. See supported values at
+         * [org.phoenixframework.liveview.data.constants.ImeActionValues].
          */
         fun imeAction(imeAction: String) = apply {
             keyboardOptions = when (imeAction) {
-                "none" -> keyboardOptions.copy(imeAction = ImeAction.None)
-                "go" -> keyboardOptions.copy(imeAction = ImeAction.Go)
-                "search" -> keyboardOptions.copy(imeAction = ImeAction.Search)
-                "send" -> keyboardOptions.copy(imeAction = ImeAction.Send)
-                "previous" -> keyboardOptions.copy(imeAction = ImeAction.Previous)
-                "next" -> keyboardOptions.copy(imeAction = ImeAction.Next)
-                "done" -> keyboardOptions.copy(imeAction = ImeAction.Done)
+                ImeActionValues.none -> keyboardOptions.copy(imeAction = ImeAction.None)
+                ImeActionValues.go -> keyboardOptions.copy(imeAction = ImeAction.Go)
+                ImeActionValues.search -> keyboardOptions.copy(imeAction = ImeAction.Search)
+                ImeActionValues.send -> keyboardOptions.copy(imeAction = ImeAction.Send)
+                ImeActionValues.previous -> keyboardOptions.copy(imeAction = ImeAction.Previous)
+                ImeActionValues.next -> keyboardOptions.copy(imeAction = ImeAction.Next)
+                ImeActionValues.done -> keyboardOptions.copy(imeAction = ImeAction.Done)
                 else -> keyboardOptions.copy(imeAction = ImeAction.Default)
             }
         }

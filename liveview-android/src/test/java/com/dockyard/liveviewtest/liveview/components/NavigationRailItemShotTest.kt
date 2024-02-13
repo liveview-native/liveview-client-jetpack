@@ -13,6 +13,31 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlwaysShowLabel
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrIndicatorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedTextColor
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Cyan
+import org.phoenixframework.liveview.data.constants.SystemColorValues.DarkGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Gray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.LightGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.White
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationRail
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationRailItem
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class NavigationRailItemShotTest : LiveViewComposableTest() {
     @Test
@@ -53,20 +78,20 @@ class NavigationRailItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <NavigationRail>
-                  <NavigationRailItem selected="true">
-                    <Icon image-vector="filled:Favorite" template="icon"/>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="false">
-                    <Icon image-vector="filled:Home" template="icon"/>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="true" enabled="false">
-                    <Icon image-vector="filled:Person" template="icon"/>
-                  </NavigationRailItem>   
-                  <NavigationRailItem selected="false" enabled="false">
-                    <Icon image-vector="filled:Settings" template="icon"/>
-                  </NavigationRailItem>                                                      
-                </NavigationRail>
+                <$navigationRail>
+                  <$navigationRailItem $attrSelected="true">
+                    <$icon $attrImageVector="filled:Favorite" $attrTemplate="$templateIcon"/>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="false">
+                    <$icon $attrImageVector="filled:Home" $attrTemplate="$templateIcon"/>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="true" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Person" $attrTemplate="$templateIcon"/>
+                  </$navigationRailItem>   
+                  <$navigationRailItem $attrSelected="false" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Settings" $attrTemplate="$templateIcon"/>
+                  </$navigationRailItem>                                                      
+                </$navigationRail>
                 """
         )
     }
@@ -121,24 +146,24 @@ class NavigationRailItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <NavigationRail>
-                  <NavigationRailItem selected="true">
-                    <Icon image-vector="filled:Favorite" template="icon"/>
-                    <Text template="label">Favorites</Text>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="false">
-                    <Icon image-vector="filled:Home" template="icon"/>
-                    <Text template="label">Home</Text>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="true" enabled="false">
-                    <Icon image-vector="filled:Person" template="icon"/>
-                    <Text template="label">Person</Text>
-                  </NavigationRailItem>   
-                  <NavigationRailItem selected="false" enabled="false">
-                    <Icon image-vector="filled:Settings" template="icon"/>
-                    <Text template="label">Settings</Text>
-                  </NavigationRailItem>                                                      
-                </NavigationRail>
+                <$navigationRail>
+                  <$navigationRailItem $attrSelected="true">
+                    <$icon $attrImageVector="filled:Favorite" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Favorites</$text>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="false">
+                    <$icon $attrImageVector="filled:Home" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Home</$text>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="true" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Person" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Person</$text>
+                  </$navigationRailItem>   
+                  <$navigationRailItem $attrSelected="false" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Settings" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Settings</$text>
+                  </$navigationRailItem>                                                      
+                </$navigationRail>
                 """
         )
     }
@@ -197,24 +222,24 @@ class NavigationRailItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <NavigationRail>
-                  <NavigationRailItem selected="true" always-show-label="false">
-                    <Icon image-vector="filled:Favorite" template="icon"/>
-                    <Text template="label">Favorites</Text>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="false" always-show-label="false">
-                    <Icon image-vector="filled:Home" template="icon"/>
-                    <Text template="label">Home</Text>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="true" enabled="false" always-show-label="false">
-                    <Icon image-vector="filled:Person" template="icon"/>
-                    <Text template="label">Person</Text>
-                  </NavigationRailItem>   
-                  <NavigationRailItem selected="false" enabled="false" always-show-label="false">
-                    <Icon image-vector="filled:Settings" template="icon"/>
-                    <Text template="label">Settings</Text>
-                  </NavigationRailItem>                                                      
-                </NavigationRail>
+                <$navigationRail>
+                  <$navigationRailItem $attrSelected="true" $attrAlwaysShowLabel="false">
+                    <$icon $attrImageVector="filled:Favorite" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Favorites</$text>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="false" $attrAlwaysShowLabel="false">
+                    <$icon $attrImageVector="filled:Home" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Home</$text>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="true" $attrEnabled="false" $attrAlwaysShowLabel="false">
+                    <$icon $attrImageVector="filled:Person" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Person</$text>
+                  </$navigationRailItem>   
+                  <$navigationRailItem $attrSelected="false" $attrEnabled="false" $attrAlwaysShowLabel="false">
+                    <$icon $attrImageVector="filled:Settings" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Settings</$text>
+                  </$navigationRailItem>                                                      
+                </$navigationRail>
                 """
         )
     }
@@ -223,13 +248,13 @@ class NavigationRailItemShotTest : LiveViewComposableTest() {
     fun navigationRailItemWithCustomColorsTest() {
         val colorsForTemplate = """
             {
-            'selectedIconColor': 'system-white',
-            'selectedTextColor': 'system-yellow',
-            'indicatorColor': 'system-cyan',
-            'unselectedIconColor': 'system-dark-gray',
-            'unselectedTextColor': 'system-gray',
-            'disabledIconColor': 'system-light-gray',
-            'disabledTextColor': 'system-light-gray'
+            '$colorAttrSelectedIconColor': '$White',
+            '$colorAttrSelectedTextColor': '$Yellow',
+            '$colorAttrIndicatorColor': '$Cyan',
+            '$colorAttrUnselectedIconColor': '$DarkGray',
+            '$colorAttrUnselectedTextColor': '$Gray',
+            '$colorAttrDisabledIconColor': '$LightGray',
+            '$colorAttrDisabledTextColor': '$LightGray'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -293,24 +318,24 @@ class NavigationRailItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <NavigationRail>
-                  <NavigationRailItem selected="true" colors="$colorsForTemplate">
-                    <Icon image-vector="filled:Favorite" template="icon"/>
-                    <Text template="label">Favorites</Text>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="false" colors="$colorsForTemplate">
-                    <Icon image-vector="filled:Home" template="icon"/>
-                    <Text template="label">Home</Text>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="true" enabled="false" colors="$colorsForTemplate">
-                    <Icon image-vector="filled:Person" template="icon"/>
-                    <Text template="label">Person</Text>
-                  </NavigationRailItem>   
-                  <NavigationRailItem selected="false" enabled="false" colors="$colorsForTemplate">
-                    <Icon image-vector="filled:Settings" template="icon"/>
-                    <Text template="label">Settings</Text>
-                  </NavigationRailItem>                                                      
-                </NavigationRail>
+                <$navigationRail>
+                  <$navigationRailItem $attrSelected="true" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Favorite" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Favorites</$text>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="false" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Home" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Home</$text>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="true" $attrEnabled="false" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Person" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Person</$text>
+                  </$navigationRailItem>   
+                  <$navigationRailItem $attrSelected="false" $attrEnabled="false" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Settings" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Settings</$text>
+                  </$navigationRailItem>                                                      
+                </$navigationRail>
                 """
         )
     }

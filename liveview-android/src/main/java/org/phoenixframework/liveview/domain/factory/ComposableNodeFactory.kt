@@ -104,12 +104,11 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
             registerComponent(ComposableTypes.elevatedFilterChip, ChipDtoFactory)
             registerComponent(ComposableTypes.elevatedSuggestionChip, ChipDtoFactory)
-            registerComponent(ComposableTypes.extendedFab, FloatingActionButtonDtoFactory)
+            registerComponent(ComposableTypes.extendedFloatingActionButton, FloatingActionButtonDtoFactory)
             registerComponent(
                 ComposableTypes.exposedDropdownMenuBox,
                 ExposedDropdownMenuBoxDtoFactory
             )
-            registerComponent(ComposableTypes.fab, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.filledIconButton, IconButtonDtoFactory)
             registerComponent(ComposableTypes.filledIconToggleButton, IconToggleButtonDtoFactory)
             registerComponent(ComposableTypes.filledTonalButton, ButtonDtoFactory)
@@ -119,6 +118,7 @@ object ComposableNodeFactory {
                 IconToggleButtonDtoFactory
             )
             registerComponent(ComposableTypes.filterChip, ChipDtoFactory)
+            registerComponent(ComposableTypes.floatingActionButton, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.flowColumn, FlowLayoutDtoFactory)
             registerComponent(ComposableTypes.flowRow, FlowLayoutDtoFactory)
             registerComponent(ComposableTypes.horizontalDivider, DividerDtoFactory)
@@ -128,7 +128,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.iconToggleButton, IconToggleButtonDtoFactory)
             registerComponent(ComposableTypes.image, ImageDtoFactory)
             registerComponent(ComposableTypes.inputChip, ChipDtoFactory)
-            registerComponent(ComposableTypes.largeFab, FloatingActionButtonDtoFactory)
+            registerComponent(ComposableTypes.largeFloatingActionButton, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.largeTopAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.lazyColumn, LazyColumnDtoFactory)
             registerComponent(ComposableTypes.lazyHorizontalGrid, LazyGridDtoFactory)
@@ -174,7 +174,7 @@ object ComposableNodeFactory {
                 SegmentedButtonRowDtoFactory
             )
             registerComponent(ComposableTypes.slider, SliderDtoFactory)
-            registerComponent(ComposableTypes.smallFab, FloatingActionButtonDtoFactory)
+            registerComponent(ComposableTypes.smallFloatingActionButton, FloatingActionButtonDtoFactory)
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
             registerComponent(ComposableTypes.suggestionChip, ChipDtoFactory)
             registerComponent(ComposableTypes.surface, SurfaceDtoFactory)

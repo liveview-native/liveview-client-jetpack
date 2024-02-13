@@ -18,6 +18,39 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrInitialSelectedDateMillis
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.Attrs.attrTestTag
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCurrentYearContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrHeadlineContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedDayContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedDayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedYearContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedYearContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSubheadContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTitleContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTodayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTodayDateBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrWeekdayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrYearContentColor
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Black
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.DarkGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Gray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.data.constants.SystemColorValues.White
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.Templates.templateConfirmButton
+import org.phoenixframework.liveview.data.constants.Templates.templateDismissButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.datePicker
+import org.phoenixframework.liveview.domain.base.ComposableTypes.datePickerDialog
+import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.domain.base.ComposableTypes.textButton
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,15 +82,15 @@ class DatePickerDialogShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <DatePickerDialog phx-click="hideDialog" test-tag="$testTag">
-                  <OutlinedButton phx-click="hideDialog" template="confirm">
-                    <Text>Confirm</Text>
-                  </OutlinedButton>
-                  <TextButton phx-click="hideDialog" template="dismiss">
-                    <Text>Dismiss</Text>
-                  </TextButton>
-                  <DatePicker phx-change="selectDate" initial-selected-date-millis="$jun9th2023" />
-                </DatePickerDialog>            
+                <$datePickerDialog $attrTestTag="$testTag">
+                  <$outlinedButton $attrTemplate="$templateConfirmButton">
+                    <$text>Confirm</$text>
+                  </$outlinedButton>
+                  <$textButton $attrTemplate="$templateDismissButton">
+                    <$text>Dismiss</$text>
+                  </$textButton>
+                  <$datePicker $attrInitialSelectedDateMillis="$jun9th2023" />
+                </$datePickerDialog>            
                 """
         )
     }
@@ -89,20 +122,20 @@ class DatePickerDialogShotTest : LiveViewComposableTest() {
         }.timeInMillis
         val colorsForTemplate = """
             {            
-            'containerColor': 'system-yellow',
-            'titleContentColor': 'system-red',
-            'headlineContentColor': 'system-blue',
-            'weekdayContentColor': 'system-yellow',
-            'subheadContentColor': 'system-red',
-            'yearContentColor': 'system-green',
-            'currentYearContentColor': 'system-black',
-            'selectedYearContentColor': 'system-white',
-            'selectedYearContainerColor': 'system-dark-gray',
-            'dayContentColor': 'system-gray',
-            'selectedDayContentColor': 'system-yellow',
-            'selectedDayContainerColor': 'system-red',
-            'todayContentColor': 'system-blue',
-            'todayDateBorderColor': 'system-red'
+            '$colorAttrContainerColor': '$Yellow',
+            '$colorAttrTitleContentColor': '$Red',
+            '$colorAttrHeadlineContentColor': '$Blue',
+            '$colorAttrWeekdayContentColor': '$Yellow',
+            '$colorAttrSubheadContentColor': '$Red',
+            '$colorAttrYearContentColor': '$Green',
+            '$colorAttrCurrentYearContentColor': '$Black',
+            '$colorAttrSelectedYearContentColor': '$White',
+            '$colorAttrSelectedYearContainerColor': '$DarkGray',
+            '$colorAttrDayContentColor': '$Gray',
+            '$colorAttrSelectedDayContentColor': '$Yellow',
+            '$colorAttrSelectedDayContainerColor': '$Red',
+            '$colorAttrTodayContentColor': '$Blue',
+            '$colorAttrTodayDateBorderColor': '$Red'
             }
             """.toJsonForTemplate()
         val testTag = "myAlert"
@@ -144,15 +177,15 @@ class DatePickerDialogShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <DatePickerDialog phx-click="hideDialog" test-tag="$testTag" colors="$colorsForTemplate">
-                  <OutlinedButton phx-click="hideDialog" template="confirm">
-                    <Text>Confirm</Text>
-                  </OutlinedButton>
-                  <TextButton phx-click="hideDialog" template="dismiss">
-                    <Text>Dismiss</Text>
-                  </TextButton>
-                  <DatePicker phx-change="selectDate" initial-selected-date-millis="$todayMoreOrLessOneDay" />
-                </DatePickerDialog>            
+                <$datePickerDialog $attrTestTag="$testTag" $attrColors="$colorsForTemplate">
+                  <$outlinedButton $attrTemplate="$templateConfirmButton">
+                    <$text>Confirm</$text>
+                  </$outlinedButton>
+                  <$textButton $attrTemplate="$templateDismissButton">
+                    <$text>Dismiss</$text>
+                  </$textButton>
+                  <$datePicker $attrInitialSelectedDateMillis="$todayMoreOrLessOneDay" />
+                </$datePickerDialog>            
                 """,
             delayBeforeScreenshot = 800, // Wait the button animation finishes.
             onBeforeScreenShot = { rule ->
@@ -197,20 +230,20 @@ class DatePickerDialogShotTest : LiveViewComposableTest() {
         }.timeInMillis
         val colorsForTemplate = """
             {            
-            'containerColor': 'system-yellow',
-            'titleContentColor': 'system-red',
-            'headlineContentColor': 'system-blue',
-            'weekdayContentColor': 'system-yellow',
-            'subheadContentColor': 'system-red',
-            'yearContentColor': 'system-green',
-            'currentYearContentColor': 'system-black',
-            'selectedYearContentColor': 'system-white',
-            'selectedYearContainerColor': 'system-dark-gray',
-            'dayContentColor': 'system-gray',
-            'selectedDayContentColor': 'system-yellow',
-            'selectedDayContainerColor': 'system-red',
-            'todayContentColor': 'system-blue',
-            'todayDateBorderColor': 'system-red'
+            '$colorAttrContainerColor': '$Yellow',
+            '$colorAttrTitleContentColor': '$Red',
+            '$colorAttrHeadlineContentColor': '$Blue',
+            '$colorAttrWeekdayContentColor': '$Yellow',
+            '$colorAttrSubheadContentColor': '$Red',
+            '$colorAttrYearContentColor': '$Green',
+            '$colorAttrCurrentYearContentColor': '$Black',
+            '$colorAttrSelectedYearContentColor': '$White',
+            '$colorAttrSelectedYearContainerColor': '$DarkGray',
+            '$colorAttrDayContentColor': '$Gray',
+            '$colorAttrSelectedDayContentColor': '$Yellow',
+            '$colorAttrSelectedDayContainerColor': '$Red',
+            '$colorAttrTodayContentColor': '$Blue',
+            '$colorAttrTodayDateBorderColor': '$Red'
             }
             """.toJsonForTemplate()
         val testTag = "myAlert"
@@ -254,17 +287,17 @@ class DatePickerDialogShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <DatePickerDialog phx-click="hideDialog" test-tag="$testTag">
-                  <OutlinedButton phx-click="hideDialog" template="confirm">
-                    <Text>Confirm</Text>
-                  </OutlinedButton>
-                  <TextButton phx-click="hideDialog" template="dismiss">
-                    <Text>Dismiss</Text>
-                  </TextButton>
-                  <DatePicker phx-change="selectDate" 
-                    initial-selected-date-millis="$todayMoreOrLessOneDay" 
-                    colors="$colorsForTemplate" />
-                </DatePickerDialog>            
+                <$datePickerDialog $attrTestTag="$testTag">
+                  <$outlinedButton $attrTemplate="$templateConfirmButton">
+                    <$text>Confirm</$text>
+                  </$outlinedButton>
+                  <$textButton $attrTemplate="$templateDismissButton">
+                    <$text>Dismiss</$text>
+                  </$textButton>
+                  <$datePicker  
+                    $attrInitialSelectedDateMillis="$todayMoreOrLessOneDay" 
+                    $attrColors="$colorsForTemplate" />
+                </$datePickerDialog>            
                 """,
             delayBeforeScreenshot = 800, // Wait the button animation finishes.
             onBeforeScreenShot = { rule ->

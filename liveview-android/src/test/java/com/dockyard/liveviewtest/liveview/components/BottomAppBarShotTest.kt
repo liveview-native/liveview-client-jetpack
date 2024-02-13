@@ -17,6 +17,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.Templates.templateAction
+import org.phoenixframework.liveview.data.constants.Templates.templateFab
+import org.phoenixframework.liveview.domain.base.ComposableTypes.bottomAppBar
+import org.phoenixframework.liveview.domain.base.ComposableTypes.floatingActionButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.iconButton
 
 class BottomAppBarShotTest : LiveViewComposableTest() {
     @Test
@@ -46,17 +57,17 @@ class BottomAppBarShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <BottomAppBar>
-                  <IconButton phx-click="" template="action">
-                    <Icon image-vector="filled:HorizontalDistribute" />
-                  </IconButton>
-                  <IconButton phx-click="" template="action">
-                    <Icon image-vector="filled:VerticalDistribute" />
-                  </IconButton>
-                  <FloatingActionButton phx-click="" template="fab" shape="12">
-                    <Icon image-vector="filled:Add"/>
-                  </FloatingActionButton>
-                </BottomAppBar>
+                <$bottomAppBar>
+                  <$iconButton $attrTemplate="$templateAction">
+                    <$icon $attrImageVector="filled:HorizontalDistribute" />
+                  </$iconButton>
+                  <$iconButton $attrTemplate="$templateAction">
+                    <$icon $attrImageVector="filled:VerticalDistribute" />
+                  </$iconButton>
+                  <$floatingActionButton $attrTemplate="$templateFab" $attrShape="12">
+                    <$icon $attrImageVector="filled:Add"/>
+                  </$floatingActionButton>
+                </$bottomAppBar>
                 """
         )
     }
@@ -96,20 +107,20 @@ class BottomAppBarShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <BottomAppBar container-color="#FF888888" content-color="#FF444444">
-                  <IconButton phx-click="" template="action">
-                    <Icon image-vector="filled:House" />
-                  </IconButton>
-                  <IconButton phx-click="" template="action">
-                    <Icon image-vector="filled:Search" />
-                  </IconButton>                  
-                  <IconButton phx-click="" template="action">
-                    <Icon image-vector="filled:Settings" />
-                  </IconButton>
-                  <FloatingActionButton phx-click="" template="fab">
-                    <Icon image-vector="filled:Delete"/>
-                  </FloatingActionButton>
-                </BottomAppBar>
+                <$bottomAppBar $attrContainerColor="#FF888888" $attrContentColor="#FF444444">
+                  <$iconButton $attrTemplate="$templateAction">
+                    <$icon $attrImageVector="filled:House" />
+                  </$iconButton>
+                  <$iconButton $attrTemplate="$templateAction">
+                    <$icon $attrImageVector="filled:Search" />
+                  </$iconButton>                  
+                  <$iconButton $attrTemplate="$templateAction">
+                    <$icon $attrImageVector="filled:Settings" />
+                  </$iconButton>
+                  <$floatingActionButton $attrTemplate="$templateFab">
+                    <$icon $attrImageVector="filled:Delete"/>
+                  </$floatingActionButton>
+                </$bottomAppBar>
                 """
         )
     }

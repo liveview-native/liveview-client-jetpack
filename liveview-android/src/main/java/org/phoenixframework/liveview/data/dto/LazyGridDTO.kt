@@ -11,9 +11,14 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColumns
+import org.phoenixframework.liveview.data.constants.Attrs.attrCount
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
+import org.phoenixframework.liveview.data.constants.Attrs.attrMinSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrRows
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrType
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
+import org.phoenixframework.liveview.data.constants.LazyGridColumnTypeValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableTypes
@@ -130,15 +135,15 @@ internal class LazyGridDTO private constructor(builder: Builder) :
         fun columns(columns: String) = apply {
             try {
                 val map = JsonParser.parse<Map<String, String>>(columns)
-                when (map?.get("type")) {
-                    "fixed" ->
-                        this.gridCells = GridCells.Fixed(map["count"]!!.toInt())
+                when (map?.get(attrType)) {
+                    LazyGridColumnTypeValues.fixed ->
+                        this.gridCells = GridCells.Fixed(map[attrCount]!!.toInt())
 
-                    "adaptive" ->
-                        this.gridCells = GridCells.Adaptive(map["minSize"]!!.toInt().dp)
+                    LazyGridColumnTypeValues.adaptive ->
+                        this.gridCells = GridCells.Adaptive(map[attrMinSize]!!.toInt().dp)
 
-                    "fixedSize" ->
-                        this.gridCells = GridCells.FixedSize(map["size"]!!.toInt().dp)
+                    LazyGridColumnTypeValues.fixedSize ->
+                        this.gridCells = GridCells.FixedSize(map[attrSize]!!.toInt().dp)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -149,11 +154,11 @@ internal class LazyGridDTO private constructor(builder: Builder) :
          * The vertical arrangement of the Grid's children
          *
          * ```
-         * <LazyVerticalGrid vertical-arrangement="spaceAround" >...</LazyVerticalGrid>
+         * <LazyVerticalGrid verticalArrangement="spaceAround" >...</LazyVerticalGrid>
          * ```
-         * @param verticalArrangement the vertical arrangement of the grid's children. The
-         * supported values are: `top`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `bottom`,
-         * and `center`. An int value is also supported, which will be used to determine the space.
+         * @param verticalArrangement the vertical arrangement of the grid's children. See the
+         * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
+         * An int value is also supported, which will be used to determine the space.
          */
         fun verticalArrangement(verticalArrangement: String) = apply {
             this.verticalArrangement = verticalArrangementFromString(verticalArrangement)
@@ -163,11 +168,11 @@ internal class LazyGridDTO private constructor(builder: Builder) :
          * The horizontal arrangement of the Grid's children
          *
          * ```
-         * <LazyVerticalGrid horizontal-arrangement="2" >...</LazyVerticalGrid>
+         * <LazyVerticalGrid horizontalArrangement="2" >...</LazyVerticalGrid>
          * ```
-         * @param horizontalArrangement the horizontal arrangement of the grid's children. The
-         * supported values are: `start`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `end`,
-         * and `center`. An int value is also supported, which will be used to determine the space.
+         * @param horizontalArrangement the horizontal arrangement of the grid's children. See the
+         * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
+         * An int value is also supported, which will be used to determine the space.
          */
         fun horizontalArrangement(horizontalArrangement: String) = apply {
             if (horizontalArrangement.isNotEmpty()) {

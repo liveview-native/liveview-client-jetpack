@@ -57,6 +57,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Color
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrTint
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredFilled
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredOutlined
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredRounded
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredSharp
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredTwoTone
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.outlined
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.rounded
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.sharp
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.twoTone
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
 
 class IconShotTest : LiveViewComposableTest() {
 
@@ -74,10 +89,10 @@ class IconShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                  <Icon image-vector="filled:Image" />
-                  <Icon image-vector="filled:Image" tint="#FFFF0000" />
-                </Row>
+                <$row>
+                  <$icon $attrImageVector="$filled:Image" />
+                  <$icon $attrImageVector="$filled:Image" $attrTint="#FFFF0000" />
+                </$row>
                 """
         )
     }
@@ -127,43 +142,43 @@ class IconShotTest : LiveViewComposableTest() {
 
             },
             template = """
-                <Column>             
-                    <Row>
-                        <Icon image-vector="filled:Add" />
-                        <Icon image-vector="filled:Check" />
-                        <Icon image-vector="filled:Home" />
-                        <Icon image-vector="filled:Image" />
-                        <Icon image-vector="filled:Share" />
-                    </Row>
-                    <Row>
-                        <Icon image-vector="outlined:Add" />
-                        <Icon image-vector="outlined:Check" />
-                        <Icon image-vector="outlined:Home" />
-                        <Icon image-vector="outlined:Image" />
-                        <Icon image-vector="outlined:Share" />
-                    </Row>      
-                    <Row>
-                        <Icon image-vector="rounded:Add" />
-                        <Icon image-vector="rounded:Check" />
-                        <Icon image-vector="rounded:Home" />
-                        <Icon image-vector="rounded:Image" />
-                        <Icon image-vector="rounded:Share" />
-                    </Row>    
-                    <Row>
-                        <Icon image-vector="twoTone:Add" />
-                        <Icon image-vector="twoTone:Check" />
-                        <Icon image-vector="twoTone:Home" />
-                        <Icon image-vector="twoTone:Image" />
-                        <Icon image-vector="twoTone:Share" />
-                    </Row>   
-                    <Row>
-                        <Icon image-vector="sharp:Add" />
-                        <Icon image-vector="sharp:Check" />
-                        <Icon image-vector="sharp:Home" />
-                        <Icon image-vector="sharp:Image" />
-                        <Icon image-vector="sharp:Share" />
-                    </Row>                                                                          
-                </Column>
+                <$column>             
+                  <$row>
+                    <$icon $attrImageVector="$filled:Add" />
+                    <$icon $attrImageVector="$filled:Check" />
+                    <$icon $attrImageVector="$filled:Home" />
+                    <$icon $attrImageVector="$filled:Image" />
+                    <$icon $attrImageVector="$filled:Share" />
+                  </$row>
+                  <$row>
+                    <$icon $attrImageVector="$outlined:Add" />
+                    <$icon $attrImageVector="$outlined:Check" />
+                    <$icon $attrImageVector="$outlined:Home" />
+                    <$icon $attrImageVector="$outlined:Image" />
+                    <$icon $attrImageVector="$outlined:Share" />
+                  </$row>      
+                  <$row>
+                    <$icon $attrImageVector="$rounded:Add" />
+                    <$icon $attrImageVector="$rounded:Check" />
+                    <$icon $attrImageVector="$rounded:Home" />
+                    <$icon $attrImageVector="$rounded:Image" />
+                    <$icon $attrImageVector="$rounded:Share" />
+                  </$row>    
+                  <$row>
+                    <$icon $attrImageVector="$twoTone:Add" />
+                    <$icon $attrImageVector="$twoTone:Check" />
+                    <$icon $attrImageVector="$twoTone:Home" />
+                    <$icon $attrImageVector="$twoTone:Image" />
+                    <$icon $attrImageVector="$twoTone:Share" />
+                  </$row>   
+                  <$row>
+                    <$icon $attrImageVector="$sharp:Add" />
+                    <$icon $attrImageVector="$sharp:Check" />
+                    <$icon $attrImageVector="$sharp:Home" />
+                    <$icon $attrImageVector="$sharp:Image" />
+                    <$icon $attrImageVector="$sharp:Share" />
+                  </$row>                                                                          
+                </$column>
                 """
         )
     }
@@ -264,43 +279,43 @@ class IconShotTest : LiveViewComposableTest() {
 
             },
             template = """
-                <Column>
-                    <Row>
-                        <Icon image-vector="autoMirrored.filled:AddToHomeScreen" />
-                        <Icon image-vector="autoMirrored.filled:FactCheck" />
-                        <Icon image-vector="autoMirrored.filled:Send" />
-                        <Icon image-vector="autoMirrored.filled:ArrowBack" />
-                        <Icon image-vector="autoMirrored.filled:Chat" />
-                    </Row>
-                    <Row>
-                        <Icon image-vector="autoMirrored.outlined:AddToHomeScreen" />
-                        <Icon image-vector="autoMirrored.outlined:FactCheck" />
-                        <Icon image-vector="autoMirrored.outlined:Send" />
-                        <Icon image-vector="autoMirrored.outlined:ArrowBack" />
-                        <Icon image-vector="autoMirrored.outlined:Chat" />
-                    </Row>      
-                    <Row>
-                        <Icon image-vector="autoMirrored.rounded:AddToHomeScreen" />
-                        <Icon image-vector="autoMirrored.rounded:FactCheck" />
-                        <Icon image-vector="autoMirrored.rounded:Send" />
-                        <Icon image-vector="autoMirrored.rounded:ArrowBack" />
-                        <Icon image-vector="autoMirrored.rounded:Chat" />
-                    </Row>    
-                    <Row>
-                        <Icon image-vector="autoMirrored.twoTone:AddToHomeScreen" />
-                        <Icon image-vector="autoMirrored.twoTone:FactCheck" />
-                        <Icon image-vector="autoMirrored.twoTone:Send" />
-                        <Icon image-vector="autoMirrored.twoTone:ArrowBack" />
-                        <Icon image-vector="autoMirrored.twoTone:Chat" />
-                    </Row>   
-                    <Row>
-                        <Icon image-vector="autoMirrored.sharp:AddToHomeScreen" />
-                        <Icon image-vector="autoMirrored.sharp:FactCheck" />
-                        <Icon image-vector="autoMirrored.sharp:Send" />
-                        <Icon image-vector="autoMirrored.sharp:ArrowBack" />
-                        <Icon image-vector="autoMirrored.sharp:Chat" />
-                    </Row>                                                                          
-                </Column>
+                <$column>
+                  <$row>
+                    <$icon $attrImageVector="$autoMirroredFilled:AddToHomeScreen" />
+                    <$icon $attrImageVector="$autoMirroredFilled:FactCheck" />
+                    <$icon $attrImageVector="$autoMirroredFilled:Send" />
+                    <$icon $attrImageVector="$autoMirroredFilled:ArrowBack" />
+                    <$icon $attrImageVector="$autoMirroredFilled:Chat" />
+                  </$row>
+                  <$row>
+                    <$icon $attrImageVector="$autoMirroredOutlined:AddToHomeScreen" />
+                    <$icon $attrImageVector="$autoMirroredOutlined:FactCheck" />
+                    <$icon $attrImageVector="$autoMirroredOutlined:Send" />
+                    <$icon $attrImageVector="$autoMirroredOutlined:ArrowBack" />
+                    <$icon $attrImageVector="$autoMirroredOutlined:Chat" />
+                  </$row>      
+                  <$row>
+                    <$icon $attrImageVector="$autoMirroredRounded:AddToHomeScreen" />
+                    <$icon $attrImageVector="$autoMirroredRounded:FactCheck" />
+                    <$icon $attrImageVector="$autoMirroredRounded:Send" />
+                    <$icon $attrImageVector="$autoMirroredRounded:ArrowBack" />
+                    <$icon $attrImageVector="$autoMirroredRounded:Chat" />
+                  </$row>    
+                  <$row>
+                    <$icon $attrImageVector="$autoMirroredTwoTone:AddToHomeScreen" />
+                    <$icon $attrImageVector="$autoMirroredTwoTone:FactCheck" />
+                    <$icon $attrImageVector="$autoMirroredTwoTone:Send" />
+                    <$icon $attrImageVector="$autoMirroredTwoTone:ArrowBack" />
+                    <$icon $attrImageVector="$autoMirroredTwoTone:Chat" />
+                  </$row>   
+                  <$row>
+                    <$icon $attrImageVector="$autoMirroredSharp:AddToHomeScreen" />
+                    <$icon $attrImageVector="$autoMirroredSharp:FactCheck" />
+                    <$icon $attrImageVector="$autoMirroredSharp:Send" />
+                    <$icon $attrImageVector="$autoMirroredSharp:ArrowBack" />
+                    <$icon $attrImageVector="$autoMirroredSharp:Chat" />
+                  </$row>                                                                          
+                </$column>
                 """
         )
     }

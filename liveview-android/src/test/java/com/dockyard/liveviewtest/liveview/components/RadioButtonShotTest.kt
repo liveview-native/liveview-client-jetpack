@@ -6,6 +6,15 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.ui.graphics.Color
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSelectedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUnselectedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedColor
+import org.phoenixframework.liveview.domain.base.ComposableTypes.radioButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
 
 class RadioButtonShotTest : LiveViewComposableTest() {
     @Test
@@ -20,12 +29,12 @@ class RadioButtonShotTest : LiveViewComposableTest() {
 
                 }
             }, template = """
-                <Row>
-                  <RadioButton selected="true" />
-                  <RadioButton selected="false" />
-                  <RadioButton selected="true" enabled="false" />
-                  <RadioButton selected="false" enabled="false" />
-                </Row>
+                <$row>
+                  <$radioButton $attrSelected="true" />
+                  <$radioButton $attrSelected="false" />
+                  <$radioButton $attrSelected="true" $attrEnabled="false" />
+                  <$radioButton $attrSelected="false" $attrEnabled="false" />
+                </$row>
                 """
         )
     }
@@ -34,10 +43,10 @@ class RadioButtonShotTest : LiveViewComposableTest() {
     fun radioButtonWithCustomColorsTest() {
         val colorsForTemplate = """
             {
-            'selectedColor': '#FFFF0000', 
-            'unselectedColor': '#FF0000FF', 
-            'disabledSelectedColor': '#FF444444', 
-            'disabledUnselectedColor': '#FFCCCCCC'
+            '$colorAttrSelectedColor': '#FFFF0000', 
+            '$colorAttrUnselectedColor': '#FF0000FF', 
+            '$colorAttrDisabledSelectedColor': '#FF444444', 
+            '$colorAttrDisabledUnselectedColor': '#FFCCCCCC'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -55,12 +64,12 @@ class RadioButtonShotTest : LiveViewComposableTest() {
                     RadioButton(selected = false, enabled = false, onClick = {}, colors = colors)
                 }
             }, template = """
-                <Row>
-                  <RadioButton selected="true" colors="$colorsForTemplate"/>
-                  <RadioButton selected="false" colors="$colorsForTemplate"/>
-                  <RadioButton selected="true" enabled="false" colors="$colorsForTemplate"/>
-                  <RadioButton selected="false" enabled="false" colors="$colorsForTemplate"/>
-                </Row>
+                <$row>
+                  <$radioButton $attrSelected="true" $attrColors="$colorsForTemplate"/>
+                  <$radioButton $attrSelected="false" $attrColors="$colorsForTemplate"/>
+                  <$radioButton $attrSelected="true" $attrEnabled="false" $attrColors="$colorsForTemplate"/>
+                  <$radioButton $attrSelected="false" $attrEnabled="false" $attrColors="$colorsForTemplate"/>
+                </$row>
                 """
         )
     }

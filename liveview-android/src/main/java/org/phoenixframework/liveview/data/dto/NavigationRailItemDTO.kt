@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.constants.Attrs.alwaysShowLabel
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlwaysShowLabel
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
@@ -34,20 +34,20 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * is controlled by alwaysShowLabel.
  * ```
  * <NavigationRail>
- *   <NavigationRailItem selected="true" always-show-label="false">
- *     <Icon image-vector="filled:Favorite" template="icon"/>
+ *   <NavigationRailItem selected="true" alwaysShowLabel="false">
+ *     <Icon imageVector="filled:Favorite" template="icon"/>
  *     <Text template="label">Favorites</Text>
  *   </NavigationRailItem>
- *   <NavigationRailItem selected="false" always-show-label="false">
- *     <Icon image-vector="filled:Home" template="icon"/>
+ *   <NavigationRailItem selected="false" alwaysShowLabel="false">
+ *     <Icon imageVector="filled:Home" template="icon"/>
  *     <Text template="label">Home</Text>
  *   </NavigationRailItem>
- *   <NavigationRailItem selected="true" enabled="false" always-show-label="false">
- *     <Icon image-vector="filled:Person" template="icon"/>
+ *   <NavigationRailItem selected="true" enabled="false" alwaysShowLabel="false">
+ *     <Icon imageVector="filled:Person" template="icon"/>
  *     <Text template="label">Person</Text>
  *   </NavigationRailItem>
- *   <NavigationRailItem selected="false" enabled="false" always-show-label="false">
- *     <Icon image-vector="filled:Settings" template="icon"/>
+ *   <NavigationRailItem selected="false" enabled="false" alwaysShowLabel="false">
+ *     <Icon imageVector="filled:Settings" template="icon"/>
  *     <Text template="label">Settings</Text>
  *   </NavigationRailItem>
  * </NavigationRail>
@@ -152,7 +152,7 @@ internal class NavigationRailItemDTO private constructor(builder: Builder) :
          * Whether to always show the label for this item. If false, the label will only be shown
          * when this item is selected.
          * ```
-         * <NavigationRailItem always-show-label="true">...</NavigationRailItem>
+         * <NavigationRailItem alwaysShowLabel="true">...</NavigationRailItem>
          * ```
          * @param alwaysShowLabel true if the label is always visible, false if it's only visible
          * when is selected.
@@ -215,7 +215,7 @@ internal object NavigationRailItemDtoFactory :
     ): NavigationRailItemDTO =
         attributes.fold(NavigationRailItemDTO.Builder()) { builder, attribute ->
             when (attribute.name) {
-                alwaysShowLabel -> builder.alwaysShowLabel(attribute.value)
+                attrAlwaysShowLabel -> builder.alwaysShowLabel(attribute.value)
                 attrColors -> builder.colors(attribute.value)
                 attrEnabled -> builder.enabled(attribute.value)
                 attrPhxClick -> builder.onClick(attribute.value)

@@ -6,7 +6,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
@@ -15,10 +14,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.AlignmentValues.center
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.Templates.templateBadge
+import org.phoenixframework.liveview.domain.base.ComposableTypes.badgedBox
+import org.phoenixframework.liveview.domain.base.ComposableTypes.box
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class BadgeBoxShotTest : LiveViewComposableTest() {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Test
     fun simpleBadgeBoxTest() {
         compareNativeComposableWithTemplate(
@@ -39,12 +50,12 @@ class BadgeBoxShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Box size="100" content-alignment="center">
-                  <BadgedBox container-color="#FF0000FF" content-color="#FFFF0000">
-                    <Text template="badge">+99</Text>
-                    <Icon image-vector="filled:Add" />
-                  </BadgedBox>                
-                </Box>  
+                <$box $attrSize="100" $attrContentAlignment="$center">
+                  <$badgedBox $attrContainerColor="#FF0000FF" $attrContentColor="#FFFF0000">
+                    <$text $attrTemplate="$templateBadge">+99</$text>
+                    <$icon $attrImageVector="$filled:Add" />
+                  </$badgedBox>                
+                </$box>  
                 """
         )
     }

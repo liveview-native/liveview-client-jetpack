@@ -6,6 +6,16 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.ui.graphics.Color
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckmarkColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledCheckedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedColor
+import org.phoenixframework.liveview.domain.base.ComposableTypes.checkbox
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
 
 class CheckboxShotTest : LiveViewComposableTest() {
     @Test
@@ -20,21 +30,27 @@ class CheckboxShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <CheckBox checked="true" phx-change="" />
-                    <CheckBox checked="false" phx-change="" />
-                    <CheckBox checked="true" phx-change="" enabled="false" />
-                    <CheckBox checked="false" phx-change="" enabled="false" />
-                </Row>
+                <$row>
+                    <$checkbox $attrChecked="true" />
+                    <$checkbox $attrChecked="false" />
+                    <$checkbox $attrChecked="true" $attrEnabled="false" />
+                    <$checkbox $attrChecked="false" $attrEnabled="false" />
+                </$row>
                 """
         )
     }
 
     @Test
     fun checkWithCustomParams() {
-        val colors =
-            "{'checkedColor': '#FFFF0000', 'uncheckedColor': '#FF00FF00', 'checkmarkColor': '#FFFFFF00', " +
-                    "'disabledCheckedColor': '#FF444444', 'disabledUncheckedColor': '#FF888888'}"
+        val colors = """
+            {
+            '$colorAttrCheckedColor': '#FFFF0000', 
+            '$colorAttrUncheckedColor': '#FF00FF00', 
+            '$colorAttrCheckmarkColor': '#FFFFFF00', 
+            '$colorAttrDisabledCheckedColor': '#FF444444', 
+            '$colorAttrDisabledUncheckedColor': '#FF888888'
+            }
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val colorsNative = CheckboxDefaults.colors(
@@ -62,12 +78,12 @@ class CheckboxShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                  <CheckBox checked="true" phx-change="" colors="$colors" />
-                  <CheckBox checked="false" phx-change="" colors="$colors" />
-                  <CheckBox checked="true" phx-change="" colors="$colors" enabled="false" />
-                  <CheckBox checked="false" phx-change="" colors="$colors" enabled="false" />
-                </Row>  
+                <$row>
+                  <$checkbox $attrChecked="true" $attrColors="$colors" />
+                  <$checkbox $attrChecked="false" $attrColors="$colors" />
+                  <$checkbox $attrChecked="true" $attrColors="$colors" $attrEnabled="false" />
+                  <$checkbox $attrChecked="false" $attrColors="$colors" $attrEnabled="false" />
+                </$row>  
                 """
         )
     }

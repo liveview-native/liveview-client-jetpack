@@ -22,7 +22,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 /**
  * The horizontally scrolling list that only composes and lays out the currently visible items.
  * ```
- * <LazyRow width="fill" horizontal-arrangement="start" vertical-alignment="center" >
+ * <LazyRow width="fill" horizontalArrangement="start" verticalAlignment="center" >
  *   // Children
  * </LazyRow>
  * ```
@@ -74,11 +74,11 @@ internal class LazyRowDTO private constructor(builder: Builder) :
          * The horizontal arrangement of the Row's children
          *
          * ```
-         * <LazyRow horizontal-arrangement="spaceAround" >...</LazyRow>
+         * <LazyRow horizontalArrangement="spaceAround" >...</LazyRow>
          * ```
-         * @param horizontalArrangement the horizontal arrangement of the column's children. The
-         * supported values are: `start`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `end`,
-         * and `center`. An int value is also supported, which will be used to determine the space.
+         * @param horizontalArrangement the horizontal arrangement of the column's children. See the
+         * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
+         * An int value is also supported, which will be used to determine the space.
          */
         fun horizontalArrangement(horizontalArrangement: String) = apply {
             if (horizontalArrangement.isNotEmpty()) {
@@ -90,10 +90,10 @@ internal class LazyRowDTO private constructor(builder: Builder) :
          * The vertical alignment of the Row's children
          *
          * ```
-         * <LazyRow vertical-alignment="center" >...</LazyRow>
+         * <LazyRow verticalAlignment="center" >...</LazyRow>
          * ```
-         * @param verticalAlignment the vertical alignment of the row's children. The
-         * supported values are: `top`, `center`, and `bottom`.
+         * @param verticalAlignment the vertical alignment of the row's children. See the supported
+         * values at [org.phoenixframework.liveview.data.constants.VerticalAlignmentValues].
          */
         fun verticalAlignment(verticalAlignment: String) = apply {
             if (verticalAlignment.isNotEmpty()) {

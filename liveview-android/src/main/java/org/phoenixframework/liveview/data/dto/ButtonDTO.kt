@@ -381,8 +381,9 @@ internal class ButtonDTO private constructor(builder: Builder) :
          * ```
          * <Button shape="circle" >...</Button>
          * ```
-         * @param shape button's shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied for all four corners.
+         * @param shape button's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues],
+         * or use an integer representing the curve size applied for all four corners.
          */
         fun shape(shape: String): Builder = apply {
             if (shape.isNotEmpty()) {
@@ -429,7 +430,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
         /**
          * Spacing values to apply internally between the container and the content.
          * ```
-         * <Button content-padding="8">...</Button>
+         * <Button contentPadding="8">...</Button>
          * ```
          * @param contentPadding int value representing the padding to be applied to the button's
          * content.
@@ -448,7 +449,8 @@ internal class ButtonDTO private constructor(builder: Builder) :
          * ```
          * @param border a JSON representing the border object. The `width` key is an int value
          * representing button border's width content. The `color` key must be specified as a string
-         * in the AARRGGBB format
+         * in the AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun border(border: String): Builder = apply {
             this.border = borderFromString(border)

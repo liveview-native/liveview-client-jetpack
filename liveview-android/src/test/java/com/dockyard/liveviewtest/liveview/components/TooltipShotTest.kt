@@ -17,6 +17,32 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrInitialIsVisible
+import org.phoenixframework.liveview.data.constants.Attrs.attrIsPersistent
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActionContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTitleContentColor
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.data.constants.SystemColorValues.White
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.Templates.templateAction
+import org.phoenixframework.liveview.data.constants.Templates.templateContent
+import org.phoenixframework.liveview.data.constants.Templates.templateText
+import org.phoenixframework.liveview.data.constants.Templates.templateTitle
+import org.phoenixframework.liveview.data.constants.Templates.templateTooltip
+import org.phoenixframework.liveview.domain.base.ComposableTypes.box
+import org.phoenixframework.liveview.domain.base.ComposableTypes.button
+import org.phoenixframework.liveview.domain.base.ComposableTypes.plainTooltip
+import org.phoenixframework.liveview.domain.base.ComposableTypes.richTooltip
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.domain.base.ComposableTypes.tooltipBox
 
 @OptIn(ExperimentalMaterial3Api::class)
 class TooltipShotTest : LiveViewComposableTest() {
@@ -45,14 +71,14 @@ class TooltipShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Box size="200" background="system-green">
-                  <TooltipBox initial-is-visible="true" is-persistent="true">
-                    <PlainTooltip template="tooltip">
-                      <Text>Tooltip</Text>
-                    </PlainTooltip>
-                    <Text template="content">Content</Text>
-                  </TooltipBox>
-                </Box>
+                <$box $attrSize="200" $attrBackground="$Green">
+                  <$tooltipBox $attrInitialIsVisible="true" $attrIsPersistent="true">
+                    <$plainTooltip $attrTemplate="$templateTooltip">
+                      <$text>Tooltip</$text>
+                    </$plainTooltip>
+                    <$text $attrTemplate="$templateContent">Content</$text>
+                  </$tooltipBox>
+                </$box>
                 """
         )
     }
@@ -68,9 +94,9 @@ class TooltipShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <RichTooltip>
-                    <Text template="text">Text</Text>
-                </RichTooltip>
+                <$richTooltip>
+                  <$text $attrTemplate="$templateText">Text</$text>
+                </$richTooltip>
                 """
         )
     }
@@ -89,10 +115,10 @@ class TooltipShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <RichTooltip>
-                    <Text template="title">Title</Text>
-                    <Text template="text">Text</Text>
-                </RichTooltip>
+                <$richTooltip>
+                  <$text $attrTemplate="$templateTitle">Title</$text>
+                  <$text $attrTemplate="$templateText">Text</$text>
+                </$richTooltip>
                 """
         )
     }
@@ -116,13 +142,13 @@ class TooltipShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <RichTooltip>
-                    <Text template="title">Title</Text>
-                    <Text template="text">Text</Text>
-                    <Button template="action">
-                        <Text>Action</Text>
-                    </Button>
-                </RichTooltip>
+                <$richTooltip>
+                  <$text $attrTemplate="$templateTitle">Title</$text>
+                  <$text $attrTemplate="$templateText">Text</$text>
+                  <$button $attrTemplate="$templateAction">
+                    <$text>Action</$text>
+                  </$button>
+                </$richTooltip>
                 """
         )
     }
@@ -131,10 +157,10 @@ class TooltipShotTest : LiveViewComposableTest() {
     fun richTooltipWithCustomColorAndShapeTest() {
         val colorsForTemplate = """
             {
-            'containerColor': 'system-red',
-            'contentColor': 'system-white',
-            'titleContentColor': 'system-yellow',
-            'actionContentColor': 'system-green'
+            '$colorAttrContainerColor': '$Red',
+            '$colorAttrContentColor': '$White',
+            '$colorAttrTitleContentColor': '$Yellow',
+            '$colorAttrActionContentColor': '$Green'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -160,11 +186,11 @@ class TooltipShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <RichTooltip colors="$colorsForTemplate" shape="4">
-                  <Text template="title">Title</Text>
-                  <Text template="text">Text</Text>
-                  <Text template="action">Action</Text>
-                </RichTooltip>
+                <$richTooltip $attrColors="$colorsForTemplate" $attrShape="4">
+                  <$text $attrTemplate="$templateTitle">Title</$text>
+                  <$text $attrTemplate="$templateText">Text</$text>
+                  <$text $attrTemplate="$templateAction">Action</$text>
+                </$richTooltip>
                 """
         )
     }

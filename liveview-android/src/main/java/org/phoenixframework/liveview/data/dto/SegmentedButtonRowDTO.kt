@@ -12,6 +12,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrSpace
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
+import org.phoenixframework.liveview.domain.base.ComposableTypes.segmentedButton
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -133,7 +134,7 @@ internal object SegmentedButtonRowDtoFactory :
 
     override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
         return mapOf(
-            "SegmentedButton" to SegmentedButtonDtoFactory
+            segmentedButton to SegmentedButtonDtoFactory
         )
     }
 }

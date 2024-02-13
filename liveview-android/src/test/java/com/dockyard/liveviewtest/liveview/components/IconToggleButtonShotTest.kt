@@ -23,6 +23,33 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
+import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
+import org.phoenixframework.liveview.data.constants.Attrs.attrColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.DarkGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
+import org.phoenixframework.liveview.data.constants.SystemColorValues.LightGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Magenta
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.domain.base.ComposableTypes.filledIconToggleButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.filledTonalIconToggleButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.iconToggleButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedIconToggleButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
 
 class IconToggleButtonShotTest : LiveViewComposableTest() {
 
@@ -46,20 +73,20 @@ class IconToggleButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <IconToggleButton phx-change="" checked="true">
-                        <Icon image-vector="filled:CheckCircleOutline" />
-                    </IconToggleButton>
-                    <IconToggleButton phx-change="" checked="false">
-                        <Icon image-vector="filled:CheckCircleOutline" />
-                    </IconToggleButton>                    
-                    <IconToggleButton phx-change="" checked="true" enabled="false">
-                        <Icon image-vector="filled:CheckCircleOutline" />
-                    </IconToggleButton>    
-                    <IconToggleButton phx-change="" checked="false" enabled="false">
-                        <Icon image-vector="filled:CheckCircleOutline" />
-                    </IconToggleButton>                                      
-                </Row>
+                <$row>
+                  <$iconToggleButton $attrChecked="true">
+                    <$icon $attrImageVector="filled:CheckCircleOutline" />
+                  </$iconToggleButton>
+                  <$iconToggleButton $attrChecked="false">
+                    <$icon $attrImageVector="filled:CheckCircleOutline" />
+                  </$iconToggleButton>                    
+                  <$iconToggleButton $attrChecked="true" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:CheckCircleOutline" />
+                  </$iconToggleButton>    
+                  <$iconToggleButton $attrChecked="false" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:CheckCircleOutline" />
+                  </$iconToggleButton>                                      
+                </$row>
                 """
         )
     }
@@ -68,12 +95,12 @@ class IconToggleButtonShotTest : LiveViewComposableTest() {
     fun iconToggleButtonWithCustomColorsTest() {
         val colorsForTemplate = """
             {
-                'containerColor': 'system-red', 
-                'contentColor': 'system-yellow', 
-                'disabledContainerColor': 'system-light-gray', 
-                'disabledContentColor': 'system-dark-gray', 
-                'checkedContainerColor': 'system-blue', 
-                'checkedContentColor': 'system-green'
+            '$colorAttrContainerColor': '$Red', 
+            '$colorAttrContentColor': '$Yellow', 
+            '$colorAttrDisabledContainerColor': '$LightGray', 
+            '$colorAttrDisabledContentColor': '$DarkGray', 
+            '$colorAttrCheckedContainerColor': '$Blue', 
+            '$colorAttrCheckedContentColor': '$Green'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -120,20 +147,20 @@ class IconToggleButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <IconToggleButton phx-change="" checked="true" colors="$colorsForTemplate">
-                        <Icon image-vector="filled:CheckCircle" />
-                    </IconToggleButton>
-                    <IconToggleButton phx-change="" checked="false" colors="$colorsForTemplate">
-                        <Icon image-vector="filled:CheckCircle" />
-                    </IconToggleButton>
-                    <IconToggleButton phx-change="" checked="true" enabled="false" colors="$colorsForTemplate">
-                        <Icon image-vector="filled:CheckCircle" />
-                    </IconToggleButton>
-                    <IconToggleButton phx-change="" checked="false" enabled="false" colors="$colorsForTemplate">
-                        <Icon image-vector="filled:CheckCircle" />
-                    </IconToggleButton>                    
-                </Row>
+                <$row>
+                  <$iconToggleButton $attrChecked="true" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:CheckCircle" />
+                  </$iconToggleButton>
+                  <$iconToggleButton $attrChecked="false" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:CheckCircle" />
+                  </$iconToggleButton>
+                  <$iconToggleButton $attrChecked="true" $attrEnabled="false" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:CheckCircle" />
+                  </$iconToggleButton>
+                  <$iconToggleButton $attrChecked="false" $attrEnabled="false" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:CheckCircle" />
+                  </$iconToggleButton>                    
+                </$row>
                 """
         )
     }
@@ -158,20 +185,20 @@ class IconToggleButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <FilledIconToggleButton phx-change="" checked="true">
-                        <Icon image-vector="filled:CheckBox" />
-                    </FilledIconToggleButton>
-                    <FilledIconToggleButton phx-change="" checked="false">
-                        <Icon image-vector="filled:CheckBox" />
-                    </FilledIconToggleButton>
-                    <FilledIconToggleButton phx-change="" checked="true" enabled="false">
-                        <Icon image-vector="filled:CheckBox" />
-                    </FilledIconToggleButton>
-                    <FilledIconToggleButton phx-change="" checked="false" enabled="false">
-                        <Icon image-vector="filled:CheckBox" />
-                    </FilledIconToggleButton>                    
-                </Row>
+                <$row>
+                  <$filledIconToggleButton $attrChecked="true">
+                    <$icon $attrImageVector="filled:CheckBox" />
+                  </$filledIconToggleButton>
+                  <$filledIconToggleButton $attrChecked="false">
+                    <$icon $attrImageVector="filled:CheckBox" />
+                  </$filledIconToggleButton>
+                  <$filledIconToggleButton $attrChecked="true" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:CheckBox" />
+                  </$filledIconToggleButton>
+                  <$filledIconToggleButton $attrChecked="false" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:CheckBox" />
+                  </$filledIconToggleButton>                    
+                </$row>
                 """
         )
     }
@@ -180,12 +207,12 @@ class IconToggleButtonShotTest : LiveViewComposableTest() {
     fun filledIconToggleButtonWithCustomColorsTest() {
         val colorsForTemplate = """
             {
-                'containerColor': 'system-red', 
-                'contentColor': 'system-yellow', 
-                'disabledContainerColor': 'system-light-gray', 
-                'disabledContentColor': 'system-dark-gray', 
-                'checkedContainerColor': 'system-blue', 
-                'checkedContentColor': 'system-green'
+            '$colorAttrContainerColor': '$Red', 
+            '$colorAttrContentColor': '$Yellow', 
+            '$colorAttrDisabledContainerColor': '$LightGray', 
+            '$colorAttrDisabledContentColor': '$DarkGray', 
+            '$colorAttrCheckedContainerColor': '$Blue', 
+            '$colorAttrCheckedContentColor': '$Green'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -236,24 +263,24 @@ class IconToggleButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <FilledIconToggleButton phx-change="" shape="8" checked="true"
-                      colors="$colorsForTemplate">
-                        <Icon image-vector="filled:Check" />
-                    </FilledIconToggleButton>
-                    <FilledIconToggleButton phx-change="" shape="8" checked="false"
-                      colors="$colorsForTemplate">
-                        <Icon image-vector="filled:Check" />
-                    </FilledIconToggleButton>
-                    <FilledIconToggleButton phx-change="" shape="8" checked="true" enabled="false"
-                      colors="$colorsForTemplate">
-                        <Icon image-vector="filled:Check" />
-                    </FilledIconToggleButton>
-                    <FilledIconToggleButton phx-change="" shape="8" checked="false" enabled="false"
-                      colors="$colorsForTemplate">
-                        <Icon image-vector="filled:Check" />
-                    </FilledIconToggleButton>                    
-                </Row>
+                <$row>
+                  <$filledIconToggleButton $attrShape="8" $attrChecked="true"
+                    $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Check" />
+                  </$filledIconToggleButton>
+                  <$filledIconToggleButton $attrShape="8" $attrChecked="false"
+                    $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Check" />
+                  </$filledIconToggleButton>
+                  <$filledIconToggleButton $attrShape="8" $attrChecked="true" $attrEnabled="false"
+                    $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Check" />
+                  </$filledIconToggleButton>
+                  <$filledIconToggleButton $attrShape="8" $attrChecked="false" $attrEnabled="false"
+                    $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Check" />
+                  </$filledIconToggleButton>                    
+                </$row>
                 """
         )
     }
@@ -292,20 +319,20 @@ class IconToggleButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <FilledTonalIconToggleButton phx-change="" checked="true">
-                        <Icon image-vector="filled:Cancel" />
-                    </FilledTonalIconButton>
-                    <FilledTonalIconToggleButton phx-change="" checked="false">
-                        <Icon image-vector="filled:Cancel" />
-                    </FilledTonalIconButton>
-                    <FilledTonalIconToggleButton phx-change="" checked="true" enabled="false">
-                        <Icon image-vector="filled:Cancel" />
-                    </FilledTonalIconButton>
-                    <FilledTonalIconToggleButton phx-change="" checked="false" enabled="false">
-                        <Icon image-vector="filled:Cancel" />
-                    </FilledTonalIconButton>                    
-                </Row>
+                <$row>
+                  <$filledTonalIconToggleButton $attrChecked="true">
+                    <$icon $attrImageVector="filled:Cancel" />
+                  </$filledTonalIconToggleButton>
+                  <$filledTonalIconToggleButton $attrChecked="false">
+                    <$icon $attrImageVector="filled:Cancel" />
+                  </$filledTonalIconToggleButton>
+                  <$filledTonalIconToggleButton $attrChecked="true" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Cancel" />
+                  </$filledTonalIconToggleButton>
+                  <$filledTonalIconToggleButton $attrChecked="false" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Cancel" />
+                  </$filledTonalIconToggleButton>                    
+                </$row>
                 """
         )
     }
@@ -314,12 +341,12 @@ class IconToggleButtonShotTest : LiveViewComposableTest() {
     fun filledTonalIconToggleButtonWithCustomColorsTest() {
         val colorsForTemplate = """
             {
-                'containerColor': 'system-red', 
-                'contentColor': 'system-yellow', 
-                'disabledContainerColor': 'system-light-gray', 
-                'disabledContentColor': 'system-dark-gray', 
-                'checkedContainerColor': 'system-blue', 
-                'checkedContentColor': 'system-green'
+            '$colorAttrContainerColor': '$Red', 
+            '$colorAttrContentColor': '$Yellow', 
+            '$colorAttrDisabledContainerColor': '$LightGray', 
+            '$colorAttrDisabledContentColor': '$DarkGray', 
+            '$colorAttrCheckedContainerColor': '$Blue', 
+            '$colorAttrCheckedContentColor': '$Green'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -370,24 +397,24 @@ class IconToggleButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <FilledTonalIconToggleButton phx-change="" shape="8" checked="true"
-                      colors="$colorsForTemplate">
-                        <Icon image-vector="filled:AddCircle" />
-                    </FilledTonalIconToggleButton>
-                    <FilledTonalIconToggleButton phx-change="" shape="8" checked="false"
-                      colors="$colorsForTemplate">
-                        <Icon image-vector="filled:AddCircle" />
-                    </FilledTonalIconToggleButton>
-                    <FilledTonalIconToggleButton phx-change="" shape="8" checked="true" enabled="false"
-                      colors="$colorsForTemplate">
-                        <Icon image-vector="filled:AddCircle" />
-                    </FilledTonalIconToggleButton>
-                    <FilledTonalIconToggleButton phx-change="" shape="8" checked="false" enabled="false"
-                      colors="$colorsForTemplate">
-                        <Icon image-vector="filled:AddCircle" />
-                    </FilledTonalIconToggleButton>                    
-                </Row>
+                <$row>
+                  <$filledTonalIconToggleButton $attrShape="8" $attrChecked="true"
+                    $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:AddCircle" />
+                  </$filledTonalIconToggleButton>
+                  <$filledTonalIconToggleButton $attrShape="8" $attrChecked="false"
+                    $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:AddCircle" />
+                  </$filledTonalIconToggleButton>
+                  <$filledTonalIconToggleButton $attrShape="8" $attrChecked="true" $attrEnabled="false"
+                    $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:AddCircle" />
+                  </$filledTonalIconToggleButton>
+                  <$filledTonalIconToggleButton $attrShape="8" $attrChecked="false" $attrEnabled="false"
+                    $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:AddCircle" />
+                  </$filledTonalIconToggleButton>                    
+                </$row>
                 """
         )
     }
@@ -418,27 +445,27 @@ class IconToggleButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <OutlinedIconToggleButton phx-change="" checked="true">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </OutlinedIconToggleButton>
-                    <OutlinedIconToggleButton phx-change="" checked="false">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </OutlinedIconToggleButton>
-                    <OutlinedIconToggleButton phx-change="" checked="true" enabled="false">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </OutlinedIconToggleButton>   
-                    <OutlinedIconToggleButton phx-change="" checked="false" enabled="false">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </OutlinedIconToggleButton>                                      
-                </Row>
+                <$row>
+                  <$outlinedIconToggleButton $attrChecked="true">
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$outlinedIconToggleButton>
+                  <$outlinedIconToggleButton $attrChecked="false">
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$outlinedIconToggleButton>
+                  <$outlinedIconToggleButton $attrChecked="true" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$outlinedIconToggleButton>   
+                  <$outlinedIconToggleButton $attrChecked="false" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$outlinedIconToggleButton>                                      
+                </$row>
                 """
         )
     }
 
     @Test
     fun outlinedIconToggleButtonWithCustomBorderTest() {
-        val borderForTemplate = "{'width': '2', 'color': 'system-magenta'}"
+        val borderForTemplate = "{'$attrWidth': '2', '$attrColor': '$Magenta'}"
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val border = BorderStroke(2.dp, Color.Magenta)
@@ -476,20 +503,20 @@ class IconToggleButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <OutlinedIconToggleButton phx-change="" checked="true" border="$borderForTemplate">
-                        <Icon image-vector="filled:FilterAlt" />
-                    </OutlinedIconButton>
-                    <OutlinedIconToggleButton phx-change="" checked="false" border="$borderForTemplate">
-                        <Icon image-vector="filled:FilterAlt" />
-                    </OutlinedIconButton>
-                    <OutlinedIconToggleButton phx-change="" checked="true" enabled="false" border="$borderForTemplate">
-                        <Icon image-vector="filled:FilterAlt" />
-                    </OutlinedIconButton>
-                    <OutlinedIconToggleButton phx-change="" checked="false" enabled="false" border="$borderForTemplate">
-                        <Icon image-vector="filled:FilterAlt" />
-                    </OutlinedIconButton>                    
-                </Row>
+                <$row>
+                  <$outlinedIconToggleButton $attrChecked="true" $attrBorder="$borderForTemplate">
+                    <$icon $attrImageVector="filled:FilterAlt" />
+                  </$outlinedIconToggleButton>
+                  <$outlinedIconToggleButton $attrChecked="false" $attrBorder="$borderForTemplate">
+                    <$icon $attrImageVector="filled:FilterAlt" />
+                  </$outlinedIconToggleButton>
+                  <$outlinedIconToggleButton $attrChecked="true" $attrEnabled="false" $attrBorder="$borderForTemplate">
+                    <$icon $attrImageVector="filled:FilterAlt" />
+                  </$outlinedIconToggleButton>
+                  <$outlinedIconToggleButton $attrChecked="false" $attrEnabled="false" $attrBorder="$borderForTemplate">
+                    <$icon $attrImageVector="filled:FilterAlt" />
+                  </$outlinedIconToggleButton>                    
+                </$row>
                 """
         )
     }
@@ -498,15 +525,15 @@ class IconToggleButtonShotTest : LiveViewComposableTest() {
     fun outlinedIconToggleButtonWithCustomColorsTest() {
         val colorsForTemplate = """
             {
-                'containerColor': 'system-red', 
-                'contentColor': 'system-yellow', 
-                'disabledContainerColor': 'system-light-gray', 
-                'disabledContentColor': 'system-dark-gray', 
-                'checkedContainerColor': 'system-blue', 
-                'checkedContentColor': 'system-green'
+            '$colorAttrContainerColor': '$Red', 
+            '$colorAttrContentColor': '$Yellow', 
+            '$colorAttrDisabledContainerColor': '$LightGray', 
+            '$colorAttrDisabledContentColor': '$DarkGray', 
+            '$colorAttrCheckedContainerColor': '$Blue', 
+            '$colorAttrCheckedContentColor': '$Green'
             }
             """.toJsonForTemplate()
-        val borderForTemplate = "{'width': '2', 'color': 'system-magenta'}"
+        val borderForTemplate = "{'$attrWidth': '2', '$attrColor': '$Magenta'}"
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val border = BorderStroke(2.dp, Color.Magenta)
@@ -561,24 +588,24 @@ class IconToggleButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <OutlinedIconToggleButton phx-change="" shape="8" checked="true"
-                      border="$borderForTemplate" colors="$colorsForTemplate">
-                        <Icon image-vector="filled:NearMe" />
-                    </OutlinedIconButton>
-                    <OutlinedIconToggleButton phx-change="" shape="8" checked="false"
-                      border="$borderForTemplate" colors="$colorsForTemplate">
-                        <Icon image-vector="filled:NearMe" />
-                    </OutlinedIconButton>
-                    <OutlinedIconToggleButton phx-change="" shape="8" checked="true" enabled="false"
-                      border="$borderForTemplate" colors="$colorsForTemplate">
-                        <Icon image-vector="filled:NearMe" />
-                    </OutlinedIconButton>
-                    <OutlinedIconToggleButton phx-change="" shape="8" checked="false" enabled="false"
-                      border="$borderForTemplate" colors="$colorsForTemplate">
-                        <Icon image-vector="filled:NearMe" />
-                    </OutlinedIconButton>                    
-                </Row>
+                <$row>
+                  <$outlinedIconToggleButton $attrShape="8" $attrChecked="true"
+                    $attrBorder="$borderForTemplate" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:NearMe" />
+                  </$outlinedIconToggleButton>
+                  <$outlinedIconToggleButton $attrShape="8" $attrChecked="false"
+                    $attrBorder="$borderForTemplate" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:NearMe" />
+                  </$outlinedIconToggleButton>
+                  <$outlinedIconToggleButton $attrShape="8" $attrChecked="true" $attrEnabled="false"
+                    $attrBorder="$borderForTemplate" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:NearMe" />
+                  </$outlinedIconToggleButton>
+                  <$outlinedIconToggleButton $attrShape="8" $attrChecked="false" $attrEnabled="false"
+                    $attrBorder="$borderForTemplate" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:NearMe" />
+                  </$outlinedIconToggleButton>                    
+                </$row>
                 """
         )
     }

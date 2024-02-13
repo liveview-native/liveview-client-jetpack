@@ -19,6 +19,14 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import org.phoenixframework.liveview.R
+import org.phoenixframework.liveview.data.constants.FontStyleValues
+import org.phoenixframework.liveview.data.constants.FontWeightValues
+import org.phoenixframework.liveview.data.constants.HyphensValues
+import org.phoenixframework.liveview.data.constants.LineBreakValues
+import org.phoenixframework.liveview.data.constants.TextAlignValues
+import org.phoenixframework.liveview.data.constants.TextDecorationValues
+import org.phoenixframework.liveview.data.constants.TextDirectionValues
+import org.phoenixframework.liveview.data.constants.TextStyleValues
 import org.phoenixframework.liveview.domain.extensions.toColor
 
 internal val provider: GoogleFont.Provider by lazy {
@@ -119,32 +127,32 @@ internal fun fontSizeFromString(fontSize: String): TextUnit {
 
 internal fun fontWeightFromString(fontWeight: String?): FontWeight? {
     return when (fontWeight) {
-        "thin",
-        "W100" -> FontWeight(100)
+        FontWeightValues.thin,
+        FontWeightValues.W100 -> FontWeight(100)
 
-        "extraLight",
-        "W200" -> FontWeight(200)
+        FontWeightValues.extraLight,
+        FontWeightValues.W200 -> FontWeight(200)
 
-        "light",
-        "W300" -> FontWeight(300)
+        FontWeightValues.light,
+        FontWeightValues.W300 -> FontWeight(300)
 
-        "normal",
-        "W400" -> FontWeight(400)
+        FontWeightValues.normal,
+        FontWeightValues.W400 -> FontWeight(400)
 
-        "medium",
-        "W500" -> FontWeight(500)
+        FontWeightValues.medium,
+        FontWeightValues.W500 -> FontWeight(500)
 
-        "semiBold",
-        "W600" -> FontWeight(600)
+        FontWeightValues.semiBold,
+        FontWeightValues.W600 -> FontWeight(600)
 
-        "bold",
-        "W700" -> FontWeight(700)
+        FontWeightValues.bold,
+        FontWeightValues.W700 -> FontWeight(700)
 
-        "extraBold",
-        "W800" -> FontWeight(800)
+        FontWeightValues.extraBold,
+        FontWeightValues.W800 -> FontWeight(800)
 
-        "black",
-        "W900" -> FontWeight(900)
+        FontWeightValues.black,
+        FontWeightValues.W900 -> FontWeight(900)
 
         else -> null
     }
@@ -152,8 +160,8 @@ internal fun fontWeightFromString(fontWeight: String?): FontWeight? {
 
 internal fun fontStyleFromString(fontStyle: String?): FontStyle {
     return when (fontStyle) {
-        "normal" -> FontStyle.Normal
-        "italic" -> FontStyle.Italic
+        FontStyleValues.normal -> FontStyle.Normal
+        FontStyleValues.italic -> FontStyle.Italic
         else -> FontStyle.Normal
     }
 }
@@ -165,21 +173,21 @@ internal fun letterSpacingFromString(letterSpacing: String): TextUnit {
 internal fun textDecorationFromString(textDecoration: String?): TextDecoration {
     return when (textDecoration) {
         // Draws a horizontal line below the text.
-        "underline" -> TextDecoration.Underline
+        TextDecorationValues.underline -> TextDecoration.Underline
         // Draws a horizontal line over the text.
-        "lineThrough" -> TextDecoration.LineThrough
+        TextDecorationValues.lineThrough -> TextDecoration.LineThrough
         else -> TextDecoration.None
     }
 }
 
 internal fun textAlignFromString(textAlign: String?): TextAlign {
     return when (textAlign) {
-        "left" -> TextAlign.Left
-        "right" -> TextAlign.Right
-        "center" -> TextAlign.Center
-        "justify" -> TextAlign.Justify
-        "start" -> TextAlign.Start
-        "end" -> TextAlign.End
+        TextAlignValues.left -> TextAlign.Left
+        TextAlignValues.right -> TextAlign.Right
+        TextAlignValues.center -> TextAlign.Center
+        TextAlignValues.justify -> TextAlign.Justify
+        TextAlignValues.start -> TextAlign.Start
+        TextAlignValues.end -> TextAlign.End
         else -> TextAlign.Start
     }
 }
@@ -190,28 +198,28 @@ internal fun lineHeightFromString(lineHeight: String): TextUnit {
 
 internal fun lineBreakFromString(lineBreak: String): LineBreak {
     return when (lineBreak) {
-        "simple" -> LineBreak.Simple
-        "paragraph" -> LineBreak.Paragraph
-        "heading" -> LineBreak.Heading
+        LineBreakValues.simple -> LineBreak.Simple
+        LineBreakValues.paragraph -> LineBreak.Paragraph
+        LineBreakValues.heading -> LineBreak.Heading
         else -> LineBreak.Simple
     }
 }
 
 internal fun hyphensFromString(hyphens: String): Hyphens {
     return when (hyphens) {
-        "none" -> Hyphens.None
-        "auto" -> Hyphens.Auto
+        HyphensValues.none -> Hyphens.None
+        HyphensValues.auto -> Hyphens.Auto
         else -> Hyphens.Unspecified
     }
 }
 
 internal fun textDirectionFromString(textDirection: String): TextDirection {
     return when (textDirection) {
-        "ltr" -> TextDirection.Ltr
-        "rtl" -> TextDirection.Rtl
-        "content" -> TextDirection.Content
-        "contentOrRtl" -> TextDirection.ContentOrRtl
-        "contentOrLtr" -> TextDirection.ContentOrLtr
+        TextDirectionValues.ltr -> TextDirection.Ltr
+        TextDirectionValues.rtl -> TextDirection.Rtl
+        TextDirectionValues.content -> TextDirection.Content
+        TextDirectionValues.contentOrRtl -> TextDirection.ContentOrRtl
+        TextDirectionValues.contentOrLtr -> TextDirection.ContentOrLtr
         else -> TextDirection.Unspecified
     }
 }
@@ -220,21 +228,21 @@ internal fun textDirectionFromString(textDirection: String): TextDirection {
 internal fun textStyleFromString(textStyle: String?): TextStyle {
     return when (textStyle) {
         null -> LocalTextStyle.current
-        "displayLarge" -> MaterialTheme.typography.displayLarge
-        "displayMedium" -> MaterialTheme.typography.displayMedium
-        "displaySmall" -> MaterialTheme.typography.displaySmall
-        "headlineLarge" -> MaterialTheme.typography.headlineLarge
-        "headlineMedium" -> MaterialTheme.typography.headlineMedium
-        "headlineSmall" -> MaterialTheme.typography.headlineSmall
-        "titleLarge" -> MaterialTheme.typography.titleLarge
-        "titleMedium" -> MaterialTheme.typography.titleMedium
-        "titleSmall" -> MaterialTheme.typography.titleSmall
-        "bodyLarge" -> MaterialTheme.typography.bodyLarge
-        "bodyMedium" -> MaterialTheme.typography.bodyMedium
-        "bodySmall" -> MaterialTheme.typography.bodySmall
-        "labelLarge" -> MaterialTheme.typography.labelLarge
-        "labelMedium" -> MaterialTheme.typography.labelMedium
-        "labelSmall" -> MaterialTheme.typography.labelSmall
+        TextStyleValues.displayLarge -> MaterialTheme.typography.displayLarge
+        TextStyleValues.displayMedium -> MaterialTheme.typography.displayMedium
+        TextStyleValues.displaySmall -> MaterialTheme.typography.displaySmall
+        TextStyleValues.headlineLarge -> MaterialTheme.typography.headlineLarge
+        TextStyleValues.headlineMedium -> MaterialTheme.typography.headlineMedium
+        TextStyleValues.headlineSmall -> MaterialTheme.typography.headlineSmall
+        TextStyleValues.titleLarge -> MaterialTheme.typography.titleLarge
+        TextStyleValues.titleMedium -> MaterialTheme.typography.titleMedium
+        TextStyleValues.titleSmall -> MaterialTheme.typography.titleSmall
+        TextStyleValues.bodyLarge -> MaterialTheme.typography.bodyLarge
+        TextStyleValues.bodyMedium -> MaterialTheme.typography.bodyMedium
+        TextStyleValues.bodySmall -> MaterialTheme.typography.bodySmall
+        TextStyleValues.labelLarge -> MaterialTheme.typography.labelLarge
+        TextStyleValues.labelMedium -> MaterialTheme.typography.labelMedium
+        TextStyleValues.labelSmall -> MaterialTheme.typography.labelSmall
         else -> LocalTextStyle.current
     }
 }

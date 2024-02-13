@@ -5,6 +5,7 @@ import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Shapes
 import androidx.compose.ui.unit.dp
+import org.phoenixframework.liveview.data.constants.ShapeValues
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 
 fun shapesFromThemeData(map: Map<String, Any>): Shapes {
@@ -32,8 +33,8 @@ internal fun shapeFromString(
     default: CornerBasedShape = RoundedCornerShape(0.dp)
 ): CornerBasedShape = when {
     shape.isNotEmptyAndIsDigitsOnly() -> RoundedCornerShape(shape.toInt().dp)
-    shape.isNotEmpty() && shape == "circle" -> CircleShape
-    shape.isNotEmpty() && shape == "rectangle" -> RoundedCornerShape(0.dp)
+    shape == ShapeValues.circle -> CircleShape
+    shape == ShapeValues.rectangle -> RoundedCornerShape(0.dp)
     // TODO add support for RoundedCornerShape specifying the 4 corners
     //  (topLeft, topRight, bottomLeft, bottomRight)
     else -> default

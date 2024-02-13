@@ -32,7 +32,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDividerColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInputFieldColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInputFieldColors
 import org.phoenixframework.liveview.data.constants.Templates.templateContent
 import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
 import org.phoenixframework.liveview.data.constants.Templates.templatePlaceholder
@@ -58,9 +58,9 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  * <SearchBar query={"#{@queryText}"} phx-change="onQueryChange" active="false"
  *   phx-value="Initial value" phx-submit="onSearch">
- *   <Icon image-vector="filled:Search"  template="leadingIcon"/>
+ *   <Icon imageVector="filled:Search"  template="leadingIcon"/>
  *   <IconButton phx-click="" template="trailingIcon">
- *     <Icon image-vector="filled:Clear" />
+ *     <Icon imageVector="filled:Clear" />
  *   </IconButton>
  *   <Text template="placeholder">Placeholder</Text>
  *   <Text template="content">Searching by: <%= @queryText %></Text>
@@ -237,10 +237,10 @@ internal class SearchBarDTO private constructor(builder: Builder) :
                     ?: MaterialTheme.colorScheme.surface,
                 dividerColor = colors[colorAttrDividerColor]?.toColor()
                     ?: MaterialTheme.colorScheme.outline,
-                inputFieldColors = if (colors.containsKey(colorAttrInputFieldColor)) {
+                inputFieldColors = if (colors.containsKey(colorAttrInputFieldColors)) {
                     TextFieldDTO.getTextFieldColors(
                         textFieldColors = (
-                                (colors[colorAttrInputFieldColor] as? Map<String, String>)
+                                (colors[colorAttrInputFieldColors] as? Map<String, String>)
                                     ?: emptyMap()
                                 ).toImmutableMap()
                     )
@@ -301,7 +301,7 @@ internal class SearchBarDTO private constructor(builder: Builder) :
          * Sets the event name to be triggered on the server when the active state changes.
          *
          * ```
-         * <SearchBar on-active-changed="yourServerEventHandler">...</SearchBar>
+         * <SearchBar onActiveChanged="yourServerEventHandler">...</SearchBar>
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
@@ -324,7 +324,7 @@ internal class SearchBarDTO private constructor(builder: Builder) :
         /**
          * The shadow elevation of the search bar.
          * ```
-         * <SearchBar shadow-elevation="12" >
+         * <SearchBar shadowElevation="12" >
          * ```
          * @param shadowElevation int value indicating the shadow elevation.
          */
@@ -339,8 +339,9 @@ internal class SearchBarDTO private constructor(builder: Builder) :
          * ```
          * <SearchBar shape="circle" >...</SearchBar>
          * ```
-         * @param shape search bar's shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied for all four corners.
+         * @param shape search bar's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or an integer representing
+         * the curve size applied for all four corners.
          */
         fun shape(shape: String) = apply {
             if (shape.isNotEmpty()) {
@@ -352,7 +353,7 @@ internal class SearchBarDTO private constructor(builder: Builder) :
          * A higher tonal elevation value will result in a darker color in light theme and lighter
          * color in dark theme.
          * ```
-         * <SearchBar tonal-elevation="24">...</SearchBar>
+         * <SearchBar tonalElevation="24">...</SearchBar>
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */
@@ -365,7 +366,7 @@ internal class SearchBarDTO private constructor(builder: Builder) :
         /**
          * Window insets to be passed to the search bar via PaddingValues params.
          * ```
-         * <SearchBar window-insets="{'bottom': '100'}" >
+         * <SearchBar windowInsets="{'bottom': '100'}" >
          * ```
          * @param insets the space, in Dp, at the each border of the window that the inset
          * represents. The supported values are: `left`, `top`, `bottom`, and `right`.

@@ -14,6 +14,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrShadowElevation
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrHeadlineColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrOverlineColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSupportingColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconColor
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Cyan
+import org.phoenixframework.liveview.data.constants.SystemColorValues.LightGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Magenta
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.Templates.templateHeadlineContent
+import org.phoenixframework.liveview.data.constants.Templates.templateLeadingContent
+import org.phoenixframework.liveview.data.constants.Templates.templateOverlineContent
+import org.phoenixframework.liveview.data.constants.Templates.templateSupportingContent
+import org.phoenixframework.liveview.data.constants.Templates.templateTrailingContent
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.listItem
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class ListItemShotTest : LiveViewComposableTest() {
     @Test
@@ -100,47 +128,47 @@ class ListItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column size="fill">
-                  <ListItem>
-                    <Text template="headlineContent">Headline</Text>
-                  </ListItem>
-                  <ListItem tonal-elevation="8" shadow-elevation="8" >
-                    <Text template="headlineContent">Headline</Text>
-                  </ListItem>                  
-                  <ListItem>
-                    <Text template="headlineContent">Headline</Text>
-                    <Icon template="leadingContent" image-vector="filled:Add" />
-                    <Icon template="trailingContent" image-vector="filled:ChevronRight" />
-                  </ListItem>                  
-                  <ListItem>
-                    <Text template="headlineContent">Headline</Text>
-                    <Text template="overlineContent">Overline</Text>
-                  </ListItem>   
-                  <ListItem>
-                    <Text template="headlineContent">Headline</Text>
-                    <Text template="overlineContent">Overline</Text>
-                    <Icon template="leadingContent" image-vector="filled:Add" />
-                    <Icon template="trailingContent" image-vector="filled:ChevronRight" />
-                  </ListItem> 
-                  <ListItem>
-                    <Text template="headlineContent">Headline</Text>
-                    <Text template="overlineContent">Overline</Text>
-                    <Text template="supportingContent">Supporting</Text>
-                  </ListItem>  
-                  <ListItem>
-                    <Text template="headlineContent">Headline</Text>
-                    <Text template="overlineContent">Overline</Text>
-                    <Text template="supportingContent">Supporting</Text>
-                    <Icon template="leadingContent" image-vector="filled:Add" />
-                  </ListItem>  
-                  <ListItem>
-                    <Text template="headlineContent">Headline</Text>
-                    <Text template="overlineContent">Overline</Text>
-                    <Text template="supportingContent">Supporting</Text>
-                    <Icon template="leadingContent" image-vector="filled:Add" />
-                    <Icon template="trailingContent" image-vector="filled:ChevronRight" />
-                  </ListItem>                                                                   
-                </Column>
+                <$column $attrSize="$fill">
+                  <$listItem>
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                  </$listItem>
+                  <$listItem $attrTonalElevation="8" $attrShadowElevation="8" >
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                  </$listItem>                  
+                  <$listItem>
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                    <$icon $attrTemplate="$templateLeadingContent" $attrImageVector="filled:Add" />
+                    <$icon $attrTemplate="$templateTrailingContent" $attrImageVector="filled:ChevronRight" />
+                  </$listItem>                  
+                  <$listItem>
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                    <$text $attrTemplate="$templateOverlineContent">Overline</$text>
+                  </$listItem>   
+                  <$listItem>
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                    <$text $attrTemplate="$templateOverlineContent">Overline</$text>
+                    <$icon $attrTemplate="$templateLeadingContent" $attrImageVector="filled:Add" />
+                    <$icon $attrTemplate="$templateTrailingContent" $attrImageVector="filled:ChevronRight" />
+                  </$listItem> 
+                  <$listItem>
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                    <$text $attrTemplate="$templateOverlineContent">Overline</$text>
+                    <$text $attrTemplate="$templateSupportingContent">Supporting</$text>
+                  </$listItem>  
+                  <$listItem>
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                    <$text $attrTemplate="$templateOverlineContent">Overline</$text>
+                    <$text $attrTemplate="$templateSupportingContent">Supporting</$text>
+                    <$icon $attrTemplate="$templateLeadingContent" $attrImageVector="filled:Add" />
+                  </$listItem>  
+                  <$listItem>
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                    <$text $attrTemplate="$templateOverlineContent">Overline</$text>
+                    <$text $attrTemplate="$templateSupportingContent">Supporting</$text>
+                    <$icon $attrTemplate="$templateLeadingContent" $attrImageVector="filled:Add" />
+                    <$icon $attrTemplate="$templateTrailingContent" $attrImageVector="filled:ChevronRight" />
+                  </$listItem>                                                                   
+                </$column>
                 """
         )
     }
@@ -149,12 +177,12 @@ class ListItemShotTest : LiveViewComposableTest() {
     fun listItemWithCustomColorsTest() {
         val colorsForTemplate = """
             {
-            'containerColor': 'system-light-gray',
-            'headlineColor': 'system-blue',
-            'leadingIconColor': 'system-red',
-            'overlineColor': 'system-yellow',
-            'supportingColor': 'system-cyan',
-            'trailingIconColor': 'system-magenta'
+            '$colorAttrContainerColor': '$LightGray',
+            '$colorAttrHeadlineColor': '$Blue',
+            '$colorAttrLeadingIconColor': '$Red',
+            '$colorAttrOverlineColor': '$Yellow',
+            '$colorAttrSupportingColor': '$Cyan',
+            '$colorAttrTrailingIconColor': '$Magenta'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -249,44 +277,44 @@ class ListItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column size="fill">
-                  <ListItem colors="$colorsForTemplate">
-                    <Text template="headlineContent">Headline</Text>
-                  </ListItem>                 
-                  <ListItem colors="$colorsForTemplate">
-                    <Text template="headlineContent">Headline</Text>
-                    <Icon template="leadingContent" image-vector="filled:Add" />
-                    <Icon template="trailingContent" image-vector="filled:ChevronRight" />
-                  </ListItem>                  
-                  <ListItem colors="$colorsForTemplate">
-                    <Text template="headlineContent">Headline</Text>
-                    <Text template="overlineContent">Overline</Text>
-                  </ListItem>   
-                  <ListItem colors="$colorsForTemplate">
-                    <Text template="headlineContent">Headline</Text>
-                    <Text template="overlineContent">Overline</Text>
-                    <Icon template="leadingContent" image-vector="filled:Add" />
-                    <Icon template="trailingContent" image-vector="filled:ChevronRight" />
-                  </ListItem> 
-                  <ListItem colors="$colorsForTemplate">
-                    <Text template="headlineContent">Headline</Text>
-                    <Text template="overlineContent">Overline</Text>
-                    <Text template="supportingContent">Supporting</Text>
-                  </ListItem>  
-                  <ListItem colors="$colorsForTemplate">
-                    <Text template="headlineContent">Headline</Text>
-                    <Text template="overlineContent">Overline</Text>
-                    <Text template="supportingContent">Supporting</Text>
-                    <Icon template="leadingContent" image-vector="filled:Add" />
-                  </ListItem>  
-                  <ListItem colors="$colorsForTemplate">
-                    <Text template="headlineContent">Headline</Text>
-                    <Text template="overlineContent">Overline</Text>
-                    <Text template="supportingContent">Supporting</Text>
-                    <Icon template="leadingContent" image-vector="filled:Add" />
-                    <Icon template="trailingContent" image-vector="filled:ChevronRight" />
-                  </ListItem>                                                                   
-                </Column>
+                <$column $attrSize="$fill">
+                  <$listItem $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                  </$listItem>                 
+                  <$listItem $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                    <$icon $attrTemplate="$templateLeadingContent" $attrImageVector="filled:Add" />
+                    <$icon $attrTemplate="$templateTrailingContent" $attrImageVector="filled:ChevronRight" />
+                  </$listItem>                  
+                  <$listItem $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                    <$text $attrTemplate="$templateOverlineContent">Overline</$text>
+                  </$listItem>   
+                  <$listItem $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                    <$text $attrTemplate="$templateOverlineContent">Overline</$text>
+                    <$icon $attrTemplate="$templateLeadingContent" $attrImageVector="filled:Add" />
+                    <$icon $attrTemplate="$templateTrailingContent" $attrImageVector="filled:ChevronRight" />
+                  </$listItem> 
+                  <$listItem $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                    <$text $attrTemplate="$templateOverlineContent">Overline</$text>
+                    <$text $attrTemplate="$templateSupportingContent">Supporting</$text>
+                  </$listItem>  
+                  <$listItem $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                    <$text $attrTemplate="$templateOverlineContent">Overline</$text>
+                    <$text $attrTemplate="$templateSupportingContent">Supporting</$text>
+                    <$icon $attrTemplate="$templateLeadingContent" $attrImageVector="filled:Add" />
+                  </$listItem>  
+                  <$listItem $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
+                    <$text $attrTemplate="$templateOverlineContent">Overline</$text>
+                    <$text $attrTemplate="$templateSupportingContent">Supporting</$text>
+                    <$icon $attrTemplate="$templateLeadingContent" $attrImageVector="filled:Add" />
+                    <$icon $attrTemplate="$templateTrailingContent" $attrImageVector="filled:ChevronRight" />
+                  </$listItem>                                                                   
+                </$column>
                 """
         )
     }

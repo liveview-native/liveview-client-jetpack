@@ -16,6 +16,28 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlwaysShowLabel
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrIndicatorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedTextColor
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredFilled
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationBar
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationBarItem
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class NavigationBarItemShotTest : LiveViewComposableTest() {
     @Test
@@ -53,17 +75,17 @@ class NavigationBarItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <NavigationBar>
-                  <NavigationBarItem selected="true" phx-click="" phx-value="0">
-                    <Icon image-vector="filled:HorizontalDistribute" template="icon"/>
-                  </NavigationBarItem>
-                  <NavigationBarItem selected="false" phx-click="" phx-value="1">
-                    <Icon image-vector="filled:VerticalDistribute" template="icon"/>
-                  </NavigationBarItem>
-                  <NavigationBarItem selected="false" phx-click="" phx-value="1">
-                    <Icon image-vector="filled:Add" template="icon"/>
-                  </NavigationBarItem>                      
-                </NavigationBar>
+                <$navigationBar>
+                  <$navigationBarItem $attrSelected="true" $attrPhxValue="0">
+                    <$icon $attrImageVector="$filled:HorizontalDistribute" $attrTemplate="$templateIcon"/>
+                  </$navigationBarItem>
+                  <$navigationBarItem $attrSelected="false" $attrPhxValue="1">
+                    <$icon $attrImageVector="$filled:VerticalDistribute" $attrTemplate="$templateIcon"/>
+                  </$navigationBarItem>
+                  <$navigationBarItem $attrSelected="false" $attrPhxValue="2">
+                    <$icon $attrImageVector="$filled:Add" $attrTemplate="$templateIcon"/>
+                  </$navigationBarItem>                      
+                </$navigationBar>
                 """
         )
     }
@@ -112,20 +134,20 @@ class NavigationBarItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <NavigationBar>
-                  <NavigationBarItem selected="true" phx-click="" phx-value="0">
-                    <Icon image-vector="filled:Home" template="icon"/>
-                    <Text template="label">Home</Text>
-                  </NavigationBarItem>
-                  <NavigationBarItem selected="false" phx-click="" phx-value="1">
-                    <Icon image-vector="filled:AccountCircle" template="icon"/>
-                    <Text template="label">Account</Text>
-                  </NavigationBarItem>
-                  <NavigationBarItem selected="false" phx-click="" phx-value="1">
-                    <Icon image-vector="filled:Settings" template="icon"/>
-                    <Text template="label">Settings</Text>
-                  </NavigationBarItem>                      
-                </NavigationBar>
+                <$navigationBar>
+                  <$navigationBarItem $attrSelected="true" $attrPhxValue="0">
+                    <$icon $attrImageVector="$filled:Home" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Home</$text>
+                  </$navigationBarItem>
+                  <$navigationBarItem $attrSelected="false" $attrPhxValue="1">
+                    <$icon $attrImageVector="$filled:AccountCircle" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Account</$text>
+                  </$navigationBarItem>
+                  <$navigationBarItem $attrSelected="false" $attrPhxValue="2">
+                    <$icon $attrImageVector="$filled:Settings" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Settings</$text>
+                  </$navigationBarItem>                      
+                </$navigationBar>
                 """
         )
     }
@@ -177,20 +199,20 @@ class NavigationBarItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <NavigationBar>
-                  <NavigationBarItem always-show-label="false" selected="true" phx-click="" phx-value="0">
-                    <Icon image-vector="filled:Home" template="icon"/>
-                    <Text template="label">Home</Text>
-                  </NavigationBarItem>
-                  <NavigationBarItem always-show-label="false" selected="false" phx-click="" phx-value="1">
-                    <Icon image-vector="filled:AccountCircle" template="icon"/>
-                    <Text template="label">Account</Text>
-                  </NavigationBarItem>
-                  <NavigationBarItem always-show-label="false" selected="false" phx-click="" phx-value="1">
-                    <Icon image-vector="filled:Settings" template="icon"/>
-                    <Text template="label">Settings</Text>
-                  </NavigationBarItem>                      
-                </NavigationBar>
+                <$navigationBar>
+                  <$navigationBarItem $attrAlwaysShowLabel="false" $attrSelected="true" $attrPhxValue="0">
+                    <$icon $attrImageVector="filled:Home" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Home</$text>
+                  </$navigationBarItem>
+                  <$navigationBarItem $attrAlwaysShowLabel="false" $attrSelected="false" $attrPhxValue="1">
+                    <$icon $attrImageVector="filled:AccountCircle" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Account</$text>
+                  </$navigationBarItem>
+                  <$navigationBarItem $attrAlwaysShowLabel="false" $attrSelected="false" $attrPhxValue="2">
+                    <$icon $attrImageVector="filled:Settings" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Settings</$text>
+                  </$navigationBarItem>                      
+                </$navigationBar>
                 """
         )
     }
@@ -199,13 +221,13 @@ class NavigationBarItemShotTest : LiveViewComposableTest() {
     fun navigationBarItemWithCustomColorsTest() {
         val templateColors = """ 
             {
-            'selectedIconColor': '#FF00FF00',
-            'selectedTextColor': '#FFFF0000',
-            'indicatorColor': '#FFFFFF00',
-            'unselectedIconColor': '#FF00FFFF',
-            'unselectedTextColor': '#FFFF00FF',
-            'disabledIconColor': '#FFCCCCCC',
-            'disabledTextColor': '#FF888888'
+            '$colorAttrSelectedIconColor': '#FF00FF00',
+            '$colorAttrSelectedTextColor': '#FFFF0000',
+            '$colorAttrIndicatorColor': '#FFFFFF00',
+            '$colorAttrUnselectedIconColor': '#FF00FFFF',
+            '$colorAttrUnselectedTextColor': '#FFFF00FF',
+            '$colorAttrDisabledIconColor': '#FFCCCCCC',
+            '$colorAttrDisabledTextColor': '#FF888888'
             }
             """.toJsonForTemplate()
 
@@ -277,24 +299,24 @@ class NavigationBarItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <NavigationBar>
-                  <NavigationBarItem selected="true" phx-click="" phx-value="0" colors="$templateColors">
-                    <Icon image-vector="filled:Home" template="icon"/>
-                    <Text template="label">Home</Text>
-                  </NavigationBarItem>
-                  <NavigationBarItem selected="false" phx-click="" phx-value="1" colors="$templateColors">
-                    <Icon image-vector="filled:AccountCircle" template="icon"/>
-                    <Text template="label">Account</Text>
-                  </NavigationBarItem>
-                  <NavigationBarItem selected="false" phx-click="" phx-value="2" colors="$templateColors">
-                    <Icon image-vector="filled:Settings" template="icon"/>
-                    <Text template="label">Settings</Text>
-                  </NavigationBarItem>     
-                  <NavigationBarItem selected="false" enabled="false" phx-click="" phx-value="3" colors="$templateColors">
-                    <Icon image-vector="autoMirrored.filled:ExitToApp" template="icon"/>
-                    <Text template="label">Exit</Text>
-                  </NavigationBarItem>                                     
-                </NavigationBar>
+                <$navigationBar>
+                  <$navigationBarItem $attrSelected="true" $attrPhxValue="0" $attrColors="$templateColors">
+                    <$icon $attrImageVector="$filled:Home" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Home</$text>
+                  </$navigationBarItem>
+                  <$navigationBarItem $attrSelected="false" $attrPhxValue="1" $attrColors="$templateColors">
+                    <$icon $attrImageVector="$filled:AccountCircle" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Account</$text>
+                  </$navigationBarItem>
+                  <$navigationBarItem $attrSelected="false" $attrPhxValue="2" $attrColors="$templateColors">
+                    <$icon $attrImageVector="$filled:Settings" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Settings</$text>
+                  </$navigationBarItem>     
+                  <$navigationBarItem $attrSelected="false" $attrEnabled="false" $attrPhxValue="3" $attrColors="$templateColors">
+                    <$icon $attrImageVector="$autoMirroredFilled:ExitToApp" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Exit</$text>
+                  </$navigationBarItem>                                     
+                </$navigationBar>
                 """
         )
     }

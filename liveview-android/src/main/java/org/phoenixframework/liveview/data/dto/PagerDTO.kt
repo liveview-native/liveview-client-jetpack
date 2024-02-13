@@ -44,7 +44,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * You can use beyondBoundsPageCount to place more pages before and after the visible pages.
  * ```
  * <Column size="fill">
- *   <TabRow selected-tab-index={"#{@selectedTab}"}>
+ *   <TabRow selectedTabIndex={"#{@selectedTab}"}>
  *     <Tab selected={"#{@selectedTab == "0"}"} phx-click="selectTab" phx-value="0">
  *       <Text template="text">Tab 0</Text>
  *     </Tab>
@@ -55,15 +55,15 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *       <Text template="text">Tab 2</Text>
  *     </Tab>
  *   </TabRow>
- *   <HorizontalPager current-page={"#{@selectedTab}"} page-count="3" phx-change="selectTab">
- *     <Box content-alignment="center" background="system-red" size="fill">
- *       <Text font-size="24">Red</Text>
+ *   <HorizontalPager currentPage={"#{@selectedTab}"} pageCount="3" phx-change="selectTab">
+ *     <Box contentAlignment="center" background="system-red" size="fill">
+ *       <Text fontSize="24">Red</Text>
  *     </Box>
- *     <Box content-alignment="center" background="system-green" size="fill">
- *       <Text font-size="24">Green</Text>
+ *     <Box contentAlignment="center" background="system-green" size="fill">
+ *       <Text fontSize="24">Green</Text>
  *     </Box>
- *     <Box content-alignment="center" background="system-blue" size="fill">
- *       <Text font-size="24">Blue</Text>
+ *     <Box contentAlignment="center" background="system-blue" size="fill">
+ *       <Text fontSize="24">Blue</Text>
  *     </Box>
  *   </HorizontalPager>
  * </Column>
@@ -196,7 +196,7 @@ internal class PagerDTO private constructor(builder: Builder) :
          * after the visible ones. This does not include the pages automatically composed and laid
          * out by the pre-fetcher in the direction of the scroll during scroll events.
          * ```
-         * <HorizontalPager beyond-bounds-page-count="2" >...</HorizontalPager>
+         * <HorizontalPager beyondBoundsPageCount="2" >...</HorizontalPager>
          * ```
          * @param count int value representing the number of pages to compose and layout before and
          * after the list of visible pages.
@@ -211,7 +211,7 @@ internal class PagerDTO private constructor(builder: Builder) :
          * before the first page or after the last one. Use pageSpacing to add spacing between the
          * pages.
          * ```
-         * <HorizontalPager content-padding="8" >...</HorizontalPager>
+         * <HorizontalPager contentPadding="8" >...</HorizontalPager>
          * ```
          * @param padding int value representing a padding around the whole content.
          */
@@ -225,7 +225,7 @@ internal class PagerDTO private constructor(builder: Builder) :
          * The current selected page index. Notice this value must be between 0 and pageCount
          * (exclusive). This value is also used as initial selected page.
          * ```
-         * <HorizontalPager current-page="0" >...</HorizontalPager>
+         * <HorizontalPager currentPage="0" >...</HorizontalPager>
          * ```
          * @param currentPage int value representing the current selected page index.
          */
@@ -236,9 +236,10 @@ internal class PagerDTO private constructor(builder: Builder) :
         /**
          * How pages are aligned horizontally in this in a VerticalPager.
          * ```
-         * <VerticalPager horizontal-alignment="center" >...</VerticalPager>
+         * <VerticalPager horizontalAlignment="center" >...</VerticalPager>
          * ```
-         * @param alignment supported values are 'start', 'center', and 'end'.
+         * @param alignment see supported values at
+         * [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
          */
         fun horizontalAlignment(alignment: String) = apply {
             this.horizontalAlignment = horizontalAlignmentFromString(alignment)
@@ -269,7 +270,7 @@ internal class PagerDTO private constructor(builder: Builder) :
         /**
          * The amount of pages this Pager will have.
          * ```
-         * <HorizontalPager page-count="3" >...</HorizontalPager>
+         * <HorizontalPager pageCount="3" >...</HorizontalPager>
          * ```
          * @param count int value representing the amount of pages this Pager will have.
          */
@@ -280,7 +281,7 @@ internal class PagerDTO private constructor(builder: Builder) :
         /**
          * Use this to change how the pages will look like inside this pager.
          * ```
-         * <HorizontalPager page-size="fill" >...</HorizontalPager>
+         * <HorizontalPager pageSize="fill" >...</HorizontalPager>
          * ```
          * @param size the supported values are 'fill' (default) or an int value to set the page
          * size.
@@ -295,7 +296,7 @@ internal class PagerDTO private constructor(builder: Builder) :
         /**
          * The amount of space to be used to separate the pages in this Pager.
          * ```
-         * <HorizontalPager page-spacing="16" >...</HorizontalPager>
+         * <HorizontalPager pageSpacing="16" >...</HorizontalPager>
          * ```
          * @param spacing int value representing the space to separate the pages
          */
@@ -306,7 +307,7 @@ internal class PagerDTO private constructor(builder: Builder) :
         /**
          * Reverse the direction of scrolling and layout.
          * ```
-         * <HorizontalPager reverse-layout="true" >...</HorizontalPager>
+         * <HorizontalPager reverseLayout="true" >...</HorizontalPager>
          * ```
          * @param reverse true if the scrolling direction and layout must be reversed, false
          * otherwise
@@ -318,7 +319,7 @@ internal class PagerDTO private constructor(builder: Builder) :
         /**
          * Whether the scrolling via the user gestures or accessibility actions is allowed.
          * ```
-         * <HorizontalPager user-scroll-enabled="false" >...</HorizontalPager>
+         * <HorizontalPager userScrollEnabled="false" >...</HorizontalPager>
          * ```
          * @param enabled true if the user gestures are enabled, false otherwise.
          */
@@ -329,9 +330,10 @@ internal class PagerDTO private constructor(builder: Builder) :
         /**
          * How pages are aligned vertically in this in a HorizontalPager.
          * ```
-         * <HorizontalPager vertical-alignment="center" >...</HorizontalPager>
+         * <HorizontalPager verticalAlignment="center" >...</HorizontalPager>
          * ```
-         * @param alignment supported values are 'start', 'center', and 'end'.
+         * @param alignment see the supported values at
+         * [org.phoenixframework.liveview.data.constants.VerticalAlignmentValues].
          */
         fun verticalAlignment(alignment: String) = apply {
             this.verticalAlignment = verticalAlignmentFromString(alignment)

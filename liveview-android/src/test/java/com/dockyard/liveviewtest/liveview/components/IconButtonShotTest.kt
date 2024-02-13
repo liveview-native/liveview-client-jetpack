@@ -15,6 +15,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
+import org.phoenixframework.liveview.data.constants.Attrs.attrColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Magenta
+import org.phoenixframework.liveview.domain.base.ComposableTypes.filledIconButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.filledTonalIconButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.iconButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedIconButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
 
 class IconButtonShotTest : LiveViewComposableTest() {
 
@@ -32,20 +50,28 @@ class IconButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <IconButton phx-click="">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </IconButton>
-                    <IconButton phx-click="" enabled="false">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </IconButton>                    
-                </Row>
+                <$row>
+                  <$iconButton>
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$iconButton>
+                  <$iconButton $attrEnabled="false">
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$iconButton>                    
+                </$row>
                 """
         )
     }
 
     @Test
     fun iconButtonWithCustomColorsTest() {
+        val colorsForTemplate = """
+            {
+            '$colorAttrContainerColor': '#FFFF0000', 
+            '$colorAttrContentColor': '#FFFFFF00',
+            '$colorAttrDisabledContainerColor': '#FF888888', 
+            '$colorAttrDisabledContentColor': '#FFCCCCCC'
+            }
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Row {
@@ -71,14 +97,14 @@ class IconButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <IconButton phx-click="" colors="{'containerColor': '#FFFF0000', 'contentColor': '#FFFFFF00'}">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </IconButton>
-                    <IconButton phx-click="" enabled="false" colors="{'disabledContainerColor': '#FF888888', 'disabledContentColor': '#FFCCCCCC'}">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </IconButton>                    
-                </Row>
+                <$row>
+                  <$iconButton $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$iconButton>
+                  <$iconButton $attrEnabled="false" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$iconButton>                    
+                </$row>
                 """
         )
     }
@@ -97,20 +123,28 @@ class IconButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <FilledIconButton phx-click="">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </FilledIconButton>
-                    <FilledIconButton phx-click="" enabled="false">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </FilledIconButton>                    
-                </Row>
+                <$row>
+                    <$filledIconButton>
+                        <$icon $attrImageVector="filled:AccountCircle" />
+                    </$filledIconButton>
+                    <$filledIconButton $attrEnabled="false">
+                        <$icon $attrImageVector="filled:AccountCircle" />
+                    </$filledIconButton>                    
+                </$row>
                 """
         )
     }
 
     @Test
     fun filledIconButtonWithCustomColorsTest() {
+        val colorsForTemplate = """
+            {
+            '$colorAttrContainerColor': '#FFFF0000', 
+            '$colorAttrContentColor': '#FFFFFF00',
+            '$colorAttrDisabledContainerColor': '#FF888888', 
+            '$colorAttrDisabledContentColor': '#FFCCCCCC'
+            }
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Row {
@@ -138,16 +172,19 @@ class IconButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <FilledIconButton phx-click="" shape="8"
-                      colors="{'containerColor': '#FFFF0000', 'contentColor': '#FFFFFF00'}">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </FilledIconButton>
-                    <FilledIconButton phx-click="" enabled="false" shape="8"
-                      colors="{'disabledContainerColor': '#FF888888', 'disabledContentColor': '#FFCCCCCC'}">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </FilledIconButton>                    
-                </Row>
+                <$row>
+                  <$filledIconButton
+                    $attrShape="8"
+                    $attrColors="$colorsForTemplate">
+                      <$icon $attrImageVector="filled:AccountCircle" />
+                  </$filledIconButton>
+                  <$filledIconButton
+                    $attrEnabled="false" 
+                    $attrShape="8"
+                    $attrColors="$colorsForTemplate">
+                      <$icon $attrImageVector="filled:AccountCircle" />
+                  </$filledIconButton>                    
+                </$row>
                 """
         )
     }
@@ -166,20 +203,28 @@ class IconButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <FilledTonalIconButton phx-click="">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </FilledTonalIconButton>
-                    <FilledTonalIconButton phx-click="" enabled="false">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </FilledTonalIconButton>                    
-                </Row>
+                <$row>
+                  <$filledTonalIconButton>
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$filledTonalIconButton>
+                  <$filledTonalIconButton $attrEnabled="false">
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$filledTonalIconButton>                    
+                </$row>
                 """
         )
     }
 
     @Test
     fun filledTonalIconButtonWithCustomColorsTest() {
+        val colorsForTemplate = """
+            {
+            '$colorAttrContainerColor': '#FFFF0000', 
+            '$colorAttrContentColor': '#FFFFFF00',
+            '$colorAttrDisabledContainerColor': '#FF888888', 
+            '$colorAttrDisabledContentColor': '#FFCCCCCC'
+            }
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Row {
@@ -207,16 +252,19 @@ class IconButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <FilledTonalIconButton phx-click="" shape="8"
-                      colors="{'containerColor': '#FFFF0000', 'contentColor': '#FFFFFF00'}">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </FilledTonalIconButton>
-                    <FilledTonalIconButton phx-click="" enabled="false" shape="8"
-                      colors="{'disabledContainerColor': '#FF888888', 'disabledContentColor': '#FFCCCCCC'}">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </FilledTonalIconButton>                    
-                </Row>
+                <$row>
+                  <$filledTonalIconButton 
+                    $attrShape="8"
+                    $attrColors="$colorsForTemplate">
+                      <$icon $attrImageVector="filled:AccountCircle" />
+                  </$filledTonalIconButton>
+                  <$filledTonalIconButton 
+                    $attrEnabled="false" 
+                    $attrShape="8"
+                    $attrColors="$colorsForTemplate">
+                      <$icon $attrImageVector="filled:AccountCircle" />
+                  </$filledTonalIconButton>                    
+                </$row>
                 """
         )
     }
@@ -235,14 +283,14 @@ class IconButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <OutlinedIconButton phx-click="">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </OutlinedIconButton>
-                    <OutlinedIconButton phx-click="" enabled="false">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </OutlinedIconButton>                    
-                </Row>
+                <$row>
+                  <$outlinedIconButton>
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$outlinedIconButton>
+                  <$outlinedIconButton $attrEnabled="false">
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$outlinedIconButton>                    
+                </$row>
                 """
         )
     }
@@ -265,20 +313,30 @@ class IconButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <OutlinedIconButton phx-click="" border="{'width': '2', 'color': 'system-magenta'}">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </OutlinedIconButton>
-                    <OutlinedIconButton phx-click="" enabled="false" border="{'width': '2', 'color': 'system-magenta'}">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </OutlinedIconButton>                    
-                </Row>
+                <$row>
+                  <$outlinedIconButton 
+                    $attrBorder="{'$attrWidth': '2', '$attrColor': '$Magenta'}">
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$outlinedIconButton>
+                  <$outlinedIconButton $attrEnabled="false" 
+                    $attrBorder="{'$attrWidth': '2', '$attrColor': '$Magenta'}">
+                    <$icon $attrImageVector="filled:AccountCircle" />
+                  </$outlinedIconButton>                    
+                </$row>
                 """
         )
     }
 
     @Test
     fun outlinedIconButtonWithCustomColorsTest() {
+        val colorsForTemplate = """
+            {
+            '$colorAttrContainerColor': '#FFFF0000', 
+            '$colorAttrContentColor': '#FFFFFF00',
+            '$colorAttrDisabledContainerColor': '#FF888888', 
+            '$colorAttrDisabledContentColor': '#FFCCCCCC'
+            }
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Row {
@@ -308,18 +366,18 @@ class IconButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                    <OutlinedIconButton phx-click="" shape="8"
-                      border="{'width': '2', 'color': 'system-magenta'}"
-                      colors="{'containerColor': '#FFFF0000', 'contentColor': '#FFFFFF00'}">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </OutlinedIconButton>
-                    <OutlinedIconButton phx-click="" enabled="false" shape="8"
-                      border="{'width': '2', 'color': 'system-magenta'}"
-                      colors="{'disabledContainerColor': '#FF888888', 'disabledContentColor': '#FFCCCCCC'}">
-                        <Icon image-vector="filled:AccountCircle" />
-                    </OutlinedIconButton>                    
-                </Row>
+                <$row>
+                  <$outlinedIconButton $attrShape="8"
+                    $attrBorder="{'$attrWidth': '2', '$attrColor': '$Magenta'}"
+                    $attrColors="$colorsForTemplate">
+                      <$icon $attrImageVector="filled:AccountCircle" />
+                  </$outlinedIconButton>
+                  <$outlinedIconButton $attrEnabled="false" $attrShape="8"
+                    $attrBorder="{'$attrWidth': '2', '$attrColor': '$Magenta'}"
+                    $attrColors="$colorsForTemplate">
+                      <$icon $attrImageVector="filled:AccountCircle" />
+                  </$outlinedIconButton>                    
+                </$row>
                 """
         )
     }

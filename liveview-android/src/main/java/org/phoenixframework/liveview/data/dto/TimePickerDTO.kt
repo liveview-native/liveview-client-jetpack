@@ -22,19 +22,20 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrIs24Hour
 import org.phoenixframework.liveview.data.constants.Attrs.attrLayoutType
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrClockDialColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrClockDialSelectedContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrClockDialUnselectedContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorClockDialSelectedContentColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorClockDialUnselectedContentColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorPeriodSelectorBorderColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorPeriodSelectorSelectedContainerColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorPeriodSelectorSelectedContentColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorPeriodSelectorUnselectedContainerColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorPeriodSelectorUnselectedContentColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorSelectorColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorTimeSelectorSelectedContainerColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorTimeSelectorSelectedContentColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorTimeSelectorUnselectedContainerColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorTimeSelectorUnselectedContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrPeriodSelectorBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrPeriodSelectorSelectedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrPeriodSelectorSelectedContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrPeriodSelectorUnselectedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrPeriodSelectorUnselectedContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectorColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTimeSelectorSelectedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTimeSelectorSelectedContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTimeSelectorUnselectedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTimeSelectorUnselectedContentColor
+import org.phoenixframework.liveview.data.constants.TimePickerLayoutTypeValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
@@ -58,13 +59,13 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * end
  *
  * <TimePicker
- *   initial-hour={"#{Map.get(@selectedTimeMap, "hour")}"}
- *   initial-minute={"#{Map.get(@selectedTimeMap, "minute")}"}
+ *   initialHour={"#{Map.get(@selectedTimeMap, "hour")}"}
+ *   initialMinute={"#{Map.get(@selectedTimeMap, "minute")}"}
  *   phx-change="onTimeChange" />
  *
  * <TimeInput
- *   initial-hour={"#{Map.get(@selectedTimeMap, "hour")}"}
- *   initial-minute={"#{Map.get(@selectedTimeMap, "minute")}"}
+ *   initialHour={"#{Map.get(@selectedTimeMap, "hour")}"}
+ *   initialMinute={"#{Map.get(@selectedTimeMap, "minute")}"}
  *   phx-change="onTimeChange" />
  * ```
  */
@@ -98,6 +99,7 @@ internal class TimePickerDTO private constructor(builder: Builder) :
                     colors = getTimePickerColors(colors),
                     layoutType = layoutType ?: TimePickerDefaults.layoutType(),
                 )
+
             ComposableTypes.timeInput ->
                 TimeInput(
                     state = state,
@@ -124,31 +126,31 @@ internal class TimePickerDTO private constructor(builder: Builder) :
             TimePickerDefaults.colors(
                 clockDialColor = colors[colorAttrClockDialColor]?.toColor()
                     ?: Color.Unspecified,
-                clockDialSelectedContentColor = colors[colorClockDialSelectedContentColor]?.toColor()
+                clockDialSelectedContentColor = colors[colorAttrClockDialSelectedContentColor]?.toColor()
                     ?: Color.Unspecified,
-                clockDialUnselectedContentColor = colors[colorClockDialUnselectedContentColor]?.toColor()
+                clockDialUnselectedContentColor = colors[colorAttrClockDialUnselectedContentColor]?.toColor()
                     ?: Color.Unspecified,
-                selectorColor = colors[colorSelectorColor]?.toColor()
+                selectorColor = colors[colorAttrSelectorColor]?.toColor()
                     ?: Color.Unspecified,
                 containerColor = colors[colorAttrContainerColor]?.toColor()
                     ?: Color.Unspecified,
-                periodSelectorBorderColor = colors[colorPeriodSelectorBorderColor]?.toColor()
+                periodSelectorBorderColor = colors[colorAttrPeriodSelectorBorderColor]?.toColor()
                     ?: Color.Unspecified,
-                periodSelectorSelectedContainerColor = colors[colorPeriodSelectorSelectedContainerColor]?.toColor()
+                periodSelectorSelectedContainerColor = colors[colorAttrPeriodSelectorSelectedContainerColor]?.toColor()
                     ?: Color.Unspecified,
-                periodSelectorUnselectedContainerColor = colors[colorPeriodSelectorUnselectedContainerColor]?.toColor()
+                periodSelectorUnselectedContainerColor = colors[colorAttrPeriodSelectorUnselectedContainerColor]?.toColor()
                     ?: Color.Unspecified,
-                periodSelectorSelectedContentColor = colors[colorPeriodSelectorSelectedContentColor]?.toColor()
+                periodSelectorSelectedContentColor = colors[colorAttrPeriodSelectorSelectedContentColor]?.toColor()
                     ?: Color.Unspecified,
-                periodSelectorUnselectedContentColor = colors[colorPeriodSelectorUnselectedContentColor]?.toColor()
+                periodSelectorUnselectedContentColor = colors[colorAttrPeriodSelectorUnselectedContentColor]?.toColor()
                     ?: Color.Unspecified,
-                timeSelectorSelectedContainerColor = colors[colorTimeSelectorSelectedContainerColor]?.toColor()
+                timeSelectorSelectedContainerColor = colors[colorAttrTimeSelectorSelectedContainerColor]?.toColor()
                     ?: Color.Unspecified,
-                timeSelectorUnselectedContainerColor = colors[colorTimeSelectorUnselectedContainerColor]?.toColor()
+                timeSelectorUnselectedContainerColor = colors[colorAttrTimeSelectorUnselectedContainerColor]?.toColor()
                     ?: Color.Unspecified,
-                timeSelectorSelectedContentColor = colors[colorTimeSelectorSelectedContentColor]?.toColor()
+                timeSelectorSelectedContentColor = colors[colorAttrTimeSelectorSelectedContentColor]?.toColor()
                     ?: Color.Unspecified,
-                timeSelectorUnselectedContentColor = colors[colorTimeSelectorUnselectedContentColor]?.toColor()
+                timeSelectorUnselectedContentColor = colors[colorAttrTimeSelectorUnselectedContentColor]?.toColor()
                     ?: Color.Unspecified
             )
         }
@@ -193,7 +195,7 @@ internal class TimePickerDTO private constructor(builder: Builder) :
          * Starting hour for this picker, will be displayed in the time picker when launched Ranges
          * from 0 to 23.
          * ```
-         * <TimePicker initial-hour="13" />
+         * <TimePicker initialHour="13" />
          * ```
          * @param hour int value representing the hour (from 0 to 23).
          */
@@ -205,7 +207,7 @@ internal class TimePickerDTO private constructor(builder: Builder) :
          * starting minute for this picker, will be displayed in the time picker when launched.
          * Ranges from 0 to 59
          * ```
-         * <TimePicker initial-minute="30" />
+         * <TimePicker initialMinute="30" />
          * ```
          * @param minute int value representing the minute (from 0 to 59)
          */
@@ -217,7 +219,7 @@ internal class TimePickerDTO private constructor(builder: Builder) :
          * The format for this time picker. false for 12 hour format with an AM/PM toggle or true
          * for 24 hour format without toggle. Defaults to follow system setting.
          * ```
-         * <TimePicker is-24-hour="true" />
+         * <TimePicker is24Hour="true" />
          * ```
          * @param is24Hour true for using 24 hour format, false to use 12 hour format.
          */
@@ -229,14 +231,14 @@ internal class TimePickerDTO private constructor(builder: Builder) :
          * Layout type supported by this time picker, it will change the position and sizing of
          * different components of the timepicker. Supported values are: `horizontal` or `vertical`.
          * ```
-         * <TimePicker layout-type="horizontal" />
+         * <TimePicker layoutType="horizontal" />
          * ```
          * @param layoutType layout type of the time picker.
          */
         fun layoutType(layoutType: String) = apply {
             this.layoutType = when (layoutType) {
-                "horizontal" -> TimePickerLayoutType.Horizontal
-                "vertical" -> TimePickerLayoutType.Vertical
+                TimePickerLayoutTypeValues.horizontal -> TimePickerLayoutType.Horizontal
+                TimePickerLayoutTypeValues.vertical -> TimePickerLayoutType.Vertical
                 else -> null
             }
         }

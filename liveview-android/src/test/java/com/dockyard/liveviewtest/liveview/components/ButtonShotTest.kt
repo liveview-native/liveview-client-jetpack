@@ -14,6 +14,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
+import org.phoenixframework.liveview.data.constants.Attrs.attrColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
+import org.phoenixframework.liveview.data.constants.ShapeValues.circle
+import org.phoenixframework.liveview.domain.base.ComposableTypes.button
+import org.phoenixframework.liveview.domain.base.ComposableTypes.elevatedButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.filledTonalButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.domain.base.ComposableTypes.textButton
 
 class ButtonShotTest : LiveViewComposableTest() {
 
@@ -26,9 +42,9 @@ class ButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Button phx-click="">
-                  <Text>Ok</Text>
-                </Button>
+                <$button>
+                  <$text>Ok</$text>
+                </$button>
                 """
         )
     }
@@ -42,15 +58,21 @@ class ButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Button phx-click="" enabled="false">
-                  <Text>Ok</Text>
-                </Button>
+                <$button $attrEnabled="false">
+                  <$text>Ok</$text>
+                </$button>
                 """
         )
     }
 
     @Test
     fun checkButtonWithCustomColorsTest() {
+        val colorsForTemplate = """
+            {
+            '$colorAttrContainerColor': '#FFFF00FF', 
+            '$colorAttrContentColor': '#FFFFFFFF'
+            }
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Button(
@@ -64,16 +86,22 @@ class ButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Button phx-click=""
-                  colors="{'containerColor': '#FFFF00FF', 'contentColor': '#FFFFFFFF'}">
-                  <Text>Button</Text>
-                </Button>
+                <$button
+                  $attrColors="$colorsForTemplate">
+                  <$text>Button</$text>
+                </$button>
                 """
         )
     }
 
     @Test
     fun checkButtonWithBorderShapeAndPaddingTest() {
+        val colorsForTemplate = """
+            {
+            '$colorAttrContainerColor': '#FF00FFFF', 
+            '$colorAttrContentColor': '#FFFFFF00'
+            }
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Button(
@@ -90,11 +118,13 @@ class ButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Button phx-click=""
-                  colors="{'containerColor': '#FF00FFFF', 'contentColor': '#FFFFFF00'}"
-                  border="{'width': '2', 'color': '#FFFF0000'}" shape="circle" content-padding="8">
-                  <Text>Button</Text>
-                </Button>
+                <$button
+                  $attrColors="$colorsForTemplate"
+                  $attrBorder="{'$attrWidth': '2', '$attrColor': '#FFFF0000'}" 
+                  $attrShape="$circle" 
+                  $attrContentPadding="8">
+                  <$text>Button</$text>
+                </$button>
                 """
         )
     }
@@ -108,9 +138,9 @@ class ButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <ElevatedButton phx-click="">
-                  <Text>Elevated Button</Text>
-                </ElevatedButton>
+                <$elevatedButton>
+                  <$text>Elevated Button</$text>
+                </$elevatedButton>
                 """
         )
     }
@@ -124,9 +154,9 @@ class ButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FilledTonalButton phx-click="">
-                  <Text>Filled Tonal Button</Text>
-                </FilledTonalButton>
+                <$filledTonalButton>
+                  <$text>Filled Tonal Button</$text>
+                </$filledTonalButton>
                 """
         )
     }
@@ -140,9 +170,9 @@ class ButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <OutlinedButton phx-click="">
-                  <Text>Outlined Button</Text>
-                </OutlinedButton>
+                <$outlinedButton>
+                  <$text>Outlined Button</$text>
+                </$outlinedButton>
                 """
         )
     }
@@ -156,9 +186,9 @@ class ButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <TextButton phx-click="">
-                  <Text>Text Button</Text>
-                </TextButton>
+                <$textButton>
+                  <$text>Text Button</$text>
+                </$textButton>
                 """
         )
     }

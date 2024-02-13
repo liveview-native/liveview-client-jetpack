@@ -23,8 +23,8 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 /**
  * Material Design divider.
  * ```
- * <HorizontalDivider thickness="2" vertical-padding="8" color="#FFCCCCCC" />
- * <VerticalDivider thickness="2" vertical-padding="8" color="#FFCCCCCC" />
+ * <HorizontalDivider thickness="2" verticalPadding="8" color="#FFCCCCCC" />
+ * <VerticalDivider thickness="2" verticalPadding="8" color="#FFCCCCCC" />
  * ```
  */
 internal class DividerDTO private constructor(builder: Builder) :
@@ -84,7 +84,8 @@ internal class DividerDTO private constructor(builder: Builder) :
          * <HorizontalDivider color='#FF00FF00' />
          * ```
          * @param color The color to be applied to the track behind the indicator. The color must be
-         * specified as a string in the AARRGGBB format.
+         * specified as a string in the AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun color(color: String) = apply {
             if (color.isNotEmpty()) {

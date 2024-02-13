@@ -10,6 +10,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.domain.base.ComposableTypes.dismissibleDrawerSheet
+import org.phoenixframework.liveview.domain.base.ComposableTypes.modalDrawerSheet
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationDrawerItem
+import org.phoenixframework.liveview.domain.base.ComposableTypes.permanentDrawerSheet
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class DrawerSheetShotTest : LiveViewComposableTest() {
 
@@ -33,15 +46,15 @@ class DrawerSheetShotTest : LiveViewComposableTest() {
                     Text(text = "Option 3")
                 }
             }, template = """
-                <ModalDrawerSheet>
-                    <NavigationDrawerItem selected="true">
-                        <Text template="label">Option 1</Text>
-                    </NavigationDrawerItem>
-                    <NavigationDrawerItem selected="false">
-                        <Text template="label">Option 2</Text>
-                    </NavigationDrawerItem>    
-                    <Text>Option 3</Text>                
-                </ModalDrawerSheet>
+                <$modalDrawerSheet>
+                  <$navigationDrawerItem $attrSelected="true">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                  </$navigationDrawerItem>
+                  <$navigationDrawerItem $attrSelected="false">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                  </$navigationDrawerItem>    
+                  <$text>Option 3</$text>                
+                </$modalDrawerSheet>
                 """
         )
     }
@@ -71,15 +84,18 @@ class DrawerSheetShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <ModalDrawerSheet drawer-content-color="system-red" drawer-container-color="system-yellow" drawer-shape="32">
-                    <NavigationDrawerItem selected="true">
-                        <Text template="label">Option 1</Text>
-                    </NavigationDrawerItem>
-                    <NavigationDrawerItem selected="false">
-                        <Text template="label">Option 2</Text>
-                    </NavigationDrawerItem>  
-                    <Text>Option 3</Text>                  
-                </ModalDrawerSheet>                
+                <$modalDrawerSheet 
+                  $attrDrawerContentColor="$Red" 
+                  $attrDrawerContainerColor="$Yellow" 
+                  $attrDrawerShape="32">
+                    <$navigationDrawerItem $attrSelected="true">
+                      <$text $attrTemplate="$templateLabel">Option 1</$text>
+                    </$navigationDrawerItem>
+                    <$navigationDrawerItem $attrSelected="false">
+                      <$text $attrTemplate="$templateLabel">Option 2</$text>
+                    </$navigationDrawerItem>  
+                    <$text>Option 3</$text>                  
+                </$modalDrawerSheet>                
                 """
         )
     }
@@ -104,15 +120,15 @@ class DrawerSheetShotTest : LiveViewComposableTest() {
                     Text(text = "Option 3")
                 }
             }, template = """
-                <DismissibleDrawerSheet>
-                    <NavigationDrawerItem selected="true">
-                        <Text template="label">Option 1</Text>
-                    </NavigationDrawerItem>
-                    <NavigationDrawerItem selected="false">
-                        <Text template="label">Option 2</Text>
-                    </NavigationDrawerItem>    
-                    <Text>Option 3</Text>                
-                </DismissibleDrawerSheet>
+                <$dismissibleDrawerSheet>
+                  <$navigationDrawerItem $attrSelected="true">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                  </$navigationDrawerItem>
+                  <$navigationDrawerItem $attrSelected="false">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                  </$navigationDrawerItem>    
+                  <$text>Option 3</$text>                
+                </$dismissibleDrawerSheet>
                 """
         )
     }
@@ -142,15 +158,18 @@ class DrawerSheetShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <DismissibleDrawerSheet drawer-content-color="system-red" drawer-container-color="system-yellow" drawer-shape="32">
-                    <NavigationDrawerItem selected="true">
-                        <Text template="label">Option 1</Text>
-                    </NavigationDrawerItem>
-                    <NavigationDrawerItem selected="false">
-                        <Text template="label">Option 2</Text>
-                    </NavigationDrawerItem>  
-                    <Text>Option 3</Text>                  
-                </DismissibleDrawerSheet>                
+                <$dismissibleDrawerSheet 
+                  $attrDrawerContentColor="$Red" 
+                  $attrDrawerContainerColor="$Yellow" 
+                  $attrDrawerShape="32">
+                    <$navigationDrawerItem $attrSelected="true">
+                        <$text $attrTemplate="$templateLabel">Option 1</$text>
+                    </$navigationDrawerItem>
+                    <$navigationDrawerItem $attrSelected="false">
+                        <$text $attrTemplate="$templateLabel">Option 2</$text>
+                    </$navigationDrawerItem>  
+                    <$text>Option 3</$text>                  
+                </$dismissibleDrawerSheet>                
                 """
         )
     }
@@ -175,15 +194,15 @@ class DrawerSheetShotTest : LiveViewComposableTest() {
                     Text(text = "Option 3")
                 }
             }, template = """
-                <PermanentDrawerSheet>
-                    <NavigationDrawerItem selected="true">
-                        <Text template="label">Option 1</Text>
-                    </NavigationDrawerItem>
-                    <NavigationDrawerItem selected="false">
-                        <Text template="label">Option 2</Text>
-                    </NavigationDrawerItem>    
-                    <Text>Option 3</Text>                
-                </PermanentDrawerSheet>
+                <$permanentDrawerSheet>
+                  <$navigationDrawerItem $attrSelected="true">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                  </$navigationDrawerItem>
+                  <$navigationDrawerItem $attrSelected="false">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                  </$navigationDrawerItem>    
+                  <$text>Option 3</$text>                
+                </$permanentDrawerSheet>
                 """
         )
     }
@@ -213,15 +232,18 @@ class DrawerSheetShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <PermanentDrawerSheet drawer-content-color="system-red" drawer-container-color="system-yellow" drawer-shape="32">
-                    <NavigationDrawerItem selected="true">
-                        <Text template="label">Option 1</Text>
-                    </NavigationDrawerItem>
-                    <NavigationDrawerItem selected="false">
-                        <Text template="label">Option 2</Text>
-                    </NavigationDrawerItem>  
-                    <Text>Option 3</Text>                  
-                </PermanentDrawerSheet>                
+                <$permanentDrawerSheet 
+                  $attrDrawerContentColor="$Red" 
+                  $attrDrawerContainerColor="$Yellow" 
+                  $attrDrawerShape="32">
+                    <$navigationDrawerItem $attrSelected="true">
+                        <$text $attrTemplate="$templateLabel">Option 1</$text>
+                    </$navigationDrawerItem>
+                    <$navigationDrawerItem $attrSelected="false">
+                        <$text $attrTemplate="$templateLabel">Option 2</$text>
+                    </$navigationDrawerItem>  
+                    <$text>Option 3</$text>                  
+                </$permanentDrawerSheet>                
                 """
         )
     }

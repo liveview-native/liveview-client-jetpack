@@ -21,6 +21,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.AlignmentValues.center
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrFabPosition
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.FabPositionValues
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.Templates.templateBody
+import org.phoenixframework.liveview.data.constants.Templates.templateBottomBar
+import org.phoenixframework.liveview.data.constants.Templates.templateFab
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateTitle
+import org.phoenixframework.liveview.data.constants.Templates.templateTopBar
+import org.phoenixframework.liveview.domain.base.ComposableTypes.box
+import org.phoenixframework.liveview.domain.base.ComposableTypes.floatingActionButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationBar
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationBarItem
+import org.phoenixframework.liveview.domain.base.ComposableTypes.scaffold
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.domain.base.ComposableTypes.topAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 class ScaffoldShotTest : LiveViewComposableTest() {
@@ -40,11 +67,11 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Scaffold>
-                  <Box size="fill" content-alignment="center" template="body">
-                    <Text>Scaffold Body</Text> 
-                  </Box>
-                </Scaffold>
+                <$scaffold>
+                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                    <$text>Scaffold Body</$text> 
+                  </$box>
+                </$scaffold>
                 """
         )
     }
@@ -68,11 +95,11 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Scaffold container-color="#FFFF00FF" content-color="#FF0000FF">
-                  <Box size="fill" content-alignment="center" template="body">
-                    <Text>Scaffold Body</Text> 
-                  </Box>
-                </Scaffold>
+                <$scaffold $attrContainerColor="#FFFF00FF" $attrContentColor="#FF0000FF">
+                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                    <$text>Scaffold Body</$text> 
+                  </$box>
+                </$scaffold>
                 """
         )
     }
@@ -102,14 +129,14 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <Scaffold>
-                  <TopAppBar template="topBar">
-                    <Text template="title">Top Bar</Text>
-                  </TopAppBar>  
-                  <Box size="fill" content-alignment="center" template="body">
-                    <Text>Scaffold Body</Text> 
-                  </Box>
-                </Scaffold>
+                <$scaffold>
+                  <$topAppBar $attrTemplate="$templateTopBar">
+                    <$text $attrTemplate="$templateTitle">Top Bar</$text>
+                  </$topAppBar>  
+                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                    <$text>Scaffold Body</$text> 
+                  </$box>
+                </$scaffold>
                 """
         )
     }
@@ -163,22 +190,22 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <Scaffold>
-                  <TopAppBar template="topBar">
-                    <Text template="title">Top Bar</Text>
-                  </TopAppBar>  
-                  <NavigationBar template="bottomBar">
-                    <NavigationBarItem selected="true" phx-click="" phx-value="0">
-                      <Icon image-vector="filled:HorizontalDistribute" template="icon"/>
-                    </NavigationBarItem>
-                    <NavigationBarItem selected="false" phx-click="" phx-value="1">
-                      <Icon image-vector="filled:VerticalDistribute" template="icon" />
-                    </NavigationBarItem>     
-                  </NavigationBar>               
-                  <Box size="fill" content-alignment="center" template="body">
-                    <Text>Scaffold Body</Text> 
-                  </Box>
-                </Scaffold>
+                <$scaffold>
+                  <$topAppBar $attrTemplate="$templateTopBar">
+                    <$text $attrTemplate="$templateTitle">Top Bar</$text>
+                  </$topAppBar>  
+                  <$navigationBar $attrTemplate="$templateBottomBar">
+                    <$navigationBarItem $attrSelected="true" $attrPhxValue="0">
+                      <$icon $attrImageVector="$filled:HorizontalDistribute" $attrTemplate="$templateIcon"/>
+                    </$navigationBarItem>
+                    <$navigationBarItem $attrSelected="false" $attrPhxValue="1">
+                      <$icon $attrImageVector="$filled:VerticalDistribute" $attrTemplate="$templateIcon" />
+                    </$navigationBarItem>     
+                  </$navigationBar>               
+                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                    <$text>Scaffold Body</$text> 
+                  </$box>
+                </$scaffold>
                 """
         )
     }
@@ -213,17 +240,17 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <Scaffold>
-                  <TopAppBar template="topBar">
-                    <Text template="title">Top Bar</Text>
-                  </TopAppBar>  
-                  <FloatingActionButton phx-click="" template="fab">
-                    <Icon image-vector="filled:Add"/>
-                  </FloatingActionButton>
-                  <Box size="fill" content-alignment="center" template="body">
-                    <Text>Scaffold Body</Text> 
-                  </Box>
-                </Scaffold>
+                <$scaffold>
+                  <$topAppBar $attrTemplate="$templateTopBar">
+                    <$text $attrTemplate="$templateTitle">Top Bar</$text>
+                  </$topAppBar>  
+                  <$floatingActionButton $attrTemplate="$templateFab">
+                    <$icon $attrImageVector="$filled:Add"/>
+                  </$floatingActionButton>
+                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                    <$text>Scaffold Body</$text> 
+                  </$box>
+                </$scaffold>
                 """
         )
     }
@@ -259,17 +286,17 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <Scaffold fab-position="center">
-                  <TopAppBar template="topBar">
-                    <Text template="title">Top Bar</Text>
-                  </TopAppBar>  
-                  <FloatingActionButton phx-click="" template="fab">
-                    <Icon image-vector="filled:Add"/>
-                  </FloatingActionButton>
-                  <Box size="fill" content-alignment="center" template="body">
-                    <Text>Scaffold Body</Text> 
-                  </Box>
-                </Scaffold>
+                <$scaffold $attrFabPosition="${FabPositionValues.center}">
+                  <$topAppBar $attrTemplate="$templateTopBar">
+                    <$text $attrTemplate="$templateTitle">Top Bar</$text>
+                  </$topAppBar>  
+                  <$floatingActionButton $attrTemplate="$templateFab">
+                    <$icon $attrImageVector="filled:Add"/>
+                  </$floatingActionButton>
+                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                    <$text>Scaffold Body</$text> 
+                  </$box>
+                </$scaffold>
                 """
         )
     }
@@ -328,25 +355,25 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <Scaffold>
-                  <TopAppBar template="topBar">
-                    <Text template="title">Top Bar</Text>
-                  </TopAppBar>  
-                  <NavigationBar template="bottomBar">
-                    <NavigationBarItem selected="true" phx-click="" phx-value="0">
-                      <Icon image-vector="filled:HorizontalDistribute" template="icon"/>
-                    </NavigationBarItem>
-                    <NavigationBarItem selected="false" phx-click="" phx-value="1">
-                      <Icon image-vector="filled:VerticalDistribute" template="icon" />
-                    </NavigationBarItem>     
-                  </NavigationBar>
-                  <FloatingActionButton phx-click="" template="fab">
-                    <Icon image-vector="filled:Add"/>
-                  </FloatingActionButton>
-                  <Box size="fill" content-alignment="center" template="body">
-                    <Text>Scaffold Body</Text> 
-                  </Box>
-                </Scaffold>
+                <$scaffold>
+                  <$topAppBar $attrTemplate="$templateTopBar">
+                    <$text $attrTemplate="$templateTitle">Top Bar</$text>
+                  </$topAppBar>  
+                  <$navigationBar $attrTemplate="$templateBottomBar">
+                    <$navigationBarItem $attrSelected="true" $attrPhxValue="0">
+                      <$icon $attrImageVector="filled:HorizontalDistribute" $attrTemplate="$templateIcon"/>
+                    </$navigationBarItem>
+                    <$navigationBarItem $attrSelected="false" $attrPhxValue="1">
+                      <$icon $attrImageVector="filled:VerticalDistribute" $attrTemplate="$templateIcon" />
+                    </$navigationBarItem>     
+                  </$navigationBar>
+                  <$floatingActionButton $attrTemplate="$templateFab">
+                    <$icon $attrImageVector="filled:Add"/>
+                  </$floatingActionButton>
+                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                    <$text>Scaffold Body</$text> 
+                  </$box>
+                </$scaffold>
                 """
         )
     }
@@ -406,25 +433,25 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <Scaffold fab-position="center">
-                  <TopAppBar template="topBar">
-                    <Text template="title">Top Bar</Text>
-                  </TopAppBar>  
-                  <NavigationBar template="bottomBar">
-                    <NavigationBarItem selected="true" phx-click="" phx-value="0">
-                      <Icon image-vector="filled:HorizontalDistribute" template="icon"/>
-                    </NavigationBarItem>
-                    <NavigationBarItem selected="false" phx-click="" phx-value="1">
-                      <Icon image-vector="filled:VerticalDistribute" template="icon" />
-                    </NavigationBarItem>     
-                  </NavigationBar>
-                  <FloatingActionButton phx-click="" template="fab">
-                    <Icon image-vector="filled:Add"/>
-                  </FloatingActionButton>
-                  <Box size="fill" content-alignment="center" template="body">
-                    <Text>Scaffold Body</Text> 
-                  </Box>
-                </Scaffold>
+                <$scaffold $attrFabPosition="${FabPositionValues.center}">
+                  <$topAppBar $attrTemplate="$templateTopBar">
+                    <$text $attrTemplate="$templateTitle">Top Bar</$text>
+                  </$topAppBar>  
+                  <$navigationBar $attrTemplate="$templateBottomBar">
+                    <$navigationBarItem $attrSelected="true" $attrPhxValue="0">
+                      <$icon $attrImageVector="filled:HorizontalDistribute" $attrTemplate="$templateIcon"/>
+                    </$navigationBarItem>
+                    <$navigationBarItem $attrSelected="false" $attrPhxValue="1">
+                      <$icon $attrImageVector="filled:VerticalDistribute" $attrTemplate="$templateIcon" />
+                    </$navigationBarItem>     
+                  </$navigationBar>
+                  <$floatingActionButton $attrTemplate="$templateFab">
+                    <$icon $attrImageVector="filled:Add"/>
+                  </$floatingActionButton>
+                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                    <$text>Scaffold Body</$text> 
+                  </$box>
+                </$scaffold>
                 """
         )
     }

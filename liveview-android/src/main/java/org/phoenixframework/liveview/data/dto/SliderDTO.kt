@@ -54,14 +54,14 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * <Slider
  *   phx-value={@sliderValue}
  *   phx-change="setSliderValue"
- *   min-value="0"
- *   max-value="100" />
+ *   minValue="0"
+ *   maxValue="100" />
  * // sliderRange is an array of two positions
  * <RangeSlider
  *   phx-value={Enum.join(@sliderRange, ",")}
  *   phx-change="setSliderRange"
- *   min-value="0"
- *   max-value="100" />
+ *   minValue="0"
+ *   maxValue="100" />
  * ```
  * It's also possible to customize the track of both types of slider using a child with the
  * template set as "track". The thumb of the `Slider` component can be customized using the "thumb"
@@ -281,7 +281,7 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
          * The min value for the range of values that this slider can take. The passed value will
          * be coerced to this range.
          * ```
-         * <Slider min-value="0" />
+         * <Slider minValue="0" />
          * ```
          * @param value a float value to set the min value accepted by the slider.
          */
@@ -293,7 +293,7 @@ internal class SliderDTO private constructor(builder: Builder) : ChangeableDTO<F
          * The max value for the range of values that this slider can take. The passed value will
          * be coerced to this range.
          * ```
-         * <Slider max-value="100" />
+         * <Slider maxValue="100" />
          * ```
          * @param value a float value to set the max value accepted by the slider.
          */

@@ -44,7 +44,9 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
 
     /**
      * A padding to be applied to the end edge of the lazy list items.
-     *
+     * ```
+     * <LazyColumn contentPaddingEnd="16">...</LazyColumn>
+     * ```
      * @param paddingValue int value for padding to be applied on end edge of the items.
      */
     fun contentPaddingEnd(paddingValue: String) = apply {
@@ -55,7 +57,9 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
 
     /**
      * A padding to be applied to the start edge of the lazy list items.
-     *
+     * ```
+     * <LazyColumn contentPaddingStart="16">...</LazyColumn>
+     * ```
      * @param paddingValue int value for padding to be applied on start edge of the items.
      */
     fun contentPaddingStart(paddingValue: String) = apply {
@@ -66,7 +70,9 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
 
     /**
      * A padding to be applied to the top edge of the lazy list items.
-     *
+     * ```
+     * <LazyColumn contentPaddingTop="16">...</LazyColumn>
+     * ```
      * @param paddingValue int value for padding to be applied on top edge of the items.
      */
     fun contentPaddingTop(paddingValue: String) = apply {
@@ -77,7 +83,9 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
 
     /**
      * A padding to be applied to the bottom edge of the lazy list items.
-     *
+     * ```
+     * <LazyColumn contentPaddingBottom="16">...</LazyColumn>
+     * ```
      * @param paddingValue int value for padding to be applied on top edge of the items.
      */
     fun contentPaddingBottom(paddingValue: String) = apply {
@@ -88,7 +96,9 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
 
     /**
      * A padding to be applied to the start and end edges of the lazy list items.
-     *
+     * ```
+     * <LazyColumn contentPaddingHorizontal="16">...</LazyColumn>
+     * ```
      * @param paddingValue int value for padding to be applied on start and end edges of the items.
      */
     fun contentPaddingHorizontal(paddingValue: String) = apply {
@@ -98,7 +108,9 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
 
     /**
      * A padding to be applied to the top and bottom edges of the lazy list items.
-     *
+     * ```
+     * <LazyColumn contentPaddingVertical="16">...</LazyColumn>
+     * ```
      * @param paddingValue int value for padding to be applied on top and bottom edges of the items.
      */
     fun contentPaddingVertical(paddingValue: String) = apply {
@@ -108,7 +120,9 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
 
     /**
      * A padding to be applied to the four edges of the lazy list item.
-     *
+     * ```
+     * <LazyColumn contentPadding="16">...</LazyColumn>
+     * ```
      * @param paddingValue int value for padding to be applied to list items.
      */
     fun contentPadding(paddingValue: String) = apply {

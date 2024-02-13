@@ -28,7 +28,26 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrInitialSelectedSta
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.Attrs.attrShowModeToggle
 import org.phoenixframework.liveview.data.constants.Attrs.attrYearRange
-import org.phoenixframework.liveview.data.constants.ColorAttrs
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCurrentYearContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDayInSelectionRangeContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDayInSelectionRangeContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledDayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSelectedDayContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSelectedDayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrHeadlineContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedDayContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedDayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedYearContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedYearContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSubheadContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTitleContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTodayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTodayDateBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrWeekdayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrYearContentColor
+import org.phoenixframework.liveview.data.constants.DatePickerDisplayModeValues
 import org.phoenixframework.liveview.data.constants.Templates.templateHeadline
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.core.CoreAttribute
@@ -47,12 +66,12 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  * <DatePicker
  *   phx-change="selectDate"
- *   initial-selected-date-millis="1705028400000"
+ *   initialSelectedDateMillis="1705028400000"
  * />
  * <DateRangePicker
  *   phx-change="selectDateRange"
- *   initial-selected-start-date-millis={"#{Enum.at(@dateRange,0)}"}
- *   initial-selected-end-date-millis={"#{Enum.at(@dateRange,1)}"}
+ *   initialSelectedStartDateMillis={"#{Enum.at(@dateRange,0)}"}
+ *   initialSelectedEndDateMillis={"#{Enum.at(@dateRange,1)}"}
  * />
  * ```
  */
@@ -219,7 +238,7 @@ internal class DatePickerDTO private constructor(builder: Builder) :
          * date. Provide zero to indicate no selection.
          *
          * ```
-         * <DatePicker initial-selected-start-date-millis="1686279600000" />
+         * <DatePicker initialSelectedStartDateMillis="1686279600000" />
          * ```
          * @param initialSelectedDate initial selection of a date in UTC milliseconds.
          */
@@ -232,7 +251,7 @@ internal class DatePickerDTO private constructor(builder: Builder) :
          * date. Provide zero to indicate no selection.
          *
          * ```
-         * <DateRangePicker initial-selected-end-date-millis="1686279600000" />
+         * <DateRangePicker initialSelectedEndDateMillis="1686279600000" />
          * ```
          * @param initialSelectedDate initial selection of a date in UTC milliseconds.
          */
@@ -245,7 +264,7 @@ internal class DatePickerDTO private constructor(builder: Builder) :
          * date. Provide a null to indicate no selection.
          *
          * ```
-         * <DatePicker initial-selected-date-millis="1686279600000" />
+         * <DatePicker initialSelectedDateMillis="1686279600000" />
          * ```
          * @param initialSelectedDate initial selection of a date in UTC milliseconds.
          */
@@ -260,7 +279,7 @@ internal class DatePickerDTO private constructor(builder: Builder) :
          * Otherwise, in case null is provided, the displayed month would be the current one.
          *
          * ```
-         * <DatePicker initial-displayed-month-millis="" />
+         * <DatePicker initialDisplayedMonthMillis="" />
          * ```
          * @param initialDisplayedMonth initial selection of a month in UTC milliseconds.
          */
@@ -273,7 +292,7 @@ internal class DatePickerDTO private constructor(builder: Builder) :
          * be limited to.
          *
          * ```
-         * <DatePicker year-range="1900,2024" />
+         * <DatePicker yearRange="1900,2024" />
          * ```
          * @param yearRange a string containing two integers separated by comma representing the
          * min and max year respectively.
@@ -299,8 +318,8 @@ internal class DatePickerDTO private constructor(builder: Builder) :
          */
         fun initialDisplayMode(displayMode: String) = apply {
             this.initialDisplayMode = when (displayMode) {
-                "input" -> DisplayMode.Input
-                "picker" -> DisplayMode.Picker
+                DatePickerDisplayModeValues.input -> DisplayMode.Input
+                DatePickerDisplayModeValues.picker -> DisplayMode.Picker
                 else -> DisplayMode.Picker
             }
         }
@@ -383,46 +402,46 @@ internal fun getDatePickerColors(colors: ImmutableMap<String, String>?): DatePic
         defaultValue
     } else {
         DatePickerDefaults.colors(
-            containerColor = colors[ColorAttrs.colorAttrContainerColor]?.toColor()
+            containerColor = colors[colorAttrContainerColor]?.toColor()
                 ?: MaterialTheme.colorScheme.surface,
-            titleContentColor = colors[ColorAttrs.colorAttrTitleContentColor]?.toColor()
+            titleContentColor = colors[colorAttrTitleContentColor]?.toColor()
                 ?: MaterialTheme.colorScheme.onSurfaceVariant,
-            headlineContentColor = colors[ColorAttrs.colorAttrHeadlineContentColor]?.toColor()
+            headlineContentColor = colors[colorAttrHeadlineContentColor]?.toColor()
                 ?: MaterialTheme.colorScheme.onSurfaceVariant,
-            weekdayContentColor = colors[ColorAttrs.colorAttrWeekdayContentColor]?.toColor()
+            weekdayContentColor = colors[colorAttrWeekdayContentColor]?.toColor()
                 ?: MaterialTheme.colorScheme.onSurface,
-            subheadContentColor = colors[ColorAttrs.colorAttrSubheadContentColor]?.toColor()
+            subheadContentColor = colors[colorAttrSubheadContentColor]?.toColor()
                 ?: MaterialTheme.colorScheme.onSurfaceVariant,
-            yearContentColor = colors[ColorAttrs.colorAttrYearContentColor]?.toColor()
+            yearContentColor = colors[colorAttrYearContentColor]?.toColor()
                 ?: MaterialTheme.colorScheme.onSurfaceVariant,
-            currentYearContentColor = colors[ColorAttrs.colorAttrCurrentYearContentColor]?.toColor()
+            currentYearContentColor = colors[colorAttrCurrentYearContentColor]?.toColor()
                 ?: MaterialTheme.colorScheme.primary,
-            selectedYearContentColor = colors[ColorAttrs.colorAttrSelectedYearContentColor]?.toColor()
+            selectedYearContentColor = colors[colorAttrSelectedYearContentColor]?.toColor()
                 ?: MaterialTheme.colorScheme.onPrimary,
-            selectedYearContainerColor = colors[ColorAttrs.colorAttrSelectedYearContainerColor]?.toColor()
+            selectedYearContainerColor = colors[colorAttrSelectedYearContainerColor]?.toColor()
                 ?: MaterialTheme.colorScheme.primary,
-            dayContentColor = colors[ColorAttrs.colorAttrDayContentColor]?.toColor()
+            dayContentColor = colors[colorAttrDayContentColor]?.toColor()
                 ?: MaterialTheme.colorScheme.onSurface,
-            disabledDayContentColor = colors[ColorAttrs.colorAttrDisabledDayContentColor]?.toColor()
-                ?: (colors[ColorAttrs.colorAttrDayContentColor]?.toColor()
+            disabledDayContentColor = colors[colorAttrDisabledDayContentColor]?.toColor()
+                ?: (colors[colorAttrDayContentColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurface).copy(alpha = 0.38f),
-            selectedDayContentColor = colors[ColorAttrs.colorAttrSelectedDayContentColor]?.toColor()
+            selectedDayContentColor = colors[colorAttrSelectedDayContentColor]?.toColor()
                 ?: MaterialTheme.colorScheme.onPrimary,
-            disabledSelectedDayContentColor = colors[ColorAttrs.colorAttrDisabledSelectedDayContentColor]?.toColor()
-                ?: (colors[ColorAttrs.colorAttrSelectedDayContentColor]?.toColor()
+            disabledSelectedDayContentColor = colors[colorAttrDisabledSelectedDayContentColor]?.toColor()
+                ?: (colors[colorAttrSelectedDayContentColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onPrimary).copy(alpha = 0.38f),
-            selectedDayContainerColor = colors[ColorAttrs.colorAttrSelectedDayContainerColor]?.toColor()
+            selectedDayContainerColor = colors[colorAttrSelectedDayContainerColor]?.toColor()
                 ?: MaterialTheme.colorScheme.primary,
-            disabledSelectedDayContainerColor = colors[ColorAttrs.colorAttrDisabledSelectedDayContainerColor]?.toColor()
-                ?: (colors[ColorAttrs.colorAttrSelectedDayContainerColor]?.toColor()
+            disabledSelectedDayContainerColor = colors[colorAttrDisabledSelectedDayContainerColor]?.toColor()
+                ?: (colors[colorAttrSelectedDayContainerColor]?.toColor()
                     ?: MaterialTheme.colorScheme.primary).copy(alpha = 0.38f),
-            todayContentColor = colors[ColorAttrs.colorAttrTodayContentColor]?.toColor()
+            todayContentColor = colors[colorAttrTodayContentColor]?.toColor()
                 ?: MaterialTheme.colorScheme.primary,
-            todayDateBorderColor = colors[ColorAttrs.colorAttrTodayBorderColor]?.toColor()
+            todayDateBorderColor = colors[colorAttrTodayDateBorderColor]?.toColor()
                 ?: MaterialTheme.colorScheme.primary,
-            dayInSelectionRangeContentColor = colors[ColorAttrs.colorAttrDayInSelectionRangeContentColor]?.toColor()
+            dayInSelectionRangeContentColor = colors[colorAttrDayInSelectionRangeContentColor]?.toColor()
                 ?: MaterialTheme.colorScheme.onSecondaryContainer,
-            dayInSelectionRangeContainerColor = colors[ColorAttrs.colorAttrDayInSelectionRangeContainerColor]?.toColor()
+            dayInSelectionRangeContainerColor = colors[colorAttrDayInSelectionRangeContainerColor]?.toColor()
                 ?: MaterialTheme.colorScheme.secondaryContainer,
         )
     }

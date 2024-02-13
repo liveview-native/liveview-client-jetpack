@@ -9,10 +9,10 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Templates.templateBadge
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -28,7 +28,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  * <BadgedBox>
  *   <Text template="badge">+99</Text>
- *   <Icon image-vector="filled:Add" />
+ *   <Icon imageVector="filled:Add" />
  * </BadgedBox>
  * ```
  */
@@ -80,9 +80,10 @@ internal class BadgedBoxDTO private constructor(builder: Builder) :
          * The color used for the background of the BadgedBox.
          *
          * ```
-         * <BadgedBox container-color="#FF0000FF">
+         * <BadgedBox containerColor="#FF0000FF">
          * ```
-         * @param containerColor the background color in AARRGGBB format.
+         * @param containerColor the background color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun containerColor(containerColor: String) = apply {
             this.containerColor = containerColor.toColor()
@@ -92,9 +93,10 @@ internal class BadgedBoxDTO private constructor(builder: Builder) :
          * The preferred color for content inside the BadgedBox.
          *
          * ```
-         * <BadgedBox content-color="#FF0000FF" />
+         * <BadgedBox contentColor="#FF0000FF" />
          * ```
-         * @param contentColor the content color in AARRGGBB format.
+         * @param contentColor the content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun contentColor(contentColor: String) = apply {
             this.contentColor = contentColor.toColor()

@@ -107,12 +107,12 @@ internal class FlowLayoutDTO private constructor(builder: Builder) :
          * The horizontal arrangement of the children
          *
          * ```
-         * <FlowColumn horizontal-arrangement="spaceAround" >...</FlowColumn>
-         * <FlowRow horizontal-arrangement="spaceAround" >...</FlowRow>
+         * <FlowColumn horizontalArrangement="spaceAround" >...</FlowColumn>
+         * <FlowRow horizontalArrangement="spaceAround" >...</FlowRow>
          * ```
-         * @param horizontalArrangement the horizontal arrangement of the column's children. The
-         * supported values are: `start`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `end`,
-         * and `center`. An int value is also supported, which will be used to determine the space.
+         * @param horizontalArrangement the horizontal arrangement of the column's children. See the
+         * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
+         * An int value is also supported, which will be used to determine the space.
          */
         fun horizontalArrangement(horizontalArrangement: String) = apply {
             this.horizontalArrangement = horizontalArrangementFromString(horizontalArrangement)
@@ -122,8 +122,8 @@ internal class FlowLayoutDTO private constructor(builder: Builder) :
          * The maximum number of items per column (for FlowColumn) or row (for FlowRow).
          *
          * ```
-         * <FlowColumn max-items-in-each-column="10" >...</FlowColumn>
-         * <FlowRow max-items-in-each-row="10" >...</FlowRow>
+         * <FlowColumn maxItemsInEachColumn="10" >...</FlowColumn>
+         * <FlowRow maxItemsInEachRow="10" >...</FlowRow>
          * ```
          * @param max the maximum number of items of each column/row.
          */
@@ -135,12 +135,12 @@ internal class FlowLayoutDTO private constructor(builder: Builder) :
          * The vertical arrangement of the children
          *
          * ```
-         * <FlowColumn vertical-arrangement="spaceAround" >...</FlowColumn>
-         * <FlowRow vertical-arrangement="spaceAround" >...</FlowRow>
+         * <FlowColumn verticalArrangement="spaceAround" >...</FlowColumn>
+         * <FlowRow verticalArrangement="spaceAround" >...</FlowRow>
          * ```
-         * @param verticalArrangement the vertical arrangement of the column's children. The
-         * supported values are: `top`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `bottom`,
-         * and `center`. An int value is also supported, which will be used to determine the space.
+         * @param verticalArrangement the vertical arrangement of the column's children. See the
+         * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
+         * An int value is also supported, which will be used to determine the space.
          */
         fun verticalArrangement(verticalArrangement: String) = apply {
             this.verticalArrangement = verticalArrangementFromString(verticalArrangement)

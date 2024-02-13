@@ -7,6 +7,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.SecureFlagPolicy
+import org.phoenixframework.liveview.data.constants.AlignmentValues
+import org.phoenixframework.liveview.data.constants.Attrs.attrBottom
+import org.phoenixframework.liveview.data.constants.Attrs.attrColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrLeft
+import org.phoenixframework.liveview.data.constants.Attrs.attrRight
+import org.phoenixframework.liveview.data.constants.Attrs.attrTop
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ContentScaleValues
+import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
+import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
+import org.phoenixframework.liveview.data.constants.SecureFlagPolicyValues
+import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
+import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -16,7 +29,7 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 /**
  * Returns a `WindowInsets` object from a String.
  * ```
- * <ModalBottomSheet window-insets="{'bottom': '100'}" >
+ * <ModalBottomSheet windowInsets="{'bottom': '100'}" >
  * ```
  * @param insets the space, in Dp, at the each border of the window that the inset
  * represents. The supported values are: `left`, `top`, `bottom`, and `right`.
@@ -24,10 +37,10 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 fun windowInsetsFromString(insets: String): WindowInsets {
     val map = JsonParser.parse<Map<String, String>>(insets)
     return WindowInsets(
-        left = (map?.get("left")?.toInt() ?: 0).dp,
-        top = (map?.get("top")?.toInt() ?: 0).dp,
-        right = (map?.get("right")?.toInt() ?: 0).dp,
-        bottom = (map?.get("bottom")?.toInt() ?: 0).dp,
+        left = (map?.get(attrLeft)?.toInt() ?: 0).dp,
+        top = (map?.get(attrTop)?.toInt() ?: 0).dp,
+        right = (map?.get(attrRight)?.toInt() ?: 0).dp,
+        bottom = (map?.get(attrBottom)?.toInt() ?: 0).dp,
     )
 }
 
@@ -39,15 +52,15 @@ fun windowInsetsFromString(insets: String): WindowInsets {
  */
 internal fun alignmentFromString(alignment: String, defaultValue: Alignment): Alignment =
     when (alignment) {
-        "topStart" -> Alignment.TopStart
-        "topCenter" -> Alignment.TopCenter
-        "topEnd" -> Alignment.TopEnd
-        "centerStart" -> Alignment.CenterStart
-        "center" -> Alignment.Center
-        "centerEnd" -> Alignment.CenterEnd
-        "bottomStart" -> Alignment.BottomStart
-        "bottomCenter" -> Alignment.BottomCenter
-        "bottomEnd" -> Alignment.BottomEnd
+        AlignmentValues.topStart -> Alignment.TopStart
+        AlignmentValues.topCenter -> Alignment.TopCenter
+        AlignmentValues.topEnd -> Alignment.TopEnd
+        AlignmentValues.centerStart -> Alignment.CenterStart
+        AlignmentValues.center -> Alignment.Center
+        AlignmentValues.centerEnd -> Alignment.CenterEnd
+        AlignmentValues.bottomStart -> Alignment.BottomStart
+        AlignmentValues.bottomCenter -> Alignment.BottomCenter
+        AlignmentValues.bottomEnd -> Alignment.BottomEnd
         else -> defaultValue
     }
 
@@ -60,60 +73,30 @@ internal fun alignmentFromString(alignment: String, defaultValue: Alignment): Al
 internal fun contentScaleFromString(
     contentScale: String, defaultValue: ContentScale = ContentScale.None
 ): ContentScale = when (contentScale) {
-    "crop" -> ContentScale.Crop
-    "fillBounds" -> ContentScale.FillBounds
-    "fillHeight" -> ContentScale.FillHeight
-    "fillWidth" -> ContentScale.FillWidth
-    "fit" -> ContentScale.Fit
-    "inside" -> ContentScale.Inside
-    "none" -> ContentScale.None
-    else -> defaultValue
-}
-
-/**
- * Returns an `Alignment.Vertical` object from a String.
- * @param alignment string to be converted to an `Alignment.Vertical`.
- * @param defaultValue default value to be used in case of [alignment] does not match with
- * any supported value.
- */
-internal fun verticalAlignmentFromString(
-    alignment: String, defaultValue: Alignment.Vertical = Alignment.Top
-): Alignment.Vertical = when (alignment) {
-    "top" -> Alignment.Top
-    "center" -> Alignment.CenterVertically
-    "bottom" -> Alignment.Bottom
-    else -> defaultValue
-}
-
-/**
- * Returns an `Alignment.Horizontal` object from a String.
- * @param alignment string to be converted to an `Alignment.Horizontal`.
- * @param defaultValue default value to be used in case of [alignment] does not match with
- * any supported value.
- */
-internal fun horizontalAlignmentFromString(
-    alignment: String, defaultValue: Alignment.Horizontal = Alignment.Start
-): Alignment.Horizontal = when (alignment) {
-    "start" -> Alignment.Start
-    "center" -> Alignment.CenterHorizontally
-    "end" -> Alignment.End
+    ContentScaleValues.crop -> ContentScale.Crop
+    ContentScaleValues.fillBounds -> ContentScale.FillBounds
+    ContentScaleValues.fillHeight -> ContentScale.FillHeight
+    ContentScaleValues.fillWidth -> ContentScale.FillWidth
+    ContentScaleValues.fit -> ContentScale.Fit
+    ContentScaleValues.inside -> ContentScale.Inside
+    ContentScaleValues.none -> ContentScale.None
     else -> defaultValue
 }
 
 /**
  * The vertical arrangement of the Column's children
  *
- * @param verticalArrangement the vertical arrangement of the column's children. The
- * supported values are: `top`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `bottom`,
- * and `center`. An int value is also supported, which will be used to determine the space.
+ * @param verticalArrangement the vertical arrangement of the column's children. See the
+ * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
+ * An int value is also supported, which will be used to determine the space.
  */
 internal fun verticalArrangementFromString(verticalArrangement: String) =
     when (verticalArrangement) {
-        "top" -> Arrangement.Top
-        "spaceEvenly" -> Arrangement.SpaceEvenly
-        "spaceAround" -> Arrangement.SpaceAround
-        "spaceBetween" -> Arrangement.SpaceBetween
-        "bottom" -> Arrangement.Bottom
+        VerticalArrangementValues.top -> Arrangement.Top
+        VerticalArrangementValues.spaceEvenly -> Arrangement.SpaceEvenly
+        VerticalArrangementValues.spaceAround -> Arrangement.SpaceAround
+        VerticalArrangementValues.spaceBetween -> Arrangement.SpaceBetween
+        VerticalArrangementValues.bottom -> Arrangement.Bottom
         else -> if (verticalArrangement.isNotEmptyAndIsDigitsOnly()) {
             Arrangement.spacedBy(verticalArrangement.toInt().dp)
         } else {
@@ -124,31 +107,31 @@ internal fun verticalArrangementFromString(verticalArrangement: String) =
 /**
  * The horizontal alignment of the Column's children
  *
- * @param horizontalAlignment the horizontal alignment of the column's children. The
- * supported values are: `start`, `center`, and `end`.
+ * @param horizontalAlignment the horizontal alignment of the column's children. See the
+ * supported values at [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
  */
 internal fun horizontalAlignmentFromString(horizontalAlignment: String) =
     when (horizontalAlignment) {
-        "start" -> Alignment.Start
-        "center" -> Alignment.CenterHorizontally
-        "end" -> Alignment.End
+        HorizontalAlignmentValues.start -> Alignment.Start
+        HorizontalAlignmentValues.centerHorizontally -> Alignment.CenterHorizontally
+        HorizontalAlignmentValues.end -> Alignment.End
         else -> Alignment.Start
     }
 
 /**
  * The horizontal arrangement of the Row's children
  *
- * @param horizontalArrangement the horizontal arrangement of the column's children. The
- * supported values are: `start`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `end`,
- * and `center`. An int value is also supported, which will be used to determine the space.
+ * @param horizontalArrangement the horizontal arrangement of the column's children. See the
+ * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
+ * An int value is also supported, which will be used to determine the space.
  */
 internal fun horizontalArrangementFromString(horizontalArrangement: String) =
     when (horizontalArrangement) {
-        "spaceEvenly" -> Arrangement.SpaceEvenly
-        "spaceAround" -> Arrangement.SpaceAround
-        "spaceBetween" -> Arrangement.SpaceBetween
-        "start" -> Arrangement.Start
-        "end" -> Arrangement.End
+        HorizontalArrangementValues.spaceEvenly -> Arrangement.SpaceEvenly
+        HorizontalArrangementValues.spaceAround -> Arrangement.SpaceAround
+        HorizontalArrangementValues.spaceBetween -> Arrangement.SpaceBetween
+        HorizontalArrangementValues.start -> Arrangement.Start
+        HorizontalArrangementValues.end -> Arrangement.End
         else -> if (horizontalArrangement.isNotEmptyAndIsDigitsOnly()) {
             Arrangement.spacedBy(horizontalArrangement.toInt().dp)
         } else {
@@ -159,12 +142,12 @@ internal fun horizontalArrangementFromString(horizontalArrangement: String) =
 /**
  * The vertical alignment of the Row's children
  *
- * @param verticalAlignment the vertical alignment of the row's children. The
- * supported values are: `top`, `center`, and `bottom`.
+ * @param verticalAlignment the vertical alignment of the row's children. See the supported values
+ * at [org.phoenixframework.liveview.data.constants.VerticalAlignmentValues].
  */
 internal fun verticalAlignmentFromString(verticalAlignment: String) = when (verticalAlignment) {
-    "top" -> Alignment.Top
-    "center" -> Alignment.CenterVertically
+    VerticalAlignmentValues.top -> Alignment.Top
+    VerticalAlignmentValues.center -> Alignment.CenterVertically
     else -> Alignment.Bottom
 }
 
@@ -212,8 +195,8 @@ internal fun borderFromString(border: String): BorderStroke? {
             val map = JsonParser.parse<Map<String, Any>>(border)
             if (map != null) {
                 borderCache[key] = BorderStroke(
-                    (map["width"].toString().toIntOrNull() ?: 1).dp,
-                    map["color"].toString().toColor()
+                    (map[attrWidth].toString().toIntOrNull() ?: 1).dp,
+                    map[attrColor].toString().toColor()
                 )
             }
         }
@@ -226,8 +209,8 @@ internal fun borderFromString(border: String): BorderStroke? {
 
 internal fun secureFlagPolicyFromString(securePolicy: String): SecureFlagPolicy {
     return when (securePolicy) {
-        "secureOn" -> SecureFlagPolicy.SecureOn
-        "secureOff" -> SecureFlagPolicy.SecureOff
+        SecureFlagPolicyValues.secureOn -> SecureFlagPolicy.SecureOn
+        SecureFlagPolicyValues.secureOff -> SecureFlagPolicy.SecureOff
         else -> SecureFlagPolicy.Inherit
     }
 }

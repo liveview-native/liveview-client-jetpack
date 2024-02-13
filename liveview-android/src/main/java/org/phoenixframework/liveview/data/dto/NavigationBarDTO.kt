@@ -16,6 +16,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationBarItem
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -30,7 +31,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  * <NavigationBar template="bottomBar">
  *   <NavigationBarItem selected={"#{@selectedTab == "0"}"} phx-click="selectTab" phx-value="0">
- *     <Icon image-vector="filled:HorizontalDistribute" template="icon"/>
+ *     <Icon imageVector="filled:HorizontalDistribute" template="icon"/>
  *     <Text template="label">Tab 1</Text>
  *   </NavigationBarItem>
  *   ...
@@ -79,9 +80,10 @@ internal class NavigationBarDTO private constructor(builder: Builder) :
         /**
          * The color used for the background of this navigation bar.
          * ```
-         * <NavigationBar container-color="#FFFFFF00">...</NavigationBar>
+         * <NavigationBar containerColor="#FFFFFF00">...</NavigationBar>
          * ```
-         * @param color container color in AARRGGBB format.
+         * @param color container color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun containerColor(color: String) = apply {
             this.containerColor = color.toColor()
@@ -90,9 +92,10 @@ internal class NavigationBarDTO private constructor(builder: Builder) :
         /**
          * The preferred color for content inside this navigation bar.
          * ```
-         * <NavigationBar content-color="#FFCCCCCC">...</NavigationBar>
+         * <NavigationBar contentColor="#FFCCCCCC">...</NavigationBar>
          * ```
-         * @param color content color in AARRGGBB format.
+         * @param color content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun contentColor(color: String) = apply {
             this.contentColor = color.toColor()
@@ -102,7 +105,7 @@ internal class NavigationBarDTO private constructor(builder: Builder) :
          * A higher tonal elevation value will result in a darker color in light theme and lighter
          * color in dark theme.
          * ```
-         * <NavigationBar tonal-elevation="24">...</NavigationBar>
+         * <NavigationBar tonalElevation="24">...</NavigationBar>
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */
@@ -115,7 +118,7 @@ internal class NavigationBarDTO private constructor(builder: Builder) :
         /**
          * Window insets to be passed to the navigation bar window via PaddingValues params.
          * ```
-         * <ModalBottomSheet window-insets="{'bottom': '100'}" >
+         * <ModalBottomSheet windowInsets="{'bottom': '100'}" >
          * ```
          * @param insets the space, in Dp, at the each border of the window that the inset
          * represents. The supported values are: `left`, `top`, `bottom`, and `right`.
@@ -157,9 +160,7 @@ internal object NavigationBarDtoFactory :
 
     override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
         return mapOf(
-            tagNavigationBarItem to NavigationBarItemDtoFactory
+            navigationBarItem to NavigationBarItemDtoFactory
         )
     }
-
-    private const val tagNavigationBarItem = "NavigationBarItem"
 }

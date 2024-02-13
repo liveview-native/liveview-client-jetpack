@@ -7,13 +7,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlpha
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentDescription
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
 import org.phoenixframework.liveview.data.constants.Attrs.attrCrossFade
 import org.phoenixframework.liveview.data.constants.Attrs.attrUrl
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -26,7 +26,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * <AsyncImage
  *  url="https://assets.dockyard.com/images/narwin-home-flare.jpg"
  *  alpha="0.5"
- *  content-scale="fillHeight" />
+ *  contentScale="fillHeight" />
  * ```
  */
 internal class AsyncImageDTO private constructor(builder: Builder) :
@@ -87,7 +87,7 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
          * Sets the image content description fro accessibility purpose.
          *
          * ```
-         * <AsyncImage content-description="Application Logo" />
+         * <AsyncImage contentDescription="Application Logo" />
          * ```
          * @param contentDescription string representing the image's content description
          */
@@ -99,9 +99,9 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
          * Define if the image will have the crossfade animation after loaded.
          *
          * ```
-         * <AsyncImage cross-fade="true" />
+         * <AsyncImage crossFade="true" />
          * ```
-         * @param crossFade true to enable a crossfade animation, false otherwise.
+         * @param crossFade true to enable a cross-fade animation, false otherwise.
          */
         fun crossFade(crossFade: String) = apply {
             if (crossFade.isNotEmpty()) {
@@ -113,10 +113,10 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
          * Scale parameter used to determine the aspect ratio scaling to be used if the bounds are
          * a different size from the intrinsic size.
          * ```
-         * <AsyncImage content-scale="crop" />
+         * <AsyncImage contentScale="crop" />
          * ```
-         * @param contentScale content scale. The supported values are: `fit`, `crop`, `fillBounds`,
-         *  `fillHeight`, `fillWidth` and `inside`.
+         * @param contentScale content scale.
+         * See the supported values at [org.phoenixframework.liveview.data.constants.ContentScaleValues].
          */
         fun contentScale(contentScale: String) = apply {
             if (contentScale.isNotEmpty()) {
@@ -131,8 +131,7 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
          * <AsyncImage alignment="centerStart" />
          * ```
          * @param alignment image alignment when the image is smaller than the available area.
-         * The supported values are: `topStart`, `topCenter`, `topEnd`, `centerStart`, `center`,
-         * `centerEnd`, `bottomStart`, `bottomCenter`, and `bottomEnd`.
+         * See the supported values at [org.phoenixframework.liveview.data.constants.AlignmentValues].
          */
         fun alignment(alignment: String) = apply {
             if (alignment.isNotEmpty()) {

@@ -33,13 +33,13 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  * <BottomAppBar template="bottomBar">
  *   <IconButton phx-click="horizontalGrid" template="action">
- *     <Icon image-vector="filled:HorizontalDistribute" />
+ *     <Icon imageVector="filled:HorizontalDistribute" />
  *   </IconButton>
  *   <IconButton phx-click="verticalGrid" template="action">
- *     <Icon image-vector="filled:VerticalDistribute" />
+ *     <Icon imageVector="filled:VerticalDistribute" />
  *   </IconButton>
  *   <FloatingActionButton phx-click="someAction" template="fab">
- *     <Icon image-vector="filled:Add"/>
+ *     <Icon imageVector="filled:Add"/>
  *   </FloatingActionButton>
  * </BottomAppBar>
  * ```
@@ -101,7 +101,8 @@ internal class BottomAppBarDTO private constructor(builder: Builder) :
         /**
          * Color used for the background of this bottom bar.
          *
-         * @param color container color in AARRGGBB format.
+         * @param color container color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun containerColor(color: String) = apply {
             if (color.isNotEmpty()) {
@@ -112,7 +113,8 @@ internal class BottomAppBarDTO private constructor(builder: Builder) :
         /**
          * Preferred color for content inside this bottom bar.
          *
-         * @param color content color in AARRGGBB format.
+         * @param color content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun contentColor(color: String) = apply {
             if (color.isNotEmpty()) {
@@ -123,7 +125,7 @@ internal class BottomAppBarDTO private constructor(builder: Builder) :
         /**
          * Spacing values to apply internally between the container and the content.
          * ```
-         * <BottomAppBar content-padding="8">...</Button>
+         * <BottomAppBar contentPadding="8">...</Button>
          * ```
          * @param contentPadding int value representing the padding to be applied to the button's
          * content.
@@ -139,7 +141,7 @@ internal class BottomAppBarDTO private constructor(builder: Builder) :
          * on top of the container. A higher tonal elevation value will result in a darker color in
          * light theme and lighter color in dark theme.
          * ```
-         * <BottomAppBar tonal-elevation="12" >...</BottomAppBar>
+         * <BottomAppBar tonalElevation="12" >...</BottomAppBar>
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */
@@ -152,7 +154,7 @@ internal class BottomAppBarDTO private constructor(builder: Builder) :
         /**
          * Window insets to be passed to the bottom bar via PaddingValues params.
          * ```
-         * <BottomAppBar window-insets="{'bottom': '100'}" >
+         * <BottomAppBar windowInsets="{'bottom': '100'}" >
          * ```
          * @param insets the space, in Dp, at the each border of the window that the inset
          * represents. The supported values are: `left`, `top`, `bottom`, and `right`.

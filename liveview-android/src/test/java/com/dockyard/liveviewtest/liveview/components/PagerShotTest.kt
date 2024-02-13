@@ -23,6 +23,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.AlignmentValues.center
+import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrCurrentPage
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrInitialPageOffsetFraction
+import org.phoenixframework.liveview.data.constants.Attrs.attrPageCount
+import org.phoenixframework.liveview.data.constants.Attrs.attrPageSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrPageSpacing
+import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.domain.base.ComposableTypes.box
+import org.phoenixframework.liveview.domain.base.ComposableTypes.horizontalPager
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.domain.base.ComposableTypes.verticalPager
+
 
 @OptIn(ExperimentalFoundationApi::class)
 class PagerShotTest : LiveViewComposableTest() {
@@ -42,10 +62,10 @@ class PagerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <HorizontalPager current-page="0" page-count="2" phx-change="">
-                  ${pagerTemplateTab("system-red", "Red")}
-                  ${pagerTemplateTab("system-blue", "Blue")}
-                </HorizontalPager>            
+                <$horizontalPager $attrCurrentPage="0" $attrPageCount="2">
+                  ${pagerTemplateTab(Red, "Red")}
+                  ${pagerTemplateTab(Blue, "Blue")}
+                </$horizontalPager>            
                 """
         )
     }
@@ -69,11 +89,12 @@ class PagerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <HorizontalPager current-page="0" page-count="3" phx-change="" initial-page-offset-fraction="0.5">
-                  ${pagerTemplateTab("system-red", "Red")}
-                  ${pagerTemplateTab("system-green", "Green")}
-                  ${pagerTemplateTab("system-blue", "Blue")}
-                </HorizontalPager>            
+                <$horizontalPager $attrCurrentPage="0" $attrPageCount="3" 
+                  $attrInitialPageOffsetFraction="0.5">
+                  ${pagerTemplateTab(Red, "Red")}
+                  ${pagerTemplateTab(Green, "Green")}
+                  ${pagerTemplateTab(Blue, "Blue")}
+                </$horizontalPager>            
                 """
         )
     }
@@ -97,10 +118,13 @@ class PagerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <HorizontalPager current-page="0" page-count="2" content-padding="16" phx-change="">
-                  ${pagerTemplateTab("system-red", "Red")}
-                  ${pagerTemplateTab("system-blue", "Blue")}
-                </HorizontalPager>            
+                <$horizontalPager 
+                  $attrCurrentPage="0" 
+                  $attrPageCount="2" 
+                  $attrContentPadding="16">
+                  ${pagerTemplateTab(Red, "Red")}
+                  ${pagerTemplateTab(Blue, "Blue")}
+                </$horizontalPager>            
                 """
         )
     }
@@ -124,10 +148,10 @@ class PagerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <HorizontalPager current-page="0" page-count="2" page-size="200" phx-change="">
-                  ${pagerTemplateTab("system-red", "Red")}
-                  ${pagerTemplateTab("system-blue", "Blue")}
-                </HorizontalPager>            
+                <$horizontalPager $attrCurrentPage="0" $attrPageCount="2" $attrPageSize="200">
+                  ${pagerTemplateTab(Red, "Red")}
+                  ${pagerTemplateTab(Blue, "Blue")}
+                </$horizontalPager>            
                 """
         )
     }
@@ -151,12 +175,12 @@ class PagerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <HorizontalPager current-page="0" page-count="3" phx-change="" 
-                    initial-page-offset-fraction="0.5" page-spacing="24">
-                  ${pagerTemplateTab("system-red", "Red")}
-                  ${pagerTemplateTab("system-green", "Green")}
-                  ${pagerTemplateTab("system-blue", "Blue")}
-                </HorizontalPager>            
+                <$horizontalPager $attrCurrentPage="0" $attrPageCount="3" 
+                  $attrInitialPageOffsetFraction="0.5" $attrPageSpacing="24">
+                  ${pagerTemplateTab(Red, "Red")}
+                  ${pagerTemplateTab(Green, "Green")}
+                  ${pagerTemplateTab(Blue, "Blue")}
+                </$horizontalPager>            
                 """
         )
     }
@@ -182,11 +206,11 @@ class PagerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <HorizontalPager current-page="0" page-count="3" phx-change="" page-spacing="24">
-                  ${pagerTemplateTab("system-red", "Red")}
-                  ${pagerTemplateTab("system-green", "Green")}
-                  ${pagerTemplateTab("system-blue", "Blue")}
-                </HorizontalPager>            
+                <$horizontalPager $attrCurrentPage="0" $attrPageCount="3" $attrPageSpacing="24">
+                  ${pagerTemplateTab(Red, "Red")}
+                  ${pagerTemplateTab(Green, "Green")}
+                  ${pagerTemplateTab(Blue, "Blue")}
+                </$horizontalPager>            
                 """
         )
     }
@@ -212,11 +236,15 @@ class PagerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <HorizontalPager current-page="0" page-count="3" phx-change="" reverse-layout="true">
-                  ${pagerTemplateTab("system-red", "Red")}
-                  ${pagerTemplateTab("system-blue", "Blue")}
-                  ${pagerTemplateTab("system-green", "Green")}
-                </HorizontalPager>            
+                <$horizontalPager 
+                  $attrCurrentPage="0" 
+                  $attrPageCount="3" 
+                  
+                  $attrReverseLayout="true">
+                  ${pagerTemplateTab(Red, "Red")}
+                  ${pagerTemplateTab(Blue, "Blue")}
+                  ${pagerTemplateTab(Green, "Green")}
+                </$horizontalPager>            
                 """
         )
     }
@@ -242,20 +270,20 @@ class PagerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <VerticalPager current-page="0" page-count="3" phx-change="">
-                  ${pagerTemplateTab("system-red", "Red")}
-                  ${pagerTemplateTab("system-green", "Green")}
-                  ${pagerTemplateTab("system-blue", "Blue")}
-                </VerticalPager>            
+                <$verticalPager $attrCurrentPage="0" $attrPageCount="3">
+                  ${pagerTemplateTab(Red, "Red")}
+                  ${pagerTemplateTab(Green, "Green")}
+                  ${pagerTemplateTab(Blue, "Blue")}
+                </$verticalPager>            
                 """
         )
     }
 
-    private fun pagerTemplateTab(color: String, text: String): String {
+    private fun pagerTemplateTab(color: String, textContent: String): String {
         return """
-            <Box content-alignment="center" background="$color" size="fill">
-                <Text font-size="24">$text</Text>
-            </Box>
+            <$box $attrContentAlignment="$center" $attrBackground="$color" $attrSize="fill">
+                <$text $attrFontSize="24">$textContent</$text>
+            </$box>
             """
     }
 

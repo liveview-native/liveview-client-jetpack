@@ -11,6 +11,27 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedBadgeColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedBadgeColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedTextColor
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredFilled
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.Templates.templateBadge
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.modalDrawerSheet
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationDrawerItem
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class NavigationDrawerItemShotTest : LiveViewComposableTest() {
     @Test
@@ -35,14 +56,14 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <ModalDrawerSheet>
-                  <NavigationDrawerItem selected="true" phx-click="">
-                    <Text template="label">Option 1</Text>
-                  </NavigationDrawerItem> 
-                  <NavigationDrawerItem selected="false" phx-click="">
-                    <Text template="label">Option 2</Text>
-                  </NavigationDrawerItem>                   
-                </ModalDrawerSheet>               
+                <$modalDrawerSheet>
+                  <$navigationDrawerItem $attrSelected="true">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                  </$navigationDrawerItem> 
+                  <$navigationDrawerItem $attrSelected="false">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                  </$navigationDrawerItem>                   
+                </$modalDrawerSheet>               
                 """
         )
     }
@@ -78,16 +99,16 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <ModalDrawerSheet>
-                  <NavigationDrawerItem selected="true" phx-click="">
-                    <Text template="label">Option 1</Text>
-                    <Icon image-vector="filled:AccountCircle" template="icon" />
-                  </NavigationDrawerItem> 
-                  <NavigationDrawerItem selected="false" phx-click="">
-                    <Text template="label">Option 2</Text>
-                    <Icon image-vector="autoMirrored.filled:ExitToApp" template="icon" />
-                  </NavigationDrawerItem>                   
-                </ModalDrawerSheet>               
+                <$modalDrawerSheet>
+                  <$navigationDrawerItem $attrSelected="true">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                    <$icon $attrImageVector="$filled:AccountCircle" $attrTemplate="$templateIcon" />
+                  </$navigationDrawerItem> 
+                  <$navigationDrawerItem $attrSelected="false">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                    <$icon $attrImageVector="$autoMirroredFilled:ExitToApp" $attrTemplate="$templateIcon" />
+                  </$navigationDrawerItem>                   
+                </$modalDrawerSheet>               
                 """
         )
     }
@@ -129,18 +150,18 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <ModalDrawerSheet>
-                  <NavigationDrawerItem selected="true" phx-click="">
-                    <Text template="label">Option 1</Text>
-                    <Icon image-vector="filled:AccountCircle" template="icon" />
-                    <Text template="badge">99+</Text>
-                  </NavigationDrawerItem> 
-                  <NavigationDrawerItem selected="false" phx-click="">
-                    <Text template="label">Option 2</Text>
-                    <Icon image-vector="autoMirrored.filled:ExitToApp" template="icon" />
-                    <Text template="badge">None</Text>
-                  </NavigationDrawerItem>                   
-                </ModalDrawerSheet>               
+                <$modalDrawerSheet>
+                  <$navigationDrawerItem $attrSelected="true">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                    <$icon $attrImageVector="$filled:AccountCircle" $attrTemplate="$templateIcon" />
+                    <$text $attrTemplate="$templateBadge">99+</$text>
+                  </$navigationDrawerItem> 
+                  <$navigationDrawerItem $attrSelected="false">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                    <$icon $attrImageVector="$autoMirroredFilled:ExitToApp" $attrTemplate="$templateIcon" />
+                    <$text $attrTemplate="$templateBadge">None</$text>
+                  </$navigationDrawerItem>                   
+                </$modalDrawerSheet>               
                 """
         )
     }
@@ -149,14 +170,14 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
     fun navigationDrawerItemWithCustomColors() {
         val templateColors = """ 
             {
-            'selectedContainerColor': '#FFFF0000',
-            'unselectedContainerColor': '#FF888888',
-            'selectedIconColor': '#FF00FF00',
-            'unselectedIconColor': '#FFCCCCCC',
-            'selectedTextColor': '#FF0000FF',
-            'unselectedTextColor': '#FF444444',
-            'selectedBadgeColor': '#FFFFFF00',
-            'unselectedBadgeColor': '#FFFF00FF'
+            '$colorAttrSelectedContainerColor': '#FFFF0000',
+            '$colorAttrUnselectedContainerColor': '#FF888888',
+            '$colorAttrSelectedIconColor': '#FF00FF00',
+            '$colorAttrUnselectedIconColor': '#FFCCCCCC',
+            '$colorAttrSelectedTextColor': '#FF0000FF',
+            '$colorAttrUnselectedTextColor': '#FF444444',
+            '$colorAttrSelectedBadgeColor': '#FFFFFF00',
+            '$colorAttrUnselectedBadgeColor': '#FFFF00FF'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -206,18 +227,18 @@ class NavigationDrawerItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <ModalDrawerSheet>
-                  <NavigationDrawerItem selected="true" phx-click="" colors="$templateColors">
-                    <Text template="label">Option 1</Text>
-                    <Icon image-vector="filled:AccountCircle" template="icon" />
-                    <Text template="badge">99+</Text>
-                  </NavigationDrawerItem> 
-                  <NavigationDrawerItem selected="false" phx-click="" colors="$templateColors">
-                    <Text template="label">Option 2</Text>
-                    <Icon image-vector="autoMirrored.filled:ExitToApp" template="icon" />
-                    <Text template="badge">None</Text>
-                  </NavigationDrawerItem>                   
-                </ModalDrawerSheet>               
+                <$modalDrawerSheet>
+                  <$navigationDrawerItem $attrSelected="true" $attrColors="$templateColors">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                    <$icon $attrImageVector="$filled:AccountCircle" $attrTemplate="$templateIcon" />
+                    <$text $attrTemplate="$templateBadge">99+</$text>
+                  </$navigationDrawerItem> 
+                  <$navigationDrawerItem $attrSelected="false" $attrColors="$templateColors">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                    <$icon $attrImageVector="$autoMirroredFilled:ExitToApp" $attrTemplate="$templateIcon" />
+                    <$text $attrTemplate="$templateBadge">None</$text>
+                  </$navigationDrawerItem>                   
+                </$modalDrawerSheet>               
                 """
         )
     }

@@ -2,23 +2,24 @@ package org.phoenixframework.liveview.domain.extensions
 
 import androidx.compose.ui.graphics.Color
 import androidx.core.text.isDigitsOnly
+import org.phoenixframework.liveview.data.constants.SystemColorValues
 
 fun String.isNotEmptyAndIsDigitsOnly(): Boolean = this.isNotEmpty() && this.isDigitsOnly()
 
 internal fun String.toColor(): Color {
     return when (this) {
-        "system-red" -> Color.Red
-        "system-green" -> Color.Green
-        "system-blue" -> Color.Blue
-        "system-black" -> Color.Black
-        "system-white" -> Color.White
-        "system-yellow" -> Color.Yellow
-        "system-magenta" -> Color.Magenta
-        "system-gray" -> Color.Gray
-        "system-light-gray" -> Color.LightGray
-        "system-dark-gray" -> Color.DarkGray
-        "system-transparent" -> Color.Transparent
-        "system-cyan" -> Color.Cyan
+        SystemColorValues.Red -> Color.Red
+        SystemColorValues.Green -> Color.Green
+        SystemColorValues.Blue -> Color.Blue
+        SystemColorValues.Black -> Color.Black
+        SystemColorValues.White -> Color.White
+        SystemColorValues.Yellow -> Color.Yellow
+        SystemColorValues.Magenta -> Color.Magenta
+        SystemColorValues.Gray -> Color.Gray
+        SystemColorValues.LightGray -> Color.LightGray
+        SystemColorValues.DarkGray -> Color.DarkGray
+        SystemColorValues.Transparent -> Color.Transparent
+        SystemColorValues.Cyan -> Color.Cyan
         else -> {
             var hexColorString = this
                 .removePrefix("0x")

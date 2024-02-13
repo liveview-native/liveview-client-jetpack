@@ -47,10 +47,10 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * <TopAppBar>
  *   <Text template="title">App title</Text>
  *   <IconButton template="action" phx-click="decrement-count">
- *     <Icon image-vector="filled:Add" />
+ *     <Icon imageVector="filled:Add" />
  *   </IconButton>
  *   <IconButton template="navigation-icon" phx-click="reset-count">
- *     <Icon image-vector="filled:Menu" />
+ *     <Icon imageVector="filled:Menu" />
  *   </IconButton>
  * </TopAppBar>
  * ```
@@ -295,7 +295,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
         /**
          * Window insets to be passed to the top bar via PaddingValues params.
          * ```
-         * <TopAppBar window-insets="{'bottom': '100'}" >
+         * <TopAppBar windowInsets="{'bottom': '100'}" >
          * ```
          * @param insets the space, in Dp, at the each border of the window that the inset
          * represents. The supported values are: `left`, `top`, `bottom`, and `right`.

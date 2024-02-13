@@ -16,6 +16,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.AlignmentValues.bottomEnd
+import org.phoenixframework.liveview.data.constants.AlignmentValues.bottomStart
+import org.phoenixframework.liveview.data.constants.AlignmentValues.center
+import org.phoenixframework.liveview.data.constants.AlignmentValues.topEnd
+import org.phoenixframework.liveview.data.constants.AlignmentValues.topStart
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
+import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
+import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.domain.base.ComposableTypes.box
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class BoxShotTest : LiveViewComposableTest() {
     @Test
@@ -45,11 +59,11 @@ class BoxShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-              <Box size="100" background="#FFFF0000">
-                <Icon image-vector="filled:Android" align="topStart"/>
-                <Text align="center">Text</Text>
-                <Icon image-vector="filled:Share" align="bottomEnd"/>
-              </Box>                
+              <$box $attrSize="100" $attrBackground="#FFFF0000">
+                <$icon $attrImageVector="filled:Android" $attrAlign="$topStart"/>
+                <$text $attrAlign="$center">Text</$text>
+                <$icon $attrImageVector="filled:Share" $attrAlign="$bottomEnd"/>
+              </$box>                
             """
         )
     }
@@ -82,11 +96,11 @@ class BoxShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-              <Box width="150" height="100" background="#FF0000FF">
-                <Icon image-vector="filled:Android" align="topEnd"/>
-                <Text align="center">Text Center</Text>
-                <Icon image-vector="filled:Share" align="bottomStart"/>
-              </Box>                
+              <$box $attrWidth="150" $attrHeight="100" $attrBackground="#FF0000FF">
+                <$icon $attrImageVector="filled:Android" $attrAlign="$topEnd"/>
+                <$text $attrAlign="$center">Text Center</$text>
+                <$icon $attrImageVector="filled:Share" $attrAlign="$bottomStart"/>
+              </$box>                
             """
         )
     }

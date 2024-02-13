@@ -96,7 +96,7 @@ internal class ImageDTO private constructor(builder: Builder) :
          * Sets the image content description fro accessibility purpose.Ø
          *
          * ```
-         * <Image content-description="Application Image" />
+         * <Image contentDescription="Application Image" />
          * ```
          * @param contentDescription string representing the image's content description
          */
@@ -108,10 +108,10 @@ internal class ImageDTO private constructor(builder: Builder) :
          * Scale parameter used to determine the aspect ratio scaling to be used if the bounds are
          * a different size from the intrinsic size.
          * ```
-         * <AsyncImage content-scale="crop" />
+         * <AsyncImage contentScale="crop" />
          * ```
-         * @param contentScale content scale. The supported values are: `fit`, `crop`, `fillBounds`,
-         *  `fillHeight`, `fillWidth` and `inside`.
+         * @param contentScale content scale. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ContentScaleValues] colors.
          */
         fun contentScale(contentScale: String) = apply {
             if (contentScale.isNotEmpty()) {
@@ -126,8 +126,7 @@ internal class ImageDTO private constructor(builder: Builder) :
          * <Image alignment="centerStart" />
          * ```
          * @param alignment image alignment when the image is smaller than the available area.
-         * The supported values are: `topStart`, `topCenter`, `topEnd`, `centerStart`, `center`,
-         * `centerEnd`, `bottomStart`, `bottomCenter`, and `bottomEnd`.
+         * See the supported values at [org.phoenixframework.liveview.data.constants.AlignmentValues].
          */
         fun alignment(alignment: String) = apply {
             if (alignment.isNotEmpty()) {

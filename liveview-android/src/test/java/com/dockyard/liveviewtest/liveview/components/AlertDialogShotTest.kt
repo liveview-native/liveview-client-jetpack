@@ -18,6 +18,27 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrIconContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.Attrs.attrTestTag
+import org.phoenixframework.liveview.data.constants.Attrs.attrTextContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrTitleContentColor
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.Templates.templateConfirmButton
+import org.phoenixframework.liveview.data.constants.Templates.templateDismissButton
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateTitle
+import org.phoenixframework.liveview.domain.base.ComposableTypes.alertDialog
+import org.phoenixframework.liveview.domain.base.ComposableTypes.basicAlertDialog
+import org.phoenixframework.liveview.domain.base.ComposableTypes.button
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.domain.base.ComposableTypes.textButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 class AlertDialogShotTest : LiveViewComposableTest() {
@@ -52,17 +73,22 @@ class AlertDialogShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <AlertDialog phx-click="" test-tag="$testTag">
-                  <Button phx-click="" template="confirm">
-                    <Text>Confirm</Text>
-                  </Button>
-                  <TextButton phx-click="dismissEvent" template="dismiss">
-                    <Text>Dismiss</Text>
-                  </TextButton>
-                  <Icon image-vector="filled:Add" template="icon" />
-                  <Text template="title">Alert Title</Title>
-                  <Text>Alert message</Text>
-                </AlertDialog>    
+                <$alertDialog 
+                  $attrTestTag="$testTag">
+                  <$button 
+                    $attrTemplate="$templateConfirmButton">
+                    <$text>Confirm</$text>
+                  </$button>
+                  <$textButton 
+                    $attrTemplate="$templateDismissButton">
+                    <$text>Dismiss</$text>
+                  </$textButton>
+                  <$icon 
+                    $attrImageVector="$filled:Add" 
+                    $attrTemplate="$templateIcon" />
+                  <$text $attrTemplate="$templateTitle">Alert Title</$text>
+                  <$text>Alert message</$text>
+                </$alertDialog>    
                 """
         )
     }
@@ -103,20 +129,24 @@ class AlertDialogShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <AlertDialog 
-                  phx-click="" test-tag="$testTag" shape="4" container-color="#FFF2DDE1"
-                  icon-content-color="#FFFF0000" title-content-color="#FF0000FF" 
-                  text-content-color="#FF00FF00" >
-                  <Button phx-click="" template="confirm">
-                    <Text>Confirm</Text>
-                  </Button>
-                  <TextButton phx-click="dismissEvent" template="dismiss">
-                    <Text>Dismiss</Text>
-                  </TextButton>
-                  <Icon image-vector="filled:Add" template="icon" />
-                  <Text template="title">Alert Title</Title>
-                  <Text>Alert message</Text>
-                </AlertDialog>    
+                <$alertDialog 
+                  $attrTestTag="$testTag" 
+                  $attrShape="4" 
+                  $attrContainerColor="#FFF2DDE1"
+                  $attrIconContentColor="#FFFF0000" 
+                  $attrTitleContentColor="#FF0000FF" 
+                  $attrTextContentColor="#FF00FF00" >
+                  <$button 
+                    $attrTemplate="$templateConfirmButton">
+                    <$text>Confirm</$text>
+                  </$button>
+                  <$textButton $attrTemplate="$templateDismissButton">
+                    <$text>Dismiss</$text>
+                  </$textButton>
+                  <$icon $attrImageVector="$filled:Add" $attrTemplate="$templateIcon" />
+                  <$text $attrTemplate="$templateTitle">Alert Title</$text>
+                  <$text>Alert message</$text>
+                </$alertDialog>    
                 """
         )
     }
@@ -146,16 +176,16 @@ class AlertDialogShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <BasicAlertDialog test-tag="$testTag">
-                  <Column>               
-                    <Text>Title</Text>
-                    <Text>Message</Text>
-                    <Row>
-                      <Button><Text>Cancel</Text></Button>
-                      <Button><Text>Ok</Text></Button>
-                    </Row>
-                  </Column>  
-                </BasicAlertDialog>
+                <$basicAlertDialog $attrTestTag="$testTag">
+                  <$column>
+                    <$text>Title</$text>
+                    <$text>Message</$text>
+                    <$row>
+                      <$button><$text>Cancel</$text></$button>
+                      <$button><$text>Ok</$text></$button>
+                    </$row>
+                  </$column>  
+                </$basicAlertDialog>
                 """
         )
     }
