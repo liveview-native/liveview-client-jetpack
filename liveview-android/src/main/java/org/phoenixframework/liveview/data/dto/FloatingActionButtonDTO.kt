@@ -23,6 +23,8 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrExpanded
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level3
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level4
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDefaultElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrFocusedElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
@@ -34,7 +36,6 @@ import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -149,18 +150,18 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
 
     @Composable
     private fun getFabElevation(elevation: ImmutableMap<String, String>?): FloatingActionButtonElevation {
-        val defaultValue = FloatingActionButtonDefaults.elevation()
+        val defaultElevation = FloatingActionButtonDefaults.elevation()
         return if (elevation == null) {
-            defaultValue
+            defaultElevation
         } else {
-            fun value(key: String) =
-                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultValue.privateField(key))
+            fun value(key: String, defaultValue: Dp) =
+                elevation[key]?.toIntOrNull()?.dp ?: defaultValue
 
             FloatingActionButtonDefaults.elevation(
-                defaultElevation = value(elevationAttrDefaultElevation),
-                pressedElevation = value(elevationAttrPressedElevation),
-                focusedElevation = value(elevationAttrFocusedElevation),
-                hoveredElevation = value(elevationAttrHoveredElevation),
+                defaultElevation = value(elevationAttrDefaultElevation, Level3),
+                pressedElevation = value(elevationAttrPressedElevation, Level3),
+                focusedElevation = value(elevationAttrFocusedElevation, Level3),
+                hoveredElevation = value(elevationAttrHoveredElevation, Level4),
             )
         }
     }
