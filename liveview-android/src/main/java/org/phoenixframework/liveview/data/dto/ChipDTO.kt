@@ -52,6 +52,10 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelected
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedTrailingIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconContentColor
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level0
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level1
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level2
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level4
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDisabledElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDraggedElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrElevation
@@ -69,7 +73,6 @@ import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -530,16 +533,17 @@ internal class ChipDTO private constructor(builder: Builder) :
         return if (elevation == null) {
             defaultElevation
         } else {
-            fun value(key: String) =
-                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
+            fun value(key: String, defaultElevation: Dp) =
+                elevation[key]?.toIntOrNull()?.dp ?: defaultElevation
 
+            val defValue = elevation[elevationAttrElevation]?.toIntOrNull()?.dp ?: Level0
             AssistChipDefaults.assistChipElevation(
-                elevation = value(elevationAttrElevation),
-                pressedElevation = value(elevationAttrPressedElevation),
-                focusedElevation = value(elevationAttrFocusedElevation),
-                hoveredElevation = value(elevationAttrHoveredElevation),
-                draggedElevation = value(elevationAttrDraggedElevation),
-                disabledElevation = value(elevationAttrDisabledElevation),
+                elevation = value(elevationAttrElevation, defValue),
+                pressedElevation = value(elevationAttrPressedElevation, defValue),
+                focusedElevation = value(elevationAttrFocusedElevation, defValue),
+                hoveredElevation = value(elevationAttrHoveredElevation, defValue),
+                draggedElevation = value(elevationAttrDraggedElevation, Level4),
+                disabledElevation = value(elevationAttrDisabledElevation, defValue),
             )
         }
     }
@@ -550,16 +554,16 @@ internal class ChipDTO private constructor(builder: Builder) :
         return if (elevation == null) {
             defaultElevation
         } else {
-            fun value(key: String) =
-                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
+            fun value(key: String, defaultValue: Dp) =
+                elevation[key]?.toIntOrNull()?.dp ?: defaultValue
 
             AssistChipDefaults.elevatedAssistChipElevation(
-                elevation = value(elevationAttrElevation),
-                pressedElevation = value(elevationAttrPressedElevation),
-                focusedElevation = value(elevationAttrFocusedElevation),
-                hoveredElevation = value(elevationAttrHoveredElevation),
-                draggedElevation = value(elevationAttrDraggedElevation),
-                disabledElevation = value(elevationAttrDisabledElevation),
+                elevation = value(elevationAttrElevation, Level1),
+                pressedElevation = value(elevationAttrPressedElevation, Level1),
+                focusedElevation = value(elevationAttrFocusedElevation, Level1),
+                hoveredElevation = value(elevationAttrHoveredElevation, Level2),
+                draggedElevation = value(elevationAttrDraggedElevation, Level4),
+                disabledElevation = value(elevationAttrDisabledElevation, Level0),
             )
         }
     }
@@ -570,16 +574,17 @@ internal class ChipDTO private constructor(builder: Builder) :
         return if (elevation == null) {
             defaultElevation
         } else {
-            fun value(key: String) =
-                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
+            fun value(key: String, defaultValue: Dp) =
+                elevation[key]?.toIntOrNull()?.dp ?: defaultValue
 
+            val defValue = elevation[elevationAttrElevation]?.toIntOrNull()?.dp ?: Level0
             SuggestionChipDefaults.suggestionChipElevation(
-                elevation = value(elevationAttrElevation),
-                pressedElevation = value(elevationAttrPressedElevation),
-                focusedElevation = value(elevationAttrFocusedElevation),
-                hoveredElevation = value(elevationAttrHoveredElevation),
-                draggedElevation = value(elevationAttrDraggedElevation),
-                disabledElevation = value(elevationAttrDisabledElevation),
+                elevation = value(elevationAttrElevation, Level0),
+                pressedElevation = value(elevationAttrPressedElevation, defValue),
+                focusedElevation = value(elevationAttrFocusedElevation, defValue),
+                hoveredElevation = value(elevationAttrHoveredElevation, defValue),
+                draggedElevation = value(elevationAttrDraggedElevation, Level4),
+                disabledElevation = value(elevationAttrDisabledElevation, defValue),
             )
         }
     }
@@ -590,16 +595,16 @@ internal class ChipDTO private constructor(builder: Builder) :
         return if (elevation == null) {
             defaultElevation
         } else {
-            fun value(key: String) =
-                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
+            fun value(key: String, defaultValue: Dp) =
+                elevation[key]?.toIntOrNull()?.dp ?: defaultValue
 
             SuggestionChipDefaults.elevatedSuggestionChipElevation(
-                elevation = value(elevationAttrElevation),
-                pressedElevation = value(elevationAttrPressedElevation),
-                focusedElevation = value(elevationAttrFocusedElevation),
-                hoveredElevation = value(elevationAttrHoveredElevation),
-                draggedElevation = value(elevationAttrDraggedElevation),
-                disabledElevation = value(elevationAttrDisabledElevation),
+                elevation = value(elevationAttrElevation, Level1),
+                pressedElevation = value(elevationAttrPressedElevation, Level1),
+                focusedElevation = value(elevationAttrFocusedElevation, Level1),
+                hoveredElevation = value(elevationAttrHoveredElevation, Level2),
+                draggedElevation = value(elevationAttrDraggedElevation, Level4),
+                disabledElevation = value(elevationAttrDisabledElevation, Level0),
             )
         }
     }
@@ -610,16 +615,17 @@ internal class ChipDTO private constructor(builder: Builder) :
         return if (elevation == null) {
             defaultElevation
         } else {
-            fun value(key: String) =
-                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
+            fun value(key: String, defValue: Dp) =
+                elevation[key]?.toIntOrNull()?.dp ?: defValue
 
+            val defElevation = elevation[elevationAttrElevation]?.toIntOrNull()?.dp ?: Level0
             InputChipDefaults.inputChipElevation(
-                elevation = value(elevationAttrElevation),
-                pressedElevation = value(elevationAttrPressedElevation),
-                focusedElevation = value(elevationAttrFocusedElevation),
-                hoveredElevation = value(elevationAttrHoveredElevation),
-                draggedElevation = value(elevationAttrDraggedElevation),
-                disabledElevation = value(elevationAttrDisabledElevation),
+                elevation = value(elevationAttrElevation, Level0),
+                pressedElevation = value(elevationAttrPressedElevation, defElevation),
+                focusedElevation = value(elevationAttrFocusedElevation, defElevation),
+                hoveredElevation = value(elevationAttrHoveredElevation, defElevation),
+                draggedElevation = value(elevationAttrDraggedElevation, Level4),
+                disabledElevation = value(elevationAttrDisabledElevation, defElevation),
             )
         }
     }
@@ -630,16 +636,17 @@ internal class ChipDTO private constructor(builder: Builder) :
         return if (elevation == null) {
             defaultElevation
         } else {
-            fun value(key: String) =
-                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
+            fun value(key: String, defaultValue: Dp) =
+                elevation[key]?.toIntOrNull()?.dp ?: defaultValue
 
+            val defElevation = elevation[elevationAttrElevation]?.toIntOrNull()?.dp ?: Level0
             FilterChipDefaults.filterChipElevation(
-                elevation = value(elevationAttrElevation),
-                pressedElevation = value(elevationAttrPressedElevation),
-                focusedElevation = value(elevationAttrFocusedElevation),
-                hoveredElevation = value(elevationAttrHoveredElevation),
-                draggedElevation = value(elevationAttrDraggedElevation),
-                disabledElevation = value(elevationAttrDisabledElevation),
+                elevation = value(elevationAttrElevation, Level0),
+                pressedElevation = value(elevationAttrPressedElevation, Level0),
+                focusedElevation = value(elevationAttrFocusedElevation, Level0),
+                hoveredElevation = value(elevationAttrHoveredElevation, Level1),
+                draggedElevation = value(elevationAttrDraggedElevation, Level4),
+                disabledElevation = value(elevationAttrDisabledElevation, defElevation),
             )
         }
     }
@@ -650,16 +657,16 @@ internal class ChipDTO private constructor(builder: Builder) :
         return if (elevation == null) {
             defaultElevation
         } else {
-            fun value(key: String) =
-                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
+            fun value(key: String, defaultValue: Dp) =
+                elevation[key]?.toIntOrNull()?.dp ?: defaultValue
 
             FilterChipDefaults.elevatedFilterChipElevation(
-                elevation = value(elevationAttrElevation),
-                pressedElevation = value(elevationAttrPressedElevation),
-                focusedElevation = value(elevationAttrFocusedElevation),
-                hoveredElevation = value(elevationAttrHoveredElevation),
-                draggedElevation = value(elevationAttrDraggedElevation),
-                disabledElevation = value(elevationAttrDisabledElevation),
+                elevation = value(elevationAttrElevation, Level1),
+                pressedElevation = value(elevationAttrPressedElevation, Level1),
+                focusedElevation = value(elevationAttrFocusedElevation, Level1),
+                hoveredElevation = value(elevationAttrHoveredElevation, Level2),
+                draggedElevation = value(elevationAttrDraggedElevation, Level4),
+                disabledElevation = value(elevationAttrDisabledElevation, Level0),
             )
         }
     }

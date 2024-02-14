@@ -27,6 +27,11 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level0
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level1
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level2
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level3
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level4
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDefaultElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDisabledElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDraggedElevation
@@ -41,7 +46,6 @@ import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.optional
 import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
-import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -194,60 +198,61 @@ internal class CardDTO private constructor(builder: Builder) :
 
     @Composable
     private fun getCardElevation(elevation: ImmutableMap<String, String>?): CardElevation {
-        val defaultValue = CardDefaults.cardElevation()
+        val defaultElevation = CardDefaults.cardElevation()
         return if (elevation == null) {
-            defaultValue
+            defaultElevation
         } else {
-            fun value(key: String) =
-                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultValue.privateField(key))
+            fun value(key: String, defaultValue: Dp) =
+                elevation[key]?.toIntOrNull()?.dp ?: defaultValue
 
             CardDefaults.cardElevation(
-                defaultElevation = value(elevationAttrDefaultElevation),
-                pressedElevation = value(elevationAttrPressedElevation),
-                focusedElevation = value(elevationAttrFocusedElevation),
-                hoveredElevation = value(elevationAttrHoveredElevation),
-                draggedElevation = value(elevationAttrDraggedElevation),
-                disabledElevation = value(elevationAttrDisabledElevation),
+                defaultElevation = value(elevationAttrDefaultElevation, Level0),
+                pressedElevation = value(elevationAttrPressedElevation, Level0),
+                focusedElevation = value(elevationAttrFocusedElevation, Level0),
+                hoveredElevation = value(elevationAttrHoveredElevation, Level0),
+                draggedElevation = value(elevationAttrDraggedElevation, Level3),
+                disabledElevation = value(elevationAttrDisabledElevation, Level0),
             )
         }
     }
 
     @Composable
     private fun getElevatedCardElevation(elevation: ImmutableMap<String, String>?): CardElevation {
-        val defaultValue = CardDefaults.elevatedCardElevation()
+        val defaultElevation = CardDefaults.elevatedCardElevation()
         return if (elevation == null) {
-            defaultValue
+            defaultElevation
         } else {
-            fun value(key: String) =
-                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultValue.privateField(key))
+            fun value(key: String, defaultValue: Dp) =
+                elevation[key]?.toIntOrNull()?.dp ?: defaultValue
 
             CardDefaults.elevatedCardElevation(
-                defaultElevation = value(elevationAttrDefaultElevation),
-                pressedElevation = value(elevationAttrPressedElevation),
-                focusedElevation = value(elevationAttrFocusedElevation),
-                hoveredElevation = value(elevationAttrHoveredElevation),
-                draggedElevation = value(elevationAttrDraggedElevation),
-                disabledElevation = value(elevationAttrDisabledElevation),
+                defaultElevation = value(elevationAttrDefaultElevation, Level1),
+                pressedElevation = value(elevationAttrPressedElevation, Level1),
+                focusedElevation = value(elevationAttrFocusedElevation, Level1),
+                hoveredElevation = value(elevationAttrHoveredElevation, Level2),
+                draggedElevation = value(elevationAttrDraggedElevation, Level4),
+                disabledElevation = value(elevationAttrDisabledElevation, Level1),
             )
         }
     }
 
     @Composable
     private fun getOutlinedCardElevation(elevation: ImmutableMap<String, String>?): CardElevation {
-        val defaultValue = CardDefaults.outlinedCardElevation()
+        val defaultElevation = CardDefaults.outlinedCardElevation()
         return if (elevation == null) {
-            defaultValue
+            defaultElevation
         } else {
-            fun value(key: String) =
-                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultValue.privateField(key))
+            fun value(key: String, defaultValue: Dp) =
+                elevation[key]?.toIntOrNull()?.dp ?: defaultValue
 
+            val defElevation = elevation[elevationAttrDefaultElevation]?.toIntOrNull()?.dp ?: Level0
             CardDefaults.outlinedCardElevation(
-                defaultElevation = value(elevationAttrDefaultElevation),
-                pressedElevation = value(elevationAttrPressedElevation),
-                focusedElevation = value(elevationAttrFocusedElevation),
-                hoveredElevation = value(elevationAttrHoveredElevation),
-                draggedElevation = value(elevationAttrDraggedElevation),
-                disabledElevation = value(elevationAttrDisabledElevation),
+                defaultElevation = value(elevationAttrDefaultElevation, Level0),
+                pressedElevation = value(elevationAttrPressedElevation, defElevation),
+                focusedElevation = value(elevationAttrFocusedElevation, defElevation),
+                hoveredElevation = value(elevationAttrHoveredElevation, defElevation),
+                draggedElevation = value(elevationAttrDraggedElevation, Level3),
+                disabledElevation = value(elevationAttrDisabledElevation, Level0),
             )
         }
     }

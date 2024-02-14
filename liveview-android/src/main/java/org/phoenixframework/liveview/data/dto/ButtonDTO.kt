@@ -29,6 +29,9 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContaine
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level0
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level1
+import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level2
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDefaultElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDisabledElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrFocusedElevation
@@ -42,7 +45,6 @@ import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.privateField
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -188,15 +190,15 @@ internal class ButtonDTO private constructor(builder: Builder) :
         return if (elevation == null) {
             defaultElevation
         } else {
-            fun value(key: String) =
-                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
+            fun value(key: String, defaultValue: Dp) =
+                elevation[key]?.toIntOrNull()?.dp ?: defaultValue
 
             ButtonDefaults.buttonElevation(
-                defaultElevation = value(elevationAttrDefaultElevation),
-                pressedElevation = value(elevationAttrPressedElevation),
-                focusedElevation = value(elevationAttrFocusedElevation),
-                hoveredElevation = value(elevationAttrHoveredElevation),
-                disabledElevation = value(elevationAttrDisabledElevation)
+                defaultElevation = value(elevationAttrDefaultElevation, Level0),
+                pressedElevation = value(elevationAttrPressedElevation, Level0),
+                focusedElevation = value(elevationAttrFocusedElevation, Level0),
+                hoveredElevation = value(elevationAttrHoveredElevation, Level1),
+                disabledElevation = value(elevationAttrDisabledElevation, Level0)
             )
         }
     }
@@ -207,15 +209,15 @@ internal class ButtonDTO private constructor(builder: Builder) :
         return if (elevation == null) {
             defaultElevation
         } else {
-            fun value(key: String) =
-                elevation[key]?.toIntOrNull()?.dp ?: Dp(defaultElevation.privateField(key))
+            fun value(key: String, defaultValue: Dp) =
+                elevation[key]?.toIntOrNull()?.dp ?: defaultValue
 
             ButtonDefaults.elevatedButtonElevation(
-                defaultElevation = value(elevationAttrDefaultElevation),
-                pressedElevation = value(elevationAttrPressedElevation),
-                focusedElevation = value(elevationAttrFocusedElevation),
-                hoveredElevation = value(elevationAttrHoveredElevation),
-                disabledElevation = value(elevationAttrDisabledElevation)
+                defaultElevation = value(elevationAttrDefaultElevation, Level1),
+                pressedElevation = value(elevationAttrPressedElevation, Level1),
+                focusedElevation = value(elevationAttrFocusedElevation, Level1),
+                hoveredElevation = value(elevationAttrHoveredElevation, Level2),
+                disabledElevation = value(elevationAttrDisabledElevation, Level0)
             )
         }
     }

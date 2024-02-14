@@ -36,12 +36,3 @@ internal fun String.toColor(): Color {
     }
 
 }
-
-// TODO This extension is using reflexion to get default values for different component's properties
-internal fun <T> Any.privateField(name: String): T {
-    val field = this::class.java.getDeclaredField(name).apply {
-        isAccessible = true
-    }
-    @Suppress("UNCHECKED_CAST")
-    return field.get(this) as T
-}
