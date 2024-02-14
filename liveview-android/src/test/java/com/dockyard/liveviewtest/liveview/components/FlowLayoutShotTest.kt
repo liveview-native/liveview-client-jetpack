@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -13,6 +12,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
+import org.phoenixframework.liveview.data.constants.Attrs.attrMaxItemsInEachColumn
+import org.phoenixframework.liveview.data.constants.Attrs.attrMaxItemsInEachRow
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
+import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
+import org.phoenixframework.liveview.domain.base.ComposableTypes.flowColumn
+import org.phoenixframework.liveview.domain.base.ComposableTypes.flowRow
+import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 @OptIn(ExperimentalLayoutApi::class)
 class FlowLayoutShotTest : LiveViewComposableTest() {
@@ -20,7 +32,7 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
     fun simpleFlowColumnTest() {
         val range = 0..30
         val childrenForTemplate = range.fold("") { s, i ->
-            "$s<OutlinedButton><Text>Item $i</Text></OutlinedButton>"
+            "$s<$outlinedButton><$text>Item $i</$text></$outlinedButton>"
         }
         compareNativeComposableWithTemplate(
             nativeComposable = {
@@ -33,9 +45,9 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FlowColumn height="400">
+                <$flowColumn $attrHeight="400">
                     $childrenForTemplate
-                </FlowColumn>
+                </$flowColumn>
                 """
         )
     }
@@ -44,7 +56,7 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
     fun simpleFlowRowTest() {
         val range = 0..30
         val childrenForTemplate = range.fold("") { s, i ->
-            "$s<OutlinedButton><Text>Item $i</Text></OutlinedButton>"
+            "$s<$outlinedButton><$text>Item $i</$text></$outlinedButton>"
         }
         compareNativeComposableWithTemplate(
             nativeComposable = {
@@ -57,9 +69,9 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FlowRow>
-                    $childrenForTemplate
-                </FlowRow>
+                <$flowRow>
+                  $childrenForTemplate
+                </$flowRow>
                 """
         )
     }
@@ -68,7 +80,7 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
     fun flowColumnWithMaxItemsInEachColumnTest() {
         val range = 0..30
         val childrenForTemplate = range.fold("") { s, i ->
-            "$s<OutlinedButton><Text>Item $i</Text></OutlinedButton>"
+            "$s<$outlinedButton><$text>Item $i</$text></$outlinedButton>"
         }
         compareNativeComposableWithTemplate(
             nativeComposable = {
@@ -81,9 +93,9 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FlowColumn max-items-in-each-column="5">
-                    $childrenForTemplate
-                </FlowColumn>
+                <$flowColumn $attrMaxItemsInEachColumn="5">
+                  $childrenForTemplate
+                </$flowColumn>
                 """
         )
     }
@@ -92,7 +104,7 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
     fun flowRowWithMaxItemsInEachRowTest() {
         val range = 0..30
         val childrenForTemplate = range.fold("") { s, i ->
-            "$s<OutlinedButton><Text>Item $i</Text></OutlinedButton>"
+            "$s<$outlinedButton><$text>Item $i</$text></$outlinedButton>"
         }
         compareNativeComposableWithTemplate(
             nativeComposable = {
@@ -105,9 +117,9 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FlowRow max-items-in-each-row="3">
-                    $childrenForTemplate
-                </FlowRow>
+                <$flowRow $attrMaxItemsInEachRow="3">
+                  $childrenForTemplate
+                </$flowRow>
                 """
         )
     }
@@ -116,7 +128,7 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
     fun flowColumnWithArrangementTest() {
         val range = 0..12
         val childrenForTemplate = range.fold("") { s, i ->
-            "$s<OutlinedButton><Text>Item $i</Text></OutlinedButton>"
+            "$s<$outlinedButton><$text>Item $i</$text></$outlinedButton>"
         }
         compareNativeComposableWithTemplate(
             nativeComposable = {
@@ -134,10 +146,12 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FlowColumn size="fill" max-items-in-each-column="5" 
-                  horizontal-arrangement="spaceEvenly" vertical-arrangement="center">
+                <$flowColumn 
+                  $attrSize="$fill" $attrMaxItemsInEachColumn="5" 
+                  $attrHorizontalArrangement="${HorizontalArrangementValues.spaceEvenly}" 
+                  $attrVerticalArrangement="${VerticalArrangementValues.center}">
                     $childrenForTemplate
-                </FlowColumn>
+                </$flowColumn>
                 """
         )
     }
@@ -146,7 +160,7 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
     fun flowRowWithArrangementTest() {
         val range = 0..12
         val childrenForTemplate = range.fold("") { s, i ->
-            "$s<OutlinedButton><Text>Item $i</Text></OutlinedButton>"
+            "$s<$outlinedButton><$text>Item $i</$text></$outlinedButton>"
         }
         compareNativeComposableWithTemplate(
             nativeComposable = {
@@ -164,10 +178,11 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FlowRow size="fill" max-items-in-each-row="3" 
-                  horizontal-arrangement="spaceBetween" vertical-arrangement="bottom">
+                <$flowRow $attrSize="$fill" $attrMaxItemsInEachRow="3" 
+                  $attrHorizontalArrangement="${HorizontalArrangementValues.spaceBetween}" 
+                  $attrVerticalArrangement="${VerticalArrangementValues.bottom}">
                     $childrenForTemplate
-                </FlowRow>
+                </$flowRow>
                 """
         )
     }

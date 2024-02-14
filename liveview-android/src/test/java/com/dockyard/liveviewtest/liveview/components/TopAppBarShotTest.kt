@@ -16,6 +16,24 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.graphics.Color
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActionIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrNavigationIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTitleContentColor
+import org.phoenixframework.liveview.data.constants.Templates.templateAction
+import org.phoenixframework.liveview.data.constants.Templates.templateNavigationIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateTitle
+import org.phoenixframework.liveview.domain.base.ComposableTypes.centerAlignedTopAppBar
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.iconButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.largeTopAppBar
+import org.phoenixframework.liveview.domain.base.ComposableTypes.mediumTopAppBar
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.domain.base.ComposableTypes.topAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 class TopAppBarShotTest : LiveViewComposableTest() {
@@ -57,26 +75,26 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                  <TopAppBar>
-                    <Text template="title">App Bar 1</Text>
-                  </TopAppBar>   
-                  <TopAppBar>
-                    <Text template="title">App Bar 2</Text>
-                    <IconButton template="navigationIcon" phx-click="">
-                      <Icon image-vector="filled:Menu" />
-                    </IconButton>
-                  </TopAppBar>   
-                  <TopAppBar>
-                    <Text template="title">App Bar 3</Text>
-                    <IconButton template="navigationIcon" phx-click="">
-                      <Icon image-vector="filled:Menu" />
-                    </IconButton>                    
-                    <IconButton template="action" phx-click="decrement-count">
-                      <Icon image-vector="filled:Add" />
-                    </IconButton>
-                  </TopAppBar>                                                     
-                </Column>
+                <$column>
+                  <$topAppBar>
+                    <$text $attrTemplate="$templateTitle">App Bar 1</$text>
+                  </$topAppBar>   
+                  <$topAppBar>
+                    <$text $attrTemplate="$templateTitle">App Bar 2</$text>
+                    <$iconButton $attrTemplate="$templateNavigationIcon">
+                      <$icon $attrImageVector="filled:Menu" />
+                    </$iconButton>
+                  </$topAppBar>   
+                  <$topAppBar>
+                    <$text $attrTemplate="$templateTitle">App Bar 3</$text>
+                    <$iconButton $attrTemplate="$templateNavigationIcon">
+                      <$icon $attrImageVector="filled:Menu" />
+                    </$iconButton>                    
+                    <$iconButton $attrTemplate="$templateAction">
+                      <$icon $attrImageVector="filled:Add" />
+                    </$iconButton>
+                  </$topAppBar>                                                     
+                </$column>
                 """
         )
     }
@@ -85,10 +103,10 @@ class TopAppBarShotTest : LiveViewComposableTest() {
     fun topAppBarWithColors() {
         val colorsForTemplate = """
             {
-            'containerColor': '#FF0000FF',
-            'navigationIconContentColor': '#FFFFFF00',
-            'titleContentColor': '#FFFFFFFF',
-            'actionIconContentColor': '#FF00FFFF'
+            '$colorAttrContainerColor': '#FF0000FF',
+            '$colorAttrNavigationIconContentColor': '#FFFFFF00',
+            '$colorAttrTitleContentColor': '#FFFFFFFF',
+            '$colorAttrActionIconContentColor': '#FF00FFFF'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -117,15 +135,15 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <TopAppBar colors="$colorsForTemplate">
-                  <Text template="title">App Bar 1</Text>
-                  <IconButton template="navigationIcon" phx-click="">
-                    <Icon image-vector="filled:Menu" />
-                  </IconButton>                    
-                  <IconButton template="action" phx-click="decrement-count">
-                    <Icon image-vector="filled:Add" />
-                  </IconButton>
-                </TopAppBar>                   
+                <$topAppBar $attrColors="$colorsForTemplate">
+                  <$text $attrTemplate="$templateTitle">App Bar 1</$text>
+                  <$iconButton $attrTemplate="$templateNavigationIcon">
+                    <$icon $attrImageVector="filled:Menu" />
+                  </$iconButton>                    
+                  <$iconButton $attrTemplate="$templateAction">
+                    <$icon $attrImageVector="filled:Add" />
+                  </$iconButton>
+                </$topAppBar>                   
                 """
         )
     }
@@ -168,26 +186,26 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                  <CenterAlignedTopAppBar>
-                    <Text template="title">App Bar 1</Text>
-                  </CenterAlignedTopAppBar>   
-                  <CenterAlignedTopAppBar>
-                    <Text template="title">App Bar 2</Text>
-                    <IconButton template="navigationIcon" phx-click="">
-                      <Icon image-vector="filled:Menu" />
-                    </IconButton>
-                  </CenterAlignedTopAppBar>   
-                  <CenterAlignedTopAppBar>
-                    <Text template="title">App Bar 3</Text>
-                    <IconButton template="navigationIcon" phx-click="">
-                      <Icon image-vector="filled:Menu" />
-                    </IconButton>                    
-                    <IconButton template="action" phx-click="decrement-count">
-                      <Icon image-vector="filled:Add" />
-                    </IconButton>
-                  </CenterAlignedTopAppBar>                                                     
-                </Column>
+                <$column>
+                  <$centerAlignedTopAppBar>
+                    <$text $attrTemplate="$templateTitle">App Bar 1</$text>
+                  </$centerAlignedTopAppBar>   
+                  <$centerAlignedTopAppBar>
+                    <$text $attrTemplate="$templateTitle">App Bar 2</$text>
+                    <$iconButton $attrTemplate="$templateNavigationIcon">
+                      <$icon $attrImageVector="filled:Menu" />
+                    </$iconButton>
+                  </$centerAlignedTopAppBar>   
+                  <$centerAlignedTopAppBar>
+                    <$text $attrTemplate="$templateTitle">App Bar 3</$text>
+                    <$iconButton $attrTemplate="$templateNavigationIcon">
+                      <$icon $attrImageVector="filled:Menu" />
+                    </$iconButton>                    
+                    <$iconButton $attrTemplate="$templateAction">
+                      <$icon $attrImageVector="filled:Add" />
+                    </$iconButton>
+                  </$centerAlignedTopAppBar>                                                     
+                </$column>
                 """
         )
     }
@@ -196,10 +214,10 @@ class TopAppBarShotTest : LiveViewComposableTest() {
     fun centerAlignedTopAppBarWithColors() {
         val colorsForTemplate = """
             {
-            'containerColor': '#FF0000FF',
-            'navigationIconContentColor': '#FFFFFF00',
-            'titleContentColor': '#FFFFFFFF',
-            'actionIconContentColor': '#FF00FFFF'
+            '$colorAttrContainerColor': '#FF0000FF',
+            '$colorAttrNavigationIconContentColor': '#FFFFFF00',
+            '$colorAttrTitleContentColor': '#FFFFFFFF',
+            '$colorAttrActionIconContentColor': '#FF00FFFF'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -228,15 +246,15 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <CenterAlignedTopAppBar colors="$colorsForTemplate">
-                  <Text template="title">App Bar 1</Text>
-                  <IconButton template="navigationIcon" phx-click="">
-                    <Icon image-vector="filled:Menu" />
-                  </IconButton>                    
-                  <IconButton template="action" phx-click="decrement-count">
-                    <Icon image-vector="filled:Add" />
-                  </IconButton>
-                </CenterAlignedTopAppBar>                   
+                <$centerAlignedTopAppBar $attrColors="$colorsForTemplate">
+                  <$text $attrTemplate="$templateTitle">App Bar 1</$text>
+                  <$iconButton $attrTemplate="$templateNavigationIcon">
+                    <$icon $attrImageVector="filled:Menu" />
+                  </$iconButton>                    
+                  <$iconButton $attrTemplate="$templateAction">
+                    <$icon $attrImageVector="filled:Add" />
+                  </$iconButton>
+                </$centerAlignedTopAppBar>                   
                 """
         )
     }
@@ -279,26 +297,26 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                  <MediumTopAppBar>
-                    <Text template="title">App Bar 1</Text>
-                  </MediumTopAppBar>   
-                  <MediumTopAppBar>
-                    <Text template="title">App Bar 2</Text>
-                    <IconButton template="navigationIcon" phx-click="">
-                      <Icon image-vector="filled:Menu" />
-                    </IconButton>
-                  </MediumTopAppBar>   
-                  <MediumTopAppBar>
-                    <Text template="title">App Bar 3</Text>
-                    <IconButton template="navigationIcon" phx-click="">
-                      <Icon image-vector="filled:Menu" />
-                    </IconButton>                    
-                    <IconButton template="action" phx-click="decrement-count">
-                      <Icon image-vector="filled:Add" />
-                    </IconButton>
-                  </MediumTopAppBar>                                                     
-                </Column>
+                <$column>
+                  <$mediumTopAppBar>
+                    <$text $attrTemplate="$templateTitle">App Bar 1</$text>
+                  </$mediumTopAppBar>   
+                  <$mediumTopAppBar>
+                    <$text $attrTemplate="$templateTitle">App Bar 2</$text>
+                    <$iconButton $attrTemplate="$templateNavigationIcon">
+                      <$icon $attrImageVector="filled:Menu" />
+                    </$iconButton>
+                  </$mediumTopAppBar>   
+                  <$mediumTopAppBar>
+                    <$text $attrTemplate="$templateTitle">App Bar 3</$text>
+                    <$iconButton $attrTemplate="$templateNavigationIcon">
+                      <$icon $attrImageVector="filled:Menu" />
+                    </$iconButton>                    
+                    <$iconButton $attrTemplate="$templateAction">
+                      <$icon $attrImageVector="filled:Add" />
+                    </$iconButton>
+                  </$mediumTopAppBar>                                                     
+                </$column>
                 """
         )
     }
@@ -307,10 +325,10 @@ class TopAppBarShotTest : LiveViewComposableTest() {
     fun mediumTopAppBarWithColors() {
         val colorsForTemplate = """
             {
-            'containerColor': '#FF0000FF',
-            'navigationIconContentColor': '#FFFFFF00',
-            'titleContentColor': '#FFFFFFFF',
-            'actionIconContentColor': '#FF00FFFF'
+            '$colorAttrContainerColor': '#FF0000FF',
+            '$colorAttrNavigationIconContentColor': '#FFFFFF00',
+            '$colorAttrTitleContentColor': '#FFFFFFFF',
+            '$colorAttrActionIconContentColor': '#FF00FFFF'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -339,15 +357,15 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <MediumTopAppBar colors="$colorsForTemplate">
-                  <Text template="title">App Bar 1</Text>
-                  <IconButton template="navigationIcon" phx-click="">
-                    <Icon image-vector="filled:Menu" />
-                  </IconButton>                    
-                  <IconButton template="action" phx-click="decrement-count">
-                    <Icon image-vector="filled:Add" />
-                  </IconButton>
-                </MediumTopAppBar>                   
+                <$mediumTopAppBar $attrColors="$colorsForTemplate">
+                  <$text $attrTemplate="$templateTitle">App Bar 1</$text>
+                  <$iconButton $attrTemplate="$templateNavigationIcon">
+                    <$icon $attrImageVector="filled:Menu" />
+                  </$iconButton>                    
+                  <$iconButton $attrTemplate="$templateAction">
+                    <$icon $attrImageVector="filled:Add" />
+                  </$iconButton>
+                </$mediumTopAppBar>                   
                 """
         )
     }
@@ -390,26 +408,26 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                  <LargeTopAppBar>
-                    <Text template="title">App Bar 1</Text>
-                  </LargeTopAppBar>   
-                  <LargeTopAppBar>
-                    <Text template="title">App Bar 2</Text>
-                    <IconButton template="navigationIcon" phx-click="">
-                      <Icon image-vector="filled:Menu" />
-                    </IconButton>
-                  </LargeTopAppBar>   
-                  <LargeTopAppBar>
-                    <Text template="title">App Bar 3</Text>
-                    <IconButton template="navigationIcon" phx-click="">
-                      <Icon image-vector="filled:Menu" />
-                    </IconButton>                    
-                    <IconButton template="action" phx-click="decrement-count">
-                      <Icon image-vector="filled:Add" />
-                    </IconButton>
-                  </LargeTopAppBar>                                                     
-                </Column>
+                <$column>
+                  <$largeTopAppBar>
+                    <$text $attrTemplate="$templateTitle">App Bar 1</$text>
+                  </$largeTopAppBar>   
+                  <$largeTopAppBar>
+                    <$text $attrTemplate="$templateTitle">App Bar 2</$text>
+                    <$iconButton $attrTemplate="$templateNavigationIcon">
+                      <$icon $attrImageVector="filled:Menu" />
+                    </$iconButton>
+                  </$largeTopAppBar>   
+                  <$largeTopAppBar>
+                    <$text $attrTemplate="$templateTitle">App Bar 3</$text>
+                    <$iconButton $attrTemplate="$templateNavigationIcon">
+                      <$icon $attrImageVector="filled:Menu" />
+                    </$iconButton>                    
+                    <$iconButton $attrTemplate="$templateAction">
+                      <$icon $attrImageVector="filled:Add" />
+                    </$iconButton>
+                  </$largeTopAppBar>                                                     
+                </$column>
                 """
         )
     }
@@ -418,10 +436,10 @@ class TopAppBarShotTest : LiveViewComposableTest() {
     fun largeTopAppBarWithColors() {
         val colorsForTemplate = """
             {
-            'containerColor': '#FF0000FF',
-            'navigationIconContentColor': '#FFFFFF00',
-            'titleContentColor': '#FFFFFFFF',
-            'actionIconContentColor': '#FF00FFFF'
+            '$colorAttrContainerColor': '#FF0000FF',
+            '$colorAttrNavigationIconContentColor': '#FFFFFF00',
+            '$colorAttrTitleContentColor': '#FFFFFFFF',
+            '$colorAttrActionIconContentColor': '#FF00FFFF'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -450,15 +468,15 @@ class TopAppBarShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <LargeTopAppBar colors="$colorsForTemplate">
-                  <Text template="title">App Bar 1</Text>
-                  <IconButton template="navigationIcon" phx-click="">
-                    <Icon image-vector="filled:Menu" />
-                  </IconButton>                    
-                  <IconButton template="action" phx-click="decrement-count">
-                    <Icon image-vector="filled:Add" />
-                  </IconButton>
-                </LargeTopAppBar>                   
+                <$largeTopAppBar $attrColors="$colorsForTemplate">
+                  <$text $attrTemplate="$templateTitle">App Bar 1</$text>
+                  <$iconButton $attrTemplate="$templateNavigationIcon">
+                    <$icon $attrImageVector="filled:Menu" />
+                  </$iconButton>                    
+                  <$iconButton $attrTemplate="$templateAction">
+                    <$icon $attrImageVector="filled:Add" />
+                  </$iconButton>
+                </$largeTopAppBar>                   
                 """
         )
     }

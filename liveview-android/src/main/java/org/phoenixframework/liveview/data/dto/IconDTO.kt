@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentDescription
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
 import org.phoenixframework.liveview.data.constants.Attrs.attrTint
+import org.phoenixframework.liveview.data.constants.IconPrefixValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -27,7 +28,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * and do not follow the recommended icon size, use the generic Image instead. For a clickable icon,
  * see IconButton.
  * ```
- * <Icon image-vector="filled:Add" />
+ * <Icon imageVector="filled:Add" />
  * ```
  */
 internal class IconDTO private constructor(builder: Builder) :
@@ -64,7 +65,7 @@ internal class IconDTO private constructor(builder: Builder) :
          * Sets the icon content description fro accessibility purpose.
          *
          * ```
-         * <Icon content-description="Save Icon" />
+         * <Icon contentDescription="Save Icon" />
          * ```
          * @param contentDescription string representing the icon's content description
          */
@@ -77,7 +78,8 @@ internal class IconDTO private constructor(builder: Builder) :
          * ```
          * <Icon tint="#FFFF0000"/>
          * ```
-         * @param tintColor the icon tint color in AARRGGBB format.
+         * @param tintColor the icon tint color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun tint(tintColor: String) = apply {
             this.tint = tintColor.toColor()
@@ -89,7 +91,7 @@ internal class IconDTO private constructor(builder: Builder) :
          * theme contains the same icons, but with a distinct visual style.
          * See all available icons [here](https://developer.android.com/reference/kotlin/androidx/compose/material/icons/package-summary).
          * ```
-         * <Icon image-vector="filled:ChevronLeft"/>
+         * <Icon imageVector="filled:ChevronLeft"/>
          * ```
          * @param icon material icon following the pattern: *theme:icon* (e.g.: `"filled:Send"`).
          */
@@ -144,16 +146,16 @@ private fun String.toMaterialIcon(): ImageVector? = try {
     val method = iconClass.declaredMethods.first()
 
     val theme: Any = when (themePackage) {
-        "filled" -> Icons.Filled
-        "rounded" -> Icons.Rounded
-        "outlined" -> Icons.Outlined
-        "sharp" -> Icons.Sharp
-        "twoTone" -> Icons.TwoTone
-        "autoMirrored.filled" -> Icons.AutoMirrored.Filled
-        "autoMirrored.rounded" -> Icons.AutoMirrored.Rounded
-        "autoMirrored.outlined" -> Icons.AutoMirrored.Outlined
-        "autoMirrored.sharp" -> Icons.AutoMirrored.Sharp
-        "autoMirrored.twoTone" -> Icons.AutoMirrored.TwoTone
+        IconPrefixValues.filled -> Icons.Filled
+        IconPrefixValues.rounded -> Icons.Rounded
+        IconPrefixValues.outlined -> Icons.Outlined
+        IconPrefixValues.sharp -> Icons.Sharp
+        IconPrefixValues.twoTone -> Icons.TwoTone
+        IconPrefixValues.autoMirroredFilled -> Icons.AutoMirrored.Filled
+        IconPrefixValues.autoMirroredRounded -> Icons.AutoMirrored.Rounded
+        IconPrefixValues.autoMirroredOutlined -> Icons.AutoMirrored.Outlined
+        IconPrefixValues.autoMirroredSharp -> Icons.AutoMirrored.Sharp
+        IconPrefixValues.autoMirroredTwoTone -> Icons.AutoMirrored.TwoTone
         else -> Icons.Filled
     }
     method.invoke(null, theme) as ImageVector

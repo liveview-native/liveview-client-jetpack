@@ -14,6 +14,14 @@ import coil.test.FakeImageLoaderEngine
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Before
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlpha
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
+import org.phoenixframework.liveview.data.constants.Attrs.attrUrl
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ContentScaleValues.fillHeight
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.domain.base.ComposableTypes.asyncImage
+import org.phoenixframework.liveview.domain.base.ComposableTypes.box
 
 class AsyncImageShotTest : LiveViewComposableTest() {
     private val url = "https://assets.dockyard.com/images/narwin-home-flare.jpg"
@@ -47,9 +55,9 @@ class AsyncImageShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Box width="fill">
-                  <AsyncImage url="$url" alpha="0.5" content-scale="fillHeight" />
-                </Box>    
+                <$box $attrWidth="$fill">
+                  <$asyncImage $attrUrl="$url" $attrAlpha="0.5" $attrContentScale="$fillHeight" />
+                </$box>    
                 """
         )
     }

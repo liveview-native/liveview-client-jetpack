@@ -46,7 +46,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *
  * // render function...
  * <IconButton template="action" phx-click="showPopup">
- *   <Icon image-vector="filled:MoreVert" />
+ *   <Icon imageVector="filled:MoreVert" />
  *   <DropdownMenu phx-click="hidePopup" expanded={"#{ @showPopup }"}>
  *     <DropdownMenuItem phx-click="onMenuOptionClick" phx-value="A">
  *       <Text>Option A</Text>
@@ -118,7 +118,7 @@ internal class DropdownMenuDTO private constructor(builder: Builder) :
          * the window is clipped to the screen boundaries. Setting this to false will allow windows
          * to be accurately positioned. The default value is true.
          * ```
-         * <DropdownMenu clipping-enabled="true">...</DropdownMenu>
+         * <DropdownMenu clippingEnabled="true">...</DropdownMenu>
          * ```
          * @param clipping true if the systemGestureExclusionRects is set, false otherwise.
          */
@@ -129,7 +129,7 @@ internal class DropdownMenuDTO private constructor(builder: Builder) :
         /**
          * A flag to check whether to set the systemGestureExclusionRects. The default is true.
          * ```
-         * <DropdownMenu exclude-from-system-gesture="true">...</DropdownMenu>
+         * <DropdownMenu excludeFromSystemGesture="true">...</DropdownMenu>
          * ```
          * @param exclude true if the systemGestureExclusionRects is set, false otherwise.
          */
@@ -164,7 +164,7 @@ internal class DropdownMenuDTO private constructor(builder: Builder) :
          * Whether the dropdown menu can be dismissed by pressing the back button. If true,
          * pressing the back button will call `dismissEvent` event. Default value is true.
          * ```
-         * <DropdownMenu dismiss-on-back-press="true">...</DropdownMenu>
+         * <DropdownMenu dismissOnBackPress="true">...</DropdownMenu>
          * ```
          * @param dismissOnBackPress true if the dropdown menu can be dismissed by pressing the
          * back button, false otherwise.
@@ -178,7 +178,7 @@ internal class DropdownMenuDTO private constructor(builder: Builder) :
          * bounds. If true, clicking outside the dropdown menu will call `dismissEvent` event.
          * Default value is true.
          * ```
-         * <DropdownMenu dismiss-on-click-outside="true">...</DropdownMenu>
+         * <DropdownMenu dismissOnClickOutside="true">...</DropdownMenu>
          * ```
          * @param dismissOnClickOutside true if the dropdown menu can be dismissed by clicking
          * outside the dropdown menu's bounds, false otherwise.
@@ -228,7 +228,7 @@ internal class DropdownMenuDTO private constructor(builder: Builder) :
          * window should be treated as secure, preventing it from appearing in screenshots or from
          * being viewed on non-secure displays. Default value is `inherit`.
          * ```
-         * <DropdownMenu secure-policy="inherit">...</DropdownMenu>
+         * <DropdownMenu securePolicy="inherit">...</DropdownMenu>
          * ```
          * @param securePolicy possible values are: `secureOn`, `secureOff`, and `inherit` (default).
          */
@@ -240,7 +240,7 @@ internal class DropdownMenuDTO private constructor(builder: Builder) :
          * Whether the width of the dropdown menu's content should be limited to the platform
          * default, which is smaller than the screen width.
          * ```
-         * <DropdownMenu use-platform-default-width="true">...</DropdownMenu>
+         * <DropdownMenu usePlatformDefaultWidth="true">...</DropdownMenu>
          * ```
          * @param usePlatformDefaultWidth true if the width of the dropdown menu's content should
          * be limited to the platform default, false otherwise. Default value is true.

@@ -43,6 +43,8 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrTestTag
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ScrollingValues
+import org.phoenixframework.liveview.data.constants.SizeValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.dto.alignmentFromString
 import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
@@ -100,8 +102,8 @@ abstract class ComposableBuilder {
     private fun size(size: String) = apply {
         modifier = when {
             size.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.size(size = size.toInt().dp))
-            size == FILL -> modifier.then(Modifier.fillMaxSize())
-            size == WRAP -> modifier.then(Modifier.wrapContentSize())
+            size == SizeValues.fill -> modifier.then(Modifier.fillMaxSize())
+            size == SizeValues.wrap -> modifier.then(Modifier.wrapContentSize())
             else -> modifier
         }
     }
@@ -163,10 +165,10 @@ abstract class ComposableBuilder {
     private fun height(height: String) = apply {
         modifier = when {
             height.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.height(height.toInt().dp))
-            height == FILL -> modifier.then(Modifier.fillMaxHeight())
-            height == WRAP -> modifier.then(Modifier.wrapContentHeight())
-            height == INTRINSIC_MIN -> modifier.then(Modifier.height(IntrinsicSize.Min))
-            height == INTRINSIC_MAX -> modifier.then(Modifier.height(IntrinsicSize.Max))
+            height == SizeValues.fill -> modifier.then(Modifier.fillMaxHeight())
+            height == SizeValues.wrap -> modifier.then(Modifier.wrapContentHeight())
+            height == SizeValues.intrinsicMin -> modifier.then(Modifier.height(IntrinsicSize.Min))
+            height == SizeValues.intrinsicMax -> modifier.then(Modifier.height(IntrinsicSize.Max))
             height.endsWith('%') -> {
                 handleFraction(height)?.let {
                     modifier.then(Modifier.fillMaxHeight(it))
@@ -205,10 +207,10 @@ abstract class ComposableBuilder {
     private fun width(width: String) = apply {
         modifier = when {
             width.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.width(width.toInt().dp))
-            width == FILL -> modifier.then(Modifier.fillMaxWidth())
-            width == WRAP -> modifier.then(Modifier.wrapContentWidth())
-            width == INTRINSIC_MIN -> modifier.then(Modifier.width(IntrinsicSize.Min))
-            width == INTRINSIC_MAX -> modifier.then(Modifier.width(IntrinsicSize.Max))
+            width == SizeValues.fill -> modifier.then(Modifier.fillMaxWidth())
+            width == SizeValues.wrap -> modifier.then(Modifier.wrapContentWidth())
+            width == SizeValues.intrinsicMin -> modifier.then(Modifier.width(IntrinsicSize.Min))
+            width == SizeValues.intrinsicMax -> modifier.then(Modifier.width(IntrinsicSize.Max))
             width.endsWith('%') -> {
                 handleFraction(width)?.let {
                     modifier.then(Modifier.fillMaxWidth(it))
@@ -273,8 +275,10 @@ abstract class ComposableBuilder {
      * @param scrolling scroll direction. Supported values are: `vertical`, `horizontal`, and `both`.
      */
     fun scrolling(scrolling: String) = apply {
-        hasHorizontalScrolling = scrolling == "horizontal" || scrolling == "both"
-        hasVerticalScrolling = scrolling == "vertical" || scrolling == "both"
+        hasHorizontalScrolling =
+            scrolling == ScrollingValues.horizontal || scrolling == ScrollingValues.both
+        hasVerticalScrolling =
+            scrolling == ScrollingValues.vertical || scrolling == ScrollingValues.both
     }
 
     /**
@@ -296,7 +300,7 @@ abstract class ComposableBuilder {
      * incoming constraints.
      *
      * ```
-     * <Composable aspect-ratio={"#{4/3}"} />
+     * <Composable aspectRatio={"#{4/3}"} />
      * ```
      * @param aspectRatio a floating number representing the aspect ratio.
      */
@@ -309,7 +313,7 @@ abstract class ComposableBuilder {
     /**
      * Tag used during the UI tests. It must be unique in the UI tree.
      * ```
-     * <Composable test-tag="myTag" />
+     * <Composable testTag="myTag" />
      * ```
      * @param testTag tag used during the UI tests.
      */
@@ -410,11 +414,6 @@ abstract class ComposableBuilder {
     }
 
     companion object {
-        internal const val FILL = "fill"
-        internal const val WRAP = "wrap"
-        internal const val INTRINSIC_MIN = "intrinsicMin"
-        internal const val INTRINSIC_MAX = "intrinsicMax"
-
         internal const val EVENT_TYPE_CLICK = "click"
         internal const val EVENT_TYPE_CHANGE = "change"
         internal const val EVENT_TYPE_KEY_UP = "keyup"

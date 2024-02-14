@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
@@ -13,6 +14,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
+import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
+import org.phoenixframework.liveview.domain.base.ComposableTypes.lazyColumn
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.domain.extensions.optional
 
 class LazyColumnShotTest : LiveViewComposableTest() {
 
@@ -21,14 +36,23 @@ class LazyColumnShotTest : LiveViewComposableTest() {
             (1..count).forEach {
                 append(
                     """
-                    <Row padding="8">
-                      <Text ${if (fill) "weight=\"1\"" else ""}>Item ${it}</Text>
-                      <Text>#${it}</Text>
-                    </Row>     
+                    <$row $attrPadding="8">
+                      <$text ${if (fill) "$attrWeight=\"1\"" else ""}>Item ${it}</$text>
+                      <$text>#${it}</$text>
+                    </$row>     
                     """
                 )
             }
         }.toString()
+    }
+
+    private fun LazyListScope.rowsForNativeComposable(rowCount: Int, fill: Boolean = true) {
+        items((1..rowCount).toList()) { num ->
+            Row(Modifier.padding(8.dp)) {
+                Text(text = "Item $num", Modifier.optional(fill, Modifier.weight(1f)))
+                Text(text = "#$num")
+            }
+        }
     }
 
     @Test
@@ -37,17 +61,12 @@ class LazyColumnShotTest : LiveViewComposableTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 LazyColumn {
-                    items((1..rowCount).toList()) { num ->
-                        Row(Modifier.padding(8.dp)) {
-                            Text(text = "Item $num", Modifier.weight(1f))
-                            Text(text = "#$num")
-                        }
-                    }
+                    this.rowsForNativeComposable(rowCount)
                 }
             }, template = """
-                <LazyColumn>
+                <$lazyColumn>
                   ${rowsForTemplate(rowCount)}
-                </LazyColumn>
+                </$lazyColumn>
                 """
         )
     }
@@ -58,17 +77,12 @@ class LazyColumnShotTest : LiveViewComposableTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 LazyColumn(reverseLayout = true) {
-                    items((1..rowCount).toList()) { num ->
-                        Row(Modifier.padding(8.dp)) {
-                            Text(text = "Item $num", Modifier.weight(1f))
-                            Text(text = "#$num")
-                        }
-                    }
+                    this.rowsForNativeComposable(rowCount)
                 }
             }, template = """
-                <LazyColumn reverse-layout="true">
+                <$lazyColumn $attrReverseLayout="true">
                   ${rowsForTemplate(rowCount)}
-                </LazyColumn>
+                </$lazyColumn>
                 """
         )
     }
@@ -82,17 +96,13 @@ class LazyColumnShotTest : LiveViewComposableTest() {
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.SpaceAround,
                 ) {
-                    items((1..rowCount).toList()) { num ->
-                        Row(Modifier.padding(8.dp)) {
-                            Text(text = "Item $num", Modifier.weight(1f))
-                            Text(text = "#$num")
-                        }
-                    }
+                    this.rowsForNativeComposable(rowCount)
                 }
             }, template = """
-                <LazyColumn size="fill" vertical-arrangement="spaceAround">
+                <$lazyColumn $attrSize="$fill" 
+                  $attrVerticalArrangement="${VerticalArrangementValues.spaceAround}">
                   ${rowsForTemplate(rowCount)}
-                </LazyColumn>
+                </$lazyColumn>
                 """
         )
     }
@@ -106,17 +116,13 @@ class LazyColumnShotTest : LiveViewComposableTest() {
                     Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.End,
                 ) {
-                    items((1..rowCount).toList()) { num ->
-                        Row(Modifier.padding(8.dp)) {
-                            Text(text = "Item $num")
-                            Text(text = "#$num")
-                        }
-                    }
+                    this.rowsForNativeComposable(rowCount, false)
                 }
             }, template = """
-                <LazyColumn width="fill" horizontal-alignment="end">
+                <$lazyColumn $attrWidth="$fill" 
+                  $attrHorizontalAlignment="${HorizontalAlignmentValues.end}">
                   ${rowsForTemplate(rowCount, false)}
-                </LazyColumn>
+                </$lazyColumn>
                 """
         )
     }

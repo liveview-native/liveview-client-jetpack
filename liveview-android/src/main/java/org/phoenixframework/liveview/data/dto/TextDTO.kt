@@ -27,6 +27,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextDecoration
+import org.phoenixframework.liveview.data.constants.TextOverflowValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
@@ -164,8 +165,9 @@ internal class TextDTO private constructor(builder: Builder) :
          * Sets the text color for a given text.
          *
          * @param color The color to be applied to the text. The color must be specified as a string
-         *   in the AARRGGBB format. If an empty string or any other value is provided, the color
-         *   will not be changed.
+         *   in the AARRGGBB format or one of
+         *   [org.phoenixframework.liveview.data.constants.SystemColorValues]. If an empty string or
+         *   any other value is provided, the color will not be changed.
          */
         fun color(color: String) = apply {
             if (color.isNotEmpty()) {
@@ -176,7 +178,9 @@ internal class TextDTO private constructor(builder: Builder) :
         /**
          * Sets the font family for a given text. This font must be a downloadable font from
          * fonts.google.com
-         *
+         * ```
+         * <Text fontFamily="" />
+         * ```
          * @param fontFamily The font family to be applied. The font family is the font name.
          */
         fun fontFamily(fontFamily: String) = apply {
@@ -285,8 +289,8 @@ internal class TextDTO private constructor(builder: Builder) :
         fun overflow(overflow: String) = apply {
             if (overflow.isNotEmpty()) {
                 this.overflow = when (overflow) {
-                    "clip" -> TextOverflow.Clip
-                    "ellipsis" -> TextOverflow.Ellipsis
+                    TextOverflowValues.clip -> TextOverflow.Clip
+                    TextOverflowValues.ellipsis -> TextOverflow.Ellipsis
                     else -> TextOverflow.Visible
                 }
             }
@@ -331,8 +335,8 @@ internal class TextDTO private constructor(builder: Builder) :
         /**
          * Sets the text style using Material Design naming convention.
          *
-         * @param style text style based on Material Design naming convention (e.g.: displayLarge,
-         * headlineMedium, titleSmall, bodyMedium, labelSmall, etc.).
+         * @param style text style based on Material Design naming convention. See the supported
+         * values at [org.phoenixframework.liveview.data.constants.TextStyleValues].
          */
         fun style(style: String) = apply {
             this.style = style

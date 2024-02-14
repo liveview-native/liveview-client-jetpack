@@ -15,6 +15,22 @@ import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrExpanded
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.ShapeValues.circle
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateText
+import org.phoenixframework.liveview.domain.base.ComposableTypes.extendedFloatingActionButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.floatingActionButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.largeFloatingActionButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.domain.base.ComposableTypes.smallFloatingActionButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 import org.phoenixframework.liveview.domain.extensions.toColor
 
 class FloatingActionButtonShotTest : LiveViewComposableTest() {
@@ -55,25 +71,25 @@ class FloatingActionButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                  <FloatingActionButton phx-click="">
-                    <Icon image-vector="filled:Add"/>
-                  </FloatingActionButton>
-                  <SmallFloatingActionButton phx-click="">
-                    <Icon image-vector="filled:Delete"/>
-                  </SmallFloatingActionButton>
-                  <LargeFloatingActionButton phx-click="">
-                    <Icon image-vector="filled:Cached"/>
-                  </LargeFloatingActionButton>
-                  <ExtendedFloatingActionButton phx-click="">
-                    <Icon image-vector="filled:Share" template="icon"/>
-                    <Text template="text">Share</Text>
-                  </ExtendedFloatingActionButton>
-                  <ExtendedFloatingActionButton phx-click="" expanded="false">
-                    <Icon image-vector="filled:Share" template="icon"/>
-                    <Text template="text">Share</Text>
-                  </ExtendedFloatingActionButton>                  
-                </Row>
+                <$row>
+                  <$floatingActionButton>
+                    <$icon $attrImageVector="filled:Add"/>
+                  </$floatingActionButton>
+                  <$smallFloatingActionButton>
+                    <$icon $attrImageVector="filled:Delete"/>
+                  </$smallFloatingActionButton>
+                  <$largeFloatingActionButton>
+                    <$icon $attrImageVector="filled:Cached"/>
+                  </$largeFloatingActionButton>
+                  <$extendedFloatingActionButton>
+                    <$icon $attrImageVector="filled:Share" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateText">Share</$text>
+                  </$extendedFloatingActionButton>
+                  <$extendedFloatingActionButton $attrExpanded="false">
+                    <$icon $attrImageVector="filled:Share" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateText">Share</$text>
+                  </$extendedFloatingActionButton>                  
+                </$row>
                 """
         )
     }
@@ -132,25 +148,30 @@ class FloatingActionButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                  <FloatingActionButton phx-click="" container-color="#$containerColor" content-color="#$contentColor">
-                    <Icon image-vector="filled:Add"/>
-                  </FloatingActionButton>
-                  <SmallFloatingActionButton phx-click="" container-color="#$containerColor" content-color="#$contentColor">
-                    <Icon image-vector="filled:Delete"/>
-                  </SmallFloatingActionButton>
-                  <LargeFloatingActionButton phx-click="" container-color="#$containerColor" content-color="#$contentColor">
-                    <Icon image-vector="filled:Cached"/>
-                  </LargeFloatingActionButton>
-                  <ExtendedFloatingActionButton phx-click="" container-color="#$containerColor" content-color="#$contentColor">
-                    <Icon image-vector="filled:Share" template="icon"/>
-                    <Text template="text">Share</Text>
-                  </ExtendedFloatingActionButton>
-                  <ExtendedFloatingActionButton phx-click="" expanded="false" container-color="#$containerColor" content-color="#$contentColor">
-                    <Icon image-vector="filled:Share" template="icon"/>
-                    <Text template="text">Share</Text>
-                  </ExtendedFloatingActionButton>                  
-                </Row>
+                <$row>
+                  <$floatingActionButton 
+                    $attrContainerColor="#$containerColor" $attrContentColor="#$contentColor">
+                    <$icon $attrImageVector="filled:Add"/>
+                  </$floatingActionButton>
+                  <$smallFloatingActionButton 
+                    $attrContainerColor="#$containerColor" $attrContentColor="#$contentColor">
+                    <$icon $attrImageVector="filled:Delete"/>
+                  </$smallFloatingActionButton>
+                  <$largeFloatingActionButton 
+                    $attrContainerColor="#$containerColor" $attrContentColor="#$contentColor">
+                    <$icon $attrImageVector="filled:Cached"/>
+                  </$largeFloatingActionButton>
+                  <$extendedFloatingActionButton 
+                    $attrContainerColor="#$containerColor" $attrContentColor="#$contentColor">
+                    <$icon $attrImageVector="filled:Share" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateText">Share</$text>
+                  </$extendedFloatingActionButton>
+                  <$extendedFloatingActionButton $attrExpanded="false" 
+                    $attrContainerColor="#$containerColor" $attrContentColor="#$contentColor">
+                    <$icon $attrImageVector="filled:Share" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateText">Share</$text>
+                  </$extendedFloatingActionButton>                  
+                </$row>
                 """
         )
     }
@@ -214,25 +235,35 @@ class FloatingActionButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Row>
-                  <FloatingActionButton phx-click="" container-color="#$containerColor" content-color="#$contentColor" shape="circle">
-                    <Icon image-vector="filled:Add"/>
-                  </FloatingActionButton>
-                  <SmallFloatingActionButton phx-click="" container-color="#$containerColor" content-color="#$contentColor" shape="circle">
-                    <Icon image-vector="filled:Delete"/>
-                  </SmallFloatingActionButton>
-                  <LargeFloatingActionButton phx-click="" container-color="#$containerColor" content-color="#$contentColor" shape="circle">
-                    <Icon image-vector="filled:Cached"/>
-                  </LargeFloatingActionButton>
-                  <ExtendedFloatingActionButton phx-click="" container-color="#$containerColor" content-color="#$contentColor" shape="circle">
-                    <Icon image-vector="filled:Share" template="icon"/>
-                    <Text template="text">Share</Text>
-                  </ExtendedFloatingActionButton>
-                  <ExtendedFloatingActionButton phx-click="" expanded="false" container-color="#$containerColor" content-color="#$contentColor" shape="circle">
-                    <Icon image-vector="filled:Share" template="icon"/>
-                    <Text template="text">Share</Text>
-                  </ExtendedFloatingActionButton>                  
-                </Row>
+                <$row>
+                  <$floatingActionButton 
+                    $attrContainerColor="#$containerColor" $attrContentColor="#$contentColor" 
+                    $attrShape="$circle">
+                    <$icon $attrImageVector="filled:Add"/>
+                  </$floatingActionButton>
+                  <$smallFloatingActionButton 
+                    $attrContainerColor="#$containerColor" $attrContentColor="#$contentColor" 
+                    $attrShape="$circle">
+                    <$icon $attrImageVector="filled:Delete"/>
+                  </$smallFloatingActionButton>
+                  <$largeFloatingActionButton 
+                    $attrContainerColor="#$containerColor" $attrContentColor="#$contentColor" 
+                    $attrShape="$circle">
+                    <$icon $attrImageVector="filled:Cached"/>
+                  </$largeFloatingActionButton>
+                  <$extendedFloatingActionButton 
+                    $attrContainerColor="#$containerColor" $attrContentColor="#$contentColor" 
+                    $attrShape="$circle">
+                    <$icon $attrImageVector="filled:Share" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateText">Share</$text>
+                  </$extendedFloatingActionButton>
+                  <$extendedFloatingActionButton $attrExpanded="false" 
+                    $attrContainerColor="#$containerColor" $attrContentColor="#$contentColor" 
+                    $attrShape="$circle">
+                    <$icon $attrImageVector="filled:Share" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateText">Share</$text>
+                  </$extendedFloatingActionButton>                  
+                </$row>
                 """
         )
     }

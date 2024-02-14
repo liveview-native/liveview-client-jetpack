@@ -44,7 +44,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * Material Design floating action button.
  * ```
  * <FloatingActionButton phx-click="fabHandleAction">
- *   <Icon image-vector="filled:Add" />
+ *   <Icon imageVector="filled:Add" />
  * </FloatingActionButton>
  * ```
  * You can also declare a `SmallFloatingActionButton`, `LargeFloatingActionButton`, and
@@ -52,7 +52,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * and `text`.
  * ```
  * <ExtendedFloatingActionButton phx-click="fabAction" >
- *   <Icon image-vector="filled:Add" template="icon"/>
+ *   <Icon imageVector="filled:Add" template="icon"/>
  *   <Text template="text">Increment</Text>
  * </ExtendedFloatingActionButton>
  * ```
@@ -75,7 +75,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
     ) {
         val containerColor = containerColor ?: FloatingActionButtonDefaults.containerColor
         when (composableNode?.node?.tag) {
-            ComposableTypes.fab ->
+            ComposableTypes.floatingActionButton ->
                 FloatingActionButton(
                     onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
@@ -89,7 +89,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
                     }
                 }
 
-            ComposableTypes.smallFab ->
+            ComposableTypes.smallFloatingActionButton ->
                 SmallFloatingActionButton(
                     onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
@@ -103,7 +103,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
                     }
                 }
 
-            ComposableTypes.largeFab ->
+            ComposableTypes.largeFloatingActionButton ->
                 LargeFloatingActionButton(
                     onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
                     modifier = modifier,
@@ -117,7 +117,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
                     }
                 }
 
-            ComposableTypes.extendedFab -> {
+            ComposableTypes.extendedFloatingActionButton -> {
                 val text = remember(composableNode.children) {
                     composableNode.children.find { it.node?.template == Templates.templateText }
                 }
@@ -183,9 +183,10 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
          * The color used for the background of this FAB.
          *
          * ```
-         * <FloatingActionButton container-color="#FF0000FF" />
+         * <FloatingActionButton containerColor="#FF0000FF" />
          * ```
-         * @param color the background color in AARRGGBB format.
+         * @param color the background color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun containerColor(color: String) = apply {
             if (color.isNotEmpty()) {
@@ -197,9 +198,10 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
          * The preferred color for content inside this FAB.
          *
          * ```
-         * <FloatingActionButton content-color="#FF0000FF" />
+         * <FloatingActionButton contentColor="#FF0000FF" />
          * ```
-         * @param color the content color in AARRGGBB format.
+         * @param color the content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun contentColor(color: String) = apply {
             if (color.isNotEmpty()) {
@@ -225,8 +227,9 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
          * ```
          * <FloatingActionButton shape="circle" >...</FloatingActionButton>
          * ```
-         * @param shape button's shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied for all four corners.
+         * @param shape button's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * representing the curve size applied for all four corners.
          */
         fun shape(shape: String): Builder = apply {
             if (shape.isNotEmpty()) {
@@ -256,8 +259,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
          * Controls the expansion state of this FAB. In an expanded state, the FAB will show both
          * the icon and text. In a collapsed state, the FAB will show only the icon.
          * ```
-         * <ExpandedFloatingActionButton
-         *   expanded="true">
+         * <ExpandedFloatingActionButton expanded="true">
          *   ...
          * </ExpandedFloatingActionButton>
          * ```

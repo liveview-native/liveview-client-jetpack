@@ -45,16 +45,16 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * Material Design icon toggle buttons.
  * ```
  * <IconToggleButton checked={"#{@isChecked}"} phx-change="toggleCheck">
- *   <Icon image-vector="filled:Check" />
+ *   <Icon imageVector="filled:Check" />
  * </IconToggleButton>
  * <FilledIconToggleButton checked={"#{@isChecked}"} phx-change="toggleCheck">
- *   <Icon image-vector="filled:Check" />
+ *   <Icon imageVector="filled:Check" />
  * </FilledIconToggleButton>
  * <FilledTonalIconToggleButton checked={"#{@isChecked}"} phx-change="toggleCheck">
- *   <Icon image-vector="filled:Check" />
+ *   <Icon imageVector="filled:Check" />
  * </FilledTonalIconToggleButton>
  * <OutlinedIconToggleButton checked={"#{@isChecked}"} phx-change="toggleCheck">
- *   <Icon image-vector="filled:Check" />
+ *   <Icon imageVector="filled:Check" />
  * </FilledTonalIconToggleButton>
  * ```
  */
@@ -275,7 +275,8 @@ internal class IconToggleButtonDTO private constructor(builder: Builder) :
          * ```
          * @param border a JSON representing the border object. The `width` key is an int value
          * representing button border's width content. The `color` key must be specified as a string
-         * in the AARRGGBB format
+         * in the AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun border(border: String) = apply {
             this.border = borderFromString(border)
@@ -304,8 +305,9 @@ internal class IconToggleButtonDTO private constructor(builder: Builder) :
          * ```
          * <FilledIconToggleButton shape="rectangle" >...</FilledIconToggleButton>
          * ```
-         * @param shape button's shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied to all four corners.
+         * @param shape button's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * representing the curve size applied to all four corners.
          */
         fun shape(shape: String) = apply {
             this.shape = shapeFromString(shape)

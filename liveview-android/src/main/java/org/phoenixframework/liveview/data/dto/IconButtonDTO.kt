@@ -41,16 +41,16 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * Material Design standard icon button.
  * ```
  * <IconButton phx-click="iconButtonHandleAction">
- *   <Icon image-vector="filled:Add" />
+ *   <Icon imageVector="filled:Add" />
  * </IconButton>
  * <FilledIconButton phx-click="iconButtonHandleAction">
- *   <Icon image-vector="filled:Add" />
+ *   <Icon imageVector="filled:Add" />
  * </FilledIconButton>
  * <FilledTonalIconButton phx-click="iconButtonHandleAction">
- *   <Icon image-vector="filled:Add" />
+ *   <Icon imageVector="filled:Add" />
  * </FilledTonalIconButton>
  * <OutlinedIconButton phx-click="iconButtonHandleAction">
- *   <Icon image-vector="filled:Add" />
+ *   <Icon imageVector="filled:Add" />
  * </OutlinedIconButton>
  * ```
  */
@@ -229,7 +229,8 @@ internal class IconButtonDTO private constructor(builder: Builder) :
          * ```
          * @param border a JSON representing the border object. The `width` key is an int value
          * representing button border's width content. The `color` key must be specified as a string
-         * in the AARRGGBB format
+         * in the AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun border(border: String) = apply {
             this.border = borderFromString(border)
@@ -284,8 +285,9 @@ internal class IconButtonDTO private constructor(builder: Builder) :
          * ```
          * <OutlinedIconButton shape="rectangle" >...</OutlinedIconButton>
          * ```
-         * @param shape button's shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied to all four corners.
+         * @param shape button's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues] or use an integer representing
+         * the curve size applied to all four corners.
          */
         fun shape(shape: String) = apply {
             this.shape = shapeFromString(shape)

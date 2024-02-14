@@ -13,6 +13,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrThickness
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.SizeValues.intrinsicMin
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.horizontalDivider
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.domain.base.ComposableTypes.verticalDivider
 
 class DividerShotTest : LiveViewComposableTest() {
 
@@ -27,11 +37,11 @@ class DividerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column width="100">
-                    <Text>Line 1</Text>
-                    <HorizontalDivider />
-                    <Text>Line 2</Text>
-                </Column>
+                <$column $attrWidth="100">
+                  <$text>Line 1</$text>
+                  <$horizontalDivider />
+                  <$text>Line 2</$text>
+                </$column>
                 """
         )
     }
@@ -43,18 +53,19 @@ class DividerShotTest : LiveViewComposableTest() {
                 Row(
                     Modifier
                         .width(100.dp)
-                        .height(IntrinsicSize.Min)) {
+                        .height(IntrinsicSize.Min)
+                ) {
                     Text(text = "Cell 1")
                     VerticalDivider()
                     Text(text = "Cell 2")
                 }
             },
             template = """
-                <Row width="100" height="intrinsicMin">
-                    <Text>Cell 1</Text>
-                    <VerticalDivider />
-                    <Text>Cell 2</Text>
-                </Row>
+                <$row $attrWidth="100" $attrHeight="$intrinsicMin">
+                  <$text>Cell 1</$text>
+                  <$verticalDivider />
+                  <$text>Cell 2</$text>
+                </$row>
                 """
         )
     }
@@ -70,11 +81,11 @@ class DividerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column width="100">
-                    <Text>Line 1</Text>
-                    <HorizontalDivider thickness="2" color="#FFFF0000" />
-                    <Text>Line 2</Text>
-                </Column>
+                <$column $attrWidth="100">
+                  <$text>Line 1</$text>
+                  <$horizontalDivider $attrThickness="2" $attrColor="#FFFF0000" />
+                  <$text>Line 2</$text>
+                </$column>
                 """
         )
     }
@@ -86,18 +97,19 @@ class DividerShotTest : LiveViewComposableTest() {
                 Row(
                     Modifier
                         .width(100.dp)
-                        .height(IntrinsicSize.Min)) {
+                        .height(IntrinsicSize.Min)
+                ) {
                     Text(text = "Cell 1")
                     VerticalDivider(thickness = 2.dp, color = Color.Red)
                     Text(text = "Cell 2")
                 }
             },
             template = """
-                <Row width="100" height="intrinsicMin">
-                    <Text>Cell 1</Text>
-                    <VerticalDivider thickness="2" color="#FFFF0000" />
-                    <Text>Cell 2</Text>
-                </Row>
+                <$row $attrWidth="100" $attrHeight="$intrinsicMin">
+                  <$text>Cell 1</$text>
+                  <$verticalDivider $attrThickness="2" $attrColor="#FFFF0000" />
+                  <$text>Cell 2</$text>
+                </$row>
                 """
         )
     }

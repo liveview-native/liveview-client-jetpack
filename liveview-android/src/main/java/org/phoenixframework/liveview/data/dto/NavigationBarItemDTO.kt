@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.constants.Attrs.alwaysShowLabel
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlwaysShowLabel
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
@@ -35,7 +35,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * - `icon` for the item icon.
  * ```
  * <NavigationBarItem selected="true" phx-click="selectTab1">
- *   <Icon image-vector="filled:HorizontalDistribute" template="icon"/>
+ *   <Icon imageVector="filled:HorizontalDistribute" template="icon"/>
  *   <Text template="label">Tab 1</Text>
  * </NavigationBarItem>
  * ```
@@ -132,7 +132,7 @@ internal class NavigationBarItemDTO private constructor(builder: Builder) :
          * Whether to always show the label for this item. If false, the label will only be shown
          * when this item is selected.
          * ```
-         * <NavigationBarItem always-show-label="true">...</NavigationDrawerItem>
+         * <NavigationBarItem alwaysShowLabel="true">...</NavigationDrawerItem>
          * ```
          * @param alwaysShowLabel true if the label is always visible, false if it's only visible
          * when is selected.
@@ -208,7 +208,7 @@ internal object NavigationBarItemDtoFactory :
     ): NavigationBarItemDTO =
         attributes.fold(NavigationBarItemDTO.Builder(scope as RowScope)) { builder, attribute ->
             when (attribute.name) {
-                alwaysShowLabel -> builder.alwaysShowLabel(attribute.value)
+                attrAlwaysShowLabel -> builder.alwaysShowLabel(attribute.value)
                 attrColors -> builder.colors(attribute.value)
                 attrEnabled -> builder.enabled(attribute.value)
                 attrPhxClick -> builder.onClick(attribute.value)

@@ -12,6 +12,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.Templates.templateHeader
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationRail
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationRailItem
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 import org.robolectric.annotation.Config
 
 @Config(qualifiers = "xlarge-land")
@@ -46,17 +60,17 @@ class NavigationRailShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <NavigationRail>
-                  <NavigationRailItem selected="true">
-                    <Icon image-vector="filled:Favorite" template="icon"/>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="false">
-                    <Icon image-vector="filled:Home" template="icon"/>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="false">
-                    <Icon image-vector="filled:Person" template="icon"/>
-                  </NavigationRailItem>                                   
-                </NavigationRail>
+                <$navigationRail>
+                  <$navigationRailItem $attrSelected="true">
+                    <$icon $attrImageVector="filled:Favorite" $attrTemplate="$templateIcon"/>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="false">
+                    <$icon $attrImageVector="filled:Home" $attrTemplate="$templateIcon"/>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="false">
+                    <$icon $attrImageVector="filled:Person" $attrTemplate="$templateIcon"/>
+                  </$navigationRailItem>                                   
+                </$navigationRail>
                 """
         )
     }
@@ -95,19 +109,19 @@ class NavigationRailShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <NavigationRail>
-                  <Text font-size="24" template="header">NavRail Header</Text>
-                  <Text font-size="18" template="header">Subheader</Text>
-                  <NavigationRailItem selected="true">
-                    <Icon image-vector="filled:Favorite" template="icon"/>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="false">
-                    <Icon image-vector="filled:Home" template="icon"/>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="false">
-                    <Icon image-vector="filled:Person" template="icon"/>
-                  </NavigationRailItem>                                   
-                </NavigationRail>
+                <$navigationRail>
+                  <$text $attrFontSize="24" $attrTemplate="$templateHeader">NavRail Header</$text>
+                  <$text $attrFontSize="18" $attrTemplate="$templateHeader">Subheader</$text>
+                  <$navigationRailItem $attrSelected="true">
+                    <$icon $attrImageVector="filled:Favorite" $attrTemplate="$templateIcon"/>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="false">
+                    <$icon $attrImageVector="filled:Home" $attrTemplate="$templateIcon"/>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="false">
+                    <$icon $attrImageVector="filled:Person" $attrTemplate="$templateIcon"/>
+                  </$navigationRailItem>                                   
+                </$navigationRail>
                 """
         )
     }
@@ -148,19 +162,19 @@ class NavigationRailShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <NavigationRail container-color="system-blue" content-color="system-yellow">
-                  <Text font-size="24" template="header">NavRail Header</Text>
-                  <Text font-size="18" template="header">Subheader</Text>
-                  <NavigationRailItem selected="true">
-                    <Icon image-vector="filled:Favorite" template="icon"/>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="false">
-                    <Icon image-vector="filled:Home" template="icon"/>
-                  </NavigationRailItem>
-                  <NavigationRailItem selected="false">
-                    <Icon image-vector="filled:Person" template="icon"/>
-                  </NavigationRailItem>                                   
-                </NavigationRail>
+                <$navigationRail $attrContainerColor="$Blue" $attrContentColor="$Yellow">
+                  <$text $attrFontSize="24" $attrTemplate="$templateHeader">NavRail Header</$text>
+                  <$text $attrFontSize="18" $attrTemplate="$templateHeader">Subheader</$text>
+                  <$navigationRailItem $attrSelected="true">
+                    <$icon $attrImageVector="filled:Favorite" $attrTemplate="$templateIcon"/>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="false">
+                    <$icon $attrImageVector="filled:Home" $attrTemplate="$templateIcon"/>
+                  </$navigationRailItem>
+                  <$navigationRailItem $attrSelected="false">
+                    <$icon $attrImageVector="filled:Person" $attrTemplate="$templateIcon"/>
+                  </$navigationRailItem>                                   
+                </$navigationRail>
                 """
         )
     }

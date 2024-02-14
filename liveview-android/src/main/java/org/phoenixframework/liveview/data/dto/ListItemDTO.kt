@@ -51,8 +51,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *   <Text template="headlineContent">Headline</Text>
  *   <Text template="overlineContent">Overline Content</Text>
  *   <Text template="supportingContent">Supporting Content</Text>
- *   <Icon template="leadingContent" image-vector="filled:Add" />
- *   <Icon template="trailingContent" image-vector="filled:ChevronRight" />
+ *   <Icon template="leadingContent" imageVector="filled:Add" />
+ *   <Icon template="trailingContent" imageVector="filled:ChevronRight" />
  * </ListItem>
  * ```
  */
@@ -176,7 +176,7 @@ internal class ListItemDTO private constructor(builder: Builder) :
         /**
          * The shadow elevation of this list item.
          * ```
-         * <ListItem shadow-elevation="8">...</ListItem>
+         * <ListItem shadowElevation="8">...</ListItem>
          * ```
          * @param shadowElevation shadow elevation of this list item.
          */
@@ -189,7 +189,7 @@ internal class ListItemDTO private constructor(builder: Builder) :
         /**
          * The tonal elevation of this list item
          * ```
-         * <ListItem tonal-elevation="12" >...</ListItem>
+         * <ListItem tonalElevation="12" >...</ListItem>
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */

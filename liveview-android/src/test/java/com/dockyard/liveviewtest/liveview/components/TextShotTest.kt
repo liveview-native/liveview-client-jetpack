@@ -13,8 +13,32 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontFamily
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontStyle
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontWeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrLetterSpacing
+import org.phoenixframework.liveview.data.constants.Attrs.attrLineHeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrMaxLines
+import org.phoenixframework.liveview.data.constants.Attrs.attrMinLines
+import org.phoenixframework.liveview.data.constants.Attrs.attrOverflow
+import org.phoenixframework.liveview.data.constants.Attrs.attrTextAlign
+import org.phoenixframework.liveview.data.constants.Attrs.attrTextDecoration
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.FontStyleValues.italic
+import org.phoenixframework.liveview.data.constants.FontWeightValues
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.TextAlignValues
+import org.phoenixframework.liveview.data.constants.TextDecorationValues.lineThrough
+import org.phoenixframework.liveview.data.constants.TextDecorationValues.underline
+import org.phoenixframework.liveview.data.constants.TextOverflowValues
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.ui.theme.fontFamilyFromString
 
 class TextShotTest : LiveViewComposableTest() {
+
     @Test
     fun textTest() {
         compareNativeComposableWithTemplate(
@@ -41,23 +65,97 @@ class TextShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                    <Text>Simple Text</Text>
-                    <Text color="#FFFF0000">Text with color</Text>
-                    <Text font-size="12">Text small</Text>
-                    <Text font-size="16">Text medium</Text>
-                    <Text font-size="24">Text large</Text>
-                    <Text min-lines="3">Text min lines</Text>
-                    <Text font-style="italic">Text Italic</Text>
-                    <Text letter-spacing="12">Text with letter spacing</Text>
-                    <Text text-decoration="lineThrough">Text Line Through</Text>
-                    <Text text-decoration="underline">Text Underline</Text>
-                    <Text 
-                      font-size="28" font-style="italic" min-lines="2"
-                      letter-spacing="4" text-decoration="underline">
+                <$column>
+                    <$text>Simple Text</$text>
+                    <$text $attrColor="#FFFF0000">Text with color</$text>
+                    <$text $attrFontSize="12">Text small</$text>
+                    <$text $attrFontSize="16">Text medium</$text>
+                    <$text $attrFontSize="24">Text large</$text>
+                    <$text $attrMinLines="3">Text min lines</$text>
+                    <$text $attrFontStyle="$italic">Text Italic</$text>
+                    <$text $attrLetterSpacing="12">Text with letter spacing</$text>
+                    <$text $attrTextDecoration="$lineThrough">Text Line Through</$text>
+                    <$text $attrTextDecoration="$underline">Text Underline</$text>
+                    <$text 
+                      $attrFontSize="28" 
+                      $attrFontStyle="$italic" 
+                      $attrMinLines="2"
+                      $attrLetterSpacing="4" 
+                      $attrTextDecoration="$underline">
                       All of above
-                    </Text>  
-                </Column>
+                    </$text>  
+                </$column>
+                """
+        )
+    }
+
+    @Test
+    fun textTestWithFontFamily() {
+        val fontName = "Lobster Two"
+        compareNativeComposableWithTemplate(
+            delayBeforeScreenshot = 5000,
+            nativeComposable = {
+                val fontFamily = fontFamilyFromString(fontName)
+                Column {
+                    Text(text = "Simple Text", fontFamily = fontFamily)
+                    Text(text = "Text with color", fontFamily = fontFamily, color = Color.Red)
+                    Text(text = "Text small", fontFamily = fontFamily, fontSize = 12.sp)
+                    Text(text = "Text medium", fontFamily = fontFamily, fontSize = 16.sp)
+                    Text(text = "Text large", fontFamily = fontFamily, fontSize = 24.sp)
+                    Text(text = "Text min lines", fontFamily = fontFamily, minLines = 3)
+                    Text(
+                        text = "Text Italic",
+                        fontFamily = fontFamily,
+                        fontStyle = FontStyle.Italic
+                    )
+                    Text(
+                        text = "Text with letter spacing",
+                        fontFamily = fontFamily,
+                        letterSpacing = 12.sp
+                    )
+                    Text(
+                        text = "Text Line Through",
+                        fontFamily = fontFamily,
+                        textDecoration = TextDecoration.LineThrough
+                    )
+                    Text(
+                        text = "Text Underline",
+                        fontFamily = fontFamily,
+                        textDecoration = TextDecoration.Underline
+                    )
+                    Text(
+                        text = "All of above",
+                        fontFamily = fontFamily,
+                        fontSize = 28.sp,
+                        fontStyle = FontStyle.Italic,
+                        letterSpacing = 4.sp,
+                        minLines = 2,
+                        textDecoration = TextDecoration.Underline
+                    )
+                }
+            },
+            template = """
+                <$column>
+                    <$text $attrFontFamily="$fontName">Simple Text</$text>
+                    <$text $attrFontFamily="$fontName" $attrColor="#FFFF0000">Text with color</$text>
+                    <$text $attrFontFamily="$fontName" $attrFontSize="12">Text small</$text>
+                    <$text $attrFontFamily="$fontName" $attrFontSize="16">Text medium</$text>
+                    <$text $attrFontFamily="$fontName" $attrFontSize="24">Text large</$text>
+                    <$text $attrFontFamily="$fontName" $attrMinLines="3">Text min lines</$text>
+                    <$text $attrFontFamily="$fontName" $attrFontStyle="$italic">Text Italic</$text>
+                    <$text $attrFontFamily="$fontName" $attrLetterSpacing="12">Text with letter spacing</$text>
+                    <$text $attrFontFamily="$fontName" $attrTextDecoration="$lineThrough">Text Line Through</$text>
+                    <$text $attrFontFamily="$fontName" $attrTextDecoration="$underline">$text Underline</$text>
+                    <$text 
+                      $attrFontFamily="$fontName"
+                      $attrFontSize="28" 
+                      $attrFontStyle="$italic" 
+                      $attrMinLines="2"
+                      $attrLetterSpacing="4" 
+                      $attrTextDecoration="$underline">
+                      All of above
+                    </$text>  
+                </$column>
                 """
         )
     }
@@ -79,17 +177,17 @@ class TextShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                    <Text font-weight="thin">Text Thin weight</Text>
-                    <Text font-weight="extraLight">Text Extra Light weight</Text>
-                    <Text font-weight="light">Text Light weight</Text>
-                    <Text font-weight="normal">Text Normal weight</Text>
-                    <Text font-weight="medium">Text Medium weight</Text>
-                    <Text font-weight="semiBold">Text Semi Bold weight</Text>
-                    <Text font-weight="bold">Text Bold weight</Text>
-                    <Text font-weight="extraBold">Text Extra Bold weight</Text>
-                    <Text font-weight="black">Text Black weight</Text>
-                </Column>
+                <$column>
+                    <$text $attrFontWeight="${FontWeightValues.thin}">Text Thin weight</$text>
+                    <$text $attrFontWeight="${FontWeightValues.extraLight}">Text Extra Light weight</$text>
+                    <$text $attrFontWeight="${FontWeightValues.light}">Text Light weight</$text>
+                    <$text $attrFontWeight="${FontWeightValues.normal}">Text Normal weight</$text>
+                    <$text $attrFontWeight="${FontWeightValues.medium}">Text Medium weight</$text>
+                    <$text $attrFontWeight="${FontWeightValues.semiBold}">Text Semi Bold weight</$text>
+                    <$text $attrFontWeight="${FontWeightValues.bold}">Text Bold weight</$text>
+                    <$text $attrFontWeight="${FontWeightValues.extraBold}">Text Extra Bold weight</$text>
+                    <$text $attrFontWeight="${FontWeightValues.black}">Text Black weight</$text>
+                </$column>
                 """
         )
     }
@@ -122,12 +220,12 @@ class TextShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                    <Text width="fill" text-align="start">Text Start</Text>
-                    <Text width="fill" text-align="end">Text End</Text>
-                    <Text width="fill" text-align="center">Text Center</Text>
-                    <Text width="fill" text-align="justify">$lorenIpsum</Text>
-                </Column>
+                <$column>
+                    <$text $attrWidth="$fill" $attrTextAlign="${TextAlignValues.start}">Text Start</$text>
+                    <$text $attrWidth="$fill" $attrTextAlign="${TextAlignValues.end}">Text End</$text>
+                    <$text $attrWidth="$fill" $attrTextAlign="${TextAlignValues.center}">Text Center</$text>
+                    <$text $attrWidth="$fill" $attrTextAlign="${TextAlignValues.justify}">$lorenIpsum</$text>
+                </$column>
                 """
         )
     }
@@ -143,11 +241,11 @@ class TextShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                    <Text max-lines="2" overflow="clip">$lorenIpsum</Text>
-                    <Text max-lines="3" overflow="ellipsis">$lorenIpsum</Text>
-                    <Text max-lines="4" overflow="visible">$lorenIpsum</Text>
-                </Column>
+                <$column>
+                    <$text $attrMaxLines="2" $attrOverflow="${TextOverflowValues.clip}">$lorenIpsum</$text>
+                    <$text $attrMaxLines="3" $attrOverflow="${TextOverflowValues.ellipsis}">$lorenIpsum</$text>
+                    <$text $attrMaxLines="4" $attrOverflow="${TextOverflowValues.visible}">$lorenIpsum</$text>
+                </$column>
                 """
         )
     }
@@ -162,10 +260,10 @@ class TextShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                    <Text max-lines="3" line-height="16">$lorenIpsum</Text>
-                    <Text max-lines="3" line-height="20">$lorenIpsum</Text>
-                </Column>
+                <$column>
+                    <$text $attrMaxLines="3" $attrLineHeight="16">$lorenIpsum</$text>
+                    <$text $attrMaxLines="3" $attrLineHeight="20">$lorenIpsum</$text>
+                </$column>
                 """
         )
     }

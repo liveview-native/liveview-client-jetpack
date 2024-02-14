@@ -43,7 +43,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *
  * ```
  * <NavigationDrawerItem phx-click="navigate">
- *   <Icon template="icon" image-vector="filled:AccountBox"  />
+ *   <Icon template="icon" imageVector="filled:AccountBox"  />
  *   <Text template="label">Option Label</Text>
  *   <Text template="badge">99+</Text>
  * </NavigationDrawerItem>
@@ -155,8 +155,9 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
          * ```
          * <NavigationDrawerItem shape="rectangle" >...</NavigationDrawerItem>
          * ```
-         * @param shape button's shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied to all four corners.
+         * @param shape button's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or an integer representing
+         * the curve size applied to all four corners.
          */
         fun shape(shape: String) = apply {
             this.shape = shapeFromString(shape)

@@ -15,6 +15,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
+import org.phoenixframework.liveview.data.constants.Attrs.attrColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
+import org.phoenixframework.liveview.domain.base.ComposableTypes.card
+import org.phoenixframework.liveview.domain.base.ComposableTypes.elevatedCard
+import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedCard
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class CardShotTest : LiveViewComposableTest() {
 
@@ -30,18 +44,24 @@ class CardShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Card>
-                  <Row padding="32">
-                    <Text>Card Content 1</Text>
-                    <Text>Card Content 2</Text>
-                  </Row>
-                </Card>                
+                <$card>
+                  <$row $attrPadding="32">
+                    <$text>Card Content 1</$text>
+                    <$text>Card Content 2</$text>
+                  </$row>
+                </$card>                
                 """
         )
     }
 
     @Test
     fun cardWithCustomParamsTest() {
+        val colorsForTemplate = """
+            {
+            '$colorAttrContainerColor': '#FFFF00FF', 
+            '$colorAttrContentColor': 'FFFFFFFF'
+            }
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Card(
@@ -58,12 +78,14 @@ class CardShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Card shape="12" colors="{'containerColor': '#FFFF00FF', 'contentColor': 'FFFFFFFF'}">
-                  <Row padding="32">
-                    <Text>Card Content 1</Text>
-                    <Text>Card Content 2</Text>
-                  </Row>
-                </Card>                
+                <$card 
+                  $attrShape="12" 
+                  $attrColors="$colorsForTemplate">
+                  <$row $attrPadding="32">
+                    <$text>Card Content 1</$text>
+                    <$text>Card Content 2</$text>
+                  </$row>
+                </$card>                
                 """
         )
     }
@@ -81,9 +103,9 @@ class CardShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <ElevatedCard>
-                  <Text padding="48" font-size="24">Elevated Card</Text>
-                </ElevatedCard>
+                <$elevatedCard>
+                  <$text $attrPadding="48" $attrFontSize="24">Elevated Card</$text>
+                </$elevatedCard>
                 """
         )
     }
@@ -101,9 +123,9 @@ class CardShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <OutlinedCard>
-                  <Text padding="32" font-size="16">Oulined Card</Text>
-                </OutlinedCard>
+                <$outlinedCard>
+                  <$text $attrPadding="32" $attrFontSize="16">Oulined Card</$text>
+                </$outlinedCard>
                 """
         )
     }
@@ -116,16 +138,16 @@ class CardShotTest : LiveViewComposableTest() {
                     border = BorderStroke(2.dp, Color.Blue)
                 ) {
                     Text(
-                        text = "Oulined Card",
+                        text = "Outlined Card",
                         fontSize = 24.sp,
                         modifier = Modifier.padding(32.dp)
                     )
                 }
             },
             template = """
-                <OutlinedCard border="{'width': '2', 'color': '#FF0000FF'}">
-                  <Text padding="32" font-size="24">Oulined Card</Text>
-                </OutlinedCard>
+                <$outlinedCard $attrBorder="{'$attrWidth': '2', '$attrColor': '#FF0000FF'}">
+                  <$text $attrPadding="32" $attrFontSize="24">Outlined Card</$text>
+                </$outlinedCard>
                 """
         )
     }

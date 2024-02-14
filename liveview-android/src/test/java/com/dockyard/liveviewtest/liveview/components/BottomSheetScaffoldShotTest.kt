@@ -26,6 +26,41 @@ import androidx.compose.ui.unit.sp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Ignore
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.AlignmentValues.center
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrMessage
+import org.phoenixframework.liveview.data.constants.Attrs.attrSheetContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrSheetContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrSheetPeekHeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrSheetShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrSheetSkipHiddenState
+import org.phoenixframework.liveview.data.constants.Attrs.attrSheetValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.SheetValues.expanded
+import org.phoenixframework.liveview.data.constants.SheetValues.hidden
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.Templates.templateBody
+import org.phoenixframework.liveview.data.constants.Templates.templateDragHandle
+import org.phoenixframework.liveview.data.constants.Templates.templateSheetContent
+import org.phoenixframework.liveview.data.constants.Templates.templateTitle
+import org.phoenixframework.liveview.data.constants.Templates.templateTopBar
+import org.phoenixframework.liveview.domain.base.ComposableTypes.bottomSheetScaffold
+import org.phoenixframework.liveview.domain.base.ComposableTypes.box
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.snackbar
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.domain.base.ComposableTypes.topAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
@@ -47,14 +82,14 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <BottomSheetScaffold>
-                  <Box size="fill" template="sheetContent">
-                    <Text>Sheet content</Text>
-                  </Box>
-                  <Box size="fill" template="body">
-                    <Text font-size="24">Screen content</Text>
-                  </Box>
-                </BottomSheetScaffold>                
+                <$bottomSheetScaffold>
+                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                    <$text>Sheet content</$text>
+                  </$box>
+                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                    <$text $attrFontSize="24">Screen content</$text>
+                  </$box>
+                </$bottomSheetScaffold>                
                 """
         )
     }
@@ -84,15 +119,15 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <BottomSheetScaffold>
-                  <Snackbar message="Hello World" dismiss-event="" />
-                  <Box size="fill" template="sheetContent">
-                    <Text>Sheet content</Text>
-                  </Box>
-                  <Box size="fill" template="body">
-                    <Text font-size="24">Screen content</Text>
-                  </Box>
-                </BottomSheetScaffold>                
+                <$bottomSheetScaffold>
+                  <$snackbar $attrMessage="Hello World" />
+                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                    <$text>Sheet content</$text>
+                  </$box>
+                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                    <$text $attrFontSize="24">Screen content</$text>
+                  </$box>
+                </$bottomSheetScaffold>                
                 """
         )
     }
@@ -116,14 +151,14 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <BottomSheetScaffold sheet-peek-height="60">
-                  <Box size="fill" template="sheetContent">
-                    <Text>Sheet content</Text>
-                  </Box>
-                  <Box size="fill" template="body">
-                    <Text font-size="24">Screen content</Text>
-                  </Box>
-                </BottomSheetScaffold>     
+                <$bottomSheetScaffold $attrSheetPeekHeight="60">
+                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                    <$text>Sheet content</$text>
+                  </$box>
+                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                    <$text $attrFontSize="24">Screen content</$text>
+                  </$box>
+                </$bottomSheetScaffold>     
                 """
         )
     }
@@ -148,14 +183,14 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <BottomSheetScaffold sheet-peek-height="60" sheet-shape="24">
-                  <Box size="fill" template="sheetContent">
-                    <Text>Sheet content</Text>
-                  </Box>
-                  <Box size="fill" template="body">
-                    <Text font-size="24">Screen content</Text>
-                  </Box>
-                </BottomSheetScaffold>              
+                <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24">
+                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                    <$text>Sheet content</$text>
+                  </$box>
+                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                    <$text $attrFontSize="24">Screen content</$text>
+                  </$box>
+                </$bottomSheetScaffold>              
                 """
         )
     }
@@ -182,15 +217,15 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <BottomSheetScaffold sheet-peek-height="60" sheet-shape="24" 
-                  sheet-container-color="system-yellow" sheet-content-color="system-blue">
-                  <Box size="fill" template="sheetContent">
-                    <Text>Sheet content</Text>
-                  </Box>
-                  <Box size="fill" template="body">
-                    <Text font-size="24">Screen content</Text>
-                  </Box>
-                </BottomSheetScaffold>              
+                <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24" 
+                  $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue">
+                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                    <$text>Sheet content</$text>
+                  </$box>
+                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                    <$text $attrFontSize="24">Screen content</$text>
+                  </$box>
+                </$bottomSheetScaffold>              
                 """
         )
     }
@@ -226,18 +261,18 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <BottomSheetScaffold sheet-peek-height="60" sheet-shape="24" 
-                  sheet-container-color="system-yellow" sheet-content-color="system-blue">
-                  <Box width="fill" template="dragHandle">
-                    <Icon image-vector="filled:ArrowUpward" align="center" />
-                  </Box>
-                  <Box size="fill" template="sheetContent">
-                    <Text>Sheet content</Text>
-                  </Box>
-                  <Box size="fill" template="body">
-                    <Text font-size="24">Screen content</Text>
-                  </Box>
-                </BottomSheetScaffold>              
+                <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24" 
+                  $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue">
+                  <$box $attrWidth="$fill" $attrTemplate="$templateDragHandle">
+                    <$icon $attrImageVector="$filled:ArrowUpward" $attrAlign="$center" />
+                  </$box>
+                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                    <$text>Sheet content</$text>
+                  </$box>
+                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                    <$text $attrFontSize="24">Screen content</$text>
+                  </$box>
+                </$bottomSheetScaffold>              
                 """
         )
     }
@@ -276,21 +311,21 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <BottomSheetScaffold sheet-peek-height="60" sheet-shape="24" 
-                  sheet-container-color="system-yellow" sheet-content-color="system-blue">
-                  <Box width="fill" template="dragHandle">
-                    <Icon image-vector="filled:ArrowUpward" align="center" />
-                  </Box>
-                  <TopAppBar template="topBar">
-                    <Text template="title">Title</Text>
-                  </TopAppBar>
-                  <Box size="fill" template="sheetContent">
-                    <Text>Sheet content</Text>
-                  </Box>
-                  <Box size="fill" template="body">
-                    <Text font-size="24">Screen content</Text>
-                  </Box>
-                </BottomSheetScaffold>              
+                <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24" 
+                  $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue">
+                  <$box $attrWidth="$fill" $attrTemplate="$templateDragHandle">
+                    <$icon $attrImageVector="filled:ArrowUpward" $attrAlign="$center" />
+                  </$box>
+                  <$topAppBar $attrTemplate="$templateTopBar">
+                    <$text $attrTemplate="$templateTitle">Title</$text>
+                  </$topAppBar>
+                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                    <$text>Sheet content</$text>
+                  </$box>
+                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                    <$text $attrFontSize="24">Screen content</$text>
+                  </$box>
+                </$bottomSheetScaffold>              
                 """
         )
     }
@@ -331,22 +366,22 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <BottomSheetScaffold sheet-peek-height="60" sheet-shape="24" 
-                  sheet-container-color="system-yellow" sheet-content-color="system-blue"
-                  container-color="system-red" content-color="system-green">
-                  <Box width="fill" template="dragHandle">
-                    <Icon image-vector="filled:ArrowUpward" align="center" />
-                  </Box>
-                  <TopAppBar template="topBar">
-                    <Text template="title">Title</Text>
-                  </TopAppBar>
-                  <Box size="fill" template="sheetContent">
-                    <Text>Sheet content</Text>
-                  </Box>
-                  <Box size="fill" template="body">
-                    <Text font-size="24">Screen content</Text>
-                  </Box>
-                </BottomSheetScaffold>              
+                <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24" 
+                  $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue"
+                  $attrContainerColor="$Red" $attrContentColor="$Green">
+                  <$box $attrWidth="$fill" $attrTemplate="$templateDragHandle">
+                    <$icon $attrImageVector="filled:ArrowUpward" $attrAlign="$center" />
+                  </$box>
+                  <$topAppBar $attrTemplate="$templateTopBar">
+                    <$text $attrTemplate="$templateTitle">Title</$text>
+                  </$topAppBar>
+                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                    <$text>Sheet content</$text>
+                  </$box>
+                  <$box $attrSize="fill" $attrTemplate="$templateBody">
+                    <$text $attrFontSize="24">Screen content</$text>
+                  </$box>
+                </$bottomSheetScaffold>              
                 """
         )
     }
@@ -392,23 +427,23 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <BottomSheetScaffold sheet-peek-height="60" sheet-shape="24" 
-                  sheet-container-color="system-yellow" sheet-content-color="system-blue"
-                  container-color="system-red" content-color="system-green"
-                  sheet-value="expanded">
-                  <Box width="fill" template="dragHandle">
-                    <Icon image-vector="filled:ArrowUpward" align="center" />
-                  </Box>
-                  <TopAppBar template="topBar">
-                    <Text template="title">Title</Text>
-                  </TopAppBar>
-                  <Box size="fill" template="sheetContent">
-                    <Text>Sheet content</Text>
-                  </Box>
-                  <Box size="fill" template="body">
-                    <Text font-size="24">Screen content</Text>
-                  </Box>
-                </BottomSheetScaffold>              
+                <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24" 
+                  $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue"
+                  $attrContainerColor="$Red" $attrContentColor="$Green"
+                  $attrSheetValue="$expanded">
+                  <$box $attrWidth="$fill" $attrTemplate="$templateDragHandle">
+                    <$icon $attrImageVector="filled:ArrowUpward" $attrAlign="$center" />
+                  </$box>
+                  <$topAppBar $attrTemplate="$templateTopBar">
+                    <$text $attrTemplate="$templateTitle">Title</$text>
+                  </$topAppBar>
+                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                    <$text>Sheet content</$text>
+                  </$box>
+                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                    <$text $attrFontSize="24">Screen content</$text>
+                  </$box>
+                </$bottomSheetScaffold>              
                 """
         )
     }
@@ -460,23 +495,23 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <BottomSheetScaffold sheet-peek-height="60" sheet-shape="24" 
-                  sheet-container-color="system-yellow" sheet-content-color="system-blue"
-                  container-color="system-red" content-color="system-green"
-                  sheet-value="hidden" sheet-skip-hidden-state="false">
-                  <Box width="fill" template="dragHandle">
-                    <Icon image-vector="filled:ArrowUpward" align="center" />
-                  </Box>
-                  <TopAppBar template="topBar">
-                    <Text template="title">Title</Text>
-                  </TopAppBar>
-                  <Box size="fill" template="sheetContent">
-                    <Text>Sheet content</Text>
-                  </Box>
-                  <Box size="fill" template="body">
-                    <Text font-size="24">Screen content</Text>
-                  </Box>
-                </BottomSheetScaffold>              
+                <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24" 
+                  $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue"
+                  $attrContainerColor="$Red" $attrContentColor="$Green"
+                  $attrSheetValue="$hidden" $attrSheetSkipHiddenState="false">
+                  <$box $attrWidth="$fill" $attrTemplate="$templateDragHandle">
+                    <$icon $attrImageVector="filled:ArrowUpward" $attrAlign="$center" />
+                  </$box>
+                  <$topAppBar $attrTemplate="$templateTopBar">
+                    <$text $attrTemplate="$templateTitle">Title</$text>
+                  </$topAppBar>
+                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                    <$text>Sheet content</$text>
+                  </$box>
+                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                    <$text $attrFontSize="24">Screen content</$text>
+                  </$box>
+                </$bottomSheetScaffold>              
                 """
         )
     }

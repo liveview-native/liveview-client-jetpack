@@ -13,6 +13,32 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedThumbColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledCheckedBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledCheckedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledCheckedThumbColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledCheckedTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedThumbColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedTrackColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedThumbColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedTrackColor
+import org.phoenixframework.liveview.data.constants.Templates.templateThumb
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.domain.base.ComposableTypes.switch
 
 class SwitchShotTest : LiveViewComposableTest() {
     @Test
@@ -26,12 +52,12 @@ class SwitchShotTest : LiveViewComposableTest() {
                     Switch(checked = false, enabled = false, onCheckedChange = {})
                 }
             }, template = """
-                <Row>
-                  <Switch checked="true" />
-                  <Switch checked="false" />
-                  <Switch checked="true" enabled="false" />
-                  <Switch checked="false" enabled="false" />                  
-                </Row>  
+                <$row>
+                  <$switch $attrChecked="true" />
+                  <$switch $attrChecked="false" />
+                  <$switch $attrChecked="true" $attrEnabled="false" />
+                  <$switch $attrChecked="false" $attrEnabled="false" />                  
+                </$row>  
                 """
         )
     }
@@ -61,20 +87,20 @@ class SwitchShotTest : LiveViewComposableTest() {
                     })
                 }
             }, template = """
-                <Row>
-                  <Switch checked="true">
-                    <Icon image-vector="filled:Check" template="thumb" />
-                  </Switch>
-                  <Switch checked="false">
-                    <Icon image-vector="filled:Cancel" template="thumb" />
-                  </Switch>
-                  <Switch checked="true" enabled="false">
-                    <Icon image-vector="filled:Check" template="thumb" />
-                  </Switch>
-                  <Switch checked="false" enabled="false">
-                    <Icon image-vector="filled:Cancel" template="thumb" />
-                  </Switch>                  
-                </Row>  
+                <$row>
+                  <$switch $attrChecked="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateThumb" />
+                  </$switch>
+                  <$switch $attrChecked="false">
+                    <$icon $attrImageVector="filled:Cancel" $attrTemplate="$templateThumb" />
+                  </$switch>
+                  <$switch $attrChecked="true" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateThumb" />
+                  </$switch>
+                  <$switch $attrChecked="false" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Cancel" $attrTemplate="$templateThumb" />
+                  </$switch>                  
+                </$row>  
                 """
         )
     }
@@ -83,22 +109,22 @@ class SwitchShotTest : LiveViewComposableTest() {
     fun switchWithCustomColorsTest() {
         val colorsForTemplate = """
             {            
-            'checkedThumbColor': '#FFFFFF00', 
-            'checkedTrackColor': '#FFFFFFFF', 
-            'checkedBorderColor': '#FFFF0000', 
-            'checkedIconColor': '#FF00FF00', 
-            'uncheckedThumbColor': '#FF888888', 
-            'uncheckedTrackColor': '#FFCCCCCC', 
-            'uncheckedBorderColor': '#FF444444', 
-            'uncheckedIconColor': '#FF000000', 
-            'disabledCheckedThumbColor': '#FFFF00FF', 
-            'disabledCheckedTrackColor': '#FF00FFFF', 
-            'disabledCheckedBorderColor': '#FF0000FF', 
-            'disabledCheckedIconColor': '#FFFF0000', 
-            'disabledUncheckedThumbColor': '#FFFF0000', 
-            'disabledUncheckedTrackColor': '#FF0000FF', 
-            'disabledUncheckedBorderColor': '#FF00FF00', 
-            'disabledUncheckedIconColor': '#FF888888'    
+            '$colorAttrCheckedThumbColor': '#FFFFFF00', 
+            '$colorAttrCheckedTrackColor': '#FFFFFFFF', 
+            '$colorAttrCheckedBorderColor': '#FFFF0000', 
+            '$colorAttrCheckedIconColor': '#FF00FF00', 
+            '$colorAttrUncheckedThumbColor': '#FF888888', 
+            '$colorAttrUncheckedTrackColor': '#FFCCCCCC', 
+            '$colorAttrUncheckedBorderColor': '#FF444444', 
+            '$colorAttrUncheckedIconColor': '#FF000000', 
+            '$colorAttrDisabledCheckedThumbColor': '#FFFF00FF', 
+            '$colorAttrDisabledCheckedTrackColor': '#FF00FFFF', 
+            '$colorAttrDisabledCheckedBorderColor': '#FF0000FF', 
+            '$colorAttrDisabledCheckedIconColor': '#FFFF0000', 
+            '$colorAttrDisabledUncheckedThumbColor': '#FFFF0000', 
+            '$colorAttrDisabledUncheckedTrackColor': '#FF0000FF', 
+            '$colorAttrDisabledUncheckedBorderColor': '#FF00FF00', 
+            '$colorAttrDisabledUncheckedIconColor': '#FF888888'    
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -148,20 +174,20 @@ class SwitchShotTest : LiveViewComposableTest() {
                     )
                 }
             }, template = """
-                <Row padding="16">
-                  <Switch checked="true" colors="$colorsForTemplate">
-                    <Icon image-vector="filled:Check" template="thumb" />
-                  </Switch>
-                  <Switch checked="false" colors="$colorsForTemplate">
-                    <Icon image-vector="filled:Cancel" template="thumb" />
-                  </Switch>
-                  <Switch checked="true" enabled="false" colors="$colorsForTemplate">
-                    <Icon image-vector="filled:Check" template="thumb" />
-                  </Switch>
-                  <Switch checked="false" enabled="false" colors="$colorsForTemplate">
-                    <Icon image-vector="filled:Cancel" template="thumb" />
-                  </Switch>                  
-                </Row>  
+                <$row $attrPadding="16">
+                  <$switch $attrChecked="true" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateThumb" />
+                  </$switch>
+                  <$switch $attrChecked="false" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Cancel" $attrTemplate="$templateThumb" />
+                  </$switch>
+                  <$switch $attrChecked="true" $attrEnabled="false" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateThumb" />
+                  </$switch>
+                  <$switch $attrChecked="false" $attrEnabled="false" $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Cancel" $attrTemplate="$templateThumb" />
+                  </$switch>                  
+                </$row>  
                 """
 
         )

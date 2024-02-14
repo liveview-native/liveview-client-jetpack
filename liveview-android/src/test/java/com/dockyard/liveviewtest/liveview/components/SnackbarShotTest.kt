@@ -13,6 +13,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrActionColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrActionContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrActionLabel
+import org.phoenixframework.liveview.data.constants.Attrs.attrActionOnNewLine
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrDismissActionContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrDismissEvent
+import org.phoenixframework.liveview.data.constants.Attrs.attrMessage
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrWithDismissAction
+import org.phoenixframework.liveview.data.constants.ShapeValues.circle
+import org.phoenixframework.liveview.domain.base.ComposableTypes.scaffold
+import org.phoenixframework.liveview.domain.base.ComposableTypes.snackbar
 
 class SnackbarShotTest : LiveViewComposableTest() {
     @Test
@@ -32,9 +46,11 @@ class SnackbarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Scaffold>
-                    <Snackbar message="Hello World" dismiss-event="" />
-                </Scaffold>
+                <$scaffold>
+                  <$snackbar 
+                    $attrMessage="Hello World" 
+                    $attrDismissEvent="" />
+                </$scaffold>
                 """
         )
     }
@@ -58,9 +74,12 @@ class SnackbarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Scaffold>
-                    <Snackbar message="Hello World" shape="circle" dismiss-event="" />
-                </Scaffold>
+                <$scaffold>
+                  <$snackbar 
+                    $attrMessage="Hello World" 
+                    $attrShape="$circle" 
+                    $attrDismissEvent="" />
+                </$scaffold>
                 """
         )
     }
@@ -85,9 +104,12 @@ class SnackbarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Scaffold>
-                    <Snackbar message="Snackbar Message" action-label="Dismiss" dismiss-event="" />
-                </Scaffold>
+                <$scaffold>
+                  <$snackbar 
+                    $attrMessage="Snackbar Message" 
+                    $attrActionLabel="Dismiss" 
+                    $attrDismissEvent="" />
+                </$scaffold>
                 """
         )
     }
@@ -113,9 +135,13 @@ class SnackbarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Scaffold>
-                    <Snackbar message="Snackbar Message" action-label="Action" with-dismiss-action="true" dismiss-event="" />
-                </Scaffold>
+                <$scaffold>
+                  <$snackbar 
+                    $attrMessage="Snackbar Message" 
+                    $attrActionLabel="Action" 
+                    $attrWithDismissAction="true" 
+                    $attrDismissEvent="" />
+                </$scaffold>
                 """
         )
     }
@@ -149,17 +175,17 @@ class SnackbarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Scaffold>
-                    <Snackbar 
-                      message="Snackbar Message" 
-                      action-label="Action" 
-                      with-dismiss-action="true"
-                      container-color="#FF0000FF"
-                      content-color="#FFFFFF00"
-                      action-content-color="#FFFF0000"
-                      action-color="#FFFF00FF" 
-                      dismiss-event="" />
-                </Scaffold>
+                <$scaffold>
+                  <$snackbar 
+                    $attrMessage="Snackbar Message" 
+                    $attrActionLabel="Action" 
+                    $attrWithDismissAction="true"
+                    $attrContainerColor="#FF0000FF"
+                    $attrContentColor="#FFFFFF00"
+                    $attrActionContentColor="#FFFF0000"
+                    $attrActionColor="#FFFF00FF" 
+                    $attrDismissEvent="" />
+                </$scaffold>
                 """
         )
     }
@@ -195,19 +221,19 @@ class SnackbarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Scaffold>
-                    <Snackbar 
-                      message="Snackbar Message" 
-                      action-label="Action" 
-                      with-dismiss-action="true"
-                      container-color="#FF0000FF"
-                      content-color="#FFFFFF00"
-                      action-content-color="#FFFF0000"
-                      action-color="#FFFF00FF" 
-                      action-on-new-line="true"
-                      dismiss-action-content-color="#FF00FF00"
-                      dismiss-event="" />
-                </Scaffold>
+                <$scaffold>
+                  <$snackbar 
+                    $attrMessage="Snackbar Message" 
+                    $attrActionLabel="Action" 
+                    $attrWithDismissAction="true"
+                    $attrContainerColor="#FF0000FF"
+                    $attrContentColor="#FFFFFF00"
+                    $attrActionContentColor="#FFFF0000"
+                    $attrActionColor="#FFFF00FF" 
+                    $attrActionOnNewLine="true"
+                    $attrDismissActionContentColor="#FF00FF00"
+                    $attrDismissEvent="" />
+                </$scaffold>
                 """
         )
     }

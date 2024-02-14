@@ -22,7 +22,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 /**
  * The vertically scrolling list that only composes and lays out the currently visible items.
  * ```
- * <LazyColumn width="fill" vertical-arrangement="center" horizontal-alignment="center">
+ * <LazyColumn width="fill" verticalArrangement="center" horizontalAlignment="center">
  *   // Children
  * </LazyColumn>
  * ```
@@ -75,11 +75,11 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
          * The vertical arrangement of the Column's children
          *
          * ```
-         * <LazyColumn vertical-arrangement="spaceAround" >...</LazyColumn>
+         * <LazyColumn verticalArrangement="spaceAround" >...</LazyColumn>
          * ```
-         * @param verticalArrangement the vertical arrangement of the column's children. The
-         * supported values are: `top`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `bottom`,
-         * and `center`. An int value is also supported, which will be used to determine the space.
+         * @param verticalArrangement the vertical arrangement of the column's children. See the
+         * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
+         * An int value is also supported, which will be used to determine the space.
          */
         fun verticalArrangement(verticalArrangement: String) = apply {
             this.verticalArrangement = verticalArrangementFromString(verticalArrangement)
@@ -89,10 +89,10 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
          * The horizontal alignment of the Column's children
          *
          * ```
-         * <LazyColumn horizontal-alignment="center" >...</LazyColumn>
+         * <LazyColumn horizontalAlignment="center" >...</LazyColumn>
          * ```
-         * @param horizontalAlignment the horizontal alignment of the column's children. The
-         * supported values are: `start`, `center`, and `end`.
+         * @param horizontalAlignment the horizontal alignment of the column's children. See the
+         * supported values at [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
          */
         fun horizontalAlignment(horizontalAlignment: String) = apply {
             this.horizontalAlignment = horizontalAlignmentFromString(horizontalAlignment)

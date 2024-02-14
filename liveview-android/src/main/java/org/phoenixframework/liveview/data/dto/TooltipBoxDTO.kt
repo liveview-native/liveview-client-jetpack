@@ -18,7 +18,8 @@ import org.phoenixframework.liveview.data.constants.Templates.templateContent
 import org.phoenixframework.liveview.data.constants.Templates.templateTooltip
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableTypes
+import org.phoenixframework.liveview.domain.base.ComposableTypes.plainTooltip
+import org.phoenixframework.liveview.domain.base.ComposableTypes.richTooltip
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -31,7 +32,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * tooltips provide a descriptive message for an anchor. It can be used to call the users attention
  * to the anchor. Tooltip that is invoked when the anchor is long pressed.
  * ```
- * <TooltipBox initial-is-visible="true" is-persistent="true">
+ * <TooltipBox initialIsVisible="true" isPersistent="true">
  *   <RichTooltip template="tooltip">
  *     <Text template="title">Title</Text>
  *     <Text template="text">Text</Text>
@@ -105,7 +106,7 @@ internal class TooltipBoxDTO private constructor(builder: Builder) :
          * Boolean which determines if this TooltipBox will handle long press and mouse hover to
          * trigger the tooltip through the state provided.
          * ```
-         * <TooltipBox enable-user-input="true">...</TooltipBox>
+         * <TooltipBox enableUserInput="true">...</TooltipBox>
          * ```
          * @param value true if this TooltipBox will handle long press and mouse hover, false
          * otherwise.
@@ -137,7 +138,7 @@ internal class TooltipBoxDTO private constructor(builder: Builder) :
          * after a short duration. Ideally, this should be set to true when there is actionable
          * content being displayed within a tooltip.
          * ```
-         * <TooltipBox is-persistent="true">...</TooltipBox>
+         * <TooltipBox isPersistent="true">...</TooltipBox>
          * ```
          * @param value true if the tooltip associated with this will be persistent, false
          * otherwise.
@@ -149,7 +150,7 @@ internal class TooltipBoxDTO private constructor(builder: Builder) :
         /**
          * The initial value for the tooltip's visibility when drawn.
          * ```
-         * <TooltipBox initial-is-visible="true">...</TooltipBox>
+         * <TooltipBox initialIsVisible="true">...</TooltipBox>
          * ```
          * @param value true if initially visible, false otherwise.
          */
@@ -160,7 +161,7 @@ internal class TooltipBoxDTO private constructor(builder: Builder) :
         /**
          * The spacing between the tooltip and the anchor content.
          * ```
-         * <TooltipBox spacing-between-tooltip-and-anchor="24">...</TooltipBox>
+         * <TooltipBox spacingBetweenTooltipAndAnchor="24">...</TooltipBox>
          * ```
          * @param value int value indicating the spacing between the tooltip and the anchor content.
          */
@@ -195,7 +196,4 @@ internal object TooltipBoxDtoFactory :
             richTooltip to TooltipDtoFactory,
         )
     }
-
-    const val plainTooltip = "PlainTooltip"
-    const val richTooltip = ComposableTypes.richTooltip
 }

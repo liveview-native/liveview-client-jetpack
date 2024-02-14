@@ -22,13 +22,15 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrFabPosition
 import org.phoenixframework.liveview.data.constants.Attrs.attrTopBarScrollBehavior
+import org.phoenixframework.liveview.data.constants.FabPositionValues
+import org.phoenixframework.liveview.data.constants.ScrollBehaviorValues
 import org.phoenixframework.liveview.data.constants.Templates.templateBody
 import org.phoenixframework.liveview.data.constants.Templates.templateBottomBar
 import org.phoenixframework.liveview.data.constants.Templates.templateFab
 import org.phoenixframework.liveview.data.constants.Templates.templateTopBar
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.ScaffoldDtoFactory.tagSnackbar
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -55,7 +57,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *   <FloatingActionButton phx-click="navigateToOtherScreen" template="fab">
  *     <Icon imageVector="filled:Add" />
  *   </FloatingActionButton>
- *   <Snackbar message="message" dismiss-event="hideDialog" />
+ *   <Snackbar message="message" dismissEvent="hideDialog" />
  *   <Box template="body">
  *       <Text>Screen Body</Text>
  *   </Box>
@@ -86,7 +88,7 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
             composableNode?.children?.find { it.node?.template == templateFab }
         }
         val snackBar = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == tagSnackbar }
+            composableNode?.children?.find { it.node?.tag == ComposableTypes.snackbar }
         }
         val body = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateBody }
@@ -146,9 +148,9 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
     @Composable
     private fun scrollBehaviorFromString(scrollBehavior: String?): TopAppBarScrollBehavior? {
         return when (scrollBehavior) {
-            "exitUntilCollapsed" -> TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-            "enterAlways" -> TopAppBarDefaults.enterAlwaysScrollBehavior()
-            "pinnedScroll" -> TopAppBarDefaults.pinnedScrollBehavior()
+            ScrollBehaviorValues.exitUntilCollapsed -> TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+            ScrollBehaviorValues.enterAlways -> TopAppBarDefaults.enterAlwaysScrollBehavior()
+            ScrollBehaviorValues.pinnedScroll -> TopAppBarDefaults.pinnedScrollBehavior()
             else -> null
         }
     }
@@ -166,7 +168,8 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
         /**
          * Color used for the background of this scaffold.
          *
-         * @param color container color in AARRGGBB format.
+         * @param color container color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun containerColor(color: String) = apply {
             if (color.isNotEmpty()) {
@@ -177,7 +180,8 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
         /**
          * Preferred color for content inside this scaffold.
          *
-         * @param color content color in AARRGGBB format.
+         * @param color content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun contentColor(color: String) = apply {
             if (color.isNotEmpty()) {
@@ -188,12 +192,16 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
         /**
          * Position of the Floating Action Button on the screen
          *
-         * @param position FAB position on the screen. Supported values are `center` and `end`.
+         * @param position FAB position on the screen. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.FabPositionValues].
          */
         fun fabPosition(position: String) = apply {
             if (position.isNotEmpty()) {
                 this.fabPosition = when (position) {
-                    "center" -> FabPosition.Center
+                    FabPositionValues.center -> FabPosition.Center
+                    FabPositionValues.start -> FabPosition.Start
+                    FabPositionValues.end -> FabPosition.End
+                    FabPositionValues.endOverlay -> FabPosition.EndOverlay
                     else -> FabPosition.End
                 }
             }
@@ -206,10 +214,10 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
          * content scrolls.
          * Once this scroll behavior is set, a NestedScrollConnection will be attached to a
          * Modifier.nestedScroll in order to keep track of the scroll events.
-         * @param scrollBehavior the supported values are: `exitUntilCollapsed`, `enterAlways`, and
-         * `pinnedScroll`.
+         * @param scrollBehavior see the supported values at
+         * [org.phoenixframework.liveview.data.constants.ScrollBehaviorValues].
          * ```
-         * <Scaffold top-bar-scroll-behavior="exitUntilCollapsed">
+         * <Scaffold topBarScrollBehavior="exitUntilCollapsed">
          * ```
          */
         fun topBarScrollBehavior(scrollBehavior: String) = apply {
@@ -253,9 +261,7 @@ internal object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, Scaffold
 
     override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
         return mapOf(
-            tagSnackbar to SnackbarDtoFactory
+            ComposableTypes.snackbar to SnackbarDtoFactory
         )
     }
-
-    internal const val tagSnackbar = "Snackbar"
 }

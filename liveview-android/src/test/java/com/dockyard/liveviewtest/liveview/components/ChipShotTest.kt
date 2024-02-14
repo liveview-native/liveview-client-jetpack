@@ -26,6 +26,63 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
+import org.phoenixframework.liveview.data.constants.Attrs.attrColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLeadingIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSelectedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTrailingIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrLeadingIconContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconContentColor
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.sharp
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Black
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Cyan
+import org.phoenixframework.liveview.data.constants.SystemColorValues.DarkGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Gray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
+import org.phoenixframework.liveview.data.constants.SystemColorValues.LightGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Magenta
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.data.constants.SystemColorValues.White
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.Templates.templateAvatar
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.assistChip
+import org.phoenixframework.liveview.domain.base.ComposableTypes.elevatedAssistChip
+import org.phoenixframework.liveview.domain.base.ComposableTypes.elevatedFilterChip
+import org.phoenixframework.liveview.domain.base.ComposableTypes.elevatedSuggestionChip
+import org.phoenixframework.liveview.domain.base.ComposableTypes.filterChip
+import org.phoenixframework.liveview.domain.base.ComposableTypes.flowRow
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.inputChip
+import org.phoenixframework.liveview.domain.base.ComposableTypes.suggestionChip
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 @OptIn(ExperimentalLayoutApi::class)
 class ChipShotTest : LiveViewComposableTest() {
@@ -34,14 +91,14 @@ class ChipShotTest : LiveViewComposableTest() {
     fun assistChipTest() {
         val colorsForTemplate = """
             {
-                'containerColor': 'system-blue',
-                'labelColor': 'system-yellow',
-                'leadingIconContentColor': 'system-white',
-                'trailingIconContentColor': 'system-cyan',
-                'disabledContainerColor': 'system-light-gray',
-                'disabledLabelColor': 'system-gray',
-                'disabledLeadingIconContentColor': 'system-dark-gray',
-                'disabledTrailingIconContentColor': 'system-black'
+                '$colorAttrContainerColor': '$Blue',
+                '$colorAttrLabelColor': '$Yellow',
+                '$colorAttrLeadingIconContentColor': '$White',
+                '$colorAttrTrailingIconContentColor': '$Cyan',
+                '$colorAttrDisabledContainerColor': '$LightGray',
+                '$colorAttrDisabledLabelColor': '$Gray',
+                '$colorAttrDisabledLeadingIconContentColor': '$DarkGray',
+                '$colorAttrDisabledTrailingIconContentColor': '$Black'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -135,52 +192,52 @@ class ChipShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FlowRow>
-                  <AssistChip phx-click="">
-                    <Text template="label">Chip 1</Text>
-                  </AssistChip>     
-                  <AssistChip phx-click="" enabled="false">
-                    <Text template="label">Chip 2</Text>
-                  </AssistChip>      
-                  <AssistChip phx-click="">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 3</Text>
-                  </AssistChip>    
-                  <AssistChip phx-click="" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 4</Text>
-                  </AssistChip>                                                         
-                  <AssistChip phx-click="">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 5</Text>
-                  </AssistChip>
-                  <AssistChip phx-click="" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 6</Text>
-                  </AssistChip>   
-                  <AssistChip phx-click="" shape="rect">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 7</Text>
-                  </AssistChip>    
-                  <AssistChip phx-click="" border="{'width': '2', 'color': 'system-red'}">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 8</Text>
-                  </AssistChip> 
-                  <AssistChip phx-click="" colors="$colorsForTemplate">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 9</Text>
-                  </AssistChip>   
-                  <AssistChip phx-click="" colors="$colorsForTemplate" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 10</Text>
-                  </AssistChip>                                                                                
-                </FlowRow>            
+                <$flowRow>
+                  <$assistChip>
+                    <$text $attrTemplate="$templateLabel">Chip 1</$text>
+                  </$assistChip>     
+                  <$assistChip $attrEnabled="false">
+                    <$text $attrTemplate="$templateLabel">Chip 2</$text>
+                  </$assistChip>      
+                  <$assistChip>
+                    <$icon $attrImageVector="$filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 3</$text>
+                  </$assistChip>    
+                  <$assistChip $attrEnabled="false">
+                    <$icon $attrImageVector="$filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 4</$text>
+                  </$assistChip>                                                         
+                  <$assistChip>
+                    <$icon $attrImageVector="$filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="$filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 5</$text>
+                  </$assistChip>
+                  <$assistChip $attrEnabled="false">
+                    <$icon $attrImageVector="$filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="$filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 6</$text>
+                  </$assistChip>   
+                  <$assistChip $attrShape="rect">
+                    <$icon $attrImageVector="$filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="$filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 7</$text>
+                  </$assistChip>    
+                  <$assistChip $attrBorder="{'$attrWidth': '2', '$attrColor': '$Red'}">
+                    <$icon $attrImageVector="$filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="$filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 8</$text>
+                  </$assistChip> 
+                  <$assistChip $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="$filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="$filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 9</$text>
+                  </$assistChip>   
+                  <$assistChip $attrColors="$colorsForTemplate" $attrEnabled="false">
+                    <$icon $attrImageVector="$filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="$filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 10</$text>
+                  </$assistChip>                                                                                
+                </$flowRow>            
                 """
         )
     }
@@ -189,14 +246,14 @@ class ChipShotTest : LiveViewComposableTest() {
     fun elevatedAssistChipTest() {
         val colorsForTemplate = """
             {
-                'containerColor': 'system-blue',
-                'labelColor': 'system-yellow',
-                'leadingIconContentColor': 'system-white',
-                'trailingIconContentColor': 'system-cyan',
-                'disabledContainerColor': 'system-light-gray',
-                'disabledLabelColor': 'system-gray',
-                'disabledLeadingIconContentColor': 'system-dark-gray',
-                'disabledTrailingIconContentColor': 'system-black'
+            '$colorAttrContainerColor': '$Blue',
+            '$colorAttrLabelColor': '$Yellow',
+            '$colorAttrLeadingIconContentColor': '$White',
+            '$colorAttrTrailingIconContentColor': '$Cyan',
+            '$colorAttrDisabledContainerColor': '$LightGray',
+            '$colorAttrDisabledLabelColor': '$Gray',
+            '$colorAttrDisabledLeadingIconContentColor': '$DarkGray',
+            '$colorAttrDisabledTrailingIconContentColor': '$Black'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -290,52 +347,52 @@ class ChipShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FlowRow>
-                  <ElevatedAssistChip phx-click="">
-                    <Text template="label">Chip 1</Text>
-                  </ElevatedAssistChip>     
-                  <ElevatedAssistChip phx-click="" enabled="false">
-                    <Text template="label">Chip 2</Text>
-                  </ElevatedAssistChip>      
-                  <ElevatedAssistChip phx-click="">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 3</Text>
-                  </ElevatedAssistChip>    
-                  <ElevatedAssistChip phx-click="" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 4</Text>
-                  </ElevatedAssistChip>                                                         
-                  <ElevatedAssistChip phx-click="">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 5</Text>
-                  </ElevatedAssistChip>
-                  <ElevatedAssistChip phx-click="" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 6</Text>
-                  </ElevatedAssistChip>   
-                  <ElevatedAssistChip phx-click="" shape="rect">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 7</Text>
-                  </ElevatedAssistChip>    
-                  <ElevatedAssistChip phx-click="" border="{'width': '2', 'color': 'system-red'}">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 8</Text>
-                  </ElevatedAssistChip> 
-                  <ElevatedAssistChip phx-click="" colors="$colorsForTemplate">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 9</Text>
-                  </ElevatedAssistChip>   
-                  <ElevatedAssistChip phx-click="" colors="$colorsForTemplate" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 10</Text>
-                  </ElevatedAssistChip>                                                                                
-                </FlowRow>            
+                <$flowRow>
+                  <$elevatedAssistChip>
+                    <$text $attrTemplate="$templateLabel">Chip 1</$text>
+                  </$elevatedAssistChip>     
+                  <$elevatedAssistChip $attrEnabled="false">
+                    <$text $attrTemplate="$templateLabel">Chip 2</$text>
+                  </$elevatedAssistChip>      
+                  <$elevatedAssistChip>
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 3</$text>
+                  </$elevatedAssistChip>    
+                  <$elevatedAssistChip $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 4</$text>
+                  </$elevatedAssistChip>                                                         
+                  <$elevatedAssistChip>
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 5</$text>
+                  </$elevatedAssistChip>
+                  <$elevatedAssistChip $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 6</$text>
+                  </$elevatedAssistChip>   
+                  <$elevatedAssistChip $attrShape="rect">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 7</$text>
+                  </$elevatedAssistChip>    
+                  <$elevatedAssistChip $attrBorder="{'$attrWidth': '2', '$attrColor': '$Red'}">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 8</$text>
+                  </$elevatedAssistChip> 
+                  <$elevatedAssistChip $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 9</$text>
+                  </$elevatedAssistChip>   
+                  <$elevatedAssistChip $attrColors="$colorsForTemplate" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 10</$text>
+                  </$elevatedAssistChip>                                                                                
+                </$flowRow>            
                 """
         )
     }
@@ -344,12 +401,12 @@ class ChipShotTest : LiveViewComposableTest() {
     fun suggestionChipTest() {
         val colorsForTemplate = """
             {
-                'containerColor': 'system-blue',
-                'labelColor': 'system-yellow',
-                'iconContentColor': 'system-white',
-                'disabledContainerColor': 'system-light-gray',
-                'disabledLabelColor': 'system-gray',
-                'disabledIconContentColor': 'system-dark-gray'
+            '$colorAttrContainerColor': '$Blue',
+            '$colorAttrLabelColor': '$Yellow',
+            '$colorAttrIconContentColor': '$White',
+            '$colorAttrDisabledContainerColor': '$LightGray',
+            '$colorAttrDisabledLabelColor': '$Gray',
+            '$colorAttrDisabledIconContentColor': '$DarkGray'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -411,38 +468,38 @@ class ChipShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FlowRow>
-                  <SuggestionChip phx-click="">
-                    <Text template="label">Chip 1</Text>
-                  </SuggestionChip>     
-                  <SuggestionChip phx-click="" enabled="false">
-                    <Text template="label">Chip 2</Text>
-                  </SuggestionChip>      
-                  <SuggestionChip phx-click="">
-                    <Icon image-vector="filled:Check" template="icon"/>
-                    <Text template="label">Chip 3</Text>
-                  </SuggestionChip>    
-                  <SuggestionChip phx-click="" enabled="false">
-                    <Icon image-vector="filled:Check" template="icon"/>
-                    <Text template="label">Chip 4</Text>
-                  </SuggestionChip>                                                          
-                  <SuggestionChip phx-click="" shape="rect">
-                    <Icon image-vector="filled:Check" template="icon"/>
-                    <Text template="label">Chip 5</Text>
-                  </SuggestionChip>    
-                  <SuggestionChip phx-click="" border="{'width': '2', 'color': 'system-red'}">
-                    <Icon image-vector="filled:Check" template="icon"/>
-                    <Text template="label">Chip 6</Text>
-                  </SuggestionChip> 
-                  <SuggestionChip phx-click="" colors="$colorsForTemplate">
-                    <Icon image-vector="filled:Check" template="icon"/>
-                    <Text template="label">Chip 7</Text>
-                  </SuggestionChip>   
-                  <SuggestionChip phx-click="" colors="$colorsForTemplate" enabled="false">
-                    <Icon image-vector="filled:Check" template="icon"/>
-                    <Text template="label">Chip 8</Text>
-                  </SuggestionChip>                                                                                
-                </FlowRow>            
+                <$flowRow>
+                  <$suggestionChip>
+                    <$text $attrTemplate="$templateLabel">Chip 1</$text>
+                  </$suggestionChip>     
+                  <$suggestionChip $attrEnabled="false">
+                    <$text $attrTemplate="$templateLabel">Chip 2</$text>
+                  </$suggestionChip>      
+                  <$suggestionChip>
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 3</$text>
+                  </$suggestionChip>    
+                  <$suggestionChip $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 4</$text>
+                  </$suggestionChip>                                                          
+                  <$suggestionChip $attrShape="rect">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 5</$text>
+                  </$suggestionChip>    
+                  <$suggestionChip $attrBorder="{'$attrWidth': '2', '$attrColor': '$Red'}">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 6</$text>
+                  </$suggestionChip> 
+                  <$suggestionChip $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 7</$text>
+                  </$suggestionChip>   
+                  <$suggestionChip $attrColors="$colorsForTemplate" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 8</$text>
+                  </$suggestionChip>                                                                                
+                </$flowRow>            
                 """
         )
     }
@@ -451,12 +508,12 @@ class ChipShotTest : LiveViewComposableTest() {
     fun elevatedSuggestionChipTest() {
         val colorsForTemplate = """
             {
-                'containerColor': 'system-blue',
-                'labelColor': 'system-yellow',
-                'iconContentColor': 'system-white',
-                'disabledContainerColor': 'system-light-gray',
-                'disabledLabelColor': 'system-gray',
-                'disabledIconContentColor': 'system-dark-gray'
+            '$colorAttrContainerColor': '$Blue',
+            '$colorAttrLabelColor': '$Yellow',
+            '$colorAttrIconContentColor': '$White',
+            '$colorAttrDisabledContainerColor': '$LightGray',
+            '$colorAttrDisabledLabelColor': '$Gray',
+            '$colorAttrDisabledIconContentColor': '$DarkGray'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -522,38 +579,38 @@ class ChipShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FlowRow>
-                  <ElevatedSuggestionChip phx-click="">
-                    <Text template="label">Chip 1</Text>
-                  </ElevatedSuggestionChip>     
-                  <ElevatedSuggestionChip phx-click="" enabled="false">
-                    <Text template="label">Chip 2</Text>
-                  </ElevatedSuggestionChip>      
-                  <ElevatedSuggestionChip phx-click="">
-                    <Icon image-vector="filled:Check" template="icon"/>
-                    <Text template="label">Chip 3</Text>
-                  </ElevatedSuggestionChip>    
-                  <ElevatedSuggestionChip phx-click="" enabled="false">
-                    <Icon image-vector="filled:Check" template="icon"/>
-                    <Text template="label">Chip 4</Text>
-                  </ElevatedSuggestionChip>                                                          
-                  <ElevatedSuggestionChip phx-click="" shape="rect">
-                    <Icon image-vector="filled:Check" template="icon"/>
-                    <Text template="label">Chip 5</Text>
-                  </ElevatedSuggestionChip>    
-                  <ElevatedSuggestionChip phx-click="" border="{'width': '2', 'color': 'system-red'}">
-                    <Icon image-vector="filled:Check" template="icon"/>
-                    <Text template="label">Chip 6</Text>
-                  </ElevatedSuggestionChip> 
-                  <ElevatedSuggestionChip phx-click="" colors="$colorsForTemplate">
-                    <Icon image-vector="filled:Check" template="icon"/>
-                    <Text template="label">Chip 7</Text>
-                  </ElevatedSuggestionChip>   
-                  <ElevatedSuggestionChip phx-click="" colors="$colorsForTemplate" enabled="false">
-                    <Icon image-vector="filled:Check" template="icon"/>
-                    <Text template="label">Chip 8</Text>
-                  </ElevatedSuggestionChip>                                                                                
-                </FlowRow>            
+                <$flowRow>
+                  <$elevatedSuggestionChip>
+                    <$text $attrTemplate="$templateLabel">Chip 1</$text>
+                  </$elevatedSuggestionChip>     
+                  <$elevatedSuggestionChip $attrEnabled="false">
+                    <$text $attrTemplate="$templateLabel">Chip 2</$text>
+                  </$elevatedSuggestionChip>      
+                  <$elevatedSuggestionChip>
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 3</$text>
+                  </$elevatedSuggestionChip>    
+                  <$elevatedSuggestionChip $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 4</$text>
+                  </$elevatedSuggestionChip>                                                          
+                  <$elevatedSuggestionChip $attrShape="rect">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 5</$text>
+                  </$elevatedSuggestionChip>    
+                  <$elevatedSuggestionChip $attrBorder="{'$attrWidth': '2', '$attrColor': '$Red'}">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 6</$text>
+                  </$elevatedSuggestionChip> 
+                  <$elevatedSuggestionChip $attrColors="$colorsForTemplate">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 7</$text>
+                  </$elevatedSuggestionChip>   
+                  <$elevatedSuggestionChip $attrColors="$colorsForTemplate" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 8</$text>
+                  </$elevatedSuggestionChip>                                                                                
+                </$flowRow>            
                 """
         )
     }
@@ -562,18 +619,18 @@ class ChipShotTest : LiveViewComposableTest() {
     fun filterChipTest() {
         val colorsForTemplate = """
             {                
-            'containerColor': 'system-blue',
-            'labelColor': 'system-yellow',
-            'iconColor': 'system-white',
-            'disabledContainerColor': 'system-light-gray',
-            'disabledLabelColor': 'system-gray',
-            'disabledLeadingIconColor': 'system-dark-gray',
-            'disabledTrailingIconColor': 'system-black',
-            'selectedContainerColor': 'system-red',
-            'disabledSelectedContainerColor': 'system-magenta',
-            'selectedLabelColor': 'system-green',
-            'selectedLeadingIconColor': 'system-yellow',
-            'selectedTrailingIconColor': 'system-white'                
+            '$colorAttrContainerColor': '$Blue',
+            '$colorAttrLabelColor': '$Yellow',
+            '$colorAttrIconColor': '$White',
+            '$colorAttrDisabledContainerColor': '$LightGray',
+            '$colorAttrDisabledLabelColor': '$Gray',
+            '$colorAttrDisabledLeadingIconColor': '$DarkGray',
+            '$colorAttrDisabledTrailingIconColor': '$Black',
+            '$colorAttrSelectedContainerColor': '$Red',
+            '$colorAttrDisabledSelectedContainerColor': '$Magenta',
+            '$colorAttrSelectedLabelColor': '$Green',
+            '$colorAttrSelectedLeadingIconColor': '$Yellow',
+            '$colorAttrSelectedTrailingIconColor': '$White'                
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -765,86 +822,86 @@ class ChipShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FlowRow>
-                  <FilterChip phx-click="" selected="false">
-                    <Text template="label">Chip 1</Text>
-                  </FilterChip>   
-                  <FilterChip phx-click="" selected="true">
-                    <Text template="label">Chip 2</Text>
-                  </FilterChip>                    
-                  <FilterChip phx-click="" selected="false" enabled="false">
-                    <Text template="label">Chip 3</Text>
-                  </FilterChip>     
-                  <FilterChip phx-click="" selected="true" enabled="false">
-                    <Text template="label">Chip 4</Text>
-                  </FilterChip>                     
-                  <FilterChip phx-click="" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 5</Text>
-                  </FilterChip> 
-                  <FilterChip phx-click="" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 6</Text>
-                  </FilterChip>                         
-                  <FilterChip phx-click="" selected="false" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 7</Text>
-                  </FilterChip>    
-                  <FilterChip phx-click="" selected="true" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 8</Text>
-                  </FilterChip>                                                                        
-                  <FilterChip phx-click="" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 9</Text>
-                  </FilterChip>
-                  <FilterChip phx-click="" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 10</Text>
-                  </FilterChip>   
-                  <FilterChip phx-click="" shape="rect" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 11</Text>
-                  </FilterChip>  
-                  <FilterChip phx-click="" shape="rect" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 12</Text>
-                  </FilterChip>                     
-                  <FilterChip phx-click="" border="{'width': '2', 'color': 'system-red'}" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 13</Text>
-                  </FilterChip> 
-                  <FilterChip phx-click="" border="{'width': '2', 'color': 'system-red'}" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 14</Text>
-                  </FilterChip>   
-                  <FilterChip phx-click="" colors="$colorsForTemplate" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 15</Text>
-                  </FilterChip>                                   
-                  <FilterChip phx-click="" colors="$colorsForTemplate" selected="false" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 16</Text>
-                  </FilterChip>   
-                  <FilterChip phx-click="" colors="$colorsForTemplate" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 17</Text>
-                  </FilterChip>    
-                  <FilterChip phx-click="" colors="$colorsForTemplate" selected="true" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 18</Text>
-                  </FilterChip>                                                                                                
-                </FlowRow>            
+                <$flowRow>
+                  <$filterChip $attrSelected="false">
+                    <$text $attrTemplate="$templateLabel">Chip 1</$text>
+                  </$filterChip>   
+                  <$filterChip $attrSelected="true">
+                    <$text $attrTemplate="$templateLabel">Chip 2</$text>
+                  </$filterChip>                    
+                  <$filterChip $attrSelected="false" $attrEnabled="false">
+                    <$text $attrTemplate="$templateLabel">Chip 3</$text>
+                  </$filterChip>     
+                  <$filterChip $attrSelected="true" $attrEnabled="false">
+                    <$text $attrTemplate="$templateLabel">Chip 4</$text>
+                  </$filterChip>                     
+                  <$filterChip $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 5</$text>
+                  </$filterChip> 
+                  <$filterChip $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 6</$text>
+                  </$filterChip>                         
+                  <$filterChip $attrSelected="false" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 7</$text>
+                  </$filterChip>    
+                  <$filterChip $attrSelected="true" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 8</$text>
+                  </$filterChip>                                                                        
+                  <$filterChip $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 9</$text>
+                  </$filterChip>
+                  <$filterChip $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 10</$text>
+                  </$filterChip>   
+                  <$filterChip $attrShape="rect" $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 11</$text>
+                  </$filterChip>  
+                  <$filterChip $attrShape="rect" $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 12</$text>
+                  </$filterChip>                     
+                  <$filterChip $attrBorder="{'$attrWidth': '2', '$attrColor': '$Red'}" $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 13</$text>
+                  </$filterChip> 
+                  <$filterChip $attrBorder="{'$attrWidth': '2', '$attrColor': '$Red'}" $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 14</$text>
+                  </$filterChip>   
+                  <$filterChip $attrColors="$colorsForTemplate" $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 15</$text>
+                  </$filterChip>                                   
+                  <$filterChip $attrColors="$colorsForTemplate" $attrSelected="false" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 16</$text>
+                  </$filterChip>   
+                  <$filterChip $attrColors="$colorsForTemplate" $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 17</$text>
+                  </$filterChip>    
+                  <$filterChip $attrColors="$colorsForTemplate" $attrSelected="true" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 18</$text>
+                  </$filterChip>                                                                                                
+                </$flowRow>            
                 """
         )
     }
@@ -853,18 +910,18 @@ class ChipShotTest : LiveViewComposableTest() {
     fun elevatedFilterChipTest() {
         val colorsForTemplate = """
             {                
-            'containerColor': 'system-blue',
-            'labelColor': 'system-yellow',
-            'iconColor': 'system-white',
-            'disabledContainerColor': 'system-light-gray',
-            'disabledLabelColor': 'system-gray',
-            'disabledLeadingIconColor': 'system-dark-gray',
-            'disabledTrailingIconColor': 'system-black',
-            'selectedContainerColor': 'system-red',
-            'disabledSelectedContainerColor': 'system-magenta',
-            'selectedLabelColor': 'system-green',
-            'selectedLeadingIconColor': 'system-yellow',
-            'selectedTrailingIconColor': 'system-white'                
+            '$colorAttrContainerColor': '$Blue',
+            '$colorAttrLabelColor': '$Yellow',
+            '$colorAttrIconColor': '$White',
+            '$colorAttrDisabledContainerColor': '$LightGray',
+            '$colorAttrDisabledLabelColor': '$Gray',
+            '$colorAttrDisabledLeadingIconColor': '$DarkGray',
+            '$colorAttrDisabledTrailingIconColor': '$Black',
+            '$colorAttrSelectedContainerColor': '$Red',
+            '$colorAttrDisabledSelectedContainerColor': '$Magenta',
+            '$colorAttrSelectedLabelColor': '$Green',
+            '$colorAttrSelectedLeadingIconColor': '$Yellow',
+            '$colorAttrSelectedTrailingIconColor': '$White'                
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -1056,86 +1113,86 @@ class ChipShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FlowRow>
-                  <ElevatedFilterChip phx-click="" selected="false">
-                    <Text template="label">Chip 1</Text>
-                  </ElevatedFilterChip>   
-                  <ElevatedFilterChip phx-click="" selected="true">
-                    <Text template="label">Chip 2</Text>
-                  </ElevatedFilterChip>                    
-                  <ElevatedFilterChip phx-click="" selected="false" enabled="false">
-                    <Text template="label">Chip 3</Text>
-                  </ElevatedFilterChip>     
-                  <ElevatedFilterChip phx-click="" selected="true" enabled="false">
-                    <Text template="label">Chip 4</Text>
-                  </ElevatedFilterChip>                     
-                  <ElevatedFilterChip phx-click="" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 5</Text>
-                  </ElevatedFilterChip> 
-                  <ElevatedFilterChip phx-click="" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 6</Text>
-                  </ElevatedFilterChip>                         
-                  <ElevatedFilterChip phx-click="" selected="false" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 7</Text>
-                  </ElevatedFilterChip>    
-                  <ElevatedFilterChip phx-click="" selected="true" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 8</Text>
-                  </ElevatedFilterChip>                                                                        
-                  <ElevatedFilterChip phx-click="" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 9</Text>
-                  </ElevatedFilterChip>
-                  <ElevatedFilterChip phx-click="" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 10</Text>
-                  </ElevatedFilterChip>   
-                  <ElevatedFilterChip phx-click="" shape="rect" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 11</Text>
-                  </ElevatedFilterChip>  
-                  <ElevatedFilterChip phx-click="" shape="rect" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 12</Text>
-                  </ElevatedFilterChip>                     
-                  <ElevatedFilterChip phx-click="" border="{'width': '2', 'color': 'system-red'}" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 13</Text>
-                  </ElevatedFilterChip> 
-                  <ElevatedFilterChip phx-click="" border="{'width': '2', 'color': 'system-red'}" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 14</Text>
-                  </ElevatedFilterChip>   
-                  <ElevatedFilterChip phx-click="" colors="$colorsForTemplate" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 15</Text>
-                  </ElevatedFilterChip>                                   
-                  <ElevatedFilterChip phx-click="" colors="$colorsForTemplate" selected="false" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 16</Text>
-                  </ElevatedFilterChip>   
-                  <ElevatedFilterChip phx-click="" colors="$colorsForTemplate" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 17</Text>
-                  </ElevatedFilterChip>    
-                  <ElevatedFilterChip phx-click="" colors="$colorsForTemplate" selected="true" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 18</Text>
-                  </ElevatedFilterChip>                                                                                                
-                </FlowRow>            
+                <$flowRow>
+                  <$elevatedFilterChip $attrSelected="false">
+                    <$text $attrTemplate="$templateLabel">Chip 1</$text>
+                  </$elevatedFilterChip>   
+                  <$elevatedFilterChip $attrSelected="true">
+                    <$text $attrTemplate="$templateLabel">Chip 2</$text>
+                  </$elevatedFilterChip>                    
+                  <$elevatedFilterChip $attrSelected="false" $attrEnabled="false">
+                    <$text $attrTemplate="$templateLabel">Chip 3</$text>
+                  </$elevatedFilterChip>     
+                  <$elevatedFilterChip $attrSelected="true" $attrEnabled="false">
+                    <$text $attrTemplate="$templateLabel">Chip 4</$text>
+                  </$elevatedFilterChip>                     
+                  <$elevatedFilterChip $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 5</$text>
+                  </$elevatedFilterChip> 
+                  <$elevatedFilterChip $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 6</$text>
+                  </$elevatedFilterChip>                         
+                  <$elevatedFilterChip $attrSelected="false" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 7</$text>
+                  </$elevatedFilterChip>    
+                  <$elevatedFilterChip $attrSelected="true" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 8</$text>
+                  </$elevatedFilterChip>                                                                        
+                  <$elevatedFilterChip $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 9</$text>
+                  </$elevatedFilterChip>
+                  <$elevatedFilterChip $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 10</$text>
+                  </$elevatedFilterChip>   
+                  <$elevatedFilterChip $attrShape="rect" $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 11</$text>
+                  </$elevatedFilterChip>  
+                  <$elevatedFilterChip $attrShape="rect" $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 12</$text>
+                  </$elevatedFilterChip>                     
+                  <$elevatedFilterChip $attrBorder="{'$attrWidth': '2', '$attrColor': '$Red'}" $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 13</$text>
+                  </$elevatedFilterChip> 
+                  <$elevatedFilterChip $attrBorder="{'$attrWidth': '2', '$attrColor': '$Red'}" $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 14</$text>
+                  </$elevatedFilterChip>   
+                  <$elevatedFilterChip $attrColors="$colorsForTemplate" $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 15</$text>
+                  </$elevatedFilterChip>                                   
+                  <$elevatedFilterChip $attrColors="$colorsForTemplate" $attrSelected="false" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 16</$text>
+                  </$elevatedFilterChip>   
+                  <$elevatedFilterChip $attrColors="$colorsForTemplate" $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 17</$text>
+                  </$elevatedFilterChip>    
+                  <$elevatedFilterChip $attrColors="$colorsForTemplate" $attrSelected="true" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 18</$text>
+                  </$elevatedFilterChip>                                                                                                
+                </$flowRow>            
                 """
         )
     }
@@ -1145,19 +1202,19 @@ class ChipShotTest : LiveViewComposableTest() {
     fun inputChipTest() {
         val colorsForTemplate = """
             {                
-            'containerColor': 'system-blue',
-            'labelColor': 'system-yellow',
-            'leadingIconColor': 'system-white',
-            'trailingIconColor': 'system-red',
-            'disabledContainerColor': 'system-light-gray',
-            'disabledLabelColor': 'system-gray',
-            'disabledLeadingIconColor': 'system-dark-gray',
-            'disabledTrailingIconColor': 'system-black',
-            'selectedContainerColor': 'system-red',
-            'disabledSelectedContainerColor': 'system-magenta',
-            'selectedLabelColor': 'system-green',
-            'selectedLeadingIconColor': 'system-yellow',
-            'selectedTrailingIconColor': 'system-white'                
+            '$colorAttrContainerColor': '$Blue',
+            '$colorAttrLabelColor': '$Yellow',
+            '$colorAttrLeadingIconColor': '$White',
+            '$colorAttrTrailingIconColor': '$Red',
+            '$colorAttrDisabledContainerColor': '$LightGray',
+            '$colorAttrDisabledLabelColor': '$Gray',
+            '$colorAttrDisabledLeadingIconColor': '$DarkGray',
+            '$colorAttrDisabledTrailingIconColor': '$Black',
+            '$colorAttrSelectedContainerColor': '$Red',
+            '$colorAttrDisabledSelectedContainerColor': '$Magenta',
+            '$colorAttrSelectedLabelColor': '$Green',
+            '$colorAttrSelectedLeadingIconColor': '$Yellow',
+            '$colorAttrSelectedTrailingIconColor': '$White'                
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -1446,118 +1503,118 @@ class ChipShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <FlowRow>
-                  <InputChip phx-click="" selected="false">
-                    <Text template="label">Chip 1</Text>
-                  </InputChip>   
-                  <InputChip phx-click="" selected="true">
-                    <Text template="label">Chip 2</Text>
-                  </InputChip>                    
-                  <InputChip phx-click="" selected="false" enabled="false">
-                    <Text template="label">Chip 3</Text>
-                  </InputChip>     
-                  <InputChip phx-click="" selected="true" enabled="false">
-                    <Text template="label">Chip 4</Text>
-                  </InputChip>                     
-                  <InputChip phx-click="" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 5</Text>
-                  </InputChip> 
-                  <InputChip phx-click="" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 6</Text>
-                  </InputChip>                         
-                  <InputChip phx-click="" selected="false" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 7</Text>
-                  </InputChip>    
-                  <InputChip phx-click="" selected="true" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Text template="label">Chip 8</Text>
-                  </InputChip>                                                                        
-                  <InputChip phx-click="" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 9</Text>
-                  </InputChip>
-                  <InputChip phx-click="" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 10</Text>
-                  </InputChip>   
-                  <InputChip phx-click="" shape="rect" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 11</Text>
-                  </InputChip>  
-                  <InputChip phx-click="" shape="rect" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 12</Text>
-                  </InputChip>                     
-                  <InputChip phx-click="" border="{'width': '2', 'color': 'system-red'}" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 13</Text>
-                  </InputChip> 
-                  <InputChip phx-click="" border="{'width': '2', 'color': 'system-red'}" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 14</Text>
-                  </InputChip>   
-                  <InputChip phx-click="" colors="$colorsForTemplate" selected="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 15</Text>
-                  </InputChip>                                   
-                  <InputChip phx-click="" colors="$colorsForTemplate" selected="false" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 16</Text>
-                  </InputChip>   
-                  <InputChip phx-click="" colors="$colorsForTemplate" selected="true">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 17</Text>
-                  </InputChip>    
-                  <InputChip phx-click="" colors="$colorsForTemplate" selected="true" enabled="false">
-                    <Icon image-vector="filled:Check" template="leadingIcon"/>
-                    <Icon image-vector="filled:ChevronRight" template="trailingIcon"/>
-                    <Text template="label">Chip 18</Text>
-                  </InputChip>     
-                  <InputChip phx-click="" selected="true">
-                    <Icon image-vector="sharp:Person" template="avatar"/>
-                    <Text template="label">Chip 19</Text>
-                  </InputChip>    
-                  <InputChip phx-click="" selected="false">
-                    <Icon image-vector="sharp:PersonAdd" template="avatar"/>
-                    <Text template="label">Chip 20</Text>
-                  </InputChip>    
-                  <InputChip phx-click="" selected="true" enabled="false">
-                    <Icon image-vector="sharp:Person" template="avatar"/>
-                    <Text template="label">Chip 21</Text>
-                  </InputChip>    
-                  <InputChip phx-click="" selected="false" enabled="false">
-                    <Icon image-vector="sharp:PersonAdd" template="avatar"/>
-                    <Text template="label">Chip 22</Text>
-                  </InputChip>    
-                  <InputChip phx-click="" colors="$colorsForTemplate" selected="true" >
-                    <Icon image-vector="sharp:Person" template="avatar"/>
-                    <Text template="label">Chip 23</Text>
-                  </InputChip>    
-                  <InputChip phx-click="" colors="$colorsForTemplate" selected="false">
-                    <Icon image-vector="sharp:PersonAdd" template="avatar"/>
-                    <Text template="label">Chip 24</Text>
-                  </InputChip>    
-                  <InputChip phx-click="" colors="$colorsForTemplate" selected="true" enabled="false">
-                    <Icon image-vector="sharp:Person" template="avatar"/>
-                    <Text template="label">Chip 25</Text>
-                  </InputChip>    
-                  <InputChip phx-click="" colors="$colorsForTemplate" selected="false" enabled="false">
-                    <Icon image-vector="sharp:PersonAdd" template="avatar"/>
-                    <Text template="label">Chip 26</Text>
-                  </InputChip>                                                                                                                                                             
-                </FlowRow>            
+                <$flowRow>
+                  <$inputChip $attrSelected="false">
+                    <$text $attrTemplate="$templateLabel">Chip 1</$text>
+                  </$inputChip>   
+                  <$inputChip $attrSelected="true">
+                    <$text $attrTemplate="$templateLabel">Chip 2</$text>
+                  </$inputChip>                    
+                  <$inputChip $attrSelected="false" $attrEnabled="false">
+                    <$text $attrTemplate="$templateLabel">Chip 3</$text>
+                  </$inputChip>     
+                  <$inputChip $attrSelected="true" $attrEnabled="false">
+                    <$text $attrTemplate="$templateLabel">Chip 4</$text>
+                  </$inputChip>                     
+                  <$inputChip $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 5</$text>
+                  </$inputChip> 
+                  <$inputChip $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 6</$text>
+                  </$inputChip>                         
+                  <$inputChip $attrSelected="false" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 7</$text>
+                  </$inputChip>    
+                  <$inputChip $attrSelected="true" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 8</$text>
+                  </$inputChip>                                                                        
+                  <$inputChip $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 9</$text>
+                  </$inputChip>
+                  <$inputChip $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 10</$text>
+                  </$inputChip>   
+                  <$inputChip $attrShape="rect" $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 11</$text>
+                  </$inputChip>  
+                  <$inputChip $attrShape="rect" $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 12</$text>
+                  </$inputChip>                     
+                  <$inputChip $attrBorder="{'$attrWidth': '2', '$attrColor': '$Red'}" $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 13</$text>
+                  </$inputChip> 
+                  <$inputChip $attrBorder="{'$attrWidth': '2', '$attrColor': '$Red'}" $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 14</$text>
+                  </$inputChip>   
+                  <$inputChip $attrColors="$colorsForTemplate" $attrSelected="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 15</$text>
+                  </$inputChip>                                   
+                  <$inputChip $attrColors="$colorsForTemplate" $attrSelected="false" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 16</$text>
+                  </$inputChip>   
+                  <$inputChip $attrColors="$colorsForTemplate" $attrSelected="true">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 17</$text>
+                  </$inputChip>    
+                  <$inputChip $attrColors="$colorsForTemplate" $attrSelected="true" $attrEnabled="false">
+                    <$icon $attrImageVector="filled:Check" $attrTemplate="$templateLeadingIcon"/>
+                    <$icon $attrImageVector="filled:ChevronRight" $attrTemplate="$templateTrailingIcon"/>
+                    <$text $attrTemplate="$templateLabel">Chip 18</$text>
+                  </$inputChip>     
+                  <$inputChip $attrSelected="true">
+                    <$icon $attrImageVector="$sharp:Person" $attrTemplate="$templateAvatar"/>
+                    <$text $attrTemplate="$templateLabel">Chip 19</$text>
+                  </$inputChip>    
+                  <$inputChip $attrSelected="false">
+                    <$icon $attrImageVector="$sharp:PersonAdd" $attrTemplate="$templateAvatar"/>
+                    <$text $attrTemplate="$templateLabel">Chip 20</$text>
+                  </$inputChip>    
+                  <$inputChip $attrSelected="true" $attrEnabled="false">
+                    <$icon $attrImageVector="$sharp:Person" $attrTemplate="$templateAvatar"/>
+                    <$text $attrTemplate="$templateLabel">Chip 21</$text>
+                  </$inputChip>    
+                  <$inputChip $attrSelected="false" $attrEnabled="false">
+                    <$icon $attrImageVector="$sharp:PersonAdd" $attrTemplate="$templateAvatar"/>
+                    <$text $attrTemplate="$templateLabel">Chip 22</$text>
+                  </$inputChip>    
+                  <$inputChip $attrColors="$colorsForTemplate" $attrSelected="true" >
+                    <$icon $attrImageVector="$sharp:Person" $attrTemplate="$templateAvatar"/>
+                    <$text $attrTemplate="$templateLabel">Chip 23</$text>
+                  </$inputChip>    
+                  <$inputChip $attrColors="$colorsForTemplate" $attrSelected="false">
+                    <$icon $attrImageVector="$sharp:PersonAdd" $attrTemplate="$templateAvatar"/>
+                    <$text $attrTemplate="$templateLabel">Chip 24</$text>
+                  </$inputChip>    
+                  <$inputChip $attrColors="$colorsForTemplate" $attrSelected="true" $attrEnabled="false">
+                    <$icon $attrImageVector="$sharp:Person" $attrTemplate="$templateAvatar"/>
+                    <$text $attrTemplate="$templateLabel">Chip 25</$text>
+                  </$inputChip>    
+                  <$inputChip $attrColors="$colorsForTemplate" $attrSelected="false" $attrEnabled="false">
+                    <$icon $attrImageVector="$sharp:PersonAdd" $attrTemplate="$templateAvatar"/>
+                    <$text $attrTemplate="$templateLabel">Chip 26</$text>
+                  </$inputChip>                                                                                                                                                             
+                </$flowRow>            
                 """
         )
     }

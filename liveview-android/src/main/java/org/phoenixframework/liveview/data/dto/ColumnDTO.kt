@@ -71,11 +71,12 @@ internal class ColumnDTO private constructor(builder: Builder) :
          * The vertical arrangement of the Column's children
          *
          * ```
-         * <Column vertical-arrangement="spaceAround" >...</Column>
+         * <Column verticalArrangement="spaceAround" >...</Column>
          * ```
-         * @param verticalArrangement the vertical arrangement of the column's children. The
-         * supported values are: `top`, `spacedEvenly`, `spaceAround`, `spaceBetween`, `bottom`,
-         * and `center`. An int value is also supported, which will be used to determine the space.
+         * @param verticalArrangement the vertical arrangement of the column's children. See the
+         * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
+         * An int value is also supported, which will be used to determine the space between the
+         * items.
          */
         fun verticalArrangement(verticalArrangement: String) = apply {
             this.verticalArrangement = verticalArrangementFromString(verticalArrangement)
@@ -85,10 +86,10 @@ internal class ColumnDTO private constructor(builder: Builder) :
          * The horizontal alignment of the Column's children
          *
          * ```
-         * <Column horizontal-alignment="center" >...</Column>
+         * <Column horizontalAlignment="center" >...</Column>
          * ```
-         * @param horizontalAlignment the horizontal alignment of the column's children. The
-         * supported values are: `start`, `center`, and `end`.
+         * @param horizontalAlignment the horizontal alignment of the column's children. See the
+         * supported values at [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
          */
         fun horizontalAlignment(horizontalAlignment: String) = apply {
             this.horizontalAlignment = horizontalAlignmentFromString(horizontalAlignment)

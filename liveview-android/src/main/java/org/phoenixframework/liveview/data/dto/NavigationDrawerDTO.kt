@@ -34,14 +34,14 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * the drawer; and the second one is the screen content.
  * ```
  * <ModalNavigationDrawer
- *   is-open={"#{@drawerIsOpen}"}
- *   on-close="closeDrawer"
- *   on-open="openDrawer">
+ *   isOpen={"#{@drawerIsOpen}"}
+ *   onClose="closeDrawer"
+ *   onOpen="openDrawer">
  *    <ModalDrawerSheet template="drawerContent">...</ModalDrawerSheet>
  *    <Scaffold>...</Scaffold>
  *  </ModalNavigationDrawer>
  * ```
- * Notice that it's essential to declared the `is-open`, `on-close`, and `on-open` properties in
+ * Notice that it's essential to declared the `isOpen`, `onClose`, and `onOpen` properties in
  * order to control if the drawer is open or not.
  * You can also use a `PermanentNavigationDrawer` or a `DismissibleNavigationDrawer`.
  */
@@ -157,7 +157,7 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
          * Indicates if the drawer is opened or closed. This property is only used by
          * `ModalNavigationDrawer` and `DismissibleNavigationDrawer`
          * ```
-         * <ModalNavigationDrawer is-open={"#{@drawerIsOpen}"} >
+         * <ModalNavigationDrawer isOpen={"#{@drawerIsOpen}"} >
          * ```
          * @param isOpen true if the drawer is opened, false if it is closed.
          */
@@ -169,7 +169,7 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
          * Whether or not the drawer can be interacted by gestures. This property is only used by
          * `ModalNavigationDrawer` and `DismissibleNavigationDrawer`.
          * ```
-         * <ModalNavigationDrawer gestures-enabled="false">
+         * <ModalNavigationDrawer gesturesEnabled="false">
          * ```
          * @param gesturesEnabled true if the user can interact with the drawer using gestures,
          * false otherwise.
@@ -182,9 +182,10 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
          * Color of the scrim that obscures content when the drawer is open. This is only used by
          * the `ModalNavigationDrawer`.
          * ```
-         * <ModalNavigationDrawer scrim-color="#FF000000">
+         * <ModalNavigationDrawer scrimColor="#FF000000">
          * ```
-         * @scrimColor the scrim color in AARRGGBB format.
+         * @scrimColor the scrim color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun scrimColor(scrimColor: String) = apply {
             this.scrimColor = scrimColor.toColor()
@@ -194,7 +195,7 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
          * Function to be called on the server to be called when the drawer is closed. This property
          * is only used by `ModalNavigationDrawer` and `DismissibleNavigationDrawer`.
          * ```
-         * <ModalNavigationDrawer on-close="closeDrawer" >
+         * <ModalNavigationDrawer onClose="closeDrawer" >
          * ```
          * @param event name of the function to be called on the server when the drawer is closed.
          */
@@ -206,7 +207,7 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
          * Function to be called on the server to be called when the drawer is opened. This property
          * is only used by `ModalNavigationDrawer` and `DismissibleNavigationDrawer`.
          * ```
-         * <ModalNavigationDrawer on-open="openDrawer" >
+         * <ModalNavigationDrawer onOpen="openDrawer" >
          * ```
          * @param event name of the function to be called on the server when the drawer is opened.
          */

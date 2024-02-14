@@ -16,6 +16,44 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrInitialDisplayMode
+import org.phoenixframework.liveview.data.constants.Attrs.attrInitialSelectedDateMillis
+import org.phoenixframework.liveview.data.constants.Attrs.attrInitialSelectedEndDateMillis
+import org.phoenixframework.liveview.data.constants.Attrs.attrInitialSelectedStartDateMillis
+import org.phoenixframework.liveview.data.constants.Attrs.attrShowModeToggle
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCurrentYearContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDayInSelectionRangeContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDayInSelectionRangeContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrHeadlineContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedDayContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedDayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedYearContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedYearContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSubheadContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTitleContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTodayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTodayDateBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrWeekdayContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrYearContentColor
+import org.phoenixframework.liveview.data.constants.DatePickerDisplayModeValues
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Black
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.DarkGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Gray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.data.constants.SystemColorValues.White
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.Templates.templateHeadline
+import org.phoenixframework.liveview.data.constants.Templates.templateTitle
+import org.phoenixframework.liveview.domain.base.ComposableTypes.datePicker
+import org.phoenixframework.liveview.domain.base.ComposableTypes.dateRangePicker
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +68,7 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 DatePicker(state = rememberDatePickerState())
             },
             template = """  
-                <DatePicker />
+                <$datePicker />
                 """
         )
     }
@@ -42,7 +80,7 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 DatePicker(state = rememberDatePickerState(initialSelectedDateMillis = jun9th2023))
             },
             template = """  
-                <DatePicker initial-selected-date-millis="$jun9th2023" />
+                <$datePicker $attrInitialSelectedDateMillis="$jun9th2023" />
                 """
         )
     }
@@ -59,8 +97,9 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """  
-                <DatePicker initial-selected-date-millis="$jun9th2023" 
-                  initial-display-mode="input"/>
+                <$datePicker 
+                  $attrInitialSelectedDateMillis="$jun9th2023" 
+                  $attrInitialDisplayMode="input"/>
                 """
         )
     }
@@ -78,8 +117,10 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """  
-                <DatePicker initial-selected-date-millis="$jun9th2023" 
-                  initial-display-mode="input" show-mode-toggle="false" />
+                <$datePicker 
+                  $attrInitialSelectedDateMillis="$jun9th2023" 
+                  $attrInitialDisplayMode="${DatePickerDisplayModeValues.input}" 
+                  $attrShowModeToggle="false" />
                 """
         )
     }
@@ -98,9 +139,9 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <DatePicker initial-selected-date-millis="$jun9th2023">
-                    <Text template="title" color="system-red">Select an important date</Text>
-                </DatePicker>
+                <$datePicker $attrInitialSelectedDateMillis="$jun9th2023">
+                  <$text $attrTemplate="$templateTitle" $attrColor="$Red">Select an important date</$text>
+                </$datePicker>
                 """
         )
     }
@@ -128,10 +169,10 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <DatePicker initial-selected-date-millis="$jun9th2023">
-                    <Text template="title" color="system-red">Select an important date</Text>
-                    <Text template="headline" color="system-blue">$formattedDate</Text>
-                </DatePicker>
+                <$datePicker $attrInitialSelectedDateMillis="$jun9th2023">
+                  <$text $attrTemplate="$templateTitle" $attrColor="$Red">Select an important date</$text>
+                  <$text $attrTemplate="$templateHeadline" $attrColor="$Blue">$formattedDate</$text>
+                </$datePicker>
                 """
         )
     }
@@ -162,20 +203,20 @@ class DatePickerShotTest : LiveViewComposableTest() {
         }.timeInMillis
         val colorsForTemplate = """
             {            
-            'containerColor': 'system-yellow',
-            'titleContentColor': 'system-red',
-            'headlineContentColor': 'system-blue',
-            'weekdayContentColor': 'system-yellow',
-            'subheadContentColor': 'system-red',
-            'yearContentColor': 'system-green',
-            'currentYearContentColor': 'system-black',
-            'selectedYearContentColor': 'system-white',
-            'selectedYearContainerColor': 'system-dark-gray',
-            'dayContentColor': 'system-gray',
-            'selectedDayContentColor': 'system-yellow',
-            'selectedDayContainerColor': 'system-red',
-            'todayContentColor': 'system-blue',
-            'todayDateBorderColor': 'system-red'
+            '$colorAttrContainerColor': '$Yellow',
+            '$colorAttrTitleContentColor': '$Red',
+            '$colorAttrHeadlineContentColor': '$Blue',
+            '$colorAttrWeekdayContentColor': '$Yellow',
+            '$colorAttrSubheadContentColor': '$Red',
+            '$colorAttrYearContentColor': '$Green',
+            '$colorAttrCurrentYearContentColor': '$Black',
+            '$colorAttrSelectedYearContentColor': '$White',
+            '$colorAttrSelectedYearContainerColor': '$DarkGray',
+            '$colorAttrDayContentColor': '$Gray',
+            '$colorAttrSelectedDayContentColor': '$Yellow',
+            '$colorAttrSelectedDayContainerColor': '$Red',
+            '$colorAttrTodayContentColor': '$Blue',
+            '$colorAttrTodayDateBorderColor': '$Red'
             }
             """.toJsonForTemplate()
 
@@ -204,8 +245,8 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """  
-                <DatePicker initial-selected-date-millis="$todayMoreOrLessOneDay" 
-                    colors="$colorsForTemplate" />
+                <$datePicker $attrInitialSelectedDateMillis="$todayMoreOrLessOneDay" 
+                    $attrColors="$colorsForTemplate" />
                 """,
             delayBeforeScreenshot = 800, // Wait the button animation finishes.
             onBeforeScreenShot = { rule ->
@@ -230,7 +271,7 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 DateRangePicker(state = rememberDateRangePickerState())
             },
             template = """  
-                <DateRangePicker />
+                <$dateRangePicker />
                 """
         )
     }
@@ -244,7 +285,7 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """  
-                <DateRangePicker initial-selected-start-date-millis="$jun9th2023"/>
+                <$dateRangePicker $attrInitialSelectedStartDateMillis="$jun9th2023"/>
                 """
         )
     }
@@ -261,9 +302,9 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """  
-                <DateRangePicker 
-                  initial-selected-start-date-millis="$jun9th2023"
-                  initial-selected-end-date-millis="$jun22nd2023" />
+                <$dateRangePicker 
+                  $attrInitialSelectedStartDateMillis="$jun9th2023"
+                  $attrInitialSelectedEndDateMillis="$jun22nd2023" />
                 """
         )
     }
@@ -281,10 +322,10 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """  
-                <DateRangePicker 
-                  initial-selected-start-date-millis="$jun9th2023" 
-                  initial-selected-end-date-millis="$jun22nd2023" 
-                  initial-display-mode="input"/>
+                <$dateRangePicker 
+                  $attrInitialSelectedStartDateMillis="$jun9th2023" 
+                  $attrInitialSelectedEndDateMillis="$jun22nd2023" 
+                  $attrInitialDisplayMode="${DatePickerDisplayModeValues.input}"/>
                 """
         )
     }
@@ -302,8 +343,10 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """  
-                <DateRangePicker initial-selected-start-date-millis="$jun9th2023" 
-                  initial-display-mode="input" show-mode-toggle="false" />
+                <$dateRangePicker 
+                  $attrInitialSelectedStartDateMillis="$jun9th2023" 
+                  $attrInitialDisplayMode="${DatePickerDisplayModeValues.input}" 
+                  $attrShowModeToggle="false" />
                 """
         )
     }
@@ -322,9 +365,9 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <DateRangePicker initial-selected-start-date-millis="$jun9th2023">
-                    <Text template="title" color="system-red">Select a date range</Text>
-                </DateRangePicker>
+                <$dateRangePicker $attrInitialSelectedStartDateMillis="$jun9th2023">
+                  <$text $attrTemplate="$templateTitle" $attrColor="$Red">Select a date range</$text>
+                </$dateRangePicker>
                 """
         )
     }
@@ -355,11 +398,12 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <DateRangePicker initial-selected-start-date-millis="$jun9th2023"
-                  initial-selected-end-date-millis="$jun22nd2023">
-                    <Text template="title" color="system-red">Select a date range</Text>
-                    <Text template="headline" color="system-blue">$startDate | $endDate</Text>
-                </DateRangePicker>
+                <$dateRangePicker 
+                  $attrInitialSelectedStartDateMillis="$jun9th2023"
+                  $attrInitialSelectedEndDateMillis="$jun22nd2023">
+                    <$text $attrTemplate="$templateTitle" $attrColor="$Red">Select a date range</$text>
+                    <$text $attrTemplate="$templateHeadline" $attrColor="$Blue">$startDate | $endDate</$text>
+                </$dateRangePicker>
                 """
         )
     }
@@ -375,22 +419,22 @@ class DatePickerShotTest : LiveViewComposableTest() {
         }.timeInMillis
         val colorsForTemplate = """
             {            
-            'containerColor': 'system-yellow',
-            'titleContentColor': 'system-red',
-            'headlineContentColor': 'system-blue',
-            'weekdayContentColor': 'system-yellow',
-            'subheadContentColor': 'system-red',
-            'yearContentColor': 'system-green',
-            'currentYearContentColor': 'system-black',
-            'selectedYearContentColor': 'system-white',
-            'selectedYearContainerColor': 'system-dark-gray',
-            'dayContentColor': 'system-gray',
-            'selectedDayContentColor': 'system-yellow',
-            'selectedDayContainerColor': 'system-red',
-            'todayContentColor': 'system-blue',
-            'todayDateBorderColor': 'system-red',
-            'dayInSelectionRangeContentColor': 'system-white',
-            'dayInSelectionRangeContainerColor': 'system-dark-gray'            
+            '$colorAttrContainerColor': '$Yellow',
+            '$colorAttrTitleContentColor': '$Red',
+            '$colorAttrHeadlineContentColor': '$Blue',
+            '$colorAttrWeekdayContentColor': '$Yellow',
+            '$colorAttrSubheadContentColor': '$Red',
+            '$colorAttrYearContentColor': '$Green',
+            '$colorAttrCurrentYearContentColor': '$Black',
+            '$colorAttrSelectedYearContentColor': '$White',
+            '$colorAttrSelectedYearContainerColor': '$DarkGray',
+            '$colorAttrDayContentColor': '$Gray',
+            '$colorAttrSelectedDayContentColor': '$Yellow',
+            '$colorAttrSelectedDayContainerColor': '$Red',
+            '$colorAttrTodayContentColor': '$Blue',
+            '$colorAttrTodayDateBorderColor': '$Red',
+            '$colorAttrDayInSelectionRangeContentColor': '$White',
+            '$colorAttrDayInSelectionRangeContainerColor': '$DarkGray'            
             }
             """.toJsonForTemplate()
 
@@ -422,10 +466,10 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """  
-                <DateRangePicker 
-                  initial-selected-start-date-millis="$startDate"
-                  initial-selected-end-date-millis="$endDate"
-                  colors="$colorsForTemplate" />
+                <$dateRangePicker 
+                  $attrInitialSelectedStartDateMillis="$startDate"
+                  $attrInitialSelectedEndDateMillis="$endDate"
+                  $attrColors="$colorsForTemplate" />
                 """,
         )
     }

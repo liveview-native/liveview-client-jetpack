@@ -44,8 +44,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  * <DropdownMenuItem phx-click="setDDOption" phx-value="A">
  *   <Text>Option A</Text>
- *   <Icon image-vector="filled:Add" template="trailing-icon" />
- *   <Icon image-vector="filled:ChevronLeft" template="leading-icon"/>
+ *   <Icon imageVector="filled:Add" template="trailing-icon" />
+ *   <Icon imageVector="filled:ChevronLeft" template="leading-icon"/>
  * </DropdownMenuItem>
  * ```
  */

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -19,7 +18,6 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrOnChanged
 import org.phoenixframework.liveview.data.constants.Attrs.attrScrimColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
-import org.phoenixframework.liveview.data.constants.Attrs.attrSheetValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrSkipPartiallyExpanded
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
@@ -32,19 +30,16 @@ import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.pushNewValue
 import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.extensions.toSheetValue
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
 /**
  * Material Design modal bottom sheet.
- * Use the sheet-value property to determine if the bottom sheet is hidden, partially expanded, or
- * expanded. You must have to define the `on-changed` event in order to keep the `sheet-value` in
- * sync with the server.
+ * You can define the `onChanged` event in order to be notified when the `sheetValue` changed.
  * ```
- * <ModalBottomSheet on-changed="updateSheetState" sheet-value="expanded">
- *   <Box content-alignment="center" width="fill" height="200">
+ * <ModalBottomSheet onChanged="updateSheetState">
+ *   <Box contentAlignment="center" width="fill" height="200">
  *     <Text>BottomSheet Content</Text>
  *   </Box>
  * </ModalBottomSheet>
@@ -55,7 +50,6 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
 
     private val skipPartiallyExpanded = builder.skipPartiallyExpanded
-    private val sheetValue = builder.sheetValue
     private val onChanged = builder.onChanged
     private val windowsInsets = builder.windowInsets
     private val shape = builder.shape
@@ -110,11 +104,8 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         )
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     internal class Builder : ComposableBuilder() {
         var skipPartiallyExpanded: Boolean = false
-            private set
-        var sheetValue: SheetValue = SheetValue.Hidden
             private set
         var onChanged: String = ""
             private set
@@ -136,7 +127,7 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
          * If true, the sheet will always expand to the Expanded state and move to the Hidden state
          * when hiding the sheet, either programmatically or by user interaction.
          * ```
-         * <ModalBottomSheet skip-partially-expanded="true" >...</ModalBottomSheet>
+         * <ModalBottomSheet skipPartiallyExpanded="true" >...</ModalBottomSheet>
          * ```
          * @param skipPartiallyExpanded true if the partially expanded state should be skipped,
          * false otherwise.
@@ -146,21 +137,9 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         }
 
         /**
-         * Possible values of SheetState.
-         * ```
-         * <ModalBottomSheet sheet-value="expanded" >...</ModalBottomSheet>
-         * ```
-         * @param sheetValue the value representing the state of the bottom sheet. The possible
-         * values are: `expanded`, `partiallyExpanded`, and `hidden`.
-         */
-        fun sheetValue(sheetValue: String) = apply {
-            this.sheetValue = sheetValue.toSheetValue() ?: SheetValue.Hidden
-        }
-
-        /**
          * Function in the server to be called when the bottom sheet state changes.
          * ```
-         * <ModalBottomSheet on-changed="updateBottomSheet" >...</ModalBottomSheet>
+         * <ModalBottomSheet onChanged="updateBottomSheet" >...</ModalBottomSheet>
          * ```
          * @param onChanged the name of the function to be called in the server when the bottom
          * sheet is expanded.
@@ -174,8 +153,9 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
          * ```
          * <ModalBottomSheet shape="8">...</ModalBottomSheet>
          * ```
-         * @param shape drawer's container's shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied to all four corners.
+         * @param shape drawer's container's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * representing the curve size applied to all four corners.
          */
         fun shape(shape: String) = apply {
             this.shape = shapeFromString(shape)
@@ -184,9 +164,10 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         /**
          * The color used for the background of this bottom sheet
          * ```
-         * <ModalBottomSheet container-color="#FFFFFF00">...</ModalBottomSheet>
+         * <ModalBottomSheet containerColor="#FFFFFF00">...</ModalBottomSheet>
          * ```
-         * @param color container color in AARRGGBB format.
+         * @param color container color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun containerColor(color: String) = apply {
             this.containerColor = color.toColor()
@@ -195,9 +176,10 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         /**
          * The preferred color for content inside this bottom sheet.
          * ```
-         * <ModalBottomSheet content-color="#FFCCCCCC">...</ModalBottomSheet>
+         * <ModalBottomSheet contentColor="#FFCCCCCC">...</ModalBottomSheet>
          * ```
-         * @param color content color in AARRGGBB format.
+         * @param color content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun contentColor(color: String) = apply {
             this.contentColor = color.toColor()
@@ -207,7 +189,7 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
          * A higher tonal elevation value will result in a darker color in light theme and lighter
          * color in dark theme.
          * ```
-         * <ModalDrawerSheet tonal-elevation="24">...</ModalDrawerSheet>
+         * <ModalDrawerSheet tonalElevation="24">...</ModalDrawerSheet>
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */
@@ -220,9 +202,10 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         /**
          * Color of the scrim that obscures content when the drawer is open
          * ```
-         * <ModalDrawerSheet scrim-color="#FF000000">...</ModalDrawerSheet>
+         * <ModalDrawerSheet scrimColor="#FF000000">...</ModalDrawerSheet>
          * ```
-         * @scrimColor the scrim color in AARRGGBB format.
+         * @scrimColor the scrim color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun scrimColor(scrimColor: String) = apply {
             this.scrimColor = scrimColor.toColor()
@@ -231,7 +214,7 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         /**
          * Window insets to be passed to the bottom sheet window via PaddingValues params.
          * ```
-         * <ModalBottomSheet window-insets="{'bottom': '100'}" >
+         * <ModalBottomSheet windowInsets="{'bottom': '100'}" >
          * ```
          * @param insets the space, in Dp, at the each border of the window that the inset
          * represents. The supported values are: `left`, `top`, `bottom`, and `right`.
@@ -263,7 +246,6 @@ internal object ModalBottomSheetDtoFactory :
                 attrScrimColor -> builder.scrimColor(attribute.value)
                 attrShape -> builder.shape(attribute.value)
                 attrSkipPartiallyExpanded -> builder.skipPartiallyExpanded(attribute.value)
-                attrSheetValue -> builder.sheetValue(attribute.value)
                 attrTonalElevation -> builder.tonalElevation(attribute.value)
                 attrWindowInsets -> builder.windowInsets(attribute.value)
                 else -> builder.handleCommonAttributes(attribute, pushEvent, scope)

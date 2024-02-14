@@ -16,6 +16,37 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrActive
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrShadowElevation
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDividerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInputFieldColors
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedPlaceholderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedTrailingIconColor
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.ShapeValues.rectangle
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Gray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.LightGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.White
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.Templates.templateContent
+import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
+import org.phoenixframework.liveview.data.constants.Templates.templatePlaceholder
+import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.dockedSearchBar
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.searchBar
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 @OptIn(ExperimentalMaterial3Api::class)
 class SearchBarShotTest : LiveViewComposableTest() {
@@ -24,12 +55,12 @@ class SearchBarShotTest : LiveViewComposableTest() {
     fun simpleSearchBarTest() {
         val colorsForTemplate = """
             {
-            'containerColor': 'system-blue',
-            'dividerColor': 'system-yellow',
-            'inputFieldColors': {
-              'unfocusedPlaceholderColor': 'system-white',
-              'unfocusedLeadingIconColor': 'system-light-gray',
-              'unfocusedTrailingIconColor': 'system-gray'        
+            '$colorAttrContainerColor': '$Blue',
+            '$colorAttrDividerColor': '$Yellow',
+            '$colorAttrInputFieldColors': {
+              '$colorAttrUnfocusedPlaceholderColor': '$White',
+              '$colorAttrUnfocusedLeadingIconColor': '$LightGray',
+              '$colorAttrUnfocusedTrailingIconColor': '$Gray'        
               }
             }
             """.toJsonForTemplate()
@@ -180,58 +211,58 @@ class SearchBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                  <SearchBar phx-value="Text to search" 
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Text>Search content</Text>
-                  </SearchBar>
-                  <SearchBar phx-value="" 
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </SearchBar>                    
-                  <SearchBar phx-value="" 
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Icon template="leadingIcon" image-vector="filled:Search"/>
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </SearchBar>     
-                  <SearchBar phx-value="" 
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Icon template="leadingIcon" image-vector="filled:Search"/>
-                    <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </SearchBar>   
-                  <SearchBar phx-value="" enabled="false"
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Icon template="leadingIcon" image-vector="filled:Search"/>
-                    <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </SearchBar>                   
-                  <SearchBar phx-value="" tonal-elevation="8" shadow-elevation="12"
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Icon template="leadingIcon" image-vector="filled:Search"/>
-                    <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </SearchBar>                   
-                  <SearchBar phx-value="" colors="$colorsForTemplate"
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Icon template="leadingIcon" image-vector="filled:Search"/>
-                    <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </SearchBar>
-                  <SearchBar phx-value="" colors="$colorsForTemplate" shape="rectangle"
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Icon template="leadingIcon" image-vector="filled:Search"/>
-                    <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </SearchBar>                   
-                </Column>  
+                <$column>
+                  <$searchBar $attrPhxValue="Text to search" 
+                    $attrActive="false">
+                    <$text>Search content</$text>
+                  </$searchBar>
+                  <$searchBar $attrPhxValue="" 
+                    $attrActive="false">
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$searchBar>                    
+                  <$searchBar $attrPhxValue="" 
+                    $attrActive="false">
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:Search"/>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$searchBar>     
+                  <$searchBar $attrPhxValue="" 
+                    $attrActive="false">
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:Search"/>
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$filled:Clear"/>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$searchBar>   
+                  <$searchBar $attrPhxValue="" $attrEnabled="false"
+                    $attrActive="false">
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:Search"/>
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$filled:Clear"/>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$searchBar>                   
+                  <$searchBar $attrPhxValue="" $attrTonalElevation="8" $attrShadowElevation="12"
+                    $attrActive="false">
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:Search"/>
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$filled:Clear"/>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$searchBar>                   
+                  <$searchBar $attrPhxValue="" $attrColors="$colorsForTemplate"
+                    $attrActive="false">
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:Search"/>
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$searchBar>
+                  <$searchBar $attrPhxValue="" $attrColors="$colorsForTemplate" $attrShape="$rectangle"
+                    $attrActive="false">
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$searchBar>                   
+                </$column>  
                 """
         )
     }
@@ -260,13 +291,13 @@ class SearchBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <SearchBar phx-value=""
-                  phx-change="" phx-submit="" active="true" on-active-change="">
-                  <Icon template="leadingIcon" image-vector="filled:Search"/>
-                  <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                  <Text template="placeholder">Placeholder</Text>
-                  <Text template="content">Search content</Text>
-                </SearchBar>             
+                <$searchBar $attrPhxValue=""
+                  $attrActive="true">
+                  <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
+                  <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
+                  <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                  <$text $attrTemplate="$templateContent">Search content</$text>
+                </$searchBar>             
                 """
         )
     }
@@ -275,12 +306,12 @@ class SearchBarShotTest : LiveViewComposableTest() {
     fun activeSearchBarWithCustomColorsTest() {
         val colorsForTemplate = """
             {
-            'containerColor': 'system-blue',
-            'dividerColor': 'system-yellow',
-            'inputFieldColors': {
-              'unfocusedPlaceholderColor': 'system-white',
-              'unfocusedLeadingIconColor': 'system-light-gray',
-              'unfocusedTrailingIconColor': 'system-gray'        
+            '$colorAttrContainerColor': '$Blue',
+            '$colorAttrDividerColor': '$Yellow',
+            '$colorAttrInputFieldColors': {
+              '$colorAttrUnfocusedPlaceholderColor': '$White',
+              '$colorAttrUnfocusedLeadingIconColor': '$LightGray',
+              '$colorAttrUnfocusedTrailingIconColor': '$Gray'        
               }
             }
             """.toJsonForTemplate()
@@ -316,13 +347,13 @@ class SearchBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <SearchBar phx-value="" colors="$colorsForTemplate"
-                  phx-change="" phx-submit="" active="true" on-active-change="">
-                  <Icon template="leadingIcon" image-vector="filled:Search"/>
-                  <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                  <Text template="placeholder">Placeholder</Text>
-                  <Text template="content">Search content</Text>
-                </SearchBar>             
+                <$searchBar $attrPhxValue="" $attrColors="$colorsForTemplate"
+                  $attrActive="true">
+                  <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
+                  <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
+                  <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                  <$text $attrTemplate="$templateContent">Search content</$text>
+                </$searchBar>             
                 """
         )
     }
@@ -331,12 +362,12 @@ class SearchBarShotTest : LiveViewComposableTest() {
     fun simpleDockedSearchBarTest() {
         val colorsForTemplate = """
             {
-            'containerColor': 'system-blue',
-            'dividerColor': 'system-yellow',
-            'inputFieldColors': {
-              'unfocusedPlaceholderColor': 'system-white',
-              'unfocusedLeadingIconColor': 'system-light-gray',
-              'unfocusedTrailingIconColor': 'system-gray'        
+            '$colorAttrContainerColor': '$Blue',
+            '$colorAttrDividerColor': '$Yellow',
+            '$colorAttrInputFieldColors': {
+              '$colorAttrUnfocusedPlaceholderColor': '$White',
+              '$colorAttrUnfocusedLeadingIconColor': '$LightGray',
+              '$colorAttrUnfocusedTrailingIconColor': '$Gray'        
               }
             }
             """.toJsonForTemplate()
@@ -487,58 +518,50 @@ class SearchBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                  <DockedSearchBar phx-value="Text to search" 
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Text>Search content</Text>
-                  </DockedSearchBar>
-                  <DockedSearchBar phx-value="" 
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </DockedSearchBar>                    
-                  <DockedSearchBar phx-value="" 
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Icon template="leadingIcon" image-vector="filled:Search"/>
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </DockedSearchBar>     
-                  <DockedSearchBar phx-value="" 
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Icon template="leadingIcon" image-vector="filled:Search"/>
-                    <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </DockedSearchBar>   
-                  <DockedSearchBar phx-value="" enabled="false"
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Icon template="leadingIcon" image-vector="filled:Search"/>
-                    <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </DockedSearchBar>                   
-                  <DockedSearchBar phx-value="" tonal-elevation="8" shadow-elevation="12"
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Icon template="leadingIcon" image-vector="filled:Search"/>
-                    <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </DockedSearchBar>                   
-                  <DockedSearchBar phx-value="" colors="$colorsForTemplate"
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Icon template="leadingIcon" image-vector="filled:Search"/>
-                    <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </DockedSearchBar>
-                  <DockedSearchBar phx-value="" colors="$colorsForTemplate" shape="rectangle"
-                    phx-change="" phx-submit="" active="false" on-active-change="">
-                    <Icon template="leadingIcon" image-vector="filled:Search"/>
-                    <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                    <Text template="placeholder">Placeholder</Text>
-                    <Text template="content">Search content</Text>
-                  </DockedSearchBar>                   
-                </Column>  
+                <$column>
+                  <$dockedSearchBar $attrPhxValue="Text to search" $attrActive="false">
+                    <$text>Search content</$text>
+                  </$dockedSearchBar>
+                  <$dockedSearchBar $attrPhxValue="" $attrActive="false">
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$dockedSearchBar>                    
+                  <$dockedSearchBar $attrPhxValue="" $attrActive="false">
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$dockedSearchBar>     
+                  <$dockedSearchBar $attrPhxValue="" $attrActive="false">
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$dockedSearchBar>   
+                  <$dockedSearchBar $attrPhxValue="" $attrEnabled="false" $attrActive="false">
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$dockedSearchBar>                   
+                  <$dockedSearchBar $attrPhxValue="" $attrTonalElevation="8" $attrShadowElevation="12" $attrActive="false">
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$dockedSearchBar>                   
+                  <$dockedSearchBar $attrPhxValue="" $attrColors="$colorsForTemplate" $attrActive="false">
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$dockedSearchBar>
+                  <$dockedSearchBar $attrPhxValue="" $attrColors="$colorsForTemplate" $attrShape="$rectangle" $attrActive="false">
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                    <$text $attrTemplate="$templateContent">Search content</$text>
+                  </$dockedSearchBar>                   
+                </$column>  
                 """
         )
     }
@@ -567,13 +590,12 @@ class SearchBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <DockedSearchBar phx-value=""
-                  phx-change="" phx-submit="" active="true" on-active-change="">
-                  <Icon template="leadingIcon" image-vector="filled:Search"/>
-                  <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                  <Text template="placeholder">Placeholder</Text>
-                  <Text template="content">Search content</Text>
-                </DockedSearchBar>             
+                <$dockedSearchBar $attrPhxValue="" $attrActive="true">
+                  <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
+                  <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
+                  <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                  <$text $attrTemplate="$templateContent">Search content</$text>
+                </$dockedSearchBar>             
                 """
         )
     }
@@ -582,12 +604,12 @@ class SearchBarShotTest : LiveViewComposableTest() {
     fun activeDockedSearchBarWithCustomColorsTest() {
         val colorsForTemplate = """
             {
-            'containerColor': 'system-blue',
-            'dividerColor': 'system-yellow',
-            'inputFieldColors': {
-              'unfocusedPlaceholderColor': 'system-white',
-              'unfocusedLeadingIconColor': 'system-light-gray',
-              'unfocusedTrailingIconColor': 'system-gray'        
+            '$colorAttrContainerColor': '$Blue',
+            '$colorAttrDividerColor': '$Yellow',
+            '$colorAttrInputFieldColors': {
+              '$colorAttrUnfocusedPlaceholderColor': '$White',
+              '$colorAttrUnfocusedLeadingIconColor': '$LightGray',
+              '$colorAttrUnfocusedTrailingIconColor': '$Gray'        
               }
             }
             """.toJsonForTemplate()
@@ -623,13 +645,12 @@ class SearchBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <DockedSearchBar phx-value="" colors="$colorsForTemplate"
-                  phx-change="" phx-submit="" active="true" on-active-change="">
-                  <Icon template="leadingIcon" image-vector="filled:Search"/>
-                  <Icon template="trailingIcon" image-vector="filled:Clear"/>
-                  <Text template="placeholder">Placeholder</Text>
-                  <Text template="content">Search content</Text>
-                </DockedSearchBar>             
+                <$dockedSearchBar $attrPhxValue="" $attrColors="$colorsForTemplate" $attrActive="true">
+                  <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
+                  <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
+                  <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                  <$text $attrTemplate="$templateContent">Search content</$text>
+                </$dockedSearchBar>             
                 """
         )
     }

@@ -16,6 +16,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.AlignmentValues
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
+import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
+import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
+import org.phoenixframework.liveview.domain.base.ComposableTypes.box
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class ColumnShotTest : LiveViewComposableTest() {
     @Composable
@@ -33,9 +50,9 @@ class ColumnShotTest : LiveViewComposableTest() {
 
     private val contentHeight = 150
     private val verticalContentTestTemplate = """
-            <Box background="#FFFF0000"><Text>Red</Text></Box>
-            <Box background="#FF00FF00"><Text>Green</Text></Box>
-            <Box background="#FF0000FF"><Text>Blue</Text></Box>
+            <$box $attrBackground="#FFFF0000"><$text>Red</$text></$box>
+            <$box $attrBackground="#FF00FF00"><$text>Green</$text></$box>
+            <$box $attrBackground="#FF0000FF"><$text>Blue</$text></$box>
             """
 
     @Test
@@ -54,11 +71,11 @@ class ColumnShotTest : LiveViewComposableTest() {
                     }
                 }
             }, template = """
-                <Column>
-                    <Box background="#FFFF0000"><Text>Red</Text></Box>
-                    <Box background="#FF00FF00"><Text>Green</Text></Box>
-                    <Box background="#FF0000FF"><Text>Blue</Text></Box>
-                </Column>
+                <$column>
+                    <$box $attrBackground="#FFFF0000"><$text>Red</$text></$box>
+                    <$box $attrBackground="#FF00FF00"><$text>Green</$text></$box>
+                    <$box $attrBackground="#FF0000FF"><$text>Blue</$text></$box>
+                </$column>
                 """
         )
     }
@@ -100,23 +117,28 @@ class ColumnShotTest : LiveViewComposableTest() {
                     }
                 }
             }, template = """
-                <Row>
-                  <Column height="$contentHeight" vertical-arrangement="bottom">
+                <$row>
+                  <$column $attrHeight="$contentHeight" 
+                    $attrVerticalArrangement="${VerticalArrangementValues.bottom}">
                     $verticalContentTestTemplate
-                  </Column>
-                  <Column height="$contentHeight" vertical-arrangement="center">
+                  </$column>
+                  <$column $attrHeight="$contentHeight" 
+                    $attrVerticalArrangement="${VerticalArrangementValues.center}">
                     $verticalContentTestTemplate
-                  </Column>
-                  <Column height="$contentHeight" vertical-arrangement="spaceAround">
+                  </$column>
+                  <$column $attrHeight="$contentHeight" 
+                    $attrVerticalArrangement="${VerticalArrangementValues.spaceAround}">
                     $verticalContentTestTemplate
-                  </Column>
-                  <Column height="$contentHeight" vertical-arrangement="spaceBetween">
+                  </$column>
+                  <$column $attrHeight="$contentHeight" 
+                    $attrVerticalArrangement="${VerticalArrangementValues.spaceBetween}">
                     $verticalContentTestTemplate
-                  </Column>
-                  <Column height="$contentHeight" vertical-arrangement="spaceEvenly">
+                  </$column>
+                  <$column $attrHeight="$contentHeight" 
+                    $attrVerticalArrangement="${VerticalArrangementValues.spaceEvenly}">
                     $verticalContentTestTemplate
-                  </Column>
-                </Row>
+                  </$column>
+                </$row>
                 """
         )
     }
@@ -154,17 +176,20 @@ class ColumnShotTest : LiveViewComposableTest() {
 
             },
             template = """
-                <Row width="fill">
-                  <Column weight="1" height="$contentHeight" horizontal-alignment="start">
+                <$row $attrWidth="fill">
+                  <$column $attrWeight="1" $attrHeight="$contentHeight" 
+                    $attrHorizontalAlignment="${HorizontalAlignmentValues.start}">
                     $verticalContentTestTemplate
-                  </Column>
-                  <Column weight="1" height="$contentHeight" horizontal-alignment="center">
+                  </$column>
+                  <$column $attrWeight="1" $attrHeight="$contentHeight" 
+                    $attrHorizontalAlignment="${HorizontalAlignmentValues.centerHorizontally}">
                     $verticalContentTestTemplate
-                  </Column>
-                  <Column weight="1" height="$contentHeight" horizontal-alignment="end">
+                  </$column>
+                  <$column $attrWeight="1" $attrHeight="$contentHeight" 
+                    $attrHorizontalAlignment="${HorizontalAlignmentValues.end}">
                     $verticalContentTestTemplate
-                  </Column>
-                </Row>
+                  </$column>
+                </$row>
                 """
         )
     }
@@ -208,17 +233,20 @@ class ColumnShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column height="200" width="200" background="#FFCCCCCC">
-                  <Box background="#FFFF0000" width="fill" weight="25" content-alignment="center">
-                    <Text>25%</Text>
-                  </Box>
-                  <Box background="#FF00FF00" width="fill" weight="35" content-alignment="center">
-                    <Text>35%</Text>
-                  </Box>
-                  <Box background="#FF0000FF" width="fill" weight="40" content-alignment="center">
-                    <Text>40%</Text>
-                  </Box>
-                </Column>                
+                <$column $attrHeight="200" $attrWidth="200" $attrBackground="#FFCCCCCC">
+                  <$box $attrBackground="#FFFF0000" $attrWidth="$fill" $attrWeight="25" 
+                    $attrContentAlignment="${AlignmentValues.center}">
+                    <$text>25%</$text>
+                  </$box>
+                  <$box $attrBackground="#FF00FF00" $attrWidth="$fill" $attrWeight="35" 
+                    $attrContentAlignment="${AlignmentValues.center}">
+                    <$text>35%</$text>
+                  </$box>
+                  <$box $attrBackground="#FF0000FF" $attrWidth="$fill" $attrWeight="40" 
+                    $attrContentAlignment="${AlignmentValues.center}">
+                    <$text>40%</$text>
+                  </$box>
+                </$column>                
                 """
         )
     }
@@ -234,11 +262,11 @@ class ColumnShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column size="100">
-                  <Text align="start">Start</Text>
-                  <Text align="center">Center</Text>
-                  <Text align="end">End</Text>
-                </Column>
+                <$column $attrSize="100">
+                  <$text $attrAlign="${HorizontalAlignmentValues.start}">Start</$text>
+                  <$text $attrAlign="${HorizontalAlignmentValues.centerHorizontally}">Center</$text>
+                  <$text $attrAlign="${HorizontalAlignmentValues.end}">End</$text>
+                </$column>
                 """
         )
     }

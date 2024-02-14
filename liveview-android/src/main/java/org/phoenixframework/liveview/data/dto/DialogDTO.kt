@@ -52,7 +52,7 @@ internal abstract class DialogDTO(builder: Builder) :
          * Whether the dialog can be dismissed by pressing the back button. If true, pressing the
          * back button will call `dismissEvent` event. Default value is true.
          * ```
-         * <AlertDialog dismiss-on-back-press="true">...</AlertDialog>
+         * <AlertDialog dismissOnBackPress="true">...</AlertDialog>
          * ```
          * @param dismissOnBackPress true if the dialog can be dismissed by pressing the back
          * button, false otherwise.
@@ -65,7 +65,7 @@ internal abstract class DialogDTO(builder: Builder) :
          * Whether the dialog can be dismissed by clicking outside the dialog's bounds. If true,
          * clicking outside the dialog will call `dismissEvent` event. Default value is true.
          * ```
-         * <AlertDialog dismiss-on-click-outside="true">...</AlertDialog>
+         * <AlertDialog dismissOnClickOutside="true">...</AlertDialog>
          * ```
          * @param dismissOnClickOutside true if the dialog can be dismissed by clicking outside the
          * dialog's bounds, false otherwise.
@@ -79,7 +79,7 @@ internal abstract class DialogDTO(builder: Builder) :
          * be treated as secure, preventing it from appearing in screenshots or from being viewed
          * on non-secure displays. Default value is `inherit`.
          * ```
-         * <AlertDialog secure-policy="inherit">...</AlertDialog>
+         * <AlertDialog securePolicy="inherit">...</AlertDialog>
          * ```
          * @param securePolicy possible values are: `secureOn`, `secureOff`, and `inherit` (default).
          */
@@ -91,7 +91,7 @@ internal abstract class DialogDTO(builder: Builder) :
          * Whether the width of the dialog's content should be limited to the platform default,
          * which is smaller than the screen width.
          * ```
-         * <AlertDialog use-platform-default-width="true">...</AlertDialog>
+         * <AlertDialog usePlatformDefaultWidth="true">...</AlertDialog>
          * ```
          * @param usePlatformDefaultWidth true if the width of the dialog's content should be
          * limited to the platform default, false otherwise. Default value is true.
@@ -106,7 +106,7 @@ internal abstract class DialogDTO(builder: Builder) :
          *  WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE and android:windowIsFloating is set
          *  to false for Android R and earlier.
          *  ```
-         *  <AlertDialog decor-fits-system-windows="true">...</AlertDialog>
+         *  <AlertDialog decorFitsSystemWindows="true">...</AlertDialog>
          *  ```
          *  @param decorFitsSystemWindows true to set WindowCompat.setDecorFitsSystemWindows value,
          *  false otherwise. Default value is true.
@@ -132,7 +132,8 @@ internal abstract class DialogDTO(builder: Builder) :
          * ```
          * <AlertDialog shape="16" >...</AlertDialog>
          * ```
-         * @param shape button's shape. Supported values are: `circle`, `rectangle`, or an integer
+         * @param shape button's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
          * representing the curve size applied for all four corners.
          */
         fun shape(shape: String) = apply {
@@ -144,7 +145,7 @@ internal abstract class DialogDTO(builder: Builder) :
          * on top of the container. A higher tonal elevation value will result in a darker color in
          * light theme and lighter color in dark theme.
          * ```
-         * <AlertDialog tonal-elevation="12" >...</AlertDialog>
+         * <AlertDialog tonalElevation="12" >...</AlertDialog>
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */

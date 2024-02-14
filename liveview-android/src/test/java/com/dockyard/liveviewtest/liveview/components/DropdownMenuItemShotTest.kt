@@ -10,6 +10,22 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconColor
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.dropdownMenuItem
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class DropdownMenuItemShotTest : LiveViewComposableTest() {
     @Test
@@ -24,9 +40,9 @@ class DropdownMenuItemShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <DropdownMenuItem>
-                    <Text>Simple Menu Item</Text>
-                </DropdownMenuItem>
+                <$dropdownMenuItem>
+                    <$text>Simple Menu Item</$text>
+                </$dropdownMenuItem>
                 """
         )
     }
@@ -49,17 +65,24 @@ class DropdownMenuItemShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <DropdownMenuItem>
-                    <Text>Simple Menu Item</Text>
-                    <Icon image-vector="filled:Add" template="trailingIcon" />
-                    <Icon image-vector="filled:ChevronLeft" template="leadingIcon"/>                    
-                </DropdownMenuItem>
+                <$dropdownMenuItem>
+                  <$text>Simple Menu Item</$text>
+                  <$icon $attrImageVector="$filled:Add" $attrTemplate="$templateTrailingIcon" />
+                  <$icon $attrImageVector="$filled:ChevronLeft" $attrTemplate="$templateLeadingIcon"/>                    
+                </$dropdownMenuItem>
                 """
         )
     }
 
     @Test
     fun dropdownWithCustomColorsTest() {
+        val colorsForTemplate = """
+            {
+            '$colorAttrTextColor': '#FF444444', 
+            '$colorAttrLeadingIconColor': '#FFFF0000', 
+            '$colorAttrTrailingIconColor': '#FF0000FF'
+            }
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 DropdownMenuItem(
@@ -81,17 +104,24 @@ class DropdownMenuItemShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <DropdownMenuItem colors="{'textColor': '#FF444444', 'leadingIconColor': '#FFFF0000', 'trailingIconColor': '#FF0000FF'}">
-                    <Text>Simple Menu Item</Text>
-                    <Icon image-vector="filled:Add" template="trailingIcon" />
-                    <Icon image-vector="filled:ChevronLeft" template="leadingIcon"/>                    
-                </DropdownMenuItem>
+                <$dropdownMenuItem $attrColors="$colorsForTemplate">
+                  <$text>Simple Menu Item</$text>
+                  <$icon $attrImageVector="$filled:Add" $attrTemplate="$templateTrailingIcon" />
+                  <$icon $attrImageVector="$filled:ChevronLeft" $attrTemplate="$templateLeadingIcon"/>                    
+                </$dropdownMenuItem>
                 """
         )
     }
 
     @Test
     fun dropdownWithCustomColorsDisabledTest() {
+        val colorsForTemplate = """
+            {
+            '$colorAttrDisabledTextColor': '#FFCCCCCC', 
+            '$colorAttrDisabledLeadingIconColor': '#FF888888', 
+            '$colorAttrDisabledTrailingIconColor': '#FF444444'
+            }
+            """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 DropdownMenuItem(
@@ -114,11 +144,11 @@ class DropdownMenuItemShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <DropdownMenuItem colors="{'disabledTextColor': '#FFCCCCCC', 'disabledLeadingIconColor': '#FF888888', 'disabledTrailingIconColor': '#FF444444'}" enabled="false">
-                    <Text>Simple Menu Item</Text>
-                    <Icon image-vector="filled:Add" template="trailingIcon" />
-                    <Icon image-vector="filled:ChevronLeft" template="leadingIcon"/>                    
-                </DropdownMenuItem>
+                <$dropdownMenuItem $attrColors="$colorsForTemplate" $attrEnabled="false">
+                  <$text>Simple Menu Item</$text>
+                  <$icon $attrImageVector="$filled:Add" $attrTemplate="$templateTrailingIcon" />
+                  <$icon $attrImageVector="$filled:ChevronLeft" $attrTemplate="$templateLeadingIcon"/>                    
+                </$dropdownMenuItem>
                 """
         )
     }

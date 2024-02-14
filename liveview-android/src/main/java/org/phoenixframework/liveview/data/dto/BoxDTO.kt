@@ -25,9 +25,9 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * The Box will organize the components of top of each other in a Z-order.
  * ```
  * <Box size="100" background="#FFFF0000">
- *   <Icon image-vector="filled:Add" align="topStart"/>
+ *   <Icon imageVector="filled:Add" align="topStart"/>
  *   <Text align="center">Text</Text>
- *   <Icon image-vector="filled:Share" align="bottomEnd"/>
+ *   <Icon imageVector="filled:Share" align="bottomEnd"/>
  * </Box>
  * ```
  */
@@ -72,11 +72,10 @@ internal class BoxDTO private constructor(builder: Builder) :
          * The default alignment inside the Box.
          *
          * ```
-         * <Box content-alignment="bottomEnd">...</Box>
+         * <Box contentAlignment="bottomEnd">...</Box>
          * ```
-         * @param contentAlignment children's alignment inside the Box. Supported values:
-         * `topStart`, `topCenter`, `topEnd`, `centerStart`, `center`, `centerEnd`, `bottomStart`,
-         * `bottomCenter`, or `bottomEnd`.
+         * @param contentAlignment children's alignment inside the Box. See the supported at
+         * [org.phoenixframework.liveview.data.constants.AlignmentValues].
          */
         fun contentAlignment(contentAlignment: String) = apply {
             this.contentAlignment = alignmentFromString(contentAlignment, Alignment.TopStart)
@@ -86,7 +85,7 @@ internal class BoxDTO private constructor(builder: Builder) :
          * Whether the incoming min constraints should be passed to content.
          *
          * ```
-         * <Box propagate-min-constraints="true">...</Box>
+         * <Box propagateMinConstraints="true">...</Box>
          * ```
          * @param value true if the incoming min constraints should be passed to content, false
          * otherwise.

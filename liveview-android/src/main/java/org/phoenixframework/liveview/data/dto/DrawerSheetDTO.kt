@@ -132,10 +132,11 @@ internal class DrawerSheetDTO private constructor(builder: Builder) :
         /**
          * Defines the shape of this drawer's container.
          * ```
-         * <ModalDrawerSheet drawer-shape="8">...</ModalDrawerSheet>
+         * <ModalDrawerSheet drawerShape="8">...</ModalDrawerSheet>
          * ```
-         * @param shape drawer's container's shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied to all four corners.
+         * @param shape drawer's container's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or an integer representing
+         * the curve size applied to all four corners.
          */
         fun drawerShape(shape: String) = apply {
             this.drawerShape = shapeFromString(shape)
@@ -144,9 +145,10 @@ internal class DrawerSheetDTO private constructor(builder: Builder) :
         /**
          * The color used for the background of this drawer.
          * ```
-         * <ModalDrawerSheet drawer-container-color="#FFFFFF00">...</ModalDrawerSheet>
+         * <ModalDrawerSheet drawerContainerColor="#FFFFFF00">...</ModalDrawerSheet>
          * ```
-         * @param color container color in AARRGGBB format.
+         * @param color container color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun drawerContainerColor(color: String) = apply {
             this.drawerContainerColor = color.toColor()
@@ -155,9 +157,10 @@ internal class DrawerSheetDTO private constructor(builder: Builder) :
         /**
          * The preferred color for content inside this drawer..
          * ```
-         * <ModalDrawerSheet drawer-content-color="#FFCCCCCC">...</ModalDrawerSheet>
+         * <ModalDrawerSheet drawerContentColor="#FFCCCCCC">...</ModalDrawerSheet>
          * ```
-         * @param color content color in AARRGGBB format.
+         * @param color content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun drawerContentColor(color: String) = apply {
             this.drawerContentColor = color.toColor()
@@ -167,7 +170,7 @@ internal class DrawerSheetDTO private constructor(builder: Builder) :
          * A higher tonal elevation value will result in a darker color in light theme and lighter
          * color in dark theme.
          * ```
-         * <ModalDrawerSheet tonal-elevation="24">...</ModalDrawerSheet>
+         * <ModalDrawerSheet tonalElevation="24">...</ModalDrawerSheet>
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */
@@ -180,7 +183,7 @@ internal class DrawerSheetDTO private constructor(builder: Builder) :
         /**
          * Window insets to be passed to the bottom sheet window via PaddingValues params.
          * ```
-         * <ModalBottomSheet window-insets="{'bottom': '100'}" >
+         * <ModalBottomSheet windowInsets="{'bottom': '100'}" >
          * ```
          * @param insets the space, in Dp, at the each border of the window that the inset
          * represents. The supported values are: `left`, `top`, `bottom`, and `right`.

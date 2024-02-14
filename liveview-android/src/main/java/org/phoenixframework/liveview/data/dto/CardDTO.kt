@@ -268,8 +268,9 @@ internal class CardDTO private constructor(builder: Builder) :
          * ```
          * <Card shape="rectangle" >...</Button>
          * ```
-         * @param shape button's shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied to all four corners.
+         * @param shape button's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or an integer representing
+         * the curve size applied to all four corners.
          */
         fun shape(shape: String) = apply {
             this.shape = shapeFromString(shape)
@@ -314,7 +315,8 @@ internal class CardDTO private constructor(builder: Builder) :
          * ```
          * @param border a JSON representing the border object. The `width` key is an int value
          * representing card border's width content. The `color` key must be specified as a string
-         * in the AARRGGBB format
+         * in the AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun border(border: String) = apply {
             this.border = borderFromString(border)

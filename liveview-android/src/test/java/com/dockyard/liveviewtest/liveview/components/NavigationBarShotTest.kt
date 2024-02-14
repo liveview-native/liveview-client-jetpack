@@ -11,6 +11,18 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationBar
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationBarItem
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class NavigationBarShotTest : LiveViewComposableTest() {
     @Test
@@ -55,20 +67,20 @@ class NavigationBarShotTest : LiveViewComposableTest() {
                     )
                 }
             }, template = """
-                <NavigationBar>
-                  <NavigationBarItem selected="true" phx-click="" phx-value="0">
-                    <Icon image-vector="filled:HorizontalDistribute" template="icon"/>
-                    <Text template="label">Tab 1</Text>
-                  </NavigationBarItem>
-                  <NavigationBarItem selected="false" phx-click="" phx-value="1">
-                    <Icon image-vector="filled:VerticalDistribute" template="icon" />
-                    <Text template="label">Tab 2</Text>
-                  </NavigationBarItem>
-                  <NavigationBarItem selected="false" phx-click="" phx-value="2">
-                    <Icon image-vector="filled:Add" template="icon"/>
-                    <Text template="label">Tab 3</Text>
-                  </NavigationBarItem>
-                </NavigationBar>                
+                <$navigationBar>
+                  <$navigationBarItem $attrSelected="true" $attrPhxValue="0">
+                    <$icon $attrImageVector="filled:HorizontalDistribute" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Tab 1</$text>
+                  </$navigationBarItem>
+                  <$navigationBarItem $attrSelected="false" $attrPhxValue="1">
+                    <$icon $attrImageVector="filled:VerticalDistribute" $attrTemplate="$templateIcon" />
+                    <$text $attrTemplate="$templateLabel">Tab 2</$text>
+                  </$navigationBarItem>
+                  <$navigationBarItem $attrSelected="false" $attrPhxValue="2">
+                    <$icon $attrImageVector="filled:Add" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Tab 3</$text>
+                  </$navigationBarItem>
+                </$navigationBar>                
                 """
         )
     }
@@ -118,20 +130,20 @@ class NavigationBarShotTest : LiveViewComposableTest() {
                     )
                 }
             }, template = """
-                <NavigationBar container-color="#FFFFFF00" content-color="#FF00FF00">
-                  <NavigationBarItem selected="true" phx-click="" phx-value="0">
-                    <Icon image-vector="filled:HorizontalDistribute" template="icon"/>
-                    <Text template="label">Tab 1</Text>
-                  </NavigationBarItem>
-                  <NavigationBarItem selected="false" phx-click="" phx-value="1">
-                    <Icon image-vector="filled:VerticalDistribute" template="icon" />
-                    <Text template="label">Tab 2</Text>
-                  </NavigationBarItem>
-                  <NavigationBarItem selected="false" phx-click="" phx-value="2">
-                    <Icon image-vector="filled:Add" template="icon"/>
-                    <Text template="label">Tab 3</Text>
-                  </NavigationBarItem>
-                </NavigationBar>                
+                <$navigationBar $attrContainerColor="#FFFFFF00" $attrContentColor="#FF00FF00">
+                  <$navigationBarItem $attrSelected="true" $attrPhxValue="0">
+                    <$icon $attrImageVector="filled:HorizontalDistribute" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Tab 1</$text>
+                  </$navigationBarItem>
+                  <$navigationBarItem $attrSelected="false" $attrPhxValue="1">
+                    <$icon $attrImageVector="filled:VerticalDistribute" $attrTemplate="$templateIcon" />
+                    <$text $attrTemplate="$templateLabel">Tab 2</$text>
+                  </$navigationBarItem>
+                  <$navigationBarItem $attrSelected="false" $attrPhxValue="2">
+                    <$icon $attrImageVector="filled:Add" $attrTemplate="$templateIcon"/>
+                    <$text $attrTemplate="$templateLabel">Tab 3</$text>
+                  </$navigationBarItem>
+                </$navigationBar>                
                 """
         )
     }

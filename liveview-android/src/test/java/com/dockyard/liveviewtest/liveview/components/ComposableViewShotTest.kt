@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,6 +13,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
+import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Black
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Cyan
+import org.phoenixframework.liveview.data.constants.SystemColorValues.DarkGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Gray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
+import org.phoenixframework.liveview.data.constants.SystemColorValues.LightGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Magenta
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Transparent
+import org.phoenixframework.liveview.data.constants.SystemColorValues.White
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.domain.base.ComposableTypes.box
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
 
 class ComposableViewShotTest : LiveViewComposableTest() {
     @Test
@@ -45,21 +64,21 @@ class ComposableViewShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                    <Box size="40" background="system-red" />
-                    <Box size="40" background="system-green" />
-                    <Box size="40" background="system-blue" />
-                    <Box size="40" background="system-black" />
-                    <Box size="40" background="system-white" />
-                    <Box size="40" background="system-gray" />
-                    <Box size="40" background="system-light-gray" />
-                    <Box size="40" background="system-dark-gray" />
-                    <Box size="40" background="system-yellow" />
-                    <Box size="40" background="system-magenta" />
-                    <Box size="40" background="system-cyan" />
-                    <Box size="40" background="system-transparent" />
-                    <Box size="40" background="invalid-color" />
-                </Column>
+                <$column>
+                    <$box $attrSize="40" $attrBackground="$Red" />
+                    <$box $attrSize="40" $attrBackground="$Green" />
+                    <$box $attrSize="40" $attrBackground="$Blue" />
+                    <$box $attrSize="40" $attrBackground="$Black" />
+                    <$box $attrSize="40" $attrBackground="$White" />
+                    <$box $attrSize="40" $attrBackground="$Gray" />
+                    <$box $attrSize="40" $attrBackground="$LightGray" />
+                    <$box $attrSize="40" $attrBackground="$DarkGray" />
+                    <$box $attrSize="40" $attrBackground="$Yellow" />
+                    <$box $attrSize="40" $attrBackground="$Magenta" />
+                    <$box $attrSize="40" $attrBackground="$Cyan" />
+                    <$box $attrSize="40" $attrBackground="$Transparent" />
+                    <$box $attrSize="40" $attrBackground="invalid-color" />
+                </$column>
                 """
         )
     }
@@ -92,20 +111,20 @@ class ComposableViewShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <Column>
-                    <Box size="40" background="#FF0000" />
-                    <Box size="40" background="#00FF00" />
-                    <Box size="40" background="#0000FF" />
-                    <Box size="40" background="#000000" />
-                    <Box size="40" background="#FFFFFF" />
-                    <Box size="40" background="#888888" />
-                    <Box size="40" background="#CCCCCC" />
-                    <Box size="40" background="#444444" />
-                    <Box size="40" background="#FFFF00" />
-                    <Box size="40" background="#FF00FF" />
-                    <Box size="40" background="#00FFFF" />
-                    <Box size="40" background="invalid-color" />
-                </Column>
+                <$column>
+                    <$box $attrSize="40" $attrBackground="#FF0000" />
+                    <$box $attrSize="40" $attrBackground="#00FF00" />
+                    <$box $attrSize="40" $attrBackground="#0000FF" />
+                    <$box $attrSize="40" $attrBackground="#000000" />
+                    <$box $attrSize="40" $attrBackground="#FFFFFF" />
+                    <$box $attrSize="40" $attrBackground="#888888" />
+                    <$box $attrSize="40" $attrBackground="#CCCCCC" />
+                    <$box $attrSize="40" $attrBackground="#444444" />
+                    <$box $attrSize="40" $attrBackground="#FFFF00" />
+                    <$box $attrSize="40" $attrBackground="#FF00FF" />
+                    <$box $attrSize="40" $attrBackground="#00FFFF" />
+                    <$box $attrSize="40" $attrBackground="invalid-color" />
+                </$column>
                 """
         )
     }
@@ -123,33 +142,42 @@ class ComposableViewShotTest : LiveViewComposableTest() {
                         Modifier
                             .fillMaxWidth(0.1f)
                             .fillMaxHeight(0.7f)
-                            .background(Color.Red))
-                    Box(Modifier
-                        .fillMaxWidth(0.15f)
-                        .fillMaxHeight(0.5f)
-                        .background(Color.Green))
-                    Box(Modifier
-                        .fillMaxWidth(0.25f)
-                        .fillMaxHeight(0.4f)
-                        .background(Color.Blue))
-                    Box(Modifier
-                        .fillMaxWidth(0.35f)
-                        .fillMaxHeight(0.2f)
-                        .background(Color.Cyan))
-                    Box(Modifier
-                        .fillMaxWidth(0.15f)
-                        .fillMaxHeight(0.1f)
-                        .background(Color.Yellow))
+                            .background(Color.Red)
+                    )
+                    Box(
+                        Modifier
+                            .fillMaxWidth(0.15f)
+                            .fillMaxHeight(0.5f)
+                            .background(Color.Green)
+                    )
+                    Box(
+                        Modifier
+                            .fillMaxWidth(0.25f)
+                            .fillMaxHeight(0.4f)
+                            .background(Color.Blue)
+                    )
+                    Box(
+                        Modifier
+                            .fillMaxWidth(0.35f)
+                            .fillMaxHeight(0.2f)
+                            .background(Color.Cyan)
+                    )
+                    Box(
+                        Modifier
+                            .fillMaxWidth(0.15f)
+                            .fillMaxHeight(0.1f)
+                            .background(Color.Yellow)
+                    )
                 }
             },
             template = """
-                <Row height="50%" width="fill">
-                    <Box width="10%" height="70%" background="system-red"/>
-                    <Box width="15%" height="50%" background="system-green"/>
-                    <Box width="25%" height="40%" background="system-blue"/>
-                    <Box width="35%" height="20%" background="system-cyan"/>
-                    <Box width="15%" height="10%" background="system-yellow"/>
-                </Row>
+                <$row $attrHeight="50%" $attrWidth="$fill">
+                    <$box $attrWidth="10%" $attrHeight="70%" $attrBackground="$Red"/>
+                    <$box $attrWidth="15%" $attrHeight="50%" $attrBackground="$Green"/>
+                    <$box $attrWidth="25%" $attrHeight="40%" $attrBackground="$Blue"/>
+                    <$box $attrWidth="35%" $attrHeight="20%" $attrBackground="$Cyan"/>
+                    <$box $attrWidth="15%" $attrHeight="10%" $attrBackground="$Yellow"/>
+                </$row>
                 """
         )
     }

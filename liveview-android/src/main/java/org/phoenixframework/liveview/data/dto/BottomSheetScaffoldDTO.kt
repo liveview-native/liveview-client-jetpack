@@ -25,7 +25,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetOnChanged
-import org.phoenixframework.liveview.data.constants.Attrs.attrSheetPickHeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrSheetPeekHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetShadowElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetSkipHiddenState
@@ -38,6 +38,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateSheetConte
 import org.phoenixframework.liveview.data.constants.Templates.templateTopBar
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -60,7 +61,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *     <Text>Sheet content</Text>
  *   </Box>
  *   <Box size="fill" template="body">
- *     <Text font-size="24">Screen content</Text>
+ *     <Text fontSize="24">Screen content</Text>
  *   </Box>
  * </BottomSheetScaffold>
  * ```
@@ -71,10 +72,10 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  * <BottomSheetScaffold>
  *   <%= if @showSnack do %>
- *     <Snackbar message="Hi there!" dismiss-event="hideSnackbar" />
+ *     <Snackbar message="Hi there!" dismissEvent="hideSnackbar" />
  *   <% end %>
  *   <Box width="fill" template="dragHandle">
- *     <Icon image-vector="filled:ArrowUpward" align="center" />
+ *     <Icon imageVector="filled:ArrowUpward" align="center" />
  *   </Box>
  *   <TopAppBar template="topBar">
  *     <Text template="title">Title</Text>
@@ -83,14 +84,14 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *     <Text>Sheet content</Text>
  *   </Box>
  *   <Box size="fill" template="body">
- *     <Text font-size="24">Screen content</Text>
+ *     <Text fontSize="24">Screen content</Text>
  *   </Box>
  * </BottomSheetScaffold>
  * ```
- *  Use the `sheet-value` property to determine if the bottom sheet is hidden, partially expanded,
- *  or expanded. You must have to define the `sheet-on-changed` event in order to keep the
- *  `sheet-value` in sync with the server. Notice that the hidden value is only allowed if the
- *  `sheet-skip-hidden-state` set to false.
+ *  Use the `sheetValue` property to determine if the bottom sheet is hidden, partially expanded,
+ *  or expanded. You must have to define the `sheetOnChanged` event in order to keep the
+ *  `sheetValue` in sync with the server. Notice that the hidden value is only allowed if the
+ *  `sheetSkipHiddenState` set to false.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
@@ -126,7 +127,7 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
             composableNode?.children?.find { it.node?.template == templateDragHandle }
         }
         val snackBar = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.tag == ScaffoldDtoFactory.tagSnackbar }
+            composableNode?.children?.find { it.node?.tag == ComposableTypes.snackbar }
         }
         val snackbarHostState = remember { SnackbarHostState() }
         val state =
@@ -233,9 +234,10 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
         /**
          * The color used for the background of this BottomSheetScaffold.
          * ```
-         * <BottomSheetScaffold container-color="#FFFFFFFF" >
+         * <BottomSheetScaffold containerColor="#FFFFFFFF" >
          * ```
-         * @param containerColor the background color in AARRGGBB format.
+         * @param containerColor the background color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun containerColor(containerColor: String) = apply {
             this.containerColor = containerColor.toColor()
@@ -244,9 +246,10 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
         /**
          * The preferred color for content inside this BottomSheetScaffold.
          * ```
-         * <BottomSheetScaffold content-color="#FF000000" >
+         * <BottomSheetScaffold contentColor="#FF000000" >
          * ```
-         * @param contentColor the content color in AARRGGBB format.
+         * @param contentColor the content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun contentColor(contentColor: String) = apply {
             this.contentColor = contentColor.toColor()
@@ -255,7 +258,7 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
         /**
          * Function in the server to be called when the bottom sheet state changes.
          * ```
-         * <BottomSheetScaffold sheet-on-changed="updateBottomSheet" >
+         * <BottomSheetScaffold sheetOnChanged="updateBottomSheet" >
          * ```
          * @param onChanged the name of the function to be called in the server when the bottom
          * sheet is expanded.
@@ -267,9 +270,10 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
         /**
          * The color used for the sheet's background of this BottomSheetScaffold.
          * ```
-         * <BottomSheetScaffold sheet-container-color="#FFFFFFFF" >
+         * <BottomSheetScaffold sheetContainerColor="#FFFFFFFF" >
          * ```
-         * @param containerColor the background color in AARRGGBB format.
+         * @param containerColor the background color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun sheetContainerColor(containerColor: String) = apply {
             this.sheetContainerColor = containerColor.toColor()
@@ -278,9 +282,10 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
         /**
          * The preferred color for sheet's content inside this BottomSheetScaffold.
          * ```
-         * <BottomSheetScaffold sheet-content-color="#FF000000" >
+         * <BottomSheetScaffold sheetContentColor="#FF000000" >
          * ```
-         * @param contentColor the content color in AARRGGBB format.
+         * @param contentColor the content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun sheetContentColor(contentColor: String) = apply {
             this.sheetContentColor = contentColor.toColor()
@@ -289,7 +294,7 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
         /**
          * The shadow elevation of the bottom sheet.
          * ```
-         * <BottomSheetScaffold sheet-shadow-elevation="12" >
+         * <BottomSheetScaffold sheetShadowElevation="12" >
          * ```
          * @param shadowElevation int value indicating the shadow elevation.
          */
@@ -302,7 +307,7 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
         /**
          * The height of the bottom sheet when it is collapsed.
          * ```
-         * <BottomSheetScaffold sheet-peek-height="50" >
+         * <BottomSheetScaffold sheetPeekHeight="50" >
          * ```
          * @param height height of the bottom sheet peek area (whe it is not hidden).
          */
@@ -315,10 +320,11 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
         /**
          * Defines the shape of the BottomSheetScaffold sheet's container.
          * ```
-         * <BottomSheetScaffold sheet-shape="16" >
+         * <BottomSheetScaffold sheetShape="16" >
          * ```
-         * @param shape BottomSheetScaffold's sheet shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied for all four corners.
+         * @param shape BottomSheetScaffold's sheet shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * representing the curve size applied for all four corners.
          */
         fun sheetShape(shape: String) = apply {
             if (shape.isNotEmpty()) {
@@ -329,7 +335,7 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
         /**
          * Whether the sheet swiping is enabled and should react to the user's input
          * ```
-         * <BottomSheetScaffold sheet-swipe-enabled="true" >
+         * <BottomSheetScaffold sheetSwipeEnabled="true" >
          * ```
          * @param enabled true if the sheet swiping is enabled, false otherwise.
          */
@@ -344,7 +350,7 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
          * on top of the container. A higher tonal elevation value will result in a darker color in
          * light theme and lighter color in dark theme.
          * ```
-         * <BottomSheetScaffold sheet-tonal-elevation="12" >
+         * <BottomSheetScaffold sheetTonalElevation="12" >
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */
@@ -357,7 +363,7 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
         /**
          * Whether Hidden state is skipped for BottomSheetScaffold.
          * ```
-         * <BottomSheetScaffold sheet-skip-hidden-state="true" >
+         * <BottomSheetScaffold sheetSkipHiddenState="true" >
          * ```
          * @param skipHiddenState true if the hidden state must be skipped for BottomSheetScaffold,
          * false otherwise.
@@ -368,12 +374,12 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
 
         /**
          * Possible values of SheetState. The `hidden` value is only allowed setting the
-         * `sheet-skip-hidden-state` property to true.
+         * `sheetSkipHiddenState` property to true.
          * ```
-         * <BottomSheetScaffold sheet-value="expanded" >
+         * <BottomSheetScaffold sheetValue="expanded" >
          * ```
-         * @param sheetValue the value representing the state of the bottom sheet. The possible
-         * values are: `expanded`, `partiallyExpanded`, and `hidden`.
+         * @param sheetValue the value representing the state of the bottom sheet. See the possible
+         * values at [org.phoenixframework.liveview.data.constants.SheetValues].
          */
         fun sheetValue(sheetValue: String) = apply {
             this.sheetValue = sheetValue.toSheetValue() ?: SheetValue.PartiallyExpanded
@@ -395,7 +401,7 @@ internal object BottomSheetScaffoldDtoFactory :
                 attrSheetContainerColor -> builder.sheetContainerColor(attribute.value)
                 attrSheetContentColor -> builder.sheetContentColor(attribute.value)
                 attrSheetOnChanged -> builder.sheetOnChanged(attribute.value)
-                attrSheetPickHeight -> builder.sheetPickHeight(attribute.value)
+                attrSheetPeekHeight -> builder.sheetPickHeight(attribute.value)
                 attrSheetShadowElevation -> builder.sheetShadowElevation(attribute.value)
                 attrSheetShape -> builder.sheetShape(attribute.value)
                 attrSheetSkipHiddenState -> builder.sheetSkipHiddenState(attribute.value)
@@ -408,9 +414,7 @@ internal object BottomSheetScaffoldDtoFactory :
 
     override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
         return mapOf(
-            tagSnackbar to SnackbarDtoFactory
+            ComposableTypes.snackbar to SnackbarDtoFactory
         )
     }
-
-    private const val tagSnackbar = ScaffoldDtoFactory.tagSnackbar
 }

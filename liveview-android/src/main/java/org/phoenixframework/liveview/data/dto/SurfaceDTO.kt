@@ -51,21 +51,21 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * - checkable: the surface has a checked state and a change action that receives the new check
  * state as parameter.
  * ```
- * <Surface shape="12" color="system-blue" content-color="system-white">
+ * <Surface shape="12" color="system-blue" contentColor="system-white">
  *   <Text padding="16">Simple Surface</Text>
  * </Surface>
  *
- * <Surface shape="12" color="system-blue" content-color="system-white"
+ * <Surface shape="12" color="system-blue" contentColor="system-white"
  *   phx-click="onClick">
  *   <Text padding="32">Clickable Surface</Text>
  * </Surface>
  *
- * <Surface shape="12" color="system-blue" content-color="system-white"
+ * <Surface shape="12" color="system-blue" contentColor="system-white"
  *   selected={"#{@isSelected}"} phx-click="selectItem">
  *   <Text padding="32">Selectable Surface</Text>
  * </Surface>
  *
- * <Surface shape="12" color="system-blue" content-color="system-white"
+ * <Surface shape="12" color="system-blue" contentColor="system-white"
  *   checked={"#{@isChecked}"} phx-change="toggleCheck">
  *   <Text padding="32">Checkable Surface</Text>
  * </Surface>
@@ -222,7 +222,7 @@ internal class SurfaceDTO private constructor(builder: Builder) :
         }
 
         /**
-         * callback to be invoked when the toggleable Surface is clicked.
+         * Callback to be invoked when the toggleable Surface is clicked.
          */
         fun checked(checked: String) = apply {
             this.checked = checked.toBoolean()
@@ -283,8 +283,9 @@ internal class SurfaceDTO private constructor(builder: Builder) :
          * Defines the surface's shape as well its shadow. A shadow is only displayed if the
          * tonalElevation is greater than zero.
          *
-         * @param shape surface's shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied for all four corners.
+         * @param shape surface's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * representing the curve size applied for all four corners.
          */
         fun shape(shape: String) = apply {
             if (shape.isNotEmpty()) {

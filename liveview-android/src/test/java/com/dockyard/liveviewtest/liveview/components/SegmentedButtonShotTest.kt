@@ -16,6 +16,48 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
+import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
+import org.phoenixframework.liveview.data.constants.Attrs.attrColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrSpace
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActiveBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActiveContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActiveContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledActiveBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledActiveContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledActiveContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledInactiveBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledInactiveContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledInactiveContentColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInactiveBorderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInactiveContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInactiveContentColor
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.outlined
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Black
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Cyan
+import org.phoenixframework.liveview.data.constants.SystemColorValues.DarkGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Gray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
+import org.phoenixframework.liveview.data.constants.SystemColorValues.LightGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Magenta
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.data.constants.SystemColorValues.White
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.multiChoiceSegmentedButtonRow
+import org.phoenixframework.liveview.domain.base.ComposableTypes.segmentedButton
+import org.phoenixframework.liveview.domain.base.ComposableTypes.singleChoiceSegmentedButtonRow
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 @OptIn(ExperimentalMaterial3Api::class)
 class SegmentedButtonShotTest : LiveViewComposableTest() {
@@ -37,17 +79,17 @@ class SegmentedButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <SingleChoiceSegmentedButtonRow>
-                  <SegmentedButton selected="false" phx-click="">
-                    <Text template="label">Option 1</Text>
-                  </SegmentedButton>
-                  <SegmentedButton selected="true" phx-click="">
-                    <Text template="label">Option 2</Text>
-                  </SegmentedButton>
-                  <SegmentedButton selected="false" phx-click="">
-                    <Text template="label">Option 3</Text>
-                  </SegmentedButton>
-                </SingleChoiceSegmentedButtonRow>            
+                <$singleChoiceSegmentedButtonRow>
+                  <$segmentedButton $attrSelected="false">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                  </$segmentedButton>
+                  <$segmentedButton $attrSelected="true">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                  </$segmentedButton>
+                  <$segmentedButton $attrSelected="false">
+                    <$text $attrTemplate="$templateLabel">Option 3</$text>
+                  </$segmentedButton>
+                </$singleChoiceSegmentedButtonRow>            
                 """
         )
     }
@@ -70,17 +112,17 @@ class SegmentedButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <MultiChoiceSegmentedButtonRow>
-                  <SegmentedButton checked="true" phx-change="">
-                    <Text template="label">Option 1</Text>
-                  </SegmentedButton>
-                  <SegmentedButton checked="false" phx-change="">
-                    <Text template="label">Option 2</Text>
-                  </SegmentedButton>
-                  <SegmentedButton checked="true" phx-change="">
-                    <Text template="label">Option 3</Text>
-                  </SegmentedButton>
-                </MultiChoiceSegmentedButtonRow>            
+                <$multiChoiceSegmentedButtonRow>
+                  <$segmentedButton $attrChecked="true">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                  </$segmentedButton>
+                  <$segmentedButton $attrChecked="false">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                  </$segmentedButton>
+                  <$segmentedButton $attrChecked="true">
+                    <$text $attrTemplate="$templateLabel">Option 3</$text>
+                  </$segmentedButton>
+                </$multiChoiceSegmentedButtonRow>            
                 """
         )
     }
@@ -105,17 +147,17 @@ class SegmentedButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <SingleChoiceSegmentedButtonRow space="20">
-                  <SegmentedButton selected="false" phx-click="">
-                    <Text template="label">Option 1</Text>
-                  </SegmentedButton>
-                  <SegmentedButton selected="true" phx-click="">
-                    <Text template="label">Option 2</Text>
-                  </SegmentedButton>
-                  <SegmentedButton selected="false" phx-click="">
-                    <Text template="label">Option 3</Text>
-                  </SegmentedButton>
-                </SingleChoiceSegmentedButtonRow>            
+                <$singleChoiceSegmentedButtonRow $attrSpace="20">
+                  <$segmentedButton $attrSelected="false">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                  </$segmentedButton>
+                  <$segmentedButton $attrSelected="true">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                  </$segmentedButton>
+                  <$segmentedButton $attrSelected="false">
+                    <$text $attrTemplate="$templateLabel">Option 3</$text>
+                  </$segmentedButton>
+                </$singleChoiceSegmentedButtonRow>            
                 """
         )
     }
@@ -138,17 +180,17 @@ class SegmentedButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <MultiChoiceSegmentedButtonRow space="20">
-                  <SegmentedButton checked="true" phx-change="">
-                    <Text template="label">Option 1</Text>
-                  </SegmentedButton>
-                  <SegmentedButton checked="false" phx-change="">
-                    <Text template="label">Option 2</Text>
-                  </SegmentedButton>
-                  <SegmentedButton checked="true" phx-change="">
-                    <Text template="label">Option 3</Text>
-                  </SegmentedButton>
-                </MultiChoiceSegmentedButtonRow>
+                <$multiChoiceSegmentedButtonRow $attrSpace="20">
+                  <$segmentedButton $attrChecked="true">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                  </$segmentedButton>
+                  <$segmentedButton $attrChecked="false">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                  </$segmentedButton>
+                  <$segmentedButton $attrChecked="true">
+                    <$text $attrTemplate="$templateLabel">Option 3</$text>
+                  </$segmentedButton>
+                </$multiChoiceSegmentedButtonRow>
                 """
         )
     }
@@ -182,20 +224,20 @@ class SegmentedButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <SingleChoiceSegmentedButtonRow>
-                  <SegmentedButton selected="false" phx-click="" 
-                    shape="8" border="{'width': '2', 'color': 'system-magenta'}">
-                    <Text template="label">Option 1</Text>
-                  </SegmentedButton>
-                  <SegmentedButton selected="true" phx-click="" shape="8" 
-                    border="{'width': '2', 'color': 'system-magenta'}">
-                    <Text template="label">Option 2</Text>
-                  </SegmentedButton>
-                  <SegmentedButton selected="false" phx-click="" shape="8" 
-                    border="{'width': '2', 'color': 'system-magenta'}">
-                    <Text template="label">Option 3</Text>
-                  </SegmentedButton>
-                </SingleChoiceSegmentedButtonRow>            
+                <$singleChoiceSegmentedButtonRow>
+                  <$segmentedButton $attrSelected="false" 
+                    $attrShape="8" $attrBorder="{'$attrWidth': '2', '$attrColor': '$Magenta'}">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                  </$segmentedButton>
+                  <$segmentedButton $attrSelected="true" $attrShape="8" 
+                    $attrBorder="{'$attrWidth': '2', '$attrColor': '$Magenta'}">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                  </$segmentedButton>
+                  <$segmentedButton $attrSelected="false" $attrShape="8" 
+                    $attrBorder="{'$attrWidth': '2', '$attrColor': '$Magenta'}">
+                    <$text $attrTemplate="$templateLabel">Option 3</$text>
+                  </$segmentedButton>
+                </$singleChoiceSegmentedButtonRow>            
                 """
         )
     }
@@ -234,21 +276,21 @@ class SegmentedButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <SingleChoiceSegmentedButtonRow>
-                  <SegmentedButton selected="false" phx-click="" 
-                    shape="8" border="{'width': '2', 'color': 'system-magenta'}">
-                    <Text template="label">Option 1</Text>
-                  </SegmentedButton>
-                  <SegmentedButton selected="true" phx-click="" shape="8" 
-                    border="{'width': '2', 'color': 'system-magenta'}">
-                    <Text template="label">Option 2</Text>
-                    <Icon template="icon" image-vector="outlined:CheckCircle" />
-                  </SegmentedButton>
-                  <SegmentedButton selected="false" phx-click="" shape="8" 
-                    border="{'width': '2', 'color': 'system-magenta'}">
-                    <Text template="label">Option 3</Text>
-                  </SegmentedButton>
-                </SingleChoiceSegmentedButtonRow>            
+                <$singleChoiceSegmentedButtonRow>
+                  <$segmentedButton $attrSelected="false" 
+                    $attrShape="8" $attrBorder="{'$attrWidth': '2', '$attrColor': '$Magenta'}">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                  </$segmentedButton>
+                  <$segmentedButton $attrSelected="true" $attrShape="8" 
+                    $attrBorder="{'$attrWidth': '2', '$attrColor': '$Magenta'}">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                    <$icon $attrTemplate="$templateIcon" $attrImageVector="$outlined:CheckCircle" />
+                  </$segmentedButton>
+                  <$segmentedButton $attrSelected="false" $attrShape="8" 
+                    $attrBorder="{'$attrWidth': '2', '$attrColor': '$Magenta'}">
+                    <$text $attrTemplate="$templateLabel">Option 3</$text>
+                  </$segmentedButton>
+                </$singleChoiceSegmentedButtonRow>            
                 """
         )
     }
@@ -257,18 +299,18 @@ class SegmentedButtonShotTest : LiveViewComposableTest() {
     fun multiChoiceSegmentedButtonWithCustomColorsTest() {
         val colorsForTemplate = """
             {
-            'activeContainerColor': 'system-green',
-            'activeContentColor': 'system-yellow',
-            'activeBorderColor': 'system-blue',
-            'inactiveContainerColor': 'system-cyan',
-            'inactiveContentColor': 'system-white',
-            'inactiveBorderColor': 'system-red',
-            'disabledActiveContainerColor': 'system-light-gray',
-            'disabledActiveContentColor': 'system-dark-gray',
-            'disabledActiveBorderColor': 'system-magenta',
-            'disabledInactiveContainerColor': 'system-gray',
-            'disabledInactiveContentColor': 'system-white',
-            'disabledInactiveBorderColor': 'system-black'
+            '$colorAttrActiveContainerColor': '$Green',
+            '$colorAttrActiveContentColor': '$Yellow',
+            '$colorAttrActiveBorderColor': '$Blue',
+            '$colorAttrInactiveContainerColor': '$Cyan',
+            '$colorAttrInactiveContentColor': '$White',
+            '$colorAttrInactiveBorderColor': '$Red',
+            '$colorAttrDisabledActiveContainerColor': '$LightGray',
+            '$colorAttrDisabledActiveContentColor': '$DarkGray',
+            '$colorAttrDisabledActiveBorderColor': '$Magenta',
+            '$colorAttrDisabledInactiveContainerColor': '$Gray',
+            '$colorAttrDisabledInactiveContentColor': '$White',
+            '$colorAttrDisabledInactiveBorderColor': '$Black'
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -330,22 +372,26 @@ class SegmentedButtonShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <MultiChoiceSegmentedButtonRow>
-                  <SegmentedButton checked="false" phx-click="" shape="8" colors="$colorsForTemplate">
-                    <Text template="label">Option 1</Text>
-                  </SegmentedButton>
-                  <SegmentedButton checked="true" phx-click="" shape="8" colors="$colorsForTemplate">
-                    <Text template="label">Option 2</Text>
-                    <Icon template="icon" image-vector="outlined:CheckCircle" />
-                  </SegmentedButton>
-                  <SegmentedButton checked="false" enabled="false" phx-click="" shape="8" colors="$colorsForTemplate">
-                    <Text template="label">Option 3</Text>
-                  </SegmentedButton>
-                  <SegmentedButton checked="true" enabled="false" phx-click="" shape="8" colors="$colorsForTemplate">
-                    <Text template="label">Option 4</Text>
-                    <Icon template="icon" image-vector="outlined:CheckCircle" />
-                  </SegmentedButton>                  
-                </MultiChoiceSegmentedButtonRow>            
+                <$multiChoiceSegmentedButtonRow>
+                  <$segmentedButton $attrChecked="false" 
+                    $attrShape="8" $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateLabel">Option 1</$text>
+                  </$segmentedButton>
+                  <$segmentedButton $attrChecked="true" 
+                    $attrShape="8" $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateLabel">Option 2</$text>
+                    <$icon $attrTemplate="$templateIcon" $attrImageVector="$outlined:CheckCircle" />
+                  </$segmentedButton>
+                  <$segmentedButton $attrChecked="false" $attrEnabled="false" 
+                    $attrShape="8" $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateLabel">Option 3</$text>
+                  </$segmentedButton>
+                  <$segmentedButton $attrChecked="true" $attrEnabled="false" 
+                    $attrShape="8" $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateLabel">Option 4</$text>
+                    <$icon $attrTemplate="$templateIcon" $attrImageVector="$outlined:CheckCircle" />
+                  </$segmentedButton>                  
+                </$multiChoiceSegmentedButtonRow>            
                 """
         )
     }

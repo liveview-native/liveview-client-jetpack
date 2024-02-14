@@ -15,6 +15,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.AlignmentValues.center
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrIsOpen
+import org.phoenixframework.liveview.data.constants.Attrs.attrOnClose
+import org.phoenixframework.liveview.data.constants.Attrs.attrOnOpen
+import org.phoenixframework.liveview.data.constants.Attrs.attrScrimColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.data.constants.Templates.templateDrawerContent
+import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.domain.base.ComposableTypes.box
+import org.phoenixframework.liveview.domain.base.ComposableTypes.dismissibleNavigationDrawer
+import org.phoenixframework.liveview.domain.base.ComposableTypes.modalDrawerSheet
+import org.phoenixframework.liveview.domain.base.ComposableTypes.modalNavigationDrawer
+import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationDrawerItem
+import org.phoenixframework.liveview.domain.base.ComposableTypes.permanentNavigationDrawer
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class NavigationDrawerShotTest : LiveViewComposableTest() {
     @Test
@@ -49,19 +69,19 @@ class NavigationDrawerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <ModalNavigationDrawer is-open="true" on-close="" on-open="">
-                  <ModalDrawerSheet template="drawerContent">
-                    <NavigationDrawerItem selected="true" phx-click="">
-                      <Text template="label">Option 1</Text>
-                    </NavigationDrawerItem>
-                    <NavigationDrawerItem selected="false" phx-click="">
-                      <Text template="label">Option 2</Text>
-                    </NavigationDrawerItem>
-                  </ModalDrawerSheet>                      
-                  <Box content-alignment="center">
-                    <Text>Screen Content</Text>
-                  </Box>
-                </ModalNavigationDrawer>
+                <$modalNavigationDrawer $attrIsOpen="true" $attrOnClose="" $attrOnOpen="">
+                  <$modalDrawerSheet $attrTemplate="$templateDrawerContent">
+                    <$navigationDrawerItem $attrSelected="true">
+                      <$text $attrTemplate="$templateLabel">Option 1</$text>
+                    </$navigationDrawerItem>
+                    <$navigationDrawerItem $attrSelected="false">
+                      <$text $attrTemplate="$templateLabel">Option 2</$text>
+                    </$navigationDrawerItem>
+                  </$modalDrawerSheet>                      
+                  <$box $attrContentAlignment="$center">
+                    <$text>Screen Content</$text>
+                  </$box>
+                </$modalNavigationDrawer>
                 """
         )
     }
@@ -99,19 +119,23 @@ class NavigationDrawerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <ModalNavigationDrawer scrim-color="system-red" is-open="true" on-close="" on-open="">
-                  <ModalDrawerSheet template="drawerContent">
-                    <NavigationDrawerItem selected="true" phx-click="">
-                      <Text template="label">Option 1</Text>
-                    </NavigationDrawerItem>
-                    <NavigationDrawerItem selected="false" phx-click="">
-                      <Text template="label">Option 2</Text>
-                    </NavigationDrawerItem>
-                  </ModalDrawerSheet>                      
-                  <Box content-alignment="center">
-                    <Text>Screen Content</Text>
-                  </Box>
-                </ModalNavigationDrawer>
+                <$modalNavigationDrawer 
+                  $attrScrimColor="$Red" 
+                  $attrIsOpen="true" 
+                  $attrOnClose="" 
+                  $attrOnOpen="">
+                  <$modalDrawerSheet $attrTemplate="$templateDrawerContent">
+                    <$navigationDrawerItem $attrSelected="true">
+                      <$text $attrTemplate="$templateLabel">Option 1</$text>
+                    </$navigationDrawerItem>
+                    <$navigationDrawerItem $attrSelected="false">
+                      <$text $attrTemplate="$templateLabel">Option 2</$text>
+                    </$navigationDrawerItem>
+                  </$modalDrawerSheet>                      
+                  <$box $attrContentAlignment="$center">
+                    <$text>Screen Content</$text>
+                  </$box>
+                </$modalNavigationDrawer>
                 """
         )
     }
@@ -149,19 +173,19 @@ class NavigationDrawerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <DismissibleNavigationDrawer is-open="true" on-close="" on-open="" size="fill">
-                  <ModalDrawerSheet template="drawerContent">
-                    <NavigationDrawerItem selected="true" phx-click="">
-                      <Text template="label">Option 1</Text>
-                    </NavigationDrawerItem>
-                    <NavigationDrawerItem selected="false" phx-click="">
-                      <Text template="label">Option 2</Text>
-                    </NavigationDrawerItem>
-                  </ModalDrawerSheet>                      
-                  <Box content-alignment="center">
-                    <Text>Screen Content</Text>
-                  </Box>
-                </DismissibleNavigationDrawer>
+                <$dismissibleNavigationDrawer $attrIsOpen="true" $attrOnClose="" $attrOnOpen="" $attrSize="$fill">
+                  <$modalDrawerSheet $attrTemplate="$templateDrawerContent">
+                    <$navigationDrawerItem $attrSelected="true">
+                      <$text $attrTemplate="$templateLabel">Option 1</$text>
+                    </$navigationDrawerItem>
+                    <$navigationDrawerItem $attrSelected="false">
+                      <$text $attrTemplate="$templateLabel">Option 2</$text>
+                    </$navigationDrawerItem>
+                  </$modalDrawerSheet>                      
+                  <$box $attrContentAlignment="$center">
+                    <$text>Screen Content</$text>
+                  </$box>
+                </$dismissibleNavigationDrawer>
                 """
         )
     }
@@ -197,19 +221,19 @@ class NavigationDrawerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <PermanentNavigationDrawer is-open="true" on-close="" on-open="">
-                  <ModalDrawerSheet template="drawerContent">
-                    <NavigationDrawerItem selected="true" phx-click="">
-                      <Text template="label">Option 1</Text>
-                    </NavigationDrawerItem>
-                    <NavigationDrawerItem selected="false" phx-click="">
-                      <Text template="label">Option 2</Text>
-                    </NavigationDrawerItem>
-                  </ModalDrawerSheet>                      
-                  <Box content-alignment="center">
-                    <Text>Screen Content</Text>
-                  </Box>
-                </PermanentNavigationDrawer>
+                <$permanentNavigationDrawer $attrIsOpen="true" $attrOnClose="" $attrOnOpen="">
+                  <$modalDrawerSheet $attrTemplate="$templateDrawerContent">
+                    <$navigationDrawerItem $attrSelected="true">
+                      <$text $attrTemplate="$templateLabel">Option 1</$text>
+                    </$navigationDrawerItem>
+                    <$navigationDrawerItem $attrSelected="false">
+                      <$text $attrTemplate="$templateLabel">Option 2</$text>
+                    </$navigationDrawerItem>
+                  </$modalDrawerSheet>                      
+                  <$box $attrContentAlignment="$center">
+                    <$text>Screen Content</$text>
+                  </$box>
+                </$permanentNavigationDrawer>
                 """
         )
     }

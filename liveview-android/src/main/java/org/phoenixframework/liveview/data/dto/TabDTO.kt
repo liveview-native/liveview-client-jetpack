@@ -32,7 +32,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  * <Tab selected="true" phx-click="selectTab" phx-value="0">
  *   <Text template="text">Tab Title</Text>
- *   <Icon template="icon" image-vector="filled:Add"/>
+ *   <Icon template="icon" imageVector="filled:Add"/>
  * </Tab>
  * ```
  * The code above shows the icon on top of the title. In order to have the icon on the left of the
@@ -42,7 +42,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  * <Tab selected="true" phx-click="selectTab" phx-value="0">
  *   <Row>
- *     <Icon template="icon" image-vector="filled:Add"/>
+ *     <Icon template="icon" imageVector="filled:Add"/>
  *     <Text>Tab Title</Text>
  *   </Row>
  * </Tab>
@@ -178,9 +178,10 @@ internal class TabDTO private constructor(builder: Builder) :
         /**
          * The color used for the background of this tab row.
          * ```
-         * <Tab selected-content-color="#FFFFFFFF" />
+         * <Tab selectedContentColor="#FFFFFFFF" />
          * ```
-         * @param selectedContentColor the background color in AARRGGBB format.
+         * @param selectedContentColor the background color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun selectedContentColor(selectedContentColor: String) = apply {
             this.selectedContentColor = selectedContentColor.toColor()
@@ -189,9 +190,10 @@ internal class TabDTO private constructor(builder: Builder) :
         /**
          * The preferred color for content inside this tab row.
          * ```
-         * <Tab unselected-content-color="#FF000000" />
+         * <Tab unselectedContentColor="#FF000000" />
          * ```
-         * @param unselectedContentColor the content color in AARRGGBB format.
+         * @param unselectedContentColor the content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun unselectedContentColor(unselectedContentColor: String) = apply {
             this.unselectedContentColor = unselectedContentColor.toColor()

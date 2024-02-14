@@ -27,13 +27,13 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  * <NavigationRail>
  *   <NavigationRailItem selected="true">
- *     <Icon image-vector="filled:Favorite" template="icon"/>
+ *     <Icon imageVector="filled:Favorite" template="icon"/>
  *   </NavigationRailItem>
  *   <NavigationRailItem selected="false">
- *     <Icon image-vector="filled:Home" template="icon"/>
+ *     <Icon imageVector="filled:Home" template="icon"/>
  *   </NavigationRailItem>
  *   <NavigationRailItem selected="false">
- *     <Icon image-vector="filled:Person" template="icon"/>
+ *     <Icon imageVector="filled:Person" template="icon"/>
  *   </NavigationRailItem>
  * </NavigationRail>
  * ```
@@ -90,9 +90,10 @@ internal class NavigationRailDTO private constructor(builder: Builder) :
         /**
          * The color used for the background of this navigation rail.
          * ```
-         * <NavigationRail container-color="system-blue">...</NavigationRail>
+         * <NavigationRail containerColor="system-blue">...</NavigationRail>
          * ```
-         * @param color container color in AARRGGBB format or one of the `system-*` colors.
+         * @param color container color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun containerColor(color: String) = apply {
             if (color.isNotEmpty()) {
@@ -103,9 +104,10 @@ internal class NavigationRailDTO private constructor(builder: Builder) :
         /**
          * The preferred color for content inside this navigation rail.
          * ```
-         * <NavigationRail content-color="system-yellow">...</NavigationRail>
+         * <NavigationRail contentColor="system-yellow">...</NavigationRail>
          * ```
-         * @param color content color in AARRGGBB format or one of the `system-*` colors.
+         * @param color content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun contentColor(color: String) = apply {
             if (color.isNotEmpty()) {
@@ -116,7 +118,7 @@ internal class NavigationRailDTO private constructor(builder: Builder) :
         /**
          * A window insets of the navigation rail.
          * ```
-         * <NavigationRail window-insets="{'bottom': '100'}" >
+         * <NavigationRail windowInsets="{'bottom': '100'}" >
          * ```
          * @param insets the space, in Dp, at the each border of the window that the inset
          * represents. The supported values are: `left`, `top`, `bottom`, and `right`.

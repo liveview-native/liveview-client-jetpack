@@ -15,6 +15,59 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrColors
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrIsError
+import org.phoenixframework.liveview.data.constants.Attrs.attrMinLines
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.Attrs.attrVisualTransformation
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledPlaceholderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledPrefixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSuffixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSupportingTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorPlaceholderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorPrefixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorSuffixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorSupportingTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrErrorTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedContainerColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedLabelColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedLeadingIconColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedPlaceholderColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedPrefixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedSuffixColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedSupportingTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedTextColor
+import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedTrailingIconColor
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredFilled
+import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.ShapeValues.circle
+import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
+import org.phoenixframework.liveview.data.constants.Templates.templatePlaceholder
+import org.phoenixframework.liveview.data.constants.Templates.templatePrefix
+import org.phoenixframework.liveview.data.constants.Templates.templateSuffix
+import org.phoenixframework.liveview.data.constants.Templates.templateSupportingText
+import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
+import org.phoenixframework.liveview.data.constants.VisualTransformationValues
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
+import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedTextField
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.domain.base.ComposableTypes.textField
 
 class TextFieldShotTest : LiveViewComposableTest() {
     @Test
@@ -34,14 +87,14 @@ class TextFieldShotTest : LiveViewComposableTest() {
                     )
                 }
             }, template = """
-                <Column>
-                    <TextField phx-value="Text 1" phx-change="" />
-                    <TextField phx-value="Text 2" phx-change="" min-lines="3" />
-                    <TextField phx-value="Text 3" phx-change="" enabled="false" />
-                    <TextField phx-value="Text 4" phx-change="" shape="circle" />
-                    <TextField phx-value="Text 5" phx-change="" is-error="true" />
-                    <TextField phx-value="Text 6" phx-change="" visual-transformation="password" />
-                </Column>
+                <$column>
+                    <$textField $attrPhxValue="Text 1" />
+                    <$textField $attrPhxValue="Text 2" $attrMinLines="3" />
+                    <$textField $attrPhxValue="Text 3" $attrEnabled="false" />
+                    <$textField $attrPhxValue="Text 4" $attrShape="$circle" />
+                    <$textField $attrPhxValue="Text 5" $attrIsError="true" />
+                    <$textField $attrPhxValue="Text 6" $attrVisualTransformation="${VisualTransformationValues.password}" />
+                </$column>
                 """
         )
     }
@@ -155,45 +208,45 @@ class TextFieldShotTest : LiveViewComposableTest() {
                     )
                 }
             }, template = """
-                <Column>
-                  <TextField phx-value="Text 1" phx-change="">
-                    <Text template="label">Label</Text>
-                  </Text>
-                  <TextField phx-value="" phx-change="">
-                    <Text template="label">Label</Text>
-                    <Text template="placeholder">Placeholder</Text>
-                  </Text>
-                  <TextField phx-value="Text 3" phx-change="">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" />                    
-                  </Text>     
-                  <TextField phx-value="Text 4" phx-change="">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" /> 
-                  </Text>                        
-                  <TextField phx-value="Text 5" phx-change="">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
-                    <Text template="prefix">Pre</Text>
-                  </Text>  
-                  <TextField phx-value="Text 6" phx-change="">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
-                    <Text template="prefix">Pre</Text>
-                    <Text template="suffix">Suf</Text>
-                  </Text>   
-                  <TextField phx-value="Text 7" phx-change="">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
-                    <Text template="prefix">Pre</Text>
-                    <Text template="suffix">Suf</Text>
-                    <Text template="supportingText">Supporting</Text>
-                  </Text>                                                                
-                </Column>
+                <$column>
+                  <$textField $attrPhxValue="Text 1" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                  </$textField>
+                  <$textField $attrPhxValue="" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                  </$textField>
+                  <$textField $attrPhxValue="Text 3" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:AccountCircle" />                    
+                  </$textField>     
+                  <$textField $attrPhxValue="Text 4" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" /> 
+                  </$textField>                        
+                  <$textField $attrPhxValue="Text 5" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" />
+                    <$text $attrTemplate="$templatePrefix">Pre</$text>
+                  </$textField>  
+                  <$textField $attrPhxValue="Text 6" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" />
+                    <$text $attrTemplate="$templatePrefix">Pre</$text>
+                    <$text $attrTemplate="$templateSuffix">Suf</$text>
+                  </$textField>   
+                  <$textField $attrPhxValue="Text 7" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" />
+                    <$text $attrTemplate="$templatePrefix">Pre</$text>
+                    <$text $attrTemplate="$templateSuffix">Suf</$text>
+                    <$text $attrTemplate="$templateSupportingText">Supporting</$text>
+                  </$textField>                                                                
+                </$column>
                 """
         )
     }
@@ -202,33 +255,33 @@ class TextFieldShotTest : LiveViewComposableTest() {
     fun textFieldCustomColorsTest() {
         val colorsForTemplate = """
             {
-                'unfocusedTextColor': '#FF0000FF', 
-                'unfocusedContainerColor': '#FF00FF00', 
-                'unfocusedLeadingIconColor': '#FFFFFFFF', 
-                'unfocusedTrailingIconColor': '#FFFF00FF', 
-                'unfocusedLabelColor': '#FFFF0000', 
-                'unfocusedPlaceholderColor': '#FFCCCCCC', 
-                'unfocusedSupportingTextColor': '#FF444444', 
-                'unfocusedPrefixColor': '#FF00FFFF', 
-                'unfocusedSuffixColor': '#FF000000', 
-                'disabledTextColor': '#FF888888', 
-                'disabledContainerColor': '#FFCCCCCC', 
-                'disabledLeadingIconColor': '#FF444444', 
-                'disabledTrailingIconColor': '#FF000000', 
-                'disabledLabelColor': '#FFFFFFFF', 
-                'disabledPlaceholderColor': '#FFFFFF00', 
-                'disabledSupportingTextColor': '#FF888888', 
-                'disabledPrefixColor': '#FFFF00FF', 
-                'disabledSuffixColor': '#FF00FFFF', 
-                'errorTextColor': '#FFFFFF00', 
-                'errorContainerColor': '#FFFF0000', 
-                'errorLeadingIconColor': '#FFFF00FF', 
-                'errorTrailingIconColor': '#FFFFFF00',
-                'errorLabelColor': '#FFFFFFFF', 
-                'errorPlaceholderColor': '#FF00FF00', 
-                'errorSupportingTextColor': '#FFFF0000', 
-                'errorPrefixColor': '#FF0000FF',
-                'errorSuffixColor': '#FF000000' 
+            '$colorAttrUnfocusedTextColor': '#FF0000FF', 
+            '$colorAttrUnfocusedContainerColor': '#FF00FF00', 
+            '$colorAttrUnfocusedLeadingIconColor': '#FFFFFFFF', 
+            '$colorAttrUnfocusedTrailingIconColor': '#FFFF00FF', 
+            '$colorAttrUnfocusedLabelColor': '#FFFF0000', 
+            '$colorAttrUnfocusedPlaceholderColor': '#FFCCCCCC', 
+            '$colorAttrUnfocusedSupportingTextColor': '#FF444444', 
+            '$colorAttrUnfocusedPrefixColor': '#FF00FFFF', 
+            '$colorAttrUnfocusedSuffixColor': '#FF000000', 
+            '$colorAttrDisabledTextColor': '#FF888888', 
+            '$colorAttrDisabledContainerColor': '#FFCCCCCC', 
+            '$colorAttrDisabledLeadingIconColor': '#FF444444', 
+            '$colorAttrDisabledTrailingIconColor': '#FF000000', 
+            '$colorAttrDisabledLabelColor': '#FFFFFFFF', 
+            '$colorAttrDisabledPlaceholderColor': '#FFFFFF00', 
+            '$colorAttrDisabledSupportingTextColor': '#FF888888', 
+            '$colorAttrDisabledPrefixColor': '#FFFF00FF', 
+            '$colorAttrDisabledSuffixColor': '#FF00FFFF', 
+            '$colorAttrErrorTextColor': '#FFFFFF00', 
+            '$colorAttrErrorContainerColor': '#FFFF0000', 
+            '$colorAttrErrorLeadingIconColor': '#FFFF00FF', 
+            '$colorAttrErrorTrailingIconColor': '#FFFFFF00',
+            '$colorAttrErrorLabelColor': '#FFFFFFFF', 
+            '$colorAttrErrorPlaceholderColor': '#FF00FF00', 
+            '$colorAttrErrorSupportingTextColor': '#FFFF0000', 
+            '$colorAttrErrorPrefixColor': '#FF0000FF',
+            '$colorAttrErrorSuffixColor': '#FF000000' 
             }            
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -343,32 +396,32 @@ class TextFieldShotTest : LiveViewComposableTest() {
                     )
                 }
             }, template = """
-                <Column>
-                  <TextField phx-value="Text 1" phx-change="" colors="$colorsForTemplate">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
-                    <Text template="prefix">Pre</Text>
-                    <Text template="suffix">Suf</Text>
-                    <Text template="supportingText">Supporting</Text>
-                  </Text>    
-                  <TextField phx-value="Text 2" phx-change="" enabled="false" colors="$colorsForTemplate">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
-                    <Text template="prefix">Pre</Text>
-                    <Text template="suffix">Suf</Text>
-                    <Text template="supportingText">Supporting</Text>
-                  </Text>   
-                  <TextField phx-value="Text 3" phx-change="" is-error="true" colors="$colorsForTemplate">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
-                    <Text template="prefix">Pre</Text>
-                    <Text template="suffix">Suf</Text>
-                    <Text template="supportingText">Supporting</Text>
-                  </Text>                                                                                               
-                </Column>
+                <$column>
+                  <$textField $attrPhxValue="Text 1" $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" />
+                    <$text $attrTemplate="$templatePrefix">Pre</$text>
+                    <$text $attrTemplate="$templateSuffix">Suf</$text>
+                    <$text $attrTemplate="$templateSupportingText">Supporting</$text>
+                  </$textField>    
+                  <$textField $attrPhxValue="Text 2" $attrEnabled="false" $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" />
+                    <$text $attrTemplate="$templatePrefix">Pre</$text>
+                    <$text $attrTemplate="$templateSuffix">Suf</$text>
+                    <$text $attrTemplate="$templateSupportingText">Supporting</$text>
+                  </$textField>   
+                  <$textField $attrPhxValue="Text 3" $attrIsError="true" $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" />
+                    <$text $attrTemplate="$templatePrefix">Pre</$text>
+                    <$text $attrTemplate="$templateSuffix">Suf</$text>
+                    <$text $attrTemplate="$templateSupportingText">Supporting</$text>
+                  </$textField>                                                                                               
+                </$column>
                 """
         )
     }
@@ -390,14 +443,14 @@ class TextFieldShotTest : LiveViewComposableTest() {
                     )
                 }
             }, template = """
-                <Column>
-                    <OutlinedTextField phx-value="Text 1" phx-change="" />
-                    <OutlinedTextField phx-value="Text 2" phx-change="" min-lines="3" />
-                    <OutlinedTextField phx-value="Text 3" phx-change="" enabled="false" />
-                    <OutlinedTextField phx-value="Text 4" phx-change="" shape="circle" />
-                    <OutlinedTextField phx-value="Text 5" phx-change="" is-error="true" />
-                    <OutlinedTextField phx-value="Text 6" phx-change="" visual-transformation="password" />
-                </Column>
+                <$column>
+                    <$outlinedTextField $attrPhxValue="Text 1" />
+                    <$outlinedTextField $attrPhxValue="Text 2" $attrMinLines="3" />
+                    <$outlinedTextField $attrPhxValue="Text 3" $attrEnabled="false" />
+                    <$outlinedTextField $attrPhxValue="Text 4" $attrShape="$circle" />
+                    <$outlinedTextField $attrPhxValue="Text 5" $attrIsError="true" />
+                    <$outlinedTextField $attrPhxValue="Text 6" $attrVisualTransformation="${VisualTransformationValues.password}" />
+                </$column>
                 """
         )
     }
@@ -511,45 +564,45 @@ class TextFieldShotTest : LiveViewComposableTest() {
                     )
                 }
             }, template = """
-                <Column>
-                  <OutlinedTextField phx-value="Text 1" phx-change="">
-                    <Text template="label">Label</Text>
-                  </OutlinedTextField>
-                  <OutlinedTextField phx-value="" phx-change="">
-                    <Text template="label">Label</Text>
-                    <Text template="placeholder">Placeholder</Text>
-                  </OutlinedTextField>
-                  <OutlinedTextField phx-value="Text 3" phx-change="">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" />                    
-                  </OutlinedTextField>     
-                  <OutlinedTextField phx-value="Text 4" phx-change="">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" /> 
-                  </OutlinedTextField>                        
-                  <OutlinedTextField phx-value="Text 5" phx-change="">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
-                    <Text template="prefix">Pre</Text>
-                  </OutlinedTextField>  
-                  <OutlinedTextField phx-value="Text 6" phx-change="">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
-                    <Text template="prefix">Pre</Text>
-                    <Text template="suffix">Suf</Text>
-                  </OutlinedTextField>   
-                  <OutlinedTextField phx-value="Text 7" phx-change="">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
-                    <Text template="prefix">Pre</Text>
-                    <Text template="suffix">Suf</Text>
-                    <Text template="supportingText">Supporting</Text>
-                  </OutlinedTextField>                                                                
-                </Column>
+                <$column>
+                  <$outlinedTextField $attrPhxValue="Text 1" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                  </$outlinedTextField>
+                  <$outlinedTextField $attrPhxValue="" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
+                  </$outlinedTextField>
+                  <$outlinedTextField $attrPhxValue="Text 3" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:AccountCircle" />                    
+                  </$outlinedTextField>     
+                  <$outlinedTextField $attrPhxValue="Text 4" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" /> 
+                  </$outlinedTextField>                        
+                  <$outlinedTextField $attrPhxValue="Text 5" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" />
+                    <$text $attrTemplate="$templatePrefix">Pre</$text>
+                  </$outlinedTextField>  
+                  <$outlinedTextField $attrPhxValue="Text 6" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" />
+                    <$text $attrTemplate="$templatePrefix">Pre</$text>
+                    <$text $attrTemplate="$templateSuffix">Suf</$text>
+                  </$outlinedTextField>   
+                  <$outlinedTextField $attrPhxValue="Text 7" $attrPhxChange="">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" />
+                    <$text $attrTemplate="$templatePrefix">Pre</$text>
+                    <$text $attrTemplate="$templateSuffix">Suf</$text>
+                    <$text $attrTemplate="$templateSupportingText">Supporting</$text>
+                  </$outlinedTextField>                                                                
+                </$column>
                 """
         )
     }
@@ -558,33 +611,33 @@ class TextFieldShotTest : LiveViewComposableTest() {
     fun outlinedTextFieldCustomColorsTest() {
         val colorsForTemplate = """
             {
-                'unfocusedTextColor': '#FF0000FF', 
-                'unfocusedContainerColor': '#FF00FF00', 
-                'unfocusedLeadingIconColor': '#FFFFFFFF', 
-                'unfocusedTrailingIconColor': '#FFFF00FF', 
-                'unfocusedLabelColor': '#FFFF0000', 
-                'unfocusedPlaceholderColor': '#FFCCCCCC', 
-                'unfocusedSupportingTextColor': '#FF444444', 
-                'unfocusedPrefixColor': '#FF00FFFF', 
-                'unfocusedSuffixColor': '#FF000000', 
-                'disabledTextColor': '#FF888888', 
-                'disabledContainerColor': '#FFCCCCCC', 
-                'disabledLeadingIconColor': '#FF444444', 
-                'disabledTrailingIconColor': '#FF000000', 
-                'disabledLabelColor': '#FFFFFFFF', 
-                'disabledPlaceholderColor': '#FFFFFF00', 
-                'disabledSupportingTextColor': '#FF888888', 
-                'disabledPrefixColor': '#FFFF00FF', 
-                'disabledSuffixColor': '#FF00FFFF', 
-                'errorTextColor': '#FFFFFF00', 
-                'errorContainerColor': '#FFFF0000', 
-                'errorLeadingIconColor': '#FFFF00FF', 
-                'errorTrailingIconColor': '#FFFFFF00',
-                'errorLabelColor': '#FFFFFFFF', 
-                'errorPlaceholderColor': '#FF00FF00', 
-                'errorSupportingTextColor': '#FFFF0000', 
-                'errorPrefixColor': '#FF0000FF',
-                'errorSuffixColor': '#FF000000' 
+            '$colorAttrUnfocusedTextColor': '#FF0000FF', 
+            '$colorAttrUnfocusedContainerColor': '#FF00FF00', 
+            '$colorAttrUnfocusedLeadingIconColor': '#FFFFFFFF', 
+            '$colorAttrUnfocusedTrailingIconColor': '#FFFF00FF', 
+            '$colorAttrUnfocusedLabelColor': '#FFFF0000', 
+            '$colorAttrUnfocusedPlaceholderColor': '#FFCCCCCC', 
+            '$colorAttrUnfocusedSupportingTextColor': '#FF444444', 
+            '$colorAttrUnfocusedPrefixColor': '#FF00FFFF', 
+            '$colorAttrUnfocusedSuffixColor': '#FF000000', 
+            '$colorAttrDisabledTextColor': '#FF888888', 
+            '$colorAttrDisabledContainerColor': '#FFCCCCCC', 
+            '$colorAttrDisabledLeadingIconColor': '#FF444444', 
+            '$colorAttrDisabledTrailingIconColor': '#FF000000', 
+            '$colorAttrDisabledLabelColor': '#FFFFFFFF', 
+            '$colorAttrDisabledPlaceholderColor': '#FFFFFF00', 
+            '$colorAttrDisabledSupportingTextColor': '#FF888888', 
+            '$colorAttrDisabledPrefixColor': '#FFFF00FF', 
+            '$colorAttrDisabledSuffixColor': '#FF00FFFF', 
+            '$colorAttrErrorTextColor': '#FFFFFF00', 
+            '$colorAttrErrorContainerColor': '#FFFF0000', 
+            '$colorAttrErrorLeadingIconColor': '#FFFF00FF', 
+            '$colorAttrErrorTrailingIconColor': '#FFFFFF00',
+            '$colorAttrErrorLabelColor': '#FFFFFFFF', 
+            '$colorAttrErrorPlaceholderColor': '#FF00FF00', 
+            '$colorAttrErrorSupportingTextColor': '#FFFF0000', 
+            '$colorAttrErrorPrefixColor': '#FF0000FF',
+            '$colorAttrErrorSuffixColor': '#FF000000' 
             }            
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -695,32 +748,32 @@ class TextFieldShotTest : LiveViewComposableTest() {
                         })
                 }
             }, template = """
-                <Column>
-                  <OutlinedTextField phx-value="Text 1" phx-change="" colors="$colorsForTemplate">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
-                    <Text template="prefix">Pre</Text>
-                    <Text template="suffix">Suf</Text>
-                    <Text template="supportingText">Supporting</Text>
-                  </OutlinedTextField>    
-                  <OutlinedTextField phx-value="Text 2" phx-change="" enabled="false" colors="$colorsForTemplate">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
-                    <Text template="prefix">Pre</Text>
-                    <Text template="suffix">Suf</Text>
-                    <Text template="supportingText">Supporting</Text>
-                  </OutlinedTextField>   
-                  <OutlinedTextField phx-value="Text 3" phx-change="" is-error="true" colors="$colorsForTemplate">
-                    <Text template="label">Label</Text>
-                    <Icon template="leadingIcon" image-vector="filled:AccountCircle" /> 
-                    <Icon template="trailingIcon" image-vector="autoMirrored.filled:Send" />
-                    <Text template="prefix">Pre</Text>
-                    <Text template="suffix">Suf</Text>
-                    <Text template="supportingText">Supporting</Text>
-                  </OutlinedTextField>                                                                                               
-                </Column>
+                <$column>
+                  <$outlinedTextField $attrPhxValue="Text 1" $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" />
+                    <$text $attrTemplate="$templatePrefix">Pre</$text>
+                    <$text $attrTemplate="$templateSuffix">Suf</$text>
+                    <$text $attrTemplate="$templateSupportingText">Supporting</$text>
+                  </$outlinedTextField>    
+                  <$outlinedTextField $attrPhxValue="Text 2" $attrEnabled="false" $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" />
+                    <$text $attrTemplate="$templatePrefix">Pre</$text>
+                    <$text $attrTemplate="$templateSuffix">Suf</$text>
+                    <$text $attrTemplate="$templateSupportingText">Supporting</$text>
+                  </$outlinedTextField>   
+                  <$outlinedTextField $attrPhxValue="Text 3" $attrIsError="true" $attrColors="$colorsForTemplate">
+                    <$text $attrTemplate="$templateLabel">Label</$text>
+                    <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:AccountCircle" /> 
+                    <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$autoMirroredFilled:Send" />
+                    <$text $attrTemplate="$templatePrefix">Pre</$text>
+                    <$text $attrTemplate="$templateSuffix">Suf</$text>
+                    <$text $attrTemplate="$templateSupportingText">Supporting</$text>
+                  </$outlinedTextField>                                                                                               
+                </$column>
                 """
         )
     }

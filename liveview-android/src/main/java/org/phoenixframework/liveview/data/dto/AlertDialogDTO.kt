@@ -47,7 +47,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *  <TextButton phx-click="dismissEvent" template="dismiss">
  *      <Text>Dismiss</Text>
  *  </TextButton>
- *  <Icon image-vector="filled:Add" template="icon" />
+ *  <Icon imageVector="filled:Add" template="icon" />
  *  <Text template="title">Alert Title</Title>
  *  <Text>Alert message</Text>
  * </AlertDialog>
@@ -173,9 +173,10 @@ internal class AlertDialogDTO private constructor(builder: Builder) : DialogDTO(
         /**
          * The color used for the background of this dialog.
          * ```
-         * <AlertDialog container-color="#FFFFFFFF" >...</AlertDialog>
+         * <AlertDialog containerColor="#FFFFFFFF" >...</AlertDialog>
          * ```
-         * @param containerColor the background color in AARRGGBB format.
+         * @param containerColor the background color in AARRGGBB format or one of the `system-*`
+         * colors.
          */
         fun containerColor(containerColor: String) = apply {
             this.containerColor = containerColor.toColor()
@@ -184,9 +185,10 @@ internal class AlertDialogDTO private constructor(builder: Builder) : DialogDTO(
         /**
          * The content color used for the icon.
          * ```
-         * <AlertDialog icon-content-color="#FF00FF00" >...</AlertDialog>
+         * <AlertDialog iconContentColor="#FF00FF00" >...</AlertDialog>
          * ```
-         * @param iconContentColor the content color used for the icon in AARRGGBB format.
+         * @param iconContentColor the content color used for the icon in AARRGGBB format or one of
+         * the [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun iconContentColor(iconContentColor: String) = apply {
             this.iconContentColor = iconContentColor.toColor()
@@ -195,9 +197,10 @@ internal class AlertDialogDTO private constructor(builder: Builder) : DialogDTO(
         /**
          * The content color used for the title.
          * ```
-         * <AlertDialog title-content-color="#FFCCCCCC" >...</AlertDialog>
+         * <AlertDialog titleContentColor="#FFCCCCCC" >...</AlertDialog>
          * ```
-         * @param titleContentColor the content color used for the title in AARRGGBB format.
+         * @param titleContentColor the content color used for the title in AARRGGBB format or one
+         * of the [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun titleContentColor(titleContentColor: String) = apply {
             this.titleContentColor = titleContentColor.toColor()
@@ -206,9 +209,10 @@ internal class AlertDialogDTO private constructor(builder: Builder) : DialogDTO(
         /**
          * The content color used for the text.
          * ```
-         * <AlertDialog text-content-color="#FFCCCCCC" >...</AlertDialog>
+         * <AlertDialog textContentColor="#FFCCCCCC" >...</AlertDialog>
          * ```
-         * @param textContentColor the content color used for the text in AARRGGBB format.
+         * @param textContentColor the content color used for the text in AARRGGBB format or one of
+         * the [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun textContentColor(textContentColor: String) = apply {
             this.textContentColor = textContentColor.toColor()

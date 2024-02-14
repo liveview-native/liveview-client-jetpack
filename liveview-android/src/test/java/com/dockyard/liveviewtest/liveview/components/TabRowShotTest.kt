@@ -15,6 +15,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
+import org.phoenixframework.liveview.data.constants.Attrs.attrClip
+import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrEdgePadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.data.constants.Attrs.attrSelectedTabIndex
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ShapeValues.circle
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Cyan
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.Templates.templateDivider
+import org.phoenixframework.liveview.data.constants.Templates.templateText
+import org.phoenixframework.liveview.domain.base.ComposableTypes.box
+import org.phoenixframework.liveview.domain.base.ComposableTypes.scrollableTabRow
+import org.phoenixframework.liveview.domain.base.ComposableTypes.tab
+import org.phoenixframework.liveview.domain.base.ComposableTypes.tabRow
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class TabRowShotTest : LiveViewComposableTest() {
     @Test
@@ -45,17 +68,18 @@ class TabRowShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <TabRow selected-tab-index="0" container-color="system-blue" content-color="system-yellow" >
-                    <Tab selected="true" phx-click="">
-                        <Text template="text">Tab 0</Text>
-                    </Tab>
-                    <Tab selected="false" phx-click="">
-                        <Text template="text">Tab 1</Text>
-                    </Tab>      
-                    <Tab selected="false" enabled="false" phx-click="">
-                        <Text template="text">Tab 2</Text>
-                    </Tab>                                    
-                </TabRow>
+                <$tabRow $attrSelectedTabIndex="0" $attrContainerColor="$Blue" 
+                  $attrContentColor="$Yellow" >
+                    <$tab $attrSelected="true">
+                        <$text $attrTemplate="$templateText">Tab 0</$text>
+                    </$tab>
+                    <$tab $attrSelected="false">
+                        <$text $attrTemplate="$templateText">Tab 1</$text>
+                    </$tab>      
+                    <$tab $attrSelected="false" $attrEnabled="false">
+                        <$text $attrTemplate="$templateText">Tab 2</$text>
+                    </$tab>                                    
+                </$tabRow>
                 """
         )
     }
@@ -97,18 +121,26 @@ class TabRowShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <TabRow selected-tab-index="0" container-color="system-blue" content-color="system-yellow" >
-                    <Box template="divider" width="fill" height="4" clip="circle" background="system-cyan" />
-                    <Tab selected="true" phx-click="">
-                        <Text template="text">Tab 0</Text>
-                    </Tab>
-                    <Tab selected="false" phx-click="">
-                        <Text template="text">Tab 1</Text>
-                    </Tab>      
-                    <Tab selected="false" enabled="false" phx-click="">
-                        <Text template="text">Tab 2</Text>
-                    </Tab>                                    
-                </TabRow>
+                <$tabRow 
+                  $attrSelectedTabIndex="0" 
+                  $attrContainerColor="$Blue" 
+                  $attrContentColor="$Yellow" >
+                  <$box 
+                    $attrTemplate="$templateDivider" 
+                    $attrWidth="$fill" 
+                    $attrHeight="4" 
+                    $attrClip="$circle" 
+                    $attrBackground="$Cyan" />
+                  <$tab $attrSelected="true">
+                    <$text $attrTemplate="$templateText">Tab 0</$text>
+                  </$tab>
+                  <$tab $attrSelected="false">
+                    <$text $attrTemplate="$templateText">Tab 1</$text>
+                  </$tab>      
+                  <$tab $attrSelected="false" $attrEnabled="false">
+                    <$text $attrTemplate="$templateText">Tab 2</$text>
+                  </$tab>                                    
+                </$tabRow>
                 """
         )
     }
@@ -143,20 +175,20 @@ class TabRowShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <ScrollableTabRow selected-tab-index="1" >
-                    <Tab selected="false" phx-click="">
-                        <Text template="text">Tab 0</Text>
-                    </Tab>
-                    <Tab selected="true" phx-click="">
-                        <Text template="text">Tab 1</Text>
-                    </Tab>      
-                    <Tab selected="false" enabled="false" phx-click="">
-                        <Text template="text">Tab 2</Text>
-                    </Tab>         
-                    <Tab selected="false" enabled="false" phx-click="">
-                        <Text template="text">Tab 3</Text>
-                    </Tab>                                                  
-                </ScrollableTabRow>
+                <$scrollableTabRow $attrSelectedTabIndex="1" >
+                    <$tab $attrSelected="false">
+                        <$text $attrTemplate="$templateText">Tab 0</$text>
+                    </$tab>
+                    <$tab $attrSelected="true">
+                        <$text $attrTemplate="$templateText">Tab 1</$text>
+                    </$tab>      
+                    <$tab $attrSelected="false" $attrEnabled="false">
+                        <$text $attrTemplate="$templateText">Tab 2</$text>
+                    </$tab>         
+                    <$tab $attrSelected="false" $attrEnabled="false">
+                        <$text $attrTemplate="$templateText">Tab 3</$text>
+                    </$tab>                                                  
+                </$scrollableTabRow>
                 """
         )
     }
@@ -191,20 +223,20 @@ class TabRowShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <ScrollableTabRow selected-tab-index="1" edge-padding="8">
-                    <Tab selected="false" phx-click="">
-                        <Text template="text">Tab 0</Text>
-                    </Tab>
-                    <Tab selected="true" phx-click="">
-                        <Text template="text">Tab 1</Text>
-                    </Tab>      
-                    <Tab selected="false" enabled="false" phx-click="">
-                        <Text template="text">Tab 2</Text>
-                    </Tab>         
-                    <Tab selected="false" enabled="false" phx-click="">
-                        <Text template="text">Tab 3</Text>
-                    </Tab>                                                  
-                </ScrollableTabRow>
+                <$scrollableTabRow $attrSelectedTabIndex="1" $attrEdgePadding="8">
+                    <$tab $attrSelected="false">
+                        <$text $attrTemplate="$templateText">Tab 0</$text>
+                    </$tab>
+                    <$tab $attrSelected="true">
+                        <$text $attrTemplate="$templateText">Tab 1</$text>
+                    </$tab>      
+                    <$tab $attrSelected="false" $attrEnabled="false">
+                        <$text $attrTemplate="$templateText">Tab 2</$text>
+                    </$tab>         
+                    <$tab $attrSelected="false" $attrEnabled="false">
+                        <$text $attrTemplate="$templateText">Tab 3</$text>
+                    </$tab>                                                  
+                </$scrollableTabRow>
                 """
         )
     }
@@ -243,21 +275,21 @@ class TabRowShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <ScrollableTabRow selected-tab-index="0" 
-                    container-color="system-blue" content-color="system-yellow" >
-                    <Tab selected="true" phx-click="">
-                        <Text template="text">Tab 0</Text>
-                    </Tab>
-                    <Tab selected="false" phx-click="">
-                        <Text template="text">Tab 1</Text>
-                    </Tab>      
-                    <Tab selected="false" enabled="false" phx-click="">
-                        <Text template="text">Tab 2</Text>
-                    </Tab>         
-                    <Tab selected="false" enabled="false" phx-click="">
-                        <Text template="text">Tab 3</Text>
-                    </Tab>                                                  
-                </ScrollableTabRow>
+                <$scrollableTabRow $attrSelectedTabIndex="0" 
+                    $attrContainerColor="$Blue" $attrContentColor="$Yellow" >
+                    <$tab $attrSelected="true">
+                        <$text $attrTemplate="$templateText">Tab 0</$text>
+                    </$tab>
+                    <$tab $attrSelected="false">
+                        <$text $attrTemplate="$templateText">Tab 1</$text>
+                    </$tab>      
+                    <$tab $attrSelected="false" $attrEnabled="false">
+                        <$text $attrTemplate="$templateText">Tab 2</$text>
+                    </$tab>         
+                    <$tab $attrSelected="false" $attrEnabled="false">
+                        <$text $attrTemplate="$templateText">Tab 3</$text>
+                    </$tab>                                                  
+                </$scrollableTabRow>
                 """
         )
     }

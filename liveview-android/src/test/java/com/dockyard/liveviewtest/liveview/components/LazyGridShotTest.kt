@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -15,6 +16,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.Attrs.attrColumns
+import org.phoenixframework.liveview.data.constants.Attrs.attrCount
+import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
+import org.phoenixframework.liveview.data.constants.Attrs.attrMinSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
+import org.phoenixframework.liveview.data.constants.Attrs.attrRows
+import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrType
+import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
+import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
+import org.phoenixframework.liveview.data.constants.LazyGridColumnTypeValues.adaptive
+import org.phoenixframework.liveview.data.constants.LazyGridColumnTypeValues.fixed
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.lazyHorizontalGrid
+import org.phoenixframework.liveview.domain.base.ComposableTypes.lazyVerticalGrid
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class LazyGridShotTest : LiveViewComposableTest() {
 
@@ -23,14 +45,30 @@ class LazyGridShotTest : LiveViewComposableTest() {
             (1..count).forEach {
                 append(
                     """
-                    <Column vertical-arrangement="center" horizontal-alignment="center" size="100">
-                      <Text>Item ${it}</Text>
-                      <Text>#${it}</Text>
-                    </Column>     
+                    <$column 
+                      $attrVerticalArrangement="${VerticalArrangementValues.center}" 
+                      $attrHorizontalAlignment="${HorizontalAlignmentValues.centerHorizontally}" 
+                      $attrSize="100">
+                      <$text>Item ${it}</$text>
+                      <$text>#${it}</$text>
+                    </$column>     
                     """
                 )
             }
         }.toString()
+    }
+
+    private fun LazyGridScope.cellForComposable(cellCount: Int) {
+        items((1..cellCount).toList()) { num ->
+            Column(
+                modifier = Modifier.size(100.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(text = "Item $num")
+                Text(text = "#$num")
+            }
+        }
     }
 
     @Test
@@ -39,21 +77,12 @@ class LazyGridShotTest : LiveViewComposableTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 LazyVerticalGrid(columns = GridCells.Fixed(3)) {
-                    items((1..cellCount).toList()) { num ->
-                        Column(
-                            modifier = Modifier.size(100.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(text = "Item $num")
-                            Text(text = "#$num")
-                        }
-                    }
+                    cellForComposable(cellCount)
                 }
             }, template = """
-                <LazyVerticalGrid columns="{'type': 'fixed', 'count': '3'}">
+                <$lazyVerticalGrid $attrColumns="{'$attrType': '$fixed', '$attrCount': '3'}">
                   ${cellsForTemplate(cellCount)}
-                </LazyVerticalGrid>
+                </$lazyVerticalGrid>
                 """
         )
     }
@@ -67,21 +96,12 @@ class LazyGridShotTest : LiveViewComposableTest() {
                     columns = GridCells.Fixed(3),
                     reverseLayout = true,
                 ) {
-                    items((1..cellCount).toList()) { num ->
-                        Column(
-                            modifier = Modifier.size(100.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(text = "Item $num")
-                            Text(text = "#$num")
-                        }
-                    }
+                    cellForComposable(cellCount)
                 }
             }, template = """
-                <LazyVerticalGrid reverse-layout="true" columns="{'type': 'fixed', 'count': '3'}">
+                <$lazyVerticalGrid $attrReverseLayout="true" $attrColumns="{'$attrType': '$fixed', '$attrCount': '3'}">
                   ${cellsForTemplate(cellCount)}
-                </LazyVerticalGrid>
+                </$lazyVerticalGrid>
                 """
         )
     }
@@ -96,24 +116,15 @@ class LazyGridShotTest : LiveViewComposableTest() {
                     columns = GridCells.Fixed(3),
                     verticalArrangement = Arrangement.Center
                 ) {
-                    items((1..cellCount).toList()) { num ->
-                        Column(
-                            modifier = Modifier.size(100.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(text = "Item $num")
-                            Text(text = "#$num")
-                        }
-                    }
+                    cellForComposable(cellCount)
                 }
             }, template = """
-                <LazyVerticalGrid 
-                  size="fill" 
-                  vertical-arrangement="center" 
-                  columns="{'type': 'fixed', 'count': '3'}">
+                <$lazyVerticalGrid 
+                  $attrSize="$fill" 
+                  $attrVerticalArrangement="${VerticalArrangementValues.center}" 
+                  $attrColumns="{'$attrType': '$fixed', '$attrCount': '3'}">
                   ${cellsForTemplate(cellCount)}
-                </LazyVerticalGrid>
+                </$lazyVerticalGrid>
                 """
         )
     }
@@ -129,29 +140,19 @@ class LazyGridShotTest : LiveViewComposableTest() {
                     verticalArrangement = Arrangement.Center,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    items((1..cellCount).toList()) { num ->
-                        Column(
-                            modifier = Modifier.size(100.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(text = "Item $num")
-                            Text(text = "#$num")
-                        }
-                    }
+                    cellForComposable(cellCount)
                 }
             }, template = """
-                <LazyVerticalGrid 
-                  size="fill" 
-                  vertical-arrangement="center" 
-                  horizontal-arrangement="spaceBetween" 
-                  columns="{'type': 'adaptive', 'minSize': '100'}">
+                <$lazyVerticalGrid 
+                  $attrSize="$fill" 
+                  $attrVerticalArrangement="${VerticalArrangementValues.center}" 
+                  $attrHorizontalArrangement="${HorizontalArrangementValues.spaceBetween}" 
+                  $attrColumns="{'$attrType': '$adaptive', '$attrMinSize': '100'}">
                   ${cellsForTemplate(cellCount)}
-                </LazyVerticalGrid>
+                </$lazyVerticalGrid>
                 """
         )
     }
-
 
     @Test
     fun simpleLazyHorizontalGridTest() {
@@ -159,21 +160,12 @@ class LazyGridShotTest : LiveViewComposableTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 LazyHorizontalGrid(rows = GridCells.Fixed(3)) {
-                    items((1..cellCount).toList()) { num ->
-                        Column(
-                            modifier = Modifier.size(100.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(text = "Item $num")
-                            Text(text = "#$num")
-                        }
-                    }
+                    cellForComposable(cellCount)
                 }
             }, template = """
-                <LazyHorizontalGrid rows="{'type': 'fixed', 'count': '3'}">
+                <$lazyHorizontalGrid $attrRows="{'$attrType': '$fixed', '$attrCount': '3'}">
                   ${cellsForTemplate(cellCount)}
-                </LazyHorizontalGrid>
+                </$lazyHorizontalGrid>
                 """
         )
     }
@@ -187,21 +179,12 @@ class LazyGridShotTest : LiveViewComposableTest() {
                     rows = GridCells.Fixed(3),
                     reverseLayout = true,
                 ) {
-                    items((1..cellCount).toList()) { num ->
-                        Column(
-                            modifier = Modifier.size(100.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(text = "Item $num")
-                            Text(text = "#$num")
-                        }
-                    }
+                    cellForComposable(cellCount)
                 }
             }, template = """
-                <LazyHorizontalGrid reverse-layout="true" rows="{'type': 'fixed', 'count': '3'}">
+                <$lazyHorizontalGrid $attrReverseLayout="true" $attrRows="{'$attrType': '$fixed', '$attrCount': '3'}">
                   ${cellsForTemplate(cellCount)}
-                </LazyHorizontalGrid>
+                </$lazyHorizontalGrid>
                 """
         )
     }
@@ -216,24 +199,15 @@ class LazyGridShotTest : LiveViewComposableTest() {
                     rows = GridCells.Fixed(3),
                     verticalArrangement = Arrangement.Center
                 ) {
-                    items((1..cellCount).toList()) { num ->
-                        Column(
-                            modifier = Modifier.size(100.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(text = "Item $num")
-                            Text(text = "#$num")
-                        }
-                    }
+                    cellForComposable(cellCount)
                 }
             }, template = """
-                <LazyHorizontalGrid 
-                  size="fill" 
-                  vertical-arrangement="center" 
-                  columns="{'type': 'fixed', 'count': '3'}">
+                <$lazyHorizontalGrid 
+                  $attrSize="$fill" 
+                  $attrVerticalArrangement="${VerticalArrangementValues.center}" 
+                  $attrColumns="{'$attrType': '$fixed', '$attrCount': '3'}">
                   ${cellsForTemplate(cellCount)}
-                </LazyHorizontalGrid>
+                </$lazyHorizontalGrid>
                 """
         )
     }
@@ -249,25 +223,16 @@ class LazyGridShotTest : LiveViewComposableTest() {
                     verticalArrangement = Arrangement.Center,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    items((1..cellCount).toList()) { num ->
-                        Column(
-                            modifier = Modifier.size(100.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(text = "Item $num")
-                            Text(text = "#$num")
-                        }
-                    }
+                    cellForComposable(cellCount)
                 }
             }, template = """
-                <LazyHorizontalGrid 
-                  width="fill" 
-                  vertical-arrangement="center" 
-                  horizontal-arrangement="spaceBetween" 
-                  columns="{'type': 'adaptive', 'minSize': '100'}">
+                <$lazyHorizontalGrid 
+                  $attrWidth="$fill" 
+                  $attrVerticalArrangement="${VerticalArrangementValues.center}" 
+                  $attrHorizontalArrangement="${HorizontalArrangementValues.spaceBetween}" 
+                  $attrColumns="{'$attrType': '$adaptive', '$attrMinSize': '100'}">
                   ${cellsForTemplate(cellCount)}
-                </LazyHorizontalGrid>
+                </$lazyHorizontalGrid>
                 """
         )
     }

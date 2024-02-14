@@ -24,6 +24,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrDuration
 import org.phoenixframework.liveview.data.constants.Attrs.attrMessage
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrWithDismissAction
+import org.phoenixframework.liveview.data.constants.SnackbarDurationValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
@@ -42,7 +43,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  * <Snackbar
  *   message="message"
- *   dismiss-event="hideDialog"
+ *   dismissEvent="hideDialog"
  * />
  * ```
  */
@@ -123,7 +124,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
          * Whether or not action should be put on a separate line. Recommended for action with
          * long action text.
          * ```
-         * <Snackbar action-on-new-line="true" />
+         * <Snackbar actionOnNewLine="true" />
          * ```
          * @param actionOnNewLine true if action should be put on a separate line, false otherwise.
          */
@@ -136,8 +137,9 @@ internal class SnackbarDTO private constructor(builder: Builder) :
          * ```
          * <Snackbar shape="16" />
          * ```
-         * @param shape snackbar's shape. Supported values are: `circle`,
-         * `rectangle`, or an integer representing the curve size applied for all four corners.
+         * @param shape snackbar's shape. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * representing the curve size applied for all four corners.
          */
         fun shape(shape: String) = apply {
             if (shape.isNotEmpty()) {
@@ -148,9 +150,10 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * The color used for the background of this snackbar.
          * ```
-         * <Snackbar container-color="#FFFFFFFF" />
+         * <Snackbar containerColor="#FFFFFFFF" />
          * ```
-         * @param containerColor the background color in AARRGGBB format.
+         * @param containerColor the background color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun containerColor(containerColor: String) = apply {
             this.containerColor = containerColor.toColor()
@@ -159,9 +162,10 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * The preferred color for content inside this snackbar.
          * ```
-         * <Snackbar content-color="#FF000000" />
+         * <Snackbar contentColor="#FF000000" />
          * ```
-         * @param contentColor the content color in AARRGGBB format.
+         * @param contentColor the content color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun contentColor(contentColor: String) = apply {
             this.contentColor = contentColor.toColor()
@@ -170,9 +174,10 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * The color of the snackbar's action.
          * ```
-         * <Snackbar action-color="#FF000000" />
+         * <Snackbar actionColor="#FF000000" />
          * ```
-         * @param actionColor the action color in AARRGGBB format.
+         * @param actionColor the action color in AARRGGBB format or one of
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun actionColor(actionColor: String) = apply {
             this.actionColor = actionColor.toColor()
@@ -181,9 +186,10 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * The color of the snackbar's action.
          * ```
-         * <Snackbar action-content-color="#FF00FF00" />
+         * <Snackbar actionContentColor="#FF00FF00" />
          * ```
-         * @param actionContentColor the action color in AARRGGBB format.
+         * @param actionContentColor the action color in AARRGGBB format or one of the
+         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
         fun actionContentColor(actionContentColor: String) = apply {
             this.actionContentColor = actionContentColor.toColor()
@@ -192,10 +198,11 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * The preferred content color for the optional dismiss action inside this snackbar.
          * ```
-         * <Snackbar dismiss-action-content-color="#FF00FF00" />
+         * <Snackbar dismissActionContentColor="#FF00FF00" />
          * ```
          * @param dismissActionContentColor the color for the optional dismiss action in AARRGGBB
-         * format.
+         * format or one of the [org.phoenixframework.liveview.data.constants.SystemColorValues]
+         * colors.
          */
         fun dismissActionContentColor(dismissActionContentColor: String) = apply {
             this.dismissActionContentColor = dismissActionContentColor.toColor()
@@ -204,7 +211,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * Optional action label to show as button in the Snackbar.
          * ```
-         * <Snackbar action-label="Action" />
+         * <Snackbar actionLabel="Action" />
          * ```
          * @param label action label to show as button in the Snackbar
          */
@@ -217,14 +224,14 @@ internal class SnackbarDTO private constructor(builder: Builder) :
          * ```
          * <Snackbar duration="short" />
          * ```
-         * @param duration duration of the Snackbar. The supported values are: `short`, `long`, and
-         * `indefinite`.
+         * @param duration duration of the Snackbar. See the supported values at
+         * [org.phoenixframework.liveview.data.constants.SnackbarDurationValues].
          */
         fun duration(duration: String) = apply {
             this.visuals = visuals.copy(
                 snackbarDuration = when (duration) {
-                    "indefinite" -> SnackbarDuration.Indefinite
-                    "long" -> SnackbarDuration.Long
+                    SnackbarDurationValues.indefinite -> SnackbarDuration.Indefinite
+                    SnackbarDurationValues.long -> SnackbarDuration.Long
                     else -> SnackbarDuration.Short
                 }
             )
@@ -245,7 +252,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
          * A boolean to show a dismiss action in the Snackbar. This is recommended to be set to
          * true better accessibility when a Snackbar duration is set `indefinite`.
          * ```
-         * <Snackbar with-dismiss-action="true" />
+         * <Snackbar withDismissAction="true" />
          * ```
          * @param withDismissAction true to show dismiss action, false otherwise.
          */
@@ -256,7 +263,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         /**
          * Event name is the server to be called when the user presses the action in the snackbar.
          * ```
-         * <Snackbar action-event="doSomething" />
+         * <Snackbar actionEvent="doSomething" />
          * ```
          * @param actionEvent event name in the server to be called in the action button.
          */
@@ -268,7 +275,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
          * Event name is the server to be called when the snackbar is dismissed (both from the user
          * or after a timeout when the duration is `short` or `long`).
          * ```
-         * <Snackbar dismiss-event="doSomething" />
+         * <Snackbar dismissEvent="doSomething" />
          * ```
          * @param dismissEvent event name in the server to be called when the snackbar is dismissed.
          */
