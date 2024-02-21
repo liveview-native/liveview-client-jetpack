@@ -21,6 +21,7 @@ liveview-native-core-jetpack = "0.1.0-pre-alpha-09"
 org-jsoup = "1.17.2"
 roborazzi = "1.9.0"
 robolectric = "4.11.1"
+org-jetbrains-kotlin-jvm = "1.9.10"
 
 [libraries]
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
@@ -59,3 +60,4 @@ android-application = { id = "com.android.application", version.ref = "android-g
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
+org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }

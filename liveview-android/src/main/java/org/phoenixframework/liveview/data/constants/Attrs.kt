@@ -22,6 +22,7 @@ object Attrs {
     const val attrCaretProperties = "caretProperties"
     const val attrCaretWidth = "caretWidth"
     const val attrChecked = "checked"
+    const val attrClass = "class"
     const val attrClip = "clip"
     const val attrClippingEnabled = "clippingEnabled"
     const val attrColumns = "columns"
