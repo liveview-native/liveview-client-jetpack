@@ -15,7 +15,7 @@ fun PhxLiveView(
     paddingValues: PaddingValues? = null,
     scope: Any? = null
 ) {
-    val composableView = remember(composableNode) {
+    val composableView = remember(composableNode, scope) {
         ComposableNodeFactory.buildComposableView(
             composableNode.node, parentNode?.node?.tag, pushEvent, scope
         )

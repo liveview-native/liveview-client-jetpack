@@ -3,13 +3,16 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrExpanded
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableTypes.exposedDropdownMenu
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -24,26 +27,30 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * the menu is anchored. If the text field input is used to filter results in the menu, the
  * component is also known as "autocomplete" or a "combobox".
  * The first child must be the "anchor", which means the clickable component that will show the
- * menu. This component must add the `menuAnchor` property. The second component and the following
- * ones, will be considered menu items. The menu items are commonly `DropdownMenuItem`, but can be
- * any component.
+ * menu. This component must add the `menuAnchor` property. The second component is an
+ * ExposedDropdownMenu which will contain the menu items. The menu items are commonly
+ * `DropdownMenuItem`, but can be any component.
  * ```
  * <ExposedDropdownMenuBox horizontalPadding="16">
  *   <TextField text={"#{@ddOption}"} readOnly="true" menuAnchor/>
- *   <DropdownMenuItem phx-click="setDDOption" phx-value="A">
- *     <Text>Option A</Text>
- *   </DropdownMenuItem>
- *   <DropdownMenuItem phx-click="setDDOption" phx-value="B" enabled="false">
- *     <Text>Option B</Text>
- *   </DropdownMenuItem>
- *   <DropdownMenuItem phx-click="setDDOption" phx-value="C">
- *     <Text>Option C</Text>
- *   </DropdownMenuItem>
+ *   <ExposedDropdownMenu>
+ *     <DropdownMenuItem phx-click="setDDOption" phx-value="A">
+ *       <Text>Option A</Text>
+ *     </DropdownMenuItem>
+ *     <DropdownMenuItem phx-click="setDDOption" phx-value="B" enabled="false">
+ *       <Text>Option B</Text>
+ *     </DropdownMenuItem>
+ *     <DropdownMenuItem phx-click="setDDOption" phx-value="C">
+ *       <Text>Option C</Text>
+ *     </DropdownMenuItem>
+ *   </ExposedDropdownMenu>
  * </ExposedDropdownMenuBox>
  * ```
  */
 internal class ExposedDropdownMenuBoxDTO private constructor(builder: Builder) :
     ComposableView(modifier = builder.modifier) {
+    private val expanded = builder.expanded
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Compose(
@@ -51,45 +58,59 @@ internal class ExposedDropdownMenuBoxDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val items = remember(composableNode?.children) {
-            composableNode?.children?.let {
-                if (it.size > 1) it.copyOfRange(1, it.size) else null
-            } ?: emptyArray()
-        }
-        val body = remember(composableNode?.children) {
-            composableNode?.children?.first()
-        }
         var isExpanded by remember {
-            mutableStateOf(false)
+            mutableStateOf(expanded)
         }
-
         ExposedDropdownMenuBox(
             expanded = isExpanded,
-            onExpandedChange = { isExpanded = it },
+            onExpandedChange = {
+                isExpanded = it
+            },
             modifier = modifier,
         ) {
-            body?.let {
-                PhxLiveView(it, pushEvent, composableNode, null, this)
+            val wrapper = remember(isExpanded) {
+                ExposedDropdownMenuBoxScopeWrapper(
+                    scope = this,
+                    isExpanded = isExpanded,
+                    onDismissRequest = {
+                        isExpanded = false
+                    }
+                )
             }
-            ExposedDropdownMenu(
-                expanded = isExpanded,
-                onDismissRequest = { isExpanded = false },
-            ) {
-                items.forEach {
-                    PhxLiveView(it, { type, event, value, target ->
+            composableNode?.children?.forEach {
+                PhxLiveView(
+                    composableNode = it,
+                    pushEvent = { type, event, value, target ->
                         isExpanded = false
                         pushEvent(type, event, value, target)
-                    }, composableNode, null, this)
-                }
+                    },
+                    parentNode = composableNode,
+                    paddingValues = null,
+                    scope = wrapper
+                )
             }
         }
     }
 
     internal class Builder : ComposableBuilder() {
+        var expanded: Boolean = false
+            private set
+
+        fun expanded(expanded: String) = apply {
+            this.expanded = expanded.toBoolean()
+        }
 
         fun build() = ExposedDropdownMenuBoxDTO(this)
     }
 }
+
+// Wrapper class in order to communicate with ExposedDropdownMenu class.
+@OptIn(ExperimentalMaterial3Api::class)
+internal data class ExposedDropdownMenuBoxScopeWrapper(
+    val scope: ExposedDropdownMenuBoxScope,
+    val isExpanded: Boolean,
+    val onDismissRequest: () -> Unit
+)
 
 internal object ExposedDropdownMenuBoxDtoFactory :
     ComposableViewFactory<ExposedDropdownMenuBoxDTO, ExposedDropdownMenuBoxDTO.Builder>() {
@@ -109,10 +130,17 @@ internal object ExposedDropdownMenuBoxDtoFactory :
         scope: Any?
     ): ExposedDropdownMenuBoxDTO =
         attributes.fold(ExposedDropdownMenuBoxDTO.Builder()) { builder, attribute ->
-            builder.handleCommonAttributes(
-                attribute,
-                pushEvent,
-                scope
-            ) as ExposedDropdownMenuBoxDTO.Builder
+            when (attribute.name) {
+                attrExpanded -> builder.expanded(attribute.value)
+                else -> builder.handleCommonAttributes(
+                    attribute,
+                    pushEvent,
+                    scope
+                ) as ExposedDropdownMenuBoxDTO.Builder
+            }
         }.build()
+
+    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
+        return mapOf(exposedDropdownMenu to ExposedDropdownMenuDtoFactory)
+    }
 }
