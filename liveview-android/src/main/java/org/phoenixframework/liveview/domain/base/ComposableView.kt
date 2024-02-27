@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +45,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.ScrollingValues
 import org.phoenixframework.liveview.data.constants.SizeValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxScopeWrapper
 import org.phoenixframework.liveview.data.dto.alignmentFromString
 import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
 import org.phoenixframework.liveview.data.dto.onClickFromString
@@ -397,13 +397,13 @@ abstract class ComposableBuilder {
                 }
             }
 
-            is ExposedDropdownMenuBoxScope -> {
+            is ExposedDropdownMenuBoxScopeWrapper -> {
                 when (attribute.name) {
-                    attrMenuAnchor -> scope.run {
+                    attrMenuAnchor -> scope.scope.run {
                         modifier = modifier.then(Modifier.menuAnchor())
                     }
 
-                    attrExposedDropdownSize -> scope.run {
+                    attrExposedDropdownSize -> scope.scope.run {
                         modifier =
                             modifier.then(Modifier.exposedDropdownSize(attribute.value.toBoolean()))
                     }
@@ -417,6 +417,7 @@ abstract class ComposableBuilder {
         internal const val EVENT_TYPE_CLICK = "click"
         internal const val EVENT_TYPE_CHANGE = "change"
         internal const val EVENT_TYPE_KEY_UP = "keyup"
+        internal const val EVENT_TYPE_BLUR = "blur"
         internal const val EVENT_TYPE_SUBMIT = "submit"
     }
 }
