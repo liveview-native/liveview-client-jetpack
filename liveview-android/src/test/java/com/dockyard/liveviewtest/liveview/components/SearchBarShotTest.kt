@@ -20,7 +20,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrActive
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrQuery
 import org.phoenixframework.liveview.data.constants.Attrs.attrShadowElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
@@ -212,50 +212,50 @@ class SearchBarShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$column>
-                  <$searchBar $attrPhxValue="Text to search" 
+                  <$searchBar $attrQuery="Text to search" 
                     $attrActive="false">
                     <$text>Search content</$text>
                   </$searchBar>
-                  <$searchBar $attrPhxValue="" 
+                  <$searchBar $attrQuery="" 
                     $attrActive="false">
                     <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
                     <$text $attrTemplate="$templateContent">Search content</$text>
                   </$searchBar>                    
-                  <$searchBar $attrPhxValue="" 
+                  <$searchBar $attrQuery="" 
                     $attrActive="false">
                     <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:Search"/>
                     <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
                     <$text $attrTemplate="$templateContent">Search content</$text>
                   </$searchBar>     
-                  <$searchBar $attrPhxValue="" 
+                  <$searchBar $attrQuery="" 
                     $attrActive="false">
                     <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:Search"/>
                     <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$filled:Clear"/>
                     <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
                     <$text $attrTemplate="$templateContent">Search content</$text>
                   </$searchBar>   
-                  <$searchBar $attrPhxValue="" $attrEnabled="false"
+                  <$searchBar $attrQuery="" $attrEnabled="false"
                     $attrActive="false">
                     <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:Search"/>
                     <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$filled:Clear"/>
                     <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
                     <$text $attrTemplate="$templateContent">Search content</$text>
                   </$searchBar>                   
-                  <$searchBar $attrPhxValue="" $attrTonalElevation="8" $attrShadowElevation="12"
+                  <$searchBar $attrQuery="" $attrTonalElevation="8" $attrShadowElevation="12"
                     $attrActive="false">
                     <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:Search"/>
                     <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="$filled:Clear"/>
                     <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
                     <$text $attrTemplate="$templateContent">Search content</$text>
                   </$searchBar>                   
-                  <$searchBar $attrPhxValue="" $attrColors="$colorsForTemplate"
+                  <$searchBar $attrQuery="" $attrColors="$colorsForTemplate"
                     $attrActive="false">
                     <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="$filled:Search"/>
                     <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
                     <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
                     <$text $attrTemplate="$templateContent">Search content</$text>
                   </$searchBar>
-                  <$searchBar $attrPhxValue="" $attrColors="$colorsForTemplate" $attrShape="$rectangle"
+                  <$searchBar $attrQuery="" $attrColors="$colorsForTemplate" $attrShape="$rectangle"
                     $attrActive="false">
                     <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
                     <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
@@ -291,7 +291,7 @@ class SearchBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$searchBar $attrPhxValue=""
+                <$searchBar $attrQuery=""
                   $attrActive="true">
                   <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
                   <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
@@ -347,7 +347,7 @@ class SearchBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$searchBar $attrPhxValue="" $attrColors="$colorsForTemplate"
+                <$searchBar $attrQuery="" $attrColors="$colorsForTemplate"
                   $attrActive="true">
                   <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
                   <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
@@ -519,43 +519,43 @@ class SearchBarShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$column>
-                  <$dockedSearchBar $attrPhxValue="Text to search" $attrActive="false">
+                  <$dockedSearchBar $attrQuery="Text to search" $attrActive="false">
                     <$text>Search content</$text>
                   </$dockedSearchBar>
-                  <$dockedSearchBar $attrPhxValue="" $attrActive="false">
+                  <$dockedSearchBar $attrQuery="" $attrActive="false">
                     <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
                     <$text $attrTemplate="$templateContent">Search content</$text>
                   </$dockedSearchBar>                    
-                  <$dockedSearchBar $attrPhxValue="" $attrActive="false">
+                  <$dockedSearchBar $attrQuery="" $attrActive="false">
                     <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
                     <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
                     <$text $attrTemplate="$templateContent">Search content</$text>
                   </$dockedSearchBar>     
-                  <$dockedSearchBar $attrPhxValue="" $attrActive="false">
+                  <$dockedSearchBar $attrQuery="" $attrActive="false">
                     <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
                     <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
                     <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
                     <$text $attrTemplate="$templateContent">Search content</$text>
                   </$dockedSearchBar>   
-                  <$dockedSearchBar $attrPhxValue="" $attrEnabled="false" $attrActive="false">
+                  <$dockedSearchBar $attrQuery="" $attrEnabled="false" $attrActive="false">
                     <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
                     <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
                     <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
                     <$text $attrTemplate="$templateContent">Search content</$text>
                   </$dockedSearchBar>                   
-                  <$dockedSearchBar $attrPhxValue="" $attrTonalElevation="8" $attrShadowElevation="12" $attrActive="false">
+                  <$dockedSearchBar $attrQuery="" $attrTonalElevation="8" $attrShadowElevation="12" $attrActive="false">
                     <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
                     <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
                     <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
                     <$text $attrTemplate="$templateContent">Search content</$text>
                   </$dockedSearchBar>                   
-                  <$dockedSearchBar $attrPhxValue="" $attrColors="$colorsForTemplate" $attrActive="false">
+                  <$dockedSearchBar $attrQuery="" $attrColors="$colorsForTemplate" $attrActive="false">
                     <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
                     <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
                     <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
                     <$text $attrTemplate="$templateContent">Search content</$text>
                   </$dockedSearchBar>
-                  <$dockedSearchBar $attrPhxValue="" $attrColors="$colorsForTemplate" $attrShape="$rectangle" $attrActive="false">
+                  <$dockedSearchBar $attrQuery="" $attrColors="$colorsForTemplate" $attrShape="$rectangle" $attrActive="false">
                     <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
                     <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
                     <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
@@ -590,7 +590,7 @@ class SearchBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$dockedSearchBar $attrPhxValue="" $attrActive="true">
+                <$dockedSearchBar $attrQuery="" $attrActive="true">
                   <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
                   <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
                   <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
@@ -645,7 +645,7 @@ class SearchBarShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$dockedSearchBar $attrPhxValue="" $attrColors="$colorsForTemplate" $attrActive="true">
+                <$dockedSearchBar $attrQuery="" $attrColors="$colorsForTemplate" $attrActive="true">
                   <$icon $attrTemplate="$templateLeadingIcon" $attrImageVector="filled:Search"/>
                   <$icon $attrTemplate="$templateTrailingIcon" $attrImageVector="filled:Clear"/>
                   <$text $attrTemplate="$templatePlaceholder">Placeholder</$text>
