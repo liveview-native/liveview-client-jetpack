@@ -65,7 +65,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class SegmentedButtonRowDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
+    ComposableView<SegmentedButtonRowDTO.Builder>(builder) {
     private val space = builder.space
 
     @Composable
@@ -118,8 +118,7 @@ internal class SegmentedButtonRowDTO private constructor(builder: Builder) :
     }
 }
 
-internal object SegmentedButtonRowDtoFactory :
-    ComposableViewFactory<SegmentedButtonRowDTO, SegmentedButtonRowDTO.Builder>() {
+internal object SegmentedButtonRowDtoFactory : ComposableViewFactory<SegmentedButtonRowDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
@@ -132,7 +131,7 @@ internal object SegmentedButtonRowDtoFactory :
             } as SegmentedButtonRowDTO.Builder
         }.build()
 
-    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
+    override fun subTags(): Map<String, ComposableViewFactory<*>> {
         return mapOf(
             segmentedButton to SegmentedButtonDtoFactory
         )

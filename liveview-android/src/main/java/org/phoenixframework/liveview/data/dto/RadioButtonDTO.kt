@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSelectedColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUnselectedColor
@@ -36,10 +35,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * ```
  */
 internal class RadioButtonDTO private constructor(builder: Builder) :
-    ChangeableDTO<String>(builder) {
-
-    private val selected = builder.selected
-    private val colors = builder.colors?.toImmutableMap()
+    ChangeableDTO<Any, RadioButtonDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -47,13 +43,16 @@ internal class RadioButtonDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val selected = builder.selected
+        val colors = builder.colors
+
         RadioButton(
             modifier = modifier,
             selected = selected,
             onClick = {
                 if (!selected) {
                     changeValueEventName?.let {
-                        pushOnChangeEvent(pushEvent, it, value)
+                        pushOnChangeEvent(pushEvent, it, phxValue)
                     }
                 }
             },
@@ -84,8 +83,8 @@ internal class RadioButtonDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ChangeableDTOBuilder<String>("") {
-        var colors: Map<String, String>? = null
+    internal class Builder : ChangeableDTOBuilder() {
+        var colors: ImmutableMap<String, String>? = null
             private set
 
         var selected: Boolean = false
@@ -115,7 +114,7 @@ internal class RadioButtonDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -123,8 +122,7 @@ internal class RadioButtonDTO private constructor(builder: Builder) :
     }
 }
 
-internal object RadioButtonDtoFactory :
-    ComposableViewFactory<RadioButtonDTO, RadioButtonDTO.Builder>() {
+internal object RadioButtonDtoFactory : ComposableViewFactory<RadioButtonDTO>() {
     /**
      * Creates a `RadioButtonDTO` object based on the attributes of the input `Attributes` object.
      * RadioButtonDTO co-relates to the RadioButton composable
@@ -144,7 +142,6 @@ internal object RadioButtonDtoFactory :
             } else {
                 when (attribute.name) {
                     attrColors -> builder.colors(attribute.value)
-                    attrPhxValue -> builder.value(attribute.value)
                     attrSelected -> builder.selected(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
                 } as RadioButtonDTO.Builder

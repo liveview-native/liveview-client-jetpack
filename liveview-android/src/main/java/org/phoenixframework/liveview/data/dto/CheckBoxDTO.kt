@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.coroutines.flow.map
 import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedColor
@@ -36,8 +37,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * ```
  */
 internal class CheckBoxDTO private constructor(builder: Builder) :
-    ChangeableDTO<Boolean>(builder) {
-    private val colors = builder.colors?.toImmutableMap()
+    ChangeableDTO<Boolean, CheckBoxDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -45,11 +45,14 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val colors = builder.colors
+        val checked = builder.checked
+
         var stateValue by remember(composableNode) {
-            mutableStateOf(value)
+            mutableStateOf(checked)
         }
         Checkbox(
-            checked = stateValue,
+            checked = checked,
             onCheckedChange = {
                 stateValue = it
             },
@@ -62,8 +65,11 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
             changeValueEventName?.let { event ->
                 snapshotFlow { stateValue }
                     .onChangeable()
-                    .collect { value ->
-                        pushOnChangeEvent(pushEvent, event, value)
+                    .map { isChecked ->
+                        mergeValueWithPhxValue(KEY_CHECKED, isChecked)
+                    }
+                    .collect { pushValue ->
+                        pushOnChangeEvent(pushEvent, event, pushValue)
                     }
             }
         }
@@ -96,10 +102,21 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ChangeableDTOBuilder<Boolean>(false) {
+    companion object {
+        private const val KEY_CHECKED = "checked"
+    }
 
-        var colors: Map<String, String>? = null
+    internal class Builder : ChangeableDTOBuilder() {
+
+        var colors: ImmutableMap<String, String>? = null
             private set
+
+        var checked: Boolean = false
+            private set
+
+        fun checked(checked: String) = apply {
+            this.checked = checked.toBoolean()
+        }
 
         /**
          * Set CheckBox colors.
@@ -113,7 +130,7 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -121,7 +138,7 @@ internal class CheckBoxDTO private constructor(builder: Builder) :
     }
 }
 
-internal object CheckBoxDtoFactory : ComposableViewFactory<CheckBoxDTO, CheckBoxDTO.Builder>() {
+internal object CheckBoxDtoFactory : ComposableViewFactory<CheckBoxDTO>() {
     /**
      * Creates a `CheckBoxDTO` object based on the attributes of the input `Attributes` object.
      * CheckBoxDTO co-relates to the CheckBox composable
@@ -138,7 +155,7 @@ internal object CheckBoxDtoFactory : ComposableViewFactory<CheckBoxDTO, CheckBox
                 builder
             } else {
                 when (attribute.name) {
-                    attrChecked -> builder.value(attribute.value.toBoolean())
+                    attrChecked -> builder.checked(attribute.value)
                     attrColors -> builder.colors(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
                 } as CheckBoxDTO.Builder

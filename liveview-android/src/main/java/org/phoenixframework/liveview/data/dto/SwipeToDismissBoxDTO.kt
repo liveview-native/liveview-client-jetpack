@@ -38,12 +38,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val initialValue = builder.initialValue
-    private val enableDismissFromStartToEnd = builder.enableDismissFromStartToEnd
-    private val enableDismissFromEndToStart = builder.enableDismissFromEndToStart
-    private val onValueChange = builder.onValueChange
+    ComposableView<SwipeToDismissBoxDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -51,6 +46,11 @@ internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val initialValue = builder.initialValue
+        val enableDismissFromStartToEnd = builder.enableDismissFromStartToEnd
+        val enableDismissFromEndToStart = builder.enableDismissFromEndToStart
+        val onValueChange = builder.onValueChange
+
         val backgroundContent = remember(composableNode?.children) {
             composableNode?.children?.filter { it.node?.template == templateBackgroundContent }
         }
@@ -70,7 +70,7 @@ internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
                         pushEvent(
                             ComposableBuilder.EVENT_TYPE_CHANGE,
                             onValueChange,
-                            it,
+                            mergeValueWithPhxValue(KEY_SWIPE_TO_DISMISS_VALUE, it),
                             null
                         )
                     }
@@ -94,6 +94,10 @@ internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
                 }
             }
         )
+    }
+
+    companion object {
+        const val KEY_SWIPE_TO_DISMISS_VALUE = "swipeToDismissValue"
     }
 
     internal class Builder : ComposableBuilder() {
@@ -162,8 +166,7 @@ internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
     }
 }
 
-internal object SwipeToDismissBoxDtoFactory :
-    ComposableViewFactory<SwipeToDismissBoxDTO, SwipeToDismissBoxDTO.Builder>() {
+internal object SwipeToDismissBoxDtoFactory : ComposableViewFactory<SwipeToDismissBoxDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

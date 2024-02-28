@@ -57,10 +57,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class ListItemDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val colors = builder.colors?.toImmutableMap()
-    private val tonalElevation = builder.tonalElevation
-    private val shadowElevation = builder.shadowElevation
+    ComposableView<ListItemDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -68,6 +65,10 @@ internal class ListItemDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val colors = builder.colors
+        val tonalElevation = builder.tonalElevation
+        val shadowElevation = builder.shadowElevation
+
         val headlineContent = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateHeadlineContent }
         }
@@ -147,7 +148,7 @@ internal class ListItemDTO private constructor(builder: Builder) :
     }
 
     internal class Builder : ComposableBuilder() {
-        var colors: Map<String, String>? = null
+        var colors: ImmutableMap<String, String>? = null
             private set
         var tonalElevation: Dp? = null
             private set
@@ -169,7 +170,7 @@ internal class ListItemDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -203,7 +204,7 @@ internal class ListItemDTO private constructor(builder: Builder) :
     }
 }
 
-internal object ListItemDtoFactory : ComposableViewFactory<ListItemDTO, ListItemDTO.Builder>() {
+internal object ListItemDtoFactory : ComposableViewFactory<ListItemDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

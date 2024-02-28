@@ -31,11 +31,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class ColumnDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
-    private val horizontalAlignment: Alignment.Horizontal = builder.horizontalAlignment
-    private val hasVerticalScroll = builder.hasVerticalScrolling
-    private val hasHorizontalScroll = builder.hasHorizontalScrolling
+    ComposableView<ColumnDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -43,6 +39,11 @@ internal class ColumnDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val verticalArrangement = builder.verticalArrangement
+        val horizontalAlignment = builder.horizontalAlignment
+        val hasVerticalScroll = builder.hasVerticalScrolling
+        val hasHorizontalScroll = builder.hasHorizontalScrolling
+
         Column(
             modifier = modifier
                 .paddingIfNotNull(paddingValues)
@@ -99,7 +100,7 @@ internal class ColumnDTO private constructor(builder: Builder) :
     }
 }
 
-internal object ColumnDtoFactory : ComposableViewFactory<ColumnDTO, ColumnDTO.Builder>() {
+internal object ColumnDtoFactory : ComposableViewFactory<ColumnDTO>() {
     /**
      * Creates a `ColumnDTO` object based on the attributes of the input `Attributes` object.
      * ColumnDTO co-relates to the Column composable

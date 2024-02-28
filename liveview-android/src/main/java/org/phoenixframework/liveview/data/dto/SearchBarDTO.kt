@@ -25,7 +25,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrActive
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrOnActiveChanged
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxSubmit
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrQuery
 import org.phoenixframework.liveview.data.constants.Attrs.attrShadowElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
@@ -56,8 +56,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * used to display dynamic suggestions.
  *
  * ```
- * <SearchBar query={"#{@queryText}"} phx-change="onQueryChange" active="false"
- *   phx-value="Initial value" phx-submit="onSearch">
+ * <SearchBar query={"#{@queryText}"} active="false"
+ *   phx-change="onQueryChange" phx-submit="onSearch">
  *   <Icon imageVector="filled:Search"  template="leadingIcon"/>
  *   <IconButton phx-click="" template="trailingIcon">
  *     <Icon imageVector="filled:Clear" />
@@ -70,16 +70,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class SearchBarDTO private constructor(builder: Builder) :
-    ChangeableDTO<String>(builder) {
-
-    private val active = builder.active
-    private val colors = builder.colors?.toImmutableMap()
-    private val onActiveChanged = builder.onActiveChanged
-    private val onSubmit = builder.onSubmit
-    private val shadowElevation = builder.shadowElevation
-    private val shape = builder.shape
-    private val tonalElevation = builder.tonalElevation
-    private val windowsInsets = builder.windowInsets
+    ChangeableDTO<String, SearchBarDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -87,6 +78,16 @@ internal class SearchBarDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val active = builder.active
+        val colors = builder.colors
+        val onActiveChanged = builder.onActiveChanged
+        val onSubmit = builder.onSubmit
+        val query = builder.query
+        val shadowElevation = builder.shadowElevation
+        val shape = builder.shape
+        val tonalElevation = builder.tonalElevation
+        val windowsInsets = builder.windowInsets
+
         val placeholder = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templatePlaceholder }
         }
@@ -100,7 +101,7 @@ internal class SearchBarDTO private constructor(builder: Builder) :
             composableNode?.children?.find { it.node?.template == templateContent }
         }
         var queryStateValue by remember {
-            mutableStateOf(value)
+            mutableStateOf(query)
         }
         var activeState by remember {
             mutableStateOf(active)
@@ -112,10 +113,15 @@ internal class SearchBarDTO private constructor(builder: Builder) :
                     onQueryChange = { q ->
                         queryStateValue = q
                     },
-                    onSearch = { query ->
+                    onSearch = { queryText ->
                         onSubmit.let { onSubmitEvent ->
                             if (onSubmitEvent.isNotBlank())
-                                pushEvent.invoke(EVENT_TYPE_SUBMIT, onSubmitEvent, query, null)
+                                pushEvent.invoke(
+                                    EVENT_TYPE_SUBMIT,
+                                    onSubmitEvent,
+                                    mergeValueWithPhxValue(KEY_QUERY, queryText),
+                                    null
+                                )
                         }
                     },
                     active = activeState,
@@ -126,7 +132,7 @@ internal class SearchBarDTO private constructor(builder: Builder) :
                                 pushEvent.invoke(
                                     EVENT_TYPE_CHANGE,
                                     onActiveChangedEvent,
-                                    actv,
+                                    mergeValueWithPhxValue(KEY_ACTIVE, actv),
                                     null
                                 )
                         }
@@ -166,10 +172,15 @@ internal class SearchBarDTO private constructor(builder: Builder) :
                     onQueryChange = { q ->
                         queryStateValue = q
                     },
-                    onSearch = { query ->
+                    onSearch = { queryText ->
                         onSubmit.let { onSubmitEvent ->
                             if (onSubmitEvent.isNotBlank())
-                                pushEvent.invoke(EVENT_TYPE_SUBMIT, onSubmitEvent, query, null)
+                                pushEvent.invoke(
+                                    EVENT_TYPE_SUBMIT,
+                                    onSubmitEvent,
+                                    mergeValueWithPhxValue(KEY_QUERY, queryText),
+                                    null
+                                )
                         }
                     },
                     active = activeState,
@@ -180,7 +191,7 @@ internal class SearchBarDTO private constructor(builder: Builder) :
                                 pushEvent.invoke(
                                     EVENT_TYPE_CHANGE,
                                     onActiveChangedEvent,
-                                    actv,
+                                    mergeValueWithPhxValue(KEY_ACTIVE, actv),
                                     null
                                 )
                         }
@@ -218,11 +229,22 @@ internal class SearchBarDTO private constructor(builder: Builder) :
 
         LaunchedEffect(composableNode) {
             changeValueEventName?.let { event ->
-                snapshotFlow { queryStateValue }.map { it }.onChangeable().collect { value ->
-                    pushOnChangeEvent(pushEvent, event, value)
-                }
+                snapshotFlow { queryStateValue }
+                    .map { it }
+                    .onChangeable()
+                    .map {
+                        mergeValueWithPhxValue(KEY_QUERY, it)
+                    }
+                    .collect { value ->
+                        pushOnChangeEvent(pushEvent, event, value)
+                    }
             }
         }
+    }
+
+    companion object {
+        const val KEY_QUERY = "query"
+        const val KEY_ACTIVE = "active"
     }
 
     @Composable
@@ -251,14 +273,16 @@ internal class SearchBarDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ChangeableDTOBuilder<String>("") {
+    internal class Builder : ChangeableDTOBuilder() {
         var active: Boolean = false
             private set
-        var colors: Map<String, String>? = null
+        var colors: ImmutableMap<String, String>? = null
             private set
         var onActiveChanged: String = ""
             private set
         var onSubmit: String = ""
+            private set
+        var query: String = ""
             private set
         var shadowElevation: Dp? = null
             private set
@@ -293,7 +317,7 @@ internal class SearchBarDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -319,6 +343,10 @@ internal class SearchBarDTO private constructor(builder: Builder) :
          */
         fun onSubmit(event: String) = apply {
             this.onSubmit = event
+        }
+
+        fun query(query: String) = apply {
+            this.query = query
         }
 
         /**
@@ -383,7 +411,7 @@ internal class SearchBarDTO private constructor(builder: Builder) :
     }
 }
 
-internal object SearchBarDtoFactory : ComposableViewFactory<SearchBarDTO, SearchBarDTO.Builder>() {
+internal object SearchBarDtoFactory : ComposableViewFactory<SearchBarDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
@@ -398,7 +426,7 @@ internal object SearchBarDtoFactory : ComposableViewFactory<SearchBarDTO, Search
                     attrOnActiveChanged -> builder.onActiveChanged(attribute.value)
                     attrColors -> builder.colors(attribute.value)
                     attrPhxSubmit -> builder.onSubmit(attribute.value)
-                    attrPhxValue -> builder.value(attribute.value)
+                    attrQuery -> builder.query(attribute.value)
                     attrShadowElevation -> builder.shadowElevation(attribute.value)
                     attrShape -> builder.shape(attribute.value)
                     attrTonalElevation -> builder.tonalElevation(attribute.value)

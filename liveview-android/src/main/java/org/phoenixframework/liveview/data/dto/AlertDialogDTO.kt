@@ -17,6 +17,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateDismissBut
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_BLUR
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -29,7 +30,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * There are two ways to create a dialog:
  * - The first one is defining the content of the dialog by hand.
  * ```
- * <BasicAlertDialog phx-click="dismissAction">
+ * <BasicAlertDialog onDismissRequest="dismissAction">
  *  // Content
  * </BasicAlertDialog>
  * ```
@@ -40,7 +41,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *   - `title` for the dialog title;
  *   - and no template form the dialog content.
  * ```
- * <AlertDialog phx-click="dismissAction">
+ * <AlertDialog onDismissRequest="dismissAction">
  *  <Button phx-click="confirmEvent" template="confirm">
  *      <Text>Confirm</Text>
  *  </Button>
@@ -65,22 +66,27 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *
  * // render function...
  * <%= if @showDialog do %>
- *   <AlertDialog phx-click="hideDialog">...</AlertDialog>
+ *   <AlertDialog onDismissRequest="hideDialog">...</AlertDialog>
  * <% end %>
  * ```
  */
-internal class AlertDialogDTO private constructor(builder: Builder) : DialogDTO(builder) {
-
-    private val containerColor = builder.containerColor
-    private val iconContentColor = builder.iconContentColor
-    private val titleContentColor = builder.titleContentColor
-    private val textContentColor = builder.textContentColor
+internal class AlertDialogDTO private constructor(builder: Builder) :
+    DialogDTO<AlertDialogDTO.Builder>(builder) {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
+        val dismissEvent = builder.dismissEvent
+        val dialogProperties = builder.dialogProperties
+        val shape = builder.shape
+        val tonalElevation = builder.tonalElevation
+        val containerColor = builder.containerColor
+        val iconContentColor = builder.iconContentColor
+        val titleContentColor = builder.titleContentColor
+        val textContentColor = builder.textContentColor
+
         when (composableNode?.node?.tag) {
             ComposableTypes.alertDialog -> {
                 val dismissButton = remember(composableNode.children) {
@@ -99,10 +105,10 @@ internal class AlertDialogDTO private constructor(builder: Builder) : DialogDTO(
                     composableNode.children.find { it.node?.template == null }
                 }
                 AlertDialog(
-                    onDismissRequest = dismissEvent?.let {
-                        onClickFromString(pushEvent, it, value?.toString() ?: "")
-                    } ?: {
-                        // Do nothing
+                    onDismissRequest = {
+                        dismissEvent?.let { event ->
+                            pushEvent(EVENT_TYPE_BLUR, event, phxValue, null)
+                        }
                     },
                     confirmButton = {
                         confirmButton?.let {
@@ -142,10 +148,10 @@ internal class AlertDialogDTO private constructor(builder: Builder) : DialogDTO(
 
             ComposableTypes.basicAlertDialog -> {
                 BasicAlertDialog(
-                    onDismissRequest = dismissEvent?.let {
-                        onClickFromString(pushEvent, it, value?.toString() ?: "")
-                    } ?: {
-                        // Do nothing
+                    onDismissRequest = {
+                        dismissEvent?.let { event ->
+                            pushEvent(EVENT_TYPE_BLUR, event, phxValue, null)
+                        }
                     },
                     modifier = modifier,
                     properties = dialogProperties,
@@ -225,8 +231,7 @@ internal class AlertDialogDTO private constructor(builder: Builder) : DialogDTO(
     }
 }
 
-internal object AlertDialogDtoFactory :
-    ComposableViewFactory<AlertDialogDTO, AlertDialogDTO.Builder>() {
+internal object AlertDialogDtoFactory : ComposableViewFactory<AlertDialogDTO>() {
 
     /**
      * Creates a `AlertDialogDTO` object based on the attributes of the input `Attributes` object.

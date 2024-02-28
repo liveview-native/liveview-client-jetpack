@@ -29,7 +29,8 @@ import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttr
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrFocusedElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
-import org.phoenixframework.liveview.data.constants.Templates
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateText
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
@@ -59,14 +60,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  */
 internal class FloatingActionButtonDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val onClick: String = builder.onClick
-    private val shape: Shape? = builder.shape
-    private val containerColor: Color? = builder.containerColor
-    private val contentColor: Color? = builder.contentColor
-    private val elevation: ImmutableMap<String, String>? = builder.elevation?.toImmutableMap()
-    private val expanded: Boolean = builder.expanded
-    private val value: Any? = builder.value
+    ComposableView<FloatingActionButtonDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -74,11 +68,18 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val containerColor = containerColor ?: FloatingActionButtonDefaults.containerColor
+        val onClick = builder.onClick
+        val shape = builder.shape
+        val containerColorValue = builder.containerColor
+        val contentColor = builder.contentColor
+        val elevation = builder.elevation
+        val expanded = builder.expanded
+
+        val containerColor = containerColorValue ?: FloatingActionButtonDefaults.containerColor
         when (composableNode?.node?.tag) {
             ComposableTypes.floatingActionButton ->
                 FloatingActionButton(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = modifier,
                     shape = shape ?: FloatingActionButtonDefaults.shape,
                     containerColor = containerColor,
@@ -92,7 +93,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
 
             ComposableTypes.smallFloatingActionButton ->
                 SmallFloatingActionButton(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = modifier,
                     shape = shape ?: FloatingActionButtonDefaults.smallShape,
                     containerColor = containerColor,
@@ -106,7 +107,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
 
             ComposableTypes.largeFloatingActionButton ->
                 LargeFloatingActionButton(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = modifier,
                     shape = shape ?: FloatingActionButtonDefaults.largeShape,
                     containerColor = containerColor,
@@ -120,10 +121,10 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
 
             ComposableTypes.extendedFloatingActionButton -> {
                 val text = remember(composableNode.children) {
-                    composableNode.children.find { it.node?.template == Templates.templateText }
+                    composableNode.children.find { it.node?.template == templateText }
                 }
                 val icon = remember(composableNode.children) {
-                    composableNode.children.find { it.node?.template == Templates.templateIcon }
+                    composableNode.children.find { it.node?.template == templateIcon }
                 }
                 ExtendedFloatingActionButton(
                     text = {
@@ -136,7 +137,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = modifier,
                     expanded = expanded,
                     shape = shape ?: FloatingActionButtonDefaults.extendedFabShape,
@@ -175,7 +176,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
             private set
         var shape: Shape? = null
             private set
-        var elevation: Map<String, String>? = null
+        var elevation: ImmutableMap<String, String>? = null
             private set
         var expanded: Boolean = true
             private set
@@ -252,7 +253,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
          */
         fun elevation(elevations: String) = apply {
             if (elevations.isNotEmpty()) {
-                this.elevation = elevationsFromString(elevations)
+                this.elevation = elevationsFromString(elevations)?.toImmutableMap()
             }
         }
 
@@ -277,7 +278,7 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
 }
 
 internal object FloatingActionButtonDtoFactory :
-    ComposableViewFactory<FloatingActionButtonDTO, FloatingActionButtonDTO.Builder>() {
+    ComposableViewFactory<FloatingActionButtonDTO>() {
     /**
      * Creates an `FloatingActionButtonDTO` object based on the attributes and text of the input
      * `Attributes` object. FloatingActionButtonDTO co-relates to the FloatingActionButton

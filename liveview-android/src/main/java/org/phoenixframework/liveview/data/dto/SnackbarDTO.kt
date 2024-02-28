@@ -48,7 +48,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  */
 internal class SnackbarDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
+    ComposableView<SnackbarDTO.Builder>(builder) {
     private val actionOnNewLine = builder.actionOnNewLine
     private val shape = builder.shape
     private val containerColor = builder.containerColor
@@ -71,6 +71,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
             Data(
                 visuals,
                 pushEvent,
+                phxValue,
                 actionEvent,
                 dismissEvent,
             )
@@ -91,7 +92,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
             onDispose {
                 if (!snackbarData.dismissWasCalled) {
                     dismissEvent?.let {
-                        onClickFromString(pushEvent, it).invoke()
+                        pushEvent(ComposableBuilder.EVENT_TYPE_BLUR, it, phxValue, null)
                     }
                 }
             }
@@ -289,6 +290,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
     internal data class Data(
         val snackbarVisuals: Visuals,
         val pushEvent: PushEvent,
+        val phxValue: Any?,
         val actionEventName: String?,
         val dismissEventName: String?,
         var dismissWasCalled: Boolean = false
@@ -298,14 +300,14 @@ internal class SnackbarDTO private constructor(builder: Builder) :
 
         override fun dismiss() {
             dismissEventName?.let {
-                onClickFromString(pushEvent, it).invoke()
+                onClickFromString(pushEvent, it, phxValue).invoke()
                 dismissWasCalled = true
             }
         }
 
         override fun performAction() {
             actionEventName?.let {
-                onClickFromString(pushEvent, it).invoke()
+                onClickFromString(pushEvent, it, phxValue).invoke()
             }
         }
     }
@@ -337,7 +339,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
     }
 }
 
-internal object SnackbarDtoFactory : ComposableViewFactory<SnackbarDTO, SnackbarDTO.Builder>() {
+internal object SnackbarDtoFactory : ComposableViewFactory<SnackbarDTO>() {
 
     /**
      * Creates a `SnackbarDTO` object based on the attributes of the input `Attributes` object.

@@ -3,30 +3,17 @@ package org.phoenixframework.liveview.domain.extensions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
 import org.phoenixframework.liveview.data.constants.SheetValues
-import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.PushEvent
 
+internal const val SHEET_VALUE_KEY = "sheetValue"
 
 @OptIn(ExperimentalMaterial3Api::class)
-fun SheetValue.pushNewValue(pushEvent: PushEvent, onChangedEvent: String) {
-    when (this) {
-        SheetValue.Expanded -> pushEvent(
-            ComposableBuilder.EVENT_TYPE_CHANGE, onChangedEvent, SheetValues.expanded, null,
-        )
+fun SheetValue.toValue(): String {
+    return when (this) {
+        SheetValue.Expanded -> SheetValues.expanded
 
-        SheetValue.PartiallyExpanded -> pushEvent(
-            ComposableBuilder.EVENT_TYPE_CHANGE,
-            onChangedEvent,
-            SheetValues.partiallyExpanded,
-            null,
-        )
+        SheetValue.PartiallyExpanded -> SheetValues.partiallyExpanded
 
-        SheetValue.Hidden -> pushEvent(
-            ComposableBuilder.EVENT_TYPE_CHANGE,
-            onChangedEvent,
-            SheetValues.hidden,
-            null,
-        )
+        SheetValue.Hidden -> SheetValues.hidden
     }
 }
 

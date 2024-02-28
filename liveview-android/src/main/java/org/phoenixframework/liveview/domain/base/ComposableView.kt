@@ -37,6 +37,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrMenuAnchor
 import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValueNamed
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrTestTag
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalPadding
@@ -50,6 +51,7 @@ import org.phoenixframework.liveview.data.dto.alignmentFromString
 import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
 import org.phoenixframework.liveview.data.dto.onClickFromString
 import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
+import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.KEY_PHX_VALUE
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -63,12 +65,49 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *  `ComposableViewFactory` must be implemented, the it must be registered on `ComposableRegistry`
  *  object informing the respective tag for the composable.
  */
-abstract class ComposableView(val modifier: Modifier = Modifier) {
+abstract class ComposableView<CB : ComposableBuilder>(protected val builder: CB) {
+    // All components can have modifiers
+    protected val modifier: Modifier
+        get() = builder.modifier
+
+    // All components can have a value assigned to it. It can be a single value or a map of values
+    protected open val value: Map<String, Any>
+        get() = builder.value
+
+    // The phx-value can be a single value or a map of values.
+    val phxValue: Any?
+        get() = builder.getPhxValue()
 
     @Composable
     abstract fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     )
+
+    // This function is used to merge/join "on changed" values with the component value(s)
+    // (phx-value and phx-value-*). For example, when a checkbox changes its checked state, the new
+    // checked value (true/false) and the checkbox values (phx-value/phx-value-*) are sent to server
+    protected fun mergeValueWithPhxValue(key: String, value: Any): Any {
+        val currentPhxValue = phxValue
+        return if (currentPhxValue == null) {
+            if (key == KEY_PHX_VALUE) {
+                value
+            } else {
+                mapOf(key to value)
+            }
+        } else if (this.value.size == 1 && this.value.containsKey(KEY_PHX_VALUE)) {
+            if (key == KEY_PHX_VALUE) {
+                value
+            } else {
+                val newMap = this.value.toMutableMap()
+                newMap[key] = value
+                newMap
+            }
+        } else {
+            val newMap = this.value.toMutableMap()
+            newMap[key] = value
+            newMap
+        }
+    }
 }
 
 /**
@@ -84,8 +123,7 @@ abstract class ComposableBuilder {
         private set
     var modifier: Modifier = Modifier
         private set
-    var value: Any? = null
-        private set
+    val value = mutableMapOf<String, Any>()
 
     /**
      * Declare the preferred size (width and height) of a Composable. You can specify the exactly
@@ -247,7 +285,7 @@ abstract class ComposableBuilder {
     private fun clickable(event: String, pushEvent: PushEvent?) = apply {
         modifier = modifier.then(
             Modifier.clickable {
-                onClickFromString(pushEvent, event, value?.toString() ?: "").invoke()
+                onClickFromString(pushEvent, event, getPhxValue()).invoke()
             }
         )
     }
@@ -260,8 +298,23 @@ abstract class ComposableBuilder {
      * ```
      * @param value event name defined on the server to handle the composable's click.
      */
-    internal fun value(value: Any?) = apply {
-        this.value = value
+    internal fun value(attributeName: String, value: Any) = apply {
+        if (attributeName == attrPhxValue) {
+            this.value[KEY_PHX_VALUE] = value
+        } else if (attributeName.startsWith(attrPhxValueNamed)) {
+            val phxValueKey = attributeName.substring(attrPhxValueNamed.length)
+            this.value[phxValueKey] = value
+        }
+    }
+
+    internal fun getPhxValue(): Any? {
+        return if (value.isEmpty())
+            null
+        else if (value.size == 1 && value.containsKey(KEY_PHX_VALUE)) {
+            value[KEY_PHX_VALUE]
+        } else {
+            value
+        }
     }
 
     /**
@@ -342,11 +395,15 @@ abstract class ComposableBuilder {
             attrHorizontalPadding -> paddingHorizontal(attribute.value)
             attrPadding -> padding(attribute.value)
             attrPhxClick -> clickable(attribute.value, pushEvent)
-            attrPhxValue -> value(attribute.value)
+            attrPhxValue -> value(attrPhxValue, attribute.value)
             attrSize -> size(attribute.value)
             attrTestTag -> testTag(attribute.value)
             attrVerticalPadding -> paddingVertical(attribute.value)
             attrWidth -> width(attribute.value)
+            else ->
+                if (attribute.name.startsWith(attrPhxValueNamed)) {
+                    value(attribute.name, attribute.value)
+                }
         }
         when (scope) {
             is BoxScope -> {
@@ -419,13 +476,15 @@ abstract class ComposableBuilder {
         internal const val EVENT_TYPE_KEY_UP = "keyup"
         internal const val EVENT_TYPE_BLUR = "blur"
         internal const val EVENT_TYPE_SUBMIT = "submit"
+
+        internal const val KEY_PHX_VALUE = "value"
     }
 }
 
 /**
  * A `ComposableViewFactory` is responsible to create a `ComposableView` using a list of attributes.
  */
-abstract class ComposableViewFactory<CV : ComposableView, CB : ComposableBuilder> {
+abstract class ComposableViewFactory<CV : ComposableView<*>> {
 
     /**
      * Create a new instance of a `ComposableView`. Subclasses of this class must override this
@@ -446,5 +505,5 @@ abstract class ComposableViewFactory<CV : ComposableView, CB : ComposableBuilder
      * Subclasses of ComposableViewFactory can register subtags specific for a particular component.
      * See ComposableRegistry and ComposableNodeFactory for more details.
      */
-    open fun subTags(): Map<String, ComposableViewFactory<*, *>> = emptyMap()
+    open fun subTags(): Map<String, ComposableViewFactory<*>> = emptyMap()
 }

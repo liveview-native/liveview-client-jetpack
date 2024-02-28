@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgeDefaults
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -33,17 +32,17 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class BadgedBoxDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val contentColor = builder.contentColor
-    private val containerColor = builder.containerColor
+    ComposableView<BadgedBoxDTO.Builder>(builder) {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?,
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val contentColor = builder.contentColor
+        val containerColor = builder.containerColor
+
         val badge = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateBadge }
         }
@@ -106,7 +105,7 @@ internal class BadgedBoxDTO private constructor(builder: Builder) :
     }
 }
 
-internal object BadgedBoxDtoFactory : ComposableViewFactory<BadgedBoxDTO, BadgedBoxDTO.Builder>() {
+internal object BadgedBoxDtoFactory : ComposableViewFactory<BadgedBoxDTO>() {
     /**
      * Creates a `BadgedBoxDTO` object based on the attributes of the input `Attributes` object.
      * BadgedBoxDTO co-relates to the BadgedBox composable

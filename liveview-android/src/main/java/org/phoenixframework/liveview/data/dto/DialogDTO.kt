@@ -8,7 +8,7 @@ import androidx.compose.ui.window.SecureFlagPolicy
 import org.phoenixframework.liveview.data.constants.Attrs.attrDecorFitsSystemWindows
 import org.phoenixframework.liveview.data.constants.Attrs.attrDismissOnBackPress
 import org.phoenixframework.liveview.data.constants.Attrs.attrDismissOnClickOutside
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrOnDismissRequest
 import org.phoenixframework.liveview.data.constants.Attrs.attrSecurePolicy
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
@@ -22,14 +22,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
 /**
  * Parent class of `AlertDialog` and `DatePickerDialog`.
  */
-internal abstract class DialogDTO(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    protected val dismissEvent = builder.dismissEvent
-    protected val dialogProperties = builder.dialogProperties
-    protected val shape = builder.shape
-    protected val tonalElevation = builder.tonalElevation
-    protected val value = builder.value
+internal abstract class DialogDTO<DB : DialogDTO.Builder>(builder: DB) :
+    ComposableView<DB>(builder) {
 
     internal abstract class Builder : ComposableBuilder() {
         var dismissEvent: String? = null
@@ -118,7 +112,7 @@ internal abstract class DialogDTO(builder: Builder) :
         /**
          * Event to be triggered on the server when the dialog should be dismissed.
          * ```
-         * <AlertDialog phx-click="dismissAction">...</AlertDialog>
+         * <AlertDialog onDismissRequest="dismissAction">...</AlertDialog>
          * ```
          * @param dismissEventName event name to be called on the server in order to dismiss the
          * alert dialog.
@@ -161,7 +155,7 @@ internal abstract class DialogDTO(builder: Builder) :
                 attrDecorFitsSystemWindows -> decorFitsSystemWindows(attribute.value)
                 attrDismissOnBackPress -> dismissOnBackPress(attribute.value)
                 attrDismissOnClickOutside -> dismissOnClickOutside(attribute.value)
-                attrPhxClick -> onDismissRequest(attribute.value)
+                attrOnDismissRequest -> onDismissRequest(attribute.value)
                 attrSecurePolicy -> securePolicy(attribute.value)
                 attrTonalElevation -> tonalElevation(attribute.value)
                 attrUsePlatformDefaultWidth -> usePlatformDefaultWidth(attribute.value)

@@ -46,13 +46,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * You can also use a `PermanentNavigationDrawer` or a `DismissibleNavigationDrawer`.
  */
 internal class NavigationDrawerDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val gesturesEnabled = builder.gesturesEnabled
-    private val scrimColor = builder.scrimColor
-    private val isOpen = builder.isOpen
-    private val onClose = builder.onClose
-    private val onOpen = builder.onOpen
+    ComposableView<NavigationDrawerDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -60,6 +54,12 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val gesturesEnabled = builder.gesturesEnabled
+        val isOpen = builder.isOpen
+        val onClose = builder.onClose
+        val onOpen = builder.onOpen
+        val scrimColor = builder.scrimColor
+
         val drawerContent = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == Templates.templateDrawerContent }
         }
@@ -86,10 +86,10 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
                 rememberDrawerState(
                     initialValue = if (isOpen) DrawerValue.Open else DrawerValue.Closed,
                     confirmStateChange = { drawerValue ->
-                        if (drawerValue == DrawerValue.Open) {
-                            pushEvent(EVENT_TYPE_CHANGE, onOpen, "", null)
-                        } else {
-                            pushEvent(EVENT_TYPE_CHANGE, onClose, "", null)
+                        val event = if (drawerValue == DrawerValue.Open) onOpen else onClose
+                        if (event.isNotEmpty()) {
+                            val pushValue = mergeValueWithPhxValue(KEY_DRAWER_VALUE, drawerValue)
+                            pushEvent(EVENT_TYPE_CHANGE, event, pushValue, null)
                         }
                         true
                     }
@@ -139,6 +139,10 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
                 }
             }
         }
+    }
+
+    companion object {
+        const val KEY_DRAWER_VALUE = "drawerValue"
     }
 
     internal class Builder : ComposableBuilder() {
@@ -219,8 +223,7 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
     }
 }
 
-internal object NavigationDrawerDtoFactory :
-    ComposableViewFactory<NavigationDrawerDTO, NavigationDrawerDTO.Builder>() {
+internal object NavigationDrawerDtoFactory : ComposableViewFactory<NavigationDrawerDTO>() {
     /**
      * Creates a `NavigationDrawerDTO` object based on the attributes of the input `Attributes`
      * object. NavigationDrawerDTO co-relates to the ModalNavigationDrawer,

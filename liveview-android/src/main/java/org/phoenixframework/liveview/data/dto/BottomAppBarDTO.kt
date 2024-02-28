@@ -15,7 +15,8 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
-import org.phoenixframework.liveview.data.constants.Templates
+import org.phoenixframework.liveview.data.constants.Templates.templateAction
+import org.phoenixframework.liveview.data.constants.Templates.templateFab
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -45,13 +46,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class BottomAppBarDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val containerColor = builder.containerColor
-    private val contentColor = builder.contentColor
-    private val contentPadding = builder.contentPadding
-    private val tonalElevation = builder.tonalElevation
-    private val windowsInsets = builder.windowInsets
+    ComposableView<BottomAppBarDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -59,13 +54,19 @@ internal class BottomAppBarDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val containerColorValue = builder.containerColor
+        val contentColor = builder.contentColor
+        val contentPadding = builder.contentPadding
+        val tonalElevation = builder.tonalElevation
+        val windowsInsets = builder.windowInsets
+
         val actions = remember(composableNode?.children) {
-            composableNode?.children?.filter { it.node?.template == Templates.templateAction }
+            composableNode?.children?.filter { it.node?.template == templateAction }
         }
         val floatingActionButton = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateFab }
+            composableNode?.children?.find { it.node?.template == templateFab }
         }
-        val containerColor = containerColor ?: BottomAppBarDefaults.containerColor
+        val containerColor = containerColorValue ?: BottomAppBarDefaults.containerColor
         BottomAppBar(
             actions = {
                 actions?.forEach {
@@ -171,8 +172,7 @@ internal class BottomAppBarDTO private constructor(builder: Builder) :
     }
 }
 
-internal object BottomAppBarDtoFactory :
-    ComposableViewFactory<BottomAppBarDTO, BottomAppBarDTO.Builder>() {
+internal object BottomAppBarDtoFactory : ComposableViewFactory<BottomAppBarDTO>() {
     /**
      * Creates a `BottomAppBarDTO` object based on the attributes of the input `Attributes` object.
      * BottomAppBarDTO co-relates to the BottomAppBar composable

@@ -7,8 +7,8 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
-import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColumns
 import org.phoenixframework.liveview.data.constants.Attrs.attrCount
@@ -43,14 +43,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class LazyGridDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
-    private val horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
-    private val contentPadding: ImmutableMap<String, Int> = builder.contentPadding.toImmutableMap()
-    private val reverseLayout: Boolean = builder.reverseLayout
-    private val userScrollEnabled: Boolean = builder.userScrollEnabled
-    private val gridCells: GridCells = builder.gridCells
+    ComposableView<LazyGridDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -58,6 +51,15 @@ internal class LazyGridDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val verticalArrangement = builder.verticalArrangement
+        val horizontalArrangement = builder.horizontalArrangement
+        val reverseLayout = builder.reverseLayout
+        val userScrollEnabled = builder.userScrollEnabled
+        val gridCells = builder.gridCells
+        val contentPadding = remember {
+            builder.contentPadding.toImmutableMap()
+        }
+
         when (composableNode?.node?.tag) {
             ComposableTypes.lazyHorizontalGrid ->
                 LazyHorizontalGrid(
@@ -184,8 +186,7 @@ internal class LazyGridDTO private constructor(builder: Builder) :
     }
 }
 
-internal object LazyGridDtoFactory :
-    ComposableViewFactory<LazyGridDTO, LazyGridDTO.Builder>() {
+internal object LazyGridDtoFactory : ComposableViewFactory<LazyGridDTO>() {
     /**
      * Creates a `LazyGridDTO` object based on the attributes of the input `Attributes` object.
      * LazyGridDTO co-relates to the LazyHorizontalGrid or LazyVerticalGrid composable depending of

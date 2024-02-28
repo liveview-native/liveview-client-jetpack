@@ -67,16 +67,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class TooltipDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val scope = builder.scope
-    private val caretProperties = builder.caretProperties
-    private val colors = builder.colors?.toImmutableMap()
-    private val shape = builder.shape
-    private val contentColor = builder.contentColor
-    private val containerColor = builder.containerColor
-    private val tonalElevation = builder.tonalElevation
-    private val shadowElevation = builder.shadowElevation
+    ComposableView<TooltipDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -84,6 +75,15 @@ internal class TooltipDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val scope = builder.scope
+        val caretProperties = builder.caretProperties
+        val colors = builder.colors
+        val shape = builder.shape
+        val contentColor = builder.contentColor
+        val containerColor = builder.containerColor
+        val tonalElevation = builder.tonalElevation
+        val shadowElevation = builder.shadowElevation
+
         when (composableNode?.node?.tag) {
             ComposableTypes.plainTooltip -> {
                 if (scope is CaretScope) {
@@ -163,7 +163,7 @@ internal class TooltipDTO private constructor(builder: Builder) :
     internal class Builder(val scope: Any? = null) : ComposableBuilder() {
         var caretProperties: CaretProperties? = null
             private set
-        var colors: Map<String, String>? = null
+        var colors: ImmutableMap<String, String>? = null
             private set
         var shape: Shape? = null
             private set
@@ -188,7 +188,7 @@ internal class TooltipDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -285,7 +285,7 @@ internal class TooltipDTO private constructor(builder: Builder) :
     }
 }
 
-internal object TooltipDtoFactory : ComposableViewFactory<TooltipDTO, TooltipDTO.Builder>() {
+internal object TooltipDtoFactory : ComposableViewFactory<TooltipDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

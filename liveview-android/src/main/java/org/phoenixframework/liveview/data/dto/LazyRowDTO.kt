@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
@@ -28,12 +28,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class LazyRowDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
-    private val verticalAlignment: Alignment.Vertical = builder.verticalAlignment
-    private val contentPadding: ImmutableMap<String, Int> = builder.contentPadding.toImmutableMap()
-    private val reverseLayout: Boolean = builder.reverseLayout
-    private val userScrollEnabled: Boolean = builder.userScrollEnabled
+    ComposableView<LazyRowDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -41,6 +36,14 @@ internal class LazyRowDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val horizontalArrangement = builder.horizontalArrangement
+        val verticalAlignment = builder.verticalAlignment
+        val reverseLayout = builder.reverseLayout
+        val userScrollEnabled = builder.userScrollEnabled
+        val contentPadding = remember {
+            builder.contentPadding.toImmutableMap()
+        }
+
         LazyRow(
             modifier = modifier.paddingIfNotNull(paddingValues),
             reverseLayout = reverseLayout,
@@ -105,7 +108,7 @@ internal class LazyRowDTO private constructor(builder: Builder) :
     }
 }
 
-internal object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO, LazyRowDTO.Builder>() {
+internal object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO>() {
     /**
      * Creates a `LazyRowDTO` object based on the attributes of the input `Attributes` object.
      * LazyRowDTO co-relates to the LazyRow composable

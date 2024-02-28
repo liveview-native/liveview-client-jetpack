@@ -32,11 +32,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * ```
  */
 internal class ProgressIndicatorDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val color = builder.color
-    private val strokeWidth = builder.strokeWidth
-    private val trackColor = builder.trackColor
-    private val strokeCap = builder.strokeCap
+    ComposableView<ProgressIndicatorDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -44,6 +40,11 @@ internal class ProgressIndicatorDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val color = builder.color
+        val strokeWidth = builder.strokeWidth
+        val trackColor = builder.trackColor
+        val strokeCap = builder.strokeCap
+
         if (composableNode?.node?.tag == ComposableTypes.linearProgressIndicator) {
             LinearProgressIndicator(
                 modifier = modifier,
@@ -145,8 +146,7 @@ internal class ProgressIndicatorDTO private constructor(builder: Builder) :
     }
 }
 
-internal object ProgressIndicatorDtoFactory :
-    ComposableViewFactory<ProgressIndicatorDTO, ProgressIndicatorDTO.Builder>() {
+internal object ProgressIndicatorDtoFactory : ComposableViewFactory<ProgressIndicatorDTO>() {
     /**
      * Creates a `ProgressIndicatorDTO` object based on the attributes of the input `Attributes`
      * object. `ProgressIndicatorDTO` co-relates to both `LinearProgressIndicator` and

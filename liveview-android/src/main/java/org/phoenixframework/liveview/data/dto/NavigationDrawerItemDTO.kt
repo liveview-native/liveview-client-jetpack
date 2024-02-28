@@ -22,7 +22,9 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselect
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedTextColor
-import org.phoenixframework.liveview.data.constants.Templates
+import org.phoenixframework.liveview.data.constants.Templates.templateBadge
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateLabel
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -50,13 +52,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  */
 internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val onClick = builder.onClick
-    private val shape = builder.shape
-    private val selected = builder.selected
-    private val colors = builder.colors?.toImmutableMap()
-    private val value = builder.value
+    ComposableView<NavigationDrawerItemDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -64,14 +60,19 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val onClick = builder.onClick
+        val shape = builder.shape
+        val selected = builder.selected
+        val colors = builder.colors
+
         val ndiLabel = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateLabel }
+            composableNode?.children?.find { it.node?.template == templateLabel }
         }
         val ndiIcon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateIcon }
+            composableNode?.children?.find { it.node?.template == templateIcon }
         }
         val ndiBadge = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateBadge }
+            composableNode?.children?.find { it.node?.template == templateBadge }
         }
 
         NavigationDrawerItem(
@@ -81,7 +82,7 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
                 }
             },
             selected = selected,
-            onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+            onClick = onClickFromString(pushEvent, onClick, phxValue),
             icon = ndiIcon?.let {
                 {
                     PhxLiveView(it, pushEvent, composableNode, null)
@@ -134,7 +135,7 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
         var selected: Boolean = false
             private set
 
-        var colors: Map<String, String>? = null
+        var colors: ImmutableMap<String, String>? = null
             private set
 
         /**
@@ -187,7 +188,7 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -195,8 +196,7 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
     }
 }
 
-internal object NavigationDrawerItemDtoFactory :
-    ComposableViewFactory<NavigationDrawerItemDTO, NavigationDrawerItemDTO.Builder>() {
+internal object NavigationDrawerItemDtoFactory : ComposableViewFactory<NavigationDrawerItemDTO>() {
     /**
      * Creates a `NavigationDrawerItemDTO` object based on the attributes of the input `Attributes`
      * object. NavigationDrawerItemDTO co-relates to the NavigationDrawerItem composable.

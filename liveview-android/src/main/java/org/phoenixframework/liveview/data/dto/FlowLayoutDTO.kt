@@ -37,13 +37,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  */
 @OptIn(ExperimentalLayoutApi::class)
 internal class FlowLayoutDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
-    private val verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
-    private val maxItems: Int = builder.maxItems
-    private val hasVerticalScroll = builder.hasVerticalScrolling
-    private val hasHorizontalScroll = builder.hasHorizontalScrolling
+    ComposableView<FlowLayoutDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -51,6 +45,12 @@ internal class FlowLayoutDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val horizontalArrangement = builder.horizontalArrangement
+        val verticalArrangement = builder.verticalArrangement
+        val maxItems = builder.maxItems
+        val hasVerticalScroll = builder.hasVerticalScrolling
+        val hasHorizontalScroll = builder.hasHorizontalScrolling
+
         when (composableNode?.node?.tag) {
             ComposableTypes.flowColumn -> {
                 FlowColumn(
@@ -150,8 +150,7 @@ internal class FlowLayoutDTO private constructor(builder: Builder) :
     }
 }
 
-internal object FlowLayoutDtoFactory :
-    ComposableViewFactory<FlowLayoutDTO, FlowLayoutDTO.Builder>() {
+internal object FlowLayoutDtoFactory : ComposableViewFactory<FlowLayoutDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

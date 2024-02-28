@@ -16,7 +16,8 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
 import org.phoenixframework.liveview.data.constants.ColorAttrs
-import org.phoenixframework.liveview.data.constants.Templates
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateLabel
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -41,7 +42,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class NavigationBarItemDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
+    ComposableView<NavigationBarItemDTO.Builder>(builder) {
     private val rowScope = builder.rowScope
 
     private val alwaysShowLabel = builder.alwaysShowLabel
@@ -49,7 +50,6 @@ internal class NavigationBarItemDTO private constructor(builder: Builder) :
     private val enabled = builder.enabled
     private val onClick = builder.onClick
     private val selected = builder.selected
-    private val value = builder.value
 
     @Composable
     override fun Compose(
@@ -58,17 +58,17 @@ internal class NavigationBarItemDTO private constructor(builder: Builder) :
         pushEvent: PushEvent
     ) {
         val icon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateIcon }
+            composableNode?.children?.find { it.node?.template == templateIcon }
         }
 
         val label = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateLabel }
+            composableNode?.children?.find { it.node?.template == templateLabel }
         }
 
         rowScope.NavigationBarItem(
             selected = selected,
-            onClick = onClick?.let {
-                onClickFromString(pushEvent, it, value.toString())
+            onClick = onClick?.let { clickEventName ->
+                onClickFromString(pushEvent, clickEventName, phxValue)
             } ?: {},
             icon = {
                 icon?.let {
@@ -199,8 +199,7 @@ internal class NavigationBarItemDTO private constructor(builder: Builder) :
     }
 }
 
-internal object NavigationBarItemDtoFactory :
-    ComposableViewFactory<NavigationBarItemDTO, NavigationBarItemDTO.Builder>() {
+internal object NavigationBarItemDtoFactory : ComposableViewFactory<NavigationBarItemDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

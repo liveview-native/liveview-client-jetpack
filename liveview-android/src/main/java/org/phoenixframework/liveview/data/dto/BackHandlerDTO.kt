@@ -22,9 +22,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * ```
  */
 internal class BackHandlerDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val enabled = builder.enabled
-    private val onBack = builder.onBack
+    ComposableView<BackHandlerDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -32,12 +30,19 @@ internal class BackHandlerDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val enabled = builder.enabled
+        val onBack = builder.onBack
+
         BackHandler(
             enabled = enabled,
             onBack = {
-                pushEvent(EVENT_TYPE_KEY_UP, onBack, mapOf("key" to "Back"), null)
+                pushEvent(EVENT_TYPE_KEY_UP, onBack, mergeValueWithPhxValue(KEY_KEY, "Back"), null)
             }
         )
+    }
+
+    companion object {
+        private const val KEY_KEY = "key"
     }
 
     internal class Builder : ComposableBuilder() {
@@ -74,8 +79,7 @@ internal class BackHandlerDTO private constructor(builder: Builder) :
     }
 }
 
-internal object BackHandlerDtoFactory :
-    ComposableViewFactory<BackHandlerDTO, BackHandlerDTO.Builder>() {
+internal object BackHandlerDtoFactory : ComposableViewFactory<BackHandlerDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

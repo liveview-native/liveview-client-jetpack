@@ -28,9 +28,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * ```
  */
 internal class DividerDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val thickness = builder.thickness
-    private val color = builder.color
+    ComposableView<DividerDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -38,6 +36,9 @@ internal class DividerDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val thickness = builder.thickness
+        val color = builder.color
+
         when (composableNode?.node?.tag) {
             ComposableTypes.horizontalDivider -> {
                 HorizontalDivider(
@@ -97,7 +98,7 @@ internal class DividerDTO private constructor(builder: Builder) :
     }
 }
 
-internal object DividerDtoFactory : ComposableViewFactory<DividerDTO, DividerDTO.Builder>() {
+internal object DividerDtoFactory : ComposableViewFactory<DividerDTO>() {
     /**
      * Creates a `DividerDTO` object based on the attributes of the input `Attributes` object.
      * DividerDTO co-relates to the HorizontalDivider and VerticalDivider composables.

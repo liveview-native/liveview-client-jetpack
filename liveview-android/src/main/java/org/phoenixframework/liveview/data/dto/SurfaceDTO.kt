@@ -72,21 +72,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  */
 internal class SurfaceDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val shape = builder.shape
-    private val color = builder.color
-    private val contentColor = builder.contentColor
-    private val tonalElevation = builder.tonalElevation
-    private val shadowElevation = builder.shadowElevation
-    private val border = builder.border
-    private val hasVerticalScroll = builder.hasVerticalScrolling
-    private val hasHorizontalScroll = builder.hasHorizontalScrolling
-    private val onClick = builder.onClick
-    private val value = builder.value
-    private val enabled = builder.enabled
-    private val selected = builder.selected
-    private val checked = builder.checked
-    private val onChange = builder.onChange
+    ComposableView<SurfaceDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -94,7 +80,21 @@ internal class SurfaceDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val color = color ?: MaterialTheme.colorScheme.surface
+        val shape = builder.shape
+        val colorValue = builder.color
+        val contentColor = builder.contentColor
+        val tonalElevation = builder.tonalElevation
+        val shadowElevation = builder.shadowElevation
+        val border = builder.border
+        val hasVerticalScroll = builder.hasVerticalScrolling
+        val hasHorizontalScroll = builder.hasHorizontalScrolling
+        val onClick = builder.onClick
+        val enabled = builder.enabled
+        val selected = builder.selected
+        val checked = builder.checked
+        val onChange = builder.onChange
+
+        val color = colorValue ?: MaterialTheme.colorScheme.surface
         val newModifier = modifier
             .paddingIfNotNull(paddingValues)
             .optional(
@@ -106,7 +106,7 @@ internal class SurfaceDTO private constructor(builder: Builder) :
         when {
             onClick != null && selected == null ->
                 Surface(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = newModifier,
                     enabled = enabled ?: true,
                     shape = shape ?: RectangleShape,
@@ -126,7 +126,7 @@ internal class SurfaceDTO private constructor(builder: Builder) :
             onClick != null && selected != null ->
                 Surface(
                     selected = selected,
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = newModifier,
                     enabled = enabled ?: true,
                     shape = shape ?: RectangleShape,
@@ -151,7 +151,7 @@ internal class SurfaceDTO private constructor(builder: Builder) :
                             pushEvent.invoke(
                                 ComposableBuilder.EVENT_TYPE_CHANGE,
                                 onChange,
-                                it,
+                                mergeValueWithPhxValue(KEY_CHECKED, it),
                                 null
                             )
                         }
@@ -188,6 +188,10 @@ internal class SurfaceDTO private constructor(builder: Builder) :
                     }
                 )
         }
+    }
+
+    companion object {
+        const val KEY_CHECKED = "checked"
     }
 
     internal class Builder : ComposableBuilder() {
@@ -307,7 +311,7 @@ internal class SurfaceDTO private constructor(builder: Builder) :
     }
 }
 
-internal object SurfaceDtoFactory : ComposableViewFactory<SurfaceDTO, SurfaceDTO.Builder>() {
+internal object SurfaceDtoFactory : ComposableViewFactory<SurfaceDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

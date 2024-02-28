@@ -12,7 +12,8 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelectedContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrUnselectedContentColor
-import org.phoenixframework.liveview.data.constants.Templates
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateText
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
@@ -49,23 +50,23 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class TabDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val onClick = builder.onClick
-    private val value = builder.value
-    private val selected = builder.selected
-    private val enabled = builder.enabled
-    private val selectedContentColor = builder.selectedContentColor
-    private val unselectedContentColor = builder.unselectedContentColor
+    ComposableView<TabDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
+        val onClick = builder.onClick
+        val selected = builder.selected
+        val enabled = builder.enabled
+        val selectedContentColor = builder.selectedContentColor
+        val unselectedContentColor = builder.unselectedContentColor
+
         val text = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateText }
+            composableNode?.children?.find { it.node?.template == templateText }
         }
         val icon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateIcon }
+            composableNode?.children?.find { it.node?.template == templateIcon }
         }
         val selectedColor = selectedContentColor ?: LocalContentColor.current
         when (composableNode?.node?.tag) {
@@ -73,7 +74,7 @@ internal class TabDTO private constructor(builder: Builder) :
                 if (text == null && icon == null) {
                     Tab(
                         selected = selected,
-                        onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                        onClick = onClickFromString(pushEvent, onClick, phxValue),
                         modifier = modifier,
                         enabled = enabled,
                         selectedContentColor = selectedColor,
@@ -87,7 +88,7 @@ internal class TabDTO private constructor(builder: Builder) :
                 } else {
                     Tab(
                         selected = selected,
-                        onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                        onClick = onClickFromString(pushEvent, onClick, phxValue),
                         modifier = modifier,
                         enabled = enabled,
                         text = text?.let {
@@ -108,7 +109,7 @@ internal class TabDTO private constructor(builder: Builder) :
             ComposableTypes.leadingIconTab ->
                 LeadingIconTab(
                     selected = selected,
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     text = text?.let {
                         {
                             PhxLiveView(it, pushEvent, composableNode, null)
@@ -203,7 +204,7 @@ internal class TabDTO private constructor(builder: Builder) :
     }
 }
 
-internal object TabDtoFactory : ComposableViewFactory<TabDTO, TabDTO.Builder>() {
+internal object TabDtoFactory : ComposableViewFactory<TabDTO>() {
     /**
      * Creates a `TabDTO` object based on the attributes of the input `Attributes` object.
      * TabDTO co-relates to the Tab composable.

@@ -48,8 +48,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class ExposedDropdownMenuBoxDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val expanded = builder.expanded
+    ComposableView<ExposedDropdownMenuBoxDTO.Builder>(builder) {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -58,6 +57,7 @@ internal class ExposedDropdownMenuBoxDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val expanded = builder.expanded
         var isExpanded by remember {
             mutableStateOf(expanded)
         }
@@ -113,7 +113,7 @@ internal data class ExposedDropdownMenuBoxScopeWrapper(
 )
 
 internal object ExposedDropdownMenuBoxDtoFactory :
-    ComposableViewFactory<ExposedDropdownMenuBoxDTO, ExposedDropdownMenuBoxDTO.Builder>() {
+    ComposableViewFactory<ExposedDropdownMenuBoxDTO>() {
 
     /**
      * Creates a `ExposedDropdownMenuBoxDTO` object based on the attributes of the input
@@ -140,7 +140,7 @@ internal object ExposedDropdownMenuBoxDtoFactory :
             }
         }.build()
 
-    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
+    override fun subTags(): Map<String, ComposableViewFactory<*>> {
         return mapOf(exposedDropdownMenu to ExposedDropdownMenuDtoFactory)
     }
 }

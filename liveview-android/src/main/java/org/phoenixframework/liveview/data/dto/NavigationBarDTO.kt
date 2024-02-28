@@ -39,11 +39,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class NavigationBarDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val containerColor = builder.containerColor
-    private val contentColor = builder.contentColor
-    private val tonalElevation = builder.tonalElevation
-    private val windowsInsets = builder.windowInsets
+    ComposableView<NavigationBarDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -51,7 +47,12 @@ internal class NavigationBarDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val containerColor = containerColor ?: NavigationBarDefaults.containerColor
+        val containerColorValue = builder.containerColor
+        val contentColor = builder.contentColor
+        val tonalElevation = builder.tonalElevation
+        val windowsInsets = builder.windowInsets
+
+        val containerColor = containerColorValue ?: NavigationBarDefaults.containerColor
         NavigationBar(
             modifier = modifier,
             containerColor = containerColor,
@@ -136,7 +137,7 @@ internal class NavigationBarDTO private constructor(builder: Builder) :
 }
 
 internal object NavigationBarDtoFactory :
-    ComposableViewFactory<NavigationBarDTO, NavigationBarDTO.Builder>() {
+    ComposableViewFactory<NavigationBarDTO>() {
     /**
      * Creates a `NavigationBarDTO` object based on the attributes of the input `Attributes` object.
      * NavigationBarDTO co-relates to the NavigationBar.
@@ -158,7 +159,7 @@ internal object NavigationBarDtoFactory :
             } as NavigationBarDTO.Builder
         }.build()
 
-    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
+    override fun subTags(): Map<String, ComposableViewFactory<*>> {
         return mapOf(
             navigationBarItem to NavigationBarItemDtoFactory
         )

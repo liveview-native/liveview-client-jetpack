@@ -54,21 +54,21 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class SegmentedButtonDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val border: BorderStroke? = builder.border
-    private val colors: ImmutableMap<String, String>? = builder.colors?.toImmutableMap()
-    private val enabled = builder.enabled
-    private val onClick = builder.onClick
-    private val selected = builder.selected
-    private val scope = builder.scope
-    private val shape = builder.shape
-    private val value = builder.value
+    ComposableView<SegmentedButtonDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
-        val colors = getSegmentedButtonColors(colors = colors)
+        val border = builder.border
+        val colorsValue = builder.colors
+        val enabled = builder.enabled
+        val onClick = builder.onClick
+        val selected = builder.selected
+        val scope = builder.scope
+        val shape = builder.shape
+
+        val colors = getSegmentedButtonColors(colors = colorsValue)
         val label = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateLabel }
         }
@@ -87,7 +87,7 @@ internal class SegmentedButtonDTO private constructor(builder: Builder) :
             is SingleChoiceSegmentedButtonRowScope -> {
                 scope.SegmentedButton(
                     selected = selected,
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     shape = shape,
                     modifier = modifier,
                     enabled = enabled,
@@ -110,11 +110,11 @@ internal class SegmentedButtonDTO private constructor(builder: Builder) :
             is MultiChoiceSegmentedButtonRowScope -> {
                 scope.SegmentedButton(
                     checked = selected,
-                    onCheckedChange = { selected ->
+                    onCheckedChange = { isSelected ->
                         pushEvent(
                             ComposableBuilder.EVENT_TYPE_CHANGE,
                             onClick,
-                            arrayOf(value, selected),
+                            mergeValueWithPhxValue(KEY_SELECTED, isSelected),
                             null
                         )
                     },
@@ -175,12 +175,16 @@ internal class SegmentedButtonDTO private constructor(builder: Builder) :
         }
     }
 
+    companion object {
+        const val KEY_SELECTED = "selected"
+    }
+
     // scope must be an instance of
     // SingleChoiceSegmentedButtonRowScope or MultiChoiceSegmentedButtonRowScope
     internal class Builder(val scope: Any? = null) : ComposableBuilder() {
         var border: BorderStroke? = null
             private set
-        var colors: Map<String, String>? = null
+        var colors: ImmutableMap<String, String>? = null
             private set
         var enabled: Boolean = true
             private set
@@ -222,7 +226,7 @@ internal class SegmentedButtonDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -287,7 +291,7 @@ internal class SegmentedButtonDTO private constructor(builder: Builder) :
 }
 
 internal object SegmentedButtonDtoFactory :
-    ComposableViewFactory<SegmentedButtonDTO, SegmentedButtonDTO.Builder>() {
+    ComposableViewFactory<SegmentedButtonDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): SegmentedButtonDTO =

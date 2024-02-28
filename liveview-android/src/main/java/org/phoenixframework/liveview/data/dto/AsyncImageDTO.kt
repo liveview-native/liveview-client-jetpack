@@ -30,13 +30,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * ```
  */
 internal class AsyncImageDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val imageUrl: String = builder.imageUrl
-    private val contentDescription: String? = builder.contentDescription
-    private val crossFade: Boolean = builder.crossFade
-    private val alignment: Alignment = builder.alignment
-    private val contentScale: ContentScale = builder.contentScale
-    private val alpha: Float = builder.alpha
+    ComposableView<AsyncImageDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -44,6 +38,13 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val imageUrl = builder.imageUrl
+        val contentDescription = builder.contentDescription
+        val crossFade = builder.crossFade
+        val alignment = builder.alignment
+        val contentScale = builder.contentScale
+        val alpha = builder.alpha
+
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUrl)
@@ -155,8 +156,7 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
     }
 }
 
-internal object AsyncImageDtoFactory :
-    ComposableViewFactory<AsyncImageDTO, AsyncImageDTO.Builder>() {
+internal object AsyncImageDtoFactory : ComposableViewFactory<AsyncImageDTO>() {
     /**
      * Creates an `AsyncImageDTO` object based on the attributes and text of the input `Attributes`
      * object. AsyncImageDTO co-relates to the AsyncImage composable from Coil library used to load

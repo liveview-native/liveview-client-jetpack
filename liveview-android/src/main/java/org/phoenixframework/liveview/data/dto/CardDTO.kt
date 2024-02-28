@@ -68,13 +68,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  */
 internal class CardDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val shape: Shape? = builder.shape
-    private val colors: ImmutableMap<String, String>? = builder.cardColors?.toImmutableMap()
-    private val elevation: ImmutableMap<String, String>? = builder.elevation?.toImmutableMap()
-    private val border: BorderStroke? = builder.border
-    private val hasVerticalScroll = builder.hasVerticalScrolling
-    private val hasHorizontalScroll = builder.hasHorizontalScrolling
+    ComposableView<CardDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -82,6 +76,13 @@ internal class CardDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val shape = builder.shape
+        val colors = builder.cardColors
+        val elevation = builder.elevation
+        val border = builder.border
+        val hasVerticalScroll = builder.hasVerticalScrolling
+        val hasHorizontalScroll = builder.hasHorizontalScrolling
+
         when (composableNode?.node?.tag) {
             ComposableTypes.card ->
                 Card(
@@ -260,9 +261,9 @@ internal class CardDTO private constructor(builder: Builder) :
     internal class Builder : ComposableBuilder() {
         var shape: Shape? = null
             private set
-        var cardColors: Map<String, String>? = null
+        var cardColors: ImmutableMap<String, String>? = null
             private set
-        var elevation: Map<String, String>? = null
+        var elevation: ImmutableMap<String, String>? = null
             private set
         var border: BorderStroke? = null
             private set
@@ -292,7 +293,7 @@ internal class CardDTO private constructor(builder: Builder) :
          */
         fun cardColors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.cardColors = colorsFromString(colors)
+                this.cardColors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -308,7 +309,7 @@ internal class CardDTO private constructor(builder: Builder) :
          */
         fun elevation(elevations: String) = apply {
             if (elevations.isNotEmpty()) {
-                this.elevation = elevationsFromString(elevations)
+                this.elevation = elevationsFromString(elevations)?.toImmutableMap()
             }
         }
 
@@ -331,7 +332,7 @@ internal class CardDTO private constructor(builder: Builder) :
     }
 }
 
-internal object CardDtoFactory : ComposableViewFactory<CardDTO, CardDTO.Builder>() {
+internal object CardDtoFactory : ComposableViewFactory<CardDTO>() {
     /**
      * Creates a `CardDTO` object based on the attributes of the input `Attributes` object.
      * CardDTO co-relates to the Card composable

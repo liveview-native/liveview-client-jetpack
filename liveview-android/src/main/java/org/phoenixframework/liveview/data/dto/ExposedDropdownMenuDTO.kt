@@ -20,11 +20,10 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class ExposedDropdownMenuDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
+    ComposableView<ExposedDropdownMenuDTO.Builder>(builder) {
 
     private val scopeWrapper = builder.scopeWrapper
     private val onDismissRequest = builder.onDismissRequest
-    private val value = builder.value
 
     @Composable
     override fun Compose(
@@ -38,7 +37,7 @@ internal class ExposedDropdownMenuDTO private constructor(builder: Builder) :
                 onDismissRequest = {
                     wrapper.onDismissRequest.invoke()
                     onDismissRequest?.let { event ->
-                        pushEvent(EVENT_TYPE_BLUR, event, value ?: "", null)
+                        pushEvent(EVENT_TYPE_BLUR, event, phxValue, null)
                     }
                 }
             ) {
@@ -64,7 +63,7 @@ internal class ExposedDropdownMenuDTO private constructor(builder: Builder) :
 }
 
 internal object ExposedDropdownMenuDtoFactory :
-    ComposableViewFactory<ExposedDropdownMenuDTO, ExposedDropdownMenuDTO.Builder>() {
+    ComposableViewFactory<ExposedDropdownMenuDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

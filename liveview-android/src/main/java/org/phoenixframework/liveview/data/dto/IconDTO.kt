@@ -32,10 +32,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * ```
  */
 internal class IconDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val contentDescription: String = builder.contentDescription
-    private val tint: Color? = builder.tint
-    private val imageVector: ImageVector? = builder.imageVector
+    ComposableView<IconDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -43,7 +40,11 @@ internal class IconDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        imageVector?.let { imageVector ->
+        val contentDescription = builder.contentDescription
+        val tint = builder.tint
+        val imageVectorValue = builder.imageVector
+
+        imageVectorValue?.let { imageVector ->
             Icon(
                 imageVector = imageVector,
                 contentDescription = contentDescription,
@@ -114,7 +115,7 @@ internal class IconDTO private constructor(builder: Builder) :
     }
 }
 
-internal object IconDtoFactory : ComposableViewFactory<IconDTO, IconDTO.Builder>() {
+internal object IconDtoFactory : ComposableViewFactory<IconDTO>() {
     /**
      * Creates a `IconDTO` object based on the attributes of the input `Attributes` object.
      * IconDTO co-relates to the Icon composable

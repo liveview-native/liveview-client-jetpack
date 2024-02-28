@@ -54,13 +54,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class NavigationRailItemDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val alwaysShowLabel = builder.alwaysShowLabel
-    private val colors = builder.colors?.toImmutableMap()
-    private val enabled = builder.enabled
-    private val onClick = builder.onClick
-    private val selected = builder.selected
-    private val value = builder.value
+    ComposableView<NavigationRailItemDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -68,6 +62,12 @@ internal class NavigationRailItemDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val alwaysShowLabel = builder.alwaysShowLabel
+        val colors = builder.colors
+        val enabled = builder.enabled
+        val onClick = builder.onClick
+        val selected = builder.selected
+
         val nriIcon = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateIcon }
         }
@@ -76,7 +76,7 @@ internal class NavigationRailItemDTO private constructor(builder: Builder) :
         }
         NavigationRailItem(
             selected = selected,
-            onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+            onClick = onClickFromString(pushEvent, onClick, phxValue),
             icon = {
                 nriIcon?.let {
                     PhxLiveView(it, pushEvent, composableNode, null)
@@ -127,7 +127,7 @@ internal class NavigationRailItemDTO private constructor(builder: Builder) :
     internal class Builder : ComposableBuilder() {
         var alwaysShowLabel: Boolean = true
             private set
-        var colors: Map<String, String>? = null
+        var colors: ImmutableMap<String, String>? = null
             private set
         var enabled: Boolean = true
             private set
@@ -176,7 +176,7 @@ internal class NavigationRailItemDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -206,8 +206,7 @@ internal class NavigationRailItemDTO private constructor(builder: Builder) :
     }
 }
 
-internal object NavigationRailItemDtoFactory :
-    ComposableViewFactory<NavigationRailItemDTO, NavigationRailItemDTO.Builder>() {
+internal object NavigationRailItemDtoFactory : ComposableViewFactory<NavigationRailItemDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

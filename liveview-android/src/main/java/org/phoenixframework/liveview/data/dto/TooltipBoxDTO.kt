@@ -44,18 +44,18 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class TooltipBoxDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val spacingBetweenTooltipAndAnchor = builder.spacingBetweenTooltipAndAnchor
-    private val isVisible = builder.initialIsVisible
-    private val isPersistent = builder.isPersistent
-    private val focusable = builder.focusable
-    private val enableUserInput = builder.enableUserInput
+    ComposableView<TooltipBoxDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
+        val spacingBetweenTooltipAndAnchor = builder.spacingBetweenTooltipAndAnchor
+        val isVisible = builder.initialIsVisible
+        val isPersistent = builder.isPersistent
+        val focusable = builder.focusable
+        val enableUserInput = builder.enableUserInput
+
         val tooltip = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateTooltip }
         }
@@ -175,8 +175,7 @@ internal class TooltipBoxDTO private constructor(builder: Builder) :
     }
 }
 
-internal object TooltipBoxDtoFactory :
-    ComposableViewFactory<TooltipBoxDTO, TooltipBoxDTO.Builder>() {
+internal object TooltipBoxDtoFactory : ComposableViewFactory<TooltipBoxDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): TooltipBoxDTO = attributes.fold(TooltipBoxDTO.Builder()) { builder, attribute ->
@@ -190,7 +189,7 @@ internal object TooltipBoxDtoFactory :
         } as TooltipBoxDTO.Builder
     }.build()
 
-    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
+    override fun subTags(): Map<String, ComposableViewFactory<*>> {
         return mapOf(
             plainTooltip to TooltipDtoFactory,
             richTooltip to TooltipDtoFactory,

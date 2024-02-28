@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import org.phoenixframework.liveview.data.constants.Attrs.attrBeyondBoundsPageCount
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrCurrentPage
@@ -71,24 +72,25 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  */
 @OptIn(ExperimentalFoundationApi::class, FlowPreview::class)
 internal class PagerDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val currentPage = builder.currentPage
-    private val initialPageOffsetFraction = builder.initialPageOffsetFraction
-    private val pageCount = builder.pageCount
-    private val contentPadding = builder.contentPadding
-    private val onChanged = builder.onChanged
-    private val pageSize = builder.pageSize
-    private val beyondBoundsPageCount = builder.beyondBoundsPageCount
-    private val pageSpacing = builder.pageSpacing
-    private val verticalAlignment = builder.verticalAlignment
-    private val horizontalAlignment = builder.horizontalAlignment
-    private val userScrollEnabled = builder.userScrollEnabled
-    private val reverseLayout = builder.reverseLayout
+    ComposableView<PagerDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
+        val currentPage = builder.currentPage
+        val initialPageOffsetFraction = builder.initialPageOffsetFraction
+        val pageCount = builder.pageCount
+        val contentPadding = builder.contentPadding
+        val onChanged = builder.onChanged
+        val pageSize = builder.pageSize
+        val beyondBoundsPageCount = builder.beyondBoundsPageCount
+        val pageSpacing = builder.pageSpacing
+        val verticalAlignment = builder.verticalAlignment
+        val horizontalAlignment = builder.horizontalAlignment
+        val userScrollEnabled = builder.userScrollEnabled
+        val reverseLayout = builder.reverseLayout
+
         val childrenNodes = composableNode?.children ?: emptyArray()
         val state = rememberPagerState(
             initialPage = currentPage,
@@ -149,9 +151,12 @@ internal class PagerDTO private constructor(builder: Builder) :
                 .distinctUntilChanged()
                 // debouncing to avoid send intermediate values between the scrolling animation
                 .debounce(300)
-                .collect { page ->
+                .map {
+                    mergeValueWithPhxValue(KEY_PAGE, it)
+                }
+                .collect { value ->
                     onChanged?.let { event ->
-                        pushEvent.invoke(EVENT_TYPE_CHANGE, event, page, null)
+                        pushEvent.invoke(EVENT_TYPE_CHANGE, event, value, null)
                     }
                 }
         }
@@ -160,6 +165,10 @@ internal class PagerDTO private constructor(builder: Builder) :
                 state.animateScrollToPage(currentPage)
             }
         }
+    }
+
+    companion object {
+        const val KEY_PAGE = "page"
     }
 
     internal class Builder : ComposableBuilder() {
@@ -343,7 +352,7 @@ internal class PagerDTO private constructor(builder: Builder) :
     }
 }
 
-internal object PagerDtoFactory : ComposableViewFactory<PagerDTO, PagerDTO.Builder>() {
+internal object PagerDtoFactory : ComposableViewFactory<PagerDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): PagerDTO = PagerDTO.Builder().also {

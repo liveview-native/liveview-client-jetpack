@@ -154,10 +154,12 @@ internal fun verticalAlignmentFromString(verticalAlignment: String) = when (vert
 internal fun onClickFromString(
     pushEvent: PushEvent?,
     event: String,
-    value: String = "",
+    value: Any?,
     target: Int? = null
 ): () -> Unit = {
-    pushEvent?.invoke(ComposableBuilder.EVENT_TYPE_CLICK, event, value, target)
+    if (event.isNotEmpty()) {
+        pushEvent?.invoke(ComposableBuilder.EVENT_TYPE_CLICK, event, value, target)
+    }
 }
 
 private val colorsCache = mutableMapOf<Int, Map<String, String>>()

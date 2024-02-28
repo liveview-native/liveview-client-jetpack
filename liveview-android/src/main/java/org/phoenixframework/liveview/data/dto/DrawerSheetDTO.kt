@@ -47,13 +47,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  */
 internal class DrawerSheetDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val drawerShape = builder.drawerShape
-    private val containerColor = builder.drawerContainerColor
-    private val contentColor = builder.drawerContentColor
-    private val tonalElevation = builder.drawerTonalElevation
-    private val windowsInsets = builder.windowInsets
+    ComposableView<DrawerSheetDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -61,6 +55,12 @@ internal class DrawerSheetDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val drawerShape = builder.drawerShape
+        val containerColor = builder.drawerContainerColor
+        val contentColor = builder.drawerContentColor
+        val tonalElevation = builder.drawerTonalElevation
+        val windowsInsets = builder.windowInsets
+
         when (composableNode?.node?.tag) {
             ComposableTypes.modalDrawerSheet ->
                 ModalDrawerSheet(
@@ -201,7 +201,7 @@ internal class DrawerSheetDTO private constructor(builder: Builder) :
 }
 
 internal object DrawerSheetDtoFactory :
-    ComposableViewFactory<DrawerSheetDTO, DrawerSheetDTO.Builder>() {
+    ComposableViewFactory<DrawerSheetDTO>() {
     /**
      * Creates a `DrawerSheetDTO` object based on the attributes of the input `Attributes`
      * object. DrawerSheetDTO co-relates to the ModalDrawerSheet, DismissibleDrawerSheet, or

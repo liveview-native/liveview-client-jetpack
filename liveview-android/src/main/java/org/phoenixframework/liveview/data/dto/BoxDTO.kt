@@ -32,11 +32,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class BoxDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val contentAlignment: Alignment = builder.contentAlignment
-    private val propagateMinConstraints = builder.propagateMinConstraints
-    private val hasVerticalScroll = builder.hasVerticalScrolling
-    private val hasHorizontalScroll = builder.hasHorizontalScrolling
+    ComposableView<BoxDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -44,6 +40,11 @@ internal class BoxDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val contentAlignment: Alignment = builder.contentAlignment
+        val propagateMinConstraints = builder.propagateMinConstraints
+        val hasVerticalScroll = builder.hasVerticalScrolling
+        val hasHorizontalScroll = builder.hasHorizontalScrolling
+
         Box(
             contentAlignment = contentAlignment,
             propagateMinConstraints = propagateMinConstraints,
@@ -98,7 +99,7 @@ internal class BoxDTO private constructor(builder: Builder) :
     }
 }
 
-internal object BoxDtoFactory : ComposableViewFactory<BoxDTO, BoxDTO.Builder>() {
+internal object BoxDtoFactory : ComposableViewFactory<BoxDTO>() {
     /**
      * Creates a `BoxDTO` object based on the attributes of the input `Attributes` object.
      * BoxDTO co-relates to the Box composable

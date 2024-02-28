@@ -55,22 +55,7 @@ import org.phoenixframework.liveview.ui.theme.textStyleFromString
  * ```
  */
 internal class TextDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val text: String = builder.text
-    private val color: Color = builder.color
-    private val fontSize: TextUnit = builder.fontSize
-    private val fontStyle: FontStyle? = builder.fontStyle
-    private val fontWeight: FontWeight? = builder.fontWeight
-    private val fontFamily: FontFamily? = builder.fontFamily
-    private val letterSpacing: TextUnit = builder.letterSpacing
-    private val textDecoration: TextDecoration? = builder.textDecoration
-    private val textAlign: TextAlign? = builder.textAlign
-    private val lineHeight: TextUnit = builder.lineHeight
-    private val overflow: TextOverflow = builder.overflow
-    private val softWrap: Boolean = builder.softWrap
-    private val maxLines: Int = builder.maxLines
-    private val minLines: Int = builder.minLines
-    private val style: String? = builder.style
+    ComposableView<TextDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -78,8 +63,24 @@ internal class TextDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val textValue = builder.text
+        val color = builder.color
+        val fontSize = builder.fontSize
+        val fontStyle = builder.fontStyle
+        val fontWeight = builder.fontWeight
+        val fontFamily = builder.fontFamily
+        val letterSpacing = builder.letterSpacing
+        val textDecoration = builder.textDecoration
+        val textAlign = builder.textAlign
+        val lineHeight = builder.lineHeight
+        val overflow = builder.overflow
+        val softWrap = builder.softWrap
+        val maxLines = builder.maxLines
+        val minLines = builder.minLines
+        val style = builder.style
+
         val text = remember(composableNode) {
-            getText(composableNode)
+            getText(composableNode, textValue)
         }
         Text(
             text = text,
@@ -101,11 +102,11 @@ internal class TextDTO private constructor(builder: Builder) :
         )
     }
 
-    private fun getText(composableNode: ComposableTreeNode?): String {
+    private fun getText(composableNode: ComposableTreeNode?, textValue: String): String {
         // The first (and only) children node of a Text element must be the text itself.
         // It is contained in a attribute called "text"
         val childrenNodes = composableNode?.children
-        var text = text
+        var text = textValue
         if (childrenNodes?.isNotEmpty() == true) {
             val firstNode = childrenNodes.first().node
             if (firstNode?.attributes?.isNotEmpty() == true) {
@@ -346,7 +347,7 @@ internal class TextDTO private constructor(builder: Builder) :
     }
 }
 
-internal object TextDtoFactory : ComposableViewFactory<TextDTO, TextDTO.Builder>() {
+internal object TextDtoFactory : ComposableViewFactory<TextDTO>() {
     fun buildComposableView(
         text: String,
         attributes: Array<CoreAttribute>,

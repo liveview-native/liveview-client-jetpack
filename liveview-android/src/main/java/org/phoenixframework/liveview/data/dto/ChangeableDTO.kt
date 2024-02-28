@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.data.dto
 
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -20,23 +21,21 @@ import org.phoenixframework.liveview.domain.extensions.throttleLatest
  * server. It also contains the component value and if it is enabled or not.
  * Examples of subclasses of this class are: `CheckBoxDTO`, `SliderDTO` and `TextFieldDTO`.
  */
-internal abstract class ChangeableDTO<T : Any>(builder: ChangeableDTOBuilder<T>) :
-    ComposableView(builder.modifier) {
+internal abstract class ChangeableDTO<T : Any, CB : ChangeableDTOBuilder>(builder: CB) :
+    ComposableView<CB>(builder) {
     protected val debounce = builder.debounce
     protected val throttle = builder.throttle
     protected val changeValueEventName = builder.onChange
     protected val enabled = builder.enabled
-    protected val value = builder.value as T
 
-    protected fun <TC> Flow<TC>.onTypedChangeable(): Flow<TC> =
-        this.distinctUntilChanged()
-            .drop(1) // Ignoring the first emission when the component is displayed
-            .debounce(debounce)
-            .throttleLatest(throttle)
+    @OptIn(FlowPreview::class)
+    protected fun <TC> Flow<TC>.onTypedChangeable(): Flow<TC> = this.distinctUntilChanged()
+        .drop(1) // Ignoring the first emission when the component is displayed
+        .debounce(debounce).throttleLatest(throttle)
 
     protected fun Flow<T>.onChangeable(): Flow<T> = onTypedChangeable()
 
-    protected fun pushOnChangeEvent(pushEvent: PushEvent, event: String, value: T) {
+    protected fun pushOnChangeEvent(pushEvent: PushEvent, event: String, value: Any?) {
         pushEvent.invoke(ComposableBuilder.EVENT_TYPE_CHANGE, event, value, null)
     }
 }
@@ -46,7 +45,7 @@ internal abstract class ChangeableDTO<T : Any>(builder: ChangeableDTOBuilder<T>)
  * the properties `phx-debounce` and `phx-throttle` in order to reduce the number of socket calls
  * from the client.
  */
-internal abstract class ChangeableDTOBuilder<T : Any>(defaultValue: T) : ComposableBuilder() {
+internal abstract class ChangeableDTOBuilder() : ComposableBuilder() {
     var onChange: String? = null
         private set
     var debounce: Long = 300
@@ -55,10 +54,6 @@ internal abstract class ChangeableDTOBuilder<T : Any>(defaultValue: T) : Composa
         private set
     var enabled: Boolean = true
         private set
-
-    init {
-        value(defaultValue)
-    }
 
     /**
      * Sets the event name to triggered on the server when the component's value changes.

@@ -19,7 +19,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * ```
  */
 internal class SpacerDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
+    ComposableView<SpacerDTO.Builder>(builder) {
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?,
@@ -34,7 +34,7 @@ internal class SpacerDTO private constructor(builder: Builder) :
     }
 }
 
-internal object SpacerDtoFactory : ComposableViewFactory<SpacerDTO, SpacerDTO.Builder>() {
+internal object SpacerDtoFactory : ComposableViewFactory<SpacerDTO>() {
 
     /**
      * Creates a `SpacerDTO` object based on the attributes of the input `Attributes` object.

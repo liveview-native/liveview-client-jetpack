@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -16,20 +17,22 @@ import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrOnChanged
+import org.phoenixframework.liveview.data.constants.Attrs.attrOnDismissRequest
 import org.phoenixframework.liveview.data.constants.Attrs.attrScrimColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrSkipPartiallyExpanded
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
-import org.phoenixframework.liveview.data.constants.Templates
+import org.phoenixframework.liveview.data.constants.Templates.templateDragHandle
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.domain.extensions.SHEET_VALUE_KEY
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.pushNewValue
 import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.domain.extensions.toValue
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
@@ -47,16 +50,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class ModalBottomSheetDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val skipPartiallyExpanded = builder.skipPartiallyExpanded
-    private val onChanged = builder.onChanged
-    private val windowsInsets = builder.windowInsets
-    private val shape = builder.shape
-    private val containerColor = builder.containerColor
-    private val contentColor = builder.contentColor
-    private val tonalElevation = builder.tonalElevation
-    private val scrimColor = builder.scrimColor
+    ComposableView<ModalBottomSheetDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -64,22 +58,34 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val dismissEvent = builder.dismissEvent
+        val skipPartiallyExpanded = builder.skipPartiallyExpanded
+        val onChanged = builder.onChanged
+        val windowsInsets = builder.windowInsets
+        val shape = builder.shape
+        val containerColor = builder.containerColor
+        val contentColor = builder.contentColor
+        val tonalElevation = builder.tonalElevation
+        val scrimColor = builder.scrimColor
+
         val dragHandle = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateDragHandle }
+            composableNode?.children?.find { it.node?.template == templateDragHandle }
         }
         val content = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template != Templates.templateDragHandle }
+            composableNode?.children?.find { it.node?.template != templateDragHandle }
         }
         val sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = skipPartiallyExpanded,
             confirmValueChange = { sheetValue ->
-                sheetValue.pushNewValue(pushEvent, onChanged)
+                pushNewValue(sheetValue, pushEvent, onChanged)
                 true
             }
         )
         ModalBottomSheet(
             onDismissRequest = {
-                // TODO Do nothing
+                dismissEvent?.let { event ->
+                    pushEvent(ComposableBuilder.EVENT_TYPE_BLUR, event, phxValue, null)
+                }
             },
             modifier = modifier,
             sheetState = sheetState,
@@ -104,7 +110,19 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         )
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun pushNewValue(sheetValue: SheetValue, pushEvent: PushEvent, onChangedEvent: String) {
+        pushEvent(
+            ComposableBuilder.EVENT_TYPE_CHANGE,
+            onChangedEvent,
+            mergeValueWithPhxValue(SHEET_VALUE_KEY, sheetValue.toValue()),
+            null,
+        )
+    }
+
     internal class Builder : ComposableBuilder() {
+        var dismissEvent: String? = null
+            private set
         var skipPartiallyExpanded: Boolean = false
             private set
         var onChanged: String = ""
@@ -146,6 +164,18 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
          */
         fun onChanged(onChanged: String) = apply {
             this.onChanged = onChanged
+        }
+
+        /**
+         * Event to be triggered on the server when the bottom sheet should be dismissed.
+         * ```
+         * <ModalBottomSheet onDismissRequest="dismissAction">...</AlertDialog>
+         * ```
+         * @param dismissEventName event name to be called on the server in order to dismiss the
+         * bottom sheet.
+         */
+        fun onDismissRequest(dismissEventName: String) = apply {
+            this.dismissEvent = dismissEventName
         }
 
         /**
@@ -231,8 +261,7 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
     }
 }
 
-internal object ModalBottomSheetDtoFactory :
-    ComposableViewFactory<ModalBottomSheetDTO, ModalBottomSheetDTO.Builder>() {
+internal object ModalBottomSheetDtoFactory : ComposableViewFactory<ModalBottomSheetDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
@@ -243,6 +272,7 @@ internal object ModalBottomSheetDtoFactory :
                 attrContainerColor -> builder.containerColor(attribute.value)
                 attrContentColor -> builder.contentColor(attribute.value)
                 attrOnChanged -> builder.onChanged(attribute.value)
+                attrOnDismissRequest -> builder.onDismissRequest(attribute.value)
                 attrScrimColor -> builder.scrimColor(attribute.value)
                 attrShape -> builder.shape(attribute.value)
                 attrSkipPartiallyExpanded -> builder.skipPartiallyExpanded(attribute.value)

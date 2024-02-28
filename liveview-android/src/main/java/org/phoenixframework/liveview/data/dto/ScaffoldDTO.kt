@@ -65,11 +65,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class ScaffoldDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val containerColor: Color? = builder.containerColor
-    private val contentColor: Color? = builder.contentColor
-    private val fabPosition: FabPosition = builder.fabPosition
-    private val topAppScrollBehavior = builder.topAppScrollBehavior
+    ComposableView<ScaffoldDTO.Builder>(builder) {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -78,6 +74,11 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val containerColorValue = builder.containerColor
+        val contentColor = builder.contentColor
+        val fabPosition = builder.fabPosition
+        val topAppScrollBehavior = builder.topAppScrollBehavior
+
         val topBar = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateTopBar }
         }
@@ -93,7 +94,7 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
         val body = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateBody }
         }
-        val containerColor = containerColor ?: MaterialTheme.colorScheme.background
+        val containerColor = containerColorValue ?: MaterialTheme.colorScheme.background
 
         val topAppBarScrollBehavior = scrollBehaviorFromString(topAppScrollBehavior)
 
@@ -238,7 +239,7 @@ internal class ScaffoldDTO private constructor(builder: Builder) :
 @OptIn(ExperimentalMaterial3Api::class)
 val LocalAppScrollBehavior = compositionLocalOf<TopAppBarScrollBehavior?> { null }
 
-internal object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, ScaffoldDTO.Builder>() {
+internal object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO>() {
     /**
      * Creates a `ScaffoldDTO` object based on the attributes of the input `Attributes` object.
      * ScaffoldDTO co-relates to the Scaffold composable
@@ -259,7 +260,7 @@ internal object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO, Scaffold
         } as ScaffoldDTO.Builder
     }.build()
 
-    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
+    override fun subTags(): Map<String, ComposableViewFactory<*>> {
         return mapOf(
             ComposableTypes.snackbar to SnackbarDtoFactory
         )

@@ -15,7 +15,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrExcludeFromSystemG
 import org.phoenixframework.liveview.data.constants.Attrs.attrExpanded
 import org.phoenixframework.liveview.data.constants.Attrs.attrFocusable
 import org.phoenixframework.liveview.data.constants.Attrs.attrOffset
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrOnDismissRequest
 import org.phoenixframework.liveview.data.constants.Attrs.attrSecurePolicy
 import org.phoenixframework.liveview.data.constants.Attrs.attrUsePlatformDefaultWidth
 import org.phoenixframework.liveview.data.core.CoreAttribute
@@ -47,7 +47,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * // render function...
  * <IconButton template="action" phx-click="showPopup">
  *   <Icon imageVector="filled:MoreVert" />
- *   <DropdownMenu phx-click="hidePopup" expanded={"#{ @showPopup }"}>
+ *   <DropdownMenu onDismissRequest="hidePopup" expanded={"#{ @showPopup }"}>
  *     <DropdownMenuItem phx-click="onMenuOptionClick" phx-value="A">
  *       <Text>Option A</Text>
  *     </DropdownMenuItem>
@@ -58,13 +58,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </IconButton>
  */
 internal class DropdownMenuDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val expanded = builder.expanded
-    private val dismissEvent = builder.dismissEvent
-    private val value = builder.value
-    private val popupProperties = builder.popupProperties
-    private val offset = builder.offset
+    ComposableView<DropdownMenuDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -72,10 +66,15 @@ internal class DropdownMenuDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val expanded = builder.expanded
+        val dismissEvent = builder.dismissEvent
+        val popupProperties = builder.popupProperties
+        val offset = builder.offset
+
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = dismissEvent?.let {
-                onClickFromString(pushEvent, it, value?.toString() ?: "")
+                onClickFromString(pushEvent, it, phxValue)
             } ?: {
                 // Do nothing
             },
@@ -265,7 +264,7 @@ internal class DropdownMenuDTO private constructor(builder: Builder) :
 }
 
 internal object DropdownMenuDtoFactory :
-    ComposableViewFactory<DropdownMenuDTO, DropdownMenuDTO.Builder>() {
+    ComposableViewFactory<DropdownMenuDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,
@@ -275,13 +274,13 @@ internal object DropdownMenuDtoFactory :
     ) { builder, attribute ->
         when (attribute.name) {
             attrClippingEnabled -> builder.clippingEnabled(attribute.value)
-            attrPhxClick -> builder.onDismissRequest(attribute.value)
             attrDismissOnBackPress -> builder.dismissOnBackPress(attribute.value)
             attrDismissOnClickOutside -> builder.dismissOnClickOutside(attribute.value)
             attrExcludeFromSystemGesture -> builder.excludeFromSystemGesture(attribute.value)
             attrExpanded -> builder.expanded(attribute.value)
             attrFocusable -> builder.focusable(attribute.value)
             attrOffset -> builder.offset(attribute.value)
+            attrOnDismissRequest -> builder.onDismissRequest(attribute.value)
             attrSecurePolicy -> builder.securePolicy(attribute.value)
             attrUsePlatformDefaultWidth -> builder.usePlatformDefaultWidth(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)

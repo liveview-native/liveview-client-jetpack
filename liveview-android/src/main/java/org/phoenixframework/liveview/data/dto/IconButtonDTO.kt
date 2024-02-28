@@ -55,13 +55,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  */
 internal class IconButtonDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val onClick: String = builder.onClick
-    private val enabled: Boolean = builder.enabled
-    private val colors: ImmutableMap<String, String>? = builder.colors?.toImmutableMap()
-    private val shape: Shape? = builder.shape
-    private val border: BorderStroke? = builder.border
-    private val value: Any? = builder.value
+    ComposableView<IconButtonDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -69,10 +63,16 @@ internal class IconButtonDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val onClick = builder.onClick
+        val enabled = builder.enabled
+        val colors = builder.colors
+        val shape = builder.shape
+        val border = builder.border
+
         when (composableNode?.node?.tag) {
             ComposableTypes.iconButton -> {
                 IconButton(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     enabled = enabled,
                     colors = getIconButtonColors(colors),
                     // TODO interactionSource: MutableInteractionSource,
@@ -85,7 +85,7 @@ internal class IconButtonDTO private constructor(builder: Builder) :
 
             ComposableTypes.filledIconButton -> {
                 FilledIconButton(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = modifier,
                     enabled = enabled,
                     shape = shape ?: IconButtonDefaults.filledShape,
@@ -100,7 +100,7 @@ internal class IconButtonDTO private constructor(builder: Builder) :
 
             ComposableTypes.filledTonalIconButton -> {
                 FilledTonalIconButton(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = modifier,
                     enabled = enabled,
                     shape = shape ?: IconButtonDefaults.filledShape,
@@ -115,7 +115,7 @@ internal class IconButtonDTO private constructor(builder: Builder) :
 
             ComposableTypes.outlinedIconButton -> {
                 OutlinedIconButton(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = modifier,
                     enabled = enabled,
                     shape = shape ?: IconButtonDefaults.filledShape,
@@ -216,7 +216,7 @@ internal class IconButtonDTO private constructor(builder: Builder) :
             private set
         var enabled: Boolean = true
             private set
-        var colors: Map<String, String>? = null
+        var colors: ImmutableMap<String, String>? = null
             private set
         var shape: Shape? = null
             private set
@@ -274,7 +274,7 @@ internal class IconButtonDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String): Builder = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -297,8 +297,7 @@ internal class IconButtonDTO private constructor(builder: Builder) :
     }
 }
 
-internal object IconButtonDtoFactory :
-    ComposableViewFactory<IconButtonDTO, IconButtonDTO.Builder>() {
+internal object IconButtonDtoFactory : ComposableViewFactory<IconButtonDTO>() {
     /**
      * Creates a `IconButtonDTO` object based on the attributes of the input `Attributes` object.
      * IconButtonDTO co-relates to the IconButton composable

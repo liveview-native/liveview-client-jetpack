@@ -56,10 +56,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class TopAppBarDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val colors: ImmutableMap<String, String>? = builder.colors?.toImmutableMap()
-    private val windowsInsets = builder.windowInsets
+    ComposableView<TopAppBarDTO.Builder>(builder) {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -68,6 +65,9 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val colors = builder.colors
+        val windowsInsets = builder.windowInsets
+
         val title = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateTitle }
         }
@@ -269,7 +269,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
     }
 
     class Builder : ComposableBuilder() {
-        var colors: Map<String, String>? = null
+        var colors: ImmutableMap<String, String>? = null
             private set
         var windowInsets: WindowInsets? = null
             private set
@@ -288,7 +288,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String): Builder = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -312,7 +312,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
     }
 }
 
-internal object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO, TopAppBarDTO.Builder>() {
+internal object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO>() {
 
     /**
      * Creates a `TopAppBarDTO` object based on the attributes and text of the input `Attributes`

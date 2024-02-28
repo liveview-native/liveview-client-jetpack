@@ -6,11 +6,13 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Templates.templateConfirmButton
 import org.phoenixframework.liveview.data.constants.Templates.templateDismissButton
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -35,12 +37,12 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *
  * // render function...
  * <%= if @showDialog do %>
- *   <DatePickerDialog phx-click="hideDialog">...</DatePickerDialog>
+ *   <DatePickerDialog onDismissRequest="hideDialog">...</DatePickerDialog>
  * <% end %>
  */
 @OptIn(ExperimentalMaterial3Api::class)
-internal class DatePickerDialogDTO private constructor(builder: Builder) : DialogDTO(builder) {
-    private val colors = builder.colors?.toImmutableMap()
+internal class DatePickerDialogDTO private constructor(builder: Builder) :
+    DialogDTO<DatePickerDialogDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -48,6 +50,12 @@ internal class DatePickerDialogDTO private constructor(builder: Builder) : Dialo
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val colors = builder.colors
+        val dismissEvent = builder.dismissEvent
+        val dialogProperties = builder.dialogProperties
+        val shape = builder.shape
+        val tonalElevation = builder.tonalElevation
+
         val dismissButton = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateDismissButton }
         }
@@ -58,10 +66,12 @@ internal class DatePickerDialogDTO private constructor(builder: Builder) : Dialo
             composableNode?.children?.filter { it.node?.template == null }
         }
         DatePickerDialog(
-            onDismissRequest = dismissEvent?.let {
-                onClickFromString(pushEvent, it, value?.toString() ?: "")
-            } ?: {
-                // Do nothing
+            onDismissRequest = {
+                dismissEvent?.let {
+                    if (it.isNotEmpty()) {
+                        pushEvent.invoke(ComposableBuilder.EVENT_TYPE_BLUR, it, value, null)
+                    }
+                }
             },
             confirmButton = {
                 confirmButton?.let {
@@ -92,7 +102,7 @@ internal class DatePickerDialogDTO private constructor(builder: Builder) : Dialo
             usePlatformDefaultWidth("false")
         }
 
-        var colors: Map<String, String>? = null
+        var colors: ImmutableMap<String, String>? = null
             private set
 
         /**
@@ -112,7 +122,7 @@ internal class DatePickerDialogDTO private constructor(builder: Builder) : Dialo
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -124,7 +134,7 @@ internal class DatePickerDialogDTO private constructor(builder: Builder) : Dialo
 }
 
 internal object DatePickerDialogDtoFactory :
-    ComposableViewFactory<DatePickerDialogDTO, DatePickerDialogDTO.Builder>() {
+    ComposableViewFactory<DatePickerDialogDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

@@ -39,6 +39,7 @@ import org.phoenixframework.liveview.data.constants.TimePickerLayoutTypeValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
+import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.KEY_PHX_VALUE
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -71,7 +72,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class TimePickerDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
+    ComposableView<TimePickerDTO.Builder>(builder) {
 
     private val colors = builder.colors?.toImmutableMap()
     private val initialHour = builder.initialHour
@@ -108,12 +109,27 @@ internal class TimePickerDTO private constructor(builder: Builder) :
                 )
         }
         LaunchedEffect(state.hour, state.minute, state.is24hour) {
-            val map = mapOf(
+            val timeMapValues = mutableMapOf(
                 "hour" to state.hour,
                 "minute" to state.minute,
                 "is24Hour" to state.is24hour
             )
-            pushEvent.invoke(EVENT_TYPE_CHANGE, onChanged, map, null)
+            val currentValue = phxValue
+            val pushValues = if (currentValue is Map<*, *>) {
+                val newMap = currentValue.toMutableMap()
+                newMap.putAll(timeMapValues)
+                newMap
+            } else {
+                if (currentValue == null) {
+                    timeMapValues
+                } else {
+                    val newMap = mutableMapOf<String, Any>()
+                    newMap[KEY_PHX_VALUE] = currentValue
+                    newMap.putAll(timeMapValues)
+                    newMap
+                }
+            }
+            pushEvent.invoke(EVENT_TYPE_CHANGE, onChanged, pushValues, null)
         }
     }
 
@@ -260,8 +276,7 @@ internal class TimePickerDTO private constructor(builder: Builder) :
     }
 }
 
-internal object TimePickerDtoFactory :
-    ComposableViewFactory<TimePickerDTO, TimePickerDTO.Builder>() {
+internal object TimePickerDtoFactory : ComposableViewFactory<TimePickerDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): TimePickerDTO = attributes.fold(TimePickerDTO.Builder()) { builder, attribute ->

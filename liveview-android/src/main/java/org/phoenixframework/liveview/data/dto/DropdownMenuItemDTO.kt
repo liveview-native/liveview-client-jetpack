@@ -50,9 +50,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class DropdownMenuItemDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
+    ComposableView<DropdownMenuItemDTO.Builder>(builder) {
     private val event = builder.clickEventName
-    private val value = builder.value
     private val enabled = builder.enabled
     private val colors = builder.colors?.toImmutableMap()
     private val contentPadding = builder.contentPadding
@@ -78,7 +77,7 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
                     PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
-            onClick = onClickFromString(pushEvent, event, value?.toString() ?: ""),
+            onClick = onClickFromString(pushEvent, event, phxValue),
             modifier = modifier,
             leadingIcon = leadingIcon?.let {
                 {
@@ -192,7 +191,7 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
 }
 
 internal object DropdownMenuItemDtoFactory :
-    ComposableViewFactory<DropdownMenuItemDTO, DropdownMenuItemDTO.Builder>() {
+    ComposableViewFactory<DropdownMenuItemDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

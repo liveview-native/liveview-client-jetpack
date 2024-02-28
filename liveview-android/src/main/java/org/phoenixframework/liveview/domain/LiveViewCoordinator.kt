@@ -196,7 +196,7 @@ class LiveViewCoordinator(
         repository.closeChannel()
     }
 
-    fun pushEvent(type: String, event: String, value: Any, target: Int? = null) {
+    fun pushEvent(type: String, event: String, value: Any?, target: Int? = null) {
         Log.d(TAG, "pushEvent: type: $type, event: $event, value: $value, target: $target")
         repository.pushEvent(type, event, value, target)
     }

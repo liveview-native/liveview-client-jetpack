@@ -218,7 +218,7 @@ object ComposableNodeFactory {
         parentTag: String?,
         pushEvent: PushEvent,
         scope: Any?
-    ): ComposableView {
+    ): ComposableView<*> {
         return if (element != null) {
             val tag = element.tag
             val attrs = element.attributes

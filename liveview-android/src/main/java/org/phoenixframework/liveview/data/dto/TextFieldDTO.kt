@@ -38,7 +38,6 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrKeyboardType
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxLines
 import org.phoenixframework.liveview.data.constants.Attrs.attrMinLines
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrReadOnly
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrSingleLine
@@ -106,6 +105,7 @@ import org.phoenixframework.liveview.data.constants.VisualTransformationValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
+import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.KEY_PHX_VALUE
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -130,7 +130,7 @@ import org.phoenixframework.liveview.ui.theme.textStyleFromString
  * - `supportingText`: the optional supporting text to be displayed below the text field.
  *
  * ```
- * <TextField text={"#{@userName}"} phx-change="setName">
+ * <TextField phx-value={"#{@userName}"} phx-change="setName">
  *   <Text template="label">Label</Text>
  *   <Text template="placeholder">Placeholder</Text>
  *   <Icon template="leadingIcon" imageVector="filled:Add"/>
@@ -142,23 +142,25 @@ import org.phoenixframework.liveview.ui.theme.textStyleFromString
  * ```
  * You can instantiate both `TextField` and `OutlinedTextField`.
  */
-internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDTO<String>(builder) {
-    private val readOnly = builder.readOnly
-    private val textStyle = builder.textStyle
-    private val isError = builder.isError
-    private val visualTransformation = builder.visualTransformation
-    private val singleLine = builder.singleLine
-    private val maxLines = builder.maxLines
-    private val minLines = builder.minLines
-    private val shape = builder.shape
-    private val colors = builder.colors?.toImmutableMap()
-    private val keyboardOptions = builder.keyboardOptions
-    private val keyboardActions = builder.keyboardActions
+internal class TextFieldDTO private constructor(builder: Builder) :
+    ChangeableDTO<String, TextFieldDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
+        val readOnly = builder.readOnly
+        val textStyle = builder.textStyle
+        val isError = builder.isError
+        val visualTransformation = builder.visualTransformation
+        val singleLine = builder.singleLine
+        val maxLines = builder.maxLines
+        val minLines = builder.minLines
+        val shape = builder.shape
+        val colors = builder.colors
+        val keyboardOptions = builder.keyboardOptions
+        val keyboardActions = builder.keyboardActions
+
         val label = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateLabel }
         }
@@ -180,13 +182,22 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
         val supportingText = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateSupportingText }
         }
+        val stringValue = remember(phxValue) {
+            phxValue?.let {
+                when (it) {
+                    is String -> it
+                    is Map<*, *> -> it[KEY_PHX_VALUE]?.toString() ?: ""
+                    else -> ""
+                }
+            } ?: ""
+        }
         var textFieldValue by remember {
-            mutableStateOf(TextFieldValue(value))
+            mutableStateOf(TextFieldValue(stringValue))
         }
         when (composableNode?.node?.tag) {
             ComposableTypes.outlinedTextField -> {
                 OutlinedTextField(
-                    value = if (readOnly) TextFieldValue(value) else textFieldValue,
+                    value = if (readOnly) TextFieldValue(stringValue) else textFieldValue,
                     onValueChange = { value ->
                         textFieldValue = value
                     },
@@ -243,7 +254,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
 
             ComposableTypes.textField -> {
                 TextField(
-                    value = if (readOnly) TextFieldValue(value) else textFieldValue,
+                    value = if (readOnly) TextFieldValue(stringValue) else textFieldValue,
                     onValueChange = { value ->
                         textFieldValue = value
                     },
@@ -301,9 +312,15 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
 
         LaunchedEffect(composableNode) {
             changeValueEventName?.let { event ->
-                snapshotFlow { textFieldValue }.map { it.text }.onChangeable().collect { value ->
-                    pushOnChangeEvent(pushEvent, event, value)
-                }
+                snapshotFlow { textFieldValue }
+                    .map { it.text }
+                    .onChangeable()
+                    .map {
+                        mergeValueWithPhxValue(KEY_PHX_VALUE, it)
+                    }
+                    .collect { value ->
+                        pushOnChangeEvent(pushEvent, event, value)
+                    }
             }
         }
     }
@@ -512,7 +529,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
         }
     }
 
-    internal class Builder : ChangeableDTOBuilder<String>("") {
+    internal class Builder : ChangeableDTOBuilder() {
         var readOnly: Boolean = false
             private set
         var textStyle: String? = null
@@ -529,7 +546,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
             private set
         var shape: CornerBasedShape? = null
             private set
-        var colors: Map<String, String>? = null
+        var colors: ImmutableMap<String, String>? = null
             private set
         var keyboardOptions: KeyboardOptions = KeyboardOptions.Default
             private set
@@ -545,9 +562,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          * @param pushEvent function responsible to dispatch the server call.
          */
         fun onKeyboardAction(event: String, pushEvent: PushEvent?) = apply {
-            val action = {
-                onClickFromString(pushEvent, event, value?.toString() ?: "")
-            }
+            val action = onClickFromString(pushEvent, event, getPhxValue())
             this.keyboardActions = KeyboardActions(
                 onDone = { action.invoke() },
                 onGo = { action.invoke() },
@@ -693,7 +708,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -789,7 +804,7 @@ internal class TextFieldDTO private constructor(builder: Builder) : ChangeableDT
     }
 }
 
-internal object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO, TextFieldDTO.Builder>() {
+internal object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO>() {
 
     /**
      * Creates a `TextFieldDTO` object based on the attributes and text of the input `Attributes`
@@ -816,7 +831,6 @@ internal object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO, TextFi
                     attrMaxLines -> builder.maxLines(attribute.value)
                     attrMinLines -> builder.minLines(attribute.value)
                     attrPhxClick -> builder.onKeyboardAction(attribute.value, pushEvent)
-                    attrPhxValue -> builder.value(attribute.value)
                     attrReadOnly -> builder.readOnly(attribute.value)
                     attrShape -> builder.shape(attribute.value)
                     attrSingleLine -> builder.singleLine(attribute.value)

@@ -39,11 +39,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class NavigationRailDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val containerColor = builder.containerColor
-    private val contentColor = builder.contentColor
-    private val windowsInsets = builder.windowInsets
+    ComposableView<NavigationRailDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -51,6 +47,10 @@ internal class NavigationRailDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val containerColorValue = builder.containerColor
+        val contentColor = builder.contentColor
+        val windowsInsets = builder.windowInsets
+
         val header = remember(composableNode?.children) {
             composableNode?.children?.filter { it.node?.template == templateHeader }
                 .takeIf { it?.isNotEmpty() == true }
@@ -58,7 +58,7 @@ internal class NavigationRailDTO private constructor(builder: Builder) :
         val content = remember(composableNode?.children) {
             composableNode?.children?.filter { it.node?.template.isNullOrEmpty() }
         }
-        val containerColor = containerColor ?: NavigationRailDefaults.ContainerColor
+        val containerColor = containerColorValue ?: NavigationRailDefaults.ContainerColor
         NavigationRail(
             modifier = modifier,
             containerColor = containerColor,
@@ -135,8 +135,7 @@ internal class NavigationRailDTO private constructor(builder: Builder) :
     }
 }
 
-internal object NavigationRailDtoFactory :
-    ComposableViewFactory<NavigationRailDTO, NavigationRailDTO.Builder>() {
+internal object NavigationRailDtoFactory : ComposableViewFactory<NavigationRailDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

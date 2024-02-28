@@ -80,15 +80,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  */
 internal class ButtonDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val onClick: String = builder.onClick
-    private val enabled: Boolean = builder.enabled
-    private val shape: Shape? = builder.shape
-    private val colors: ImmutableMap<String, String>? = builder.colors?.toImmutableMap()
-    private val elevation: ImmutableMap<String, String>? = builder.elevations?.toImmutableMap()
-    private val contentPadding: PaddingValues? = builder.contentPadding
-    private val border: BorderStroke? = builder.border
-    private val value: Any? = builder.value
+    ComposableView<ButtonDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -96,11 +88,19 @@ internal class ButtonDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val onClick = builder.onClick
+        val enabled = builder.enabled
+        val shape = builder.shape
+        val colors = builder.colors
+        val elevation = builder.elevations
+        val contentPadding = builder.contentPadding
+        val border = builder.border
+
         when (composableNode?.node?.tag) {
             // Filled Button
             ComposableTypes.button ->
                 Button(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.shape,
@@ -117,7 +117,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
             // Elevated Button
             ComposableTypes.elevatedButton ->
                 ElevatedButton(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.elevatedShape,
@@ -134,7 +134,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
             // Filled Tonal Button
             ComposableTypes.filledTonalButton ->
                 FilledTonalButton(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.filledTonalShape,
@@ -151,7 +151,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
             // Outlined Button
             ComposableTypes.outlinedButton ->
                 OutlinedButton(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.outlinedShape,
@@ -168,7 +168,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
             // Text Button
             ComposableTypes.textButton ->
                 TextButton(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     modifier = modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.textShape,
@@ -342,9 +342,9 @@ internal class ButtonDTO private constructor(builder: Builder) :
             private set
         var shape: Shape? = null
             private set
-        var colors: Map<String, String>? = null
+        var colors: ImmutableMap<String, String>? = null
             private set
-        var elevations: Map<String, String>? = null
+        var elevations: ImmutableMap<String, String>? = null
             private set
         var contentPadding: PaddingValues? = null
             private set
@@ -407,7 +407,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String): Builder = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -425,7 +425,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
          */
         fun elevation(elevations: String): Builder = apply {
             if (elevations.isNotEmpty()) {
-                this.elevations = elevationsFromString(elevations)
+                this.elevations = elevationsFromString(elevations)?.toImmutableMap()
             }
         }
 
@@ -462,7 +462,7 @@ internal class ButtonDTO private constructor(builder: Builder) :
     }
 }
 
-internal object ButtonDtoFactory : ComposableViewFactory<ButtonDTO, ButtonDTO.Builder>() {
+internal object ButtonDtoFactory : ComposableViewFactory<ButtonDTO>() {
     /**
      * Creates a `ButtonDTO` object based on the attributes of the input `Attributes` object.
      * ButtonDTO co-relates to the Button composable

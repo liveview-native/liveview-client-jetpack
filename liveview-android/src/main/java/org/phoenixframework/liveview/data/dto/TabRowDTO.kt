@@ -14,7 +14,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrEdgePadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelectedTabIndex
-import org.phoenixframework.liveview.data.constants.Templates
+import org.phoenixframework.liveview.data.constants.Templates.templateDivider
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableTypes
@@ -43,12 +43,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class TabRowDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val selectedTabIndex = builder.selectedTabIndex
-    private val contentColor = builder.contentColor
-    private val containerColor = builder.containerColor
-    private val edgePadding = builder.edgePadding
+    ComposableView<TabRowDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -56,11 +51,16 @@ internal class TabRowDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val selectedTabIndex = builder.selectedTabIndex
+        val contentColor = builder.contentColor
+        val containerColor = builder.containerColor
+        val edgePadding = builder.edgePadding
+
         val divider = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateDivider }
+            composableNode?.children?.find { it.node?.template == templateDivider }
         }
         val tabs = remember(composableNode?.children) {
-            composableNode?.children?.filter { it.node?.template != Templates.templateDivider }
+            composableNode?.children?.filter { it.node?.template != templateDivider }
         }
         when (composableNode?.node?.tag) {
             ComposableTypes.tabRow ->
@@ -169,7 +169,7 @@ internal class TabRowDTO private constructor(builder: Builder) :
     }
 }
 
-internal object TabRowDtoFactory : ComposableViewFactory<TabRowDTO, TabRowDTO.Builder>() {
+internal object TabRowDtoFactory : ComposableViewFactory<TabRowDTO>() {
     /**
      * Creates a `TabRowDTO` object based on the attributes of the input `Attributes` object.
      * TabRowDTO co-relates to the TabRow composable

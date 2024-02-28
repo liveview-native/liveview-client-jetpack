@@ -30,12 +30,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * ```
  */
 internal class ImageDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val imageResource: String = builder.imageResource
-    private val contentDescription: String? = builder.contentDescription
-    private val alignment: Alignment = builder.alignment
-    private val contentScale: ContentScale = builder.contentScale
-    private val alpha: Float = builder.alpha
+    ComposableView<ImageDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -43,6 +38,12 @@ internal class ImageDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val imageResource = builder.imageResource
+        val contentDescription = builder.contentDescription
+        val alignment = builder.alignment
+        val contentScale = builder.contentScale
+        val alpha = builder.alpha
+
         Image(
             painter = getPainter(imageResource = imageResource),
             contentDescription = contentDescription,
@@ -150,7 +151,7 @@ internal class ImageDTO private constructor(builder: Builder) :
     }
 }
 
-internal object ImageDtoFactory : ComposableViewFactory<ImageDTO, ImageDTO.Builder>() {
+internal object ImageDtoFactory : ComposableViewFactory<ImageDTO>() {
     /**
      * Creates an `ImageDTO` object based on the attributes and text of the input `Attributes`
      * object. ImageDTO co-relates to the Image composable from Compose library used to load images

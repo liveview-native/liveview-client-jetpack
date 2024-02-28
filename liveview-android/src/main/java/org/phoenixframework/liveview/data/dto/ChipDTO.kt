@@ -109,14 +109,13 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  */
 internal class ChipDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
+    ComposableView<ChipDTO.Builder>(builder) {
 
     private val border = builder.border
     private val colors = builder.colors?.toImmutableMap()
     private val elevation = builder.elevations?.toImmutableMap()
     private val enabled = builder.enabled
     private val onClick: String = builder.onClick
-    private val value = builder.value
     private val selected = builder.selected
     private val shape = builder.shape
 
@@ -142,7 +141,7 @@ internal class ChipDTO private constructor(builder: Builder) :
         when (composableNode?.node?.tag) {
             ComposableTypes.assistChip ->
                 AssistChip(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
@@ -169,7 +168,7 @@ internal class ChipDTO private constructor(builder: Builder) :
 
             ComposableTypes.elevatedAssistChip ->
                 ElevatedAssistChip(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
@@ -196,7 +195,7 @@ internal class ChipDTO private constructor(builder: Builder) :
 
             ComposableTypes.suggestionChip ->
                 SuggestionChip(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
@@ -218,7 +217,7 @@ internal class ChipDTO private constructor(builder: Builder) :
 
             ComposableTypes.elevatedSuggestionChip ->
                 ElevatedSuggestionChip(
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
@@ -241,7 +240,7 @@ internal class ChipDTO private constructor(builder: Builder) :
             ComposableTypes.filterChip ->
                 FilterChip(
                     selected = selected,
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
@@ -269,7 +268,7 @@ internal class ChipDTO private constructor(builder: Builder) :
             ComposableTypes.elevatedFilterChip ->
                 ElevatedFilterChip(
                     selected = selected,
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
@@ -297,7 +296,7 @@ internal class ChipDTO private constructor(builder: Builder) :
             ComposableTypes.inputChip ->
                 InputChip(
                     selected = selected,
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(pushEvent, onClick, phxValue),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
@@ -794,7 +793,7 @@ internal class ChipDTO private constructor(builder: Builder) :
     }
 }
 
-internal object ChipDtoFactory : ComposableViewFactory<ChipDTO, ChipDTO.Builder>() {
+internal object ChipDtoFactory : ComposableViewFactory<ChipDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>,
         pushEvent: PushEvent?,

@@ -77,16 +77,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class DatePickerDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val colors = builder.colors?.toImmutableMap()
-    private val initialDisplayedMonthMillis = builder.initialDisplayedMonthMillis
-    private val initialDisplayMode = builder.initialDisplayMode
-    private val initialSelectedDateMillis = builder.initialSelectedDateMillis
-    private val initialSelectedStartDateMillis = builder.initialSelectedStartDateMillis
-    private val initialSelectedEndDateMillis = builder.initialSelectedEndDateMillis
-    private val onChanged = builder.onChanged
-    private val showModeToggle = builder.showModeToggle
-    private val yearRange = builder.yearRange
+    ComposableView<DatePickerDTO.Builder>(builder) {
 
     @Composable
     override fun Compose(
@@ -114,6 +105,14 @@ internal class DatePickerDTO private constructor(builder: Builder) :
         headline: ComposableTreeNode?,
         pushEvent: PushEvent
     ) {
+        val colors = builder.colors
+        val initialDisplayedMonthMillis = builder.initialDisplayedMonthMillis
+        val initialDisplayMode = builder.initialDisplayMode
+        val initialSelectedDateMillis = builder.initialSelectedDateMillis
+        val onChanged = builder.onChanged
+        val showModeToggle = builder.showModeToggle
+        val yearRange = builder.yearRange
+
         val state = rememberDatePickerState(
             initialSelectedDateMillis = initialSelectedDateMillis,
             initialDisplayedMonthMillis = initialDisplayedMonthMillis ?: initialSelectedDateMillis,
@@ -149,8 +148,13 @@ internal class DatePickerDTO private constructor(builder: Builder) :
             colors = getDatePickerColors(colors),
         )
         LaunchedEffect(state.selectedDateMillis) {
-            state.selectedDateMillis?.let {
-                pushEvent.invoke(ComposableBuilder.EVENT_TYPE_CHANGE, onChanged, it, null)
+            state.selectedDateMillis?.let { dateInMillis ->
+                pushEvent(
+                    ComposableBuilder.EVENT_TYPE_CHANGE,
+                    onChanged,
+                    mergeValueWithPhxValue(KEY_DATE, dateInMillis),
+                    null
+                )
             }
         }
     }
@@ -162,6 +166,15 @@ internal class DatePickerDTO private constructor(builder: Builder) :
         headline: ComposableTreeNode?,
         pushEvent: PushEvent
     ) {
+        val colors = builder.colors
+        val initialDisplayedMonthMillis = builder.initialDisplayedMonthMillis
+        val initialDisplayMode = builder.initialDisplayMode
+        val initialSelectedStartDateMillis = builder.initialSelectedStartDateMillis
+        val initialSelectedEndDateMillis = builder.initialSelectedEndDateMillis
+        val onChanged = builder.onChanged
+        val showModeToggle = builder.showModeToggle
+        val yearRange = builder.yearRange
+
         val state = rememberDateRangePickerState(
             initialSelectedStartDateMillis = initialSelectedStartDateMillis,
             initialSelectedEndDateMillis = initialSelectedEndDateMillis,
@@ -213,8 +226,12 @@ internal class DatePickerDTO private constructor(builder: Builder) :
         }
     }
 
+    companion object {
+        private const val KEY_DATE = "date"
+    }
+
     internal class Builder : ComposableBuilder() {
-        var colors: Map<String, String>? = null
+        var colors: ImmutableMap<String, String>? = null
             private set
         var initialDisplayedMonthMillis: Long? = null
             private set
@@ -366,7 +383,7 @@ internal class DatePickerDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -375,7 +392,7 @@ internal class DatePickerDTO private constructor(builder: Builder) :
 }
 
 internal object DatePickerDtoFactory :
-    ComposableViewFactory<DatePickerDTO, DatePickerDTO.Builder>() {
+    ComposableViewFactory<DatePickerDTO>() {
     override fun buildComposableView(
         attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): DatePickerDTO = attributes.fold(DatePickerDTO.Builder()) { builder, attribute ->
