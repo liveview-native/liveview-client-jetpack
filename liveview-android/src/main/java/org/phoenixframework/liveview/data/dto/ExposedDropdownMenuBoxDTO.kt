@@ -5,13 +5,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrExpanded
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes.exposedDropdownMenu
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -47,8 +51,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </ExposedDropdownMenuBox>
  * ```
  */
-internal class ExposedDropdownMenuBoxDTO private constructor(builder: Builder) :
-    ComposableView<ExposedDropdownMenuBoxDTO.Builder>(builder) {
+internal class ExposedDropdownMenuBoxDTO private constructor(props: Properties) :
+    ComposableView<ExposedDropdownMenuBoxDTO.Properties>(props) {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -57,18 +61,17 @@ internal class ExposedDropdownMenuBoxDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val expanded = builder.expanded
-        var isExpanded by remember {
-            mutableStateOf(expanded)
+        var isExpanded by remember(props) {
+            mutableStateOf(props.expanded)
         }
         ExposedDropdownMenuBox(
             expanded = isExpanded,
             onExpandedChange = {
                 isExpanded = it
             },
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
         ) {
-            val wrapper = remember(isExpanded) {
+            val scopeWrapper = remember(this, isExpanded) {
                 ExposedDropdownMenuBoxScopeWrapper(
                     scope = this,
                     isExpanded = isExpanded,
@@ -86,26 +89,34 @@ internal class ExposedDropdownMenuBoxDTO private constructor(builder: Builder) :
                     },
                     parentNode = composableNode,
                     paddingValues = null,
-                    scope = wrapper
+                    scope = scopeWrapper
                 )
             }
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val expanded: Boolean = false,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var expanded: Boolean = false
-            private set
+        private var expanded: Boolean = false
 
         fun expanded(expanded: String) = apply {
             this.expanded = expanded.toBoolean()
         }
 
-        fun build() = ExposedDropdownMenuBoxDTO(this)
+        fun build() = ExposedDropdownMenuBoxDTO(
+            Properties(expanded, commonProps)
+        )
     }
 }
 
 // Wrapper class in order to communicate with ExposedDropdownMenu class.
 @OptIn(ExperimentalMaterial3Api::class)
+@Stable
 internal data class ExposedDropdownMenuBoxScopeWrapper(
     val scope: ExposedDropdownMenuBoxScope,
     val isExpanded: Boolean,
@@ -125,7 +136,7 @@ internal object ExposedDropdownMenuBoxDtoFactory :
      * `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): ExposedDropdownMenuBoxDTO =

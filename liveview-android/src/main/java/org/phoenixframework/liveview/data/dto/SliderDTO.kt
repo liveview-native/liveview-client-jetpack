@@ -12,9 +12,11 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SliderState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.compositeOver
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -39,6 +41,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateTrack
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.KEY_PHX_VALUE
 import org.phoenixframework.liveview.domain.base.ComposableTypes
@@ -82,12 +85,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </RangeSlider>
  * ```
  */
-internal class SliderDTO private constructor(builder: Builder) :
-    ChangeableDTO<Float, SliderDTO.Builder>(builder) {
-    private val minValue = builder.minValue
-    private val maxValue = builder.maxValue
-    private val steps = builder.steps
-    private val colors = builder.colors?.toImmutableMap()
+internal class SliderDTO private constructor(props: Properties) :
+    ChangeableDTO<Float, SliderDTO.Properties>(props) {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -96,13 +95,22 @@ internal class SliderDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val changeValueEventName = props.changeableProps.onChange
+        val enabled = props.changeableProps.enabled
+
+        val minValue = props.minValue
+        val maxValue = props.maxValue
+        val steps = props.steps
+        val colorsValue = props.colors?.toImmutableMap()
+
         val interactionSource = remember { MutableInteractionSource() }
-        val colors = getSliderColors(colors)
+        val colors = getSliderColors(colorsValue)
         val track = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateTrack }
         }
         when (composableNode?.node?.tag) {
             ComposableTypes.slider -> {
+                val phxValue = props.commonProps.phxValue
                 val sliderValue = remember(phxValue) {
                     phxValue?.let {
                         when (it) {
@@ -125,7 +133,7 @@ internal class SliderDTO private constructor(builder: Builder) :
 
                 Slider(
                     state = sliderState,
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     colors = colors,
                     thumb = {
@@ -137,7 +145,7 @@ internal class SliderDTO private constructor(builder: Builder) :
                             enabled = enabled
                         )
                     },
-                    track = { positions ->
+                    track = { _ ->
                         track?.let {
                             //TODO how to pass the positions to the child?
                             PhxLiveView(it, pushEvent, composableNode, null)
@@ -166,6 +174,7 @@ internal class SliderDTO private constructor(builder: Builder) :
 
             ComposableTypes.rangeSlider -> {
                 val endInteractionSource = remember { MutableInteractionSource() }
+                val phxValue = props.commonProps.phxValue
                 val sliderValue = remember(phxValue) {
                     phxValue?.let {
                         when (it) {
@@ -195,10 +204,10 @@ internal class SliderDTO private constructor(builder: Builder) :
                 }
                 RangeSlider(
                     state = rangeSliderState,
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     colors = colors,
-                    track = { positions ->
+                    track = { _ ->
                         track?.let {
                             //TODO how to pass the positions to the child?
                             PhxLiveView(it, pushEvent, composableNode, null)
@@ -295,15 +304,21 @@ internal class SliderDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val minValue: Float = 0f,
+        val maxValue: Float = 1f,
+        val steps: Int = 0,
+        val colors: ImmutableMap<String, String>? = null,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : IChangeableProperties
+
     internal class Builder : ChangeableDTOBuilder() {
-        var minValue = 0f
-            private set
-        var maxValue = 1f
-            private set
-        var steps = 0
-            private set
-        var colors: Map<String, String>? = null
-            private set
+        private var minValue = 0f
+        private var maxValue = 1f
+        private var steps = 0
+        private var colors: ImmutableMap<String, String>? = null
 
         /**
          * The min value for the range of values that this slider can take. The passed value will
@@ -355,7 +370,7 @@ internal class SliderDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -377,7 +392,16 @@ internal class SliderDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build(): SliderDTO = SliderDTO(this)
+        fun build(): SliderDTO = SliderDTO(
+            Properties(
+                minValue,
+                maxValue,
+                steps,
+                colors,
+                changeableProps,
+                commonProps,
+            )
+        )
     }
 }
 
@@ -390,7 +414,7 @@ internal object SliderDtoFactory : ComposableViewFactory<SliderDTO>() {
      * @return a `SliderDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): SliderDTO = SliderDTO.Builder().also {

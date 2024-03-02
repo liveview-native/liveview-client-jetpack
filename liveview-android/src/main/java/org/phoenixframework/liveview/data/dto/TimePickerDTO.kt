@@ -11,8 +11,10 @@ import androidx.compose.material3.TimePickerLayoutType
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -37,9 +39,11 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTimeSele
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTimeSelectorUnselectedContentColor
 import org.phoenixframework.liveview.data.constants.TimePickerLayoutTypeValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.KEY_PHX_VALUE
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -71,15 +75,8 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * ```
  */
 @OptIn(ExperimentalMaterial3Api::class)
-internal class TimePickerDTO private constructor(builder: Builder) :
-    ComposableView<TimePickerDTO.Builder>(builder) {
-
-    private val colors = builder.colors?.toImmutableMap()
-    private val initialHour = builder.initialHour
-    private val initialMinute = builder.initialMinute
-    private val is24Hour = builder.is24Hour
-    private val layoutType = builder.layoutType
-    private val onChanged = builder.onChanged
+internal class TimePickerDTO private constructor(props: Properties) :
+    ComposableView<TimePickerDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -87,6 +84,13 @@ internal class TimePickerDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val colors = props.colors?.toImmutableMap()
+        val initialHour = props.initialHour
+        val initialMinute = props.initialMinute
+        val is24Hour = props.is24Hour
+        val layoutType = props.layoutType
+        val onChanged = props.onChanged
+
         val state = rememberTimePickerState(
             initialHour = initialHour,
             initialMinute = initialMinute,
@@ -96,7 +100,7 @@ internal class TimePickerDTO private constructor(builder: Builder) :
             ComposableTypes.timePicker ->
                 TimePicker(
                     state = state,
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     colors = getTimePickerColors(colors),
                     layoutType = layoutType ?: TimePickerDefaults.layoutType(),
                 )
@@ -104,7 +108,7 @@ internal class TimePickerDTO private constructor(builder: Builder) :
             ComposableTypes.timeInput ->
                 TimeInput(
                     state = state,
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     colors = getTimePickerColors(colors)
                 )
         }
@@ -114,7 +118,7 @@ internal class TimePickerDTO private constructor(builder: Builder) :
                 "minute" to state.minute,
                 "is24Hour" to state.is24hour
             )
-            val currentValue = phxValue
+            val currentValue = props.commonProps.phxValue
             val pushValues = if (currentValue is Map<*, *>) {
                 val newMap = currentValue.toMutableMap()
                 newMap.putAll(timeMapValues)
@@ -172,19 +176,24 @@ internal class TimePickerDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val colors: ImmutableMap<String, String>? = null,
+        val initialHour: Int = 0,
+        val initialMinute: Int = 0,
+        val is24Hour: Boolean? = null,
+        val layoutType: TimePickerLayoutType? = null,
+        val onChanged: String = "",
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var colors: Map<String, String>? = null
-            private set
-        var initialHour: Int = 0
-            private set
-        var initialMinute: Int = 0
-            private set
-        var is24Hour: Boolean? = null
-            private set
-        var layoutType: TimePickerLayoutType? = null
-            private set
-        var onChanged: String = ""
-            private set
+        private var colors: ImmutableMap<String, String>? = null
+        private var initialHour: Int = 0
+        private var initialMinute: Int = 0
+        private var is24Hour: Boolean? = null
+        private var layoutType: TimePickerLayoutType? = null
+        private var onChanged: String = ""
 
         /**
          * Set TimePicker colors.
@@ -203,7 +212,7 @@ internal class TimePickerDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -272,13 +281,23 @@ internal class TimePickerDTO private constructor(builder: Builder) :
             this.onChanged = onChanged
         }
 
-        fun build() = TimePickerDTO(this)
+        fun build() = TimePickerDTO(
+            Properties(
+                colors,
+                initialHour,
+                initialMinute,
+                is24Hour,
+                layoutType,
+                onChanged,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object TimePickerDtoFactory : ComposableViewFactory<TimePickerDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): TimePickerDTO = attributes.fold(TimePickerDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             attrColors -> builder.colors(attribute.value)

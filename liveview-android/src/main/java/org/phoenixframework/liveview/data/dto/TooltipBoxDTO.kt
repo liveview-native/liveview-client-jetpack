@@ -6,9 +6,11 @@ import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnableUserInput
 import org.phoenixframework.liveview.data.constants.Attrs.attrFocusable
 import org.phoenixframework.liveview.data.constants.Attrs.attrInitialIsVisible
@@ -17,7 +19,9 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrSpacingBetweenTool
 import org.phoenixframework.liveview.data.constants.Templates.templateContent
 import org.phoenixframework.liveview.data.constants.Templates.templateTooltip
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes.plainTooltip
 import org.phoenixframework.liveview.domain.base.ComposableTypes.richTooltip
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -43,18 +47,18 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 @OptIn(ExperimentalMaterial3Api::class)
-internal class TooltipBoxDTO private constructor(builder: Builder) :
-    ComposableView<TooltipBoxDTO.Builder>(builder) {
+internal class TooltipBoxDTO private constructor(props: Properties) :
+    ComposableView<TooltipBoxDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
-        val spacingBetweenTooltipAndAnchor = builder.spacingBetweenTooltipAndAnchor
-        val isVisible = builder.initialIsVisible
-        val isPersistent = builder.isPersistent
-        val focusable = builder.focusable
-        val enableUserInput = builder.enableUserInput
+        val spacingBetweenTooltipAndAnchor = props.spacingBetweenTooltipAndAnchor
+        val isVisible = props.initialIsVisible
+        val isPersistent = props.isPersistent
+        val focusable = props.focusable
+        val enableUserInput = props.enableUserInput
 
         val tooltip = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateTooltip }
@@ -79,7 +83,7 @@ internal class TooltipBoxDTO private constructor(builder: Builder) :
                 }
             },
             state = state,
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             focusable = focusable,
             enableUserInput = enableUserInput,
             content = {
@@ -90,17 +94,22 @@ internal class TooltipBoxDTO private constructor(builder: Builder) :
         )
     }
 
+    @Stable
+    internal data class Properties(
+        val enableUserInput: Boolean = true,
+        val focusable: Boolean = true,
+        val isPersistent: Boolean = false,
+        val initialIsVisible: Boolean = false,
+        val spacingBetweenTooltipAndAnchor: Dp = 4.dp,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var enableUserInput: Boolean = true
-            private set
-        var focusable: Boolean = true
-            private set
-        var isPersistent: Boolean = false
-            private set
-        var initialIsVisible: Boolean = false
-            private set
-        var spacingBetweenTooltipAndAnchor: Dp = 4.dp
-            private set
+        private var enableUserInput: Boolean = true
+        private var focusable: Boolean = true
+        private var isPersistent: Boolean = false
+        private var initialIsVisible: Boolean = false
+        private var spacingBetweenTooltipAndAnchor: Dp = 4.dp
 
         /**
          * Boolean which determines if this TooltipBox will handle long press and mouse hover to
@@ -171,13 +180,22 @@ internal class TooltipBoxDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = TooltipBoxDTO(this)
+        fun build() = TooltipBoxDTO(
+            Properties(
+                enableUserInput,
+                focusable,
+                isPersistent,
+                initialIsVisible,
+                spacingBetweenTooltipAndAnchor,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object TooltipBoxDtoFactory : ComposableViewFactory<TooltipBoxDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): TooltipBoxDTO = attributes.fold(TooltipBoxDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             attrEnableUserInput -> builder.enableUserInput(attribute.value)

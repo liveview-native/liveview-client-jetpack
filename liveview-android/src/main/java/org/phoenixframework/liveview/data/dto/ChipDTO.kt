@@ -18,11 +18,13 @@ import androidx.compose.material3.SelectableChipElevation
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
@@ -68,7 +70,9 @@ import org.phoenixframework.liveview.data.constants.Templates.templateLabel
 import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -108,16 +112,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * </FlowRow>
  * ```
  */
-internal class ChipDTO private constructor(builder: Builder) :
-    ComposableView<ChipDTO.Builder>(builder) {
-
-    private val border = builder.border
-    private val colors = builder.colors?.toImmutableMap()
-    private val elevation = builder.elevations?.toImmutableMap()
-    private val enabled = builder.enabled
-    private val onClick: String = builder.onClick
-    private val selected = builder.selected
-    private val shape = builder.shape
+internal class ChipDTO private constructor(props: Properties) :
+    ComposableView<ChipDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -125,6 +121,14 @@ internal class ChipDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val border = props.border
+        val colors = props.colors?.toImmutableMap()
+        val elevation = props.elevations?.toImmutableMap()
+        val enabled = props.enabled
+        val onClick: String = props.onClick
+        val selected = props.selected
+        val shape = props.shape
+
         val label = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateLabel }
         }
@@ -141,13 +145,17 @@ internal class ChipDTO private constructor(builder: Builder) :
         when (composableNode?.node?.tag) {
             ComposableTypes.assistChip ->
                 AssistChip(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     leadingIcon = leadingIcon?.let {
                         {
@@ -168,13 +176,17 @@ internal class ChipDTO private constructor(builder: Builder) :
 
             ComposableTypes.elevatedAssistChip ->
                 ElevatedAssistChip(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     leadingIcon = leadingIcon?.let {
                         {
@@ -195,13 +207,17 @@ internal class ChipDTO private constructor(builder: Builder) :
 
             ComposableTypes.suggestionChip ->
                 SuggestionChip(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     icon = leadingIcon?.let {
                         {
@@ -217,13 +233,17 @@ internal class ChipDTO private constructor(builder: Builder) :
 
             ComposableTypes.elevatedSuggestionChip ->
                 ElevatedSuggestionChip(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     icon = leadingIcon?.let {
                         {
@@ -240,13 +260,17 @@ internal class ChipDTO private constructor(builder: Builder) :
             ComposableTypes.filterChip ->
                 FilterChip(
                     selected = selected,
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        mergeValueWithPhxValue(KEY_SELECTED, selected)
+                    ),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     leadingIcon = leadingIcon?.let {
                         {
@@ -268,13 +292,17 @@ internal class ChipDTO private constructor(builder: Builder) :
             ComposableTypes.elevatedFilterChip ->
                 ElevatedFilterChip(
                     selected = selected,
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        mergeValueWithPhxValue(KEY_SELECTED, selected)
+                    ),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     leadingIcon = leadingIcon?.let {
                         {
@@ -296,13 +324,17 @@ internal class ChipDTO private constructor(builder: Builder) :
             ComposableTypes.inputChip ->
                 InputChip(
                     selected = selected,
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        mergeValueWithPhxValue(KEY_SELECTED, selected)
+                    ),
                     label = {
                         label?.let {
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     leadingIcon = leadingIcon?.let {
                         {
@@ -670,21 +702,30 @@ internal class ChipDTO private constructor(builder: Builder) :
         }
     }
 
+    companion object {
+        const val KEY_SELECTED = "selected"
+    }
+
+    @Stable
+    internal data class Properties(
+        val border: BorderStroke? = null,
+        val colors: ImmutableMap<String, String>? = null,
+        val elevations: ImmutableMap<String, String>? = null,
+        val enabled: Boolean = true,
+        val onClick: String = "",
+        val selected: Boolean = false,
+        val shape: Shape? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var border: BorderStroke? = null
-            private set
-        var colors: Map<String, String>? = null
-            private set
-        var elevations: Map<String, String>? = null
-            private set
-        var enabled: Boolean = true
-            private set
-        var onClick: String = ""
-            private set
-        var selected: Boolean = false
-            private set
-        var shape: Shape? = null
-            private set
+        private var border: BorderStroke? = null
+        private var colors: ImmutableMap<String, String>? = null
+        private var elevations: ImmutableMap<String, String>? = null
+        private var enabled: Boolean = true
+        private var onClick: String = ""
+        private var selected: Boolean = false
+        private var shape: Shape? = null
 
         /**
          * The border to draw around the container of this chip.
@@ -719,7 +760,7 @@ internal class ChipDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -737,7 +778,7 @@ internal class ChipDTO private constructor(builder: Builder) :
          */
         fun elevation(elevations: String) = apply {
             if (elevations.isNotEmpty()) {
-                this.elevations = elevationsFromString(elevations)
+                this.elevations = elevationsFromString(elevations)?.toImmutableMap()
             }
         }
 
@@ -789,13 +830,24 @@ internal class ChipDTO private constructor(builder: Builder) :
             this.shape = shapeFromString(shape)
         }
 
-        fun build() = ChipDTO(this)
+        fun build() = ChipDTO(
+            Properties(
+                border,
+                colors,
+                elevations,
+                enabled,
+                onClick,
+                selected,
+                shape,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object ChipDtoFactory : ComposableViewFactory<ChipDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): ChipDTO = attributes.fold(ChipDTO.Builder()) { builder, attribute ->

@@ -6,13 +6,17 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrPropagateMinConstraints
 import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -31,8 +35,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </Box>
  * ```
  */
-internal class BoxDTO private constructor(builder: Builder) :
-    ComposableView<BoxDTO.Builder>(builder) {
+internal class BoxDTO private constructor(props: Properties) :
+    ComposableView<BoxDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -40,15 +44,15 @@ internal class BoxDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val contentAlignment: Alignment = builder.contentAlignment
-        val propagateMinConstraints = builder.propagateMinConstraints
-        val hasVerticalScroll = builder.hasVerticalScrolling
-        val hasHorizontalScroll = builder.hasHorizontalScrolling
+        val contentAlignment: Alignment = props.contentAlignment
+        val propagateMinConstraints = props.propagateMinConstraints
+        val hasVerticalScroll = props.commonProps.hasVerticalScrolling
+        val hasHorizontalScroll = props.commonProps.hasHorizontalScrolling
 
         Box(
             contentAlignment = contentAlignment,
             propagateMinConstraints = propagateMinConstraints,
-            modifier = modifier
+            modifier = props.commonProps.modifier
                 .paddingIfNotNull(paddingValues)
                 .optional(
                     hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
@@ -63,11 +67,16 @@ internal class BoxDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val contentAlignment: Alignment = Alignment.TopStart,
+        val propagateMinConstraints: Boolean = false,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var contentAlignment: Alignment = Alignment.TopStart
-            private set
-        var propagateMinConstraints: Boolean = false
-            private set
+        private var contentAlignment: Alignment = Alignment.TopStart
+        private var propagateMinConstraints: Boolean = false
 
         /**
          * The default alignment inside the Box.
@@ -95,7 +104,13 @@ internal class BoxDTO private constructor(builder: Builder) :
             this.propagateMinConstraints = value.toBoolean()
         }
 
-        fun build(): BoxDTO = BoxDTO(this)
+        fun build(): BoxDTO = BoxDTO(
+            Properties(
+                contentAlignment,
+                propagateMinConstraints,
+                commonProps,
+            )
+        )
     }
 }
 
@@ -107,7 +122,7 @@ internal object BoxDtoFactory : ComposableViewFactory<BoxDTO>() {
      * @return a `BoxDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): BoxDTO = attributes.fold(BoxDTO.Builder()) { builder, attribute ->

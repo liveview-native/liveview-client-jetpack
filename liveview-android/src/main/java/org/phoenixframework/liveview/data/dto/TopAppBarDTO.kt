@@ -12,7 +12,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -26,7 +28,9 @@ import org.phoenixframework.liveview.data.constants.Templates.templateAction
 import org.phoenixframework.liveview.data.constants.Templates.templateNavigationIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -55,8 +59,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </TopAppBar>
  * ```
  */
-internal class TopAppBarDTO private constructor(builder: Builder) :
-    ComposableView<TopAppBarDTO.Builder>(builder) {
+internal class TopAppBarDTO private constructor(props: Properties) :
+    ComposableView<TopAppBarDTO.Properties>(props) {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -65,8 +69,8 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val colors = builder.colors
-        val windowsInsets = builder.windowInsets
+        val colors = props.colors
+        val windowsInsets = props.windowInsets
 
         val title = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateTitle }
@@ -85,7 +89,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     navigationIcon = {
                         navIcon?.let {
                             Box {
@@ -110,7 +114,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     navigationIcon = {
                         navIcon?.let {
                             Box {
@@ -135,7 +139,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     navigationIcon = {
                         navIcon?.let {
                             Box {
@@ -160,7 +164,7 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     navigationIcon = {
                         navIcon?.let {
                             Box {
@@ -268,11 +272,16 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val colors: ImmutableMap<String, String>? = null,
+        val windowInsets: WindowInsets? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     class Builder : ComposableBuilder() {
-        var colors: ImmutableMap<String, String>? = null
-            private set
-        var windowInsets: WindowInsets? = null
-            private set
+        private var colors: ImmutableMap<String, String>? = null
+        private var windowInsets: WindowInsets? = null
 
         /**
          * Set TopAppBar colors.
@@ -308,7 +317,13 @@ internal class TopAppBarDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = TopAppBarDTO(this)
+        fun build() = TopAppBarDTO(
+            Properties(
+                colors,
+                windowInsets,
+                commonProps,
+            )
+        )
     }
 }
 
@@ -323,7 +338,7 @@ internal object TopAppBarDtoFactory : ComposableViewFactory<TopAppBarDTO>() {
      * object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): TopAppBarDTO {

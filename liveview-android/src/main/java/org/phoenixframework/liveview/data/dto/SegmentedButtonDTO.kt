@@ -2,6 +2,7 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MultiChoiceSegmentedButtonRowScope
@@ -10,9 +11,11 @@ import androidx.compose.material3.SegmentedButtonColors
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRowScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
@@ -38,7 +41,9 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInactive
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -53,20 +58,20 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * `MultiChoiceSegmentedButtonRow`.
  */
 @OptIn(ExperimentalMaterial3Api::class)
-internal class SegmentedButtonDTO private constructor(builder: Builder) :
-    ComposableView<SegmentedButtonDTO.Builder>(builder) {
+internal class SegmentedButtonDTO private constructor(props: Properties) :
+    ComposableView<SegmentedButtonDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
-        val border = builder.border
-        val colorsValue = builder.colors
-        val enabled = builder.enabled
-        val onClick = builder.onClick
-        val selected = builder.selected
-        val scope = builder.scope
-        val shape = builder.shape
+        val border = props.border
+        val colorsValue = props.colors
+        val enabled = props.enabled
+        val onClick = props.onClick
+        val selected = props.selected
+        val scope = props.scope
+        val shape = props.shape
 
         val colors = getSegmentedButtonColors(colors = colorsValue)
         val label = remember(composableNode?.children) {
@@ -87,9 +92,13 @@ internal class SegmentedButtonDTO private constructor(builder: Builder) :
             is SingleChoiceSegmentedButtonRowScope -> {
                 scope.SegmentedButton(
                     selected = selected,
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
                     shape = shape,
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     colors = colors,
                     border = borderStroke,
@@ -119,7 +128,7 @@ internal class SegmentedButtonDTO private constructor(builder: Builder) :
                         )
                     },
                     shape = shape,
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     colors = colors,
                     border = borderStroke,
@@ -179,21 +188,27 @@ internal class SegmentedButtonDTO private constructor(builder: Builder) :
         const val KEY_SELECTED = "selected"
     }
 
+    @Stable
+    internal data class Properties(
+        val scope: RowScope? = null,
+        val border: BorderStroke? = null,
+        val colors: ImmutableMap<String, String>? = null,
+        val enabled: Boolean = true,
+        val onClick: String = "",
+        val selected: Boolean = false,
+        val shape: Shape = RectangleShape,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     // scope must be an instance of
     // SingleChoiceSegmentedButtonRowScope or MultiChoiceSegmentedButtonRowScope
-    internal class Builder(val scope: Any? = null) : ComposableBuilder() {
-        var border: BorderStroke? = null
-            private set
-        var colors: ImmutableMap<String, String>? = null
-            private set
-        var enabled: Boolean = true
-            private set
-        var onClick: String = ""
-            private set
-        var selected: Boolean = false
-            private set
-        var shape: Shape = RectangleShape
-            private set
+    internal class Builder(val scope: RowScope? = null) : ComposableBuilder() {
+        private var border: BorderStroke? = null
+        private var colors: ImmutableMap<String, String>? = null
+        private var enabled: Boolean = true
+        private var onClick: String = ""
+        private var selected: Boolean = false
+        private var shape: Shape = RectangleShape
 
         /**
          * The border to draw around the container of this `SegmentedButton`.
@@ -286,16 +301,27 @@ internal class SegmentedButtonDTO private constructor(builder: Builder) :
             this.shape = shapeFromString(shape)
         }
 
-        fun build() = SegmentedButtonDTO(this)
+        fun build() = SegmentedButtonDTO(
+            Properties(
+                scope,
+                border,
+                colors,
+                enabled,
+                onClick,
+                selected,
+                shape,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object SegmentedButtonDtoFactory :
     ComposableViewFactory<SegmentedButtonDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): SegmentedButtonDTO =
-        attributes.fold(SegmentedButtonDTO.Builder(scope)) { builder, attribute ->
+        attributes.fold(SegmentedButtonDTO.Builder(scope as? RowScope)) { builder, attribute ->
             when (attribute.name) {
                 attrBorder -> builder.border(attribute.value)
                 attrColors -> builder.colors(attribute.value)

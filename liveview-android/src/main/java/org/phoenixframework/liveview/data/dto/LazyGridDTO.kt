@@ -7,8 +7,10 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColumns
 import org.phoenixframework.liveview.data.constants.Attrs.attrCount
@@ -21,6 +23,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangemen
 import org.phoenixframework.liveview.data.constants.LazyGridColumnTypeValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -42,86 +45,86 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </LazyHorizontalGrid>
  * ```
  */
-internal class LazyGridDTO private constructor(builder: Builder) :
-    ComposableView<LazyGridDTO.Builder>(builder) {
+internal class LazyGridDTO private constructor(props: Properties) :
+    ComposableView<LazyGridDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
-        composableNode: ComposableTreeNode?,
-        paddingValues: PaddingValues?,
-        pushEvent: PushEvent
+        composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
-        val verticalArrangement = builder.verticalArrangement
-        val horizontalArrangement = builder.horizontalArrangement
-        val reverseLayout = builder.reverseLayout
-        val userScrollEnabled = builder.userScrollEnabled
-        val gridCells = builder.gridCells
+        val verticalArrangement = props.verticalArrangement
+        val horizontalArrangement = props.horizontalArrangement
+        val reverseLayout = props.lazyListProps.reverseLayout
+        val userScrollEnabled = props.lazyListProps.userScrollEnabled
+        val gridCells = props.gridCells
         val contentPadding = remember {
-            builder.contentPadding.toImmutableMap()
+            props.lazyListProps.contentPadding.toImmutableMap()
         }
 
         when (composableNode?.node?.tag) {
-            ComposableTypes.lazyHorizontalGrid ->
-                LazyHorizontalGrid(
-                    rows = gridCells,
-                    modifier = modifier.paddingIfNotNull(paddingValues),
-                    contentPadding = PaddingValues(
-                        (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
-                        (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
-                        (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
-                        (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
-                    ),
-                    reverseLayout = reverseLayout,
-                    verticalArrangement = verticalArrangement,
-                    horizontalArrangement = horizontalArrangement,
-                    // TODO flingBehavior = ,
-                    userScrollEnabled = userScrollEnabled,
-                    content = {
-                        items(
-                            composableNode.children,
-                            key = { item -> item.id },
-                        ) { item ->
-                            PhxLiveView(item, pushEvent, composableNode, null, this)
-                        }
-                    },
-                )
+            ComposableTypes.lazyHorizontalGrid -> LazyHorizontalGrid(
+                rows = gridCells,
+                modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
+                contentPadding = PaddingValues(
+                    (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
+                    (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
+                    (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
+                    (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
+                ),
+                reverseLayout = reverseLayout,
+                verticalArrangement = verticalArrangement,
+                horizontalArrangement = horizontalArrangement,
+                // TODO flingBehavior = ,
+                userScrollEnabled = userScrollEnabled,
+                content = {
+                    items(
+                        composableNode.children,
+                        key = { item -> item.id },
+                    ) { item ->
+                        PhxLiveView(item, pushEvent, composableNode, null, this)
+                    }
+                },
+            )
 
-            ComposableTypes.lazyVerticalGrid ->
-                LazyVerticalGrid(
-                    columns = gridCells,
-                    modifier = modifier.paddingIfNotNull(paddingValues),
-                    contentPadding = PaddingValues(
-                        (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
-                        (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
-                        (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
-                        (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
-                    ),
-                    reverseLayout = reverseLayout,
-                    verticalArrangement = verticalArrangement,
-                    horizontalArrangement = horizontalArrangement,
-                    // TODO flingBehavior = ,
-                    userScrollEnabled = userScrollEnabled,
-                    content = {
-                        items(
-                            composableNode.children,
-                            key = { item -> item.id },
-                        ) { item ->
-                            PhxLiveView(item, pushEvent, composableNode, null, this)
-                        }
-                    },
-                )
+            ComposableTypes.lazyVerticalGrid -> LazyVerticalGrid(
+                columns = gridCells,
+                modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
+                contentPadding = PaddingValues(
+                    (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
+                    (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
+                    (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
+                    (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
+                ),
+                reverseLayout = reverseLayout,
+                verticalArrangement = verticalArrangement,
+                horizontalArrangement = horizontalArrangement,
+                // TODO flingBehavior = ,
+                userScrollEnabled = userScrollEnabled,
+                content = {
+                    items(
+                        composableNode.children,
+                        key = { item -> item.id },
+                    ) { item ->
+                        PhxLiveView(item, pushEvent, composableNode, null, this)
+                    }
+                },
+            )
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+        val horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
+        val gridCells: GridCells = GridCells.Fixed(1),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        override val lazyListProps: LazyListProperties = LazyListProperties()
+    ) : ILazyListProperties
+
     internal class Builder : LazyComposableBuilder() {
-
-        var verticalArrangement: Arrangement.Vertical = Arrangement.Top
-            private set
-        var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
-            private set
-        var gridCells: GridCells = GridCells.Fixed(1)
-            private set
-
+        private var verticalArrangement: Arrangement.Vertical = Arrangement.Top
+        private var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
+        private var gridCells: GridCells = GridCells.Fixed(1)
 
         /**
          * Describes the count and the size of the grid's columns. The supported values are:
@@ -138,14 +141,14 @@ internal class LazyGridDTO private constructor(builder: Builder) :
             try {
                 val map = JsonParser.parse<Map<String, String>>(columns)
                 when (map?.get(attrType)) {
-                    LazyGridColumnTypeValues.fixed ->
-                        this.gridCells = GridCells.Fixed(map[attrCount]!!.toInt())
+                    LazyGridColumnTypeValues.fixed -> this.gridCells =
+                        GridCells.Fixed(map[attrCount]!!.toInt())
 
-                    LazyGridColumnTypeValues.adaptive ->
-                        this.gridCells = GridCells.Adaptive(map[attrMinSize]!!.toInt().dp)
+                    LazyGridColumnTypeValues.adaptive -> this.gridCells =
+                        GridCells.Adaptive(map[attrMinSize]!!.toInt().dp)
 
-                    LazyGridColumnTypeValues.fixedSize ->
-                        this.gridCells = GridCells.FixedSize(map[attrSize]!!.toInt().dp)
+                    LazyGridColumnTypeValues.fixedSize -> this.gridCells =
+                        GridCells.FixedSize(map[attrSize]!!.toInt().dp)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -182,7 +185,15 @@ internal class LazyGridDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = LazyGridDTO(this)
+        fun build() = LazyGridDTO(
+            Properties(
+                verticalArrangement,
+                horizontalArrangement,
+                gridCells,
+                commonProps,
+                lazyListProps,
+            )
+        )
     }
 }
 
@@ -195,7 +206,7 @@ internal object LazyGridDtoFactory : ComposableViewFactory<LazyGridDTO>() {
      * @return a `LazyGridDTO` object based on the attributes of the input `Attributes` object.
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): LazyGridDTO = LazyGridDTO.Builder().also {
         attributes.fold(it) { builder, attribute ->
             if (builder.handleLazyAttribute(attribute)) {

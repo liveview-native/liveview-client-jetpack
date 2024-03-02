@@ -14,12 +14,14 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetContainerColor
@@ -37,7 +39,9 @@ import org.phoenixframework.liveview.data.constants.Templates.templateDragHandle
 import org.phoenixframework.liveview.data.constants.Templates.templateSheetContent
 import org.phoenixframework.liveview.data.constants.Templates.templateTopBar
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -95,25 +99,25 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *  `sheetSkipHiddenState` set to false.
  */
 @OptIn(ExperimentalMaterial3Api::class)
-internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
-    ComposableView<BottomSheetScaffoldDTO.Builder>(builder) {
+internal class BottomSheetScaffoldDTO private constructor(props: Properties) :
+    ComposableView<BottomSheetScaffoldDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
-        val containerColor = builder.containerColor
-        val contentColor = builder.contentColor
-        val onChanged = builder.onChanged
-        val sheetContainerColor = builder.sheetContainerColor
-        val sheetContentColor = builder.sheetContentColor
-        val sheetPickHeight = builder.sheetPickHeight
-        val sheetShadowElevation = builder.sheetShadowElevation
-        val sheetShape = builder.sheetShape
-        val sheetSkipHiddenState = builder.sheetSkipHiddenState
-        val sheetSwipeEnabled = builder.sheetSwipeEnabled
-        val sheetTonalElevation = builder.sheetTonalElevation
-        val sheetValue = builder.sheetValue
+        val containerColor = props.containerColor
+        val contentColor = props.contentColor
+        val onChanged = props.onChanged
+        val sheetContainerColor = props.sheetContainerColor
+        val sheetContentColor = props.sheetContentColor
+        val sheetPickHeight = props.sheetPickHeight
+        val sheetShadowElevation = props.sheetShadowElevation
+        val sheetShape = props.sheetShape
+        val sheetSkipHiddenState = props.sheetSkipHiddenState
+        val sheetSwipeEnabled = props.sheetSwipeEnabled
+        val sheetTonalElevation = props.sheetTonalElevation
+        val sheetValue = props.sheetValue
 
         val topBar = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateTopBar }
@@ -152,7 +156,7 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
                 PhxLiveView(content, pushEvent, composableNode, null, this)
             }
         },
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             scaffoldState = state,
             sheetPeekHeight = sheetPickHeight ?: BottomSheetDefaults.SheetPeekHeight,
             sheetShape = sheetShape ?: BottomSheetDefaults.ExpandedShape,
@@ -219,31 +223,36 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
         )
     }
 
+    @Stable
+    internal data class Properties(
+        val containerColor: Color? = null,
+        val contentColor: Color? = null,
+        val onChanged: String = "",
+        val sheetContainerColor: Color? = null,
+        val sheetContentColor: Color? = null,
+        val sheetPickHeight: Dp? = null,
+        val sheetShadowElevation: Dp? = null,
+        val sheetShape: Shape? = null,
+        val sheetSwipeEnabled: Boolean = true,
+        val sheetTonalElevation: Dp? = null,
+        val sheetSkipHiddenState: Boolean = true,
+        val sheetValue: SheetValue = SheetValue.PartiallyExpanded,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var containerColor: Color? = null
-            private set
-        var contentColor: Color? = null
-            private set
-        var onChanged: String = ""
-            private set
-        var sheetContainerColor: Color? = null
-            private set
-        var sheetContentColor: Color? = null
-            private set
-        var sheetPickHeight: Dp? = null
-            private set
-        var sheetShadowElevation: Dp? = null
-            private set
-        var sheetShape: Shape? = null
-            private set
-        var sheetSwipeEnabled: Boolean = true
-            private set
-        var sheetTonalElevation: Dp? = null
-            private set
-        var sheetSkipHiddenState: Boolean = true
-            private set
-        var sheetValue: SheetValue = SheetValue.PartiallyExpanded
-            private set
+        private var containerColor: Color? = null
+        private var contentColor: Color? = null
+        private var onChanged: String = ""
+        private var sheetContainerColor: Color? = null
+        private var sheetContentColor: Color? = null
+        private var sheetPickHeight: Dp? = null
+        private var sheetShadowElevation: Dp? = null
+        private var sheetShape: Shape? = null
+        private var sheetSwipeEnabled: Boolean = true
+        private var sheetTonalElevation: Dp? = null
+        private var sheetSkipHiddenState: Boolean = true
+        private var sheetValue: SheetValue = SheetValue.PartiallyExpanded
 
         /**
          * The color used for the background of this BottomSheetScaffold.
@@ -399,14 +408,30 @@ internal class BottomSheetScaffoldDTO private constructor(builder: Builder) :
             this.sheetValue = sheetValue.toSheetValue() ?: SheetValue.PartiallyExpanded
         }
 
-        fun build() = BottomSheetScaffoldDTO(this)
+        fun build() = BottomSheetScaffoldDTO(
+            Properties(
+                containerColor,
+                contentColor,
+                onChanged,
+                sheetContainerColor,
+                sheetContentColor,
+                sheetPickHeight,
+                sheetShadowElevation,
+                sheetShape,
+                sheetSwipeEnabled,
+                sheetTonalElevation,
+                sheetSkipHiddenState,
+                sheetValue,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object BottomSheetScaffoldDtoFactory :
     ComposableViewFactory<BottomSheetScaffoldDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): BottomSheetScaffoldDTO =
         attributes.fold(BottomSheetScaffoldDTO.Builder()) { builder, attribute ->
             when (attribute.name) {

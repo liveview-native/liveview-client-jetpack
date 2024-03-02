@@ -6,9 +6,11 @@ import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -29,7 +31,9 @@ import org.phoenixframework.liveview.data.constants.Templates.templateOverlineCo
 import org.phoenixframework.liveview.data.constants.Templates.templateSupportingContent
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingContent
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -56,8 +60,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </ListItem>
  * ```
  */
-internal class ListItemDTO private constructor(builder: Builder) :
-    ComposableView<ListItemDTO.Builder>(builder) {
+internal class ListItemDTO private constructor(props: Properties) :
+    ComposableView<ListItemDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -65,9 +69,9 @@ internal class ListItemDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val colors = builder.colors
-        val tonalElevation = builder.tonalElevation
-        val shadowElevation = builder.shadowElevation
+        val colors = props.colors
+        val tonalElevation = props.tonalElevation
+        val shadowElevation = props.shadowElevation
 
         val headlineContent = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateHeadlineContent }
@@ -91,7 +95,7 @@ internal class ListItemDTO private constructor(builder: Builder) :
                     PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             overlineContent = overlineContent?.let {
                 {
                     PhxLiveView(it, pushEvent, composableNode, null)
@@ -147,13 +151,18 @@ internal class ListItemDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val colors: ImmutableMap<String, String>? = null,
+        val tonalElevation: Dp? = null,
+        val shadowElevation: Dp? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var colors: ImmutableMap<String, String>? = null
-            private set
-        var tonalElevation: Dp? = null
-            private set
-        var shadowElevation: Dp? = null
-            private set
+        private var colors: ImmutableMap<String, String>? = null
+        private var tonalElevation: Dp? = null
+        private var shadowElevation: Dp? = null
 
         /**
          * Set ListItem colors.
@@ -200,13 +209,20 @@ internal class ListItemDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = ListItemDTO(this)
+        fun build() = ListItemDTO(
+            Properties(
+                colors,
+                tonalElevation,
+                shadowElevation,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object ListItemDtoFactory : ComposableViewFactory<ListItemDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): ListItemDTO = attributes.fold(ListItemDTO.Builder()) { builder, attribute ->

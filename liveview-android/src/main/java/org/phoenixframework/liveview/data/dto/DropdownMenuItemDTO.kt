@@ -6,8 +6,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.MenuItemColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
@@ -23,7 +26,9 @@ import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIco
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -49,12 +54,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </DropdownMenuItem>
  * ```
  */
-internal class DropdownMenuItemDTO private constructor(builder: Builder) :
-    ComposableView<DropdownMenuItemDTO.Builder>(builder) {
-    private val event = builder.clickEventName
-    private val enabled = builder.enabled
-    private val colors = builder.colors?.toImmutableMap()
-    private val contentPadding = builder.contentPadding
+internal class DropdownMenuItemDTO private constructor(props: Properties) :
+    ComposableView<DropdownMenuItemDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -62,6 +63,11 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val event = props.clickEventName
+        val enabled = props.enabled
+        val colors = props.colors?.toImmutableMap()
+        val contentPadding = props.contentPadding
+
         val textChild = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == null }
         }
@@ -77,8 +83,8 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
                     PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
-            onClick = onClickFromString(pushEvent, event, phxValue),
-            modifier = modifier,
+            onClick = onClickFromString(pushEvent, event, props.commonProps.phxValue),
+            modifier = props.commonProps.modifier,
             leadingIcon = leadingIcon?.let {
                 {
                     PhxLiveView(it, pushEvent, composableNode, null)
@@ -124,15 +130,20 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val clickEventName: String = "",
+        val enabled: Boolean = true,
+        val colors: ImmutableMap<String, String>? = null,
+        val contentPadding: PaddingValues? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var clickEventName: String = ""
-            private set
-        var enabled: Boolean = true
-            private set
-        var colors: Map<String, String>? = null
-            private set
-        var contentPadding: PaddingValues? = null
-            private set
+        private var clickEventName: String = ""
+        private var enabled: Boolean = true
+        private var colors: ImmutableMap<String, String>? = null
+        private var contentPadding: PaddingValues? = null
 
         /**
          * Sets the event name to be triggered on the server when the item is clicked.
@@ -171,7 +182,7 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -186,14 +197,22 @@ internal class DropdownMenuItemDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = DropdownMenuItemDTO(this)
+        fun build() = DropdownMenuItemDTO(
+            Properties(
+                clickEventName,
+                enabled,
+                colors,
+                contentPadding,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object DropdownMenuItemDtoFactory :
     ComposableViewFactory<DropdownMenuItemDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): DropdownMenuItemDTO = attributes.fold(DropdownMenuItemDTO.Builder()) { builder, attribute ->

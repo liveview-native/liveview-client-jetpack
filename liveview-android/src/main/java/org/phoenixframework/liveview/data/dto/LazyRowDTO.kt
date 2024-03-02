@@ -5,13 +5,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -27,8 +30,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </LazyRow>
  * ```
  */
-internal class LazyRowDTO private constructor(builder: Builder) :
-    ComposableView<LazyRowDTO.Builder>(builder) {
+internal class LazyRowDTO private constructor(props: Properties) :
+    ComposableView<LazyRowDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -36,16 +39,16 @@ internal class LazyRowDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val horizontalArrangement = builder.horizontalArrangement
-        val verticalAlignment = builder.verticalAlignment
-        val reverseLayout = builder.reverseLayout
-        val userScrollEnabled = builder.userScrollEnabled
+        val horizontalArrangement = props.horizontalArrangement
+        val verticalAlignment = props.verticalAlignment
+        val reverseLayout = props.lazyListProps.reverseLayout
+        val userScrollEnabled = props.lazyListProps.userScrollEnabled
         val contentPadding = remember {
-            builder.contentPadding.toImmutableMap()
+            props.lazyListProps.contentPadding.toImmutableMap()
         }
 
         LazyRow(
-            modifier = modifier.paddingIfNotNull(paddingValues),
+            modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
             reverseLayout = reverseLayout,
             horizontalArrangement = horizontalArrangement,
             verticalAlignment = verticalAlignment,
@@ -67,11 +70,17 @@ internal class LazyRowDTO private constructor(builder: Builder) :
         )
     }
 
+    @Stable
+    internal data class Properties(
+        val horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
+        val verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        override val lazyListProps: LazyListProperties = LazyListProperties()
+    ) : ILazyListProperties
+
     internal class Builder : LazyComposableBuilder() {
-        var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
-            private set
-        var verticalAlignment: Alignment.Vertical = Alignment.CenterVertically
-            private set
+        private var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
+        private var verticalAlignment: Alignment.Vertical = Alignment.CenterVertically
 
         /**
          * The horizontal arrangement of the Row's children
@@ -104,7 +113,14 @@ internal class LazyRowDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = LazyRowDTO(this)
+        fun build() = LazyRowDTO(
+            Properties(
+                horizontalArrangement,
+                verticalAlignment,
+                commonProps,
+                lazyListProps,
+            )
+        )
     }
 }
 
@@ -116,7 +132,7 @@ internal object LazyRowDtoFactory : ComposableViewFactory<LazyRowDTO>() {
      * @return a `LazyRowDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): LazyRowDTO = LazyRowDTO.Builder().also {

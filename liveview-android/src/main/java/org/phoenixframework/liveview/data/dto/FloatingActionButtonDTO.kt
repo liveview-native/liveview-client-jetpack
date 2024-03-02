@@ -10,11 +10,13 @@ import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
@@ -32,7 +34,9 @@ import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttr
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateText
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -59,8 +63,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * </ExtendedFloatingActionButton>
  * ```
  */
-internal class FloatingActionButtonDTO private constructor(builder: Builder) :
-    ComposableView<FloatingActionButtonDTO.Builder>(builder) {
+internal class FloatingActionButtonDTO private constructor(props: Properties) :
+    ComposableView<FloatingActionButtonDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -68,56 +72,59 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val onClick = builder.onClick
-        val shape = builder.shape
-        val containerColorValue = builder.containerColor
-        val contentColor = builder.contentColor
-        val elevation = builder.elevation
-        val expanded = builder.expanded
+        val onClick = props.onClick
+        val shape = props.shape
+        val containerColorValue = props.containerColor
+        val contentColor = props.contentColor
+        val elevation = props.elevation
+        val expanded = props.expanded
 
         val containerColor = containerColorValue ?: FloatingActionButtonDefaults.containerColor
         when (composableNode?.node?.tag) {
-            ComposableTypes.floatingActionButton ->
-                FloatingActionButton(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
-                    modifier = modifier,
-                    shape = shape ?: FloatingActionButtonDefaults.shape,
-                    containerColor = containerColor,
-                    contentColor = contentColor ?: contentColorFor(containerColor),
-                    elevation = getFabElevation(elevation),
-                ) {
-                    composableNode.children.forEach {
-                        PhxLiveView(it, pushEvent, composableNode, null)
-                    }
+            ComposableTypes.floatingActionButton -> FloatingActionButton(
+                onClick = onClickFromString(
+                    pushEvent, onClick, props.commonProps.phxValue
+                ),
+                modifier = props.commonProps.modifier,
+                shape = shape ?: FloatingActionButtonDefaults.shape,
+                containerColor = containerColor,
+                contentColor = contentColor ?: contentColorFor(containerColor),
+                elevation = getFabElevation(elevation),
+            ) {
+                composableNode.children.forEach {
+                    PhxLiveView(it, pushEvent, composableNode, null)
                 }
+            }
 
-            ComposableTypes.smallFloatingActionButton ->
-                SmallFloatingActionButton(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
-                    modifier = modifier,
-                    shape = shape ?: FloatingActionButtonDefaults.smallShape,
-                    containerColor = containerColor,
-                    contentColor = contentColor ?: contentColorFor(containerColor),
-                    elevation = getFabElevation(elevation),
-                ) {
-                    composableNode.children.forEach {
-                        PhxLiveView(it, pushEvent, composableNode, null)
-                    }
+            ComposableTypes.smallFloatingActionButton -> SmallFloatingActionButton(
+                onClick = onClickFromString(
+                    pushEvent, onClick, props.commonProps.phxValue
+                ),
+                modifier = props.commonProps.modifier,
+                shape = shape ?: FloatingActionButtonDefaults.smallShape,
+                containerColor = containerColor,
+                contentColor = contentColor ?: contentColorFor(containerColor),
+                elevation = getFabElevation(elevation),
+            ) {
+                composableNode.children.forEach {
+                    PhxLiveView(it, pushEvent, composableNode, null)
                 }
+            }
 
-            ComposableTypes.largeFloatingActionButton ->
-                LargeFloatingActionButton(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
-                    modifier = modifier,
-                    shape = shape ?: FloatingActionButtonDefaults.largeShape,
-                    containerColor = containerColor,
-                    contentColor = contentColor ?: contentColorFor(containerColor),
-                    elevation = getFabElevation(elevation),
-                ) {
-                    composableNode.children.forEach {
-                        PhxLiveView(it, pushEvent, composableNode, null)
-                    }
+            ComposableTypes.largeFloatingActionButton -> LargeFloatingActionButton(
+                onClick = onClickFromString(
+                    pushEvent, onClick, props.commonProps.phxValue
+                ),
+                modifier = props.commonProps.modifier,
+                shape = shape ?: FloatingActionButtonDefaults.largeShape,
+                containerColor = containerColor,
+                contentColor = contentColor ?: contentColorFor(containerColor),
+                elevation = getFabElevation(elevation),
+            ) {
+                composableNode.children.forEach {
+                    PhxLiveView(it, pushEvent, composableNode, null)
                 }
+            }
 
             ComposableTypes.extendedFloatingActionButton -> {
                 val text = remember(composableNode.children) {
@@ -137,8 +144,10 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     },
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
-                    modifier = modifier,
+                    onClick = onClickFromString(
+                        pushEvent, onClick, props.commonProps.phxValue
+                    ),
+                    modifier = props.commonProps.modifier,
                     expanded = expanded,
                     shape = shape ?: FloatingActionButtonDefaults.extendedFabShape,
                     containerColor = containerColor,
@@ -167,19 +176,24 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val onClick: String = "",
+        val containerColor: Color? = null,
+        val contentColor: Color? = null,
+        val shape: Shape? = null,
+        val elevation: ImmutableMap<String, String>? = null,
+        val expanded: Boolean = true,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var onClick: String = ""
-            private set
-        var containerColor: Color? = null
-            private set
-        var contentColor: Color? = null
-            private set
-        var shape: Shape? = null
-            private set
-        var elevation: ImmutableMap<String, String>? = null
-            private set
-        var expanded: Boolean = true
-            private set
+        private var onClick: String = ""
+        private var containerColor: Color? = null
+        private var contentColor: Color? = null
+        private var shape: Shape? = null
+        private var elevation: ImmutableMap<String, String>? = null
+        private var expanded: Boolean = true
 
         /**
          * The color used for the background of this FAB.
@@ -273,12 +287,21 @@ internal class FloatingActionButtonDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = FloatingActionButtonDTO(this)
+        fun build() = FloatingActionButtonDTO(
+            Properties(
+                onClick,
+                containerColor,
+                contentColor,
+                shape,
+                elevation,
+                expanded,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object FloatingActionButtonDtoFactory :
-    ComposableViewFactory<FloatingActionButtonDTO>() {
+internal object FloatingActionButtonDtoFactory : ComposableViewFactory<FloatingActionButtonDTO>() {
     /**
      * Creates an `FloatingActionButtonDTO` object based on the attributes and text of the input
      * `Attributes` object. FloatingActionButtonDTO co-relates to the FloatingActionButton
@@ -288,7 +311,7 @@ internal object FloatingActionButtonDtoFactory :
      * `Attributes` object.
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): FloatingActionButtonDTO = attributes.fold(

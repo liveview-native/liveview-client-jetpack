@@ -20,11 +20,16 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrAspectRatio
 import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
@@ -65,18 +70,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *  `ComposableViewFactory` must be implemented, the it must be registered on `ComposableRegistry`
  *  object informing the respective tag for the composable.
  */
-abstract class ComposableView<CB : ComposableBuilder>(protected val builder: CB) {
-    // All components can have modifiers
-    protected val modifier: Modifier
-        get() = builder.modifier
-
-    // All components can have a value assigned to it. It can be a single value or a map of values
-    protected open val value: Map<String, Any>
-        get() = builder.value
-
-    // The phx-value can be a single value or a map of values.
-    val phxValue: Any?
-        get() = builder.getPhxValue()
+abstract class ComposableView<CP : ComposableProperties>(protected open val props: CP) {
 
     @Composable
     abstract fun Compose(
@@ -87,27 +81,51 @@ abstract class ComposableView<CB : ComposableBuilder>(protected val builder: CB)
     // (phx-value and phx-value-*). For example, when a checkbox changes its checked state, the new
     // checked value (true/false) and the checkbox values (phx-value/phx-value-*) are sent to server
     protected fun mergeValueWithPhxValue(key: String, value: Any): Any {
-        val currentPhxValue = phxValue
+        val currentPhxValue = props.commonProps.phxValue
         return if (currentPhxValue == null) {
             if (key == KEY_PHX_VALUE) {
                 value
             } else {
                 mapOf(key to value)
             }
-        } else if (this.value.size == 1 && this.value.containsKey(KEY_PHX_VALUE)) {
+        } else if (props.commonProps.value.size == 1 && props.commonProps.value.containsKey(
+                KEY_PHX_VALUE
+            )
+        ) {
             if (key == KEY_PHX_VALUE) {
                 value
             } else {
-                val newMap = this.value.toMutableMap()
+                val newMap = props.commonProps.value.toMutableMap()
                 newMap[key] = value
                 newMap
             }
         } else {
-            val newMap = this.value.toMutableMap()
+            val newMap = props.commonProps.value.toMutableMap()
             newMap[key] = value
             newMap
         }
     }
+}
+
+interface ComposableProperties {
+    val commonProps: CommonComposableProperties
+}
+
+@Stable
+data class CommonComposableProperties(
+    val hasVerticalScrolling: Boolean = false,
+    val hasHorizontalScrolling: Boolean = false,
+    val modifier: Modifier = Modifier,
+    val value: ImmutableMap<String, Any> = persistentMapOf()
+) {
+    val phxValue: Any?
+        get() = if (value.isEmpty())
+            null
+        else if (value.size == 1 && value.containsKey(KEY_PHX_VALUE)) {
+            value[KEY_PHX_VALUE]
+        } else {
+            value
+        }
 }
 
 /**
@@ -117,13 +135,8 @@ abstract class ComposableView<CB : ComposableBuilder>(protected val builder: CB)
  *  `ComposableView` must be provided by the respective `ComposableBuilder`.
  */
 abstract class ComposableBuilder {
-    var hasVerticalScrolling: Boolean = false
+    var commonProps = CommonComposableProperties()
         private set
-    var hasHorizontalScrolling: Boolean = false
-        private set
-    var modifier: Modifier = Modifier
-        private set
-    val value = mutableMapOf<String, Any>()
 
     /**
      * Declare the preferred size (width and height) of a Composable. You can specify the exactly
@@ -138,12 +151,15 @@ abstract class ComposableBuilder {
      * @param size the size of a `ComposableView` instance.
      */
     private fun size(size: String) = apply {
-        modifier = when {
-            size.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.size(size = size.toInt().dp))
-            size == SizeValues.fill -> modifier.then(Modifier.fillMaxSize())
-            size == SizeValues.wrap -> modifier.then(Modifier.wrapContentSize())
-            else -> modifier
-        }
+        val modifier = this.commonProps.modifier
+        this.commonProps = this.commonProps.copy(
+            modifier = when {
+                size.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.size(size = size.toInt().dp))
+                size == SizeValues.fill -> modifier.then(Modifier.fillMaxSize())
+                size == SizeValues.wrap -> modifier.then(Modifier.wrapContentSize())
+                else -> modifier
+            }
+        )
     }
 
     /**
@@ -156,7 +172,9 @@ abstract class ComposableBuilder {
      */
     private fun padding(padding: String) = apply {
         if (padding.isNotEmptyAndIsDigitsOnly()) {
-            modifier = modifier.then(Modifier.padding(padding.toInt().dp))
+            val modifier = this.commonProps.modifier
+            this.commonProps =
+                this.commonProps.copy(modifier = modifier.then(Modifier.padding(padding.toInt().dp)))
         }
     }
 
@@ -169,7 +187,10 @@ abstract class ComposableBuilder {
      */
     internal fun paddingVertical(padding: String) = apply {
         if (padding.isNotEmptyAndIsDigitsOnly()) {
-            modifier = modifier.then(Modifier.padding(vertical = padding.toInt().dp))
+            val modifier = this.commonProps.modifier
+            this.commonProps = this.commonProps.copy(
+                modifier = modifier.then(Modifier.padding(vertical = padding.toInt().dp))
+            )
         }
     }
 
@@ -182,7 +203,10 @@ abstract class ComposableBuilder {
      */
     internal fun paddingHorizontal(padding: String) = apply {
         if (padding.isNotEmptyAndIsDigitsOnly()) {
-            modifier = modifier.then(Modifier.padding(horizontal = padding.toInt().dp))
+            val modifier = this.commonProps.modifier
+            this.commonProps = this.commonProps.copy(
+                modifier = modifier.then(Modifier.padding(horizontal = padding.toInt().dp))
+            )
         }
     }
 
@@ -201,20 +225,22 @@ abstract class ComposableBuilder {
      * @param height int value for preferred component height.
      */
     private fun height(height: String) = apply {
-        modifier = when {
-            height.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.height(height.toInt().dp))
-            height == SizeValues.fill -> modifier.then(Modifier.fillMaxHeight())
-            height == SizeValues.wrap -> modifier.then(Modifier.wrapContentHeight())
-            height == SizeValues.intrinsicMin -> modifier.then(Modifier.height(IntrinsicSize.Min))
-            height == SizeValues.intrinsicMax -> modifier.then(Modifier.height(IntrinsicSize.Max))
-            height.endsWith('%') -> {
-                handleFraction(height)?.let {
-                    modifier.then(Modifier.fillMaxHeight(it))
-                } ?: modifier
-            }
+        val modifier = this.commonProps.modifier
+        this.commonProps = this.commonProps.copy(
+            modifier = when {
+                height.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.height(height.toInt().dp))
+                height == SizeValues.fill -> modifier.then(Modifier.fillMaxHeight())
+                height == SizeValues.wrap -> modifier.then(Modifier.wrapContentHeight())
+                height == SizeValues.intrinsicMin -> modifier.then(Modifier.height(IntrinsicSize.Min))
+                height == SizeValues.intrinsicMax -> modifier.then(Modifier.height(IntrinsicSize.Max))
+                height.endsWith('%') -> {
+                    handleFraction(height)?.let {
+                        modifier.then(Modifier.fillMaxHeight(it))
+                    } ?: modifier
+                }
 
-            else -> modifier
-        }
+                else -> modifier
+            })
     }
 
     private fun handleFraction(value: String): Float? {
@@ -243,20 +269,23 @@ abstract class ComposableBuilder {
      * @param width int value for preferred component width.
      */
     private fun width(width: String) = apply {
-        modifier = when {
-            width.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.width(width.toInt().dp))
-            width == SizeValues.fill -> modifier.then(Modifier.fillMaxWidth())
-            width == SizeValues.wrap -> modifier.then(Modifier.wrapContentWidth())
-            width == SizeValues.intrinsicMin -> modifier.then(Modifier.width(IntrinsicSize.Min))
-            width == SizeValues.intrinsicMax -> modifier.then(Modifier.width(IntrinsicSize.Max))
-            width.endsWith('%') -> {
-                handleFraction(width)?.let {
-                    modifier.then(Modifier.fillMaxWidth(it))
-                } ?: modifier
-            }
+        val modifier = this.commonProps.modifier
+        this.commonProps = this.commonProps.copy(
+            modifier = when {
+                width.isNotEmptyAndIsDigitsOnly() -> modifier.then(Modifier.width(width.toInt().dp))
+                width == SizeValues.fill -> modifier.then(Modifier.fillMaxWidth())
+                width == SizeValues.wrap -> modifier.then(Modifier.wrapContentWidth())
+                width == SizeValues.intrinsicMin -> modifier.then(Modifier.width(IntrinsicSize.Min))
+                width == SizeValues.intrinsicMax -> modifier.then(Modifier.width(IntrinsicSize.Max))
+                width.endsWith('%') -> {
+                    handleFraction(width)?.let {
+                        modifier.then(Modifier.fillMaxWidth(it))
+                    } ?: modifier
+                }
 
-            else -> modifier
-        }
+                else -> modifier
+            }
+        )
     }
 
     /**
@@ -268,8 +297,11 @@ abstract class ComposableBuilder {
      * `rectangle`, or an integer representing the curve size applied for all four corners.
      */
     private fun clip(shape: String) = apply {
-        modifier = modifier.then(
-            Modifier.clip(shapeFromString(shape))
+        val modifier = this.commonProps.modifier
+        this.commonProps = this.commonProps.copy(
+            modifier = modifier.then(
+                Modifier.clip(shapeFromString(shape))
+            )
         )
     }
 
@@ -283,10 +315,13 @@ abstract class ComposableBuilder {
      * @param pushEvent function responsible to dispatch the server call.
      */
     private fun clickable(event: String, pushEvent: PushEvent?) = apply {
-        modifier = modifier.then(
-            Modifier.clickable {
-                onClickFromString(pushEvent, event, getPhxValue()).invoke()
-            }
+        val modifier = this.commonProps.modifier
+        this.commonProps = this.commonProps.copy(
+            modifier = modifier.then(
+                Modifier.clickable {
+                    onClickFromString(pushEvent, event, this.commonProps.phxValue).invoke()
+                }
+            )
         )
     }
 
@@ -300,20 +335,14 @@ abstract class ComposableBuilder {
      */
     internal fun value(attributeName: String, value: Any) = apply {
         if (attributeName == attrPhxValue) {
-            this.value[KEY_PHX_VALUE] = value
+            val newMap = this.commonProps.value.toMutableMap()
+            newMap[KEY_PHX_VALUE] = value
+            this.commonProps = this.commonProps.copy(value = newMap.toImmutableMap())
         } else if (attributeName.startsWith(attrPhxValueNamed)) {
             val phxValueKey = attributeName.substring(attrPhxValueNamed.length)
-            this.value[phxValueKey] = value
-        }
-    }
-
-    internal fun getPhxValue(): Any? {
-        return if (value.isEmpty())
-            null
-        else if (value.size == 1 && value.containsKey(KEY_PHX_VALUE)) {
-            value[KEY_PHX_VALUE]
-        } else {
-            value
+            val newMap = this.commonProps.value.toMutableMap()
+            newMap[phxValueKey] = value
+            this.commonProps = this.commonProps.copy(value = newMap.toImmutableMap())
         }
     }
 
@@ -328,10 +357,12 @@ abstract class ComposableBuilder {
      * @param scrolling scroll direction. Supported values are: `vertical`, `horizontal`, and `both`.
      */
     fun scrolling(scrolling: String) = apply {
-        hasHorizontalScrolling =
-            scrolling == ScrollingValues.horizontal || scrolling == ScrollingValues.both
-        hasVerticalScrolling =
-            scrolling == ScrollingValues.vertical || scrolling == ScrollingValues.both
+        this.commonProps = this.commonProps.copy(
+            hasHorizontalScrolling =
+            scrolling == ScrollingValues.horizontal || scrolling == ScrollingValues.both,
+            hasVerticalScrolling =
+            scrolling == ScrollingValues.vertical || scrolling == ScrollingValues.both,
+        )
     }
 
     /**
@@ -344,7 +375,10 @@ abstract class ComposableBuilder {
      */
     private fun background(background: String) = apply {
         if (background.isNotEmpty()) {
-            modifier = modifier.then(Modifier.background(background.toColor()))
+            val modifier = this.commonProps.modifier
+            this.commonProps = this.commonProps.copy(
+                modifier = modifier.then(Modifier.background(background.toColor()))
+            )
         }
     }
 
@@ -359,7 +393,10 @@ abstract class ComposableBuilder {
      */
     private fun aspectRatio(aspectRatio: String) = apply {
         if (aspectRatio.isNotEmpty()) {
-            modifier = modifier.then(Modifier.aspectRatio(aspectRatio.toFloat()))
+            val modifier = this.commonProps.modifier
+            this.commonProps = this.commonProps.copy(
+                modifier = modifier.then(Modifier.aspectRatio(aspectRatio.toFloat()))
+            )
         }
     }
 
@@ -371,7 +408,10 @@ abstract class ComposableBuilder {
      * @param testTag tag used during the UI tests.
      */
     private fun testTag(testTag: String) = apply {
-        modifier = modifier.then(Modifier.testTag(testTag))
+        val modifier = this.commonProps.modifier
+        this.commonProps = this.commonProps.copy(
+            modifier = modifier.then(Modifier.testTag(testTag))
+        )
     }
 
     /**
@@ -409,14 +449,27 @@ abstract class ComposableBuilder {
             is BoxScope -> {
                 when (attribute.name) {
                     attrAlign -> scope.run {
-                        modifier = modifier.then(
-                            Modifier.align(alignmentFromString(attribute.value, Alignment.TopStart))
-                        )
+                        val modifier = this@ComposableBuilder.commonProps.modifier
+                        this@ComposableBuilder.commonProps =
+                            this@ComposableBuilder.commonProps.copy(
+                                modifier = modifier.then(
+                                    Modifier.align(
+                                        alignmentFromString(
+                                            attribute.value,
+                                            Alignment.TopStart
+                                        )
+                                    )
+                                )
+                            )
                     }
 
                     attrMatchParentSize -> scope.run {
                         if (attribute.value.toBoolean()) {
-                            modifier = modifier.then(Modifier.matchParentSize())
+                            val modifier = this@ComposableBuilder.commonProps.modifier
+                            this@ComposableBuilder.commonProps =
+                                this@ComposableBuilder.commonProps.copy(
+                                    modifier = modifier.then(Modifier.matchParentSize())
+                                )
                         }
                     }
                 }
@@ -426,14 +479,22 @@ abstract class ComposableBuilder {
                 when (attribute.name) {
                     attrWeight -> scope.run {
                         attribute.value.toFloatOrNull()?.let {
-                            modifier = modifier.then(Modifier.weight(it))
+                            val modifier = this@ComposableBuilder.commonProps.modifier
+                            this@ComposableBuilder.commonProps =
+                                this@ComposableBuilder.commonProps.copy(
+                                    modifier = modifier.then(Modifier.weight(it))
+                                )
                         }
                     }
 
                     attrAlign -> scope.run {
-                        modifier = modifier.then(
-                            Modifier.align(horizontalAlignmentFromString(attribute.value))
-                        )
+                        val modifier = this@ComposableBuilder.commonProps.modifier
+                        this@ComposableBuilder.commonProps =
+                            this@ComposableBuilder.commonProps.copy(
+                                modifier = modifier.then(
+                                    Modifier.align(horizontalAlignmentFromString(attribute.value))
+                                )
+                            )
                     }
                 }
             }
@@ -442,14 +503,22 @@ abstract class ComposableBuilder {
                 when (attribute.name) {
                     attrWeight -> scope.run {
                         attribute.value.toFloatOrNull()?.let {
-                            modifier = modifier.then(Modifier.weight(it))
+                            val modifier = this@ComposableBuilder.commonProps.modifier
+                            this@ComposableBuilder.commonProps =
+                                this@ComposableBuilder.commonProps.copy(
+                                    modifier = modifier.then(Modifier.weight(it))
+                                )
                         }
                     }
 
                     attrAlign -> scope.run {
-                        modifier = modifier.then(
-                            Modifier.align(verticalAlignmentFromString(attribute.value))
-                        )
+                        val modifier = this@ComposableBuilder.commonProps.modifier
+                        this@ComposableBuilder.commonProps =
+                            this@ComposableBuilder.commonProps.copy(
+                                modifier = modifier.then(
+                                    Modifier.align(verticalAlignmentFromString(attribute.value))
+                                )
+                            )
                     }
                 }
             }
@@ -457,12 +526,20 @@ abstract class ComposableBuilder {
             is ExposedDropdownMenuBoxScopeWrapper -> {
                 when (attribute.name) {
                     attrMenuAnchor -> scope.scope.run {
-                        modifier = modifier.then(Modifier.menuAnchor())
+                        val modifier = this@ComposableBuilder.commonProps.modifier
+                        this@ComposableBuilder.commonProps =
+                            this@ComposableBuilder.commonProps.copy(
+                                modifier = modifier.then(Modifier.menuAnchor())
+                            )
                     }
 
                     attrExposedDropdownSize -> scope.scope.run {
-                        modifier =
-                            modifier.then(Modifier.exposedDropdownSize(attribute.value.toBoolean()))
+                        val modifier = this@ComposableBuilder.commonProps.modifier
+                        this@ComposableBuilder.commonProps =
+                            this@ComposableBuilder.commonProps.copy(
+                                modifier =
+                                modifier.then(Modifier.exposedDropdownSize(attribute.value.toBoolean()))
+                            )
                     }
                 }
             }
@@ -496,7 +573,7 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> {
      * composable (e.g.: `Column`, `Row`, `Box`).
      */
     abstract fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): CV

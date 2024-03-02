@@ -1,6 +1,10 @@
 package org.phoenixframework.liveview.data.core
 
 import androidx.compose.runtime.Immutable
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
+import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
 import org.phoenixframework.liveview.lib.Node
 
 /**
@@ -11,11 +15,10 @@ import org.phoenixframework.liveview.lib.Node
 data class CoreNodeElement internal constructor(
     val tag: String,
     val namespace: String,
-    val attributes: Array<CoreAttribute>
+    val attributes: ImmutableList<CoreAttribute>
 ) {
-    val template: String? by lazy {
-        attributes.find { it.name == "template" }?.value
-    }
+    val template: String?
+        get() = attributes.find { it.name == attrTemplate }?.value
 
     // The hashCode and equals functions has an important role in terms of performance.
     // They guarantee that a composable function will be called again (recomposed) or not.
@@ -28,7 +31,7 @@ data class CoreNodeElement internal constructor(
 
         if (tag != other.tag) return false
         if (namespace != other.namespace) return false
-        return attributes.contentDeepEquals(other.attributes)
+        return attributes == other.attributes
     }
 
     override fun hashCode(): Int {
@@ -50,19 +53,19 @@ data class CoreNodeElement internal constructor(
                     CoreNodeElement(
                         node.tag,
                         node.namespace,
-                        node.attributes.map { CoreAttribute.fromAttribute(it) }.toTypedArray()
+                        node.attributes.map { CoreAttribute.fromAttribute(it) }.toImmutableList()
                     )
                 }
 
                 is Node.Root ->
-                    CoreNodeElement("", "", emptyArray<CoreAttribute>())
+                    CoreNodeElement("", "", persistentListOf())
 
                 is Node.Leaf ->
                     // A Leaf is considered an a Node element with a single attribute: text
                     CoreNodeElement(
                         "",
                         "",
-                        arrayOf(
+                        persistentListOf(
                             CoreAttribute(TEXT_ATTRIBUTE, "", node.value)
                         )
                     )

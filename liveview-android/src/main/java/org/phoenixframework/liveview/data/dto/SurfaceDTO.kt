@@ -9,12 +9,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
@@ -27,7 +29,9 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrShadowElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -71,8 +75,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * </Surface>
  * ```
  */
-internal class SurfaceDTO private constructor(builder: Builder) :
-    ComposableView<SurfaceDTO.Builder>(builder) {
+internal class SurfaceDTO private constructor(props: Properties) :
+    ComposableView<SurfaceDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -80,22 +84,22 @@ internal class SurfaceDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val shape = builder.shape
-        val colorValue = builder.color
-        val contentColor = builder.contentColor
-        val tonalElevation = builder.tonalElevation
-        val shadowElevation = builder.shadowElevation
-        val border = builder.border
-        val hasVerticalScroll = builder.hasVerticalScrolling
-        val hasHorizontalScroll = builder.hasHorizontalScrolling
-        val onClick = builder.onClick
-        val enabled = builder.enabled
-        val selected = builder.selected
-        val checked = builder.checked
-        val onChange = builder.onChange
+        val shape = props.shape
+        val colorValue = props.color
+        val contentColor = props.contentColor
+        val tonalElevation = props.tonalElevation
+        val shadowElevation = props.shadowElevation
+        val border = props.border
+        val hasVerticalScroll = props.commonProps.hasVerticalScrolling
+        val hasHorizontalScroll = props.commonProps.hasHorizontalScrolling
+        val onClick = props.onClick
+        val enabled = props.enabled
+        val selected = props.selected
+        val checked = props.checked
+        val onChange = props.onChange
 
         val color = colorValue ?: MaterialTheme.colorScheme.surface
-        val newModifier = modifier
+        val newModifier = props.commonProps.modifier
             .paddingIfNotNull(paddingValues)
             .optional(
                 hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
@@ -106,7 +110,11 @@ internal class SurfaceDTO private constructor(builder: Builder) :
         when {
             onClick != null && selected == null ->
                 Surface(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
                     modifier = newModifier,
                     enabled = enabled ?: true,
                     shape = shape ?: RectangleShape,
@@ -126,7 +134,11 @@ internal class SurfaceDTO private constructor(builder: Builder) :
             onClick != null && selected != null ->
                 Surface(
                     selected = selected,
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
                     modifier = newModifier,
                     enabled = enabled ?: true,
                     shape = shape ?: RectangleShape,
@@ -194,29 +206,34 @@ internal class SurfaceDTO private constructor(builder: Builder) :
         const val KEY_CHECKED = "checked"
     }
 
+    @Stable
+    internal data class Properties(
+        val border: BorderStroke? = null,
+        val checked: Boolean? = null,
+        val color: Color? = null,
+        val contentColor: Color? = null,
+        val enabled: Boolean? = null,
+        val onChange: String? = null,
+        val onClick: String? = null,
+        val selected: Boolean? = null,
+        val shadowElevation: Dp? = null,
+        val shape: Shape? = null,
+        val tonalElevation: Dp? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var border: BorderStroke? = null
-            private set
-        var checked: Boolean? = null
-            private set
-        var color: Color? = null
-            private set
-        var contentColor: Color? = null
-            private set
-        var enabled: Boolean? = null
-            private set
-        var onChange: String? = null
-            private set
-        var onClick: String? = null
-            private set
-        var selected: Boolean? = null
-            private set
-        var shadowElevation: Dp? = null
-            private set
-        var shape: Shape? = null
-            private set
-        var tonalElevation: Dp? = null
-            private set
+        private var border: BorderStroke? = null
+        private var checked: Boolean? = null
+        private var color: Color? = null
+        private var contentColor: Color? = null
+        private var enabled: Boolean? = null
+        private var onChange: String? = null
+        private var onClick: String? = null
+        private var selected: Boolean? = null
+        private var shadowElevation: Dp? = null
+        private var shape: Shape? = null
+        private var tonalElevation: Dp? = null
 
         /**
          * Optional border to draw on top of the surface.
@@ -307,13 +324,28 @@ internal class SurfaceDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = SurfaceDTO(this)
+        fun build() = SurfaceDTO(
+            Properties(
+                border,
+                checked,
+                color,
+                contentColor,
+                enabled,
+                onChange,
+                onClick,
+                selected,
+                shadowElevation,
+                shape,
+                tonalElevation,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object SurfaceDtoFactory : ComposableViewFactory<SurfaceDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): SurfaceDTO = attributes.fold(SurfaceDTO.Builder()) { builder, attribute ->

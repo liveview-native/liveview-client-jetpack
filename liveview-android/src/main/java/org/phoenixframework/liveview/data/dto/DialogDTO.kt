@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -15,6 +16,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrUsePlatformDefaultWidth
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.ui.theme.shapeFromString
@@ -22,17 +24,23 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
 /**
  * Parent class of `AlertDialog` and `DatePickerDialog`.
  */
-internal abstract class DialogDTO<DB : DialogDTO.Builder>(builder: DB) :
-    ComposableView<DB>(builder) {
+internal abstract class DialogDTO<DP : DialogDTO.IDialogProperties>(props: DP) :
+    ComposableView<DP>(props) {
+
+    internal interface IDialogProperties : ComposableProperties {
+        val dialogProps: DialogComposableProperties
+    }
+
+    @Stable
+    internal data class DialogComposableProperties(
+        val dismissEvent: String? = null,
+        val dialogProperties: DialogProperties = DialogProperties(),
+        val shape: Shape? = null,
+        val tonalElevation: Dp? = null,
+    )
 
     internal abstract class Builder : ComposableBuilder() {
-        var dismissEvent: String? = null
-            private set
-        var dialogProperties: DialogProperties = DialogProperties()
-            private set
-        var shape: Shape? = null
-            private set
-        var tonalElevation: Dp? = null
+        var dialogComposableProps = DialogComposableProperties()
             private set
 
         // Attributes to initialize the dialogProperties
@@ -53,6 +61,9 @@ internal abstract class DialogDTO<DB : DialogDTO.Builder>(builder: DB) :
          */
         private fun dismissOnBackPress(dismissOnBackPress: String) = apply {
             this.dismissOnBackPress = dismissOnBackPress.toBoolean()
+            this.dialogComposableProps = this.dialogComposableProps.copy(
+                dialogProperties = buildDialogProperties()
+            )
         }
 
         /**
@@ -66,6 +77,9 @@ internal abstract class DialogDTO<DB : DialogDTO.Builder>(builder: DB) :
          */
         private fun dismissOnClickOutside(dismissOnClickOutside: String) = apply {
             this.dismissOnClickOutside = dismissOnClickOutside.toBoolean()
+            this.dialogComposableProps = this.dialogComposableProps.copy(
+                dialogProperties = buildDialogProperties()
+            )
         }
 
         /**
@@ -79,6 +93,9 @@ internal abstract class DialogDTO<DB : DialogDTO.Builder>(builder: DB) :
          */
         private fun securePolicy(securePolicy: String) = apply {
             this.securePolicy = secureFlagPolicyFromString(securePolicy)
+            this.dialogComposableProps = this.dialogComposableProps.copy(
+                dialogProperties = buildDialogProperties()
+            )
         }
 
         /**
@@ -92,6 +109,9 @@ internal abstract class DialogDTO<DB : DialogDTO.Builder>(builder: DB) :
          */
         protected fun usePlatformDefaultWidth(usePlatformDefaultWidth: String) = apply {
             this.usePlatformDefaultWidth = usePlatformDefaultWidth.toBoolean()
+            this.dialogComposableProps = this.dialogComposableProps.copy(
+                dialogProperties = buildDialogProperties()
+            )
         }
 
         /**
@@ -107,6 +127,9 @@ internal abstract class DialogDTO<DB : DialogDTO.Builder>(builder: DB) :
          */
         private fun decorFitsSystemWindows(decorFitsSystemWindows: String) = apply {
             this.decorFitsSystemWindows = decorFitsSystemWindows.toBoolean()
+            this.dialogComposableProps = this.dialogComposableProps.copy(
+                dialogProperties = buildDialogProperties()
+            )
         }
 
         /**
@@ -118,7 +141,8 @@ internal abstract class DialogDTO<DB : DialogDTO.Builder>(builder: DB) :
          * alert dialog.
          */
         fun onDismissRequest(dismissEventName: String) = apply {
-            this.dismissEvent = dismissEventName
+            this.dialogComposableProps =
+                this.dialogComposableProps.copy(dismissEvent = dismissEventName)
         }
 
         /**
@@ -131,7 +155,8 @@ internal abstract class DialogDTO<DB : DialogDTO.Builder>(builder: DB) :
          * representing the curve size applied for all four corners.
          */
         fun shape(shape: String) = apply {
-            this.shape = shapeFromString(shape)
+            this.dialogComposableProps =
+                this.dialogComposableProps.copy(shape = shapeFromString(shape))
         }
 
         /**
@@ -145,7 +170,8 @@ internal abstract class DialogDTO<DB : DialogDTO.Builder>(builder: DB) :
          */
         private fun tonalElevation(tonalElevation: String) = apply {
             if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
-                this.tonalElevation = tonalElevation.toInt().dp
+                this.dialogComposableProps =
+                    this.dialogComposableProps.copy(tonalElevation = tonalElevation.toInt().dp)
             }
         }
 
@@ -165,14 +191,12 @@ internal abstract class DialogDTO<DB : DialogDTO.Builder>(builder: DB) :
             return result
         }
 
-        fun buildDialogProperties() {
-            dialogProperties = DialogProperties(
-                dismissOnBackPress,
-                dismissOnClickOutside,
-                securePolicy,
-                usePlatformDefaultWidth,
-                decorFitsSystemWindows
-            )
-        }
+        private fun buildDialogProperties() = DialogProperties(
+            dismissOnBackPress,
+            dismissOnClickOutside,
+            securePolicy,
+            usePlatformDefaultWidth,
+            decorFitsSystemWindows
+        )
     }
 }

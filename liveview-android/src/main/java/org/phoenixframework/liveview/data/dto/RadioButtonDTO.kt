@@ -6,6 +6,8 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -16,6 +18,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelected
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedColor
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.toColor
@@ -34,8 +37,8 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * </Row>
  * ```
  */
-internal class RadioButtonDTO private constructor(builder: Builder) :
-    ChangeableDTO<Any, RadioButtonDTO.Builder>(builder) {
+internal class RadioButtonDTO private constructor(builder: Properties) :
+    ChangeableDTO<Any, RadioButtonDTO.Properties>(builder) {
 
     @Composable
     override fun Compose(
@@ -43,16 +46,19 @@ internal class RadioButtonDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val selected = builder.selected
-        val colors = builder.colors
+        val changeValueEventName = props.changeableProps.onChange
+        val enabled = props.changeableProps.enabled
+
+        val selected = props.selected
+        val colors = props.colors
 
         RadioButton(
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             selected = selected,
             onClick = {
                 if (!selected) {
                     changeValueEventName?.let {
-                        pushOnChangeEvent(pushEvent, it, phxValue)
+                        pushOnChangeEvent(pushEvent, it, props.commonProps.phxValue)
                     }
                 }
             },
@@ -82,6 +88,14 @@ internal class RadioButtonDTO private constructor(builder: Builder) :
             )
         }
     }
+
+    @Stable
+    internal data class Properties(
+        val colors: ImmutableMap<String, String>? = null,
+        val selected: Boolean = false,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : IChangeableProperties
 
     internal class Builder : ChangeableDTOBuilder() {
         var colors: ImmutableMap<String, String>? = null
@@ -118,7 +132,14 @@ internal class RadioButtonDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = RadioButtonDTO(this)
+        fun build() = RadioButtonDTO(
+            Properties(
+                colors,
+                selected,
+                changeableProps,
+                commonProps,
+            )
+        )
     }
 }
 
@@ -130,7 +151,7 @@ internal object RadioButtonDtoFactory : ComposableViewFactory<RadioButtonDTO>() 
      * @return a `RadioButtonDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): RadioButtonDTO = RadioButtonDTO.Builder().also {

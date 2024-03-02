@@ -3,8 +3,12 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -18,19 +22,24 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * <Spacer height="8" />
  * ```
  */
-internal class SpacerDTO private constructor(builder: Builder) :
-    ComposableView<SpacerDTO.Builder>(builder) {
+internal class SpacerDTO private constructor(props: Properties) :
+    ComposableView<SpacerDTO.Properties>(props) {
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?,
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        Spacer(modifier = modifier.paddingIfNotNull(paddingValues))
+        Spacer(modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues))
     }
 
+    @Stable
+    internal data class Properties(
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        fun build() = SpacerDTO(this)
+        fun build() = SpacerDTO(Properties(commonProps))
     }
 }
 
@@ -43,7 +52,7 @@ internal object SpacerDtoFactory : ComposableViewFactory<SpacerDTO>() {
      * @return a `SpacerDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): SpacerDTO = attributes.fold(SpacerDTO.Builder()) { builder, attribute ->

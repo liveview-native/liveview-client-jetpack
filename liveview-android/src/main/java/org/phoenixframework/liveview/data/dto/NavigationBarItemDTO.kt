@@ -7,7 +7,9 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlwaysShowLabel
@@ -19,7 +21,9 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -41,22 +45,20 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </NavigationBarItem>
  * ```
  */
-internal class NavigationBarItemDTO private constructor(builder: Builder) :
-    ComposableView<NavigationBarItemDTO.Builder>(builder) {
-    private val rowScope = builder.rowScope
-
-    private val alwaysShowLabel = builder.alwaysShowLabel
-    private val colors = builder.colors?.toImmutableMap()
-    private val enabled = builder.enabled
-    private val onClick = builder.onClick
-    private val selected = builder.selected
+internal class NavigationBarItemDTO private constructor(props: Properties) :
+    ComposableView<NavigationBarItemDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
-        composableNode: ComposableTreeNode?,
-        paddingValues: PaddingValues?,
-        pushEvent: PushEvent
+        composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
+        val rowScope = props.rowScope
+        val alwaysShowLabel = props.alwaysShowLabel
+        val colors = props.colors?.toImmutableMap()
+        val enabled = props.enabled
+        val onClick = props.onClick
+        val selected = props.selected
+
         val icon = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateIcon }
         }
@@ -68,14 +70,14 @@ internal class NavigationBarItemDTO private constructor(builder: Builder) :
         rowScope.NavigationBarItem(
             selected = selected,
             onClick = onClick?.let { clickEventName ->
-                onClickFromString(pushEvent, clickEventName, phxValue)
+                onClickFromString(pushEvent, clickEventName, props.commonProps.phxValue)
             } ?: {},
             icon = {
                 icon?.let {
                     PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             enabled = enabled,
             label = label?.let {
                 {
@@ -105,10 +107,9 @@ internal class NavigationBarItemDTO private constructor(builder: Builder) :
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 unselectedTextColor = colors[ColorAttrs.colorAttrUnselectedTextColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
-                disabledIconColor = colors[ColorAttrs.colorAttrDisabledIconColor]?.toColor() ?: (
-                        colors[ColorAttrs.colorAttrUnselectedIconColor]?.toColor()
-                            ?: MaterialTheme.colorScheme.onSurfaceVariant
-                        ).copy(alpha = 0.38f),
+                disabledIconColor = colors[ColorAttrs.colorAttrDisabledIconColor]?.toColor()
+                    ?: (colors[ColorAttrs.colorAttrUnselectedIconColor]?.toColor()
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant).copy(alpha = 0.38f),
                 disabledTextColor = colors[ColorAttrs.colorAttrDisabledTextColor]?.toColor()
                     ?: (colors[ColorAttrs.colorAttrUnselectedTextColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurfaceVariant).copy(alpha = 0.38f),
@@ -116,17 +117,23 @@ internal class NavigationBarItemDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder(val rowScope: RowScope) : ComposableBuilder() {
-        var alwaysShowLabel: Boolean = true
-            private set
-        var colors: Map<String, String>? = null
-            private set
-        var enabled: Boolean = true
-            private set
-        var onClick: String? = null
-            private set
-        var selected: Boolean = false
-            private set
+    @Stable
+    internal data class Properties(
+        val rowScope: RowScope,
+        var alwaysShowLabel: Boolean = true,
+        var colors: ImmutableMap<String, String>? = null,
+        var enabled: Boolean = true,
+        var onClick: String? = null,
+        var selected: Boolean = false,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
+    internal class Builder(private val rowScope: RowScope) : ComposableBuilder() {
+        private var alwaysShowLabel: Boolean = true
+        private var colors: ImmutableMap<String, String>? = null
+        private var enabled: Boolean = true
+        private var onClick: String? = null
+        private var selected: Boolean = false
 
         /**
          * Whether to always show the label for this item. If false, the label will only be shown
@@ -156,7 +163,7 @@ internal class NavigationBarItemDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -195,15 +202,23 @@ internal class NavigationBarItemDTO private constructor(builder: Builder) :
             this.selected = selected.toBoolean()
         }
 
-        fun build() = NavigationBarItemDTO(this)
+        fun build() = NavigationBarItemDTO(
+            Properties(
+                rowScope,
+                alwaysShowLabel,
+                colors,
+                enabled,
+                onClick,
+                selected,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object NavigationBarItemDtoFactory : ComposableViewFactory<NavigationBarItemDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): NavigationBarItemDTO =
         attributes.fold(NavigationBarItemDTO.Builder(scope as RowScope)) { builder, attribute ->
             when (attribute.name) {

@@ -12,10 +12,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
@@ -40,7 +42,9 @@ import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttr
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -79,8 +83,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * </TextButton>
  * ```
  */
-internal class ButtonDTO private constructor(builder: Builder) :
-    ComposableView<ButtonDTO.Builder>(builder) {
+internal class ButtonDTO private constructor(props: Properties) :
+    ComposableView<ButtonDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -88,20 +92,24 @@ internal class ButtonDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val onClick = builder.onClick
-        val enabled = builder.enabled
-        val shape = builder.shape
-        val colors = builder.colors
-        val elevation = builder.elevations
-        val contentPadding = builder.contentPadding
-        val border = builder.border
+        val onClick = props.onClick
+        val enabled = props.enabled
+        val shape = props.shape
+        val colors = props.colors
+        val elevation = props.elevations
+        val contentPadding = props.contentPadding
+        val border = props.border
 
         when (composableNode?.node?.tag) {
             // Filled Button
             ComposableTypes.button ->
                 Button(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
-                    modifier = modifier,
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.shape,
                     colors = getButtonColors(colors),
@@ -117,8 +125,12 @@ internal class ButtonDTO private constructor(builder: Builder) :
             // Elevated Button
             ComposableTypes.elevatedButton ->
                 ElevatedButton(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
-                    modifier = modifier,
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.elevatedShape,
                     colors = getElevatedButtonColors(colors),
@@ -134,8 +146,12 @@ internal class ButtonDTO private constructor(builder: Builder) :
             // Filled Tonal Button
             ComposableTypes.filledTonalButton ->
                 FilledTonalButton(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
-                    modifier = modifier,
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.filledTonalShape,
                     colors = getFilledTonalButtonColors(colors),
@@ -151,8 +167,12 @@ internal class ButtonDTO private constructor(builder: Builder) :
             // Outlined Button
             ComposableTypes.outlinedButton ->
                 OutlinedButton(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
-                    modifier = modifier,
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.outlinedShape,
                     colors = getOutlineButtonColors(colors),
@@ -168,8 +188,12 @@ internal class ButtonDTO private constructor(builder: Builder) :
             // Text Button
             ComposableTypes.textButton ->
                 TextButton(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
-                    modifier = modifier,
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.textShape,
                     colors = getTextButtonColors(colors),
@@ -335,6 +359,19 @@ internal class ButtonDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val onClick: String = "",
+        val enabled: Boolean = true,
+        val shape: Shape? = null,
+        val colors: ImmutableMap<String, String>? = null,
+        val elevations: ImmutableMap<String, String>? = null,
+        val contentPadding: PaddingValues? = null,
+        val border: BorderStroke? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
+
     internal class Builder : ComposableBuilder() {
         var onClick: String = ""
             private set
@@ -458,7 +495,18 @@ internal class ButtonDTO private constructor(builder: Builder) :
             this.border = borderFromString(border)
         }
 
-        fun build() = ButtonDTO(this)
+        fun build() = ButtonDTO(
+            Properties(
+                onClick,
+                enabled,
+                shape,
+                colors,
+                elevations,
+                contentPadding,
+                border,
+                commonProps,
+            )
+        )
     }
 }
 
@@ -470,7 +518,7 @@ internal object ButtonDtoFactory : ComposableViewFactory<ButtonDTO>() {
      * @return a `ButtonDTO` object based on the attributes of the input `Attributes` object
      **/
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): ButtonDTO = attributes.fold(ButtonDTO.Builder()) { builder, attribute ->

@@ -6,17 +6,21 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrEdgePadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelectedTabIndex
 import org.phoenixframework.liveview.data.constants.Templates.templateDivider
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -42,8 +46,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </ScrollableTabRow>
  * ```
  */
-internal class TabRowDTO private constructor(builder: Builder) :
-    ComposableView<TabRowDTO.Builder>(builder) {
+internal class TabRowDTO private constructor(props: Properties) :
+    ComposableView<TabRowDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -51,10 +55,10 @@ internal class TabRowDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val selectedTabIndex = builder.selectedTabIndex
-        val contentColor = builder.contentColor
-        val containerColor = builder.containerColor
-        val edgePadding = builder.edgePadding
+        val selectedTabIndex = props.selectedTabIndex
+        val contentColor = props.contentColor
+        val containerColor = props.containerColor
+        val edgePadding = props.edgePadding
 
         val divider = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateDivider }
@@ -66,7 +70,7 @@ internal class TabRowDTO private constructor(builder: Builder) :
             ComposableTypes.tabRow ->
                 TabRow(
                     selectedTabIndex = selectedTabIndex,
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     containerColor = containerColor ?: TabRowDefaults.primaryContainerColor,
                     contentColor = contentColor ?: TabRowDefaults.primaryContentColor,
                     //indicator = { tabPositions ->
@@ -87,7 +91,7 @@ internal class TabRowDTO private constructor(builder: Builder) :
             ComposableTypes.scrollableTabRow ->
                 ScrollableTabRow(
                     selectedTabIndex = selectedTabIndex,
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     containerColor = containerColor ?: TabRowDefaults.primaryContainerColor,
                     contentColor = contentColor ?: TabRowDefaults.primaryContentColor,
                     edgePadding = edgePadding ?: TabRowDefaults.ScrollableTabRowEdgeStartPadding,
@@ -108,15 +112,20 @@ internal class TabRowDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val selectedTabIndex: Int = 0,
+        val containerColor: Color? = null,
+        val contentColor: Color? = null,
+        val edgePadding: Dp? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var selectedTabIndex: Int = 0
-            private set
-        var containerColor: Color? = null
-            private set
-        var contentColor: Color? = null
-            private set
-        var edgePadding: Dp? = null
-            private set
+        private var selectedTabIndex: Int = 0
+        private var containerColor: Color? = null
+        private var contentColor: Color? = null
+        private var edgePadding: Dp? = null
 
         /**
          * The index of the currently selected tab.
@@ -165,7 +174,15 @@ internal class TabRowDTO private constructor(builder: Builder) :
             this.edgePadding = padding.toIntOrNull()?.dp
         }
 
-        fun build() = TabRowDTO(this)
+        fun build() = TabRowDTO(
+            Properties(
+                selectedTabIndex,
+                containerColor,
+                contentColor,
+                edgePadding,
+                commonProps,
+            )
+        )
     }
 }
 
@@ -177,7 +194,7 @@ internal object TabRowDtoFactory : ComposableViewFactory<TabRowDTO>() {
      * @return a `TabRowDTO` object based on the attributes of the input `Attributes` object
      **/
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): TabRowDTO = attributes.fold(TabRowDTO.Builder()) { builder, attribute ->

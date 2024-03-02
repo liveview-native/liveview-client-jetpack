@@ -4,10 +4,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import androidx.compose.ui.window.SecureFlagPolicy
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrClippingEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrDismissOnBackPress
 import org.phoenixframework.liveview.data.constants.Attrs.attrDismissOnClickOutside
@@ -19,7 +21,9 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrOnDismissRequest
 import org.phoenixframework.liveview.data.constants.Attrs.attrSecurePolicy
 import org.phoenixframework.liveview.data.constants.Attrs.attrUsePlatformDefaultWidth
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -57,8 +61,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *   </DropdownMenu>
  * </IconButton>
  */
-internal class DropdownMenuDTO private constructor(builder: Builder) :
-    ComposableView<DropdownMenuDTO.Builder>(builder) {
+internal class DropdownMenuDTO private constructor(props: Properties) :
+    ComposableView<DropdownMenuDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -66,19 +70,19 @@ internal class DropdownMenuDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val expanded = builder.expanded
-        val dismissEvent = builder.dismissEvent
-        val popupProperties = builder.popupProperties
-        val offset = builder.offset
+        val expanded = props.expanded
+        val dismissEvent = props.dismissEvent
+        val popupProperties = props.popupProperties
+        val offset = props.offset
 
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = dismissEvent?.let {
-                onClickFromString(pushEvent, it, phxValue)
+                onClickFromString(pushEvent, it, props.commonProps.phxValue)
             } ?: {
                 // Do nothing
             },
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             offset = offset ?: DpOffset(0.dp, 0.dp),
             scrollState = rememberScrollState(),
             properties = popupProperties,
@@ -90,18 +94,19 @@ internal class DropdownMenuDTO private constructor(builder: Builder) :
         )
     }
 
+    @Stable
+    internal data class Properties(
+        val dismissEvent: String? = null,
+        val expanded: Boolean = true,
+        val offset: DpOffset? = null,
+        val popupProperties: PopupProperties = PopupProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var dismissEvent: String? = null
-            private set
-
-        var expanded: Boolean = true
-            private set
-
-        var offset: DpOffset? = null
-            private set
-
-        lateinit var popupProperties: PopupProperties
-            private set
+        private var dismissEvent: String? = null
+        private var expanded: Boolean = true
+        private var offset: DpOffset? = null
 
         // Attributes to initialize the popup Properties
         private var focusable: Boolean = true
@@ -249,16 +254,20 @@ internal class DropdownMenuDTO private constructor(builder: Builder) :
         }
 
         fun build() = DropdownMenuDTO(
-            this.apply {
-                popupProperties = PopupProperties(
+            Properties(
+                dismissEvent,
+                expanded,
+                offset,
+                PopupProperties(
                     focusable,
                     dismissOnBackPress,
                     dismissOnClickOutside,
                     securePolicy,
                     excludeFromSystemGesture,
                     clippingEnabled
-                )
-            }
+                ),
+                commonProps,
+            )
         )
     }
 }
@@ -266,7 +275,7 @@ internal class DropdownMenuDTO private constructor(builder: Builder) :
 internal object DropdownMenuDtoFactory :
     ComposableViewFactory<DropdownMenuDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): DropdownMenuDTO = attributes.fold(

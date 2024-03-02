@@ -7,13 +7,17 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -30,8 +34,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </Column>
  * ```
  */
-internal class ColumnDTO private constructor(builder: Builder) :
-    ComposableView<ColumnDTO.Builder>(builder) {
+internal class ColumnDTO private constructor(props: Properties) :
+    ComposableView<ColumnDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -39,13 +43,13 @@ internal class ColumnDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val verticalArrangement = builder.verticalArrangement
-        val horizontalAlignment = builder.horizontalAlignment
-        val hasVerticalScroll = builder.hasVerticalScrolling
-        val hasHorizontalScroll = builder.hasHorizontalScrolling
+        val verticalArrangement = props.verticalArrangement
+        val horizontalAlignment = props.horizontalAlignment
+        val hasVerticalScroll = props.commonProps.hasVerticalScrolling
+        val hasHorizontalScroll = props.commonProps.hasHorizontalScrolling
 
         Column(
-            modifier = modifier
+            modifier = props.commonProps.modifier
                 .paddingIfNotNull(paddingValues)
                 .optional(
                     hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
@@ -62,11 +66,16 @@ internal class ColumnDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+        val horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var verticalArrangement: Arrangement.Vertical = Arrangement.Top
-            private set
-        var horizontalAlignment: Alignment.Horizontal = Alignment.Start
-            private set
+        private var verticalArrangement: Arrangement.Vertical = Arrangement.Top
+        private var horizontalAlignment: Alignment.Horizontal = Alignment.Start
 
         /**
          * The vertical arrangement of the Column's children
@@ -96,7 +105,13 @@ internal class ColumnDTO private constructor(builder: Builder) :
             this.horizontalAlignment = horizontalAlignmentFromString(horizontalAlignment)
         }
 
-        fun build(): ColumnDTO = ColumnDTO(this)
+        fun build(): ColumnDTO = ColumnDTO(
+            Properties(
+                verticalArrangement,
+                horizontalAlignment,
+                commonProps,
+            )
+        )
     }
 }
 
@@ -108,7 +123,7 @@ internal object ColumnDtoFactory : ComposableViewFactory<ColumnDTO>() {
      * @return a `ColumnDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): ColumnDTO = attributes.fold(ColumnDTO.Builder()) { builder, attribute ->

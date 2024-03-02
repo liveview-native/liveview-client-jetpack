@@ -7,6 +7,7 @@ import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.flow.map
@@ -39,6 +41,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateThumb
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.toColor
@@ -51,17 +54,17 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * <Switch checked={"#{@isChecked}"} phx-change="toggleCheck" />
  * ```
  */
-internal class SwitchDTO private constructor(builder: Builder) :
-    ChangeableDTO<Boolean, SwitchDTO.Builder>(builder) {
+internal class SwitchDTO private constructor(props: Properties) :
+    ChangeableDTO<Boolean, SwitchDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
-        composableNode: ComposableTreeNode?,
-        paddingValues: PaddingValues?,
-        pushEvent: PushEvent
+        composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
-        val colors = builder.colors
-        val checked = builder.checked
+        val enabled = props.changeableProps.enabled
+        val changeValueEventName = props.changeableProps.onChange
+        val colors = props.colors
+        val checked = props.checked
 
         val thumbContent = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateThumb }
@@ -74,7 +77,7 @@ internal class SwitchDTO private constructor(builder: Builder) :
             onCheckedChange = {
                 stateValue = it
             },
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             enabled = enabled,
             thumbContent = thumbContent?.let {
                 {
@@ -86,14 +89,11 @@ internal class SwitchDTO private constructor(builder: Builder) :
 
         LaunchedEffect(composableNode) {
             changeValueEventName?.let { event ->
-                snapshotFlow { stateValue }
-                    .onChangeable()
-                    .map { isChecked ->
-                        mergeValueWithPhxValue(KEY_CHECKED, isChecked)
-                    }
-                    .collect { value ->
-                        pushOnChangeEvent(pushEvent, event, value)
-                    }
+                snapshotFlow { stateValue }.onChangeable().map { isChecked ->
+                    mergeValueWithPhxValue(KEY_CHECKED, isChecked)
+                }.collect { value ->
+                    pushOnChangeEvent(pushEvent, event, value)
+                }
             }
         }
     }
@@ -152,11 +152,17 @@ internal class SwitchDTO private constructor(builder: Builder) :
         private const val KEY_CHECKED = "checked"
     }
 
+    @Stable
+    internal data class Properties(
+        val checked: Boolean = false,
+        val colors: ImmutableMap<String, String>? = null,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : IChangeableProperties
+
     internal class Builder : ChangeableDTOBuilder() {
-        var checked: Boolean = false
-            private set
-        var colors: ImmutableMap<String, String>? = null
-            private set
+        private var checked: Boolean = false
+        private var colors: ImmutableMap<String, String>? = null
 
         fun checked(checked: String) = apply {
             this.checked = checked.toBoolean()
@@ -182,7 +188,14 @@ internal class SwitchDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = SwitchDTO(this)
+        fun build() = SwitchDTO(
+            Properties(
+                checked,
+                colors,
+                changeableProps,
+                commonProps,
+            )
+        )
     }
 }
 
@@ -194,9 +207,7 @@ internal object SwitchDtoFactory : ComposableViewFactory<SwitchDTO>() {
      * @return a `SwitchDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): SwitchDTO = SwitchDTO.Builder().also {
         attributes.fold(
             it

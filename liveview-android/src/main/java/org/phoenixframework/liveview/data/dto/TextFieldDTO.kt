@@ -14,6 +14,7 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.flow.map
@@ -105,6 +107,7 @@ import org.phoenixframework.liveview.data.constants.VisualTransformationValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.KEY_PHX_VALUE
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -142,24 +145,26 @@ import org.phoenixframework.liveview.ui.theme.textStyleFromString
  * ```
  * You can instantiate both `TextField` and `OutlinedTextField`.
  */
-internal class TextFieldDTO private constructor(builder: Builder) :
-    ChangeableDTO<String, TextFieldDTO.Builder>(builder) {
+internal class TextFieldDTO private constructor(props: Properties) :
+    ChangeableDTO<String, TextFieldDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
-        val readOnly = builder.readOnly
-        val textStyle = builder.textStyle
-        val isError = builder.isError
-        val visualTransformation = builder.visualTransformation
-        val singleLine = builder.singleLine
-        val maxLines = builder.maxLines
-        val minLines = builder.minLines
-        val shape = builder.shape
-        val colors = builder.colors
-        val keyboardOptions = builder.keyboardOptions
-        val keyboardActions = builder.keyboardActions
+        val enabled = props.changeableProps.enabled
+        val changeValueEventName = props.changeableProps.onChange
+        val readOnly = props.readOnly
+        val textStyle = props.textStyle
+        val isError = props.isError
+        val visualTransformation = props.visualTransformation
+        val singleLine = props.singleLine
+        val maxLines = props.maxLines
+        val minLines = props.minLines
+        val shape = props.shape
+        val colors = props.colors
+        val keyboardOptions = props.keyboardOptions
+        val keyboardActions = props.keyboardActions
 
         val label = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateLabel }
@@ -182,6 +187,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
         val supportingText = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateSupportingText }
         }
+        val phxValue = props.commonProps.phxValue
         val stringValue = remember(phxValue) {
             phxValue?.let {
                 when (it) {
@@ -201,7 +207,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
                     onValueChange = { value ->
                         textFieldValue = value
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     readOnly = readOnly,
                     textStyle = textStyleFromString(textStyle),
@@ -258,7 +264,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
                     onValueChange = { value ->
                         textFieldValue = value
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     readOnly = readOnly,
                     textStyle = textStyleFromString(textStyle),
@@ -529,28 +535,25 @@ internal class TextFieldDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val readOnly: Boolean = false,
+        val textStyle: String? = null,
+        val isError: Boolean = false,
+        val visualTransformation: VisualTransformation = VisualTransformation.None,
+        val singleLine: Boolean = false,
+        val maxLines: Int = Int.MAX_VALUE,
+        val minLines: Int = 1,
+        val shape: CornerBasedShape? = null,
+        val colors: ImmutableMap<String, String>? = null,
+        val keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+        val keyboardActions: KeyboardActions = KeyboardActions.Default,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : IChangeableProperties
+
     internal class Builder : ChangeableDTOBuilder() {
-        var readOnly: Boolean = false
-            private set
-        var textStyle: String? = null
-            private set
-        var isError: Boolean = false
-            private set
-        var visualTransformation: VisualTransformation = VisualTransformation.None
-            private set
-        var singleLine: Boolean = false
-            private set
-        var maxLines: Int = Int.MAX_VALUE
-            private set
-        var minLines: Int = 1
-            private set
-        var shape: CornerBasedShape? = null
-            private set
-        var colors: ImmutableMap<String, String>? = null
-            private set
-        var keyboardOptions: KeyboardOptions = KeyboardOptions.Default
-            private set
-        var keyboardActions: KeyboardActions = KeyboardActions.Default
+        var properties: Properties = Properties()
             private set
 
         /**
@@ -562,14 +565,16 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * @param pushEvent function responsible to dispatch the server call.
          */
         fun onKeyboardAction(event: String, pushEvent: PushEvent?) = apply {
-            val action = onClickFromString(pushEvent, event, getPhxValue())
-            this.keyboardActions = KeyboardActions(
-                onDone = { action.invoke() },
-                onGo = { action.invoke() },
-                onNext = { action.invoke() },
-                onPrevious = { action.invoke() },
-                onSearch = { action.invoke() },
-                onSend = { action.invoke() },
+            val action = onClickFromString(pushEvent, event, properties.commonProps.phxValue)
+            this.properties = this.properties.copy(
+                keyboardActions = KeyboardActions(
+                    onDone = { action.invoke() },
+                    onGo = { action.invoke() },
+                    onNext = { action.invoke() },
+                    onPrevious = { action.invoke() },
+                    onSearch = { action.invoke() },
+                    onSend = { action.invoke() },
+                )
             )
         }
 
@@ -581,7 +586,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * @param readOnly true if the text field is read only, false otherwise.
          */
         fun readOnly(readOnly: String) = apply {
-            this.readOnly = readOnly.toBoolean()
+            this.properties = this.properties.copy(readOnly = readOnly.toBoolean())
         }
 
         /**
@@ -593,7 +598,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * @param textStyle style to be applied to the text field.
          */
         fun textStyle(textStyle: String) = apply {
-            this.textStyle = textStyle
+            this.properties = this.properties.copy(textStyle = textStyle)
         }
 
         /**
@@ -605,7 +610,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * @param isError true if the text field is in error state, false otherwise.
          */
         fun isError(isError: String) = apply {
-            this.isError = isError.toBoolean()
+            this.properties = this.properties.copy(isError = isError.toBoolean())
         }
 
         /**
@@ -619,8 +624,10 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * @param singleLine true if the text field is in error state, false otherwise.
          */
         fun singleLine(singleLine: String) = apply {
-            this.singleLine = singleLine.toBoolean()
-            this.maxLines = if (this.singleLine) 1 else Int.MAX_VALUE
+            this.properties = this.properties.copy(
+                singleLine = singleLine.toBoolean(),
+                maxLines = if (this.properties.singleLine) 1 else Int.MAX_VALUE
+            )
         }
 
         /**
@@ -632,7 +639,8 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * @param maxLines maximum number of visible lines.
          */
         fun maxLines(maxLines: String) = apply {
-            this.maxLines = maxLines.toIntOrNull() ?: Int.MAX_VALUE
+            this.properties =
+                this.properties.copy(maxLines = maxLines.toIntOrNull() ?: Int.MAX_VALUE)
         }
 
         /**
@@ -644,7 +652,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * @param minLines minimum number of visible lines.
          */
         fun minLines(minLines: String) = apply {
-            this.minLines = minLines.toIntOrNull() ?: 1
+            this.properties = this.properties.copy(minLines = minLines.toIntOrNull() ?: 1)
         }
 
         /**
@@ -657,7 +665,7 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * representing the curve size applied to all four corners.
          */
         fun shape(shape: String) = apply {
-            this.shape = shapeFromString(shape)
+            this.properties = this.properties.copy(shape = shapeFromString(shape))
         }
 
         /**
@@ -671,12 +679,14 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * (default).
          */
         fun visualTransformation(transformation: String) = apply {
-            when (transformation) {
-                VisualTransformationValues.password ->
-                    this.visualTransformation = PasswordVisualTransformation()
+            this.properties = this.properties.copy(
+                visualTransformation = when (transformation) {
+                    VisualTransformationValues.password ->
+                        PasswordVisualTransformation()
 
-                else -> VisualTransformation.None
-            }
+                    else -> VisualTransformation.None
+                }
+            )
         }
 
         /**
@@ -708,7 +718,8 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
+                this.properties =
+                    this.properties.copy(colors = colorsFromString(colors)?.toImmutableMap())
             }
         }
 
@@ -723,18 +734,21 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * [org.phoenixframework.liveview.data.constants.KeyboardCapitalizationValues].
          */
         fun capitalization(capitalization: String) = apply {
-            keyboardOptions = when (capitalization) {
-                KeyboardCapitalizationValues.characters ->
-                    keyboardOptions.copy(capitalization = KeyboardCapitalization.Characters)
+            val keyboardOptions = this.properties.keyboardOptions
+            this.properties = this.properties.copy(
+                keyboardOptions = when (capitalization) {
+                    KeyboardCapitalizationValues.characters ->
+                        keyboardOptions.copy(capitalization = KeyboardCapitalization.Characters)
 
-                KeyboardCapitalizationValues.words ->
-                    keyboardOptions.copy(capitalization = KeyboardCapitalization.Words)
+                    KeyboardCapitalizationValues.words ->
+                        keyboardOptions.copy(capitalization = KeyboardCapitalization.Words)
 
-                KeyboardCapitalizationValues.sentences ->
-                    keyboardOptions.copy(capitalization = KeyboardCapitalization.Sentences)
+                    KeyboardCapitalizationValues.sentences ->
+                        keyboardOptions.copy(capitalization = KeyboardCapitalization.Sentences)
 
-                else -> keyboardOptions.copy(capitalization = KeyboardCapitalization.None)
-            }
+                    else -> keyboardOptions.copy(capitalization = KeyboardCapitalization.None)
+                }
+            )
         }
 
         /**
@@ -749,7 +763,12 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * @param autoCorrect true to enable auto correct, false otherwise.
          */
         fun autoCorrect(autoCorrect: String) = apply {
-            keyboardOptions = keyboardOptions.copy(autoCorrect = autoCorrect.toBoolean())
+            val keyboardOptions = this.properties.keyboardOptions
+            this.properties = this.properties.copy(
+                keyboardOptions = keyboardOptions.copy(
+                    autoCorrect = autoCorrect.toBoolean()
+                )
+            )
         }
 
         /**
@@ -763,17 +782,20 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * [org.phoenixframework.liveview.data.constants.KeyboardTypeValues]
          */
         fun keyboardType(keyboardType: String) = apply {
-            keyboardOptions = when (keyboardType) {
-                KeyboardTypeValues.ascii -> keyboardOptions.copy(keyboardType = KeyboardType.Ascii)
-                KeyboardTypeValues.number -> keyboardOptions.copy(keyboardType = KeyboardType.Number)
-                KeyboardTypeValues.phone -> keyboardOptions.copy(keyboardType = KeyboardType.Phone)
-                KeyboardTypeValues.uri -> keyboardOptions.copy(keyboardType = KeyboardType.Uri)
-                KeyboardTypeValues.email -> keyboardOptions.copy(keyboardType = KeyboardType.Email)
-                KeyboardTypeValues.password -> keyboardOptions.copy(keyboardType = KeyboardType.Password)
-                KeyboardTypeValues.numberPassword -> keyboardOptions.copy(keyboardType = KeyboardType.NumberPassword)
-                KeyboardTypeValues.decimal -> keyboardOptions.copy(keyboardType = KeyboardType.Decimal)
-                else -> keyboardOptions.copy(keyboardType = KeyboardType.Text)
-            }
+            val keyboardOptions = this.properties.keyboardOptions
+            this.properties = this.properties.copy(
+                keyboardOptions = when (keyboardType) {
+                    KeyboardTypeValues.ascii -> keyboardOptions.copy(keyboardType = KeyboardType.Ascii)
+                    KeyboardTypeValues.number -> keyboardOptions.copy(keyboardType = KeyboardType.Number)
+                    KeyboardTypeValues.phone -> keyboardOptions.copy(keyboardType = KeyboardType.Phone)
+                    KeyboardTypeValues.uri -> keyboardOptions.copy(keyboardType = KeyboardType.Uri)
+                    KeyboardTypeValues.email -> keyboardOptions.copy(keyboardType = KeyboardType.Email)
+                    KeyboardTypeValues.password -> keyboardOptions.copy(keyboardType = KeyboardType.Password)
+                    KeyboardTypeValues.numberPassword -> keyboardOptions.copy(keyboardType = KeyboardType.NumberPassword)
+                    KeyboardTypeValues.decimal -> keyboardOptions.copy(keyboardType = KeyboardType.Decimal)
+                    else -> keyboardOptions.copy(keyboardType = KeyboardType.Text)
+                }
+            )
         }
 
         /**
@@ -788,19 +810,27 @@ internal class TextFieldDTO private constructor(builder: Builder) :
          * [org.phoenixframework.liveview.data.constants.ImeActionValues].
          */
         fun imeAction(imeAction: String) = apply {
-            keyboardOptions = when (imeAction) {
-                ImeActionValues.none -> keyboardOptions.copy(imeAction = ImeAction.None)
-                ImeActionValues.go -> keyboardOptions.copy(imeAction = ImeAction.Go)
-                ImeActionValues.search -> keyboardOptions.copy(imeAction = ImeAction.Search)
-                ImeActionValues.send -> keyboardOptions.copy(imeAction = ImeAction.Send)
-                ImeActionValues.previous -> keyboardOptions.copy(imeAction = ImeAction.Previous)
-                ImeActionValues.next -> keyboardOptions.copy(imeAction = ImeAction.Next)
-                ImeActionValues.done -> keyboardOptions.copy(imeAction = ImeAction.Done)
-                else -> keyboardOptions.copy(imeAction = ImeAction.Default)
-            }
+            val keyboardOptions = this.properties.keyboardOptions
+            this.properties = this.properties.copy(
+                keyboardOptions = when (imeAction) {
+                    ImeActionValues.none -> keyboardOptions.copy(imeAction = ImeAction.None)
+                    ImeActionValues.go -> keyboardOptions.copy(imeAction = ImeAction.Go)
+                    ImeActionValues.search -> keyboardOptions.copy(imeAction = ImeAction.Search)
+                    ImeActionValues.send -> keyboardOptions.copy(imeAction = ImeAction.Send)
+                    ImeActionValues.previous -> keyboardOptions.copy(imeAction = ImeAction.Previous)
+                    ImeActionValues.next -> keyboardOptions.copy(imeAction = ImeAction.Next)
+                    ImeActionValues.done -> keyboardOptions.copy(imeAction = ImeAction.Done)
+                    else -> keyboardOptions.copy(imeAction = ImeAction.Default)
+                }
+            )
         }
 
-        fun build() = TextFieldDTO(this)
+        fun build() = TextFieldDTO(
+            properties.copy(
+                changeableProps = changeableProps,
+                commonProps = commonProps
+            )
+        )
     }
 }
 
@@ -815,7 +845,7 @@ internal object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO>() {
      * object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): TextFieldDTO = TextFieldDTO.Builder().also {
         attributes.fold(it) { builder, attribute ->
             if (builder.handleChangeableAttribute(attribute)) {

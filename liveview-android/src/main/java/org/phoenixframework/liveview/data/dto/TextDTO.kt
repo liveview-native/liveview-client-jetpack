@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
@@ -12,6 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrFontFamily
 import org.phoenixframework.liveview.data.constants.Attrs.attrFontSize
@@ -30,7 +32,9 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrTextDecoration
 import org.phoenixframework.liveview.data.constants.TextOverflowValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -54,8 +58,8 @@ import org.phoenixframework.liveview.ui.theme.textStyleFromString
  * <Text text="My Text 2" />
  * ```
  */
-internal class TextDTO private constructor(builder: Builder) :
-    ComposableView<TextDTO.Builder>(builder) {
+internal class TextDTO private constructor(props: Properties) :
+    ComposableView<TextDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -63,21 +67,21 @@ internal class TextDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val textValue = builder.text
-        val color = builder.color
-        val fontSize = builder.fontSize
-        val fontStyle = builder.fontStyle
-        val fontWeight = builder.fontWeight
-        val fontFamily = builder.fontFamily
-        val letterSpacing = builder.letterSpacing
-        val textDecoration = builder.textDecoration
-        val textAlign = builder.textAlign
-        val lineHeight = builder.lineHeight
-        val overflow = builder.overflow
-        val softWrap = builder.softWrap
-        val maxLines = builder.maxLines
-        val minLines = builder.minLines
-        val style = builder.style
+        val textValue = props.text
+        val color = props.color
+        val fontSize = props.fontSize
+        val fontStyle = props.fontStyle
+        val fontWeight = props.fontWeight
+        val fontFamily = props.fontFamily
+        val letterSpacing = props.letterSpacing
+        val textDecoration = props.textDecoration
+        val textAlign = props.textAlign
+        val lineHeight = props.lineHeight
+        val overflow = props.overflow
+        val softWrap = props.softWrap
+        val maxLines = props.maxLines
+        val minLines = props.minLines
+        val style = props.style
 
         val text = remember(composableNode) {
             getText(composableNode, textValue)
@@ -85,7 +89,7 @@ internal class TextDTO private constructor(builder: Builder) :
         Text(
             text = text,
             color = color,
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             fontSize = fontSize,
             fontStyle = fontStyle,
             fontWeight = fontWeight,
@@ -119,37 +123,42 @@ internal class TextDTO private constructor(builder: Builder) :
         return text
     }
 
+    @Stable
+    internal data class Properties(
+        val text: String = "",
+        val color: Color = Color.Unspecified,
+        val fontSize: TextUnit = TextUnit.Unspecified,
+        val fontStyle: FontStyle? = null,
+        val fontWeight: FontWeight? = null,
+        val fontFamily: FontFamily? = null,
+        val letterSpacing: TextUnit = TextUnit.Unspecified,
+        val textDecoration: TextDecoration? = null,
+        val textAlign: TextAlign? = null,
+        val lineHeight: TextUnit = TextUnit.Unspecified,
+        val overflow: TextOverflow = TextOverflow.Clip,
+        val softWrap: Boolean = true,
+        val minLines: Int = 1,
+        val maxLines: Int = Int.MAX_VALUE,
+        val style: String? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var text: String = ""
-            private set
-        var color: Color = Color.Unspecified
-            private set
-        var fontSize: TextUnit = TextUnit.Unspecified
-            private set
-        var fontStyle: FontStyle? = null
-            private set
-        var fontWeight: FontWeight? = null
-            private set
-        var fontFamily: FontFamily? = null
-            private set
-        var letterSpacing: TextUnit = TextUnit.Unspecified
-            private set
-        var textDecoration: TextDecoration? = null
-            private set
-        var textAlign: TextAlign? = null
-            private set
-        var lineHeight: TextUnit = TextUnit.Unspecified
-            private set
-        var overflow: TextOverflow = TextOverflow.Clip
-            private set
-        var softWrap: Boolean = true
-            private set
-        var minLines: Int = 1
-            private set
-        var maxLines: Int = Int.MAX_VALUE
-            private set
-        var style: String? = null
-            private set
+        private var text: String = ""
+        private var color: Color = Color.Unspecified
+        private var fontSize: TextUnit = TextUnit.Unspecified
+        private var fontStyle: FontStyle? = null
+        private var fontWeight: FontWeight? = null
+        private var fontFamily: FontFamily? = null
+        private var letterSpacing: TextUnit = TextUnit.Unspecified
+        private var textDecoration: TextDecoration? = null
+        private var textAlign: TextAlign? = null
+        private var lineHeight: TextUnit = TextUnit.Unspecified
+        private var overflow: TextOverflow = TextOverflow.Clip
+        private var softWrap: Boolean = true
+        private var minLines: Int = 1
+        private var maxLines: Int = Int.MAX_VALUE
+        private var style: String? = null
 
         /**
          * Sets the text to be displayed. There are two ways to set the text:
@@ -343,14 +352,33 @@ internal class TextDTO private constructor(builder: Builder) :
             this.style = style
         }
 
-        fun build() = TextDTO(this)
+        fun build() = TextDTO(
+            Properties(
+                text,
+                color,
+                fontSize,
+                fontStyle,
+                fontWeight,
+                fontFamily,
+                letterSpacing,
+                textDecoration,
+                textAlign,
+                lineHeight,
+                overflow,
+                softWrap,
+                minLines,
+                maxLines,
+                style,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object TextDtoFactory : ComposableViewFactory<TextDTO>() {
     fun buildComposableView(
         text: String,
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         scope: Any?,
         pushEvent: PushEvent?,
     ): TextDTO = textBuilder(attributes, scope, pushEvent).text(text).build()
@@ -363,13 +391,13 @@ internal object TextDtoFactory : ComposableViewFactory<TextDTO>() {
      * @return a `TextDTO` object based on the attributes and text of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): TextDTO = textBuilder(attributes, scope, pushEvent).build()
 
     private fun textBuilder(
-        attributes: Array<CoreAttribute>, scope: Any?, pushEvent: PushEvent?
+        attributes: ImmutableList<CoreAttribute>, scope: Any?, pushEvent: PushEvent?
     ): TextDTO.Builder = attributes.fold(TextDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             attrColor -> builder.color(attribute.value)

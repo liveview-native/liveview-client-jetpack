@@ -9,11 +9,13 @@ import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.RichTooltipColors
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrCaretHeight
@@ -31,7 +33,9 @@ import org.phoenixframework.liveview.data.constants.Templates.templateText
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -66,8 +70,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  */
 @OptIn(ExperimentalMaterial3Api::class)
-internal class TooltipDTO private constructor(builder: Builder) :
-    ComposableView<TooltipDTO.Builder>(builder) {
+internal class TooltipDTO private constructor(props: Properties) :
+    ComposableView<TooltipDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -75,20 +79,20 @@ internal class TooltipDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val scope = builder.scope
-        val caretProperties = builder.caretProperties
-        val colors = builder.colors
-        val shape = builder.shape
-        val contentColor = builder.contentColor
-        val containerColor = builder.containerColor
-        val tonalElevation = builder.tonalElevation
-        val shadowElevation = builder.shadowElevation
+        val scope = props.scope
+        val caretProperties = props.caretProperties
+        val colors = props.colors
+        val shape = props.shape
+        val contentColor = props.contentColor
+        val containerColor = props.containerColor
+        val tonalElevation = props.tonalElevation
+        val shadowElevation = props.shadowElevation
 
         when (composableNode?.node?.tag) {
             ComposableTypes.plainTooltip -> {
                 if (scope is CaretScope) {
                     scope.PlainTooltip(
-                        modifier = modifier,
+                        modifier = props.commonProps.modifier,
                         caretProperties = caretProperties ?: TooltipDefaults.caretProperties,
                         shape = shape ?: TooltipDefaults.plainTooltipContainerShape,
                         contentColor = contentColor ?: TooltipDefaults.plainTooltipContentColor,
@@ -116,7 +120,7 @@ internal class TooltipDTO private constructor(builder: Builder) :
                     composableNode.children.find { it.node?.template == templateText }
                 }
                 RichTooltip(
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     title = title?.let {
                         {
                             PhxLiveView(it, pushEvent, composableNode, null)
@@ -160,21 +164,27 @@ internal class TooltipDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder(val scope: Any? = null) : ComposableBuilder() {
-        var caretProperties: CaretProperties? = null
-            private set
-        var colors: ImmutableMap<String, String>? = null
-            private set
-        var shape: Shape? = null
-            private set
-        var contentColor: Color? = null
-            private set
-        var containerColor: Color? = null
-            private set
-        var tonalElevation: Dp? = null
-            private set
-        var shadowElevation: Dp? = null
-            private set
+    @Stable
+    internal data class Properties(
+        val scope: CaretScope? = null,
+        val caretProperties: CaretProperties? = null,
+        val colors: ImmutableMap<String, String>? = null,
+        val shape: Shape? = null,
+        val contentColor: Color? = null,
+        val containerColor: Color? = null,
+        val tonalElevation: Dp? = null,
+        val shadowElevation: Dp? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
+    internal class Builder(val scope: CaretScope? = null) : ComposableBuilder() {
+        private var caretProperties: CaretProperties? = null
+        private var colors: ImmutableMap<String, String>? = null
+        private var shape: Shape? = null
+        private var contentColor: Color? = null
+        private var containerColor: Color? = null
+        private var tonalElevation: Dp? = null
+        private var shadowElevation: Dp? = null
 
         /**
          * RichTooltipColors that will be applied to the tooltip's container and content.
@@ -281,25 +291,39 @@ internal class TooltipDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = TooltipDTO(this)
+        fun build() = TooltipDTO(
+            Properties(
+                scope,
+                caretProperties,
+                colors,
+                shape,
+                contentColor,
+                containerColor,
+                tonalElevation,
+                shadowElevation,
+                commonProps,
+            )
+        )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 internal object TooltipDtoFactory : ComposableViewFactory<TooltipDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
-    ): TooltipDTO = attributes.fold(TooltipDTO.Builder(scope)) { builder, attribute ->
-        when (attribute.name) {
-            attrCaretProperties -> builder.caretProperties(attribute.value)
-            attrColors -> builder.colors(attribute.value)
-            attrContainerColor -> builder.containerColor(attribute.value)
-            attrContentColor -> builder.contentColor(attribute.value)
-            attrShadowElevation -> builder.shadowElevation(attribute.value)
-            attrShape -> builder.shape(attribute.value)
-            attrTonalElevation -> builder.tonalElevation(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as TooltipDTO.Builder
-    }.build()
+    ): TooltipDTO =
+        attributes.fold(TooltipDTO.Builder(scope as? CaretScope)) { builder, attribute ->
+            when (attribute.name) {
+                attrCaretProperties -> builder.caretProperties(attribute.value)
+                attrColors -> builder.colors(attribute.value)
+                attrContainerColor -> builder.containerColor(attribute.value)
+                attrContentColor -> builder.contentColor(attribute.value)
+                attrShadowElevation -> builder.shadowElevation(attribute.value)
+                attrShape -> builder.shape(attribute.value)
+                attrTonalElevation -> builder.tonalElevation(attribute.value)
+                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
+            } as TooltipDTO.Builder
+        }.build()
 }

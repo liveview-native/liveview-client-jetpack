@@ -7,13 +7,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -30,22 +34,20 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </Row>
  * ```
  */
-internal class RowDTO private constructor(builder: Builder) :
-    ComposableView<RowDTO.Builder>(builder) {
+internal class RowDTO private constructor(props: Properties) :
+    ComposableView<RowDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
-        composableNode: ComposableTreeNode?,
-        paddingValues: PaddingValues?,
-        pushEvent: PushEvent
+        composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
-        val horizontalArrangement = builder.horizontalArrangement
-        val verticalAlignment = builder.verticalAlignment
-        val hasVerticalScroll = builder.hasVerticalScrolling
-        val hasHorizontalScroll = builder.hasHorizontalScrolling
+        val horizontalArrangement = props.horizontalArrangement
+        val verticalAlignment = props.verticalAlignment
+        val hasVerticalScroll = props.commonProps.hasVerticalScrolling
+        val hasHorizontalScroll = props.commonProps.hasHorizontalScrolling
 
         Row(
-            modifier = modifier
+            modifier = props.commonProps.modifier
                 .paddingIfNotNull(paddingValues)
                 .optional(
                     hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
@@ -62,11 +64,16 @@ internal class RowDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
+        val verticalAlignment: Alignment.Vertical = Alignment.Top,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
-            private set
-        var verticalAlignment: Alignment.Vertical = Alignment.Top
-            private set
+        private var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
+        private var verticalAlignment: Alignment.Vertical = Alignment.Top
 
         /**
          * The horizontal arrangement of the Row's children
@@ -99,7 +106,13 @@ internal class RowDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build(): RowDTO = RowDTO(this)
+        fun build(): RowDTO = RowDTO(
+            Properties(
+                horizontalArrangement,
+                verticalAlignment,
+                commonProps,
+            )
+        )
     }
 }
 
@@ -111,16 +124,15 @@ internal object RowDtoFactory : ComposableViewFactory<RowDTO>() {
      * @return a `RowDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
-    ): RowDTO =
-        attributes.fold(RowDTO.Builder()) { builder, attribute ->
-            when (attribute.name) {
-                attrHorizontalArrangement -> builder.horizontalArrangement(attribute.value)
-                attrScroll -> builder.scrolling(attribute.value)
-                attrVerticalAlignment -> builder.verticalAlignment(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as RowDTO.Builder
-        }.build()
+    ): RowDTO = attributes.fold(RowDTO.Builder()) { builder, attribute ->
+        when (attribute.name) {
+            attrHorizontalArrangement -> builder.horizontalArrangement(attribute.value)
+            attrScroll -> builder.scrolling(attribute.value)
+            attrVerticalAlignment -> builder.verticalAlignment(attribute.value)
+            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
+        } as RowDTO.Builder
+    }.build()
 }

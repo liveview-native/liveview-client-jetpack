@@ -12,8 +12,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
@@ -27,7 +29,9 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabled
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -54,8 +58,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * </OutlinedIconButton>
  * ```
  */
-internal class IconButtonDTO private constructor(builder: Builder) :
-    ComposableView<IconButtonDTO.Builder>(builder) {
+internal class IconButtonDTO private constructor(props: Properties) :
+    ComposableView<IconButtonDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -63,16 +67,20 @@ internal class IconButtonDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val onClick = builder.onClick
-        val enabled = builder.enabled
-        val colors = builder.colors
-        val shape = builder.shape
-        val border = builder.border
+        val onClick = props.onClick
+        val enabled = props.enabled
+        val colors = props.colors
+        val shape = props.shape
+        val border = props.border
 
         when (composableNode?.node?.tag) {
             ComposableTypes.iconButton -> {
                 IconButton(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
                     enabled = enabled,
                     colors = getIconButtonColors(colors),
                     // TODO interactionSource: MutableInteractionSource,
@@ -85,8 +93,12 @@ internal class IconButtonDTO private constructor(builder: Builder) :
 
             ComposableTypes.filledIconButton -> {
                 FilledIconButton(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
-                    modifier = modifier,
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: IconButtonDefaults.filledShape,
                     colors = getFilledIconButtonColors(colors = colors),
@@ -100,8 +112,12 @@ internal class IconButtonDTO private constructor(builder: Builder) :
 
             ComposableTypes.filledTonalIconButton -> {
                 FilledTonalIconButton(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
-                    modifier = modifier,
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: IconButtonDefaults.filledShape,
                     colors = getFilledTonalIconButtonColors(colors = colors),
@@ -115,8 +131,12 @@ internal class IconButtonDTO private constructor(builder: Builder) :
 
             ComposableTypes.outlinedIconButton -> {
                 OutlinedIconButton(
-                    onClick = onClickFromString(pushEvent, onClick, phxValue),
-                    modifier = modifier,
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: IconButtonDefaults.filledShape,
                     border = border ?: IconButtonDefaults.outlinedIconButtonBorder(enabled),
@@ -209,17 +229,22 @@ internal class IconButtonDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val border: BorderStroke? = null,
+        val onClick: String = "",
+        val enabled: Boolean = true,
+        val colors: ImmutableMap<String, String>? = null,
+        val shape: Shape? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var border: BorderStroke? = null
-            private set
-        var onClick: String = ""
-            private set
-        var enabled: Boolean = true
-            private set
-        var colors: ImmutableMap<String, String>? = null
-            private set
-        var shape: Shape? = null
-            private set
+        private var border: BorderStroke? = null
+        private var onClick: String = ""
+        private var enabled: Boolean = true
+        private var colors: ImmutableMap<String, String>? = null
+        private var shape: Shape? = null
 
         /**
          * The border to draw around the container of this button. This property is used just for
@@ -293,7 +318,16 @@ internal class IconButtonDTO private constructor(builder: Builder) :
             this.shape = shapeFromString(shape)
         }
 
-        fun build() = IconButtonDTO(this)
+        fun build() = IconButtonDTO(
+            Properties(
+                border,
+                onClick,
+                enabled,
+                colors,
+                shape,
+                commonProps,
+            )
+        )
     }
 }
 
@@ -305,7 +339,7 @@ internal object IconButtonDtoFactory : ComposableViewFactory<IconButtonDTO>() {
      * @return a `IconButtonDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): IconButtonDTO = attributes.fold(

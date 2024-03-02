@@ -5,13 +5,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -27,8 +30,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </LazyColumn>
  * ```
  */
-internal class LazyColumnDTO private constructor(builder: Builder) :
-    ComposableView<LazyColumnDTO.Builder>(builder) {
+internal class LazyColumnDTO private constructor(props: Properties) :
+    ComposableView<LazyColumnDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -36,16 +39,16 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val verticalArrangement = builder.verticalArrangement
-        val horizontalAlignment = builder.horizontalAlignment
-        val reverseLayout = builder.reverseLayout
-        val userScrollEnabled = builder.userScrollEnabled
-        val contentPadding = remember(builder) {
-            builder.contentPadding.toImmutableMap()
+        val verticalArrangement = props.verticalArrangement
+        val horizontalAlignment = props.horizontalAlignment
+        val reverseLayout = props.lazyListProps.reverseLayout
+        val userScrollEnabled = props.lazyListProps.userScrollEnabled
+        val contentPadding = remember(props.lazyListProps) {
+            props.lazyListProps.contentPadding.toImmutableMap()
         }
 
         LazyColumn(
-            modifier = modifier.paddingIfNotNull(paddingValues),
+            modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
             reverseLayout = reverseLayout,
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
@@ -68,11 +71,17 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
         )
     }
 
+    @Stable
+    internal data class Properties(
+        val verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+        val horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        override val lazyListProps: LazyListProperties = LazyListProperties()
+    ) : ILazyListProperties
+
     class Builder : LazyComposableBuilder() {
-        var verticalArrangement: Arrangement.Vertical = Arrangement.Top
-            private set
-        var horizontalAlignment: Alignment.Horizontal = Alignment.Start
-            private set
+        private var verticalArrangement: Arrangement.Vertical = Arrangement.Top
+        private var horizontalAlignment: Alignment.Horizontal = Alignment.Start
 
         /**
          * The vertical arrangement of the Column's children
@@ -101,7 +110,14 @@ internal class LazyColumnDTO private constructor(builder: Builder) :
             this.horizontalAlignment = horizontalAlignmentFromString(horizontalAlignment)
         }
 
-        fun build() = LazyColumnDTO(this)
+        fun build() = LazyColumnDTO(
+            Properties(
+                verticalArrangement,
+                horizontalAlignment,
+                commonProps,
+                lazyListProps
+            )
+        )
     }
 }
 
@@ -113,7 +129,7 @@ internal object LazyColumnDtoFactory : ComposableViewFactory<LazyColumnDTO>() {
      * @return a `LazyColumnDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): LazyColumnDTO = LazyColumnDTO.Builder().also {

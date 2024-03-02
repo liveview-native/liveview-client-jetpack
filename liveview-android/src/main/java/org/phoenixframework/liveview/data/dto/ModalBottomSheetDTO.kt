@@ -9,11 +9,13 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrOnChanged
@@ -25,7 +27,9 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
 import org.phoenixframework.liveview.data.constants.Templates.templateDragHandle
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -49,8 +53,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  */
 @OptIn(ExperimentalMaterial3Api::class)
-internal class ModalBottomSheetDTO private constructor(builder: Builder) :
-    ComposableView<ModalBottomSheetDTO.Builder>(builder) {
+internal class ModalBottomSheetDTO private constructor(props: Properties) :
+    ComposableView<ModalBottomSheetDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -58,15 +62,15 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val dismissEvent = builder.dismissEvent
-        val skipPartiallyExpanded = builder.skipPartiallyExpanded
-        val onChanged = builder.onChanged
-        val windowsInsets = builder.windowInsets
-        val shape = builder.shape
-        val containerColor = builder.containerColor
-        val contentColor = builder.contentColor
-        val tonalElevation = builder.tonalElevation
-        val scrimColor = builder.scrimColor
+        val dismissEvent = props.dismissEvent
+        val skipPartiallyExpanded = props.skipPartiallyExpanded
+        val onChanged = props.onChanged
+        val windowsInsets = props.windowInsets
+        val shape = props.shape
+        val containerColor = props.containerColor
+        val contentColor = props.contentColor
+        val tonalElevation = props.tonalElevation
+        val scrimColor = props.scrimColor
 
         val dragHandle = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateDragHandle }
@@ -84,10 +88,15 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         ModalBottomSheet(
             onDismissRequest = {
                 dismissEvent?.let { event ->
-                    pushEvent(ComposableBuilder.EVENT_TYPE_BLUR, event, phxValue, null)
+                    pushEvent(
+                        ComposableBuilder.EVENT_TYPE_BLUR,
+                        event,
+                        props.commonProps.phxValue,
+                        null
+                    )
                 }
             },
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             sheetState = sheetState,
             shape = shape ?: BottomSheetDefaults.ExpandedShape,
             containerColor = containerColor ?: BottomSheetDefaults.ContainerColor,
@@ -120,25 +129,30 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         )
     }
 
+    @Stable
+    internal data class Properties(
+        val dismissEvent: String? = null,
+        val skipPartiallyExpanded: Boolean = false,
+        val onChanged: String = "",
+        val windowInsets: WindowInsets? = null,
+        val shape: Shape? = null,
+        val containerColor: Color? = null,
+        val contentColor: Color? = null,
+        val tonalElevation: Dp? = null,
+        val scrimColor: Color? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var dismissEvent: String? = null
-            private set
-        var skipPartiallyExpanded: Boolean = false
-            private set
-        var onChanged: String = ""
-            private set
-        var windowInsets: WindowInsets? = null
-            private set
-        var shape: Shape? = null
-            private set
-        var containerColor: Color? = null
-            private set
-        var contentColor: Color? = null
-            private set
-        var tonalElevation: Dp? = null
-            private set
-        var scrimColor: Color? = null
-            private set
+        private var dismissEvent: String? = null
+        private var skipPartiallyExpanded: Boolean = false
+        private var onChanged: String = ""
+        private var windowInsets: WindowInsets? = null
+        private var shape: Shape? = null
+        private var containerColor: Color? = null
+        private var contentColor: Color? = null
+        private var tonalElevation: Dp? = null
+        private var scrimColor: Color? = null
 
         /**
          * Whether the partially expanded state, if the sheet is tall enough, should be skipped.
@@ -257,13 +271,26 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = ModalBottomSheetDTO(this)
+        fun build() = ModalBottomSheetDTO(
+            Properties(
+                dismissEvent,
+                skipPartiallyExpanded,
+                onChanged,
+                windowInsets,
+                shape,
+                containerColor,
+                contentColor,
+                tonalElevation,
+                scrimColor,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object ModalBottomSheetDtoFactory : ComposableViewFactory<ModalBottomSheetDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): ModalBottomSheetDTO =

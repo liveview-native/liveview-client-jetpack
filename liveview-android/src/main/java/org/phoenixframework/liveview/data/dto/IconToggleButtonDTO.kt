@@ -13,6 +13,7 @@ import androidx.compose.material3.OutlinedIconToggleButton
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,8 +21,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.coroutines.flow.map
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -33,6 +36,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentC
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -58,19 +62,19 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * </FilledTonalIconToggleButton>
  * ```
  */
-internal class IconToggleButtonDTO private constructor(builder: Builder) :
-    ChangeableDTO<Boolean, IconToggleButtonDTO.Builder>(builder) {
+internal class IconToggleButtonDTO private constructor(props: Properties) :
+    ChangeableDTO<Boolean, IconToggleButtonDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
-        composableNode: ComposableTreeNode?,
-        paddingValues: PaddingValues?,
-        pushEvent: PushEvent
+        composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
-        val border = builder.border
-        val colors = builder.colors
-        val shape = builder.shape
-        val checked = builder.checked
+        val changeValueEventName = props.changeableProps.onChange
+        val enabled = props.changeableProps.enabled
+        val border = props.border
+        val colors = props.colors
+        val shape = props.shape
+        val checked = props.checked
 
         var stateValue by remember(composableNode) {
             mutableStateOf(checked)
@@ -82,7 +86,7 @@ internal class IconToggleButtonDTO private constructor(builder: Builder) :
                     onCheckedChange = {
                         stateValue = it
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     colors = getIconToggleButtonColors(colors),
                     // TODO interactionSource: MutableInteractionSource,
@@ -99,7 +103,7 @@ internal class IconToggleButtonDTO private constructor(builder: Builder) :
                     onCheckedChange = {
                         stateValue = it
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: IconButtonDefaults.filledShape,
                     colors = getFilledIconToggleButtonColors(colors),
@@ -117,7 +121,7 @@ internal class IconToggleButtonDTO private constructor(builder: Builder) :
                     onCheckedChange = {
                         stateValue = it
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: IconButtonDefaults.filledShape,
                     colors = getFilledTonalIconToggleButtonColors(colors),
@@ -135,13 +139,12 @@ internal class IconToggleButtonDTO private constructor(builder: Builder) :
                     onCheckedChange = {
                         stateValue = it
                     },
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: IconButtonDefaults.filledShape,
                     colors = getOutlinedIconToggleButtonColors(colors),
                     border = border ?: IconButtonDefaults.outlinedIconToggleButtonBorder(
-                        enabled,
-                        stateValue
+                        enabled, stateValue
                     ),
                     // TODO interactionSource: MutableInteractionSource,
                 ) {
@@ -156,6 +159,7 @@ internal class IconToggleButtonDTO private constructor(builder: Builder) :
             changeValueEventName?.let { event ->
                 snapshotFlow { stateValue }
                     .onChangeable()
+                    .map { mergeValueWithPhxValue(KEY_CHECKED, it) }
                     .collect { value ->
                         pushOnChangeEvent(pushEvent, event, value)
                     }
@@ -169,11 +173,9 @@ internal class IconToggleButtonDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultValue
         } else {
-            val contentColor = colors[colorAttrContentColor]?.toColor()
-                ?: LocalContentColor.current
+            val contentColor = colors[colorAttrContentColor]?.toColor() ?: LocalContentColor.current
             IconButtonDefaults.iconToggleButtonColors(
-                containerColor = colors[colorAttrContainerColor]?.toColor()
-                    ?: Color.Transparent,
+                containerColor = colors[colorAttrContainerColor]?.toColor() ?: Color.Transparent,
                 contentColor = contentColor,
                 disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
                     ?: Color.Transparent,
@@ -221,8 +223,9 @@ internal class IconToggleButtonDTO private constructor(builder: Builder) :
                 ?: MaterialTheme.colorScheme.surfaceVariant
             IconButtonDefaults.filledTonalIconToggleButtonColors(
                 containerColor = containerColor,
-                contentColor = colors[colorAttrContentColor]?.toColor()
-                    ?: contentColorFor(containerColor),
+                contentColor = colors[colorAttrContentColor]?.toColor() ?: contentColorFor(
+                    containerColor
+                ),
                 disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
                 disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
@@ -241,13 +244,11 @@ internal class IconToggleButtonDTO private constructor(builder: Builder) :
         return if (colors == null) {
             defaultValue
         } else {
-            val contentColor = colors[colorAttrContentColor]?.toColor()
-                ?: LocalContentColor.current
+            val contentColor = colors[colorAttrContentColor]?.toColor() ?: LocalContentColor.current
             val checkedContainerColor = colors[colorAttrCheckedContainerColor]?.toColor()
                 ?: MaterialTheme.colorScheme.inverseSurface
             IconButtonDefaults.outlinedIconToggleButtonColors(
-                containerColor = colors[colorAttrContainerColor]?.toColor()
-                    ?: Color.Transparent,
+                containerColor = colors[colorAttrContainerColor]?.toColor() ?: Color.Transparent,
                 contentColor = contentColor,
                 disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
                     ?: Color.Transparent,
@@ -261,15 +262,25 @@ internal class IconToggleButtonDTO private constructor(builder: Builder) :
         }
     }
 
+    companion object {
+        private const val KEY_CHECKED = "checked"
+    }
+
+    @Stable
+    internal data class Properties(
+        val border: BorderStroke? = null,
+        val checked: Boolean = false,
+        val colors: ImmutableMap<String, String>? = null,
+        val shape: Shape? = null,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : IChangeableProperties
+
     internal class Builder : ChangeableDTOBuilder() {
-        var border: BorderStroke? = null
-            private set
-        var checked: Boolean = false
-            private set
-        var colors: ImmutableMap<String, String>? = null
-            private set
-        var shape: Shape? = null
-            private set
+        private var border: BorderStroke? = null
+        private var checked: Boolean = false
+        private var colors: ImmutableMap<String, String>? = null
+        private var shape: Shape? = null
 
         /**
          * The border to draw around the container of this button. This property is used just for
@@ -327,12 +338,20 @@ internal class IconToggleButtonDTO private constructor(builder: Builder) :
             this.shape = shapeFromString(shape)
         }
 
-        fun build() = IconToggleButtonDTO(this)
+        fun build() = IconToggleButtonDTO(
+            Properties(
+                border,
+                checked,
+                colors,
+                shape,
+                changeableProps,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object IconToggleButtonDtoFactory :
-    ComposableViewFactory<IconToggleButtonDTO>() {
+internal object IconToggleButtonDtoFactory : ComposableViewFactory<IconToggleButtonDTO>() {
     /**
      * Creates a `IconToggleButtonDTO` object based on the attributes of the input `Attributes`
      * object. IconToggleButtonDTO co-relates to the IconToggleButton composables.
@@ -341,7 +360,7 @@ internal object IconToggleButtonDtoFactory :
      * object.
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): IconToggleButtonDTO = IconToggleButtonDTO.Builder().also {
         attributes.fold(
             it

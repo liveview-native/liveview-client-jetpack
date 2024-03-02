@@ -14,10 +14,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
@@ -39,7 +41,9 @@ import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttr
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -67,8 +71,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * <OutlinedCard>...</OutlinedCard>
  * ```
  */
-internal class CardDTO private constructor(builder: Builder) :
-    ComposableView<CardDTO.Builder>(builder) {
+internal class CardDTO private constructor(props: Properties) :
+    ComposableView<CardDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -76,17 +80,17 @@ internal class CardDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val shape = builder.shape
-        val colors = builder.cardColors
-        val elevation = builder.elevation
-        val border = builder.border
-        val hasVerticalScroll = builder.hasVerticalScrolling
-        val hasHorizontalScroll = builder.hasHorizontalScrolling
+        val shape = props.shape
+        val colors = props.cardColors
+        val elevation = props.elevation
+        val border = props.border
+        val hasVerticalScroll = props.commonProps.hasVerticalScrolling
+        val hasHorizontalScroll = props.commonProps.hasHorizontalScrolling
 
         when (composableNode?.node?.tag) {
             ComposableTypes.card ->
                 Card(
-                    modifier = modifier
+                    modifier = props.commonProps.modifier
                         .paddingIfNotNull(paddingValues)
                         .optional(
                             hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
@@ -106,7 +110,7 @@ internal class CardDTO private constructor(builder: Builder) :
 
             ComposableTypes.elevatedCard ->
                 ElevatedCard(
-                    modifier = modifier
+                    modifier = props.commonProps.modifier
                         .paddingIfNotNull(paddingValues)
                         .optional(
                             hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
@@ -125,7 +129,7 @@ internal class CardDTO private constructor(builder: Builder) :
 
             ComposableTypes.outlinedCard ->
                 OutlinedCard(
-                    modifier = modifier
+                    modifier = props.commonProps.modifier
                         .paddingIfNotNull(paddingValues)
                         .optional(
                             hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
@@ -258,15 +262,20 @@ internal class CardDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val shape: Shape? = null,
+        val cardColors: ImmutableMap<String, String>? = null,
+        val elevation: ImmutableMap<String, String>? = null,
+        val border: BorderStroke? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var shape: Shape? = null
-            private set
-        var cardColors: ImmutableMap<String, String>? = null
-            private set
-        var elevation: ImmutableMap<String, String>? = null
-            private set
-        var border: BorderStroke? = null
-            private set
+        private var shape: Shape? = null
+        private var cardColors: ImmutableMap<String, String>? = null
+        private var elevation: ImmutableMap<String, String>? = null
+        private var border: BorderStroke? = null
 
         /**
          * Defines the shape of the card's container, border, and shadow (when using elevation).
@@ -328,7 +337,15 @@ internal class CardDTO private constructor(builder: Builder) :
             this.border = borderFromString(border)
         }
 
-        fun build() = CardDTO(this)
+        fun build() = CardDTO(
+            Properties(
+                shape,
+                cardColors,
+                elevation,
+                border,
+                commonProps,
+            )
+        )
     }
 }
 
@@ -340,7 +357,7 @@ internal object CardDtoFactory : ComposableViewFactory<CardDTO>() {
      * @return a `CardDTO` object based on the attributes of the input `Attributes` object
      **/
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): CardDTO = attributes.fold(CardDTO.Builder()) { builder, attribute ->

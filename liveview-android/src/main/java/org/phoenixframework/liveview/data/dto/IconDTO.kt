@@ -6,14 +6,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentDescription
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
 import org.phoenixframework.liveview.data.constants.Attrs.attrTint
 import org.phoenixframework.liveview.data.constants.IconPrefixValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -31,8 +35,8 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * <Icon imageVector="filled:Add" />
  * ```
  */
-internal class IconDTO private constructor(builder: Builder) :
-    ComposableView<IconDTO.Builder>(builder) {
+internal class IconDTO private constructor(props: Properties) :
+    ComposableView<IconDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -40,27 +44,32 @@ internal class IconDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val contentDescription = builder.contentDescription
-        val tint = builder.tint
-        val imageVectorValue = builder.imageVector
+        val contentDescription = props.contentDescription
+        val tint = props.tint
+        val imageVectorValue = props.imageVector
 
         imageVectorValue?.let { imageVector ->
             Icon(
                 imageVector = imageVector,
                 contentDescription = contentDescription,
                 tint = tint ?: LocalContentColor.current,
-                modifier = modifier.paddingIfNotNull(paddingValues)
+                modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues)
             )
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val contentDescription: String = "",
+        val tint: Color? = null,
+        val imageVector: ImageVector? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var contentDescription: String = ""
-            private set
-        var tint: Color? = null
-            private set
-        var imageVector: ImageVector? = null
-            private set
+        private var contentDescription: String = ""
+        private var tint: Color? = null
+        private var imageVector: ImageVector? = null
 
         /**
          * Sets the icon content description fro accessibility purpose.
@@ -100,7 +109,14 @@ internal class IconDTO private constructor(builder: Builder) :
             imageVector = getIcon(icon)
         }
 
-        fun build() = IconDTO(this)
+        fun build() = IconDTO(
+            Properties(
+                contentDescription,
+                tint,
+                imageVector,
+                commonProps,
+            )
+        )
 
         companion object {
             private val iconCache = mutableMapOf<String, ImageVector>()
@@ -123,7 +139,7 @@ internal object IconDtoFactory : ComposableViewFactory<IconDTO>() {
      * @return a `IconDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): IconDTO = attributes.fold(

@@ -10,6 +10,7 @@ import androidx.compose.material3.SearchBarColors
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +19,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.flow.map
@@ -38,6 +40,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIco
 import org.phoenixframework.liveview.data.constants.Templates.templatePlaceholder
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_SUBMIT
 import org.phoenixframework.liveview.domain.base.ComposableTypes
@@ -69,24 +72,25 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * You can also use a  DockedSearchBar using the same parameters.
  */
 @OptIn(ExperimentalMaterial3Api::class)
-internal class SearchBarDTO private constructor(builder: Builder) :
-    ChangeableDTO<String, SearchBarDTO.Builder>(builder) {
+internal class SearchBarDTO private constructor(props: Properties) :
+    ChangeableDTO<String, SearchBarDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
-        composableNode: ComposableTreeNode?,
-        paddingValues: PaddingValues?,
-        pushEvent: PushEvent
+        composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
-        val active = builder.active
-        val colors = builder.colors
-        val onActiveChanged = builder.onActiveChanged
-        val onSubmit = builder.onSubmit
-        val query = builder.query
-        val shadowElevation = builder.shadowElevation
-        val shape = builder.shape
-        val tonalElevation = builder.tonalElevation
-        val windowsInsets = builder.windowInsets
+        val changeValueEventName = props.changeableProps.onChange
+        val enabled = props.changeableProps.enabled
+
+        val active = props.active
+        val colors = props.colors
+        val onActiveChanged = props.onActiveChanged
+        val onSubmit = props.onSubmit
+        val query = props.query
+        val shadowElevation = props.shadowElevation
+        val shape = props.shape
+        val tonalElevation = props.tonalElevation
+        val windowsInsets = props.windowInsets
 
         val placeholder = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templatePlaceholder }
@@ -107,137 +111,123 @@ internal class SearchBarDTO private constructor(builder: Builder) :
             mutableStateOf(active)
         }
         when (composableNode?.node?.tag) {
-            ComposableTypes.dockedSearchBar ->
-                DockedSearchBar(
-                    query = queryStateValue,
-                    onQueryChange = { q ->
-                        queryStateValue = q
-                    },
-                    onSearch = { queryText ->
-                        onSubmit.let { onSubmitEvent ->
-                            if (onSubmitEvent.isNotBlank())
-                                pushEvent.invoke(
-                                    EVENT_TYPE_SUBMIT,
-                                    onSubmitEvent,
-                                    mergeValueWithPhxValue(KEY_QUERY, queryText),
-                                    null
-                                )
-                        }
-                    },
-                    active = activeState,
-                    onActiveChange = { actv ->
-                        activeState = actv
-                        onActiveChanged.let { onActiveChangedEvent ->
-                            if (onActiveChangedEvent.isNotBlank())
-                                pushEvent.invoke(
-                                    EVENT_TYPE_CHANGE,
-                                    onActiveChangedEvent,
-                                    mergeValueWithPhxValue(KEY_ACTIVE, actv),
-                                    null
-                                )
-                        }
-                    },
-                    modifier = modifier,
-                    enabled = enabled,
-                    placeholder = placeholder?.let {
-                        {
-                            PhxLiveView(it, pushEvent, composableNode, null)
-                        }
-                    },
-                    leadingIcon = leadingIcon?.let {
-                        {
-                            PhxLiveView(it, pushEvent, composableNode, null)
-                        }
-                    },
-                    trailingIcon = trailingIcon?.let {
-                        {
-                            PhxLiveView(it, pushEvent, composableNode, null)
-                        }
-                    },
-                    shape = shape ?: SearchBarDefaults.dockedShape,
-                    colors = getSearchBarColors(colors),
-                    tonalElevation = tonalElevation ?: SearchBarDefaults.TonalElevation,
-                    shadowElevation = shadowElevation ?: SearchBarDefaults.ShadowElevation,
-                    // TODO interactionSource: MutableInteractionSource,
-                    content = {
-                        content?.let {
-                            PhxLiveView(it, pushEvent, composableNode, null)
-                        }
+            ComposableTypes.dockedSearchBar -> DockedSearchBar(query = queryStateValue,
+                onQueryChange = { q ->
+                    queryStateValue = q
+                },
+                onSearch = { queryText ->
+                    onSubmit.let { onSubmitEvent ->
+                        if (onSubmitEvent.isNotBlank()) pushEvent.invoke(
+                            EVENT_TYPE_SUBMIT,
+                            onSubmitEvent,
+                            mergeValueWithPhxValue(KEY_QUERY, queryText),
+                            null
+                        )
                     }
-                )
+                },
+                active = activeState,
+                onActiveChange = { actv ->
+                    activeState = actv
+                    onActiveChanged.let { onActiveChangedEvent ->
+                        if (onActiveChangedEvent.isNotBlank()) pushEvent.invoke(
+                            EVENT_TYPE_CHANGE,
+                            onActiveChangedEvent,
+                            mergeValueWithPhxValue(KEY_ACTIVE, actv),
+                            null
+                        )
+                    }
+                },
+                modifier = props.commonProps.modifier,
+                enabled = enabled,
+                placeholder = placeholder?.let {
+                    {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                },
+                leadingIcon = leadingIcon?.let {
+                    {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                },
+                trailingIcon = trailingIcon?.let {
+                    {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                },
+                shape = shape ?: SearchBarDefaults.dockedShape,
+                colors = getSearchBarColors(colors),
+                tonalElevation = tonalElevation ?: SearchBarDefaults.TonalElevation,
+                shadowElevation = shadowElevation ?: SearchBarDefaults.ShadowElevation,
+                // TODO interactionSource: MutableInteractionSource,
+                content = {
+                    content?.let {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                })
 
-            ComposableTypes.searchBar ->
-                SearchBar(
-                    query = queryStateValue,
-                    onQueryChange = { q ->
-                        queryStateValue = q
-                    },
-                    onSearch = { queryText ->
-                        onSubmit.let { onSubmitEvent ->
-                            if (onSubmitEvent.isNotBlank())
-                                pushEvent.invoke(
-                                    EVENT_TYPE_SUBMIT,
-                                    onSubmitEvent,
-                                    mergeValueWithPhxValue(KEY_QUERY, queryText),
-                                    null
-                                )
-                        }
-                    },
-                    active = activeState,
-                    onActiveChange = { actv ->
-                        activeState = actv
-                        onActiveChanged.let { onActiveChangedEvent ->
-                            if (onActiveChangedEvent.isNotBlank())
-                                pushEvent.invoke(
-                                    EVENT_TYPE_CHANGE,
-                                    onActiveChangedEvent,
-                                    mergeValueWithPhxValue(KEY_ACTIVE, actv),
-                                    null
-                                )
-                        }
-                    },
-                    modifier = modifier,
-                    enabled = enabled,
-                    placeholder = placeholder?.let {
-                        {
-                            PhxLiveView(it, pushEvent, composableNode, null)
-                        }
-                    },
-                    leadingIcon = leadingIcon?.let {
-                        {
-                            PhxLiveView(it, pushEvent, composableNode, null)
-                        }
-                    },
-                    trailingIcon = trailingIcon?.let {
-                        {
-                            PhxLiveView(it, pushEvent, composableNode, null)
-                        }
-                    },
-                    shape = shape ?: SearchBarDefaults.inputFieldShape,
-                    colors = getSearchBarColors(colors),
-                    tonalElevation = tonalElevation ?: SearchBarDefaults.TonalElevation,
-                    shadowElevation = shadowElevation ?: SearchBarDefaults.ShadowElevation,
-                    windowInsets = windowsInsets ?: SearchBarDefaults.windowInsets,
-                    // TODO interactionSource: MutableInteractionSource,
-                    content = {
-                        content?.let {
-                            PhxLiveView(it, pushEvent, composableNode, null)
-                        }
+            ComposableTypes.searchBar -> SearchBar(query = queryStateValue,
+                onQueryChange = { q ->
+                    queryStateValue = q
+                },
+                onSearch = { queryText ->
+                    onSubmit.let { onSubmitEvent ->
+                        if (onSubmitEvent.isNotBlank()) pushEvent.invoke(
+                            EVENT_TYPE_SUBMIT,
+                            onSubmitEvent,
+                            mergeValueWithPhxValue(KEY_QUERY, queryText),
+                            null
+                        )
                     }
-                )
+                },
+                active = activeState,
+                onActiveChange = { actv ->
+                    activeState = actv
+                    onActiveChanged.let { onActiveChangedEvent ->
+                        if (onActiveChangedEvent.isNotBlank()) pushEvent.invoke(
+                            EVENT_TYPE_CHANGE,
+                            onActiveChangedEvent,
+                            mergeValueWithPhxValue(KEY_ACTIVE, actv),
+                            null
+                        )
+                    }
+                },
+                modifier = props.commonProps.modifier,
+                enabled = enabled,
+                placeholder = placeholder?.let {
+                    {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                },
+                leadingIcon = leadingIcon?.let {
+                    {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                },
+                trailingIcon = trailingIcon?.let {
+                    {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                },
+                shape = shape ?: SearchBarDefaults.inputFieldShape,
+                colors = getSearchBarColors(colors),
+                tonalElevation = tonalElevation ?: SearchBarDefaults.TonalElevation,
+                shadowElevation = shadowElevation ?: SearchBarDefaults.ShadowElevation,
+                windowInsets = windowsInsets ?: SearchBarDefaults.windowInsets,
+                // TODO interactionSource: MutableInteractionSource,
+                content = {
+                    content?.let {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
+                })
         }
 
         LaunchedEffect(composableNode) {
             changeValueEventName?.let { event ->
-                snapshotFlow { queryStateValue }
-                    .map { it }
-                    .onChangeable()
-                    .map {
-                        mergeValueWithPhxValue(KEY_QUERY, it)
-                    }
-                    .collect { value ->
-                        pushOnChangeEvent(pushEvent, event, value)
-                    }
+                snapshotFlow { queryStateValue }.map { it }.onChangeable().map {
+                    mergeValueWithPhxValue(KEY_QUERY, it)
+                }.collect { value ->
+                    pushOnChangeEvent(pushEvent, event, value)
+                }
             }
         }
     }
@@ -261,10 +251,8 @@ internal class SearchBarDTO private constructor(builder: Builder) :
                     ?: MaterialTheme.colorScheme.outline,
                 inputFieldColors = if (colors.containsKey(colorAttrInputFieldColors)) {
                     TextFieldDTO.getTextFieldColors(
-                        textFieldColors = (
-                                (colors[colorAttrInputFieldColors] as? Map<String, String>)
-                                    ?: emptyMap()
-                                ).toImmutableMap()
+                        textFieldColors = ((colors[colorAttrInputFieldColors] as? Map<String, String>)
+                            ?: emptyMap()).toImmutableMap()
                     )
                 } else {
                     SearchBarDefaults.inputFieldColors()
@@ -273,25 +261,31 @@ internal class SearchBarDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val active: Boolean = false,
+        val colors: ImmutableMap<String, String>? = null,
+        val onActiveChanged: String = "",
+        val onSubmit: String = "",
+        val query: String = "",
+        val shadowElevation: Dp? = null,
+        val shape: Shape? = null,
+        val tonalElevation: Dp? = null,
+        val windowInsets: WindowInsets? = null,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : IChangeableProperties
+
     internal class Builder : ChangeableDTOBuilder() {
-        var active: Boolean = false
-            private set
-        var colors: ImmutableMap<String, String>? = null
-            private set
-        var onActiveChanged: String = ""
-            private set
-        var onSubmit: String = ""
-            private set
-        var query: String = ""
-            private set
-        var shadowElevation: Dp? = null
-            private set
-        var shape: Shape? = null
-            private set
-        var tonalElevation: Dp? = null
-            private set
-        var windowInsets: WindowInsets? = null
-            private set
+        private var active: Boolean = false
+        private var colors: ImmutableMap<String, String>? = null
+        private var onActiveChanged: String = ""
+        private var onSubmit: String = ""
+        private var query: String = ""
+        private var shadowElevation: Dp? = null
+        private var shape: Shape? = null
+        private var tonalElevation: Dp? = null
+        private var windowInsets: WindowInsets? = null
 
         /**
          * Whether this search bar is active.
@@ -407,15 +401,27 @@ internal class SearchBarDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = SearchBarDTO(this)
+        fun build() = SearchBarDTO(
+            Properties(
+                active,
+                colors,
+                onActiveChanged,
+                onSubmit,
+                query,
+                shadowElevation,
+                shape,
+                tonalElevation,
+                windowInsets,
+                changeableProps,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object SearchBarDtoFactory : ComposableViewFactory<SearchBarDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): SearchBarDTO = SearchBarDTO.Builder().also {
         attributes.fold(it) { builder, attribute ->
             if (builder.handleChangeableAttribute(attribute)) {

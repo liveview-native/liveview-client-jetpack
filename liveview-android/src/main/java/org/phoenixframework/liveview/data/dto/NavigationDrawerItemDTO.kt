@@ -6,8 +6,10 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemColors
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Shape
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -26,7 +28,9 @@ import org.phoenixframework.liveview.data.constants.Templates.templateBadge
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -51,8 +55,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * </NavigationDrawerItem>
  * ```
  */
-internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
-    ComposableView<NavigationDrawerItemDTO.Builder>(builder) {
+internal class NavigationDrawerItemDTO private constructor(props: Properties) :
+    ComposableView<NavigationDrawerItemDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -60,10 +64,10 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val onClick = builder.onClick
-        val shape = builder.shape
-        val selected = builder.selected
-        val colors = builder.colors
+        val onClick = props.onClick
+        val shape = props.shape
+        val selected = props.selected
+        val colors = props.colors
 
         val ndiLabel = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateLabel }
@@ -82,7 +86,7 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
                 }
             },
             selected = selected,
-            onClick = onClickFromString(pushEvent, onClick, phxValue),
+            onClick = onClickFromString(pushEvent, onClick, props.commonProps.phxValue),
             icon = ndiIcon?.let {
                 {
                     PhxLiveView(it, pushEvent, composableNode, null)
@@ -125,18 +129,20 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val onClick: String = "",
+        val shape: Shape? = null,
+        val selected: Boolean = false,
+        val colors: ImmutableMap<String, String>? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var onClick: String = ""
-            private set
-
-        var shape: Shape? = null
-            private set
-
-        var selected: Boolean = false
-            private set
-
-        var colors: ImmutableMap<String, String>? = null
-            private set
+        private var onClick: String = ""
+        private var shape: Shape? = null
+        private var selected: Boolean = false
+        private var colors: ImmutableMap<String, String>? = null
 
         /**
          * Sets the event name to be triggered on the server when the item is clicked.
@@ -192,7 +198,15 @@ internal class NavigationDrawerItemDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = NavigationDrawerItemDTO(this)
+        fun build() = NavigationDrawerItemDTO(
+            Properties(
+                onClick,
+                shape,
+                selected,
+                colors,
+                commonProps,
+            )
+        )
     }
 }
 
@@ -205,7 +219,7 @@ internal object NavigationDrawerItemDtoFactory : ComposableViewFactory<Navigatio
      * object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): NavigationDrawerItemDTO =
