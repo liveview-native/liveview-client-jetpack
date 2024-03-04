@@ -58,53 +58,55 @@ internal class LazyGridDTO private constructor(props: Properties) :
         val contentPadding = props.lazyListProps.contentPadding
 
         when (composableNode?.node?.tag) {
-            ComposableTypes.lazyHorizontalGrid -> LazyHorizontalGrid(
-                rows = gridCells,
-                modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
-                contentPadding = PaddingValues(
-                    (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
-                    (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
-                    (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
-                    (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
-                ),
-                reverseLayout = reverseLayout,
-                verticalArrangement = verticalArrangement,
-                horizontalArrangement = horizontalArrangement,
-                // TODO flingBehavior = ,
-                userScrollEnabled = userScrollEnabled,
-                content = {
-                    items(
-                        composableNode.children,
-                        key = { item -> item.id },
-                    ) { item ->
-                        PhxLiveView(item, pushEvent, composableNode, null, this)
-                    }
-                },
-            )
+            ComposableTypes.lazyHorizontalGrid ->
+                LazyHorizontalGrid(
+                    rows = gridCells,
+                    modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
+                    contentPadding = PaddingValues(
+                        (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
+                        (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
+                        (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
+                        (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
+                    ),
+                    reverseLayout = reverseLayout,
+                    verticalArrangement = verticalArrangement,
+                    horizontalArrangement = horizontalArrangement,
+                    // TODO flingBehavior = ,
+                    userScrollEnabled = userScrollEnabled,
+                    content = {
+                        items(
+                            composableNode.children,
+                            key = { item -> item.id },
+                        ) { item ->
+                            PhxLiveView(item, pushEvent, composableNode, null, this)
+                        }
+                    },
+                )
 
-            ComposableTypes.lazyVerticalGrid -> LazyVerticalGrid(
-                columns = gridCells,
-                modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
-                contentPadding = PaddingValues(
-                    (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
-                    (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
-                    (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
-                    (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
-                ),
-                reverseLayout = reverseLayout,
-                verticalArrangement = verticalArrangement,
-                horizontalArrangement = horizontalArrangement,
-                // TODO flingBehavior = ,
-                userScrollEnabled = userScrollEnabled,
-                content = {
-                    items(
-                        composableNode.children,
-                        key = { item -> item.id },
-                    ) { item ->
-                        PhxLiveView(item, pushEvent, composableNode, null, this)
-                    }
-                },
-            )
+            ComposableTypes.lazyVerticalGrid ->
+                LazyVerticalGrid(
+                    columns = gridCells,
+                    modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
+                    contentPadding = PaddingValues(
+                        (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
+                        (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
+                        (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
+                        (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
+                    ),
+                    reverseLayout = reverseLayout,
+                    verticalArrangement = verticalArrangement,
+                    horizontalArrangement = horizontalArrangement,
+                    // TODO flingBehavior = ,
+                    userScrollEnabled = userScrollEnabled,
+                    content = {
+                        items(
+                            composableNode.children,
+                            key = { item -> item.id },
+                        ) { item ->
+                            PhxLiveView(item, pushEvent, composableNode, null, this)
+                        }
+                    },
+                )
         }
     }
 

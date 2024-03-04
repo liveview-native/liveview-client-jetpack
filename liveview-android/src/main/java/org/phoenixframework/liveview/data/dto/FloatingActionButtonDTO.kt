@@ -81,50 +81,53 @@ internal class FloatingActionButtonDTO private constructor(props: Properties) :
 
         val containerColor = containerColorValue ?: FloatingActionButtonDefaults.containerColor
         when (composableNode?.node?.tag) {
-            ComposableTypes.floatingActionButton -> FloatingActionButton(
-                onClick = onClickFromString(
-                    pushEvent, onClick, props.commonProps.phxValue
-                ),
-                modifier = props.commonProps.modifier,
-                shape = shape ?: FloatingActionButtonDefaults.shape,
-                containerColor = containerColor,
-                contentColor = contentColor ?: contentColorFor(containerColor),
-                elevation = getFabElevation(elevation),
-            ) {
-                composableNode.children.forEach {
-                    PhxLiveView(it, pushEvent, composableNode, null)
+            ComposableTypes.floatingActionButton ->
+                FloatingActionButton(
+                    onClick = onClickFromString(
+                        pushEvent, onClick, props.commonProps.phxValue
+                    ),
+                    modifier = props.commonProps.modifier,
+                    shape = shape ?: FloatingActionButtonDefaults.shape,
+                    containerColor = containerColor,
+                    contentColor = contentColor ?: contentColorFor(containerColor),
+                    elevation = getFabElevation(elevation),
+                ) {
+                    composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
                 }
-            }
 
-            ComposableTypes.smallFloatingActionButton -> SmallFloatingActionButton(
-                onClick = onClickFromString(
-                    pushEvent, onClick, props.commonProps.phxValue
-                ),
-                modifier = props.commonProps.modifier,
-                shape = shape ?: FloatingActionButtonDefaults.smallShape,
-                containerColor = containerColor,
-                contentColor = contentColor ?: contentColorFor(containerColor),
-                elevation = getFabElevation(elevation),
-            ) {
-                composableNode.children.forEach {
-                    PhxLiveView(it, pushEvent, composableNode, null)
+            ComposableTypes.smallFloatingActionButton ->
+                SmallFloatingActionButton(
+                    onClick = onClickFromString(
+                        pushEvent, onClick, props.commonProps.phxValue
+                    ),
+                    modifier = props.commonProps.modifier,
+                    shape = shape ?: FloatingActionButtonDefaults.smallShape,
+                    containerColor = containerColor,
+                    contentColor = contentColor ?: contentColorFor(containerColor),
+                    elevation = getFabElevation(elevation),
+                ) {
+                    composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
                 }
-            }
 
-            ComposableTypes.largeFloatingActionButton -> LargeFloatingActionButton(
-                onClick = onClickFromString(
-                    pushEvent, onClick, props.commonProps.phxValue
-                ),
-                modifier = props.commonProps.modifier,
-                shape = shape ?: FloatingActionButtonDefaults.largeShape,
-                containerColor = containerColor,
-                contentColor = contentColor ?: contentColorFor(containerColor),
-                elevation = getFabElevation(elevation),
-            ) {
-                composableNode.children.forEach {
-                    PhxLiveView(it, pushEvent, composableNode, null)
+            ComposableTypes.largeFloatingActionButton ->
+                LargeFloatingActionButton(
+                    onClick = onClickFromString(
+                        pushEvent, onClick, props.commonProps.phxValue
+                    ),
+                    modifier = props.commonProps.modifier,
+                    shape = shape ?: FloatingActionButtonDefaults.largeShape,
+                    containerColor = containerColor,
+                    contentColor = contentColor ?: contentColorFor(containerColor),
+                    elevation = getFabElevation(elevation),
+                ) {
+                    composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null)
+                    }
                 }
-            }
 
             ComposableTypes.extendedFloatingActionButton -> {
                 val text = remember(composableNode.children) {

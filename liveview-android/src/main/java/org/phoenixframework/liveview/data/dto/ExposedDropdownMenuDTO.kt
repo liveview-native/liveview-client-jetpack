@@ -58,7 +58,6 @@ internal class ExposedDropdownMenuDTO private constructor(props: Properties) :
         override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
-    //internal class Builder(val scopeWrapper: ExposedDropdownMenuBoxScopeWrapper) :
     internal class Builder(val scopeWrapper: ExposedDropdownMenuBoxScopeWrapper) :
         ComposableBuilder() {
         private var onDismissRequest: String? = null

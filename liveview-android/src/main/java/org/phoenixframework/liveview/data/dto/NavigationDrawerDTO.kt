@@ -113,21 +113,22 @@ internal class NavigationDrawerDTO private constructor(props: Properties) :
                     )
                 }
 
-                ComposableTypes.dismissibleNavigationDrawer -> DismissibleNavigationDrawer(
-                    drawerContent = {
-                        drawerContent?.let {
-                            PhxLiveView(it, pushEvent, composableNode, null)
-                        }
-                    },
-                    modifier = props.commonProps.modifier,
-                    drawerState = drawerState,
-                    gesturesEnabled = gesturesEnabled,
-                    content = {
-                        content?.let {
-                            PhxLiveView(it, pushEvent, composableNode, null)
-                        }
-                    },
-                )
+                ComposableTypes.dismissibleNavigationDrawer ->
+                    DismissibleNavigationDrawer(
+                        drawerContent = {
+                            drawerContent?.let {
+                                PhxLiveView(it, pushEvent, composableNode, null)
+                            }
+                        },
+                        modifier = props.commonProps.modifier,
+                        drawerState = drawerState,
+                        gesturesEnabled = gesturesEnabled,
+                        content = {
+                            content?.let {
+                                PhxLiveView(it, pushEvent, composableNode, null)
+                            }
+                        },
+                    )
             }
             LaunchedEffect(composableNode) {
                 if (isOpen && drawerState.isClosed) {

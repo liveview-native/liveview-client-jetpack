@@ -111,113 +111,115 @@ internal class SearchBarDTO private constructor(props: Properties) :
             mutableStateOf(active)
         }
         when (composableNode?.node?.tag) {
-            ComposableTypes.dockedSearchBar -> DockedSearchBar(query = queryStateValue,
-                onQueryChange = { q ->
-                    queryStateValue = q
-                },
-                onSearch = { queryText ->
-                    onSubmit.let { onSubmitEvent ->
-                        if (onSubmitEvent.isNotBlank()) pushEvent.invoke(
-                            EVENT_TYPE_SUBMIT,
-                            onSubmitEvent,
-                            mergeValueWithPhxValue(KEY_QUERY, queryText),
-                            null
-                        )
-                    }
-                },
-                active = activeState,
-                onActiveChange = { actv ->
-                    onActiveChanged.let { onActiveChangedEvent ->
-                        if (onActiveChangedEvent.isNotBlank()) pushEvent.invoke(
-                            EVENT_TYPE_CHANGE,
-                            onActiveChangedEvent,
-                            mergeValueWithPhxValue(KEY_ACTIVE, actv),
-                            null
-                        )
-                    }
-                },
-                modifier = props.commonProps.modifier,
-                enabled = enabled,
-                placeholder = placeholder?.let {
-                    {
-                        PhxLiveView(it, pushEvent, composableNode, null)
-                    }
-                },
-                leadingIcon = leadingIcon?.let {
-                    {
-                        PhxLiveView(it, pushEvent, composableNode, null)
-                    }
-                },
-                trailingIcon = trailingIcon?.let {
-                    {
-                        PhxLiveView(it, pushEvent, composableNode, null)
-                    }
-                },
-                shape = shape ?: SearchBarDefaults.dockedShape,
-                colors = getSearchBarColors(colors),
-                tonalElevation = tonalElevation ?: SearchBarDefaults.TonalElevation,
-                shadowElevation = shadowElevation ?: SearchBarDefaults.ShadowElevation,
-                // TODO interactionSource: MutableInteractionSource,
-                content = {
-                    content?.let {
-                        PhxLiveView(it, pushEvent, composableNode, null)
-                    }
-                })
+            ComposableTypes.dockedSearchBar ->
+                DockedSearchBar(query = queryStateValue,
+                    onQueryChange = { q ->
+                        queryStateValue = q
+                    },
+                    onSearch = { queryText ->
+                        onSubmit.let { onSubmitEvent ->
+                            if (onSubmitEvent.isNotBlank()) pushEvent.invoke(
+                                EVENT_TYPE_SUBMIT,
+                                onSubmitEvent,
+                                mergeValueWithPhxValue(KEY_QUERY, queryText),
+                                null
+                            )
+                        }
+                    },
+                    active = activeState,
+                    onActiveChange = { actv ->
+                        onActiveChanged.let { onActiveChangedEvent ->
+                            if (onActiveChangedEvent.isNotBlank()) pushEvent.invoke(
+                                EVENT_TYPE_CHANGE,
+                                onActiveChangedEvent,
+                                mergeValueWithPhxValue(KEY_ACTIVE, actv),
+                                null
+                            )
+                        }
+                    },
+                    modifier = props.commonProps.modifier,
+                    enabled = enabled,
+                    placeholder = placeholder?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    leadingIcon = leadingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    trailingIcon = trailingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    shape = shape ?: SearchBarDefaults.dockedShape,
+                    colors = getSearchBarColors(colors),
+                    tonalElevation = tonalElevation ?: SearchBarDefaults.TonalElevation,
+                    shadowElevation = shadowElevation ?: SearchBarDefaults.ShadowElevation,
+                    // TODO interactionSource: MutableInteractionSource,
+                    content = {
+                        content?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    })
 
-            ComposableTypes.searchBar -> SearchBar(query = queryStateValue,
-                onQueryChange = { q ->
-                    queryStateValue = q
-                },
-                onSearch = { queryText ->
-                    onSubmit.let { onSubmitEvent ->
-                        if (onSubmitEvent.isNotBlank()) pushEvent.invoke(
-                            EVENT_TYPE_SUBMIT,
-                            onSubmitEvent,
-                            mergeValueWithPhxValue(KEY_QUERY, queryText),
-                            null
-                        )
-                    }
-                },
-                active = activeState,
-                onActiveChange = { actv ->
-                    activeState = actv
-                    onActiveChanged.let { onActiveChangedEvent ->
-                        if (onActiveChangedEvent.isNotBlank()) pushEvent.invoke(
-                            EVENT_TYPE_CHANGE,
-                            onActiveChangedEvent,
-                            mergeValueWithPhxValue(KEY_ACTIVE, actv),
-                            null
-                        )
-                    }
-                },
-                modifier = props.commonProps.modifier,
-                enabled = enabled,
-                placeholder = placeholder?.let {
-                    {
-                        PhxLiveView(it, pushEvent, composableNode, null)
-                    }
-                },
-                leadingIcon = leadingIcon?.let {
-                    {
-                        PhxLiveView(it, pushEvent, composableNode, null)
-                    }
-                },
-                trailingIcon = trailingIcon?.let {
-                    {
-                        PhxLiveView(it, pushEvent, composableNode, null)
-                    }
-                },
-                shape = shape ?: SearchBarDefaults.inputFieldShape,
-                colors = getSearchBarColors(colors),
-                tonalElevation = tonalElevation ?: SearchBarDefaults.TonalElevation,
-                shadowElevation = shadowElevation ?: SearchBarDefaults.ShadowElevation,
-                windowInsets = windowsInsets ?: SearchBarDefaults.windowInsets,
-                // TODO interactionSource: MutableInteractionSource,
-                content = {
-                    content?.let {
-                        PhxLiveView(it, pushEvent, composableNode, null)
-                    }
-                })
+            ComposableTypes.searchBar ->
+                SearchBar(query = queryStateValue,
+                    onQueryChange = { q ->
+                        queryStateValue = q
+                    },
+                    onSearch = { queryText ->
+                        onSubmit.let { onSubmitEvent ->
+                            if (onSubmitEvent.isNotBlank()) pushEvent.invoke(
+                                EVENT_TYPE_SUBMIT,
+                                onSubmitEvent,
+                                mergeValueWithPhxValue(KEY_QUERY, queryText),
+                                null
+                            )
+                        }
+                    },
+                    active = activeState,
+                    onActiveChange = { actv ->
+                        activeState = actv
+                        onActiveChanged.let { onActiveChangedEvent ->
+                            if (onActiveChangedEvent.isNotBlank()) pushEvent.invoke(
+                                EVENT_TYPE_CHANGE,
+                                onActiveChangedEvent,
+                                mergeValueWithPhxValue(KEY_ACTIVE, actv),
+                                null
+                            )
+                        }
+                    },
+                    modifier = props.commonProps.modifier,
+                    enabled = enabled,
+                    placeholder = placeholder?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    leadingIcon = leadingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    trailingIcon = trailingIcon?.let {
+                        {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    },
+                    shape = shape ?: SearchBarDefaults.inputFieldShape,
+                    colors = getSearchBarColors(colors),
+                    tonalElevation = tonalElevation ?: SearchBarDefaults.TonalElevation,
+                    shadowElevation = shadowElevation ?: SearchBarDefaults.ShadowElevation,
+                    windowInsets = windowsInsets ?: SearchBarDefaults.windowInsets,
+                    // TODO interactionSource: MutableInteractionSource,
+                    content = {
+                        content?.let {
+                            PhxLiveView(it, pushEvent, composableNode, null)
+                        }
+                    })
         }
 
         LaunchedEffect(composableNode) {
