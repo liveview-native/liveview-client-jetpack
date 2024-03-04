@@ -66,9 +66,9 @@ internal class RowDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
-        val verticalAlignment: Alignment.Vertical = Alignment.Top,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val horizontalArrangement: Arrangement.Horizontal,
+        val verticalAlignment: Alignment.Vertical,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

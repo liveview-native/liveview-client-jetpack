@@ -166,15 +166,15 @@ internal class TooltipDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val scope: CaretScope? = null,
-        val caretProperties: CaretProperties? = null,
-        val colors: ImmutableMap<String, String>? = null,
-        val shape: Shape? = null,
-        val contentColor: Color? = null,
-        val containerColor: Color? = null,
-        val tonalElevation: Dp? = null,
-        val shadowElevation: Dp? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val scope: CaretScope?,
+        val caretProperties: CaretProperties?,
+        val colors: ImmutableMap<String, String>?,
+        val shape: Shape?,
+        val contentColor: Color?,
+        val containerColor: Color?,
+        val tonalElevation: Dp?,
+        val shadowElevation: Dp?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder(val scope: CaretScope? = null) : ComposableBuilder() {

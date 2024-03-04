@@ -93,12 +93,12 @@ internal class BottomAppBarDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val containerColor: Color? = null,
-        val contentColor: Color? = null,
-        val contentPadding: PaddingValues? = null,
-        val tonalElevation: Dp? = null,
-        val windowInsets: WindowInsets? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val containerColor: Color?,
+        val contentColor: Color?,
+        val contentPadding: PaddingValues?,
+        val tonalElevation: Dp?,
+        val windowInsets: WindowInsets?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

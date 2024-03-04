@@ -69,11 +69,11 @@ internal class ProgressIndicatorDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val color: Color? = null,
-        val trackColor: Color? = null,
-        val strokeCap: StrokeCap? = null,
-        val strokeWidth: Dp? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val color: Color?,
+        val trackColor: Color?,
+        val strokeCap: StrokeCap?,
+        val strokeWidth: Dp?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

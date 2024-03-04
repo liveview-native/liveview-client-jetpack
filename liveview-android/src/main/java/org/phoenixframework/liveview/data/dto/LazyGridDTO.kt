@@ -8,10 +8,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColumns
 import org.phoenixframework.liveview.data.constants.Attrs.attrCount
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
@@ -57,9 +55,7 @@ internal class LazyGridDTO private constructor(props: Properties) :
         val reverseLayout = props.lazyListProps.reverseLayout
         val userScrollEnabled = props.lazyListProps.userScrollEnabled
         val gridCells = props.gridCells
-        val contentPadding = remember {
-            props.lazyListProps.contentPadding.toImmutableMap()
-        }
+        val contentPadding = props.lazyListProps.contentPadding
 
         when (composableNode?.node?.tag) {
             ComposableTypes.lazyHorizontalGrid -> LazyHorizontalGrid(
@@ -114,11 +110,11 @@ internal class LazyGridDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val verticalArrangement: Arrangement.Vertical = Arrangement.Top,
-        val horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
-        val gridCells: GridCells = GridCells.Fixed(1),
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
-        override val lazyListProps: LazyListProperties = LazyListProperties()
+        val verticalArrangement: Arrangement.Vertical,
+        val horizontalArrangement: Arrangement.Horizontal,
+        val gridCells: GridCells,
+        override val commonProps: CommonComposableProperties,
+        override val lazyListProps: LazyListProperties
     ) : ILazyListProperties
 
     internal class Builder : LazyComposableBuilder() {

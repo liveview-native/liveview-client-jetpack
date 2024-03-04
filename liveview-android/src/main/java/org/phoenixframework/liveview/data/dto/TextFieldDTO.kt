@@ -548,12 +548,15 @@ internal class TextFieldDTO private constructor(props: Properties) :
         val colors: ImmutableMap<String, String>? = null,
         val keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
         val keyboardActions: KeyboardActions = KeyboardActions.Default,
-        override val changeableProps: ChangeableProperties = ChangeableProperties(),
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        override val changeableProps: ChangeableProperties,
+        override val commonProps: CommonComposableProperties,
     ) : IChangeableProperties
 
     internal class Builder : ChangeableDTOBuilder() {
-        var properties: Properties = Properties()
+        var properties: Properties = Properties(
+            changeableProps = changeableProps,
+            commonProps = commonProps
+        )
             private set
 
         /**

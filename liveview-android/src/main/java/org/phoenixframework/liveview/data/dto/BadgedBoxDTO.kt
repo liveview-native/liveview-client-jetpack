@@ -75,9 +75,9 @@ internal class BadgedBoxDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val containerColor: Color? = null,
-        val contentColor: Color? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val containerColor: Color?,
+        val contentColor: Color?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
 

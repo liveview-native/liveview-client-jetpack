@@ -306,12 +306,12 @@ internal class SliderDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val minValue: Float = 0f,
-        val maxValue: Float = 1f,
-        val steps: Int = 0,
-        val colors: ImmutableMap<String, String>? = null,
-        override val changeableProps: ChangeableProperties = ChangeableProperties(),
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val minValue: Float,
+        val maxValue: Float,
+        val steps: Int,
+        val colors: ImmutableMap<String, String>?,
+        override val changeableProps: ChangeableProperties,
+        override val commonProps: CommonComposableProperties,
     ) : IChangeableProperties
 
     internal class Builder : ChangeableDTOBuilder() {

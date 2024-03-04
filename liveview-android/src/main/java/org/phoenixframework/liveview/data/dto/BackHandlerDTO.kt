@@ -51,9 +51,9 @@ internal class BackHandlerDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val enabled: Boolean = false,
-        val onBack: String = "",
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val enabled: Boolean,
+        val onBack: String,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

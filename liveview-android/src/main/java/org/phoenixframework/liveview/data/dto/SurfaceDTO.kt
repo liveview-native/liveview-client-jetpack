@@ -208,18 +208,18 @@ internal class SurfaceDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val border: BorderStroke? = null,
-        val checked: Boolean? = null,
-        val color: Color? = null,
-        val contentColor: Color? = null,
-        val enabled: Boolean? = null,
-        val onChange: String? = null,
-        val onClick: String? = null,
-        val selected: Boolean? = null,
-        val shadowElevation: Dp? = null,
-        val shape: Shape? = null,
-        val tonalElevation: Dp? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val border: BorderStroke?,
+        val checked: Boolean?,
+        val color: Color?,
+        val contentColor: Color?,
+        val enabled: Boolean?,
+        val onChange: String?,
+        val onClick: String?,
+        val selected: Boolean?,
+        val shadowElevation: Dp?,
+        val shape: Shape?,
+        val tonalElevation: Dp?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

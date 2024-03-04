@@ -25,6 +25,7 @@ import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrElevation
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
@@ -61,7 +62,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * <Card
  *   padding="16"
  *   elevation="{'defaultElevation': '10', 'pressedElevation': '2'}"
- *   phx-click="dec"
+ *   phx-click="onClick"
  * >
  *   <Text>Card content</Text>
  * </Card>
@@ -84,21 +85,35 @@ internal class CardDTO private constructor(props: Properties) :
         val colors = props.cardColors
         val elevation = props.elevation
         val border = props.border
+        val onClick = props.onClick
         val hasVerticalScroll = props.commonProps.hasVerticalScrolling
         val hasHorizontalScroll = props.commonProps.hasHorizontalScrolling
 
+        val modifier = props.commonProps.modifier
+            .paddingIfNotNull(paddingValues)
+            .optional(
+                hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
+            )
+            .optional(
+                hasHorizontalScroll,
+                Modifier.horizontalScroll(rememberScrollState())
+            )
         when (composableNode?.node?.tag) {
             ComposableTypes.card ->
-                Card(
-                    modifier = props.commonProps.modifier
-                        .paddingIfNotNull(paddingValues)
-                        .optional(
-                            hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
-                        )
-                        .optional(
-                            hasHorizontalScroll,
-                            Modifier.horizontalScroll(rememberScrollState())
-                        ),
+                onClick?.let { event ->
+                    Card(
+                        onClick = onClickFromString(pushEvent, event, props.commonProps.phxValue),
+                        modifier = modifier,
+                        shape = shape ?: CardDefaults.shape,
+                        colors = getCardColors(colors),
+                        elevation = getCardElevation(elevation),
+                    ) {
+                        composableNode.children.forEach {
+                            PhxLiveView(it, pushEvent, composableNode, null, this)
+                        }
+                    }
+                } ?: Card(
+                    modifier = modifier,
                     shape = shape ?: CardDefaults.shape,
                     colors = getCardColors(colors),
                     elevation = getCardElevation(elevation),
@@ -108,16 +123,22 @@ internal class CardDTO private constructor(props: Properties) :
                     }
                 }
 
+
             ComposableTypes.elevatedCard ->
-                ElevatedCard(
-                    modifier = props.commonProps.modifier
-                        .paddingIfNotNull(paddingValues)
-                        .optional(
-                            hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
-                        )
-                        .optional(
-                            hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
-                        ),
+                onClick?.let { event ->
+                    ElevatedCard(
+                        onClick = onClickFromString(pushEvent, event, props.commonProps.phxValue),
+                        modifier = modifier,
+                        shape = shape ?: CardDefaults.elevatedShape,
+                        colors = getElevatedCardColors(colors),
+                        elevation = getElevatedCardElevation(elevation),
+                    ) {
+                        composableNode.children.forEach {
+                            PhxLiveView(it, pushEvent, composableNode, null, this)
+                        }
+                    }
+                } ?: ElevatedCard(
+                    modifier = modifier,
                     shape = shape ?: CardDefaults.elevatedShape,
                     colors = getElevatedCardColors(colors),
                     elevation = getElevatedCardElevation(elevation),
@@ -128,15 +149,21 @@ internal class CardDTO private constructor(props: Properties) :
                 }
 
             ComposableTypes.outlinedCard ->
-                OutlinedCard(
-                    modifier = props.commonProps.modifier
-                        .paddingIfNotNull(paddingValues)
-                        .optional(
-                            hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
-                        )
-                        .optional(
-                            hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
-                        ),
+                onClick?.let { event ->
+                    OutlinedCard(
+                        onClick = onClickFromString(pushEvent, event, props.commonProps.phxValue),
+                        modifier = modifier,
+                        shape = CardDefaults.outlinedShape,
+                        colors = getOutlinedCardColors(colors),
+                        elevation = getOutlinedCardElevation(elevation),
+                        border = border ?: CardDefaults.outlinedCardBorder(),
+                    ) {
+                        composableNode.children.forEach {
+                            PhxLiveView(it, pushEvent, composableNode, null, this)
+                        }
+                    }
+                } ?: OutlinedCard(
+                    modifier = modifier,
                     shape = CardDefaults.outlinedShape,
                     colors = getOutlinedCardColors(colors),
                     elevation = getOutlinedCardElevation(elevation),
@@ -264,11 +291,12 @@ internal class CardDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val shape: Shape? = null,
-        val cardColors: ImmutableMap<String, String>? = null,
-        val elevation: ImmutableMap<String, String>? = null,
-        val border: BorderStroke? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val shape: Shape?,
+        val cardColors: ImmutableMap<String, String>?,
+        val elevation: ImmutableMap<String, String>?,
+        val border: BorderStroke?,
+        val onClick: String?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {
@@ -276,6 +304,7 @@ internal class CardDTO private constructor(props: Properties) :
         private var cardColors: ImmutableMap<String, String>? = null
         private var elevation: ImmutableMap<String, String>? = null
         private var border: BorderStroke? = null
+        private var onClick: String? = null
 
         /**
          * Defines the shape of the card's container, border, and shadow (when using elevation).
@@ -337,12 +366,19 @@ internal class CardDTO private constructor(props: Properties) :
             this.border = borderFromString(border)
         }
 
+        fun onClick(onClick: String) = apply {
+            if (onClick.isNotEmpty()) {
+                this.onClick = onClick
+            }
+        }
+
         fun build() = CardDTO(
             Properties(
                 shape,
                 cardColors,
                 elevation,
                 border,
+                onClick,
                 commonProps,
             )
         )
@@ -365,6 +401,7 @@ internal object CardDtoFactory : ComposableViewFactory<CardDTO>() {
             attrBorder -> builder.border(attribute.value)
             attrColors -> builder.cardColors(attribute.value)
             attrElevation -> builder.elevation(attribute.value)
+            attrPhxClick -> builder.onClick(attribute.value)
             attrScroll -> builder.scrolling(attribute.value)
             attrShape -> builder.shape(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)

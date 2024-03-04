@@ -178,13 +178,13 @@ internal class TimePickerDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val colors: ImmutableMap<String, String>? = null,
-        val initialHour: Int = 0,
-        val initialMinute: Int = 0,
-        val is24Hour: Boolean? = null,
-        val layoutType: TimePickerLayoutType? = null,
-        val onChanged: String = "",
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val colors: ImmutableMap<String, String>?,
+        val initialHour: Int,
+        val initialMinute: Int,
+        val is24Hour: Boolean?,
+        val layoutType: TimePickerLayoutType?,
+        val onChanged: String,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

@@ -69,9 +69,9 @@ internal class BoxDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val contentAlignment: Alignment = Alignment.TopStart,
-        val propagateMinConstraints: Boolean = false,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val contentAlignment: Alignment,
+        val propagateMinConstraints: Boolean,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

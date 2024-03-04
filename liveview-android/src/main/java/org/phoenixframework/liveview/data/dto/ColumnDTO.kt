@@ -68,9 +68,9 @@ internal class ColumnDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val verticalArrangement: Arrangement.Vertical = Arrangement.Top,
-        val horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val verticalArrangement: Arrangement.Vertical,
+        val horizontalAlignment: Alignment.Horizontal,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

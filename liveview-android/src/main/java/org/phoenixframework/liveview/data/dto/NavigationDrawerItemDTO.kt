@@ -131,11 +131,11 @@ internal class NavigationDrawerItemDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val onClick: String = "",
-        val shape: Shape? = null,
-        val selected: Boolean = false,
-        val colors: ImmutableMap<String, String>? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val onClick: String,
+        val shape: Shape?,
+        val selected: Boolean,
+        val colors: ImmutableMap<String, String>?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

@@ -123,12 +123,12 @@ internal class DrawerSheetDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val drawerShape: Shape? = null,
-        val drawerContainerColor: Color? = null,
-        val drawerContentColor: Color? = null,
-        val drawerTonalElevation: Dp? = null,
-        val windowInsets: WindowInsets? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val drawerShape: Shape?,
+        val drawerContainerColor: Color?,
+        val drawerContentColor: Color?,
+        val drawerTonalElevation: Dp?,
+        val windowInsets: WindowInsets?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
 

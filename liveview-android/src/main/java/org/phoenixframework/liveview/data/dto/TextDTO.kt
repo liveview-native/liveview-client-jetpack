@@ -125,22 +125,22 @@ internal class TextDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val text: String = "",
-        val color: Color = Color.Unspecified,
-        val fontSize: TextUnit = TextUnit.Unspecified,
-        val fontStyle: FontStyle? = null,
-        val fontWeight: FontWeight? = null,
-        val fontFamily: FontFamily? = null,
-        val letterSpacing: TextUnit = TextUnit.Unspecified,
-        val textDecoration: TextDecoration? = null,
-        val textAlign: TextAlign? = null,
-        val lineHeight: TextUnit = TextUnit.Unspecified,
-        val overflow: TextOverflow = TextOverflow.Clip,
-        val softWrap: Boolean = true,
-        val minLines: Int = 1,
-        val maxLines: Int = Int.MAX_VALUE,
-        val style: String? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val text: String,
+        val color: Color,
+        val fontSize: TextUnit,
+        val fontStyle: FontStyle?,
+        val fontWeight: FontWeight?,
+        val fontFamily: FontFamily?,
+        val letterSpacing: TextUnit,
+        val textDecoration: TextDecoration?,
+        val textAlign: TextAlign?,
+        val lineHeight: TextUnit,
+        val overflow: TextOverflow,
+        val softWrap: Boolean,
+        val minLines: Int,
+        val maxLines: Int,
+        val style: String?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

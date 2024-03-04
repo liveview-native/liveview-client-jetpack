@@ -708,14 +708,14 @@ internal class ChipDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val border: BorderStroke? = null,
-        val colors: ImmutableMap<String, String>? = null,
-        val elevations: ImmutableMap<String, String>? = null,
-        val enabled: Boolean = true,
-        val onClick: String = "",
-        val selected: Boolean = false,
-        val shape: Shape? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val border: BorderStroke?,
+        val colors: ImmutableMap<String, String>?,
+        val elevations: ImmutableMap<String, String>?,
+        val enabled: Boolean,
+        val onClick: String,
+        val selected: Boolean,
+        val shape: Shape?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

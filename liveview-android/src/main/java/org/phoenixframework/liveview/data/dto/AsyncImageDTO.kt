@@ -64,13 +64,13 @@ internal class AsyncImageDTO private constructor(props: Properties) :
 
     @Stable
     data class Properties(
-        val imageUrl: String = "",
-        val contentDescription: String? = null,
-        val crossFade: Boolean = false,
-        val alignment: Alignment = Alignment.Center,
-        val contentScale: ContentScale = ContentScale.Fit,
-        val alpha: Float = 1.0f,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val imageUrl: String,
+        val contentDescription: String?,
+        val crossFade: Boolean,
+        val alignment: Alignment,
+        val contentScale: ContentScale,
+        val alpha: Float,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

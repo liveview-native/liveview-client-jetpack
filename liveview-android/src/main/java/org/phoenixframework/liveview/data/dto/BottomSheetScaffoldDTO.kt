@@ -24,9 +24,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetContentColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrSheetOnChanged
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetPeekHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetShadowElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetShape
@@ -225,19 +225,19 @@ internal class BottomSheetScaffoldDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val containerColor: Color? = null,
-        val contentColor: Color? = null,
-        val onChanged: String = "",
-        val sheetContainerColor: Color? = null,
-        val sheetContentColor: Color? = null,
-        val sheetPickHeight: Dp? = null,
-        val sheetShadowElevation: Dp? = null,
-        val sheetShape: Shape? = null,
-        val sheetSwipeEnabled: Boolean = true,
-        val sheetTonalElevation: Dp? = null,
-        val sheetSkipHiddenState: Boolean = true,
-        val sheetValue: SheetValue = SheetValue.PartiallyExpanded,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val containerColor: Color?,
+        val contentColor: Color?,
+        val onChanged: String,
+        val sheetContainerColor: Color?,
+        val sheetContentColor: Color?,
+        val sheetPickHeight: Dp?,
+        val sheetShadowElevation: Dp?,
+        val sheetShape: Shape?,
+        val sheetSwipeEnabled: Boolean,
+        val sheetTonalElevation: Dp?,
+        val sheetSkipHiddenState: Boolean,
+        val sheetValue: SheetValue,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {
@@ -281,7 +281,7 @@ internal class BottomSheetScaffoldDTO private constructor(props: Properties) :
         /**
          * Function in the server to be called when the bottom sheet state changes.
          * ```
-         * <BottomSheetScaffold sheetOnChanged="updateBottomSheet" >
+         * <BottomSheetScaffold phx-change="updateBottomSheet" >
          * ```
          * @param onChanged the name of the function to be called in the server when the bottom
          * sheet is expanded.
@@ -437,9 +437,9 @@ internal object BottomSheetScaffoldDtoFactory :
             when (attribute.name) {
                 attrContainerColor -> builder.containerColor(attribute.value)
                 attrContentColor -> builder.contentColor(attribute.value)
+                attrPhxChange -> builder.sheetOnChanged(attribute.value)
                 attrSheetContainerColor -> builder.sheetContainerColor(attribute.value)
                 attrSheetContentColor -> builder.sheetContentColor(attribute.value)
-                attrSheetOnChanged -> builder.sheetOnChanged(attribute.value)
                 attrSheetPeekHeight -> builder.sheetPickHeight(attribute.value)
                 attrSheetShadowElevation -> builder.sheetShadowElevation(attribute.value)
                 attrSheetShape -> builder.sheetShape(attribute.value)

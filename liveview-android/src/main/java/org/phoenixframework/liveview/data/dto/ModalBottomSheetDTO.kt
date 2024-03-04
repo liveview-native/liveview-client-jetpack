@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrOnChanged
 import org.phoenixframework.liveview.data.constants.Attrs.attrOnDismissRequest
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.Attrs.attrScrimColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrSkipPartiallyExpanded
@@ -131,16 +131,16 @@ internal class ModalBottomSheetDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val dismissEvent: String? = null,
-        val skipPartiallyExpanded: Boolean = false,
-        val onChanged: String = "",
-        val windowInsets: WindowInsets? = null,
-        val shape: Shape? = null,
-        val containerColor: Color? = null,
-        val contentColor: Color? = null,
-        val tonalElevation: Dp? = null,
-        val scrimColor: Color? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val dismissEvent: String?,
+        val skipPartiallyExpanded: Boolean,
+        val onChanged: String,
+        val windowInsets: WindowInsets?,
+        val shape: Shape?,
+        val containerColor: Color?,
+        val contentColor: Color?,
+        val tonalElevation: Dp?,
+        val scrimColor: Color?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {
@@ -171,7 +171,7 @@ internal class ModalBottomSheetDTO private constructor(props: Properties) :
         /**
          * Function in the server to be called when the bottom sheet state changes.
          * ```
-         * <ModalBottomSheet onChanged="updateBottomSheet" >...</ModalBottomSheet>
+         * <ModalBottomSheet phx-change="updateBottomSheet" >...</ModalBottomSheet>
          * ```
          * @param onChanged the name of the function to be called in the server when the bottom
          * sheet is expanded.
@@ -298,8 +298,8 @@ internal object ModalBottomSheetDtoFactory : ComposableViewFactory<ModalBottomSh
             when (attribute.name) {
                 attrContainerColor -> builder.containerColor(attribute.value)
                 attrContentColor -> builder.contentColor(attribute.value)
-                attrOnChanged -> builder.onChanged(attribute.value)
                 attrOnDismissRequest -> builder.onDismissRequest(attribute.value)
+                attrPhxChange -> builder.onChanged(attribute.value)
                 attrScrimColor -> builder.scrimColor(attribute.value)
                 attrShape -> builder.shape(attribute.value)
                 attrSkipPartiallyExpanded -> builder.skipPartiallyExpanded(attribute.value)

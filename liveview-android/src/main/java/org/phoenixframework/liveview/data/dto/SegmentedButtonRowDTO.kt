@@ -106,8 +106,8 @@ internal class SegmentedButtonRowDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val space: Dp? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val space: Dp?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

@@ -146,12 +146,12 @@ internal class TabDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val onClick: String = "",
-        val selected: Boolean = false,
-        val enabled: Boolean = true,
-        val selectedContentColor: Color? = null,
-        val unselectedContentColor: Color? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val onClick: String,
+        val selected: Boolean,
+        val enabled: Boolean,
+        val selectedContentColor: Color?,
+        val unselectedContentColor: Color?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {
@@ -245,9 +245,9 @@ internal object TabDtoFactory : ComposableViewFactory<TabDTO>() {
         attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): TabDTO = attributes.fold(TabDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
+            attrEnabled -> builder.enabled(attribute.value)
             attrPhxClick -> builder.onClick(attribute.value)
             attrSelected -> builder.selected(attribute.value)
-            attrEnabled -> builder.enabled(attribute.value)
             attrSelectedContentColor -> builder.selectedContentColor(attribute.value)
             attrUnselectedContentColor -> builder.unselectedContentColor(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)

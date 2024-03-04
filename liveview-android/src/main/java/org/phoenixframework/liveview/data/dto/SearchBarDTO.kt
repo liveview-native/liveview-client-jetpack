@@ -127,7 +127,6 @@ internal class SearchBarDTO private constructor(props: Properties) :
                 },
                 active = activeState,
                 onActiveChange = { actv ->
-                    activeState = actv
                     onActiveChanged.let { onActiveChangedEvent ->
                         if (onActiveChangedEvent.isNotBlank()) pushEvent.invoke(
                             EVENT_TYPE_CHANGE,
@@ -223,7 +222,11 @@ internal class SearchBarDTO private constructor(props: Properties) :
 
         LaunchedEffect(composableNode) {
             changeValueEventName?.let { event ->
-                snapshotFlow { queryStateValue }.map { it }.onChangeable().map {
+                snapshotFlow {
+                    queryStateValue
+                }.map {
+                    it
+                }.onChangeable().map {
                     mergeValueWithPhxValue(KEY_QUERY, it)
                 }.collect { value ->
                     pushOnChangeEvent(pushEvent, event, value)
@@ -263,17 +266,17 @@ internal class SearchBarDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val active: Boolean = false,
-        val colors: ImmutableMap<String, String>? = null,
-        val onActiveChanged: String = "",
-        val onSubmit: String = "",
-        val query: String = "",
-        val shadowElevation: Dp? = null,
-        val shape: Shape? = null,
-        val tonalElevation: Dp? = null,
-        val windowInsets: WindowInsets? = null,
-        override val changeableProps: ChangeableProperties = ChangeableProperties(),
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val active: Boolean,
+        val colors: ImmutableMap<String, String>?,
+        val onActiveChanged: String,
+        val onSubmit: String,
+        val query: String,
+        val shadowElevation: Dp?,
+        val shape: Shape?,
+        val tonalElevation: Dp?,
+        val windowInsets: WindowInsets?,
+        override val changeableProps: ChangeableProperties,
+        override val commonProps: CommonComposableProperties,
     ) : IChangeableProperties
 
     internal class Builder : ChangeableDTOBuilder() {

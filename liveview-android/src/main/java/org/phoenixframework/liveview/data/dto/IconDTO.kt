@@ -60,10 +60,10 @@ internal class IconDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val contentDescription: String = "",
-        val tint: Color? = null,
-        val imageVector: ImageVector? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val contentDescription: String,
+        val tint: Color?,
+        val imageVector: ImageVector?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

@@ -96,12 +96,12 @@ internal class TooltipBoxDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val enableUserInput: Boolean = true,
-        val focusable: Boolean = true,
-        val isPersistent: Boolean = false,
-        val initialIsVisible: Boolean = false,
-        val spacingBetweenTooltipAndAnchor: Dp = 4.dp,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val enableUserInput: Boolean,
+        val focusable: Boolean,
+        val isPersistent: Boolean,
+        val initialIsVisible: Boolean,
+        val spacingBetweenTooltipAndAnchor: Dp,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

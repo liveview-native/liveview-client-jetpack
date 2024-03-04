@@ -153,10 +153,10 @@ internal class ListItemDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val colors: ImmutableMap<String, String>? = null,
-        val tonalElevation: Dp? = null,
-        val shadowElevation: Dp? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val colors: ImmutableMap<String, String>?,
+        val tonalElevation: Dp?,
+        val shadowElevation: Dp?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

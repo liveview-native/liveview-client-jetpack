@@ -115,10 +115,12 @@ internal class DatePickerDTO private constructor(props: Properties) :
         val initialSelectedDateMillis = props.initialSelectedDateMillis
         val onChanged = props.onChanged
         val showModeToggle = props.showModeToggle
-        val yearRange = IntRange(
-            props.yearStart ?: DatePickerDefaults.YearRange.first,
-            props.yearEnd ?: DatePickerDefaults.YearRange.last,
-        )
+        val yearRange = remember(props.yearStart, props.yearEnd) {
+            IntRange(
+                props.yearStart ?: DatePickerDefaults.YearRange.first,
+                props.yearEnd ?: DatePickerDefaults.YearRange.last,
+            )
+        }
 
         val state = rememberDatePickerState(
             initialSelectedDateMillis = initialSelectedDateMillis,
@@ -242,17 +244,17 @@ internal class DatePickerDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val colors: ImmutableMap<String, String>? = null,
-        val initialDisplayedMonthMillis: Long? = null,
-        val initialDisplayMode: DisplayMode? = null,
-        val initialSelectedDateMillis: Long? = null,
-        val initialSelectedStartDateMillis: Long? = null,
-        val initialSelectedEndDateMillis: Long? = null,
-        val onChanged: String = "",
-        val showModeToggle: Boolean = true,
-        val yearStart: Int? = null,
-        val yearEnd: Int? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val colors: ImmutableMap<String, String>?,
+        val initialDisplayedMonthMillis: Long?,
+        val initialDisplayMode: DisplayMode?,
+        val initialSelectedDateMillis: Long?,
+        val initialSelectedStartDateMillis: Long?,
+        val initialSelectedEndDateMillis: Long?,
+        val onChanged: String,
+        val showModeToggle: Boolean,
+        val yearStart: Int?,
+        val yearEnd: Int?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

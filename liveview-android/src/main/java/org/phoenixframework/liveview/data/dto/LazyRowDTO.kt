@@ -6,11 +6,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
 import org.phoenixframework.liveview.data.core.CoreAttribute
@@ -43,9 +41,7 @@ internal class LazyRowDTO private constructor(props: Properties) :
         val verticalAlignment = props.verticalAlignment
         val reverseLayout = props.lazyListProps.reverseLayout
         val userScrollEnabled = props.lazyListProps.userScrollEnabled
-        val contentPadding = remember {
-            props.lazyListProps.contentPadding.toImmutableMap()
-        }
+        val contentPadding = props.lazyListProps.contentPadding
 
         LazyRow(
             modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
@@ -72,10 +68,10 @@ internal class LazyRowDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
-        val verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
-        override val lazyListProps: LazyListProperties = LazyListProperties()
+        val horizontalArrangement: Arrangement.Horizontal,
+        val verticalAlignment: Alignment.Vertical,
+        override val commonProps: CommonComposableProperties,
+        override val lazyListProps: LazyListProperties,
     ) : ILazyListProperties
 
     internal class Builder : LazyComposableBuilder() {

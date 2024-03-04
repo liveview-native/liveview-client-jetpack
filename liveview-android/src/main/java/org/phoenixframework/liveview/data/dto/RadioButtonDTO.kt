@@ -91,10 +91,10 @@ internal class RadioButtonDTO private constructor(builder: Properties) :
 
     @Stable
     internal data class Properties(
-        val colors: ImmutableMap<String, String>? = null,
-        val selected: Boolean = false,
-        override val changeableProps: ChangeableProperties = ChangeableProperties(),
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val colors: ImmutableMap<String, String>?,
+        val selected: Boolean,
+        override val changeableProps: ChangeableProperties,
+        override val commonProps: CommonComposableProperties,
     ) : IChangeableProperties
 
     internal class Builder : ChangeableDTOBuilder() {

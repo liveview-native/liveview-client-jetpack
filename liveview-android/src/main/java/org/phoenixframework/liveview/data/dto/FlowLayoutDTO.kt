@@ -100,10 +100,10 @@ internal class FlowLayoutDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
-        val maxItems: Int = Int.MAX_VALUE,
-        val verticalArrangement: Arrangement.Vertical = Arrangement.Top,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val horizontalArrangement: Arrangement.Horizontal,
+        val maxItems: Int,
+        val verticalArrangement: Arrangement.Vertical,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

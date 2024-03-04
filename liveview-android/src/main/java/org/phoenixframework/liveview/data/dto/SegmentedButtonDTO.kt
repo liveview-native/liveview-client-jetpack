@@ -190,14 +190,14 @@ internal class SegmentedButtonDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val scope: RowScope? = null,
-        val border: BorderStroke? = null,
-        val colors: ImmutableMap<String, String>? = null,
-        val enabled: Boolean = true,
-        val onClick: String = "",
-        val selected: Boolean = false,
-        val shape: Shape = RectangleShape,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val scope: RowScope?,
+        val border: BorderStroke?,
+        val colors: ImmutableMap<String, String>?,
+        val enabled: Boolean,
+        val onClick: String,
+        val selected: Boolean,
+        val shape: Shape,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     // scope must be an instance of

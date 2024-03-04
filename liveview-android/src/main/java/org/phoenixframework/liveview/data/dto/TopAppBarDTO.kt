@@ -274,9 +274,9 @@ internal class TopAppBarDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val colors: ImmutableMap<String, String>? = null,
-        val windowInsets: WindowInsets? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val colors: ImmutableMap<String, String>?,
+        val windowInsets: WindowInsets?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     class Builder : ComposableBuilder() {

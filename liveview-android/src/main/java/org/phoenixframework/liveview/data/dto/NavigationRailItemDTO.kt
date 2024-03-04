@@ -130,12 +130,12 @@ internal class NavigationRailItemDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val alwaysShowLabel: Boolean = true,
-        val colors: ImmutableMap<String, String>? = null,
-        val enabled: Boolean = true,
-        val onClick: String = "",
-        val selected: Boolean = false,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val alwaysShowLabel: Boolean,
+        val colors: ImmutableMap<String, String>?,
+        val enabled: Boolean,
+        val onClick: String,
+        val selected: Boolean,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

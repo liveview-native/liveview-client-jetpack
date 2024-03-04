@@ -64,9 +64,9 @@ internal class DividerDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val thickness: Dp? = null,
-        val color: Color? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val thickness: Dp?,
+        val color: Color?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

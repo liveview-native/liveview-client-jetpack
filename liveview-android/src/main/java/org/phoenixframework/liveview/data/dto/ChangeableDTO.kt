@@ -50,10 +50,10 @@ internal interface IChangeableProperties : ComposableProperties {
 
 @Stable
 internal data class ChangeableProperties(
-    val onChange: String? = null,
-    val debounce: Long = DEFAULT_DEBOUNCE,
-    val throttle: Long = DEFAULT_THROTTLE,
-    val enabled: Boolean = true,
+    val onChange: String?,
+    val debounce: Long,
+    val throttle: Long,
+    val enabled: Boolean,
 )
 
 /**
@@ -62,7 +62,12 @@ internal data class ChangeableProperties(
  * from the client.
  */
 internal abstract class ChangeableDTOBuilder : ComposableBuilder() {
-    protected var changeableProps: ChangeableProperties = ChangeableProperties()
+    protected var changeableProps: ChangeableProperties = ChangeableProperties(
+        onChange = null,
+        debounce = DEFAULT_DEBOUNCE,
+        throttle = DEFAULT_THROTTLE,
+        enabled = true,
+    )
 
     /**
      * Sets the event name to triggered on the server when the component's value changes.

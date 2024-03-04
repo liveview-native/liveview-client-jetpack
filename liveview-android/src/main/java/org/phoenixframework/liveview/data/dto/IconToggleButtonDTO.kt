@@ -268,12 +268,12 @@ internal class IconToggleButtonDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val border: BorderStroke? = null,
-        val checked: Boolean = false,
-        val colors: ImmutableMap<String, String>? = null,
-        val shape: Shape? = null,
-        override val changeableProps: ChangeableProperties = ChangeableProperties(),
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val border: BorderStroke?,
+        val checked: Boolean,
+        val colors: ImmutableMap<String, String>?,
+        val shape: Shape?,
+        override val changeableProps: ChangeableProperties,
+        override val commonProps: CommonComposableProperties,
     ) : IChangeableProperties
 
     internal class Builder : ChangeableDTOBuilder() {

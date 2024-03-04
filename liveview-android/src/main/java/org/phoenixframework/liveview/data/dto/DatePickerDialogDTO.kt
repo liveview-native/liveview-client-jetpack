@@ -106,9 +106,9 @@ internal class DatePickerDialogDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val colors: ImmutableMap<String, String>? = null,
-        override val dialogProps: DialogComposableProperties = DialogComposableProperties(),
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val colors: ImmutableMap<String, String>?,
+        override val dialogProps: DialogComposableProperties,
+        override val commonProps: CommonComposableProperties,
     ) : IDialogProperties
 
     internal class Builder : DialogDTO.Builder() {

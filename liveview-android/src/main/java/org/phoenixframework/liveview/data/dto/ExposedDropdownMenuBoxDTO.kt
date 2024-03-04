@@ -97,8 +97,8 @@ internal class ExposedDropdownMenuBoxDTO private constructor(props: Properties) 
 
     @Stable
     internal data class Properties(
-        val expanded: Boolean = false,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val expanded: Boolean,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

@@ -77,10 +77,15 @@ internal class DropdownMenuDTO private constructor(props: Properties) :
 
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = dismissEvent?.let {
-                onClickFromString(pushEvent, it, props.commonProps.phxValue)
-            } ?: {
-                // Do nothing
+            onDismissRequest = {
+                dismissEvent?.let {
+                    pushEvent(
+                        ComposableBuilder.EVENT_TYPE_BLUR,
+                        it,
+                        props.commonProps.phxValue,
+                        null
+                    )
+                }
             },
             modifier = props.commonProps.modifier,
             offset = offset ?: DpOffset(0.dp, 0.dp),
@@ -96,11 +101,11 @@ internal class DropdownMenuDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val dismissEvent: String? = null,
-        val expanded: Boolean = true,
-        val offset: DpOffset? = null,
-        val popupProperties: PopupProperties = PopupProperties(),
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val dismissEvent: String?,
+        val expanded: Boolean,
+        val offset: DpOffset?,
+        val popupProperties: PopupProperties,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

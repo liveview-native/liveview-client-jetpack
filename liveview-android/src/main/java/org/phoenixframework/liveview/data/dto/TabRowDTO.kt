@@ -114,11 +114,11 @@ internal class TabRowDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val selectedTabIndex: Int = 0,
-        val containerColor: Color? = null,
-        val contentColor: Color? = null,
-        val edgePadding: Dp? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val selectedTabIndex: Int,
+        val containerColor: Color?,
+        val contentColor: Color?,
+        val edgePadding: Dp?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

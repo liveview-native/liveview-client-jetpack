@@ -113,10 +113,10 @@ interface ComposableProperties {
 
 @Stable
 data class CommonComposableProperties(
-    val hasVerticalScrolling: Boolean = false,
-    val hasHorizontalScrolling: Boolean = false,
-    val modifier: Modifier = Modifier,
-    val value: ImmutableMap<String, Any> = persistentMapOf()
+    val hasVerticalScrolling: Boolean,
+    val hasHorizontalScrolling: Boolean,
+    val modifier: Modifier,
+    val value: ImmutableMap<String, Any>
 ) {
     val phxValue: Any?
         get() = if (value.isEmpty())
@@ -135,7 +135,12 @@ data class CommonComposableProperties(
  *  `ComposableView` must be provided by the respective `ComposableBuilder`.
  */
 abstract class ComposableBuilder {
-    var commonProps = CommonComposableProperties()
+    var commonProps = CommonComposableProperties(
+        hasVerticalScrolling = false,
+        hasHorizontalScrolling = false,
+        modifier = Modifier,
+        value = persistentMapOf()
+    )
         private set
 
     /**

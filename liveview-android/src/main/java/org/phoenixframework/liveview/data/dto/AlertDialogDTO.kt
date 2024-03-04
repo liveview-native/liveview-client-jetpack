@@ -170,12 +170,12 @@ internal class AlertDialogDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val containerColor: Color? = null,
-        val iconContentColor: Color? = null,
-        val titleContentColor: Color? = null,
-        val textContentColor: Color? = null,
-        override val dialogProps: DialogComposableProperties = DialogComposableProperties(),
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val containerColor: Color?,
+        val iconContentColor: Color?,
+        val titleContentColor: Color?,
+        val textContentColor: Color?,
+        override val dialogProps: DialogComposableProperties,
+        override val commonProps: CommonComposableProperties,
     ) : IDialogProperties
 
     internal class Builder : DialogDTO.Builder() {

@@ -112,17 +112,17 @@ internal class SnackbarDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val actionOnNewLine: Boolean = false,
-        val shape: Shape? = null,
-        val containerColor: Color? = null,
-        val contentColor: Color? = null,
-        val actionColor: Color? = null,
-        val actionContentColor: Color? = null,
-        val dismissActionContentColor: Color? = null,
-        val visuals: Visuals = Visuals(),
-        val actionEvent: String? = null,
-        val dismissEvent: String? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val actionOnNewLine: Boolean,
+        val shape: Shape?,
+        val containerColor: Color?,
+        val contentColor: Color?,
+        val actionColor: Color?,
+        val actionContentColor: Color?,
+        val dismissActionContentColor: Color?,
+        val visuals: Visuals,
+        val actionEvent: String?,
+        val dismissEvent: String?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

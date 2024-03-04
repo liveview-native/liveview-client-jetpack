@@ -231,12 +231,12 @@ internal class IconButtonDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val border: BorderStroke? = null,
-        val onClick: String = "",
-        val enabled: Boolean = true,
-        val colors: ImmutableMap<String, String>? = null,
-        val shape: Shape? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val border: BorderStroke?,
+        val onClick: String,
+        val enabled: Boolean,
+        val colors: ImmutableMap<String, String>?,
+        val shape: Shape?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

@@ -154,10 +154,10 @@ internal class SwitchDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val checked: Boolean = false,
-        val colors: ImmutableMap<String, String>? = null,
-        override val changeableProps: ChangeableProperties = ChangeableProperties(),
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val checked: Boolean,
+        val colors: ImmutableMap<String, String>?,
+        override val changeableProps: ChangeableProperties,
+        override val commonProps: CommonComposableProperties,
     ) : IChangeableProperties
 
     internal class Builder : ChangeableDTOBuilder() {

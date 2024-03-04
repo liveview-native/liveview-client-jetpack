@@ -111,8 +111,8 @@ internal class CheckBoxDTO private constructor(props: Properties) :
     internal data class Properties(
         val colors: ImmutableMap<String, String>? = null,
         val checked: Boolean = false,
-        override val changeableProps: ChangeableProperties = ChangeableProperties(),
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        override val changeableProps: ChangeableProperties,
+        override val commonProps: CommonComposableProperties,
     ) : IChangeableProperties
 
     companion object {

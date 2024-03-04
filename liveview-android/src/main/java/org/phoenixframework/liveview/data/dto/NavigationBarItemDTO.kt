@@ -120,12 +120,12 @@ internal class NavigationBarItemDTO private constructor(props: Properties) :
     @Stable
     internal data class Properties(
         val rowScope: RowScope,
-        var alwaysShowLabel: Boolean = true,
-        var colors: ImmutableMap<String, String>? = null,
-        var enabled: Boolean = true,
-        var onClick: String? = null,
-        var selected: Boolean = false,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        var alwaysShowLabel: Boolean,
+        var colors: ImmutableMap<String, String>?,
+        var enabled: Boolean,
+        var onClick: String?,
+        var selected: Boolean,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder(private val rowScope: RowScope) : ComposableBuilder() {

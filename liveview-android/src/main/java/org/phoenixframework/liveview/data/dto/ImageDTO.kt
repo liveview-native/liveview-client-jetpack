@@ -75,12 +75,12 @@ internal class ImageDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val imageResource: String = "",
-        val contentDescription: String? = null,
-        val alignment: Alignment = Alignment.Center,
-        val contentScale: ContentScale = ContentScale.Fit,
-        val alpha: Float = 1.0f,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val imageResource: String,
+        val contentDescription: String?,
+        val alignment: Alignment,
+        val contentScale: ContentScale,
+        val alpha: Float,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     class Builder : ComposableBuilder() {

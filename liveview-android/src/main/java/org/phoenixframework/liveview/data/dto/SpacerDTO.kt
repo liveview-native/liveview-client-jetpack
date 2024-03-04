@@ -35,7 +35,7 @@ internal class SpacerDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

@@ -361,32 +361,25 @@ internal class ButtonDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val onClick: String = "",
-        val enabled: Boolean = true,
-        val shape: Shape? = null,
-        val colors: ImmutableMap<String, String>? = null,
-        val elevations: ImmutableMap<String, String>? = null,
-        val contentPadding: PaddingValues? = null,
-        val border: BorderStroke? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val onClick: String,
+        val enabled: Boolean,
+        val shape: Shape?,
+        val colors: ImmutableMap<String, String>?,
+        val elevations: ImmutableMap<String, String>?,
+        val contentPadding: PaddingValues?,
+        val border: BorderStroke?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
 
     internal class Builder : ComposableBuilder() {
-        var onClick: String = ""
-            private set
-        var enabled: Boolean = true
-            private set
-        var shape: Shape? = null
-            private set
-        var colors: ImmutableMap<String, String>? = null
-            private set
-        var elevations: ImmutableMap<String, String>? = null
-            private set
-        var contentPadding: PaddingValues? = null
-            private set
-        var border: BorderStroke? = null
-            private set
+        private var onClick: String = ""
+        private var enabled: Boolean = true
+        private var shape: Shape? = null
+        private var colors: ImmutableMap<String, String>? = null
+        private var elevations: ImmutableMap<String, String>? = null
+        private var contentPadding: PaddingValues? = null
+        private var border: BorderStroke? = null
 
         /**
          * Sets the event name to be triggered on the server when the button is clicked.

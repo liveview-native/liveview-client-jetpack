@@ -177,19 +177,19 @@ internal class PagerDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val beyondBoundsPageCount: Int? = null,
-        val contentPadding: PaddingValues? = null,
-        val currentPage: Int = 0,
-        val horizontalAlignment: Alignment.Horizontal? = null,
-        val initialPageOffsetFraction: Float? = null,
-        val onChanged: String? = null,
-        val pageCount: Int = 0,
-        val pageSize: PageSize? = null,
-        val pageSpacing: Dp = 0.dp,
-        val reverseLayout: Boolean = false,
-        val userScrollEnabled: Boolean = true,
-        val verticalAlignment: Alignment.Vertical? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val beyondBoundsPageCount: Int?,
+        val contentPadding: PaddingValues?,
+        val currentPage: Int,
+        val horizontalAlignment: Alignment.Horizontal?,
+        val initialPageOffsetFraction: Float?,
+        val onChanged: String?,
+        val pageCount: Int,
+        val pageSize: PageSize?,
+        val pageSpacing: Dp,
+        val reverseLayout: Boolean,
+        val userScrollEnabled: Boolean,
+        val verticalAlignment: Alignment.Vertical?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {

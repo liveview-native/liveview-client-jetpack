@@ -63,9 +63,9 @@ internal class DropdownMenuItemDTO private constructor(props: Properties) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val event = props.clickEventName
+        val event = props.onClick
         val enabled = props.enabled
-        val colors = props.colors?.toImmutableMap()
+        val colors = props.colors
         val contentPadding = props.contentPadding
 
         val textChild = remember(composableNode?.children) {
@@ -132,15 +132,15 @@ internal class DropdownMenuItemDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val clickEventName: String = "",
-        val enabled: Boolean = true,
-        val colors: ImmutableMap<String, String>? = null,
-        val contentPadding: PaddingValues? = null,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val onClick: String,
+        val enabled: Boolean,
+        val colors: ImmutableMap<String, String>?,
+        val contentPadding: PaddingValues?,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {
-        private var clickEventName: String = ""
+        private var onClick: String = ""
         private var enabled: Boolean = true
         private var colors: ImmutableMap<String, String>? = null
         private var contentPadding: PaddingValues? = null
@@ -153,8 +153,8 @@ internal class DropdownMenuItemDTO private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
-        fun clickEventName(event: String) = apply {
-            this.clickEventName = event
+        fun onClick(event: String) = apply {
+            this.onClick = event
         }
 
         /**
@@ -199,7 +199,7 @@ internal class DropdownMenuItemDTO private constructor(props: Properties) :
 
         fun build() = DropdownMenuItemDTO(
             Properties(
-                clickEventName,
+                onClick,
                 enabled,
                 colors,
                 contentPadding,
@@ -220,7 +220,7 @@ internal object DropdownMenuItemDtoFactory :
             attrColors -> builder.colors(attribute.value)
             attrContentPadding -> builder.contentPadding(attribute.value)
             attrEnabled -> builder.enabled(attribute.value)
-            attrPhxClick -> builder.clickEventName(attribute.value)
+            attrPhxClick -> builder.onClick(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as DropdownMenuItemDTO.Builder
     }.build()

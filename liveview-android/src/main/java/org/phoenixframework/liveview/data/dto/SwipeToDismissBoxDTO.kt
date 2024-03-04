@@ -12,7 +12,7 @@ import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnableDismissFromEndToStart
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnableDismissFromStartToEnd
 import org.phoenixframework.liveview.data.constants.Attrs.attrInitialValue
-import org.phoenixframework.liveview.data.constants.Attrs.attrOnValueChanged
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.SwipeToDismissBoxValues
 import org.phoenixframework.liveview.data.constants.Templates.templateBackgroundContent
 import org.phoenixframework.liveview.data.constants.Templates.templateContent
@@ -53,7 +53,7 @@ internal class SwipeToDismissBoxDTO private constructor(props: Properties) :
         val initialValue = props.initialValue
         val enableDismissFromStartToEnd = props.enableDismissFromStartToEnd
         val enableDismissFromEndToStart = props.enableDismissFromEndToStart
-        val onValueChange = props.onValueChange
+        val onValueChange = props.onChange
 
         val backgroundContent = remember(composableNode?.children) {
             composableNode?.children?.filter { it.node?.template == templateBackgroundContent }
@@ -106,18 +106,18 @@ internal class SwipeToDismissBoxDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val initialValue: SwipeToDismissBoxValue? = null,
-        val enableDismissFromStartToEnd: Boolean? = null,
-        val enableDismissFromEndToStart: Boolean? = null,
-        val onValueChange: String = "",
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val initialValue: SwipeToDismissBoxValue?,
+        val enableDismissFromStartToEnd: Boolean?,
+        val enableDismissFromEndToStart: Boolean?,
+        val onChange: String,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {
         private var initialValue: SwipeToDismissBoxValue? = null
         private var enableDismissFromStartToEnd: Boolean? = null
         private var enableDismissFromEndToStart: Boolean? = null
-        private var onValueChange: String = ""
+        private var onChange: String = ""
 
         /**
          * The initial value of the state. See the supported values at
@@ -167,8 +167,8 @@ internal class SwipeToDismissBoxDTO private constructor(props: Properties) :
          * ```
          * @param value callback function name called in the server when the swipe is dismissed.
          */
-        fun onValueChange(value: String) = apply {
-            this.onValueChange = value
+        fun onChange(value: String) = apply {
+            this.onChange = value
         }
 
         fun build() = SwipeToDismissBoxDTO(
@@ -176,7 +176,7 @@ internal class SwipeToDismissBoxDTO private constructor(props: Properties) :
                 initialValue,
                 enableDismissFromStartToEnd,
                 enableDismissFromEndToStart,
-                onValueChange,
+                onChange,
                 commonProps,
             )
         )
@@ -194,7 +194,7 @@ internal object SwipeToDismissBoxDtoFactory : ComposableViewFactory<SwipeToDismi
                 attrInitialValue -> builder.initialValue(attribute.value)
                 attrEnableDismissFromStartToEnd -> builder.enableDismissFromStartToEnd(attribute.value)
                 attrEnableDismissFromEndToStart -> builder.enableDismissFromEndToStart(attribute.value)
-                attrOnValueChanged -> builder.onValueChange(attribute.value)
+                attrPhxChange -> builder.onChange(attribute.value)
                 else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
             } as SwipeToDismissBoxDTO.Builder
         }.build()

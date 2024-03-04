@@ -178,13 +178,13 @@ internal class FloatingActionButtonDTO private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val onClick: String = "",
-        val containerColor: Color? = null,
-        val contentColor: Color? = null,
-        val shape: Shape? = null,
-        val elevation: ImmutableMap<String, String>? = null,
-        val expanded: Boolean = true,
-        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        val onClick: String,
+        val containerColor: Color?,
+        val contentColor: Color?,
+        val shape: Shape?,
+        val elevation: ImmutableMap<String, String>?,
+        val expanded: Boolean,
+        override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
     internal class Builder : ComposableBuilder() {
