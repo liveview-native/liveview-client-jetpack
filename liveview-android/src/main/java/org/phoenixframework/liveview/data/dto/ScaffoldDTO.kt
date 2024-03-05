@@ -1,10 +1,12 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
@@ -22,6 +24,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentWindowInsets
 import org.phoenixframework.liveview.data.constants.Attrs.attrFabPosition
 import org.phoenixframework.liveview.data.constants.Attrs.attrTopBarScrollBehavior
 import org.phoenixframework.liveview.data.constants.FabPositionValues
@@ -82,6 +85,7 @@ internal class ScaffoldDTO private constructor(props: Properties) :
         val contentColor = props.contentColor
         val fabPosition = props.fabPosition
         val topAppScrollBehavior = props.topAppScrollBehavior
+        val contentWindowInsets = props.contentWindowInsets
 
         val topBar = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateTopBar }
@@ -135,6 +139,7 @@ internal class ScaffoldDTO private constructor(props: Properties) :
                         }
                     }
                 },
+                contentWindowInsets = contentWindowInsets ?: ScaffoldDefaults.contentWindowInsets,
                 content = { contentPaddingValues ->
                     body?.let { content ->
                         PhxLiveView(content, pushEvent, composableNode, contentPaddingValues)
@@ -166,6 +171,7 @@ internal class ScaffoldDTO private constructor(props: Properties) :
         val contentColor: Color?,
         val fabPosition: FabPosition,
         val topAppScrollBehavior: String?,
+        val contentWindowInsets: WindowInsets?,
         override val commonProps: CommonComposableProperties,
     ) : ComposableProperties
 
@@ -174,6 +180,7 @@ internal class ScaffoldDTO private constructor(props: Properties) :
         private var contentColor: Color? = null
         private var fabPosition: FabPosition = FabPosition.End
         private var topAppScrollBehavior: String? = null
+        private var contentWindowInsets: WindowInsets? = null
 
         /**
          * Color used for the background of this scaffold.
@@ -196,6 +203,24 @@ internal class ScaffoldDTO private constructor(props: Properties) :
         fun contentColor(color: String) = apply {
             if (color.isNotEmpty()) {
                 this.contentColor = color.toColor()
+            }
+        }
+
+        /**
+         * Window insets to be passed to content slot via PaddingValues params. Scaffold will take
+         * the insets into account from the top/bottom only if the topBar/ bottomBar are not
+         * present, as the scaffold expect topBar/bottomBar to handle insets instead.
+         * ```
+         * <Scaffold contentWindowInsets="{'bottom': '100'}" >
+         * ```
+         * @param insets the space, in Dp, at the each border of the scaffold's content that the
+         * inset represents. The supported values are: `left`, `top`, `bottom`, and `right`.
+         */
+        fun contentWindowInsets(insets: String) = apply {
+            try {
+                this.contentWindowInsets = windowInsetsFromString(insets)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
 
@@ -242,6 +267,7 @@ internal class ScaffoldDTO private constructor(props: Properties) :
                 contentColor,
                 fabPosition,
                 topAppScrollBehavior,
+                contentWindowInsets,
                 commonProps,
             )
         )
@@ -271,6 +297,7 @@ internal object ScaffoldDtoFactory : ComposableViewFactory<ScaffoldDTO>() {
         when (attribute.name) {
             attrContainerColor -> builder.containerColor(attribute.value)
             attrContentColor -> builder.contentColor(attribute.value)
+            attrContentWindowInsets -> builder.contentWindowInsets(attribute.value)
             attrFabPosition -> builder.fabPosition(attribute.value)
             attrTopBarScrollBehavior -> builder.topBarScrollBehavior(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)

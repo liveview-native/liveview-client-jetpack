@@ -39,6 +39,7 @@ object Attrs {
     const val attrContentPaddingTop = "contentPaddingTop"
     const val attrContentPaddingVertical = "contentPaddingVertical"
     const val attrContentScale = "contentScale"
+    const val attrContentWindowInsets = "contentWindowInsets"
     const val attrCount = "count"
     const val attrCrossFade = "crossFade"
     const val attrCurrentPage = "currentPage"
