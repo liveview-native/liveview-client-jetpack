@@ -1,5 +1,9 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.runtime.Stable
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentPaddingBottom
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentPaddingEnd
@@ -11,16 +15,27 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
 import org.phoenixframework.liveview.data.constants.Attrs.attrUserScrollEnabled
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+
+internal interface ILazyListProperties : ComposableProperties {
+    val lazyListProps: LazyListProperties
+}
+
+@Stable
+internal data class LazyListProperties(
+    val contentPadding: ImmutableMap<String, Int> = persistentMapOf(),
+    val reverseLayout: Boolean = false,
+    val userScrollEnabled: Boolean = true,
+)
 
 /**
  * Parent class of lazy lists like LazyColumn and LazyRow. This class holds some common attributes
  * for lazy lists.
  */
 internal abstract class LazyComposableBuilder : ComposableBuilder() {
-    var contentPadding: MutableMap<String, Int> = mutableMapOf()
-    var reverseLayout: Boolean = false
-    var userScrollEnabled: Boolean = true
+    var lazyListProps = LazyListProperties()
+    private var contentPadding: MutableMap<String, Int> = mutableMapOf()
 
     /**
      * Reverse the direction of scrolling and layout. When true, items are laid out in the reverse
@@ -28,7 +43,8 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
      */
     fun reverseLayout(isReverseLayout: String) = apply {
         if (isReverseLayout.isNotEmpty()) {
-            reverseLayout = isReverseLayout.toBoolean()
+            this.lazyListProps =
+                this.lazyListProps.copy(reverseLayout = isReverseLayout.toBoolean())
         }
     }
 
@@ -36,9 +52,10 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
      * Reverse the direction of scrolling and layout. When true, items are laid out in the reverse
      * order which means that column is scrolled to the bottom.
      */
-    fun userScrollEnabled(userScrollEnabled: String) = apply {
+    private fun userScrollEnabled(userScrollEnabled: String) = apply {
         if (userScrollEnabled.isNotEmpty()) {
-            this.userScrollEnabled = userScrollEnabled.toBoolean()
+            this.lazyListProps =
+                this.lazyListProps.copy(userScrollEnabled = userScrollEnabled.toBoolean())
         }
     }
 
@@ -49,9 +66,11 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
      * ```
      * @param paddingValue int value for padding to be applied on end edge of the items.
      */
-    fun contentPaddingEnd(paddingValue: String) = apply {
+    private fun contentPaddingEnd(paddingValue: String) = apply {
         if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
             contentPadding[END] = paddingValue.toInt()
+            this.lazyListProps =
+                this.lazyListProps.copy(contentPadding = contentPadding.toImmutableMap())
         }
     }
 
@@ -62,9 +81,11 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
      * ```
      * @param paddingValue int value for padding to be applied on start edge of the items.
      */
-    fun contentPaddingStart(paddingValue: String) = apply {
+    private fun contentPaddingStart(paddingValue: String) = apply {
         if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
             contentPadding[START] = paddingValue.toInt()
+            this.lazyListProps =
+                this.lazyListProps.copy(contentPadding = contentPadding.toImmutableMap())
         }
     }
 
@@ -75,9 +96,11 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
      * ```
      * @param paddingValue int value for padding to be applied on top edge of the items.
      */
-    fun contentPaddingTop(paddingValue: String) = apply {
+    private fun contentPaddingTop(paddingValue: String) = apply {
         if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
             contentPadding[TOP] = paddingValue.toInt()
+            this.lazyListProps =
+                this.lazyListProps.copy(contentPadding = contentPadding.toImmutableMap())
         }
     }
 
@@ -88,9 +111,11 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
      * ```
      * @param paddingValue int value for padding to be applied on top edge of the items.
      */
-    fun contentPaddingBottom(paddingValue: String) = apply {
+    private fun contentPaddingBottom(paddingValue: String) = apply {
         if (paddingValue.isNotEmptyAndIsDigitsOnly()) {
             contentPadding[BOTTOM] = paddingValue.toInt()
+            this.lazyListProps =
+                this.lazyListProps.copy(contentPadding = contentPadding.toImmutableMap())
         }
     }
 
@@ -101,9 +126,11 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
      * ```
      * @param paddingValue int value for padding to be applied on start and end edges of the items.
      */
-    fun contentPaddingHorizontal(paddingValue: String) = apply {
+    private fun contentPaddingHorizontal(paddingValue: String) = apply {
         contentPaddingStart(paddingValue)
         contentPaddingEnd(paddingValue)
+        this.lazyListProps =
+            this.lazyListProps.copy(contentPadding = contentPadding.toImmutableMap())
     }
 
     /**
@@ -113,9 +140,11 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
      * ```
      * @param paddingValue int value for padding to be applied on top and bottom edges of the items.
      */
-    fun contentPaddingVertical(paddingValue: String) = apply {
+    private fun contentPaddingVertical(paddingValue: String) = apply {
         contentPaddingTop(paddingValue)
         contentPaddingBottom(paddingValue)
+        this.lazyListProps =
+            this.lazyListProps.copy(contentPadding = contentPadding.toImmutableMap())
     }
 
     /**
@@ -125,11 +154,13 @@ internal abstract class LazyComposableBuilder : ComposableBuilder() {
      * ```
      * @param paddingValue int value for padding to be applied to list items.
      */
-    fun contentPadding(paddingValue: String) = apply {
+    private fun contentPadding(paddingValue: String) = apply {
         contentPaddingTop(paddingValue)
         contentPaddingStart(paddingValue)
         contentPaddingBottom(paddingValue)
         contentPaddingEnd(paddingValue)
+        this.lazyListProps =
+            this.lazyListProps.copy(contentPadding = contentPadding.toImmutableMap())
     }
 
     /**

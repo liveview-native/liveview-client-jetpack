@@ -3,11 +3,15 @@ package org.phoenixframework.liveview.data.dto
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxKeyUp
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_KEY_UP
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -21,10 +25,8 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * <BackHandler enabled="true" phx-keyup="onBackPressed" />
  * ```
  */
-internal class BackHandlerDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val enabled = builder.enabled
-    private val onBack = builder.onBack
+internal class BackHandlerDTO private constructor(props: Properties) :
+    ComposableView<BackHandlerDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -32,19 +34,31 @@ internal class BackHandlerDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val enabled = props.enabled
+        val onBack = props.onBack
+
         BackHandler(
             enabled = enabled,
             onBack = {
-                pushEvent(EVENT_TYPE_KEY_UP, onBack, mapOf("key" to "Back"), null)
+                pushEvent(EVENT_TYPE_KEY_UP, onBack, mergeValueWithPhxValue(KEY_KEY, "Back"), null)
             }
         )
     }
 
+    companion object {
+        private const val KEY_KEY = "key"
+    }
+
+    @Stable
+    internal data class Properties(
+        val enabled: Boolean,
+        val onBack: String,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var enabled: Boolean = false
-            private set
-        var onBack: String = ""
-            private set
+        private var enabled: Boolean = false
+        private var onBack: String = ""
 
         /**
          * Sets the event name to be triggered on the server when the back button is pressed.
@@ -70,14 +84,15 @@ internal class BackHandlerDTO private constructor(builder: Builder) :
             this.enabled = enabled.toBoolean()
         }
 
-        fun build() = BackHandlerDTO(this)
+        fun build() = BackHandlerDTO(
+            Properties(enabled, onBack, commonProps)
+        )
     }
 }
 
-internal object BackHandlerDtoFactory :
-    ComposableViewFactory<BackHandlerDTO, BackHandlerDTO.Builder>() {
+internal object BackHandlerDtoFactory : ComposableViewFactory<BackHandlerDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): BackHandlerDTO = BackHandlerDTO.Builder().also {

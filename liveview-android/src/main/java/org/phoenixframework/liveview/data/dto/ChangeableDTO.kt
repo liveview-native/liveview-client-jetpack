@@ -1,5 +1,7 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.runtime.Stable
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -10,6 +12,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPhxDebounce
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxThrottle
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.throttleLatest
@@ -20,45 +23,51 @@ import org.phoenixframework.liveview.domain.extensions.throttleLatest
  * server. It also contains the component value and if it is enabled or not.
  * Examples of subclasses of this class are: `CheckBoxDTO`, `SliderDTO` and `TextFieldDTO`.
  */
-internal abstract class ChangeableDTO<T : Any>(builder: ChangeableDTOBuilder<T>) :
-    ComposableView(builder.modifier) {
-    protected val debounce = builder.debounce
-    protected val throttle = builder.throttle
-    protected val changeValueEventName = builder.onChange
-    protected val enabled = builder.enabled
-    protected val value = builder.value as T
+internal abstract class ChangeableDTO<T : Any, CP : IChangeableProperties>(properties: CP) :
+    ComposableView<IChangeableProperties>(properties) {
+    override val props: CP = properties
 
-    protected fun <TC> Flow<TC>.onTypedChangeable(): Flow<TC> =
-        this.distinctUntilChanged()
-            .drop(1) // Ignoring the first emission when the component is displayed
-            .debounce(debounce)
-            .throttleLatest(throttle)
+    @OptIn(FlowPreview::class)
+    protected fun <TC> Flow<TC>.onTypedChangeable(): Flow<TC> = this.distinctUntilChanged()
+        .drop(1) // Ignoring the first emission when the component is displayed
+        .debounce(props.changeableProps.debounce)
+        .throttleLatest(props.changeableProps.throttle)
 
     protected fun Flow<T>.onChangeable(): Flow<T> = onTypedChangeable()
 
-    protected fun pushOnChangeEvent(pushEvent: PushEvent, event: String, value: T) {
+    protected fun pushOnChangeEvent(pushEvent: PushEvent, event: String, value: Any?) {
         pushEvent.invoke(ComposableBuilder.EVENT_TYPE_CHANGE, event, value, null)
     }
 }
+
+/**
+ * Extension of Composable properties adding properties specific for components that can change its
+ * internal value.
+ */
+internal interface IChangeableProperties : ComposableProperties {
+    val changeableProps: ChangeableProperties
+}
+
+@Stable
+internal data class ChangeableProperties(
+    val onChange: String?,
+    val debounce: Long,
+    val throttle: Long,
+    val enabled: Boolean,
+)
 
 /**
  * Common builder class for components that use `phx-change` attribute. These components can use
  * the properties `phx-debounce` and `phx-throttle` in order to reduce the number of socket calls
  * from the client.
  */
-internal abstract class ChangeableDTOBuilder<T : Any>(defaultValue: T) : ComposableBuilder() {
-    var onChange: String? = null
-        private set
-    var debounce: Long = 300
-        private set
-    var throttle: Long = 300L
-        private set
-    var enabled: Boolean = true
-        private set
-
-    init {
-        value(defaultValue)
-    }
+internal abstract class ChangeableDTOBuilder : ComposableBuilder() {
+    protected var changeableProps: ChangeableProperties = ChangeableProperties(
+        onChange = null,
+        debounce = DEFAULT_DEBOUNCE,
+        throttle = DEFAULT_THROTTLE,
+        enabled = true,
+    )
 
     /**
      * Sets the event name to triggered on the server when the component's value changes.
@@ -69,7 +78,7 @@ internal abstract class ChangeableDTOBuilder<T : Any>(defaultValue: T) : Composa
      * @param event event name defined on the server to handle the component's value changes.
      */
     private fun onChange(event: String) = apply {
-        this.onChange = event
+        this.changeableProps = this.changeableProps.copy(onChange = event)
     }
 
     /**
@@ -81,7 +90,8 @@ internal abstract class ChangeableDTOBuilder<T : Any>(defaultValue: T) : Composa
      * @param debounce delay (in milliseconds) for emitting the change value's event.
      */
     private fun debounce(debounce: String) = apply {
-        this.debounce = debounce.toLongOrNull() ?: 300
+        this.changeableProps =
+            this.changeableProps.copy(debounce = debounce.toLongOrNull() ?: DEFAULT_DEBOUNCE)
     }
 
     /**
@@ -95,7 +105,8 @@ internal abstract class ChangeableDTOBuilder<T : Any>(defaultValue: T) : Composa
      * @param throttle rate limit (in milliseconds) for change value's event calls.
      */
     private fun throttle(throttle: String) = apply {
-        this.throttle = throttle.toLongOrNull() ?: 300
+        this.changeableProps =
+            this.changeableProps.copy(throttle = throttle.toLongOrNull() ?: DEFAULT_THROTTLE)
     }
 
     /**
@@ -107,7 +118,7 @@ internal abstract class ChangeableDTOBuilder<T : Any>(defaultValue: T) : Composa
      * @param enabled true if the component is enabled, false otherwise.
      */
     private fun enabled(enabled: String) = apply {
-        this.enabled = enabled.toBoolean()
+        this.changeableProps = this.changeableProps.copy(enabled = enabled.toBoolean())
     }
 
     /**
@@ -128,3 +139,6 @@ internal abstract class ChangeableDTOBuilder<T : Any>(defaultValue: T) : Composa
         return result
     }
 }
+
+private const val DEFAULT_THROTTLE: Long = 300L
+private const val DEFAULT_DEBOUNCE: Long = 300L

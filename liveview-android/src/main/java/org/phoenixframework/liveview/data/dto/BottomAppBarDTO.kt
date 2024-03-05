@@ -6,18 +6,23 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
-import org.phoenixframework.liveview.data.constants.Templates
+import org.phoenixframework.liveview.data.constants.Templates.templateAction
+import org.phoenixframework.liveview.data.constants.Templates.templateFab
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -44,14 +49,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </BottomAppBar>
  * ```
  */
-internal class BottomAppBarDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val containerColor = builder.containerColor
-    private val contentColor = builder.contentColor
-    private val contentPadding = builder.contentPadding
-    private val tonalElevation = builder.tonalElevation
-    private val windowsInsets = builder.windowInsets
+internal class BottomAppBarDTO private constructor(props: Properties) :
+    ComposableView<BottomAppBarDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -59,20 +58,26 @@ internal class BottomAppBarDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val containerColorValue = props.containerColor
+        val contentColor = props.contentColor
+        val contentPadding = props.contentPadding
+        val tonalElevation = props.tonalElevation
+        val windowsInsets = props.windowInsets
+
         val actions = remember(composableNode?.children) {
-            composableNode?.children?.filter { it.node?.template == Templates.templateAction }
+            composableNode?.children?.filter { it.node?.template == templateAction }
         }
         val floatingActionButton = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateFab }
+            composableNode?.children?.find { it.node?.template == templateFab }
         }
-        val containerColor = containerColor ?: BottomAppBarDefaults.containerColor
+        val containerColor = containerColorValue ?: BottomAppBarDefaults.containerColor
         BottomAppBar(
             actions = {
                 actions?.forEach {
                     PhxLiveView(it, pushEvent, composableNode, null, this)
                 }
             },
-            modifier = modifier.paddingIfNotNull(paddingValues),
+            modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
             floatingActionButton = floatingActionButton?.let { fab ->
                 {
                     PhxLiveView(fab, pushEvent, composableNode, null)
@@ -86,17 +91,22 @@ internal class BottomAppBarDTO private constructor(builder: Builder) :
         )
     }
 
+    @Stable
+    internal data class Properties(
+        val containerColor: Color?,
+        val contentColor: Color?,
+        val contentPadding: PaddingValues?,
+        val tonalElevation: Dp?,
+        val windowInsets: WindowInsets?,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var containerColor: Color? = null
-            private set
-        var contentColor: Color? = null
-            private set
-        var contentPadding: PaddingValues? = null
-            private set
-        var tonalElevation: Dp? = null
-            private set
-        var windowInsets: WindowInsets? = null
-            private set
+        private var containerColor: Color? = null
+        private var contentColor: Color? = null
+        private var contentPadding: PaddingValues? = null
+        private var tonalElevation: Dp? = null
+        private var windowInsets: WindowInsets? = null
 
         /**
          * Color used for the background of this bottom bar.
@@ -167,12 +177,20 @@ internal class BottomAppBarDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = BottomAppBarDTO(this)
+        fun build() = BottomAppBarDTO(
+            Properties(
+                containerColor,
+                contentColor,
+                contentPadding,
+                tonalElevation,
+                windowInsets,
+                commonProps
+            )
+        )
     }
 }
 
-internal object BottomAppBarDtoFactory :
-    ComposableViewFactory<BottomAppBarDTO, BottomAppBarDTO.Builder>() {
+internal object BottomAppBarDtoFactory : ComposableViewFactory<BottomAppBarDTO>() {
     /**
      * Creates a `BottomAppBarDTO` object based on the attributes of the input `Attributes` object.
      * BottomAppBarDTO co-relates to the BottomAppBar composable
@@ -180,7 +198,7 @@ internal object BottomAppBarDtoFactory :
      * @return a `BottomAppBarDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): BottomAppBarDTO = attributes.fold(BottomAppBarDTO.Builder()) { builder, attribute ->

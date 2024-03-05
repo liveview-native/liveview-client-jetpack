@@ -8,9 +8,12 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import org.phoenixframework.liveview.data.constants.Attrs.attrActionColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrActionContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrActionEvent
@@ -27,7 +30,9 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrWithDismissAction
 import org.phoenixframework.liveview.data.constants.SnackbarDurationValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -47,19 +52,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * />
  * ```
  */
-internal class SnackbarDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val actionOnNewLine = builder.actionOnNewLine
-    private val shape = builder.shape
-    private val containerColor = builder.containerColor
-    private val contentColor = builder.contentColor
-    private val actionColor = builder.actionColor
-    private val actionContentColor = builder.actionContentColor
-    private val dismissActionContentColor = builder.dismissActionContentColor
-
-    private val visuals = builder.visuals
-    private val actionEvent = builder.actionEvent
-    private val dismissEvent = builder.dismissEvent
+internal class SnackbarDTO private constructor(props: Properties) :
+    ComposableView<SnackbarDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -67,17 +61,30 @@ internal class SnackbarDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val actionOnNewLine = props.actionOnNewLine
+        val shape = props.shape
+        val containerColor = props.containerColor
+        val contentColor = props.contentColor
+        val actionColor = props.actionColor
+        val actionContentColor = props.actionContentColor
+        val dismissActionContentColor = props.dismissActionContentColor
+
+        val visuals = props.visuals
+        val actionEvent = props.actionEvent
+        val dismissEvent = props.dismissEvent
+
         val snackbarData = remember(composableNode) {
             Data(
                 visuals,
                 pushEvent,
+                props.commonProps.phxValue,
                 actionEvent,
                 dismissEvent,
             )
         }
         Snackbar(
             snackbarData = snackbarData,
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             actionOnNewLine = actionOnNewLine,
             shape = shape ?: SnackbarDefaults.shape,
             containerColor = containerColor ?: SnackbarDefaults.color,
@@ -91,33 +98,44 @@ internal class SnackbarDTO private constructor(builder: Builder) :
             onDispose {
                 if (!snackbarData.dismissWasCalled) {
                     dismissEvent?.let {
-                        onClickFromString(pushEvent, it).invoke()
+                        pushEvent(
+                            ComposableBuilder.EVENT_TYPE_BLUR,
+                            it,
+                            props.commonProps.phxValue,
+                            null
+                        )
                     }
                 }
             }
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val actionOnNewLine: Boolean,
+        val shape: Shape?,
+        val containerColor: Color?,
+        val contentColor: Color?,
+        val actionColor: Color?,
+        val actionContentColor: Color?,
+        val dismissActionContentColor: Color?,
+        val visuals: Visuals,
+        val actionEvent: String?,
+        val dismissEvent: String?,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var actionOnNewLine: Boolean = false
-            private set
-        var shape: Shape? = null
-            private set
-        var containerColor: Color? = null
-            private set
-        var contentColor: Color? = null
-            private set
-        var actionColor: Color? = null
-            private set
-        var actionContentColor: Color? = null
-            private set
-        var dismissActionContentColor: Color? = null
-            private set
+        private var actionOnNewLine: Boolean = false
+        private var shape: Shape? = null
+        private var containerColor: Color? = null
+        private var contentColor: Color? = null
+        private var actionColor: Color? = null
+        private var actionContentColor: Color? = null
+        private var dismissActionContentColor: Color? = null
+        private var actionEvent: String? = null
+        private var dismissEvent: String? = null
         var visuals: Visuals = Visuals()
-            private set
-        var actionEvent: String? = null
-            private set
-        var dismissEvent: String? = null
             private set
 
         /**
@@ -283,12 +301,27 @@ internal class SnackbarDTO private constructor(builder: Builder) :
             this.dismissEvent = dismissEvent
         }
 
-        fun build() = SnackbarDTO(this)
+        fun build() = SnackbarDTO(
+            Properties(
+                actionOnNewLine,
+                shape,
+                containerColor,
+                contentColor,
+                actionColor,
+                actionContentColor,
+                dismissActionContentColor,
+                visuals,
+                actionEvent,
+                dismissEvent,
+                commonProps,
+            )
+        )
     }
 
     internal data class Data(
         val snackbarVisuals: Visuals,
         val pushEvent: PushEvent,
+        val phxValue: Any?,
         val actionEventName: String?,
         val dismissEventName: String?,
         var dismissWasCalled: Boolean = false
@@ -298,14 +331,14 @@ internal class SnackbarDTO private constructor(builder: Builder) :
 
         override fun dismiss() {
             dismissEventName?.let {
-                onClickFromString(pushEvent, it).invoke()
+                onClickFromString(pushEvent, it, phxValue).invoke()
                 dismissWasCalled = true
             }
         }
 
         override fun performAction() {
             actionEventName?.let {
-                onClickFromString(pushEvent, it).invoke()
+                onClickFromString(pushEvent, it, phxValue).invoke()
             }
         }
     }
@@ -329,7 +362,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
     companion object {
         fun visualsFromNode(node: CoreNodeElement?): Visuals {
             return SnackbarDtoFactory.handleAttrs(
-                node?.attributes ?: emptyArray(),
+                node?.attributes ?: persistentListOf(),
                 null,
                 null
             ).visuals
@@ -337,7 +370,7 @@ internal class SnackbarDTO private constructor(builder: Builder) :
     }
 }
 
-internal object SnackbarDtoFactory : ComposableViewFactory<SnackbarDTO, SnackbarDTO.Builder>() {
+internal object SnackbarDtoFactory : ComposableViewFactory<SnackbarDTO>() {
 
     /**
      * Creates a `SnackbarDTO` object based on the attributes of the input `Attributes` object.
@@ -346,13 +379,13 @@ internal object SnackbarDtoFactory : ComposableViewFactory<SnackbarDTO, Snackbar
      * @return a `SnackbarDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): SnackbarDTO = handleAttrs(attributes, pushEvent, scope).build()
 
     internal fun handleAttrs(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): SnackbarDTO.Builder = attributes.fold(SnackbarDTO.Builder()) { builder, attribute ->

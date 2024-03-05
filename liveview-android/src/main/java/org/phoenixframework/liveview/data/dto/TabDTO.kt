@@ -5,16 +5,21 @@ import androidx.compose.material3.LeadingIconTab
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Tab
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelectedContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrUnselectedContentColor
-import org.phoenixframework.liveview.data.constants.Templates
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.data.constants.Templates.templateText
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -48,24 +53,24 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </Tab>
  * ```
  */
-internal class TabDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val onClick = builder.onClick
-    private val value = builder.value
-    private val selected = builder.selected
-    private val enabled = builder.enabled
-    private val selectedContentColor = builder.selectedContentColor
-    private val unselectedContentColor = builder.unselectedContentColor
+internal class TabDTO private constructor(props: Properties) :
+    ComposableView<TabDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
+        val onClick = props.onClick
+        val selected = props.selected
+        val enabled = props.enabled
+        val selectedContentColor = props.selectedContentColor
+        val unselectedContentColor = props.unselectedContentColor
+
         val text = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateText }
+            composableNode?.children?.find { it.node?.template == templateText }
         }
         val icon = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateIcon }
+            composableNode?.children?.find { it.node?.template == templateIcon }
         }
         val selectedColor = selectedContentColor ?: LocalContentColor.current
         when (composableNode?.node?.tag) {
@@ -73,8 +78,12 @@ internal class TabDTO private constructor(builder: Builder) :
                 if (text == null && icon == null) {
                     Tab(
                         selected = selected,
-                        onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
-                        modifier = modifier,
+                        onClick = onClickFromString(
+                            pushEvent,
+                            onClick,
+                            props.commonProps.phxValue
+                        ),
+                        modifier = props.commonProps.modifier,
                         enabled = enabled,
                         selectedContentColor = selectedColor,
                         unselectedContentColor = unselectedContentColor ?: selectedColor,
@@ -87,8 +96,12 @@ internal class TabDTO private constructor(builder: Builder) :
                 } else {
                     Tab(
                         selected = selected,
-                        onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
-                        modifier = modifier,
+                        onClick = onClickFromString(
+                            pushEvent,
+                            onClick,
+                            props.commonProps.phxValue
+                        ),
+                        modifier = props.commonProps.modifier,
                         enabled = enabled,
                         text = text?.let {
                             {
@@ -108,7 +121,11 @@ internal class TabDTO private constructor(builder: Builder) :
             ComposableTypes.leadingIconTab ->
                 LeadingIconTab(
                     selected = selected,
-                    onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+                    onClick = onClickFromString(
+                        pushEvent,
+                        onClick,
+                        props.commonProps.phxValue
+                    ),
                     text = text?.let {
                         {
                             PhxLiveView(it, pushEvent, composableNode, null)
@@ -119,7 +136,7 @@ internal class TabDTO private constructor(builder: Builder) :
                             PhxLiveView(it, pushEvent, composableNode, null)
                         }
                     } ?: {},
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     enabled = enabled,
                     selectedContentColor = selectedColor,
                     unselectedContentColor = unselectedContentColor ?: selectedColor,
@@ -127,17 +144,22 @@ internal class TabDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val onClick: String,
+        val selected: Boolean,
+        val enabled: Boolean,
+        val selectedContentColor: Color?,
+        val unselectedContentColor: Color?,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var onClick: String = ""
-            private set
-        var selected: Boolean = false
-            private set
-        var enabled: Boolean = true
-            private set
-        var selectedContentColor: Color? = null
-            private set
-        var unselectedContentColor: Color? = null
-            private set
+        private var onClick: String = ""
+        private var selected: Boolean = false
+        private var enabled: Boolean = true
+        private var selectedContentColor: Color? = null
+        private var unselectedContentColor: Color? = null
 
         /**
          * Sets the event name to be triggered on the server when the tab is clicked.
@@ -199,11 +221,20 @@ internal class TabDTO private constructor(builder: Builder) :
             this.unselectedContentColor = unselectedContentColor.toColor()
         }
 
-        fun build() = TabDTO(this)
+        fun build() = TabDTO(
+            Properties(
+                onClick,
+                selected,
+                enabled,
+                selectedContentColor,
+                unselectedContentColor,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object TabDtoFactory : ComposableViewFactory<TabDTO, TabDTO.Builder>() {
+internal object TabDtoFactory : ComposableViewFactory<TabDTO>() {
     /**
      * Creates a `TabDTO` object based on the attributes of the input `Attributes` object.
      * TabDTO co-relates to the Tab composable.
@@ -211,12 +242,12 @@ internal object TabDtoFactory : ComposableViewFactory<TabDTO, TabDTO.Builder>() 
      * @return a `TabDTO` object based on the attributes of the input `Attributes` object
      **/
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): TabDTO = attributes.fold(TabDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
+            attrEnabled -> builder.enabled(attribute.value)
             attrPhxClick -> builder.onClick(attribute.value)
             attrSelected -> builder.selected(attribute.value)
-            attrEnabled -> builder.enabled(attribute.value)
             attrSelectedContentColor -> builder.selectedContentColor(attribute.value)
             attrUnselectedContentColor -> builder.unselectedContentColor(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)

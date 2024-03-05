@@ -14,9 +14,11 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -51,7 +53,9 @@ import org.phoenixframework.liveview.data.constants.DatePickerDisplayModeValues
 import org.phoenixframework.liveview.data.constants.Templates.templateHeadline
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -76,17 +80,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 @OptIn(ExperimentalMaterial3Api::class)
-internal class DatePickerDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val colors = builder.colors?.toImmutableMap()
-    private val initialDisplayedMonthMillis = builder.initialDisplayedMonthMillis
-    private val initialDisplayMode = builder.initialDisplayMode
-    private val initialSelectedDateMillis = builder.initialSelectedDateMillis
-    private val initialSelectedStartDateMillis = builder.initialSelectedStartDateMillis
-    private val initialSelectedEndDateMillis = builder.initialSelectedEndDateMillis
-    private val onChanged = builder.onChanged
-    private val showModeToggle = builder.showModeToggle
-    private val yearRange = builder.yearRange
+internal class DatePickerDTO private constructor(props: Properties) :
+    ComposableView<DatePickerDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -114,16 +109,29 @@ internal class DatePickerDTO private constructor(builder: Builder) :
         headline: ComposableTreeNode?,
         pushEvent: PushEvent
     ) {
+        val colors = props.colors
+        val initialDisplayedMonthMillis = props.initialDisplayedMonthMillis
+        val initialDisplayMode = props.initialDisplayMode
+        val initialSelectedDateMillis = props.initialSelectedDateMillis
+        val onChanged = props.onChanged
+        val showModeToggle = props.showModeToggle
+        val yearRange = remember(props.yearStart, props.yearEnd) {
+            IntRange(
+                props.yearStart ?: DatePickerDefaults.YearRange.first,
+                props.yearEnd ?: DatePickerDefaults.YearRange.last,
+            )
+        }
+
         val state = rememberDatePickerState(
             initialSelectedDateMillis = initialSelectedDateMillis,
             initialDisplayedMonthMillis = initialDisplayedMonthMillis ?: initialSelectedDateMillis,
-            yearRange = yearRange ?: DatePickerDefaults.YearRange,
+            yearRange = yearRange,
             initialDisplayMode = initialDisplayMode ?: DisplayMode.Picker,
         )
         val dateFormatter = remember { DatePickerDefaults.dateFormatter() }
         DatePicker(
             state = state,
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             dateFormatter = dateFormatter,
             // TODO Custom DatePickerFormatter,
             // TODO dateValidator = {},
@@ -149,8 +157,13 @@ internal class DatePickerDTO private constructor(builder: Builder) :
             colors = getDatePickerColors(colors),
         )
         LaunchedEffect(state.selectedDateMillis) {
-            state.selectedDateMillis?.let {
-                pushEvent.invoke(ComposableBuilder.EVENT_TYPE_CHANGE, onChanged, it, null)
+            state.selectedDateMillis?.let { dateInMillis ->
+                pushEvent(
+                    ComposableBuilder.EVENT_TYPE_CHANGE,
+                    onChanged,
+                    mergeValueWithPhxValue(KEY_DATE, dateInMillis),
+                    null
+                )
             }
         }
     }
@@ -162,18 +175,30 @@ internal class DatePickerDTO private constructor(builder: Builder) :
         headline: ComposableTreeNode?,
         pushEvent: PushEvent
     ) {
+        val colors = props.colors
+        val initialDisplayedMonthMillis = props.initialDisplayedMonthMillis
+        val initialDisplayMode = props.initialDisplayMode
+        val initialSelectedStartDateMillis = props.initialSelectedStartDateMillis
+        val initialSelectedEndDateMillis = props.initialSelectedEndDateMillis
+        val onChanged = props.onChanged
+        val showModeToggle = props.showModeToggle
+        val yearRange = IntRange(
+            props.yearStart ?: DatePickerDefaults.YearRange.first,
+            props.yearEnd ?: DatePickerDefaults.YearRange.last,
+        )
+
         val state = rememberDateRangePickerState(
             initialSelectedStartDateMillis = initialSelectedStartDateMillis,
             initialSelectedEndDateMillis = initialSelectedEndDateMillis,
             initialDisplayedMonthMillis = initialDisplayedMonthMillis
                 ?: initialSelectedStartDateMillis,
-            yearRange = yearRange ?: DatePickerDefaults.YearRange,
+            yearRange = yearRange,
             initialDisplayMode = initialDisplayMode ?: DisplayMode.Picker,
         )
         val dateFormatter = remember { DatePickerDefaults.dateFormatter() }
         DateRangePicker(
             state = state,
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             dateFormatter = dateFormatter,
             // TODO Custom DatePickerFormatter,
             // TODO dateValidator = {},
@@ -213,25 +238,35 @@ internal class DatePickerDTO private constructor(builder: Builder) :
         }
     }
 
+    companion object {
+        private const val KEY_DATE = "date"
+    }
+
+    @Stable
+    internal data class Properties(
+        val colors: ImmutableMap<String, String>?,
+        val initialDisplayedMonthMillis: Long?,
+        val initialDisplayMode: DisplayMode?,
+        val initialSelectedDateMillis: Long?,
+        val initialSelectedStartDateMillis: Long?,
+        val initialSelectedEndDateMillis: Long?,
+        val onChanged: String,
+        val showModeToggle: Boolean,
+        val yearStart: Int?,
+        val yearEnd: Int?,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var colors: Map<String, String>? = null
-            private set
-        var initialDisplayedMonthMillis: Long? = null
-            private set
-        var initialDisplayMode: DisplayMode? = null
-            private set
-        var initialSelectedDateMillis: Long? = null
-            private set
-        var initialSelectedStartDateMillis: Long? = null
-            private set
-        var initialSelectedEndDateMillis: Long? = null
-            private set
-        var onChanged: String = ""
-            private set
-        var showModeToggle: Boolean = true
-            private set
-        var yearRange: IntRange? = null
-            private set
+        private var colors: ImmutableMap<String, String>? = null
+        private var initialDisplayedMonthMillis: Long? = null
+        private var initialDisplayMode: DisplayMode? = null
+        private var initialSelectedDateMillis: Long? = null
+        private var initialSelectedStartDateMillis: Long? = null
+        private var initialSelectedEndDateMillis: Long? = null
+        private var onChanged: String = ""
+        private var showModeToggle: Boolean = true
+        private var yearRange: IntRange? = null
 
         /**
          * Timestamp in UTC milliseconds from the epoch that represents an initial selection of a
@@ -366,18 +401,32 @@ internal class DatePickerDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
-        fun build() = DatePickerDTO(this)
+        fun build() = DatePickerDTO(
+            Properties(
+                colors,
+                initialDisplayedMonthMillis,
+                initialDisplayMode,
+                initialSelectedDateMillis,
+                initialSelectedStartDateMillis,
+                initialSelectedEndDateMillis,
+                onChanged,
+                showModeToggle,
+                yearRange?.first,
+                yearRange?.last,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object DatePickerDtoFactory :
-    ComposableViewFactory<DatePickerDTO, DatePickerDTO.Builder>() {
+    ComposableViewFactory<DatePickerDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): DatePickerDTO = attributes.fold(DatePickerDTO.Builder()) { builder, attribute ->
         when (attribute.name) {
             attrColors -> builder.colors(attribute.value)

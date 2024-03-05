@@ -4,16 +4,19 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgeDefaults
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Templates.templateBadge
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -32,18 +35,18 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </BadgedBox>
  * ```
  */
-internal class BadgedBoxDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val contentColor = builder.contentColor
-    private val containerColor = builder.containerColor
+internal class BadgedBoxDTO private constructor(props: Properties) :
+    ComposableView<BadgedBoxDTO.Properties>(props) {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?,
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val contentColor = props.contentColor
+        val containerColor = props.containerColor
+
         val badge = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateBadge }
         }
@@ -62,7 +65,7 @@ internal class BadgedBoxDTO private constructor(builder: Builder) :
                     }
                 }
             },
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
         ) {
             contentChild?.let {
                 PhxLiveView(it, pushEvent, composableNode, null, this)
@@ -70,11 +73,17 @@ internal class BadgedBoxDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val containerColor: Color?,
+        val contentColor: Color?,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
+
     internal class Builder : ComposableBuilder() {
-        var containerColor: Color? = null
-            private set
-        var contentColor: Color? = null
-            private set
+        private var containerColor: Color? = null
+        private var contentColor: Color? = null
 
         /**
          * The color used for the background of the BadgedBox.
@@ -102,11 +111,11 @@ internal class BadgedBoxDTO private constructor(builder: Builder) :
             this.contentColor = contentColor.toColor()
         }
 
-        fun build() = BadgedBoxDTO(this)
+        fun build() = BadgedBoxDTO(Properties(containerColor, contentColor, commonProps))
     }
 }
 
-internal object BadgedBoxDtoFactory : ComposableViewFactory<BadgedBoxDTO, BadgedBoxDTO.Builder>() {
+internal object BadgedBoxDtoFactory : ComposableViewFactory<BadgedBoxDTO>() {
     /**
      * Creates a `BadgedBoxDTO` object based on the attributes of the input `Attributes` object.
      * BadgedBoxDTO co-relates to the BadgedBox composable
@@ -114,7 +123,7 @@ internal object BadgedBoxDtoFactory : ComposableViewFactory<BadgedBoxDTO, Badged
      * @return a `BadgedBoxDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): BadgedBoxDTO = attributes.fold(BadgedBoxDTO.Builder()) { builder, attribute ->

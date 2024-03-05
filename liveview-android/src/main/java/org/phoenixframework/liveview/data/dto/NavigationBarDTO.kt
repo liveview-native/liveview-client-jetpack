@@ -7,15 +7,19 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationBarItem
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -38,12 +42,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </NavigationBar>
  * ```
  */
-internal class NavigationBarDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val containerColor = builder.containerColor
-    private val contentColor = builder.contentColor
-    private val tonalElevation = builder.tonalElevation
-    private val windowsInsets = builder.windowInsets
+internal class NavigationBarDTO private constructor(props: Properties) :
+    ComposableView<NavigationBarDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -51,9 +51,14 @@ internal class NavigationBarDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val containerColor = containerColor ?: NavigationBarDefaults.containerColor
+        val containerColorValue = props.containerColor
+        val contentColor = props.contentColor
+        val tonalElevation = props.tonalElevation
+        val windowsInsets = props.windowInsets
+
+        val containerColor = containerColorValue ?: NavigationBarDefaults.containerColor
         NavigationBar(
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             containerColor = containerColor,
             contentColor = contentColor
                 ?: MaterialTheme.colorScheme.contentColorFor(containerColor),
@@ -67,15 +72,20 @@ internal class NavigationBarDTO private constructor(builder: Builder) :
         )
     }
 
+    @Stable
+    internal data class Properties(
+        val containerColor: Color?,
+        val contentColor: Color?,
+        val tonalElevation: Dp?,
+        val windowInsets: WindowInsets?,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var containerColor: Color? = null
-            private set
-        var contentColor: Color? = null
-            private set
-        var tonalElevation: Dp? = null
-            private set
-        var windowInsets: WindowInsets? = null
-            private set
+        private var containerColor: Color? = null
+        private var contentColor: Color? = null
+        private var tonalElevation: Dp? = null
+        private var windowInsets: WindowInsets? = null
 
         /**
          * The color used for the background of this navigation bar.
@@ -131,12 +141,20 @@ internal class NavigationBarDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = NavigationBarDTO(this)
+        fun build() = NavigationBarDTO(
+            Properties(
+                containerColor,
+                contentColor,
+                tonalElevation,
+                windowInsets,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object NavigationBarDtoFactory :
-    ComposableViewFactory<NavigationBarDTO, NavigationBarDTO.Builder>() {
+    ComposableViewFactory<NavigationBarDTO>() {
     /**
      * Creates a `NavigationBarDTO` object based on the attributes of the input `Attributes` object.
      * NavigationBarDTO co-relates to the NavigationBar.
@@ -144,7 +162,7 @@ internal object NavigationBarDtoFactory :
      * @return a `NavigationBarDTO` object based on the attributes of the input `Attributes` object.
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): NavigationBarDTO =
@@ -158,7 +176,7 @@ internal object NavigationBarDtoFactory :
             } as NavigationBarDTO.Builder
         }.build()
 
-    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
+    override fun subTags(): Map<String, ComposableViewFactory<*>> {
         return mapOf(
             navigationBarItem to NavigationBarItemDtoFactory
         )

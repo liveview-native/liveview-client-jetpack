@@ -9,17 +9,20 @@ import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrGesturesEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrIsOpen
-import org.phoenixframework.liveview.data.constants.Attrs.attrOnClose
-import org.phoenixframework.liveview.data.constants.Attrs.attrOnOpen
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.Attrs.attrScrimColor
 import org.phoenixframework.liveview.data.constants.Templates
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -35,8 +38,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  * <ModalNavigationDrawer
  *   isOpen={"#{@drawerIsOpen}"}
- *   onClose="closeDrawer"
- *   onOpen="openDrawer">
+ *   phx-change="onChange">
  *    <ModalDrawerSheet template="drawerContent">...</ModalDrawerSheet>
  *    <Scaffold>...</Scaffold>
  *  </ModalNavigationDrawer>
@@ -45,21 +47,18 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * order to control if the drawer is open or not.
  * You can also use a `PermanentNavigationDrawer` or a `DismissibleNavigationDrawer`.
  */
-internal class NavigationDrawerDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val gesturesEnabled = builder.gesturesEnabled
-    private val scrimColor = builder.scrimColor
-    private val isOpen = builder.isOpen
-    private val onClose = builder.onClose
-    private val onOpen = builder.onOpen
+internal class NavigationDrawerDTO private constructor(props: Properties) :
+    ComposableView<NavigationDrawerDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
-        composableNode: ComposableTreeNode?,
-        paddingValues: PaddingValues?,
-        pushEvent: PushEvent
+        composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
+        val gesturesEnabled = props.gesturesEnabled
+        val isOpen = props.isOpen
+        val onChange = props.onChange
+        val scrimColor = props.scrimColor
+
         val drawerContent = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == Templates.templateDrawerContent }
         }
@@ -74,25 +73,25 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
                         PhxLiveView(it, pushEvent, composableNode, null)
                     }
                 },
-                modifier = modifier,
+                modifier = props.commonProps.modifier,
                 content = {
                     content?.let {
                         PhxLiveView(it, pushEvent, composableNode, null)
                     }
-                }
+                },
             )
         } else {
             val drawerState =
                 rememberDrawerState(
                     initialValue = if (isOpen) DrawerValue.Open else DrawerValue.Closed,
                     confirmStateChange = { drawerValue ->
-                        if (drawerValue == DrawerValue.Open) {
-                            pushEvent(EVENT_TYPE_CHANGE, onOpen, "", null)
-                        } else {
-                            pushEvent(EVENT_TYPE_CHANGE, onClose, "", null)
+                        val drawerIsOpen = drawerValue == DrawerValue.Open
+                        if (onChange.isNotEmpty()) {
+                            val pushValue = mergeValueWithPhxValue(KEY_DRAWER_VALUE, drawerIsOpen)
+                            pushEvent(EVENT_TYPE_CHANGE, onChange, pushValue, null)
                         }
                         true
-                    }
+                    },
                 )
             when (composableNode?.node?.tag) {
                 ComposableTypes.modalNavigationDrawer -> {
@@ -102,7 +101,7 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
                                 PhxLiveView(it, pushEvent, composableNode, null)
                             }
                         },
-                        modifier = modifier,
+                        modifier = props.commonProps.modifier,
                         drawerState = drawerState,
                         gesturesEnabled = gesturesEnabled,
                         scrimColor = scrimColor ?: DrawerDefaults.scrimColor,
@@ -110,7 +109,7 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
                             content?.let {
                                 PhxLiveView(it, pushEvent, composableNode, null)
                             }
-                        }
+                        },
                     )
                 }
 
@@ -121,14 +120,14 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
                                 PhxLiveView(it, pushEvent, composableNode, null)
                             }
                         },
-                        modifier = modifier,
+                        modifier = props.commonProps.modifier,
                         drawerState = drawerState,
                         gesturesEnabled = gesturesEnabled,
                         content = {
                             content?.let {
                                 PhxLiveView(it, pushEvent, composableNode, null)
                             }
-                        }
+                        },
                     )
             }
             LaunchedEffect(composableNode) {
@@ -141,17 +140,24 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
         }
     }
 
+    companion object {
+        const val KEY_DRAWER_VALUE = "isOpen"
+    }
+
+    @Stable
+    internal data class Properties(
+        val gesturesEnabled: Boolean,
+        val scrimColor: Color?,
+        val isOpen: Boolean,
+        val onChange: String,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var gesturesEnabled: Boolean = true
-            private set
-        var scrimColor: Color? = null
-            private set
-        var isOpen: Boolean = false
-            private set
-        var onClose: String = ""
-            private set
-        var onOpen: String = ""
-            private set
+        private var gesturesEnabled: Boolean = true
+        private var scrimColor: Color? = null
+        private var isOpen: Boolean = false
+        private var onChange: String = ""
 
         /**
          * Indicates if the drawer is opened or closed. This property is only used by
@@ -192,35 +198,31 @@ internal class NavigationDrawerDTO private constructor(builder: Builder) :
         }
 
         /**
-         * Function to be called on the server to be called when the drawer is closed. This property
-         * is only used by `ModalNavigationDrawer` and `DismissibleNavigationDrawer`.
+         * Function to be called on the server when the drawer is open or closed. This property
+         * is only used by `ModalNavigationDrawer` and `DismissibleNavigationDrawer`. The server
+         * receives a boolean parameter in order to indicate if the drawer is open or closed.
          * ```
-         * <ModalNavigationDrawer onClose="closeDrawer" >
+         * <ModalNavigationDrawer phx-change="onChange" >
          * ```
          * @param event name of the function to be called on the server when the drawer is closed.
          */
-        fun onClose(event: String) = apply {
-            this.onClose = event
+        fun onChange(event: String) = apply {
+            this.onChange = event
         }
 
-        /**
-         * Function to be called on the server to be called when the drawer is opened. This property
-         * is only used by `ModalNavigationDrawer` and `DismissibleNavigationDrawer`.
-         * ```
-         * <ModalNavigationDrawer onOpen="openDrawer" >
-         * ```
-         * @param event name of the function to be called on the server when the drawer is opened.
-         */
-        fun onOpen(event: String) = apply {
-            this.onOpen = event
-        }
-
-        fun build() = NavigationDrawerDTO(this)
+        fun build() = NavigationDrawerDTO(
+            Properties(
+                gesturesEnabled,
+                scrimColor,
+                isOpen,
+                onChange,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object NavigationDrawerDtoFactory :
-    ComposableViewFactory<NavigationDrawerDTO, NavigationDrawerDTO.Builder>() {
+internal object NavigationDrawerDtoFactory : ComposableViewFactory<NavigationDrawerDTO>() {
     /**
      * Creates a `NavigationDrawerDTO` object based on the attributes of the input `Attributes`
      * object. NavigationDrawerDTO co-relates to the ModalNavigationDrawer,
@@ -230,18 +232,14 @@ internal object NavigationDrawerDtoFactory :
      * object.
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): NavigationDrawerDTO =
-        attributes.fold(NavigationDrawerDTO.Builder()) { builder, attribute ->
-            when (attribute.name) {
-                attrGesturesEnabled -> builder.gesturesEnabled(attribute.value)
-                attrIsOpen -> builder.isOpen(attribute.value)
-                attrOnClose -> builder.onClose(attribute.value)
-                attrOnOpen -> builder.onOpen(attribute.value)
-                attrScrimColor -> builder.scrimColor(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as NavigationDrawerDTO.Builder
-        }.build()
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+    ): NavigationDrawerDTO = attributes.fold(NavigationDrawerDTO.Builder()) { builder, attribute ->
+        when (attribute.name) {
+            attrGesturesEnabled -> builder.gesturesEnabled(attribute.value)
+            attrIsOpen -> builder.isOpen(attribute.value)
+            attrPhxChange -> builder.onChange(attribute.value)
+            attrScrimColor -> builder.scrimColor(attribute.value)
+            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
+        } as NavigationDrawerDTO.Builder
+    }.build()
 }

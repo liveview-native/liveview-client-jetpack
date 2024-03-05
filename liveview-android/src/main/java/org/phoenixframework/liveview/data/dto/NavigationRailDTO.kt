@@ -6,14 +6,18 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
 import org.phoenixframework.liveview.data.constants.Templates.templateHeader
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -38,12 +42,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </NavigationRail>
  * ```
  */
-internal class NavigationRailDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val containerColor = builder.containerColor
-    private val contentColor = builder.contentColor
-    private val windowsInsets = builder.windowInsets
+internal class NavigationRailDTO private constructor(props: Properties) :
+    ComposableView<NavigationRailDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -51,6 +51,10 @@ internal class NavigationRailDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val containerColorValue = props.containerColor
+        val contentColor = props.contentColor
+        val windowsInsets = props.windowInsets
+
         val header = remember(composableNode?.children) {
             composableNode?.children?.filter { it.node?.template == templateHeader }
                 .takeIf { it?.isNotEmpty() == true }
@@ -58,9 +62,9 @@ internal class NavigationRailDTO private constructor(builder: Builder) :
         val content = remember(composableNode?.children) {
             composableNode?.children?.filter { it.node?.template.isNullOrEmpty() }
         }
-        val containerColor = containerColor ?: NavigationRailDefaults.ContainerColor
+        val containerColor = containerColorValue ?: NavigationRailDefaults.ContainerColor
         NavigationRail(
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             containerColor = containerColor,
             contentColor = contentColor ?: contentColorFor(containerColor),
             header = header?.let { headerNodes ->
@@ -79,13 +83,18 @@ internal class NavigationRailDTO private constructor(builder: Builder) :
         )
     }
 
+    @Stable
+    internal data class Properties(
+        val containerColor: Color?,
+        val contentColor: Color?,
+        val windowInsets: WindowInsets?,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var containerColor: Color? = null
-            private set
-        var contentColor: Color? = null
-            private set
-        var windowInsets: WindowInsets? = null
-            private set
+        private var containerColor: Color? = null
+        private var contentColor: Color? = null
+        private var windowInsets: WindowInsets? = null
 
         /**
          * The color used for the background of this navigation rail.
@@ -131,14 +140,20 @@ internal class NavigationRailDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = NavigationRailDTO(this)
+        fun build() = NavigationRailDTO(
+            Properties(
+                containerColor,
+                contentColor,
+                windowInsets,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object NavigationRailDtoFactory :
-    ComposableViewFactory<NavigationRailDTO, NavigationRailDTO.Builder>() {
+internal object NavigationRailDtoFactory : ComposableViewFactory<NavigationRailDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): NavigationRailDTO =

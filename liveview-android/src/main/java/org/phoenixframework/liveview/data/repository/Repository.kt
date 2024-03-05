@@ -97,13 +97,13 @@ class Repository(
             }
         }
 
-    fun pushEvent(type: String, event: String, value: Any, target: Int? = null) {
+    fun pushEvent(type: String, event: String, value: Any?, target: Int? = null) {
         Log.d(TAG, "pushEvent: [type: $type | event: $event | value: $value | target: $target]")
         channelService?.pushEvent(
             "event", mapOf(
                 "type" to type,
                 "event" to event,
-                "value" to value,
+                "value" to (value ?: emptyMap<String, Any>()),
                 "cid" to target as Any?
             )
         )

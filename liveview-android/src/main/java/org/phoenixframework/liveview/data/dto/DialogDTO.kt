@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -8,13 +9,14 @@ import androidx.compose.ui.window.SecureFlagPolicy
 import org.phoenixframework.liveview.data.constants.Attrs.attrDecorFitsSystemWindows
 import org.phoenixframework.liveview.data.constants.Attrs.attrDismissOnBackPress
 import org.phoenixframework.liveview.data.constants.Attrs.attrDismissOnClickOutside
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.data.constants.Attrs.attrOnDismissRequest
 import org.phoenixframework.liveview.data.constants.Attrs.attrSecurePolicy
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrUsePlatformDefaultWidth
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.ui.theme.shapeFromString
@@ -22,23 +24,23 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
 /**
  * Parent class of `AlertDialog` and `DatePickerDialog`.
  */
-internal abstract class DialogDTO(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
+internal abstract class DialogDTO<DP : DialogDTO.IDialogProperties>(props: DP) :
+    ComposableView<DP>(props) {
 
-    protected val dismissEvent = builder.dismissEvent
-    protected val dialogProperties = builder.dialogProperties
-    protected val shape = builder.shape
-    protected val tonalElevation = builder.tonalElevation
-    protected val value = builder.value
+    internal interface IDialogProperties : ComposableProperties {
+        val dialogProps: DialogComposableProperties
+    }
+
+    @Stable
+    internal data class DialogComposableProperties(
+        val dismissEvent: String? = null,
+        val dialogProperties: DialogProperties = DialogProperties(),
+        val shape: Shape? = null,
+        val tonalElevation: Dp? = null,
+    )
 
     internal abstract class Builder : ComposableBuilder() {
-        var dismissEvent: String? = null
-            private set
-        var dialogProperties: DialogProperties = DialogProperties()
-            private set
-        var shape: Shape? = null
-            private set
-        var tonalElevation: Dp? = null
+        var dialogComposableProps = DialogComposableProperties()
             private set
 
         // Attributes to initialize the dialogProperties
@@ -59,6 +61,9 @@ internal abstract class DialogDTO(builder: Builder) :
          */
         private fun dismissOnBackPress(dismissOnBackPress: String) = apply {
             this.dismissOnBackPress = dismissOnBackPress.toBoolean()
+            this.dialogComposableProps = this.dialogComposableProps.copy(
+                dialogProperties = buildDialogProperties()
+            )
         }
 
         /**
@@ -72,6 +77,9 @@ internal abstract class DialogDTO(builder: Builder) :
          */
         private fun dismissOnClickOutside(dismissOnClickOutside: String) = apply {
             this.dismissOnClickOutside = dismissOnClickOutside.toBoolean()
+            this.dialogComposableProps = this.dialogComposableProps.copy(
+                dialogProperties = buildDialogProperties()
+            )
         }
 
         /**
@@ -85,6 +93,9 @@ internal abstract class DialogDTO(builder: Builder) :
          */
         private fun securePolicy(securePolicy: String) = apply {
             this.securePolicy = secureFlagPolicyFromString(securePolicy)
+            this.dialogComposableProps = this.dialogComposableProps.copy(
+                dialogProperties = buildDialogProperties()
+            )
         }
 
         /**
@@ -98,6 +109,9 @@ internal abstract class DialogDTO(builder: Builder) :
          */
         protected fun usePlatformDefaultWidth(usePlatformDefaultWidth: String) = apply {
             this.usePlatformDefaultWidth = usePlatformDefaultWidth.toBoolean()
+            this.dialogComposableProps = this.dialogComposableProps.copy(
+                dialogProperties = buildDialogProperties()
+            )
         }
 
         /**
@@ -113,18 +127,22 @@ internal abstract class DialogDTO(builder: Builder) :
          */
         private fun decorFitsSystemWindows(decorFitsSystemWindows: String) = apply {
             this.decorFitsSystemWindows = decorFitsSystemWindows.toBoolean()
+            this.dialogComposableProps = this.dialogComposableProps.copy(
+                dialogProperties = buildDialogProperties()
+            )
         }
 
         /**
          * Event to be triggered on the server when the dialog should be dismissed.
          * ```
-         * <AlertDialog phx-click="dismissAction">...</AlertDialog>
+         * <AlertDialog onDismissRequest="dismissAction">...</AlertDialog>
          * ```
          * @param dismissEventName event name to be called on the server in order to dismiss the
          * alert dialog.
          */
         fun onDismissRequest(dismissEventName: String) = apply {
-            this.dismissEvent = dismissEventName
+            this.dialogComposableProps =
+                this.dialogComposableProps.copy(dismissEvent = dismissEventName)
         }
 
         /**
@@ -137,7 +155,8 @@ internal abstract class DialogDTO(builder: Builder) :
          * representing the curve size applied for all four corners.
          */
         fun shape(shape: String) = apply {
-            this.shape = shapeFromString(shape)
+            this.dialogComposableProps =
+                this.dialogComposableProps.copy(shape = shapeFromString(shape))
         }
 
         /**
@@ -151,7 +170,8 @@ internal abstract class DialogDTO(builder: Builder) :
          */
         private fun tonalElevation(tonalElevation: String) = apply {
             if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
-                this.tonalElevation = tonalElevation.toInt().dp
+                this.dialogComposableProps =
+                    this.dialogComposableProps.copy(tonalElevation = tonalElevation.toInt().dp)
             }
         }
 
@@ -161,7 +181,7 @@ internal abstract class DialogDTO(builder: Builder) :
                 attrDecorFitsSystemWindows -> decorFitsSystemWindows(attribute.value)
                 attrDismissOnBackPress -> dismissOnBackPress(attribute.value)
                 attrDismissOnClickOutside -> dismissOnClickOutside(attribute.value)
-                attrPhxClick -> onDismissRequest(attribute.value)
+                attrOnDismissRequest -> onDismissRequest(attribute.value)
                 attrSecurePolicy -> securePolicy(attribute.value)
                 attrTonalElevation -> tonalElevation(attribute.value)
                 attrUsePlatformDefaultWidth -> usePlatformDefaultWidth(attribute.value)
@@ -171,14 +191,12 @@ internal abstract class DialogDTO(builder: Builder) :
             return result
         }
 
-        fun buildDialogProperties() {
-            dialogProperties = DialogProperties(
-                dismissOnBackPress,
-                dismissOnClickOutside,
-                securePolicy,
-                usePlatformDefaultWidth,
-                decorFitsSystemWindows
-            )
-        }
+        private fun buildDialogProperties() = DialogProperties(
+            dismissOnBackPress,
+            dismissOnClickOutside,
+            securePolicy,
+            usePlatformDefaultWidth,
+            decorFitsSystemWindows
+        )
     }
 }

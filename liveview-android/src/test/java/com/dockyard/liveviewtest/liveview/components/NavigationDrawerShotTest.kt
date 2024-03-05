@@ -18,8 +18,7 @@ import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrIsOpen
-import org.phoenixframework.liveview.data.constants.Attrs.attrOnClose
-import org.phoenixframework.liveview.data.constants.Attrs.attrOnOpen
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.Attrs.attrScrimColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
@@ -69,7 +68,7 @@ class NavigationDrawerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <$modalNavigationDrawer $attrIsOpen="true" $attrOnClose="" $attrOnOpen="">
+                <$modalNavigationDrawer $attrIsOpen="true" $attrPhxChange="">
                   <$modalDrawerSheet $attrTemplate="$templateDrawerContent">
                     <$navigationDrawerItem $attrSelected="true">
                       <$text $attrTemplate="$templateLabel">Option 1</$text>
@@ -122,8 +121,7 @@ class NavigationDrawerShotTest : LiveViewComposableTest() {
                 <$modalNavigationDrawer 
                   $attrScrimColor="$Red" 
                   $attrIsOpen="true" 
-                  $attrOnClose="" 
-                  $attrOnOpen="">
+                  $attrPhxChange="">
                   <$modalDrawerSheet $attrTemplate="$templateDrawerContent">
                     <$navigationDrawerItem $attrSelected="true">
                       <$text $attrTemplate="$templateLabel">Option 1</$text>
@@ -173,7 +171,7 @@ class NavigationDrawerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <$dismissibleNavigationDrawer $attrIsOpen="true" $attrOnClose="" $attrOnOpen="" $attrSize="$fill">
+                <$dismissibleNavigationDrawer $attrIsOpen="true" $attrPhxChange="" $attrSize="$fill">
                   <$modalDrawerSheet $attrTemplate="$templateDrawerContent">
                     <$navigationDrawerItem $attrSelected="true">
                       <$text $attrTemplate="$templateLabel">Option 1</$text>
@@ -221,7 +219,7 @@ class NavigationDrawerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <$permanentNavigationDrawer $attrIsOpen="true" $attrOnClose="" $attrOnOpen="">
+                <$permanentNavigationDrawer $attrIsOpen="true" $attrPhxChange="">
                   <$modalDrawerSheet $attrTemplate="$templateDrawerContent">
                     <$navigationDrawerItem $attrSelected="true">
                       <$text $attrTemplate="$templateLabel">Option 1</$text>

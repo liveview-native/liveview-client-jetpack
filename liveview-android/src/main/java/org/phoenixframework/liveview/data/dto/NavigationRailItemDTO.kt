@@ -6,7 +6,9 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.NavigationRailItemColors
 import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlwaysShowLabel
@@ -18,7 +20,9 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs
 import org.phoenixframework.liveview.data.constants.Templates
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -53,14 +57,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </NavigationRail>
  * ```
  */
-internal class NavigationRailItemDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val alwaysShowLabel = builder.alwaysShowLabel
-    private val colors = builder.colors?.toImmutableMap()
-    private val enabled = builder.enabled
-    private val onClick = builder.onClick
-    private val selected = builder.selected
-    private val value = builder.value
+internal class NavigationRailItemDTO private constructor(props: Properties) :
+    ComposableView<NavigationRailItemDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -68,6 +66,12 @@ internal class NavigationRailItemDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val alwaysShowLabel = props.alwaysShowLabel
+        val colors = props.colors
+        val enabled = props.enabled
+        val onClick = props.onClick
+        val selected = props.selected
+
         val nriIcon = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateIcon }
         }
@@ -76,13 +80,13 @@ internal class NavigationRailItemDTO private constructor(builder: Builder) :
         }
         NavigationRailItem(
             selected = selected,
-            onClick = onClickFromString(pushEvent, onClick, value?.toString() ?: ""),
+            onClick = onClickFromString(pushEvent, onClick, props.commonProps.phxValue),
             icon = {
                 nriIcon?.let {
                     PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             enabled = enabled,
             label = nriLabel?.let {
                 {
@@ -124,17 +128,22 @@ internal class NavigationRailItemDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val alwaysShowLabel: Boolean,
+        val colors: ImmutableMap<String, String>?,
+        val enabled: Boolean,
+        val onClick: String,
+        val selected: Boolean,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var alwaysShowLabel: Boolean = true
-            private set
-        var colors: Map<String, String>? = null
-            private set
-        var enabled: Boolean = true
-            private set
-        var onClick: String = ""
-            private set
-        var selected: Boolean = false
-            private set
+        private var alwaysShowLabel: Boolean = true
+        private var colors: ImmutableMap<String, String>? = null
+        private var enabled: Boolean = true
+        private var onClick: String = ""
+        private var selected: Boolean = false
 
         /**
          * Controls the enabled state of this item. When false, this component will not respond to
@@ -176,7 +185,7 @@ internal class NavigationRailItemDTO private constructor(builder: Builder) :
          */
         fun colors(colors: String) = apply {
             if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)
+                this.colors = colorsFromString(colors)?.toImmutableMap()
             }
         }
 
@@ -202,14 +211,22 @@ internal class NavigationRailItemDTO private constructor(builder: Builder) :
             this.selected = selected.toBoolean()
         }
 
-        fun build() = NavigationRailItemDTO(this)
+        fun build() = NavigationRailItemDTO(
+            Properties(
+                alwaysShowLabel,
+                colors,
+                enabled,
+                onClick,
+                selected,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object NavigationRailItemDtoFactory :
-    ComposableViewFactory<NavigationRailItemDTO, NavigationRailItemDTO.Builder>() {
+internal object NavigationRailItemDtoFactory : ComposableViewFactory<NavigationRailItemDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): NavigationRailItemDTO =

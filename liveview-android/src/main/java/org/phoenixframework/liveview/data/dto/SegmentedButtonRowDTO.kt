@@ -6,11 +6,15 @@ import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrSpace
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableTypes.segmentedButton
 import org.phoenixframework.liveview.domain.base.ComposableView
@@ -64,9 +68,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 @OptIn(ExperimentalMaterial3Api::class)
-internal class SegmentedButtonRowDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val space = builder.space
+internal class SegmentedButtonRowDTO private constructor(props: Properties) :
+    ComposableView<SegmentedButtonRowDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -74,10 +77,12 @@ internal class SegmentedButtonRowDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val space = props.space
+
         when (composableNode?.node?.tag) {
             ComposableTypes.singleChoiceSegmentedButtonRow -> {
                 SingleChoiceSegmentedButtonRow(
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     space = space ?: SegmentedButtonDefaults.BorderWidth,
                 ) {
                     composableNode.children.forEach {
@@ -88,7 +93,7 @@ internal class SegmentedButtonRowDTO private constructor(builder: Builder) :
 
             ComposableTypes.multiChoiceSegmentedButtonRow -> {
                 MultiChoiceSegmentedButtonRow(
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     space = space ?: SegmentedButtonDefaults.BorderWidth,
                 ) {
                     composableNode.children.forEach {
@@ -99,9 +104,14 @@ internal class SegmentedButtonRowDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val space: Dp?,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var space: Dp? = null
-            private set
+        private var space: Dp? = null
 
         /**
          * the dimension of the overlap between buttons. Should be equal to the stroke width used
@@ -114,14 +124,18 @@ internal class SegmentedButtonRowDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = SegmentedButtonRowDTO(this)
+        fun build() = SegmentedButtonRowDTO(
+            Properties(
+                space,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object SegmentedButtonRowDtoFactory :
-    ComposableViewFactory<SegmentedButtonRowDTO, SegmentedButtonRowDTO.Builder>() {
+internal object SegmentedButtonRowDtoFactory : ComposableViewFactory<SegmentedButtonRowDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): SegmentedButtonRowDTO =
@@ -132,7 +146,7 @@ internal object SegmentedButtonRowDtoFactory :
             } as SegmentedButtonRowDTO.Builder
         }.build()
 
-    override fun subTags(): Map<String, ComposableViewFactory<*, *>> {
+    override fun subTags(): Map<String, ComposableViewFactory<*>> {
         return mapOf(
             segmentedButton to SegmentedButtonDtoFactory
         )

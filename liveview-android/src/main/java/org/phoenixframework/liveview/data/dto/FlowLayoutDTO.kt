@@ -9,14 +9,18 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxItemsInEachColumn
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxItemsInEachRow
 import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -36,14 +40,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * on the bottom, and then continues filling items until the items run out.
  */
 @OptIn(ExperimentalLayoutApi::class)
-internal class FlowLayoutDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val horizontalArrangement: Arrangement.Horizontal = builder.horizontalArrangement
-    private val verticalArrangement: Arrangement.Vertical = builder.verticalArrangement
-    private val maxItems: Int = builder.maxItems
-    private val hasVerticalScroll = builder.hasVerticalScrolling
-    private val hasHorizontalScroll = builder.hasHorizontalScrolling
+internal class FlowLayoutDTO private constructor(props: Properties) :
+    ComposableView<FlowLayoutDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -51,10 +49,16 @@ internal class FlowLayoutDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val horizontalArrangement = props.horizontalArrangement
+        val verticalArrangement = props.verticalArrangement
+        val maxItems = props.maxItems
+        val hasVerticalScroll = props.commonProps.hasVerticalScrolling
+        val hasHorizontalScroll = props.commonProps.hasHorizontalScrolling
+
         when (composableNode?.node?.tag) {
             ComposableTypes.flowColumn -> {
                 FlowColumn(
-                    modifier = modifier
+                    modifier = props.commonProps.modifier
                         .paddingIfNotNull(paddingValues)
                         .optional(
                             hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
@@ -74,7 +78,7 @@ internal class FlowLayoutDTO private constructor(builder: Builder) :
 
             ComposableTypes.flowRow -> {
                 FlowRow(
-                    modifier = modifier
+                    modifier = props.commonProps.modifier
                         .paddingIfNotNull(paddingValues)
                         .optional(
                             hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
@@ -92,16 +96,20 @@ internal class FlowLayoutDTO private constructor(builder: Builder) :
                 }
             }
         }
-
     }
 
+    @Stable
+    internal data class Properties(
+        val horizontalArrangement: Arrangement.Horizontal,
+        val maxItems: Int,
+        val verticalArrangement: Arrangement.Vertical,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
-            private set
-        var maxItems: Int = Int.MAX_VALUE
-            private set
-        var verticalArrangement: Arrangement.Vertical = Arrangement.Top
-            private set
+        private var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
+        private var maxItems: Int = Int.MAX_VALUE
+        private var verticalArrangement: Arrangement.Vertical = Arrangement.Top
 
         /**
          * The horizontal arrangement of the children
@@ -146,14 +154,20 @@ internal class FlowLayoutDTO private constructor(builder: Builder) :
             this.verticalArrangement = verticalArrangementFromString(verticalArrangement)
         }
 
-        fun build() = FlowLayoutDTO(this)
+        fun build() = FlowLayoutDTO(
+            Properties(
+                horizontalArrangement,
+                maxItems,
+                verticalArrangement,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object FlowLayoutDtoFactory :
-    ComposableViewFactory<FlowLayoutDTO, FlowLayoutDTO.Builder>() {
+internal object FlowLayoutDtoFactory : ComposableViewFactory<FlowLayoutDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): FlowLayoutDTO = attributes.fold(FlowLayoutDTO.Builder()) { builder, attribute ->

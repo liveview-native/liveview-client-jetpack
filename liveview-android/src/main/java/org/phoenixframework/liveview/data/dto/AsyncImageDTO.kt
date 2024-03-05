@@ -2,11 +2,13 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlpha
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentDescription
@@ -14,7 +16,9 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
 import org.phoenixframework.liveview.data.constants.Attrs.attrCrossFade
 import org.phoenixframework.liveview.data.constants.Attrs.attrUrl
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -29,14 +33,8 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  *  contentScale="fillHeight" />
  * ```
  */
-internal class AsyncImageDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val imageUrl: String = builder.imageUrl
-    private val contentDescription: String? = builder.contentDescription
-    private val crossFade: Boolean = builder.crossFade
-    private val alignment: Alignment = builder.alignment
-    private val contentScale: ContentScale = builder.contentScale
-    private val alpha: Float = builder.alpha
+internal class AsyncImageDTO private constructor(props: Properties) :
+    ComposableView<AsyncImageDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -44,32 +42,44 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val imageUrl = props.imageUrl
+        val contentDescription = props.contentDescription
+        val crossFade = props.crossFade
+        val alignment = props.alignment
+        val contentScale = props.contentScale
+        val alpha = props.alpha
+
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(imageUrl)
                 .crossfade(crossFade)
                 .build(),
             contentDescription = contentDescription,
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             alignment = alignment,
             contentScale = contentScale,
             alpha = alpha
         )
     }
 
+    @Stable
+    data class Properties(
+        val imageUrl: String,
+        val contentDescription: String?,
+        val crossFade: Boolean,
+        val alignment: Alignment,
+        val contentScale: ContentScale,
+        val alpha: Float,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var imageUrl: String = ""
-            private set
-        var contentDescription: String? = null
-            private set
-        var crossFade: Boolean = false
-            private set
-        var alignment: Alignment = Alignment.Center
-            private set
-        var contentScale: ContentScale = ContentScale.Fit
-            private set
-        var alpha: Float = 1.0f
-            private set
+        private var imageUrl: String = ""
+        private var contentDescription: String? = null
+        private var crossFade: Boolean = false
+        private var alignment: Alignment = Alignment.Center
+        private var contentScale: ContentScale = ContentScale.Fit
+        private var alpha: Float = 1.0f
 
         /**
          * Sets the image URL.
@@ -151,12 +161,21 @@ internal class AsyncImageDTO private constructor(builder: Builder) :
             this.alpha = alpha.toFloatOrNull() ?: 1f
         }
 
-        fun build(): AsyncImageDTO = AsyncImageDTO(this)
+        fun build(): AsyncImageDTO = AsyncImageDTO(
+            Properties(
+                imageUrl,
+                contentDescription,
+                crossFade,
+                alignment,
+                contentScale,
+                alpha,
+                commonProps
+            )
+        )
     }
 }
 
-internal object AsyncImageDtoFactory :
-    ComposableViewFactory<AsyncImageDTO, AsyncImageDTO.Builder>() {
+internal object AsyncImageDtoFactory : ComposableViewFactory<AsyncImageDTO>() {
     /**
      * Creates an `AsyncImageDTO` object based on the attributes and text of the input `Attributes`
      * object. AsyncImageDTO co-relates to the AsyncImage composable from Coil library used to load
@@ -166,7 +185,7 @@ internal object AsyncImageDtoFactory :
      * object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): AsyncImageDTO = attributes.fold(

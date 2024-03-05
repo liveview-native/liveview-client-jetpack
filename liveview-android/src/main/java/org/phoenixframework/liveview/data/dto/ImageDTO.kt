@@ -3,18 +3,22 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlpha
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentDescription
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
 import org.phoenixframework.liveview.data.constants.Attrs.attrResource
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -29,13 +33,8 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * <Image resource="android_icon" />
  * ```
  */
-internal class ImageDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val imageResource: String = builder.imageResource
-    private val contentDescription: String? = builder.contentDescription
-    private val alignment: Alignment = builder.alignment
-    private val contentScale: ContentScale = builder.contentScale
-    private val alpha: Float = builder.alpha
+internal class ImageDTO private constructor(props: Properties) :
+    ComposableView<ImageDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -43,10 +42,16 @@ internal class ImageDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
+        val imageResource = props.imageResource
+        val contentDescription = props.contentDescription
+        val alignment = props.alignment
+        val contentScale = props.contentScale
+        val alpha = props.alpha
+
         Image(
             painter = getPainter(imageResource = imageResource),
             contentDescription = contentDescription,
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             alignment = alignment,
             contentScale = contentScale,
             alpha = alpha
@@ -68,17 +73,22 @@ internal class ImageDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val imageResource: String,
+        val contentDescription: String?,
+        val alignment: Alignment,
+        val contentScale: ContentScale,
+        val alpha: Float,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     class Builder : ComposableBuilder() {
-        var imageResource: String = ""
-            private set
-        var contentDescription: String? = null
-            private set
-        var alignment: Alignment = Alignment.Center
-            private set
-        var contentScale: ContentScale = ContentScale.Fit
-            private set
-        var alpha: Float = 1.0f
-            private set
+        private var imageResource: String = ""
+        private var contentDescription: String? = null
+        private var alignment: Alignment = Alignment.Center
+        private var contentScale: ContentScale = ContentScale.Fit
+        private var alpha: Float = 1.0f
 
         /**
          * Image name. The image must be located at project's `res/drawable` folder.
@@ -146,11 +156,20 @@ internal class ImageDTO private constructor(builder: Builder) :
             this.alpha = alpha.toFloatOrNull() ?: 1f
         }
 
-        fun build(): ImageDTO = ImageDTO(this)
+        fun build(): ImageDTO = ImageDTO(
+            Properties(
+                imageResource,
+                contentDescription,
+                alignment,
+                contentScale,
+                alpha,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object ImageDtoFactory : ComposableViewFactory<ImageDTO, ImageDTO.Builder>() {
+internal object ImageDtoFactory : ComposableViewFactory<ImageDTO>() {
     /**
      * Creates an `ImageDTO` object based on the attributes and text of the input `Attributes`
      * object. ImageDTO co-relates to the Image composable from Compose library used to load images
@@ -159,7 +178,7 @@ internal object ImageDtoFactory : ComposableViewFactory<ImageDTO, ImageDTO.Build
      * @return an `ImageDTO` object based on the attributes and text of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?,
     ): ImageDTO = attributes.fold(ImageDTO.Builder()) { builder, attribute ->

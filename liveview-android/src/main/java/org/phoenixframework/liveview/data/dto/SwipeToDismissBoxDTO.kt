@@ -6,16 +6,20 @@ import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnableDismissFromEndToStart
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnableDismissFromStartToEnd
 import org.phoenixframework.liveview.data.constants.Attrs.attrInitialValue
-import org.phoenixframework.liveview.data.constants.Attrs.attrOnValueChanged
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.SwipeToDismissBoxValues
 import org.phoenixframework.liveview.data.constants.Templates.templateBackgroundContent
 import org.phoenixframework.liveview.data.constants.Templates.templateContent
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -37,13 +41,8 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 @OptIn(ExperimentalMaterial3Api::class)
-internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val initialValue = builder.initialValue
-    private val enableDismissFromStartToEnd = builder.enableDismissFromStartToEnd
-    private val enableDismissFromEndToStart = builder.enableDismissFromEndToStart
-    private val onValueChange = builder.onValueChange
+internal class SwipeToDismissBoxDTO private constructor(props: Properties) :
+    ComposableView<SwipeToDismissBoxDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -51,6 +50,11 @@ internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val initialValue = props.initialValue
+        val enableDismissFromStartToEnd = props.enableDismissFromStartToEnd
+        val enableDismissFromEndToStart = props.enableDismissFromEndToStart
+        val onValueChange = props.onChange
+
         val backgroundContent = remember(composableNode?.children) {
             composableNode?.children?.filter { it.node?.template == templateBackgroundContent }
         }
@@ -70,7 +74,7 @@ internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
                         pushEvent(
                             ComposableBuilder.EVENT_TYPE_CHANGE,
                             onValueChange,
-                            it,
+                            mergeValueWithPhxValue(KEY_SWIPE_TO_DISMISS_VALUE, it),
                             null
                         )
                     }
@@ -85,7 +89,7 @@ internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
                     PhxLiveView(it, pushEvent, composableNode, null, this)
                 }
             },
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             enableDismissFromStartToEnd = enableDismissFromStartToEnd ?: true,
             enableDismissFromEndToStart = enableDismissFromEndToStart ?: true,
             content = {
@@ -96,15 +100,24 @@ internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
         )
     }
 
+    companion object {
+        const val KEY_SWIPE_TO_DISMISS_VALUE = "swipeToDismissValue"
+    }
+
+    @Stable
+    internal data class Properties(
+        val initialValue: SwipeToDismissBoxValue?,
+        val enableDismissFromStartToEnd: Boolean?,
+        val enableDismissFromEndToStart: Boolean?,
+        val onChange: String,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var initialValue: SwipeToDismissBoxValue? = null
-            private set
-        var enableDismissFromStartToEnd: Boolean? = null
-            private set
-        var enableDismissFromEndToStart: Boolean? = null
-            private set
-        var onValueChange: String = ""
-            private set
+        private var initialValue: SwipeToDismissBoxValue? = null
+        private var enableDismissFromStartToEnd: Boolean? = null
+        private var enableDismissFromEndToStart: Boolean? = null
+        private var onChange: String = ""
 
         /**
          * The initial value of the state. See the supported values at
@@ -154,18 +167,25 @@ internal class SwipeToDismissBoxDTO private constructor(builder: Builder) :
          * ```
          * @param value callback function name called in the server when the swipe is dismissed.
          */
-        fun onValueChange(value: String) = apply {
-            this.onValueChange = value
+        fun onChange(value: String) = apply {
+            this.onChange = value
         }
 
-        fun build() = SwipeToDismissBoxDTO(this)
+        fun build() = SwipeToDismissBoxDTO(
+            Properties(
+                initialValue,
+                enableDismissFromStartToEnd,
+                enableDismissFromEndToStart,
+                onChange,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object SwipeToDismissBoxDtoFactory :
-    ComposableViewFactory<SwipeToDismissBoxDTO, SwipeToDismissBoxDTO.Builder>() {
+internal object SwipeToDismissBoxDtoFactory : ComposableViewFactory<SwipeToDismissBoxDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): SwipeToDismissBoxDTO =
@@ -174,7 +194,7 @@ internal object SwipeToDismissBoxDtoFactory :
                 attrInitialValue -> builder.initialValue(attribute.value)
                 attrEnableDismissFromStartToEnd -> builder.enableDismissFromStartToEnd(attribute.value)
                 attrEnableDismissFromEndToStart -> builder.enableDismissFromEndToStart(attribute.value)
-                attrOnValueChanged -> builder.onValueChange(attribute.value)
+                attrPhxChange -> builder.onChange(attribute.value)
                 else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
             } as SwipeToDismissBoxDTO.Builder
         }.build()

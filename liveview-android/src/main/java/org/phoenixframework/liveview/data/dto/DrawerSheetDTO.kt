@@ -8,18 +8,22 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -46,14 +50,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * </PermanentNavigationDrawer>
  * ```
  */
-internal class DrawerSheetDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val drawerShape = builder.drawerShape
-    private val containerColor = builder.drawerContainerColor
-    private val contentColor = builder.drawerContentColor
-    private val tonalElevation = builder.drawerTonalElevation
-    private val windowsInsets = builder.windowInsets
+internal class DrawerSheetDTO private constructor(props: Properties) :
+    ComposableView<DrawerSheetDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -61,10 +59,16 @@ internal class DrawerSheetDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val drawerShape = props.drawerShape
+        val containerColor = props.drawerContainerColor
+        val contentColor = props.drawerContentColor
+        val tonalElevation = props.drawerTonalElevation
+        val windowsInsets = props.windowInsets
+
         when (composableNode?.node?.tag) {
             ComposableTypes.modalDrawerSheet ->
                 ModalDrawerSheet(
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     drawerShape = drawerShape ?: DrawerDefaults.shape,
                     drawerContainerColor = containerColor ?: DrawerDefaults.containerColor,
                     drawerContentColor = contentColor ?: contentColorFor(
@@ -81,7 +85,7 @@ internal class DrawerSheetDTO private constructor(builder: Builder) :
 
             ComposableTypes.dismissibleDrawerSheet ->
                 DismissibleDrawerSheet(
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     drawerShape = drawerShape ?: RectangleShape,
                     drawerContainerColor = containerColor ?: DrawerDefaults.containerColor,
                     drawerContentColor = contentColor ?: contentColorFor(
@@ -99,7 +103,7 @@ internal class DrawerSheetDTO private constructor(builder: Builder) :
 
             ComposableTypes.permanentDrawerSheet ->
                 PermanentDrawerSheet(
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     drawerShape = drawerShape ?: RectangleShape,
                     drawerContainerColor = containerColor ?: DrawerDefaults.containerColor,
                     drawerContentColor = contentColor ?: contentColorFor(
@@ -117,17 +121,23 @@ internal class DrawerSheetDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val drawerShape: Shape?,
+        val drawerContainerColor: Color?,
+        val drawerContentColor: Color?,
+        val drawerTonalElevation: Dp?,
+        val windowInsets: WindowInsets?,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
+
     internal class Builder : ComposableBuilder() {
-        var drawerShape: Shape? = null
-            private set
-        var drawerContainerColor: Color? = null
-            private set
-        var drawerContentColor: Color? = null
-            private set
-        var drawerTonalElevation: Dp? = null
-            private set
-        var windowInsets: WindowInsets? = null
-            private set
+        private var drawerShape: Shape? = null
+        private var drawerContainerColor: Color? = null
+        private var drawerContentColor: Color? = null
+        private var drawerTonalElevation: Dp? = null
+        private var windowInsets: WindowInsets? = null
 
         /**
          * Defines the shape of this drawer's container.
@@ -196,12 +206,21 @@ internal class DrawerSheetDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = DrawerSheetDTO(this)
+        fun build() = DrawerSheetDTO(
+            Properties(
+                drawerShape,
+                drawerContainerColor,
+                drawerContentColor,
+                drawerTonalElevation,
+                windowInsets,
+                commonProps,
+            )
+        )
     }
 }
 
 internal object DrawerSheetDtoFactory :
-    ComposableViewFactory<DrawerSheetDTO, DrawerSheetDTO.Builder>() {
+    ComposableViewFactory<DrawerSheetDTO>() {
     /**
      * Creates a `DrawerSheetDTO` object based on the attributes of the input `Attributes`
      * object. DrawerSheetDTO co-relates to the ModalDrawerSheet, DismissibleDrawerSheet, or
@@ -211,7 +230,7 @@ internal object DrawerSheetDtoFactory :
      * object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): DrawerSheetDTO =

@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.domain.factory
 
+import kotlinx.collections.immutable.persistentListOf
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AlertDialogDtoFactory
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
@@ -104,7 +105,10 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
             registerComponent(ComposableTypes.elevatedFilterChip, ChipDtoFactory)
             registerComponent(ComposableTypes.elevatedSuggestionChip, ChipDtoFactory)
-            registerComponent(ComposableTypes.extendedFloatingActionButton, FloatingActionButtonDtoFactory)
+            registerComponent(
+                ComposableTypes.extendedFloatingActionButton,
+                FloatingActionButtonDtoFactory
+            )
             registerComponent(
                 ComposableTypes.exposedDropdownMenuBox,
                 ExposedDropdownMenuBoxDtoFactory
@@ -128,7 +132,10 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.iconToggleButton, IconToggleButtonDtoFactory)
             registerComponent(ComposableTypes.image, ImageDtoFactory)
             registerComponent(ComposableTypes.inputChip, ChipDtoFactory)
-            registerComponent(ComposableTypes.largeFloatingActionButton, FloatingActionButtonDtoFactory)
+            registerComponent(
+                ComposableTypes.largeFloatingActionButton,
+                FloatingActionButtonDtoFactory
+            )
             registerComponent(ComposableTypes.largeTopAppBar, TopAppBarDtoFactory)
             registerComponent(ComposableTypes.lazyColumn, LazyColumnDtoFactory)
             registerComponent(ComposableTypes.lazyHorizontalGrid, LazyGridDtoFactory)
@@ -174,7 +181,10 @@ object ComposableNodeFactory {
                 SegmentedButtonRowDtoFactory
             )
             registerComponent(ComposableTypes.slider, SliderDtoFactory)
-            registerComponent(ComposableTypes.smallFloatingActionButton, FloatingActionButtonDtoFactory)
+            registerComponent(
+                ComposableTypes.smallFloatingActionButton,
+                FloatingActionButtonDtoFactory
+            )
             registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
             registerComponent(ComposableTypes.suggestionChip, ChipDtoFactory)
             registerComponent(ComposableTypes.surface, SurfaceDtoFactory)
@@ -218,7 +228,7 @@ object ComposableNodeFactory {
         parentTag: String?,
         pushEvent: PushEvent,
         scope: Any?
-    ): ComposableView {
+    ): ComposableView<*> {
         return if (element != null) {
             val tag = element.tag
             val attrs = element.attributes
@@ -235,7 +245,7 @@ object ComposableNodeFactory {
         } else {
             TextDtoFactory.buildComposableView(
                 "Invalid element",
-                emptyArray(),
+                persistentListOf(),
                 scope,
                 pushEvent
             )

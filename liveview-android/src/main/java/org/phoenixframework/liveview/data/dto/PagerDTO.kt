@@ -9,13 +9,16 @@ import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import org.phoenixframework.liveview.data.constants.Attrs.attrBeyondBoundsPageCount
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrCurrentPage
@@ -29,8 +32,10 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
 import org.phoenixframework.liveview.data.constants.Attrs.attrUserScrollEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -70,25 +75,26 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 @OptIn(ExperimentalFoundationApi::class, FlowPreview::class)
-internal class PagerDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val currentPage = builder.currentPage
-    private val initialPageOffsetFraction = builder.initialPageOffsetFraction
-    private val pageCount = builder.pageCount
-    private val contentPadding = builder.contentPadding
-    private val onChanged = builder.onChanged
-    private val pageSize = builder.pageSize
-    private val beyondBoundsPageCount = builder.beyondBoundsPageCount
-    private val pageSpacing = builder.pageSpacing
-    private val verticalAlignment = builder.verticalAlignment
-    private val horizontalAlignment = builder.horizontalAlignment
-    private val userScrollEnabled = builder.userScrollEnabled
-    private val reverseLayout = builder.reverseLayout
+internal class PagerDTO private constructor(props: Properties) :
+    ComposableView<PagerDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
         composableNode: ComposableTreeNode?, paddingValues: PaddingValues?, pushEvent: PushEvent
     ) {
+        val currentPage = props.currentPage
+        val initialPageOffsetFraction = props.initialPageOffsetFraction
+        val pageCount = props.pageCount
+        val contentPadding = props.contentPadding
+        val onChanged = props.onChanged
+        val pageSize = props.pageSize
+        val beyondBoundsPageCount = props.beyondBoundsPageCount
+        val pageSpacing = props.pageSpacing
+        val verticalAlignment = props.verticalAlignment
+        val horizontalAlignment = props.horizontalAlignment
+        val userScrollEnabled = props.userScrollEnabled
+        val reverseLayout = props.reverseLayout
+
         val childrenNodes = composableNode?.children ?: emptyArray()
         val state = rememberPagerState(
             initialPage = currentPage,
@@ -99,7 +105,7 @@ internal class PagerDTO private constructor(builder: Builder) :
             ComposableTypes.horizontalPager -> {
                 HorizontalPager(
                     state = state,
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     contentPadding = contentPadding ?: PaddingValues(0.dp),
                     pageSize = pageSize ?: PageSize.Fill,
                     beyondBoundsPageCount = beyondBoundsPageCount
@@ -122,7 +128,7 @@ internal class PagerDTO private constructor(builder: Builder) :
             ComposableTypes.verticalPager -> {
                 VerticalPager(
                     state = state,
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     contentPadding = contentPadding ?: PaddingValues(0.dp),
                     pageSize = pageSize ?: PageSize.Fill,
                     beyondBoundsPageCount = beyondBoundsPageCount
@@ -149,9 +155,12 @@ internal class PagerDTO private constructor(builder: Builder) :
                 .distinctUntilChanged()
                 // debouncing to avoid send intermediate values between the scrolling animation
                 .debounce(300)
-                .collect { page ->
+                .map {
+                    mergeValueWithPhxValue(KEY_PAGE, it)
+                }
+                .collect { value ->
                     onChanged?.let { event ->
-                        pushEvent.invoke(EVENT_TYPE_CHANGE, event, page, null)
+                        pushEvent.invoke(EVENT_TYPE_CHANGE, event, value, null)
                     }
                 }
         }
@@ -162,31 +171,40 @@ internal class PagerDTO private constructor(builder: Builder) :
         }
     }
 
+    companion object {
+        const val KEY_PAGE = "page"
+    }
+
+    @Stable
+    internal data class Properties(
+        val beyondBoundsPageCount: Int?,
+        val contentPadding: PaddingValues?,
+        val currentPage: Int,
+        val horizontalAlignment: Alignment.Horizontal?,
+        val initialPageOffsetFraction: Float?,
+        val onChanged: String?,
+        val pageCount: Int,
+        val pageSize: PageSize?,
+        val pageSpacing: Dp,
+        val reverseLayout: Boolean,
+        val userScrollEnabled: Boolean,
+        val verticalAlignment: Alignment.Vertical?,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var beyondBoundsPageCount: Int? = null
-            private set
-        var contentPadding: PaddingValues? = null
-            private set
-        var currentPage: Int = 0
-            private set
-        var horizontalAlignment: Alignment.Horizontal? = null
-            private set
-        var initialPageOffsetFraction: Float? = null
-            private set
-        var onChanged: String? = null
-            private set
-        var pageCount: Int = 0
-            private set
-        var pageSize: PageSize? = null
-            private set
-        var pageSpacing: Dp = 0.dp
-            private set
-        var reverseLayout: Boolean = false
-            private set
-        var userScrollEnabled: Boolean = true
-            private set
-        var verticalAlignment: Alignment.Vertical? = null
-            private set
+        private var beyondBoundsPageCount: Int? = null
+        private var contentPadding: PaddingValues? = null
+        private var currentPage: Int = 0
+        private var horizontalAlignment: Alignment.Horizontal? = null
+        private var initialPageOffsetFraction: Float? = null
+        private var onChanged: String? = null
+        private var pageCount: Int = 0
+        private var pageSize: PageSize? = null
+        private var pageSpacing: Dp = 0.dp
+        private var reverseLayout: Boolean = false
+        private var userScrollEnabled: Boolean = true
+        private var verticalAlignment: Alignment.Vertical? = null
 
         /**
          * Pages to compose and layout before and after the list of visible pages.
@@ -339,13 +357,29 @@ internal class PagerDTO private constructor(builder: Builder) :
             this.verticalAlignment = verticalAlignmentFromString(alignment)
         }
 
-        fun build() = PagerDTO(this)
+        fun build() = PagerDTO(
+            Properties(
+                beyondBoundsPageCount,
+                contentPadding,
+                currentPage,
+                horizontalAlignment,
+                initialPageOffsetFraction,
+                onChanged,
+                pageCount,
+                pageSize,
+                pageSpacing,
+                reverseLayout,
+                userScrollEnabled,
+                verticalAlignment,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object PagerDtoFactory : ComposableViewFactory<PagerDTO, PagerDTO.Builder>() {
+internal object PagerDtoFactory : ComposableViewFactory<PagerDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
     ): PagerDTO = PagerDTO.Builder().also {
         attributes.fold(
             it

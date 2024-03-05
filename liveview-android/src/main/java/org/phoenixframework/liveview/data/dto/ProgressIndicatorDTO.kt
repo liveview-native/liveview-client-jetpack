@@ -5,17 +5,21 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrStrokeCap
 import org.phoenixframework.liveview.data.constants.Attrs.attrStrokeWidth
 import org.phoenixframework.liveview.data.constants.Attrs.attrTrackColor
 import org.phoenixframework.liveview.data.constants.StrokeCapValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -31,12 +35,8 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * <LinearProgressIndicator color="#FFFF0000" trackColor="#FF00FF00" strokeCap="butt" width="fill" />
  * ```
  */
-internal class ProgressIndicatorDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val color = builder.color
-    private val strokeWidth = builder.strokeWidth
-    private val trackColor = builder.trackColor
-    private val strokeCap = builder.strokeCap
+internal class ProgressIndicatorDTO private constructor(props: Properties) :
+    ComposableView<ProgressIndicatorDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -44,16 +44,21 @@ internal class ProgressIndicatorDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val color = props.color
+        val strokeWidth = props.strokeWidth
+        val trackColor = props.trackColor
+        val strokeCap = props.strokeCap
+
         if (composableNode?.node?.tag == ComposableTypes.linearProgressIndicator) {
             LinearProgressIndicator(
-                modifier = modifier,
+                modifier = props.commonProps.modifier,
                 color = color ?: ProgressIndicatorDefaults.linearColor,
                 trackColor = trackColor ?: ProgressIndicatorDefaults.linearTrackColor,
                 strokeCap = strokeCap ?: ProgressIndicatorDefaults.LinearStrokeCap,
             )
         } else {
             CircularProgressIndicator(
-                modifier = modifier,
+                modifier = props.commonProps.modifier,
                 color = color ?: ProgressIndicatorDefaults.circularColor,
                 trackColor = trackColor ?: ProgressIndicatorDefaults.circularTrackColor,
                 strokeCap = strokeCap ?: ProgressIndicatorDefaults.CircularIndeterminateStrokeCap,
@@ -62,18 +67,20 @@ internal class ProgressIndicatorDTO private constructor(builder: Builder) :
         }
     }
 
+    @Stable
+    internal data class Properties(
+        val color: Color?,
+        val trackColor: Color?,
+        val strokeCap: StrokeCap?,
+        val strokeWidth: Dp?,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var color: Color? = null
-            private set
-
-        var trackColor: Color? = null
-            private set
-
-        var strokeCap: StrokeCap? = null
-            private set
-
-        var strokeWidth: Dp? = null
-            private set
+        private var color: Color? = null
+        private var trackColor: Color? = null
+        private var strokeCap: StrokeCap? = null
+        private var strokeWidth: Dp? = null
 
         /**
          * Color of this progress indicator
@@ -141,12 +148,19 @@ internal class ProgressIndicatorDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = ProgressIndicatorDTO(this)
+        fun build() = ProgressIndicatorDTO(
+            Properties(
+                color,
+                trackColor,
+                strokeCap,
+                strokeWidth,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object ProgressIndicatorDtoFactory :
-    ComposableViewFactory<ProgressIndicatorDTO, ProgressIndicatorDTO.Builder>() {
+internal object ProgressIndicatorDtoFactory : ComposableViewFactory<ProgressIndicatorDTO>() {
     /**
      * Creates a `ProgressIndicatorDTO` object based on the attributes of the input `Attributes`
      * object. `ProgressIndicatorDTO` co-relates to both `LinearProgressIndicator` and
@@ -156,7 +170,7 @@ internal object ProgressIndicatorDtoFactory :
      * object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): ProgressIndicatorDTO =

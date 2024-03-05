@@ -5,13 +5,17 @@ import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrThickness
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
@@ -27,10 +31,8 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * <VerticalDivider thickness="2" verticalPadding="8" color="#FFCCCCCC" />
  * ```
  */
-internal class DividerDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-    private val thickness = builder.thickness
-    private val color = builder.color
+internal class DividerDTO private constructor(props: Properties) :
+    ComposableView<DividerDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -38,10 +40,13 @@ internal class DividerDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val thickness = props.thickness
+        val color = props.color
+
         when (composableNode?.node?.tag) {
             ComposableTypes.horizontalDivider -> {
                 HorizontalDivider(
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     thickness = thickness ?: DividerDefaults.Thickness,
                     color = color ?: DividerDefaults.color
                 )
@@ -49,7 +54,7 @@ internal class DividerDTO private constructor(builder: Builder) :
 
             ComposableTypes.verticalDivider -> {
                 VerticalDivider(
-                    modifier = modifier,
+                    modifier = props.commonProps.modifier,
                     thickness = thickness ?: DividerDefaults.Thickness,
                     color = color ?: DividerDefaults.color
                 )
@@ -57,12 +62,16 @@ internal class DividerDTO private constructor(builder: Builder) :
         }
     }
 
-    internal class Builder : ComposableBuilder() {
-        var thickness: Dp? = null
-            private set
+    @Stable
+    internal data class Properties(
+        val thickness: Dp?,
+        val color: Color?,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
 
-        var color: Color? = null
-            private set
+    internal class Builder : ComposableBuilder() {
+        private var thickness: Dp? = null
+        private var color: Color? = null
 
         /**
          * Thickness of the divider line.
@@ -93,11 +102,17 @@ internal class DividerDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = DividerDTO(this)
+        fun build() = DividerDTO(
+            Properties(
+                thickness,
+                color,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object DividerDtoFactory : ComposableViewFactory<DividerDTO, DividerDTO.Builder>() {
+internal object DividerDtoFactory : ComposableViewFactory<DividerDTO>() {
     /**
      * Creates a `DividerDTO` object based on the attributes of the input `Attributes` object.
      * DividerDTO co-relates to the HorizontalDivider and VerticalDivider composables.
@@ -105,7 +120,7 @@ internal object DividerDtoFactory : ComposableViewFactory<DividerDTO, DividerDTO
      * @return a `DividerDTO` object based on the attributes of the input `Attributes` object
      */
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): DividerDTO = DividerDTO.Builder().also {

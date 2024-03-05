@@ -5,31 +5,38 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrOnChanged
+import org.phoenixframework.liveview.data.constants.Attrs.attrOnDismissRequest
+import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.Attrs.attrScrimColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrSkipPartiallyExpanded
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
-import org.phoenixframework.liveview.data.constants.Templates
+import org.phoenixframework.liveview.data.constants.Templates.templateDragHandle
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.domain.extensions.SHEET_VALUE_KEY
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.pushNewValue
 import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.domain.extensions.toValue
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
@@ -46,17 +53,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * ```
  */
 @OptIn(ExperimentalMaterial3Api::class)
-internal class ModalBottomSheetDTO private constructor(builder: Builder) :
-    ComposableView(modifier = builder.modifier) {
-
-    private val skipPartiallyExpanded = builder.skipPartiallyExpanded
-    private val onChanged = builder.onChanged
-    private val windowsInsets = builder.windowInsets
-    private val shape = builder.shape
-    private val containerColor = builder.containerColor
-    private val contentColor = builder.contentColor
-    private val tonalElevation = builder.tonalElevation
-    private val scrimColor = builder.scrimColor
+internal class ModalBottomSheetDTO private constructor(props: Properties) :
+    ComposableView<ModalBottomSheetDTO.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -64,24 +62,41 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
+        val dismissEvent = props.dismissEvent
+        val skipPartiallyExpanded = props.skipPartiallyExpanded
+        val onChanged = props.onChanged
+        val windowsInsets = props.windowInsets
+        val shape = props.shape
+        val containerColor = props.containerColor
+        val contentColor = props.contentColor
+        val tonalElevation = props.tonalElevation
+        val scrimColor = props.scrimColor
+
         val dragHandle = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template == Templates.templateDragHandle }
+            composableNode?.children?.find { it.node?.template == templateDragHandle }
         }
         val content = remember(composableNode?.children) {
-            composableNode?.children?.find { it.node?.template != Templates.templateDragHandle }
+            composableNode?.children?.find { it.node?.template != templateDragHandle }
         }
         val sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = skipPartiallyExpanded,
             confirmValueChange = { sheetValue ->
-                sheetValue.pushNewValue(pushEvent, onChanged)
+                pushNewValue(sheetValue, pushEvent, onChanged)
                 true
             }
         )
         ModalBottomSheet(
             onDismissRequest = {
-                // TODO Do nothing
+                dismissEvent?.let { event ->
+                    pushEvent(
+                        ComposableBuilder.EVENT_TYPE_BLUR,
+                        event,
+                        props.commonProps.phxValue,
+                        null
+                    )
+                }
             },
-            modifier = modifier,
+            modifier = props.commonProps.modifier,
             sheetState = sheetState,
             shape = shape ?: BottomSheetDefaults.ExpandedShape,
             containerColor = containerColor ?: BottomSheetDefaults.ContainerColor,
@@ -104,23 +119,40 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         )
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun pushNewValue(sheetValue: SheetValue, pushEvent: PushEvent, onChangedEvent: String) {
+        pushEvent(
+            ComposableBuilder.EVENT_TYPE_CHANGE,
+            onChangedEvent,
+            mergeValueWithPhxValue(SHEET_VALUE_KEY, sheetValue.toValue()),
+            null,
+        )
+    }
+
+    @Stable
+    internal data class Properties(
+        val dismissEvent: String?,
+        val skipPartiallyExpanded: Boolean,
+        val onChanged: String,
+        val windowInsets: WindowInsets?,
+        val shape: Shape?,
+        val containerColor: Color?,
+        val contentColor: Color?,
+        val tonalElevation: Dp?,
+        val scrimColor: Color?,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
     internal class Builder : ComposableBuilder() {
-        var skipPartiallyExpanded: Boolean = false
-            private set
-        var onChanged: String = ""
-            private set
-        var windowInsets: WindowInsets? = null
-            private set
-        var shape: Shape? = null
-            private set
-        var containerColor: Color? = null
-            private set
-        var contentColor: Color? = null
-            private set
-        var tonalElevation: Dp? = null
-            private set
-        var scrimColor: Color? = null
-            private set
+        private var dismissEvent: String? = null
+        private var skipPartiallyExpanded: Boolean = false
+        private var onChanged: String = ""
+        private var windowInsets: WindowInsets? = null
+        private var shape: Shape? = null
+        private var containerColor: Color? = null
+        private var contentColor: Color? = null
+        private var tonalElevation: Dp? = null
+        private var scrimColor: Color? = null
 
         /**
          * Whether the partially expanded state, if the sheet is tall enough, should be skipped.
@@ -139,13 +171,25 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
         /**
          * Function in the server to be called when the bottom sheet state changes.
          * ```
-         * <ModalBottomSheet onChanged="updateBottomSheet" >...</ModalBottomSheet>
+         * <ModalBottomSheet phx-change="updateBottomSheet" >...</ModalBottomSheet>
          * ```
          * @param onChanged the name of the function to be called in the server when the bottom
          * sheet is expanded.
          */
         fun onChanged(onChanged: String) = apply {
             this.onChanged = onChanged
+        }
+
+        /**
+         * Event to be triggered on the server when the bottom sheet should be dismissed.
+         * ```
+         * <ModalBottomSheet onDismissRequest="dismissAction">...</AlertDialog>
+         * ```
+         * @param dismissEventName event name to be called on the server in order to dismiss the
+         * bottom sheet.
+         */
+        fun onDismissRequest(dismissEventName: String) = apply {
+            this.dismissEvent = dismissEventName
         }
 
         /**
@@ -227,14 +271,26 @@ internal class ModalBottomSheetDTO private constructor(builder: Builder) :
             }
         }
 
-        fun build() = ModalBottomSheetDTO(this)
+        fun build() = ModalBottomSheetDTO(
+            Properties(
+                dismissEvent,
+                skipPartiallyExpanded,
+                onChanged,
+                windowInsets,
+                shape,
+                containerColor,
+                contentColor,
+                tonalElevation,
+                scrimColor,
+                commonProps,
+            )
+        )
     }
 }
 
-internal object ModalBottomSheetDtoFactory :
-    ComposableViewFactory<ModalBottomSheetDTO, ModalBottomSheetDTO.Builder>() {
+internal object ModalBottomSheetDtoFactory : ComposableViewFactory<ModalBottomSheetDTO>() {
     override fun buildComposableView(
-        attributes: Array<CoreAttribute>,
+        attributes: ImmutableList<CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): ModalBottomSheetDTO =
@@ -242,7 +298,8 @@ internal object ModalBottomSheetDtoFactory :
             when (attribute.name) {
                 attrContainerColor -> builder.containerColor(attribute.value)
                 attrContentColor -> builder.contentColor(attribute.value)
-                attrOnChanged -> builder.onChanged(attribute.value)
+                attrOnDismissRequest -> builder.onDismissRequest(attribute.value)
+                attrPhxChange -> builder.onChanged(attribute.value)
                 attrScrimColor -> builder.scrimColor(attribute.value)
                 attrShape -> builder.shape(attribute.value)
                 attrSkipPartiallyExpanded -> builder.skipPartiallyExpanded(attribute.value)
