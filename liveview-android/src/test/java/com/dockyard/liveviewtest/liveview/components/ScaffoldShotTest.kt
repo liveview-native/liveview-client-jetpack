@@ -1,6 +1,7 @@
 package com.dockyard.liveviewtest.liveview.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -19,12 +20,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
+import org.phoenixframework.liveview.data.constants.AlignmentValues
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentWindowInsets
 import org.phoenixframework.liveview.data.constants.Attrs.attrFabPosition
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
@@ -451,6 +456,38 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                   <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
                     <$text>Scaffold Body</$text> 
                   </$box>
+                </$scaffold>
+                """
+        )
+    }
+
+    @Test
+    fun simpleContentWindowInsetTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Scaffold(
+                    contentWindowInsets = WindowInsets(32.dp, 96.dp, 72.dp, 120.dp)
+                ) {
+                    Box(
+                        Modifier
+                            .padding(it)
+                            .fillMaxSize()
+                    ) {
+                        Text(text = "Top|Left", modifier = Modifier.align(Alignment.TopStart))
+                        Text(text = "Top|Right", modifier = Modifier.align(Alignment.TopEnd))
+                        Text(text = "Bottom|Left", modifier = Modifier.align(Alignment.BottomStart))
+                        Text(text = "Bottom|End", modifier = Modifier.align(Alignment.BottomEnd))
+                    }
+                }
+            },
+            template = """
+                <$scaffold $attrContentWindowInsets="{'left': '32', 'top': '96', 'right': '72', 'bottom': '120'}">
+                    <$box $attrTemplate="$templateBody" $attrSize="$fill">
+                        <$text $attrAlign="${AlignmentValues.topStart}">Top|Left</$text>
+                        <$text $attrAlign="${AlignmentValues.topEnd}">Top|Right</$text>
+                        <$text $attrAlign="${AlignmentValues.bottomStart}">Bottom|Left</$text>
+                        <$text $attrAlign="${AlignmentValues.bottomEnd}">Bottom|End</$text>
+                    </$box>
                 </$scaffold>
                 """
         )
