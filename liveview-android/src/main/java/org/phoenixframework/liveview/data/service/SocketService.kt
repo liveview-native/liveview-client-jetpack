@@ -33,7 +33,7 @@ object SocketService {
             .addInterceptor { chain ->
                 val original = chain.request()
                 val authorized = original.newBuilder().build()
-                chain.proceed(authorized);
+                chain.proceed(authorized)
             }
             .build()
     }
@@ -45,11 +45,14 @@ object SocketService {
         phxLiveViewPayload: PhoenixLiveViewPayload,
         socketBaseUrl: String,
     ) {
-        phxSocket?.disconnect()
         Log.d(TAG, "Connection to socket with params $phxLiveViewPayload")
         setupPhxSocketConnection(phxLiveViewPayload, baseUrl = socketBaseUrl)
 
         phxSocket?.connect()
+    }
+
+    fun disconnectFromLiveView() {
+        phxSocket?.disconnect()
     }
 
     private fun setupPhxSocketConnection(
@@ -57,10 +60,10 @@ object SocketService {
         baseUrl: String
     ) {
         val socketParams = mapOf(
-            "_csrf_token" to phxLiveViewPayload._csrfToken,
-            "_mounts" to 0,
-            "client_id" to uuid,
-            "_platform" to "jetpack"
+            SOCKET_PARAM_CSRF_TOKEN to phxLiveViewPayload._csrfToken,
+            SOCKET_PARAM_MOUNTS to 0,
+            SOCKET_PARAM_CLIENT_ID to uuid,
+            SOCKET_PARAM_PLATFORM to PLATFORM_JETPACK
         )
 
         val socketQueryParams =
@@ -96,15 +99,15 @@ object SocketService {
         redirect: Boolean,
     ): Channel? {
         val channelConnectionParams = mapOf(
-            "session" to phxLiveViewPayload.dataPhxSession,
-            "static" to phxLiveViewPayload.dataPhxStatic,
-            (if (redirect) "url" else "redirect") to baseHttpUrl,
-            "params" to
+            CHANNEL_PARAM_SESSION to phxLiveViewPayload.dataPhxSession,
+            CHANNEL_PARAM_STATIC to phxLiveViewPayload.dataPhxStatic,
+            (if (redirect) CHANNEL_PARAM_URL else CHANNEL_PARAM_REDIRECT) to baseHttpUrl,
+            CHANNEL_PARAM_SOCKET_PARAMS to
                     mapOf(
-                        "_csrf_token" to phxLiveViewPayload._csrfToken,
-                        "_mounts" to 0,
-                        "client_id" to uuid,
-                        "_platform" to "jetpack"
+                        SOCKET_PARAM_CSRF_TOKEN to phxLiveViewPayload._csrfToken,
+                        SOCKET_PARAM_MOUNTS to 0,
+                        SOCKET_PARAM_CLIENT_ID to uuid,
+                        SOCKET_PARAM_PLATFORM to PLATFORM_JETPACK
                     )
         )
         return phxSocket?.channel(
@@ -119,4 +122,17 @@ object SocketService {
     }
 
     private const val TAG = "SocketService"
+
+    private const val CHANNEL_PARAM_SESSION = "session"
+    private const val CHANNEL_PARAM_STATIC = "static"
+    private const val CHANNEL_PARAM_SOCKET_PARAMS = "params"
+    private const val CHANNEL_PARAM_URL = "url"
+    private const val CHANNEL_PARAM_REDIRECT = "redirect"
+
+    private const val SOCKET_PARAM_CSRF_TOKEN = "_csrf_token"
+    private const val SOCKET_PARAM_MOUNTS = "_mounts"
+    private const val SOCKET_PARAM_CLIENT_ID = "client_id"
+    private const val SOCKET_PARAM_PLATFORM = "_platform"
+
+    private const val PLATFORM_JETPACK = "jetpack"
 }

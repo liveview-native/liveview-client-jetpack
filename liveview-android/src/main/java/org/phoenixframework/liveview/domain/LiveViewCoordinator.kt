@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.buffer
@@ -23,28 +24,35 @@ import java.net.ConnectException
 class LiveViewCoordinator(
     private val httpBaseUrl: String,
     private val wsBaseUrl: String,
-    private val onNavigate: (route: String, redirect: Boolean) -> Unit,
 ) : ViewModel() {
     private val repository: Repository = Repository(httpBaseUrl, wsBaseUrl)
 
     private var document: Document = Document()
-    private var reconnect = false
 
     private val _composableTree = MutableStateFlow(ComposableTreeNode(screenId, 0, null))
     val composableTree = _composableTree.asStateFlow()
 
+    private val _navigation = MutableStateFlow<NavigationRequest?>(null)
+    val navigation = _navigation.asStateFlow()
+
+    private var channelJob: Job? = null
+
+    init {
+        instanceCount++
+    }
+
     private val screenId: String
         get() = this.toString()
 
-    fun joinChannel() {
-        viewModelScope.launch(Dispatchers.IO) {
+    internal fun joinChannel() {
+        channelJob = viewModelScope.launch(Dispatchers.IO) {
             if (!repository.isSocketConnected) {
                 repository.connectToLiveViewSocket()
                 if (ThemeHolder.isEmpty) {
                     ThemeHolder.updateThemeData(repository.loadThemeData())
                 }
             }
-            repository.joinChannel(reconnect)
+            repository.joinChannel()
                 .catch { cause: Throwable -> getDomFromThrowable(cause) }
                 .buffer()
                 .collect { message ->
@@ -70,10 +78,17 @@ class LiveViewCoordinator(
                         }
                     }
                 }
-
-        }.invokeOnCompletion {
-            Log.d(TAG, "Channel Flow Job completed url: $httpBaseUrl | wsUrl: $wsBaseUrl")
+        }.apply {
+            invokeOnCompletion {
+                Log.d(TAG, "Channel Flow Job completed url: $httpBaseUrl | wsUrl: $wsBaseUrl")
+            }
         }
+
+    }
+
+    internal fun leaveChannel() {
+        repository.leaveChannel()
+        channelJob?.cancel()
     }
 
     private fun getJsonFieldAsString(field: String, json: String): String {
@@ -87,7 +102,7 @@ class LiveViewCoordinator(
         message.payload["live_redirect"]?.let { inputMap ->
             val redirectMap: Map<String, Any?> = inputMap as Map<String, Any?>
             viewModelScope.launch(Dispatchers.Main) {
-                onNavigate(redirectMap["to"].toString(), false)
+                _navigation.update { NavigationRequest(redirectMap["to"].toString(), false) }
             }
         }
     }
@@ -96,9 +111,13 @@ class LiveViewCoordinator(
         message.payload["redirect"]?.let { inputMap ->
             val redirectMap: Map<String, Any?> = inputMap as Map<String, Any?>
             viewModelScope.launch(Dispatchers.Main) {
-                onNavigate(redirectMap["to"].toString(), true)
+                _navigation.update { NavigationRequest(redirectMap["to"].toString(), true) }
             }
         }
+    }
+
+    internal fun resetNavigation() {
+        _navigation.update { null }
     }
 
     internal fun parseTemplate(s: String) {
@@ -192,10 +211,6 @@ class LiveViewCoordinator(
         parseTemplate(errorHtml)
     }
 
-    fun leaveChannel() {
-        repository.closeChannel()
-    }
-
     fun pushEvent(type: String, event: String, value: Any?, target: Int? = null) {
         Log.d(TAG, "pushEvent: type: $type, event: $event, value: $value, target: $target")
         repository.pushEvent(type, event, value, target)
@@ -203,11 +218,18 @@ class LiveViewCoordinator(
 
     override fun onCleared() {
         super.onCleared()
-        repository.closeChannel()
+        instanceCount--
+        if (instanceCount == 0) {
+            repository.disconnectFromLiveViewSocket()
+        }
     }
 
     companion object {
         const val TAG = "VM"
+
+        // We're keeping the instance count in order to deallocate the server socket when the last
+        // instance is cleared.
+        private var instanceCount = 0
 
         internal fun composableTreeNodeFromNode(
             screenId: String,
@@ -221,4 +243,9 @@ class LiveViewCoordinator(
             )
         }
     }
+
+    data class NavigationRequest(
+        val url: String,
+        val redirect: Boolean,
+    )
 }

@@ -23,7 +23,7 @@ class Repository(
     val isSocketConnected: Boolean
         get() = socketService.isConnected
 
-    private var channelService: ChannelService? = null
+    private val channelService: ChannelService = ChannelService(socketService)
     private var payload: PhoenixLiveViewPayload? = null
 
     private val okHttpClient: OkHttpClient by lazy {
@@ -39,33 +39,38 @@ class Repository(
         }
     }
 
-    fun joinChannel(redirect: Boolean) = callbackFlow {
+    fun disconnectFromLiveViewSocket() {
+        socketService.disconnectFromLiveView()
+    }
+
+    fun joinChannel() = callbackFlow {
         if (payload == null) {
             payload = getInitialPayload(httpBaseUrl)
         }
         payload?.let {
-            channelService = ChannelService(socketService).apply {
-                joinPhoenixChannel(
-                    it, httpBaseUrl, redirect
-                ) { message ->
-                    trySend(message)
-                }
+            Log.i(TAG, "Joining channel...")
+            channelService.joinPhoenixChannel(
+                it,
+                httpBaseUrl,
+                false // It's always false. We're redirecting using Compose Navigation
+            ) { message ->
+                trySend(message)
             }
         }
-        try {
-            awaitClose {
+        awaitClose {
+            try {
                 Log.i(TAG, "Closing channel...")
                 channel.close()
+            } catch (e: Exception) {
+                Log.e(TAG, "Error awaiting for close: ${e.message}", e)
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error awaiting for close: ${e.message}", e)
         }
     }.catch {
         Log.e(TAG, "Error in flow: ${it.message}")
     }
 
-    fun closeChannel() {
-        channelService?.closeChannel()
+    fun leaveChannel() {
+        channelService.leaveChannel()
     }
 
     private suspend fun getInitialPayload(url: String): PhoenixLiveViewPayload? =
@@ -99,7 +104,7 @@ class Repository(
 
     fun pushEvent(type: String, event: String, value: Any?, target: Int? = null) {
         Log.d(TAG, "pushEvent: [type: $type | event: $event | value: $value | target: $target]")
-        channelService?.pushEvent(
+        channelService.pushEvent(
             "event", mapOf(
                 "type" to type,
                 "event" to event,

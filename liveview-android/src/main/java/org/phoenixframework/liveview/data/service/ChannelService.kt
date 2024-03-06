@@ -56,7 +56,7 @@ class ChannelService(
         channel?.push(event, payload)
     }
 
-    fun closeChannel() {
+    fun leaveChannel() {
         channel?.leave()
     }
 
