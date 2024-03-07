@@ -12,8 +12,14 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.phoenixframework.Message
+import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.repository.Repository
+import org.phoenixframework.liveview.data.service.ChannelService
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 import org.phoenixframework.liveview.domain.factory.ComposableNodeFactory
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.lib.Document
@@ -39,12 +45,17 @@ class LiveViewCoordinator(
 
     init {
         instanceCount++
+        joinChannel()
     }
 
     private val screenId: String
         get() = this.toString()
 
     internal fun joinChannel() {
+        if (repository.isSocketConnected && repository.isJoined) {
+            Log.w(TAG, "joinChannel: Already joined. Skipping...")
+            return
+        }
         channelJob = viewModelScope.launch(Dispatchers.IO) {
             if (!repository.isSocketConnected) {
                 repository.connectToLiveViewSocket()
@@ -52,29 +63,44 @@ class LiveViewCoordinator(
                     ThemeHolder.updateThemeData(repository.loadThemeData())
                 }
             }
-            repository.joinChannel()
-                .catch { cause: Throwable -> getDomFromThrowable(cause) }
+            repository.joinChannel(true)
+                .catch { cause: Throwable ->
+                    Log.e(TAG, "Error joining channel", cause)
+                    getDomFromThrowable(cause)
+                }
                 .buffer()
                 .collect { message ->
                     Log.d(TAG, "message: $message")
                     when {
                         // Navigation Messages
-                        message.payload.containsKey("live_redirect") -> handleNavigation(message)
+                        message.payload.containsKey(PAYLOAD_LIVE_REDIRECT) ->
+                            handleNavigation(message)
 
-                        message.payload.containsKey("redirect") -> handleRedirect(message)
+                        message.payload.containsKey(PAYLOAD_REDIRECT) ->
+                            handleRedirect(message)
 
                         // Render message
-                        message.payload.containsKey("rendered") -> {
-                            parseTemplate(getJsonFieldAsString("rendered", message.payloadJson))
+                        message.payload.containsKey(PAYLOAD_RENDERED) -> {
+                            parseTemplate(
+                                getJsonFieldAsString(
+                                    PAYLOAD_RENDERED,
+                                    message.payloadJson
+                                )
+                            )
                         }
 
                         // Diff messages
-                        message.event == "diff" -> {
+                        message.event == ChannelService.MESSAGE_EVENT_DIFF -> {
                             parseTemplate(message.payloadJson)
                         }
 
-                        message.payload.containsKey("diff") -> {
-                            parseTemplate(getJsonFieldAsString("diff", message.payloadJson))
+                        message.payload.containsKey(ChannelService.MESSAGE_EVENT_DIFF) -> {
+                            parseTemplate(
+                                getJsonFieldAsString(
+                                    ChannelService.MESSAGE_EVENT_DIFF,
+                                    message.payloadJson
+                                )
+                            )
                         }
                     }
                 }
@@ -99,7 +125,7 @@ class LiveViewCoordinator(
     }
 
     private fun handleNavigation(message: Message) {
-        message.payload["live_redirect"]?.let { inputMap ->
+        message.payload[PAYLOAD_LIVE_REDIRECT]?.let { inputMap ->
             val redirectMap: Map<String, Any?> = inputMap as Map<String, Any?>
             viewModelScope.launch(Dispatchers.Main) {
                 _navigation.update { NavigationRequest(redirectMap["to"].toString(), false) }
@@ -108,7 +134,7 @@ class LiveViewCoordinator(
     }
 
     private fun handleRedirect(message: Message) {
-        message.payload["redirect"]?.let { inputMap ->
+        message.payload[PAYLOAD_REDIRECT]?.let { inputMap ->
             val redirectMap: Map<String, Any?> = inputMap as Map<String, Any?>
             viewModelScope.launch(Dispatchers.Main) {
                 _navigation.update { NavigationRequest(redirectMap["to"].toString(), true) }
@@ -189,21 +215,21 @@ class LiveViewCoordinator(
         val errorHtml = when (cause) {
             is ConnectException -> {
                 """
-                <Column>
-                    <Text width='fill' padding='16'>${cause.message}</Text>
-                    <Text width='fill' padding='16'>
+                <$column>
+                    <$text $attrWidth='$fill' $attrPadding='16'>${cause.message}</$text>
+                    <$text $attrWidth='$fill' $attrPadding='16'>
                         This probably means your localhost server isn't running...\n
                         Please start your server in the terminal using iex -S mix phx.server and rerun the android application
-                    </Text>
-                </Column>
+                    </$text>
+                </$column>
                 """.trimMargin()
             }
 
             else -> {
                 """
-                <Column>
-                   <Text width='fill' padding='16'>${cause.message}</Text>
-                </Column>
+                <$column>
+                    <$text $attrWidth='$fill' $attrPadding='16'>${cause.message}</$text>
+                </$column>
                 """.trimMargin()
             }
         }
@@ -219,6 +245,7 @@ class LiveViewCoordinator(
     override fun onCleared() {
         super.onCleared()
         instanceCount--
+        leaveChannel()
         if (instanceCount == 0) {
             repository.disconnectFromLiveViewSocket()
         }
@@ -226,6 +253,10 @@ class LiveViewCoordinator(
 
     companion object {
         const val TAG = "VM"
+
+        private const val PAYLOAD_LIVE_REDIRECT = "live_redirect"
+        private const val PAYLOAD_REDIRECT = "redirect"
+        private const val PAYLOAD_RENDERED = "rendered"
 
         // We're keeping the instance count in order to deallocate the server socket when the last
         // instance is cleared.

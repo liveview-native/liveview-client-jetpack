@@ -92,18 +92,9 @@ private fun NavDestination(
         )
     }
 
-    // Joining/Leaving the channel
-    DisposableEffect(route) {
-        Log.d(TAG, "DisposableEffect::route->$route")
-        liveViewCoordinator.joinChannel()
-        onDispose {
-            Log.d(TAG, "DisposableEffect::onDispose->$route")
-            liveViewCoordinator.leaveChannel()
-        }
-    }
-
     // Observing navigation changes
     LaunchedEffect(liveViewCoordinator) {
+        liveViewCoordinator.joinChannel()
         liveViewCoordinator.navigation.collect { navigationRequest ->
             if (navigationRequest != null) {
                 val (newRoute, redirect) = navigationRequest

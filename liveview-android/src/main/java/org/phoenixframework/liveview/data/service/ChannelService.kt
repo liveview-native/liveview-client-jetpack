@@ -10,6 +10,8 @@ class ChannelService(
     private val socketService: SocketService
 ) {
     private var channel: Channel? = null
+    val isJoined: Boolean
+        get() = channel?.isJoined == true
 
     fun joinPhoenixChannel(
         phxLiveViewPayload: PhoenixLiveViewPayload,
@@ -19,14 +21,14 @@ class ChannelService(
     ) {
         channel = socketService.createChannel(phxLiveViewPayload, baseHttpUrl, redirect)?.apply {
             join()
-                .receive("ok") { message: Message ->
+                .receive(JOIN_STATUS_OK) { message: Message ->
                     Log.d(TAG, "Channel::join::receive::ok")
                     messageListener(message)
                 }
-                .receive("error") {
+                .receive(JOIN_STATUS_ERROR) {
                     Log.d(TAG, "Channel::join::receive::error->$it")
                 }
-                .receive("response") {
+                .receive(JOIN_STATUS_RESPONSE) {
                     Log.d(TAG, "Channel::join::receive::response->$it")
                 }
 
@@ -34,15 +36,15 @@ class ChannelService(
                 Log.d(TAG, "Channel::onMessage->$message")
 
                 when (message.event) {
-                    "phx_reply" -> {
+                    MESSAGE_EVENT_PHX_REPLY -> {
                         messageListener(message)
                     }
 
-                    "diff" -> {
+                    MESSAGE_EVENT_DIFF -> {
                         messageListener(message)
                     }
 
-                    "close" -> {
+                    MESSAGE_EVENT_CLOSE -> {
                         channel?.leave()
                     }
                 }
@@ -57,10 +59,19 @@ class ChannelService(
     }
 
     fun leaveChannel() {
+        Log.d(TAG, "Leaving channel: ${channel?.topic}")
         channel?.leave()
     }
 
     companion object {
         private const val TAG = "ChannelService"
+
+        const val MESSAGE_EVENT_DIFF = "diff"
+        private const val MESSAGE_EVENT_PHX_REPLY = "phx_reply"
+        private const val MESSAGE_EVENT_CLOSE = "close"
+
+        private const val JOIN_STATUS_OK = "ok"
+        private const val JOIN_STATUS_ERROR = "error"
+        private const val JOIN_STATUS_RESPONSE = "response"
     }
 }

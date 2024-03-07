@@ -24,6 +24,9 @@ class Repository(
         get() = socketService.isConnected
 
     private val channelService: ChannelService = ChannelService(socketService)
+    val isJoined: Boolean
+        get() = channelService.isJoined
+
     private var payload: PhoenixLiveViewPayload? = null
 
     private val okHttpClient: OkHttpClient by lazy {
@@ -43,7 +46,7 @@ class Repository(
         socketService.disconnectFromLiveView()
     }
 
-    fun joinChannel() = callbackFlow {
+    fun joinChannel(redirect: Boolean) = callbackFlow {
         if (payload == null) {
             payload = getInitialPayload(httpBaseUrl)
         }
@@ -52,7 +55,7 @@ class Repository(
             channelService.joinPhoenixChannel(
                 it,
                 httpBaseUrl,
-                false // It's always false. We're redirecting using Compose Navigation
+                redirect // It's always false. We're redirecting using Compose Navigation
             ) { message ->
                 trySend(message)
             }
@@ -81,19 +84,19 @@ class Repository(
                     .body?.string()
                     ?.let { Jsoup.parse(it) }
 
-                val theLiveViewMetaDataElement =
-                    doc?.body()?.getElementsByAttribute("data-phx-main")
-
-                val metaElements: Elements? = doc?.getElementsByTag("meta")
-                val filteredElements = metaElements?.filter { theElement ->
-                    theElement.attr("name") == "csrf-token"
+                val metaTags: Elements? = doc?.getElementsByTag(TAG_META)
+                val metaTagWithCsrfToken = metaTags?.find { theElement ->
+                    theElement.attr(ATTR_NAME) == VALUE_ATTR_CSRF_TOKEN
                 }
-                val csrfToken = filteredElements?.first()?.attr("content")
+                val csrfToken = metaTagWithCsrfToken?.attr(ATTR_CONTENT)
+
+                val theLiveViewMetaDataElement =
+                    doc?.body()?.getElementsByAttribute(ATTR_DATA_PHX_MAIN)
 
                 PhoenixLiveViewPayload(
-                    dataPhxSession = theLiveViewMetaDataElement?.attr("data-phx-session"),
-                    dataPhxStatic = theLiveViewMetaDataElement?.attr("data-phx-static"),
-                    phxId = theLiveViewMetaDataElement?.attr("id"),
+                    dataPhxSession = theLiveViewMetaDataElement?.attr(ATTR_DATA_PHX_SESSION),
+                    dataPhxStatic = theLiveViewMetaDataElement?.attr(ATTR_DATA_PHX_STATIC),
+                    phxId = theLiveViewMetaDataElement?.attr(ATTR_ID),
                     _csrfToken = csrfToken
                 )
             } catch (e: Exception) {
@@ -105,11 +108,11 @@ class Repository(
     fun pushEvent(type: String, event: String, value: Any?, target: Int? = null) {
         Log.d(TAG, "pushEvent: [type: $type | event: $event | value: $value | target: $target]")
         channelService.pushEvent(
-            "event", mapOf(
-                "type" to type,
-                "event" to event,
-                "value" to (value ?: emptyMap<String, Any>()),
-                "cid" to target as Any?
+            PUSH_TYPE_EVENT, mapOf(
+                EVENT_KEY_TYPE to type,
+                EVENT_KEY_EVENT to event,
+                EVENT_KEY_VALUE to (value ?: emptyMap<String, Any>()),
+                EVENT_KEY_CID to target as Any?
             )
         )
     }
@@ -131,5 +134,22 @@ class Repository(
 
     companion object {
         private const val TAG = "Repository"
+
+        // Initial payload constants
+        private const val TAG_META = "meta"
+        private const val ATTR_NAME = "name"
+        private const val ATTR_CONTENT = "content"
+        private const val ATTR_DATA_PHX_MAIN = "data-phx-main"
+        private const val ATTR_DATA_PHX_SESSION = "data-phx-session"
+        private const val ATTR_DATA_PHX_STATIC = "data-phx-static"
+        private const val ATTR_ID = "id"
+        private const val VALUE_ATTR_CSRF_TOKEN = "csrf-token"
+
+        // Push event constants
+        private const val PUSH_TYPE_EVENT = "event"
+        private const val EVENT_KEY_TYPE = "type"
+        private const val EVENT_KEY_EVENT = "event"
+        private const val EVENT_KEY_VALUE = "value"
+        private const val EVENT_KEY_CID = "cid"
     }
 }

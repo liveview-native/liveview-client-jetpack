@@ -101,7 +101,7 @@ object SocketService {
         val channelConnectionParams = mapOf(
             CHANNEL_PARAM_SESSION to phxLiveViewPayload.dataPhxSession,
             CHANNEL_PARAM_STATIC to phxLiveViewPayload.dataPhxStatic,
-            (if (redirect) CHANNEL_PARAM_URL else CHANNEL_PARAM_REDIRECT) to baseHttpUrl,
+            (if (redirect) CHANNEL_PARAM_REDIRECT else CHANNEL_PARAM_URL) to baseHttpUrl,
             CHANNEL_PARAM_SOCKET_PARAMS to
                     mapOf(
                         SOCKET_PARAM_CSRF_TOKEN to phxLiveViewPayload._csrfToken,
