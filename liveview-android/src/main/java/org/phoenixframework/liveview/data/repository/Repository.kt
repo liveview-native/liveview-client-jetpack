@@ -8,9 +8,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.data.service.ChannelService
 import org.phoenixframework.liveview.data.service.SocketService
@@ -20,90 +17,96 @@ class Repository(
     private val wsBaseUrl: String,
 ) {
     private val socketService = SocketService
-    val isSocketConnected: Boolean
-        get() = socketService.isConnected
 
     private val channelService: ChannelService = ChannelService(socketService)
-    val isJoined: Boolean
-        get() = channelService.isJoined
 
-    private var payload: PhoenixLiveViewPayload? = null
+    val liveSocketConnectionFlow = socketService.connectionFlow
+    val liveReloadSocketConnectionFlow = socketService.liveReloadConnectionFlow
 
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient()
     }
 
     suspend fun connectToLiveViewSocket() {
-        payload = getInitialPayload(httpBaseUrl)?.also {
-            socketService.connectToLiveView(
-                phxLiveViewPayload = it,
-                socketBaseUrl = wsBaseUrl,
-            )
-        }
+        Log.i(TAG, "connectToLiveViewSocket")
+        Log.i(TAG, ">>>>httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
+        socketService.connectToLiveViewSocket(
+            httpBaseUrl = httpBaseUrl,
+            socketBaseUrl = wsBaseUrl,
+        )
     }
 
     fun disconnectFromLiveViewSocket() {
+        Log.i(TAG, "disconnectFromLiveViewSocket->url=$httpBaseUrl")
+        Log.i(TAG, ">>>>httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
         socketService.disconnectFromLiveView()
     }
 
-    fun joinChannel(redirect: Boolean) = callbackFlow {
-        if (payload == null) {
-            payload = getInitialPayload(httpBaseUrl)
+    fun joinLiveViewChannel(redirect: Boolean) = callbackFlow {
+        if (socketService.payload == null) {
+            socketService.loadInitialPayload(httpBaseUrl)
         }
-        payload?.let {
-            Log.i(TAG, "Joining channel...")
+        socketService.payload?.let {
+            Log.i(TAG, "joinLiveViewChannel")
+            Log.i(TAG, ">>>>httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
             channelService.joinPhoenixChannel(
                 it,
                 httpBaseUrl,
-                redirect // It's always false. We're redirecting using Compose Navigation
+                redirect
             ) { message ->
                 trySend(message)
             }
         }
         awaitClose {
             try {
-                Log.i(TAG, "Closing channel...")
+                Log.i(TAG, "joinLiveViewChannel::Closing channel...")
                 channel.close()
             } catch (e: Exception) {
-                Log.e(TAG, "Error awaiting for close: ${e.message}", e)
+                Log.e(TAG, "joinLiveViewChannel::Error awaiting for close: ${e.message}", e)
             }
         }
     }.catch {
-        Log.e(TAG, "Error in flow: ${it.message}")
+        Log.e(TAG, "joinLiveViewChannel::Error in join channel flow: ${it.message}")
     }
 
     fun leaveChannel() {
+        Log.i(TAG, "leaveChannel")
         channelService.leaveChannel()
     }
 
-    private suspend fun getInitialPayload(url: String): PhoenixLiveViewPayload? =
-        withContext(Dispatchers.IO) {
-            try {
-                val doc: Document? = socketService.newHttpCall(url)
-                    .execute()
-                    .body?.string()
-                    ?.let { Jsoup.parse(it) }
+    fun connectToReloadSocket() {
+        Log.i(TAG, "connectToReloadSocket")
+        return socketService.connectLiveReloadSocket(
+            socketBaseUrl = wsBaseUrl
+        )
+    }
 
-                val metaTags: Elements? = doc?.getElementsByTag(TAG_META)
-                val metaTagWithCsrfToken = metaTags?.find { theElement ->
-                    theElement.attr(ATTR_NAME) == VALUE_ATTR_CSRF_TOKEN
-                }
-                val csrfToken = metaTagWithCsrfToken?.attr(ATTR_CONTENT)
+    fun disconnectFromReloadSocket() {
+        Log.i(TAG, "disconnectFromReloadSocket")
+        socketService.disconnectReloadSocket()
+    }
 
-                val theLiveViewMetaDataElement =
-                    doc?.body()?.getElementsByAttribute(ATTR_DATA_PHX_MAIN)
-
-                PhoenixLiveViewPayload(
-                    dataPhxSession = theLiveViewMetaDataElement?.attr(ATTR_DATA_PHX_SESSION),
-                    dataPhxStatic = theLiveViewMetaDataElement?.attr(ATTR_DATA_PHX_STATIC),
-                    phxId = theLiveViewMetaDataElement?.attr(ATTR_ID),
-                    _csrfToken = csrfToken
-                )
-            } catch (e: Exception) {
-                Log.e(TAG, "Error: ${e.message}", e)
-                null
+    fun joinReloadChannel() = callbackFlow {
+        socketService.payload?.let {
+            Log.i(TAG, "joinReloadChannel")
+            channelService.joinLiveReloadChannel {
+                trySend(Unit)
             }
         }
+        awaitClose {
+            try {
+                Log.i(TAG, "joinReloadChannel::Closing reload channel...")
+                channel.close()
+            } catch (e: Exception) {
+                Log.e(TAG, "joinReloadChannel::Error awaiting for close reload: ${e.message}", e)
+            }
+        }
+    }
+
+    fun leaveReloadChannel() {
+        Log.i(TAG, "leaveReloadChannel")
+        channelService.leaveReloadChannel()
+    }
 
     fun pushEvent(type: String, event: String, value: Any?, target: Int? = null) {
         Log.d(TAG, "pushEvent: [type: $type | event: $event | value: $value | target: $target]")
@@ -134,16 +137,6 @@ class Repository(
 
     companion object {
         private const val TAG = "Repository"
-
-        // Initial payload constants
-        private const val TAG_META = "meta"
-        private const val ATTR_NAME = "name"
-        private const val ATTR_CONTENT = "content"
-        private const val ATTR_DATA_PHX_MAIN = "data-phx-main"
-        private const val ATTR_DATA_PHX_SESSION = "data-phx-session"
-        private const val ATTR_DATA_PHX_STATIC = "data-phx-static"
-        private const val ATTR_ID = "id"
-        private const val VALUE_ATTR_CSRF_TOKEN = "csrf-token"
 
         // Push event constants
         private const val PUSH_TYPE_EVENT = "event"

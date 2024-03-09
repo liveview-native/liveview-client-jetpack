@@ -2,6 +2,7 @@ package org.phoenixframework.liveview.domain
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,6 +19,7 @@ import org.phoenixframework.liveview.data.constants.SizeValues.fill
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.repository.Repository
 import org.phoenixframework.liveview.data.service.ChannelService
+import org.phoenixframework.liveview.data.service.SocketService
 import org.phoenixframework.liveview.domain.base.ComposableTypes.column
 import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 import org.phoenixframework.liveview.domain.factory.ComposableNodeFactory
@@ -30,6 +32,7 @@ import java.net.ConnectException
 class LiveViewCoordinator(
     private val httpBaseUrl: String,
     private val wsBaseUrl: String,
+    private val route: String?,
 ) : ViewModel() {
     private val repository: Repository = Repository(httpBaseUrl, wsBaseUrl)
 
@@ -41,31 +44,65 @@ class LiveViewCoordinator(
     private val _navigation = MutableStateFlow<NavigationRequest?>(null)
     val navigation = _navigation.asStateFlow()
 
+    private var connectionJob: Job? = null
     private var channelJob: Job? = null
+
+    private var reloadConnectionJob: Job? = null
+    private var reloadChannelJob: Job? = null
 
     init {
         instanceCount++
-        joinChannel()
     }
 
     private val screenId: String
         get() = this.toString()
 
-    internal fun joinChannel() {
-        if (repository.isSocketConnected && repository.isJoined) {
-            Log.w(TAG, "joinChannel: Already joined. Skipping...")
-            return
-        }
-        channelJob = viewModelScope.launch(Dispatchers.IO) {
-            if (!repository.isSocketConnected) {
-                repository.connectToLiveViewSocket()
-                if (ThemeHolder.isEmpty) {
-                    ThemeHolder.updateThemeData(repository.loadThemeData())
+    internal fun connectToLiveView() {
+        Log.i(TAG, "connectToLiveView -> ROUTE=$route | $this")
+        Log.i(TAG, "connectToLiveView::httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
+
+        viewModelScope.launch(Dispatchers.IO) {
+            connectionJob = launch {
+                repository.liveSocketConnectionFlow.collect {
+                    when (it) {
+                        is SocketService.Events.PayloadLoadingError -> {
+                            Log.d(TAG, "liveSocketConnectionFlow::PayloadLoadingError")
+                        }
+
+                        is SocketService.Events.Error ->
+                            Log.d(TAG, "liveSocketConnectionFlow::Events.Error")
+
+                        SocketService.Events.Closed -> {
+                            Log.d(TAG, "liveSocketConnectionFlow::Events.Closed")
+                        }
+
+                        SocketService.Events.LiveReloadDisabled -> {
+                            Log.d(TAG, "liveSocketConnectionFlow::LiveReloadDisabled")
+                        }
+
+                        SocketService.Events.NotConnected -> {
+                            Log.d(TAG, "liveSocketConnectionFlow::NotConnected")
+                        }
+
+                        SocketService.Events.Opened -> {
+                            if (ThemeHolder.isEmpty) {
+                                ThemeHolder.updateThemeData(repository.loadThemeData())
+                            }
+                            joinLiveViewChannel()
+                            connectLiveReload()
+                        }
+                    }
                 }
             }
-            repository.joinChannel(true)
+            repository.connectToLiveViewSocket()
+        }
+    }
+
+    private fun joinLiveViewChannel() {
+        channelJob = viewModelScope.launch(Dispatchers.IO) {
+            repository.joinLiveViewChannel(true)
                 .catch { cause: Throwable ->
-                    Log.e(TAG, "Error joining channel", cause)
+                    Log.e(TAG, "joinLiveViewChannel::Error", cause)
                     getDomFromThrowable(cause)
                 }
                 .buffer()
@@ -104,17 +141,69 @@ class LiveViewCoordinator(
                         }
                     }
                 }
-        }.apply {
-            invokeOnCompletion {
-                Log.d(TAG, "Channel Flow Job completed url: $httpBaseUrl | wsUrl: $wsBaseUrl")
-            }
         }
-
     }
 
-    internal fun leaveChannel() {
-        repository.leaveChannel()
+    private fun connectLiveReload() {
+        viewModelScope.launch(Dispatchers.IO) {
+            reloadConnectionJob = launch {
+                repository.liveReloadSocketConnectionFlow.collect { reloadEvent ->
+                    when (reloadEvent) {
+                        is SocketService.Events.PayloadLoadingError ->
+                            Log.d(TAG, "liveReloadSocketConnectionFlow::PayloadLoadingError")
+
+                        is SocketService.Events.Error ->
+                            Log.d(TAG, "liveReloadSocketConnectionFlow::Error ($reloadEvent)")
+
+                        SocketService.Events.Closed ->
+                            Log.d(TAG, "liveReloadSocketConnectionFlow::Closed")
+
+                        SocketService.Events.LiveReloadDisabled ->
+                            Log.d(TAG, "liveReloadSocketConnectionFlow::LiveReloadDisabled")
+
+                        SocketService.Events.NotConnected ->
+                            Log.d(TAG, "liveReloadSocketConnectionFlow::NotConnected")
+
+                        SocketService.Events.Opened -> {
+                            Log.d(TAG, "liveReloadSocketConnectionFlow::Opened")
+                            joinLiveReloadChannel()
+                        }
+                    }
+                }
+            }
+            repository.connectToReloadSocket()
+        }
+    }
+
+    private fun joinLiveReloadChannel() {
+        reloadChannelJob = viewModelScope.launch(Dispatchers.IO) {
+            repository.joinReloadChannel()
+                .catch { cause: Throwable ->
+                    Log.e(TAG, "joinLiveReloadChannel::error", cause)
+                    getDomFromThrowable(cause)
+                }
+                .buffer()
+                .collect {
+                    Log.w(TAG, "-----------Reloading-----------")
+                    repository.leaveReloadChannel()
+                    repository.disconnectFromReloadSocket()
+                    repository.leaveChannel()
+                    repository.disconnectFromLiveViewSocket()
+                    document = Document()
+
+                    viewModelScope.launch(Dispatchers.Main) {
+                        cancelConnectionJobs()
+                        connectToLiveView()
+                    }
+                }
+        }
+    }
+
+    fun cancelConnectionJobs() {
+        reloadChannelJob?.cancel()
+        reloadConnectionJob?.cancel()
         channelJob?.cancel()
+        connectionJob?.cancel()
     }
 
     private fun getJsonFieldAsString(field: String, json: String): String {
@@ -244,12 +333,36 @@ class LiveViewCoordinator(
 
     override fun onCleared() {
         super.onCleared()
+        Log.i(TAG, "onCleared::ROUTE=$route")
+
+        repository.leaveReloadChannel()
+        repository.leaveChannel()
+
+        cancelConnectionJobs()
+
         instanceCount--
-        leaveChannel()
         if (instanceCount == 0) {
+            Log.i(TAG, "onCleared::DISCONNECTING SOCKETS")
             repository.disconnectFromLiveViewSocket()
+            repository.disconnectFromReloadSocket()
         }
     }
+
+    class Factory(
+        private val httpBaseUrl: String,
+        private val wsBaseUrl: String,
+        private val route: String?,
+    ) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            Log.d(TAG, "Creating VM:: httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
+            return LiveViewCoordinator(httpBaseUrl, wsBaseUrl, route) as T
+        }
+    }
+
+    data class NavigationRequest(
+        val url: String,
+        val redirect: Boolean,
+    )
 
     companion object {
         const val TAG = "VM"
@@ -274,9 +387,4 @@ class LiveViewCoordinator(
             )
         }
     }
-
-    data class NavigationRequest(
-        val url: String,
-        val redirect: Boolean,
-    )
 }

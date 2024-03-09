@@ -1,8 +1,9 @@
 package org.phoenixframework.liveview.data.repository
 
 data class PhoenixLiveViewPayload(
-    var dataPhxSession: String? = null,
-    var dataPhxStatic: String? = null,
-    var phxId: String? = null,
-    var _csrfToken: String? = null
+    val phxSession: String? = null,
+    val phxStatic: String? = null,
+    val phxId: String? = null,
+    val phxCSRFToken: String? = null,
+    val liveReloadEnabled: Boolean = false
 )

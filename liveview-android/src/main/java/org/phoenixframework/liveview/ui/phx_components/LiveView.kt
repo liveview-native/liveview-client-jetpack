@@ -1,12 +1,10 @@
 package org.phoenixframework.liveview.ui.phx_components
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,7 +21,6 @@ import org.phoenixframework.liveview.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.domain.ThemeHolder
 import org.phoenixframework.liveview.ui.theme.LiveViewNativeTheme
 
-private const val TAG = "LiveView"
 private const val PHX_LIVE_VIEW_ROUTE = "phxLiveView"
 private const val ARG_ROUTE = "route"
 
@@ -38,9 +35,7 @@ fun LiveView(url: String) {
     }
     val themeData by ThemeHolder.themeData.collectAsState()
 
-    LiveViewNativeTheme(
-        themeData = themeData
-    ) {
+    LiveViewNativeTheme(themeData = themeData) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -72,18 +67,13 @@ private fun NavDestination(
     httpBaseUrl: String,
     wsBaseUrl: String,
 ) {
-    val route = backStackEntry.arguments?.getString("route")
+    val route = backStackEntry.arguments?.getString(ARG_ROUTE)
     val httpUrl = if (route == null) httpBaseUrl else "$httpBaseUrl$route"
-    val webSocketUrl = if (route == null) wsBaseUrl else "$wsBaseUrl$route"
-    val liveViewCoordinator = viewModel(
+    val liveViewCoordinator = viewModel<LiveViewCoordinator>(
         viewModelStoreOwner = backStackEntry,
-        initializer = {
-            LiveViewCoordinator(
-                httpBaseUrl = httpUrl,
-                wsBaseUrl = webSocketUrl,
-            )
-        }
+        factory = LiveViewCoordinator.Factory(httpUrl, wsBaseUrl, route)
     )
+
     val state by liveViewCoordinator.composableTree.collectAsState()
     if (state.children.isNotEmpty()) {
         PhxLiveView(
@@ -92,11 +82,14 @@ private fun NavDestination(
         )
     }
 
-    // Observing navigation changes
     LaunchedEffect(liveViewCoordinator) {
-        liveViewCoordinator.joinChannel()
+        // Connecting to LiveView socket
+        liveViewCoordinator.connectToLiveView()
         liveViewCoordinator.navigation.collect { navigationRequest ->
             if (navigationRequest != null) {
+                // Cancelling connection jobs
+                liveViewCoordinator.cancelConnectionJobs()
+
                 val (newRoute, redirect) = navigationRequest
                 liveViewCoordinator.resetNavigation()
                 val routePath = "$PHX_LIVE_VIEW_ROUTE?$ARG_ROUTE=$newRoute"
