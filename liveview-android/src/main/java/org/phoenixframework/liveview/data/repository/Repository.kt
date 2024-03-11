@@ -8,9 +8,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
 import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.data.service.ChannelService
 import org.phoenixframework.liveview.data.service.SocketService
@@ -20,91 +17,105 @@ class Repository(
     private val wsBaseUrl: String,
 ) {
     private val socketService = SocketService
-    val isSocketConnected: Boolean
-        get() = socketService.isConnected
 
-    private var channelService: ChannelService? = null
-    private var payload: PhoenixLiveViewPayload? = null
+    private val channelService: ChannelService = ChannelService(socketService)
+
+    val liveSocketConnectionFlow = socketService.connectionFlow
+    val liveReloadSocketConnectionFlow = socketService.liveReloadConnectionFlow
 
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient()
     }
 
     suspend fun connectToLiveViewSocket() {
-        payload = getInitialPayload(httpBaseUrl)?.also {
-            socketService.connectToLiveView(
-                phxLiveViewPayload = it,
-                socketBaseUrl = wsBaseUrl,
-            )
-        }
+        Log.i(TAG, "connectToLiveViewSocket")
+        Log.i(TAG, ">>>>httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
+        socketService.connectToLiveViewSocket(
+            httpBaseUrl = httpBaseUrl,
+            socketBaseUrl = wsBaseUrl,
+        )
     }
 
-    fun joinChannel(redirect: Boolean) = callbackFlow {
-        if (payload == null) {
-            payload = getInitialPayload(httpBaseUrl)
+    fun disconnectFromLiveViewSocket() {
+        Log.i(TAG, "disconnectFromLiveViewSocket->url=$httpBaseUrl")
+        Log.i(TAG, ">>>>httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
+        socketService.disconnectFromLiveView()
+    }
+
+    fun joinLiveViewChannel(redirect: Boolean) = callbackFlow {
+        if (socketService.payload == null) {
+            socketService.loadInitialPayload(httpBaseUrl)
         }
-        payload?.let {
-            channelService = ChannelService(socketService).apply {
-                joinPhoenixChannel(
-                    it, httpBaseUrl, redirect
-                ) { message ->
-                    trySend(message)
-                }
+        socketService.payload?.let {
+            Log.i(TAG, "joinLiveViewChannel")
+            Log.i(TAG, ">>>>httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
+            channelService.joinPhoenixChannel(
+                it,
+                httpBaseUrl,
+                redirect
+            ) { message ->
+                trySend(message)
             }
         }
-        try {
-            awaitClose {
-                Log.i(TAG, "Closing channel...")
+        awaitClose {
+            try {
+                Log.i(TAG, "joinLiveViewChannel::Closing channel...")
                 channel.close()
+            } catch (e: Exception) {
+                Log.e(TAG, "joinLiveViewChannel::Error awaiting for close: ${e.message}", e)
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error awaiting for close: ${e.message}", e)
         }
     }.catch {
-        Log.e(TAG, "Error in flow: ${it.message}")
+        Log.e(TAG, "joinLiveViewChannel::Error in join channel flow: ${it.message}")
     }
 
-    fun closeChannel() {
-        channelService?.closeChannel()
+    fun leaveChannel() {
+        Log.i(TAG, "leaveChannel")
+        channelService.leaveChannel()
     }
 
-    private suspend fun getInitialPayload(url: String): PhoenixLiveViewPayload? =
-        withContext(Dispatchers.IO) {
-            try {
-                val doc: Document? = socketService.newHttpCall(url)
-                    .execute()
-                    .body?.string()
-                    ?.let { Jsoup.parse(it) }
+    fun connectToReloadSocket() {
+        Log.i(TAG, "connectToReloadSocket")
+        return socketService.connectLiveReloadSocket(
+            socketBaseUrl = wsBaseUrl
+        )
+    }
 
-                val theLiveViewMetaDataElement =
-                    doc?.body()?.getElementsByAttribute("data-phx-main")
+    fun disconnectFromReloadSocket() {
+        Log.i(TAG, "disconnectFromReloadSocket")
+        socketService.disconnectReloadSocket()
+    }
 
-                val metaElements: Elements? = doc?.getElementsByTag("meta")
-                val filteredElements = metaElements?.filter { theElement ->
-                    theElement.attr("name") == "csrf-token"
-                }
-                val csrfToken = filteredElements?.first()?.attr("content")
-
-                PhoenixLiveViewPayload(
-                    dataPhxSession = theLiveViewMetaDataElement?.attr("data-phx-session"),
-                    dataPhxStatic = theLiveViewMetaDataElement?.attr("data-phx-static"),
-                    phxId = theLiveViewMetaDataElement?.attr("id"),
-                    _csrfToken = csrfToken
-                )
-            } catch (e: Exception) {
-                Log.e(TAG, "Error: ${e.message}", e)
-                null
+    fun joinReloadChannel() = callbackFlow {
+        socketService.payload?.let {
+            Log.i(TAG, "joinReloadChannel")
+            channelService.joinLiveReloadChannel {
+                trySend(Unit)
             }
         }
+        awaitClose {
+            try {
+                Log.i(TAG, "joinReloadChannel::Closing reload channel...")
+                channel.close()
+            } catch (e: Exception) {
+                Log.e(TAG, "joinReloadChannel::Error awaiting for close reload: ${e.message}", e)
+            }
+        }
+    }
+
+    fun leaveReloadChannel() {
+        Log.i(TAG, "leaveReloadChannel")
+        channelService.leaveReloadChannel()
+    }
 
     fun pushEvent(type: String, event: String, value: Any?, target: Int? = null) {
         Log.d(TAG, "pushEvent: [type: $type | event: $event | value: $value | target: $target]")
-        channelService?.pushEvent(
-            "event", mapOf(
-                "type" to type,
-                "event" to event,
-                "value" to (value ?: emptyMap<String, Any>()),
-                "cid" to target as Any?
+        channelService.pushEvent(
+            PUSH_TYPE_EVENT, mapOf(
+                EVENT_KEY_TYPE to type,
+                EVENT_KEY_EVENT to event,
+                EVENT_KEY_VALUE to (value ?: emptyMap<String, Any>()),
+                EVENT_KEY_CID to target as Any?
             )
         )
     }
@@ -126,5 +137,12 @@ class Repository(
 
     companion object {
         private const val TAG = "Repository"
+
+        // Push event constants
+        private const val PUSH_TYPE_EVENT = "event"
+        private const val EVENT_KEY_TYPE = "type"
+        private const val EVENT_KEY_EVENT = "event"
+        private const val EVENT_KEY_VALUE = "value"
+        private const val EVENT_KEY_CID = "cid"
     }
 }

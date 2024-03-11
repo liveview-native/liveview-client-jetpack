@@ -2,8 +2,10 @@ package org.phoenixframework.liveview.domain
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.buffer
@@ -11,8 +13,15 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.phoenixframework.Message
+import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.SizeValues.fill
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.repository.Repository
+import org.phoenixframework.liveview.data.service.ChannelService
+import org.phoenixframework.liveview.data.service.SocketService
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 import org.phoenixframework.liveview.domain.factory.ComposableNodeFactory
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.lib.Document
@@ -23,57 +32,178 @@ import java.net.ConnectException
 class LiveViewCoordinator(
     private val httpBaseUrl: String,
     private val wsBaseUrl: String,
-    private val onNavigate: (route: String, redirect: Boolean) -> Unit,
+    private val route: String?,
 ) : ViewModel() {
     private val repository: Repository = Repository(httpBaseUrl, wsBaseUrl)
 
     private var document: Document = Document()
-    private var reconnect = false
 
     private val _composableTree = MutableStateFlow(ComposableTreeNode(screenId, 0, null))
     val composableTree = _composableTree.asStateFlow()
 
+    private val _navigation = MutableStateFlow<NavigationRequest?>(null)
+    val navigation = _navigation.asStateFlow()
+
+    private var connectionJob: Job? = null
+    private var channelJob: Job? = null
+
+    private var reloadConnectionJob: Job? = null
+    private var reloadChannelJob: Job? = null
+
+    init {
+        instanceCount++
+    }
+
     private val screenId: String
         get() = this.toString()
 
-    fun joinChannel() {
+    internal fun connectToLiveView() {
+        Log.i(TAG, "connectToLiveView -> ROUTE=$route | $this")
+        Log.i(TAG, "connectToLiveView::httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
+
         viewModelScope.launch(Dispatchers.IO) {
-            if (!repository.isSocketConnected) {
-                repository.connectToLiveViewSocket()
-                if (ThemeHolder.isEmpty) {
-                    ThemeHolder.updateThemeData(repository.loadThemeData())
+            connectionJob = launch {
+                repository.liveSocketConnectionFlow.collect {
+                    when (it) {
+                        is SocketService.Events.PayloadLoadingError -> {
+                            Log.d(TAG, "liveSocketConnectionFlow::PayloadLoadingError")
+                        }
+
+                        is SocketService.Events.Error ->
+                            Log.d(TAG, "liveSocketConnectionFlow::Events.Error")
+
+                        SocketService.Events.Closed -> {
+                            Log.d(TAG, "liveSocketConnectionFlow::Events.Closed")
+                        }
+
+                        SocketService.Events.LiveReloadDisabled -> {
+                            Log.d(TAG, "liveSocketConnectionFlow::LiveReloadDisabled")
+                        }
+
+                        SocketService.Events.NotConnected -> {
+                            Log.d(TAG, "liveSocketConnectionFlow::NotConnected")
+                        }
+
+                        SocketService.Events.Opened -> {
+                            if (ThemeHolder.isEmpty) {
+                                ThemeHolder.updateThemeData(repository.loadThemeData())
+                            }
+                            joinLiveViewChannel()
+                            connectLiveReload()
+                        }
+                    }
                 }
             }
-            repository.joinChannel(reconnect)
-                .catch { cause: Throwable -> getDomFromThrowable(cause) }
+            repository.connectToLiveViewSocket()
+        }
+    }
+
+    private fun joinLiveViewChannel() {
+        channelJob = viewModelScope.launch(Dispatchers.IO) {
+            repository.joinLiveViewChannel(true)
+                .catch { cause: Throwable ->
+                    Log.e(TAG, "joinLiveViewChannel::Error", cause)
+                    getDomFromThrowable(cause)
+                }
                 .buffer()
                 .collect { message ->
                     Log.d(TAG, "message: $message")
                     when {
                         // Navigation Messages
-                        message.payload.containsKey("live_redirect") -> handleNavigation(message)
+                        message.payload.containsKey(PAYLOAD_LIVE_REDIRECT) ->
+                            handleNavigation(message)
 
-                        message.payload.containsKey("redirect") -> handleRedirect(message)
+                        message.payload.containsKey(PAYLOAD_REDIRECT) ->
+                            handleRedirect(message)
 
                         // Render message
-                        message.payload.containsKey("rendered") -> {
-                            parseTemplate(getJsonFieldAsString("rendered", message.payloadJson))
+                        message.payload.containsKey(PAYLOAD_RENDERED) -> {
+                            parseTemplate(
+                                getJsonFieldAsString(
+                                    PAYLOAD_RENDERED,
+                                    message.payloadJson
+                                )
+                            )
                         }
 
                         // Diff messages
-                        message.event == "diff" -> {
+                        message.event == ChannelService.MESSAGE_EVENT_DIFF -> {
                             parseTemplate(message.payloadJson)
                         }
 
-                        message.payload.containsKey("diff") -> {
-                            parseTemplate(getJsonFieldAsString("diff", message.payloadJson))
+                        message.payload.containsKey(ChannelService.MESSAGE_EVENT_DIFF) -> {
+                            parseTemplate(
+                                getJsonFieldAsString(
+                                    ChannelService.MESSAGE_EVENT_DIFF,
+                                    message.payloadJson
+                                )
+                            )
                         }
                     }
                 }
-
-        }.invokeOnCompletion {
-            Log.d(TAG, "Channel Flow Job completed url: $httpBaseUrl | wsUrl: $wsBaseUrl")
         }
+    }
+
+    private fun connectLiveReload() {
+        viewModelScope.launch(Dispatchers.IO) {
+            reloadConnectionJob = launch {
+                repository.liveReloadSocketConnectionFlow.collect { reloadEvent ->
+                    when (reloadEvent) {
+                        is SocketService.Events.PayloadLoadingError ->
+                            Log.d(TAG, "liveReloadSocketConnectionFlow::PayloadLoadingError")
+
+                        is SocketService.Events.Error ->
+                            Log.d(TAG, "liveReloadSocketConnectionFlow::Error ($reloadEvent)")
+
+                        SocketService.Events.Closed ->
+                            Log.d(TAG, "liveReloadSocketConnectionFlow::Closed")
+
+                        SocketService.Events.LiveReloadDisabled ->
+                            Log.d(TAG, "liveReloadSocketConnectionFlow::LiveReloadDisabled")
+
+                        SocketService.Events.NotConnected ->
+                            Log.d(TAG, "liveReloadSocketConnectionFlow::NotConnected")
+
+                        SocketService.Events.Opened -> {
+                            Log.d(TAG, "liveReloadSocketConnectionFlow::Opened")
+                            joinLiveReloadChannel()
+                        }
+                    }
+                }
+            }
+            repository.connectToReloadSocket()
+        }
+    }
+
+    private fun joinLiveReloadChannel() {
+        reloadChannelJob = viewModelScope.launch(Dispatchers.IO) {
+            repository.joinReloadChannel()
+                .catch { cause: Throwable ->
+                    Log.e(TAG, "joinLiveReloadChannel::error", cause)
+                    getDomFromThrowable(cause)
+                }
+                .buffer()
+                .collect {
+                    Log.w(TAG, "-----------Reloading-----------")
+                    repository.leaveReloadChannel()
+                    repository.disconnectFromReloadSocket()
+                    repository.leaveChannel()
+                    repository.disconnectFromLiveViewSocket()
+                    document = Document()
+
+                    viewModelScope.launch(Dispatchers.Main) {
+                        cancelConnectionJobs()
+                        connectToLiveView()
+                    }
+                }
+        }
+    }
+
+    fun cancelConnectionJobs() {
+        reloadChannelJob?.cancel()
+        reloadConnectionJob?.cancel()
+        channelJob?.cancel()
+        connectionJob?.cancel()
     }
 
     private fun getJsonFieldAsString(field: String, json: String): String {
@@ -84,21 +214,25 @@ class LiveViewCoordinator(
     }
 
     private fun handleNavigation(message: Message) {
-        message.payload["live_redirect"]?.let { inputMap ->
+        message.payload[PAYLOAD_LIVE_REDIRECT]?.let { inputMap ->
             val redirectMap: Map<String, Any?> = inputMap as Map<String, Any?>
             viewModelScope.launch(Dispatchers.Main) {
-                onNavigate(redirectMap["to"].toString(), false)
+                _navigation.update { NavigationRequest(redirectMap["to"].toString(), false) }
             }
         }
     }
 
     private fun handleRedirect(message: Message) {
-        message.payload["redirect"]?.let { inputMap ->
+        message.payload[PAYLOAD_REDIRECT]?.let { inputMap ->
             val redirectMap: Map<String, Any?> = inputMap as Map<String, Any?>
             viewModelScope.launch(Dispatchers.Main) {
-                onNavigate(redirectMap["to"].toString(), true)
+                _navigation.update { NavigationRequest(redirectMap["to"].toString(), true) }
             }
         }
+    }
+
+    internal fun resetNavigation() {
+        _navigation.update { null }
     }
 
     internal fun parseTemplate(s: String) {
@@ -170,30 +304,26 @@ class LiveViewCoordinator(
         val errorHtml = when (cause) {
             is ConnectException -> {
                 """
-                <Column>
-                    <Text width='fill' padding='16'>${cause.message}</Text>
-                    <Text width='fill' padding='16'>
+                <$column>
+                    <$text $attrWidth='$fill' $attrPadding='16'>${cause.message}</$text>
+                    <$text $attrWidth='$fill' $attrPadding='16'>
                         This probably means your localhost server isn't running...\n
                         Please start your server in the terminal using iex -S mix phx.server and rerun the android application
-                    </Text>
-                </Column>
+                    </$text>
+                </$column>
                 """.trimMargin()
             }
 
             else -> {
                 """
-                <Column>
-                   <Text width='fill' padding='16'>${cause.message}</Text>
-                </Column>
+                <$column>
+                    <$text $attrWidth='$fill' $attrPadding='16'>${cause.message}</$text>
+                </$column>
                 """.trimMargin()
             }
         }
 
         parseTemplate(errorHtml)
-    }
-
-    fun leaveChannel() {
-        repository.closeChannel()
     }
 
     fun pushEvent(type: String, event: String, value: Any?, target: Int? = null) {
@@ -203,11 +333,47 @@ class LiveViewCoordinator(
 
     override fun onCleared() {
         super.onCleared()
-        repository.closeChannel()
+        Log.i(TAG, "onCleared::ROUTE=$route")
+
+        repository.leaveReloadChannel()
+        repository.leaveChannel()
+
+        cancelConnectionJobs()
+
+        instanceCount--
+        if (instanceCount == 0) {
+            Log.i(TAG, "onCleared::DISCONNECTING SOCKETS")
+            repository.disconnectFromLiveViewSocket()
+            repository.disconnectFromReloadSocket()
+        }
     }
+
+    class Factory(
+        private val httpBaseUrl: String,
+        private val wsBaseUrl: String,
+        private val route: String?,
+    ) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            Log.d(TAG, "Creating VM:: httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
+            return LiveViewCoordinator(httpBaseUrl, wsBaseUrl, route) as T
+        }
+    }
+
+    data class NavigationRequest(
+        val url: String,
+        val redirect: Boolean,
+    )
 
     companion object {
         const val TAG = "VM"
+
+        private const val PAYLOAD_LIVE_REDIRECT = "live_redirect"
+        private const val PAYLOAD_REDIRECT = "redirect"
+        private const val PAYLOAD_RENDERED = "rendered"
+
+        // We're keeping the instance count in order to deallocate the server socket when the last
+        // instance is cleared.
+        private var instanceCount = 0
 
         internal fun composableTreeNodeFromNode(
             screenId: String,

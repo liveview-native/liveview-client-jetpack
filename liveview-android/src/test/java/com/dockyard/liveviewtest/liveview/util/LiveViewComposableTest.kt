@@ -41,7 +41,7 @@ abstract class LiveViewComposableTest {
         coordinator: LiveViewCoordinator = LiveViewCoordinator(
             httpBaseUrl = "",
             wsBaseUrl = "",
-            onNavigate = { _, _ -> }
+            route = null
         ),
         onBeforeScreenShot: ((ComposeContentTestRule) -> Unit)? = null
     ) {

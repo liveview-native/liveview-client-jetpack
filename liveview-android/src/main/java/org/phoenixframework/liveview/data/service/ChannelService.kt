@@ -10,6 +10,7 @@ class ChannelService(
     private val socketService: SocketService
 ) {
     private var channel: Channel? = null
+    private var liveReloadChannel: Channel? = null
 
     fun joinPhoenixChannel(
         phxLiveViewPayload: PhoenixLiveViewPayload,
@@ -19,32 +20,51 @@ class ChannelService(
     ) {
         channel = socketService.createChannel(phxLiveViewPayload, baseHttpUrl, redirect)?.apply {
             join()
-                .receive("ok") { message: Message ->
-                    Log.d(TAG, "Channel::join::receive::ok")
+                .receive(JOIN_STATUS_OK) { message: Message ->
+                    Log.d(TAG, "joinPhoenixChannel::ok")
                     messageListener(message)
                 }
-                .receive("error") {
-                    Log.d(TAG, "Channel::join::receive::error->$it")
+                .receive(JOIN_STATUS_ERROR) {
+                    Log.d(TAG, "joinPhoenixChannel::error->$it")
                 }
-                .receive("response") {
-                    Log.d(TAG, "Channel::join::receive::response->$it")
+                .receive(JOIN_STATUS_RESPONSE) {
+                    Log.d(TAG, "joinPhoenixChannel::response->$it")
                 }
 
             onMessage { message: Message ->
-                Log.d(TAG, "Channel::onMessage->$message")
+                Log.d(TAG, "joinPhoenixChannel::onMessage->$message")
 
                 when (message.event) {
-                    "phx_reply" -> {
+                    MESSAGE_EVENT_PHX_REPLY -> {
                         messageListener(message)
                     }
 
-                    "diff" -> {
+                    MESSAGE_EVENT_DIFF -> {
                         messageListener(message)
                     }
 
-                    "close" -> {
+                    MESSAGE_EVENT_CLOSE -> {
                         channel?.leave()
                     }
+                }
+                message
+            }
+        }
+    }
+
+    fun joinLiveReloadChannel(onAssetsChange: () -> Unit) {
+        liveReloadChannel = socketService.createReloadChannel()?.apply {
+            join()
+                .receive(JOIN_STATUS_OK) {
+                    Log.d(TAG, "joinLiveReloadChannel::ok")
+                }.receive(JOIN_STATUS_ERROR) {
+                    Log.d(TAG, "joinLiveReloadChannel::error->$it")
+                }
+
+            onMessage { message: Message ->
+                if (message.event == MESSAGE_EVENT_ASSETS_CHANGE) {
+                    Log.d(TAG, "joinLiveReloadChannel::assets changed, reloading")
+                    onAssetsChange()
                 }
                 message
             }
@@ -56,11 +76,27 @@ class ChannelService(
         channel?.push(event, payload)
     }
 
-    fun closeChannel() {
+    fun leaveChannel() {
+        Log.d(TAG, "leaveChannel: ${channel?.topic}")
         channel?.leave()
+
+    }
+
+    fun leaveReloadChannel() {
+        Log.d(TAG, "leaveReloadChannel: ${liveReloadChannel?.topic}")
+        liveReloadChannel?.leave()
     }
 
     companion object {
         private const val TAG = "ChannelService"
+
+        const val MESSAGE_EVENT_DIFF = "diff"
+        private const val MESSAGE_EVENT_PHX_REPLY = "phx_reply"
+        private const val MESSAGE_EVENT_CLOSE = "close"
+        private const val MESSAGE_EVENT_ASSETS_CHANGE = "assets_change"
+
+        private const val JOIN_STATUS_OK = "ok"
+        private const val JOIN_STATUS_ERROR = "error"
+        private const val JOIN_STATUS_RESPONSE = "response"
     }
 }
