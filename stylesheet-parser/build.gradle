@@ -12,8 +12,8 @@ java {
 }
 
 dependencies {
-    antlr "org.antlr:antlr4:4.13.1"
-    implementation "org.antlr:antlr4-runtime:4.13.1"
+    antlr libs.antlr4
+    implementation libs.antlr4.runtime
 }
 
 generateGrammarSource {
