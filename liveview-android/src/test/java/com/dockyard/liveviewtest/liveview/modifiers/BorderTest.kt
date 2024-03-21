@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import junit.framework.TestCase
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,7 +30,7 @@ class BorderTest {
             """
         val result = Modifier.fromStyle(style, null)
         val modifier = Modifier.then(Modifier.border(2.dp, Color.Red))
-        TestCase.assertEquals(result, modifier)
+        assertEquals(result, modifier)
     }
 
     @Test
@@ -42,7 +42,7 @@ class BorderTest {
             """
         val result = Modifier.fromStyle(style, null)
         val modifier = Modifier.then(Modifier.border(2.dp, Color.Red))
-        TestCase.assertEquals(result, modifier)
+        assertEquals(result, modifier)
     }
 
     @Test
@@ -54,7 +54,7 @@ class BorderTest {
             """
         val result = Modifier.fromStyle(style, null)
         val modifier = Modifier.then(Modifier.border(1.dp, Color.Green, CircleShape))
-        TestCase.assertEquals(result, modifier)
+        assertEquals(result, modifier)
     }
 
     @Test
@@ -66,7 +66,7 @@ class BorderTest {
             """
         val result = Modifier.fromStyle(style, null)
         val modifier = Modifier.then(Modifier.border(1.dp, Color.Green, CircleShape))
-        TestCase.assertEquals(result, modifier)
+        assertEquals(result, modifier)
     }
 
     @Test
@@ -78,7 +78,7 @@ class BorderTest {
             """
         val result = Modifier.fromStyle(style, null)
         val modifier = Modifier.then(Modifier.border(BorderStroke(3.dp, Color.Blue)))
-        TestCase.assertEquals(result, modifier)
+        assertEquals(result, modifier)
     }
 
     @Test
@@ -90,6 +90,6 @@ class BorderTest {
             """
         val result = Modifier.fromStyle(style, null)
         val modifier = Modifier.then(Modifier.border(BorderStroke(3.dp, Color.Blue)))
-        TestCase.assertEquals(result, modifier)
+        assertEquals(result, modifier)
     }
 }

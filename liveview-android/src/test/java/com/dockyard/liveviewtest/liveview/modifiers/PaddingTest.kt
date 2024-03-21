@@ -1,12 +1,10 @@
 package com.dockyard.liveviewtest.liveview.modifiers
 
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import junit.framework.TestCase
+import junit.framework.TestCase.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,7 +27,7 @@ class PaddingTest {
             """
         val result = Modifier.fromStyle(style, null)
         val modifier = Modifier.then(Modifier.padding(32.dp))
-        TestCase.assertNotSame(result, modifier)
+        assertEquals(result, modifier)
     }
 
     @Test
@@ -41,7 +39,7 @@ class PaddingTest {
             """
         val result = Modifier.fromStyle(style, null)
         val modifier = Modifier.then(Modifier.padding(32.dp))
-        TestCase.assertNotSame(result, modifier)
+        assertEquals(result, modifier)
     }
 
     @Test
@@ -53,7 +51,7 @@ class PaddingTest {
             """
         val result = Modifier.fromStyle(style, null)
         val modifier = Modifier.then(Modifier.padding(horizontal = 16.dp))
-        TestCase.assertNotSame(result, modifier)
+        assertEquals(result, modifier)
     }
 
     @Test
@@ -65,7 +63,7 @@ class PaddingTest {
             """
         val result = Modifier.fromStyle(style, null)
         val modifier = Modifier.then(Modifier.padding(vertical = 8.dp))
-        TestCase.assertNotSame(result, modifier)
+        assertEquals(result, modifier)
     }
 
     @Test
@@ -77,7 +75,7 @@ class PaddingTest {
             """
         val result = Modifier.fromStyle(style, null)
         val modifier = Modifier.then(Modifier.padding(horizontal = 8.dp, vertical = 16.dp))
-        TestCase.assertNotSame(result, modifier)
+        assertEquals(result, modifier)
     }
 
     @Test
@@ -88,8 +86,8 @@ class PaddingTest {
             ]}
             """
         val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.padding( vertical = 16.dp, horizontal = 8.dp))
-        TestCase.assertNotSame(result, modifier)
+        val modifier = Modifier.then(Modifier.padding(vertical = 16.dp, horizontal = 8.dp))
+        assertEquals(result, modifier)
     }
 
     @Test
@@ -101,7 +99,7 @@ class PaddingTest {
             """
         val result = Modifier.fromStyle(style, null)
         val modifier = Modifier.then(Modifier.padding(4.dp, 8.dp, 16.dp, 32.dp))
-        TestCase.assertNotSame(result, modifier)
+        assertEquals(result, modifier)
     }
 
     @Test
@@ -112,7 +110,8 @@ class PaddingTest {
             ]}
             """
         val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.padding(end = 16.dp, bottom =  32.dp, start = 4.dp, top = 8.dp))
-        TestCase.assertNotSame(result, modifier)
+        val modifier =
+            Modifier.then(Modifier.padding(end = 16.dp, bottom = 32.dp, start = 4.dp, top = 8.dp))
+        assertEquals(result, modifier)
     }
 }

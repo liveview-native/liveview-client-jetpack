@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-fun Modifier.borderFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
+fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     var borderStroke: BorderStroke? = null
     var borderShape: Shape? = null
     var borderColor: Color? = null

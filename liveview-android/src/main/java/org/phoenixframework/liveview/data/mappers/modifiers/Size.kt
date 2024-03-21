@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-fun Modifier.aspectRatioFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
+fun Modifier.aspectRatioFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val params =
         if (arguments.firstOrNull()?.isList == true) arguments.firstOrNull()?.listValue else arguments
     val ratio = params?.find { it.isNumber }
@@ -21,19 +21,19 @@ fun Modifier.aspectRatioFromStyle(arguments: List<ModifierDataWrapper.ArgumentDa
     return this
 }
 
-fun Modifier.fillMaxHeightFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
+fun Modifier.fillMaxHeightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val fraction =
         if (arguments.isNotEmpty()) arguments.firstOrNull()?.floatValue ?: 1f else 1f
     return this.then(Modifier.fillMaxHeight(fraction))
 }
 
-fun Modifier.fillMaxWidthFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
+fun Modifier.fillMaxWidthFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val fraction =
         if (arguments.isNotEmpty()) arguments.first().floatValue ?: 1f else 1f
     return this.then(Modifier.fillMaxWidth(fraction))
 }
 
-fun Modifier.heightFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
+fun Modifier.heightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     if (arguments.isNotEmpty()) {
         val params =
             if (arguments.firstOrNull()?.isList == true) arguments.first().listValue else arguments
@@ -49,7 +49,7 @@ fun Modifier.heightFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>):
     return this
 }
 
-fun Modifier.sizeFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
+fun Modifier.sizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val params =
         if (arguments.firstOrNull()?.isList == true) arguments.first().listValue else arguments
 
@@ -71,7 +71,7 @@ fun Modifier.sizeFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): M
     }
 }
 
-fun Modifier.widthFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
+fun Modifier.widthFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     if (arguments.isNotEmpty()) {
         val params =
             if (arguments.first().isList) arguments.first().listValue else arguments

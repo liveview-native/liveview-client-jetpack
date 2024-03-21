@@ -1,32 +1,42 @@
 package org.phoenixframework.liveview.data.mappers.modifiers
 
-import android.util.Log
 import org.phoenixframework.liveview.stylesheet.ElixirParser
 
-class ModifierDataWrapper(tupleExpression: ElixirParser.TupleExprContext) {
+class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
 
     private val modifierIdExpression = tupleExpression.tuple().expressions_().expression(0)
     private val metaDataExpression = tupleExpression.tuple().expressions_().expression(1)
     private val argsExpression = tupleExpression.tuple().expressions_().expression(2)
-
-    init {
-        if (metaDataExpression is ElixirParser.ListExprContext) {
-            val metadataExpressionListCtx = metaDataExpression.list()
-            val metadataMapEntries = metadataExpressionListCtx?.short_map_entries()
-            metadataMapEntries?.short_map_entry()?.forEach { shortMapEntryContext ->
-                Log.d(
-                    TAG,
-                    "** ${shortMapEntryContext.variable().text} = ${shortMapEntryContext.expression().text}"
-                )
-            }
-        }
-    }
 
     val modifierName: String?
         get() =
             if (modifierIdExpression is ElixirParser.AtomExprContext) {
                 modifierIdExpression.ATOM().text.substring(1)
             } else null
+
+    val metaData: MetaData?
+        get() =
+            if (metaDataExpression is ElixirParser.ListExprContext) {
+                val metadataExpressionListCtx = metaDataExpression.list()
+                val metadataMapEntries = metadataExpressionListCtx?.short_map_entries()
+                var file: String? = null
+                var line: Int? = null
+                var module: String? = null
+                var source: String? = null
+
+                for (shortMapEntryContext in metadataMapEntries?.short_map_entry() ?: emptyList()) {
+                    when (shortMapEntryContext.variable().text) {
+                        "file" -> file = shortMapEntryContext.expression()?.text
+                        "line" -> line = shortMapEntryContext.expression()?.text?.toInt()
+                        "module" -> module = shortMapEntryContext.expression()?.text
+                        "source" -> source = shortMapEntryContext.expression()?.text
+                    }
+                }
+                if (file != null || line != null || module != null || source != null) {
+                    MetaData(file, line, module, source)
+                } else null
+            } else null
+
 
     val arguments: List<ArgumentData>
         get() {
@@ -281,9 +291,14 @@ class ModifierDataWrapper(tupleExpression: ElixirParser.TupleExprContext) {
             get() = stringValue?.replace(":", "")
     }
 
-    companion object {
-        const val TAG = "ModifierDataWrapper"
+    data class MetaData(
+        val file: String?,
+        val line: Int?,
+        val module: String?,
+        val source: String?,
+    )
 
+    companion object {
         private const val TypeAtom = "Atom"
         private const val TypeBoolean = "Boolean"
         private const val TypeDot = "."

@@ -12,12 +12,18 @@ import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
 import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
 
 fun Modifier.alignFromStyle(
-    arguments: List<ModifierDataWrapper.ArgumentData>,
+    arguments: List<ModifierDataAdapter.ArgumentData>,
     scope: Any?
 ): Modifier {
-    val alignmentParam = arguments.firstOrNull()?.listValue
-    val alignmentClass = alignmentParam?.getOrNull(0)?.stringValueWithoutColon
-    val alignmentValue = alignmentParam?.getOrNull(1)?.stringValueWithoutColon ?: ""
+    val alignmentParam = arguments.firstOrNull()
+    // We are not creating an Alignment object. We're just using the existing ones.
+    // So the type must be ".".
+    if (alignmentParam?.isDot == false) {
+        return this
+    }
+    val paramsToCreateTheAlignObject = alignmentParam?.listValue
+    val alignmentClass = paramsToCreateTheAlignObject?.getOrNull(0)?.stringValueWithoutColon
+    val alignmentValue = paramsToCreateTheAlignObject?.getOrNull(1)?.stringValueWithoutColon ?: ""
 
     return when (scope) {
         is BoxScope -> scope.run {

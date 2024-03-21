@@ -48,7 +48,7 @@ object ModifiersParser {
         val commonTokenStream = CommonTokenStream(elixirLexer)
         val elixirParser = ElixirParser(commonTokenStream)
 
-        // The stylesheet is a map, therefor the root expression must be a map expression
+        // The stylesheet is a map, therefore the root expression must be a map expression
         val rootExpression = elixirParser.parse().block().expression().first()
         val mapExprContext: MapExprContext
         if (rootExpression is MapExprContext) {
@@ -65,38 +65,58 @@ object ModifiersParser {
         val mapKeyContext = mapEntryContext.expression(0)
         val mapValueContext = mapEntryContext.expression(1)
 
-        // Map value must be a list of tuple
+        // Map value must be a list of tuples
         val mapValueAsListContext: ListContext
-        if (mapValueContext is ListExprContext) {
+        if (mapValueContext is ListExprContext && mapValueContext.list().expressions_().expression()
+                .all { it is TupleExprContext }
+        ) {
             mapValueAsListContext = mapValueContext.list()
         } else {
             return this
         }
 
-        var result: Modifier = Modifier
+        var parsedModifier: Modifier = Modifier
 
-        val mapValueExpressionsList =
+        // Each tuple of this list is a modifier.
+        val modifiersTupleExpressionsList =
             mapValueAsListContext.expressions_().expression().filterIsInstance<TupleExprContext>()
-        mapValueExpressionsList.forEach { tupleExpr ->
-            val modifierDataWrapper = ModifierDataWrapper(tupleExpr)
 
-            modifierDataWrapper.modifierName?.let { name ->
-                try {
-                    handlerModifier(name, modifierDataWrapper.arguments, scope).let { modifier ->
-                        result = result.then(modifier)
+        // Each tuple has 3 expressions:
+        // modifier name, meta data, and arguments to create the modifier
+        modifiersTupleExpressionsList.forEach { tupleExpr ->
+            try {
+                val modifierDataAdapter = ModifierDataAdapter(tupleExpr)
+
+                modifierDataAdapter.modifierName?.let { name ->
+                    try {
+                        handlerModifier(
+                            name,
+                            modifierDataAdapter.arguments,
+                            scope
+                        ).let { modifier ->
+                            parsedModifier = parsedModifier.then(modifier)
+                        }
+                    } catch (e: Exception) {
+                        Log.e(
+                            TAG,
+                            "Error parsing modifier: $name -> ${modifierDataAdapter.metaData}",
+                            e
+                        )
                     }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error parsing modifier: $name", e)
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error creating modifier data from tuple", e)
             }
         }
-        modifiersCacheTable[styleKey] = result
-        return this.then(result)
+        return if (parsedModifier != Modifier) {
+            modifiersCacheTable[styleKey] = parsedModifier
+            this.then(parsedModifier)
+        } else this
     }
 
     private fun Modifier.handlerModifier(
         modifierId: String,
-        argListContext: List<ModifierDataWrapper.ArgumentData>,
+        argListContext: List<ModifierDataAdapter.ArgumentData>,
         scope: Any?
     ): Modifier {
         return when (modifierId) {

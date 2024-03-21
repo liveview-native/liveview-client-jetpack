@@ -1,51 +1,60 @@
 package org.phoenixframework.liveview.data.mappers.modifiers
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-fun Modifier.paddingFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
+private const val ARG_HORIZONTAL = "horizontal"
+private const val ARG_VERTICAL = "vertical"
+private const val ARG_START = "start"
+private const val ARG_END = "_end" //TODO "end" is a reserved word in Elixir
+private const val ARG_TOP = "top"
+private const val ARG_BOTTOM = "bottom"
+
+fun Modifier.paddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    // Supporting both named and no-named params
     val params =
         if (arguments.firstOrNull()?.isList == true) arguments.first().listValue else arguments
-    val paddingValues = when (params.size) {
+    val paddingModifier = when (params.size) {
         1 -> {
             val paddingValue = params.firstOrNull()
-            val dpValue = (paddingValue?.intValue ?: 0).dp
-            when (paddingValue?.name) {
-                "horizontal" -> PaddingValues(horizontal = dpValue)
-                "vertical" -> PaddingValues(vertical = dpValue)
-                "start" -> PaddingValues(start = dpValue)
-                "_end" -> PaddingValues(end = dpValue) //TODO "end" is a reserved word in Elixir
-                "top" -> PaddingValues(top = dpValue)
-                "bottom" -> PaddingValues(bottom = dpValue)
-                else -> null
+            val dpValue = paddingValue?.intValue
+            dpValue?.let {
+                when (paddingValue.name) {
+                    ARG_HORIZONTAL -> Modifier.padding(horizontal = it.dp)
+                    ARG_VERTICAL -> Modifier.padding(vertical = it.dp)
+                    ARG_START -> Modifier.padding(start = it.dp)
+                    ARG_END -> Modifier.padding(end = it.dp)
+                    ARG_TOP -> Modifier.padding(top = it.dp)
+                    ARG_BOTTOM -> Modifier.padding(bottom = it.dp)
+                    else -> Modifier.padding(all = it.dp)
+                }
             }
         }
 
         2 -> {
             val paddingValue = params.firstOrNull()
             when (paddingValue?.name) {
-                "horizontal", "vertical", null -> {
+                ARG_HORIZONTAL, ARG_VERTICAL, null -> {
                     val hp =
-                        params.find { it.name == "horizontal" }?.intValue
+                        params.find { it.name == ARG_HORIZONTAL }?.intValue
                             ?: params.getOrNull(0)?.intValue
                     val vp =
-                        params.find { it.name == "vertical" }?.intValue
+                        params.find { it.name == ARG_VERTICAL }?.intValue
                             ?: params.getOrNull(1)?.intValue
 
-                    if (hp != null && vp != null) {
-                        PaddingValues(vertical = vp.dp, horizontal = hp.dp)
-                    } else null
+                    if (hp != null && vp != null) Modifier.padding(
+                        vertical = vp.dp,
+                        horizontal = hp.dp
+                    ) else null
                 }
 
                 else -> {
-                    PaddingValues(
-                        start = (params.find { it.name == "start" }?.intValue ?: 0).dp,
-                        top = (params.find { it.name == "top" }?.intValue ?: 0).dp,
-                        end = (params.find { it.name == "_end" }?.intValue
-                            ?: 0).dp, //TODO "end" is a reserved word in Elixir
-                        bottom = (params.find { it.name == "bottom" }?.intValue ?: 0).dp,
+                    Modifier.padding(
+                        start = (params.find { it.name == ARG_START }?.intValue ?: 0).dp,
+                        top = (params.find { it.name == ARG_TOP }?.intValue ?: 0).dp,
+                        end = (params.find { it.name == ARG_END }?.intValue ?: 0).dp,
+                        bottom = (params.find { it.name == ARG_BOTTOM }?.intValue ?: 0).dp,
                     )
                 }
             }
@@ -56,14 +65,13 @@ fun Modifier.paddingFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>)
                 params.map { it.intValue ?: 0 }
             } else {
                 listOf(
-                    params.find { it.name == "start" }?.intValue ?: 0,
-                    params.find { it.name == "top" }?.intValue ?: 0,
-                    params.find { it.name == "_end" }?.intValue
-                        ?: 0, //TODO "end" is a reserved word in Elixir
-                    params.find { it.name == "bottom" }?.intValue ?: 0
+                    params.find { it.name == ARG_START }?.intValue ?: 0,
+                    params.find { it.name == ARG_TOP }?.intValue ?: 0,
+                    params.find { it.name == ARG_END }?.intValue ?: 0,
+                    params.find { it.name == ARG_BOTTOM }?.intValue ?: 0
                 )
             }
-            PaddingValues(
+            Modifier.padding(
                 paddingValues[0].dp,
                 paddingValues[1].dp,
                 paddingValues[2].dp,
@@ -73,5 +81,5 @@ fun Modifier.paddingFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>)
 
         else -> null
     }
-    return paddingValues?.let { this.then(Modifier.padding(it)) } ?: this
+    return paddingModifier?.let { this.then(it) } ?: this
 }

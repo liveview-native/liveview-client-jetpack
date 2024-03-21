@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.constants.ShapeValues
 import org.phoenixframework.liveview.domain.extensions.toColor
 
-fun shapeFromStyle(argument: ModifierDataWrapper.ArgumentData): Shape? {
+fun shapeFromStyle(argument: ModifierDataAdapter.ArgumentData): Shape? {
     val clazz = if (argument.isDot)
         argument.listValue.getOrNull(0)?.stringValueWithoutColon ?: ""
     else
@@ -50,7 +50,7 @@ fun shapeFromStyle(argument: ModifierDataWrapper.ArgumentData): Shape? {
     }
 }
 
-fun colorFromArgument(argument: ModifierDataWrapper.ArgumentData): Color? {
+fun colorFromArgument(argument: ModifierDataAdapter.ArgumentData): Color? {
     val argsToCreateArg = argument.listValue
     val clazz = argsToCreateArg[0].stringValue
 
@@ -81,7 +81,7 @@ fun colorFromArgument(argument: ModifierDataWrapper.ArgumentData): Color? {
     return null
 }
 
-fun borderStrokeFromArgument(argument: ModifierDataWrapper.ArgumentData): BorderStroke? {
+fun borderStrokeFromArgument(argument: ModifierDataAdapter.ArgumentData): BorderStroke? {
     val borderStrokeArguments =
         if (argument.isList) argument.listValue.first().listValue else argument.listValue
     val width = borderStrokeArguments.getOrNull(0)?.intValue?.dp
