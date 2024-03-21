@@ -73,6 +73,9 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
+    implementation(files("/Users/sebastian.imlay/projects/liveview-native-core/crates/core/liveview-native-core-jetpack/core/build/outputs/aar/core-release.aar"))
+    implementation("net.java.dev.jna:jna:5.14.0")
+
     implementation(libs.com.google.code.gson)
 
     // These dependencies are exported to consumers, that is to say found on their compile classpath.
@@ -81,7 +84,7 @@ dependencies {
     api(libs.androidx.navigation.compose)
 
     api(libs.com.github.dsrees.javaphoenixclient)
-    api(libs.com.github.liveview.native.core.jetpack)
+    //api(libs.com.github.liveview.native.core.jetpack)
 
     api(libs.org.jetbrains.kotlinx.collections.immutable)
     api(libs.org.jsoup)
