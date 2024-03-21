@@ -9,6 +9,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlignByBaseline
 import org.phoenixframework.liveview.data.constants.Attrs.attrAspectRatio
 import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
+import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrClip
 import org.phoenixframework.liveview.data.constants.Attrs.attrFillMaxHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrFillMaxWidth
@@ -103,6 +104,7 @@ object ModifiersParser {
             attrAlignByBaseline -> this.then(alignByBaselineFromStyle(scope))
             attrAspectRatio -> this.then(aspectRatioFromStyle(argListContext))
             attrBackground -> this.then(backgroundFromStyle(argListContext))
+            attrBorder -> this.then(borderFromStyle(argListContext))
             attrClip -> this.then(clipFromStyle(argListContext))
             attrFillMaxHeight -> this.then(fillMaxHeightFromStyle(argListContext))
             attrFillMaxWidth -> this.then(fillMaxWidthFromStyle(argListContext))

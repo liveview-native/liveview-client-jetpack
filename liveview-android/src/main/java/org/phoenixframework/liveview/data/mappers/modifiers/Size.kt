@@ -10,37 +10,38 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-fun Modifier.aspectRatioFromStyle(modifierData: List<ModifierDataWrapper.ArgumentData>): Modifier {
-    val params = if (modifierData.first().isList) modifierData.first().listValue else modifierData
-    val ratio = params.find { it.isNumber }
-    val matchConstraints = params.find { it.isBoolean }?.booleanValue
+fun Modifier.aspectRatioFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
+    val params =
+        if (arguments.firstOrNull()?.isList == true) arguments.firstOrNull()?.listValue else arguments
+    val ratio = params?.find { it.isNumber }
+    val matchConstraints = params?.find { it.isBoolean }?.booleanValue
     if (ratio != null) {
         return this.then(Modifier.aspectRatio((ratio.value as Float), matchConstraints ?: false))
     }
     return this
 }
 
-fun Modifier.fillMaxHeightFromStyle(modifierData: List<ModifierDataWrapper.ArgumentData>): Modifier {
+fun Modifier.fillMaxHeightFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
     val fraction =
-        if (modifierData.isNotEmpty()) modifierData.first().floatValue ?: 1f else 1f
+        if (arguments.isNotEmpty()) arguments.firstOrNull()?.floatValue ?: 1f else 1f
     return this.then(Modifier.fillMaxHeight(fraction))
 }
 
-fun Modifier.fillMaxWidthFromStyle(modifierData: List<ModifierDataWrapper.ArgumentData>): Modifier {
+fun Modifier.fillMaxWidthFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
     val fraction =
-        if (modifierData.isNotEmpty()) modifierData.first().floatValue ?: 1f else 1f
+        if (arguments.isNotEmpty()) arguments.first().floatValue ?: 1f else 1f
     return this.then(Modifier.fillMaxWidth(fraction))
 }
 
-fun Modifier.heightFromStyle(argListContext: List<ModifierDataWrapper.ArgumentData>): Modifier {
-    if (argListContext.isNotEmpty()) {
+fun Modifier.heightFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
+    if (arguments.isNotEmpty()) {
         val params =
-            if (argListContext.first().isList) argListContext.first().listValue else argListContext
-        val arg = params.first()
-        if ((arg.name == "height" && arg.isInt) || (arg.isInt && params.size == 1)) {
+            if (arguments.firstOrNull()?.isList == true) arguments.first().listValue else arguments
+        val arg = params.firstOrNull()
+        if ((arg?.name == "height" && arg.isInt) || (arg?.isInt == true && params.size == 1)) {
             val heightInt = (arg.value as? Int) ?: 0
             return this.then(Modifier.height(height = heightInt.dp))
-        } else if (arg.name == "intrinsicSize") {
+        } else if (arg?.name == "intrinsicSize") {
             val intrinsicSize = IntrinsicSize.valueOf(arg.value.toString())
             return this.then(Modifier.height(intrinsicSize = intrinsicSize))
         }
@@ -48,36 +49,43 @@ fun Modifier.heightFromStyle(argListContext: List<ModifierDataWrapper.ArgumentDa
     return this
 }
 
-fun Modifier.sizeFromStyle(argListContext: List<ModifierDataWrapper.ArgumentData>): Modifier {
+fun Modifier.sizeFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
     val params =
-        if (argListContext.first().isList) argListContext.first().listValue else argListContext
+        if (arguments.firstOrNull()?.isList == true) arguments.first().listValue else arguments
 
     return when (params.size) {
         1 -> {
-            this.then(Modifier.size((params.first().intValue ?: 0).dp))
+            params.firstOrNull()?.intValue?.let { this.then(Modifier.size(it.dp)) } ?: this
         }
 
         2 -> {
-            val width = params.find { it.name == "width" }?.intValue ?: params[0].intValue ?: 0
-            val height = params.find { it.name == "height" }?.intValue ?: params[1].intValue ?: 0
-            this.then(Modifier.size(width.dp, height.dp))
+            val width = params.find { it.name == "width" }?.intValue ?: params[0].intValue
+            val height = params.find { it.name == "height" }?.intValue ?: params[1].intValue
+            if (width != null && height != null)
+                this.then(Modifier.size(width.dp, height.dp))
+            else
+                this
         }
 
         else -> this
     }
 }
 
-fun Modifier.widthFromStyle(argListContext: List<ModifierDataWrapper.ArgumentData>): Modifier {
-    if (argListContext.isNotEmpty()) {
+fun Modifier.widthFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
+    if (arguments.isNotEmpty()) {
         val params =
-            if (argListContext.first().isList) argListContext.first().listValue else argListContext
-        val arg = params.first()
-        if ((arg.name == "width" && arg.isInt) || (arg.isInt && params.size == 1)) {
-            val heightInt = (arg.value as? Int) ?: 0
-            return this.then(Modifier.width(heightInt.dp))
-        } else if (arg.name == "intrinsicSize" || arg.isDot) {
-            val intrinsicSize = IntrinsicSize.valueOf(arg.value.toString())
-            return this.then(Modifier.width(intrinsicSize = intrinsicSize))
+            if (arguments.first().isList) arguments.first().listValue else arguments
+        val arg = params.firstOrNull()
+        if ((arg?.name == "width" && arg.isInt) || (arg?.isInt == true && params.size == 1)) {
+            return (arg.value as? Int)?.let { this.then(Modifier.width(it.dp)) } ?: this
+        } else if (arg?.name == "intrinsicSize" || arg?.isDot == true) {
+            return try {
+                IntrinsicSize.valueOf(arg.value.toString())
+            } catch (_: Exception) {
+                null
+            }?.let {
+                this.then(Modifier.width(intrinsicSize = it))
+            } ?: this
         }
     }
     return this

@@ -98,16 +98,21 @@ class ModifierDataWrapper(tupleExpression: ElixirParser.TupleExprContext) {
         argumentValueExpression: ElixirParser.ListExprContext
     ): ArgumentData {
         val result = mutableListOf<ArgumentData>()
-        val argumentEntries = argumentValueExpression.list().short_map_entries()
-        if (argumentEntries is ElixirParser.Short_map_entriesContext) {
-            argumentEntries.short_map_entry().forEach { argumentEntry ->
-                val argumentEntryKey = argumentEntry.variable().text
-                argValueFromContext(argumentEntryKey, argumentEntry.expression())
-                    ?.let {
-                        result.add(it)
-                    }
+        val argumentEntriesList = argumentValueExpression.list()
 
-            }
+        argumentEntriesList.expressions_()?.expression()?.forEach { expression ->
+            argValueFromContext(null, expression)
+                ?.let {
+                    result.add(it)
+                }
+        }
+        argumentEntriesList?.short_map_entries()?.short_map_entry()?.forEach { argumentEntry ->
+            val argumentEntryKey = argumentEntry.variable().text
+            argValueFromContext(argumentEntryKey, argumentEntry.expression())
+                ?.let {
+                    result.add(it)
+                }
+
         }
         return ArgumentData(
             argumentKey,
@@ -271,6 +276,9 @@ class ModifierDataWrapper(tupleExpression: ElixirParser.TupleExprContext) {
 
         val stringValue: String?
             get() = value?.toString()
+
+        val stringValueWithoutColon: String?
+            get() = stringValue?.replace(":", "")
     }
 
     companion object {

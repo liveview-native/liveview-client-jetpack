@@ -4,12 +4,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 
-fun Modifier.clipFromStyle(modifierData: List<ModifierDataWrapper.ArgumentData>): Modifier {
+fun Modifier.clipFromStyle(arguments: List<ModifierDataWrapper.ArgumentData>): Modifier {
     val argument =
-        if (modifierData.first().isList) modifierData.first().listValue.first() else modifierData.first()
-    return this.then(
-        Modifier.clip(
-            shapeFromStyle(argument) ?: RectangleShape
-        )
-    )
+        if (arguments.firstOrNull()?.isList == true)
+            arguments.first().listValue.firstOrNull()
+        else
+            arguments.firstOrNull()
+    return this.then(Modifier.clip(argument?.let { shapeFromStyle(it) } ?: RectangleShape))
 }

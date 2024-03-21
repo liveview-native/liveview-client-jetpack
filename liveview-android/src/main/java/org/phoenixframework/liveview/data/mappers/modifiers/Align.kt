@@ -12,31 +12,29 @@ import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
 import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
 
 fun Modifier.alignFromStyle(
-    modifierData: List<ModifierDataWrapper.ArgumentData>,
+    arguments: List<ModifierDataWrapper.ArgumentData>,
     scope: Any?
 ): Modifier {
-    val params = modifierData.first().listValue
-    val clazzName =
-        params[0].value.toString().replace(":", "")
-    val attributeName =
-        params[1].value.toString().replace(":", "")
+    val alignmentParam = arguments.firstOrNull()?.listValue
+    val alignmentClass = alignmentParam?.getOrNull(0)?.stringValueWithoutColon
+    val alignmentValue = alignmentParam?.getOrNull(1)?.stringValueWithoutColon ?: ""
 
     return when (scope) {
         is BoxScope -> scope.run {
             this@alignFromStyle.then(
-                Modifier.align(alignmentFromString(attributeName, Alignment.TopStart))
+                Modifier.align(alignmentFromString(alignmentValue, Alignment.TopStart))
             )
         }
 
         is ColumnScope -> scope.run {
             this@alignFromStyle.then(
-                Modifier.align(horizontalAlignmentFromString(attributeName))
+                Modifier.align(horizontalAlignmentFromString(alignmentValue))
             )
         }
 
         is RowScope -> scope.run {
             this@alignFromStyle.then(
-                Modifier.align(verticalAlignmentFromString(attributeName))
+                Modifier.align(verticalAlignmentFromString(alignmentValue))
             )
         }
 
