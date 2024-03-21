@@ -24,11 +24,12 @@ import org.phoenixframework.liveview.domain.base.ComposableTypes.column
 import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 import org.phoenixframework.liveview.domain.factory.ComposableNodeFactory
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
-import org.phoenixframework.liveview.lib.Document
-import org.phoenixframework.liveview.lib.Node
-import org.phoenixframework.liveview.lib.NodeRef
-import org.phoenixframework.liveview.lib.DocumentChangeHandler
-import org.phoenixframework.liveview.lib.ChangeType
+import org.phoenixframework.liveviewnative.core.Document
+import org.phoenixframework.liveviewnative.core.Node
+import org.phoenixframework.liveviewnative.core.NodeRef
+import org.phoenixframework.liveviewnative.core.DocumentChangeHandler
+import org.phoenixframework.liveviewnative.core.ChangeType
+import org.phoenixframework.liveviewnative.core.NodeData
 import java.net.ConnectException
 
 class LiveViewCoordinator(
@@ -39,7 +40,7 @@ class LiveViewCoordinator(
     private val repository: Repository = Repository(httpBaseUrl, wsBaseUrl)
     // This is to implement the DocumentChangeHandler interface.
     override fun `handle`(
-        `context`: String,
+        `context`: Document,
         `changeType`: ChangeType,
         `nodeRef`: NodeRef,
         `parent`: NodeRef?,
@@ -67,7 +68,7 @@ class LiveViewCoordinator(
          }
     }
 
-    private var document: Document = Document()
+    private var document: Document = Document.empty()
 
     private val _composableTree = MutableStateFlow(ComposableTreeNode(screenId, 0, null))
     val composableTree = _composableTree.asStateFlow()
@@ -220,7 +221,7 @@ class LiveViewCoordinator(
                     repository.disconnectFromReloadSocket()
                     repository.leaveChannel()
                     repository.disconnectFromLiveViewSocket()
-                    document = Document()
+                    document = Document.empty()
 
                     viewModelScope.launch(Dispatchers.Main) {
                         cancelConnectionJobs()
@@ -268,7 +269,8 @@ class LiveViewCoordinator(
 
     internal fun parseTemplate(s: String) {
         Log.d(TAG, "parseTemplate: $s")
-        document.mergeFragmentJson(s, this)
+        document.setEventHandler(this)
+        document.mergeFragmentJson(s)
         Log.d(TAG, "renderedTemplate: ${document.render()}")
         val rootNode = ComposableTreeNode(screenId, -1, null, id = "rootNode")
         val rootElement = document.root()
@@ -283,8 +285,8 @@ class LiveViewCoordinator(
 
     private fun walkThroughDOM(document: Document, nodeRef: NodeRef, parent: ComposableTreeNode?) {
         when (val node = document.get(nodeRef)) {
-            is Node.Leaf,
-            is Node.NodeElement -> {
+            is NodeData.Leaf,
+            is NodeData.NodeElement -> {
                 val composableTreeNode =
                     composableTreeNodeFromNode(screenId, node, nodeRef)
                 parent?.addNode(composableTreeNode)
@@ -295,7 +297,7 @@ class LiveViewCoordinator(
                 }
             }
 
-            Node.Root -> {
+            NodeData.Root -> {
                 val childNodeRefs = document.children(nodeRef)
                 for (childNodeRef in childNodeRefs) {
                     walkThroughDOM(document, childNodeRef, parent)
@@ -381,7 +383,7 @@ class LiveViewCoordinator(
 
         internal fun composableTreeNodeFromNode(
             screenId: String,
-            node: Node,
+            node: NodeData,
             nodeRef: NodeRef,
         ): ComposableTreeNode {
             return ComposableNodeFactory.buildComposableTreeNode(

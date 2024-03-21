@@ -60,7 +60,7 @@ import org.phoenixframework.liveview.data.dto.TopAppBarDtoFactory
 import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.lib.NodeRef
+import org.phoenixframework.liveviewnative.core.NodeRef
 
 /**
  * A factory class that is used to create `ComposableTreeNode` objects that co-relate to composable
