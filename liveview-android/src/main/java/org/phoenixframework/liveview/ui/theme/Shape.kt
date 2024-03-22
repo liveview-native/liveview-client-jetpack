@@ -35,7 +35,20 @@ internal fun shapeFromString(
     shape.isNotEmptyAndIsDigitsOnly() -> RoundedCornerShape(shape.toInt().dp)
     shape == ShapeValues.circle -> CircleShape
     shape == ShapeValues.rectangle -> RoundedCornerShape(0.dp)
-    // TODO add support for RoundedCornerShape specifying the 4 corners
-    //  (topLeft, topRight, bottomLeft, bottomRight)
+    shape.startsWith(ShapeValues.roundedCorner) -> {
+        // roundedCored(1, 2, 3, 4)
+        val values =
+            shape.substring(ShapeValues.roundedCorner.length + 1, shape.lastIndex - 1).split(',')
+        if (values.size == 1) {
+            RoundedCornerShape((values.first().toIntOrNull() ?: 0).dp)
+        } else {
+            RoundedCornerShape(
+                (values.getOrNull(0)?.toIntOrNull() ?: 0).dp,
+                (values.getOrNull(1)?.toIntOrNull() ?: 0).dp,
+                (values.getOrNull(2)?.toIntOrNull() ?: 0).dp,
+                (values.getOrNull(3)?.toIntOrNull() ?: 0).dp,
+            )
+        }
+    }
     else -> default
 }

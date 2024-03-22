@@ -1,15 +1,15 @@
 package org.phoenixframework.liveview.data.constants
 
 object AlignmentValues {
-    const val topStart = "topStart"
-    const val topCenter = "topCenter"
-    const val topEnd = "topEnd"
-    const val centerStart = "centerStart"
-    const val center = "center"
-    const val centerEnd = "centerEnd"
-    const val bottomStart = "bottomStart"
-    const val bottomCenter = "bottomCenter"
-    const val bottomEnd = "bottomEnd"
+    const val topStart = "TopStart"
+    const val topCenter = "TopCenter"
+    const val topEnd = "TopEnd"
+    const val centerStart = "CenterStart"
+    const val center = "Center"
+    const val centerEnd = "CenterEnd"
+    const val bottomStart = "BottomStart"
+    const val bottomCenter = "BottomCenter"
+    const val bottomEnd = "BottomEnd"
 }
 
 object ContentScaleValues {
@@ -61,9 +61,9 @@ object FontWeightValues {
 }
 
 object HorizontalAlignmentValues {
-    const val start = "start"
-    const val centerHorizontally = "centerHorizontally"
-    const val end = "end"
+    const val start = "Start"
+    const val centerHorizontally = "CenterHorizontally"
+    const val end = "End"
 }
 
 object HorizontalArrangementValues {
@@ -153,8 +153,9 @@ object SecureFlagPolicyValues {
 }
 
 object ShapeValues {
-    const val circle = "circle"
-    const val rectangle = "rectangle"
+    const val circle = "CircleShape"
+    const val rectangle = "RectangleShape"
+    const val roundedCorner = "RoundedCornerShape"
 }
 
 object SheetValues {
@@ -256,9 +257,9 @@ object TimePickerLayoutTypeValues {
 }
 
 object VerticalAlignmentValues {
-    const val top = "top"
-    const val center = "center"
-    const val bottom = "bottom"
+    const val top = "Top"
+    const val center = "Center"
+    const val bottom = "Bottom"
 }
 
 object VerticalArrangementValues {

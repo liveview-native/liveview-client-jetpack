@@ -61,6 +61,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":stylesheet-parser"))
     // These dependencies are used internally, and not exposed to consumers on their own compile classpath.
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)

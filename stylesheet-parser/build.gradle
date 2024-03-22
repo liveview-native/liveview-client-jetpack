@@ -1,0 +1,41 @@
+plugins {
+    id 'java-library'
+    id 'antlr'
+    id 'idea'
+}
+
+def outputDir =  'generated-src/antlr/main/org/phoenixframework/liveview/stylesheet/'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_7
+    targetCompatibility = JavaVersion.VERSION_1_7
+}
+
+dependencies {
+    antlr libs.antlr4
+    implementation libs.antlr4.runtime
+}
+
+generateGrammarSource {
+    maxHeapSize = "128m"
+    arguments += ['-package', 'org.phoenixframework.liveview.stylesheet', '-visitor']
+    outputDirectory = new File(buildDir.toString() +'/'+ outputDir)
+}
+compileJava.dependsOn generateGrammarSource
+
+sourceSets {
+    generated {
+        java.srcDir outputDir
+    }
+}
+compileJava.source sourceSets.generated.java, sourceSets.main.java
+
+clean{
+    delete "generated-src"
+}
+
+idea {
+    module {
+        sourceDirs += file(outputDir)
+    }
+}
