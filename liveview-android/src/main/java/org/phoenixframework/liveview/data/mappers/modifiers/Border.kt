@@ -14,28 +14,24 @@ fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
     var borderShape: Shape? = null
     var borderColor: Color? = null
     var borderWidth: Dp? = null
-    // Using named arguments
+
+    val borderArguments = argsOrNamedArgs(arguments)
     if (arguments.firstOrNull()?.isList == true) {
-        val borderArguments = arguments.getOrNull(0)?.listValue ?: emptyList()
-        for (borderArgument in borderArguments) {
-            if (borderArgument.name == "color") {
-                borderColor = colorFromArgument(borderArgument)
-            }
+        // Named args
+        var arg = borderArguments.find { it.name == "color" }
+        if (arg != null) borderColor = colorFromArgument(arg)
 
-            if (borderArgument.name == "width") {
-                borderWidth = (borderArgument.intValue ?: 0).dp
-            }
+        arg = borderArguments.find { it.name == "width" }
+        if (arg != null) borderWidth = (arg.intValue ?: 0).dp
 
-            if (borderArgument.name == "border") {
-                borderStroke = borderStrokeFromArgument(borderArgument)
-            }
+        arg = borderArguments.find { it.name == "border" }
+        if (arg != null) borderStroke = borderStrokeFromArgument(arg)
 
-            if (borderArgument.name == "shape") {
-                borderShape = shapeFromStyle(borderArgument)
-            }
-        }
+        arg = borderArguments.find { it.name == "shape" }
+        if (arg != null) borderShape = shapeFromStyle(arg)
+
     } else {
-        // Allowing params in any order (without names)
+        // Ordered params
         for (borderArgument in arguments) {
             when {
                 borderArgument.type == "BorderStroke" ->

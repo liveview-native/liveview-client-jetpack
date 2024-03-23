@@ -1,6 +1,7 @@
 package org.phoenixframework.liveview.data.mappers.modifiers
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
@@ -10,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.constants.ShapeValues
 import org.phoenixframework.liveview.domain.extensions.toColor
 
-fun shapeFromStyle(argument: ModifierDataAdapter.ArgumentData): Shape? {
+internal fun shapeFromStyle(argument: ModifierDataAdapter.ArgumentData): Shape? {
     val clazz = if (argument.isDot)
         argument.listValue.getOrNull(0)?.stringValueWithoutColon ?: ""
     else
@@ -36,7 +37,7 @@ fun shapeFromStyle(argument: ModifierDataAdapter.ArgumentData): Shape? {
 
             return if (cornerSizeParts.size == 1) {
                 cornerSizeParts.firstOrNull()?.let { RoundedCornerShape(it.dp) }
-            } else if (cornerSizeParts.any { it != null }){
+            } else if (cornerSizeParts.any { it != null }) {
                 RoundedCornerShape(
                     (cornerSizeParts.getOrNull(0) ?: 0).dp,
                     (cornerSizeParts.getOrNull(1) ?: 0).dp,
@@ -81,13 +82,86 @@ fun colorFromArgument(argument: ModifierDataAdapter.ArgumentData): Color? {
     return null
 }
 
-fun borderStrokeFromArgument(argument: ModifierDataAdapter.ArgumentData): BorderStroke? {
+internal fun borderStrokeFromArgument(argument: ModifierDataAdapter.ArgumentData): BorderStroke? {
     val borderStrokeArguments =
         if (argument.isList) argument.listValue.first().listValue else argument.listValue
     val width = borderStrokeArguments.getOrNull(0)?.intValue?.dp
     val color = colorFromArgument(borderStrokeArguments[1])
     return if (width != null && color != null) BorderStroke(
         width,
-        color ?: Color.Unspecified
+        color
     ) else null
+}
+
+internal fun argsOrNamedArgs(
+    arguments: List<ModifierDataAdapter.ArgumentData>
+): List<ModifierDataAdapter.ArgumentData> =
+    if (arguments.firstOrNull()?.isList == true) arguments.first().listValue
+    else arguments
+
+internal fun intrinsicSizeFromArgument(argument: ModifierDataAdapter.ArgumentData): IntrinsicSize? {
+    val clazz = argument.listValue.firstOrNull()?.stringValueWithoutColon
+    val clazzValue = argument.listValue.getOrNull(1)?.stringValueWithoutColon
+    if (clazz == "IntrinsicSize" && clazzValue != null) {
+        return try {
+            IntrinsicSize.valueOf(clazzValue)
+        } catch (_: Exception) {
+            null
+        }
+    }
+    return null
+}
+
+internal fun singleArgumentIntValue(
+    argumentName: String,
+    argument: ModifierDataAdapter.ArgumentData
+): Int? {
+    return if (argument.isList) {
+        argument.listValue.find { it.name == argumentName }?.intValue
+    } else if (argument.isInt && (argument.name == argumentName || argument.name == null)) {
+        argument.intValue
+    } else null
+}
+
+internal fun singleArgumentBooleanValue(
+    argumentName: String,
+    argument: ModifierDataAdapter.ArgumentData
+): Boolean? {
+    return if (argument.isList) {
+        argument.listValue.find { it.name == argumentName }?.booleanValue
+    } else if (argument.isBoolean && (argument.name == argumentName || argument.name == null)) {
+        argument.booleanValue
+    } else null
+}
+
+internal fun singleArgumentFloatValue(
+    argumentName: String,
+    argument: ModifierDataAdapter.ArgumentData
+): Float? {
+    return if (argument.isList) {
+        argument.listValue.find { it.name == argumentName }?.floatValue
+    } else if (argument.isNumber && (argument.name == argumentName || argument.name == null)) {
+        argument.floatValue
+    } else null
+}
+
+internal fun singleArgumentObjectValue(
+    argumentName: String,
+    argument: ModifierDataAdapter.ArgumentData
+): Pair<String, Any>? {
+    if (argument.name != null && argument.name != argumentName) {
+        return null
+    }
+    if (argument.isDot) {
+        val clazz = argument.listValue.getOrNull(0)?.stringValueWithoutColon
+        val value = argument.listValue.getOrNull(1)?.stringValueWithoutColon
+        if (clazz != null && value != null) {
+            return clazz to value
+        }
+    } else {
+        val clazz = argument.type
+        val value = argument.listValue
+        return clazz to value
+    }
+    return null
 }

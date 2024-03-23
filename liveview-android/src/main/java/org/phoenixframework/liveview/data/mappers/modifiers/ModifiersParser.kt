@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlignByBaseline
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlpha
 import org.phoenixframework.liveview.data.constants.Attrs.attrAspectRatio
 import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
@@ -120,7 +121,8 @@ object ModifiersParser {
         scope: Any?
     ): Modifier {
         return when (modifierId) {
-            attrAlign -> this.then(alignFromStyle(argListContext, scope))
+            attrAlpha -> this.then(alphaFromStyle(argListContext))
+            attrAlign -> this.then(singleArgumentObjectValue(argListContext, scope))
             attrAlignByBaseline -> this.then(alignByBaselineFromStyle(scope))
             attrAspectRatio -> this.then(aspectRatioFromStyle(argListContext))
             attrBackground -> this.then(backgroundFromStyle(argListContext))
@@ -136,5 +138,5 @@ object ModifiersParser {
         }
     }
 
-    const val TAG = "ModifiersParse"
+    private const val TAG = "ModifiersParse"
 }

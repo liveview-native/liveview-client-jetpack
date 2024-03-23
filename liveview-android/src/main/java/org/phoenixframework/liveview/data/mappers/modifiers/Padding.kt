@@ -13,8 +13,7 @@ private const val ARG_BOTTOM = "bottom"
 
 fun Modifier.paddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     // Supporting both named and no-named params
-    val params =
-        if (arguments.firstOrNull()?.isList == true) arguments.first().listValue else arguments
+    val params = argsOrNamedArgs(arguments)
     val paddingModifier = when (params.size) {
         1 -> {
             val paddingValue = params.firstOrNull()
@@ -43,10 +42,12 @@ fun Modifier.paddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>)
                         params.find { it.name == ARG_VERTICAL }?.intValue
                             ?: params.getOrNull(1)?.intValue
 
-                    if (hp != null && vp != null) Modifier.padding(
-                        vertical = vp.dp,
-                        horizontal = hp.dp
-                    ) else null
+                    if (hp != null && vp != null)
+                        Modifier.padding(
+                            vertical = vp.dp,
+                            horizontal = hp.dp
+                        )
+                    else null
                 }
 
                 else -> {

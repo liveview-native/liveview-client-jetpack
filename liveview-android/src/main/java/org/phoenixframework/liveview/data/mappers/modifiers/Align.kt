@@ -11,35 +11,33 @@ import org.phoenixframework.liveview.data.dto.alignmentFromString
 import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
 import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
 
-fun Modifier.alignFromStyle(
+fun Modifier.singleArgumentObjectValue(
     arguments: List<ModifierDataAdapter.ArgumentData>,
     scope: Any?
 ): Modifier {
-    val alignmentParam = arguments.firstOrNull()
-    // We are not creating an Alignment object. We're just using the existing ones.
-    // So the type must be ".".
-    if (alignmentParam?.isDot == false) {
+    val alignmentParam = argsOrNamedArgs(arguments).firstOrNull()
+    if (alignmentParam == null || !alignmentParam.isDot) {
         return this
     }
-    val paramsToCreateTheAlignObject = alignmentParam?.listValue
-    val alignmentClass = paramsToCreateTheAlignObject?.getOrNull(0)?.stringValueWithoutColon
-    val alignmentValue = paramsToCreateTheAlignObject?.getOrNull(1)?.stringValueWithoutColon ?: ""
+
+    val alignmentValue = singleArgumentObjectValue("alignment", alignmentParam)?.second?.toString()
+        ?: return this
 
     return when (scope) {
         is BoxScope -> scope.run {
-            this@alignFromStyle.then(
+            this@singleArgumentObjectValue.then(
                 Modifier.align(alignmentFromString(alignmentValue, Alignment.TopStart))
             )
         }
 
         is ColumnScope -> scope.run {
-            this@alignFromStyle.then(
+            this@singleArgumentObjectValue.then(
                 Modifier.align(horizontalAlignmentFromString(alignmentValue))
             )
         }
 
         is RowScope -> scope.run {
-            this@alignFromStyle.then(
+            this@singleArgumentObjectValue.then(
                 Modifier.align(verticalAlignmentFromString(alignmentValue))
             )
         }

@@ -10,256 +10,309 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNotSame
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyle
 
 @RunWith(AndroidJUnit4::class)
-class SizeTest {
-    @Before
-    fun clearStyleCacheTable() {
-        ModifiersParser.clearCacheTable()
-    }
+class SizeTest : ModifierBaseTest() {
 
     @Test
     fun heightInDp() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"heightInDp" => [
                 {:height, [], [100]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.height(100.dp))
-        assertEquals(result, modifier)
+            """,
+            Modifier.height(100.dp)
+        )
     }
 
     @Test
     fun heightInDpWithInvalidValueMustFail() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"heightInDpWithInvalidValueMustFail" => [
                 {:height, [], ["100"]},
             ]}
-            """
-        val modifier = Modifier.fromStyle(style, null)
-        assertEquals(modifier, Modifier)
+            """,
+            Modifier
+        )
     }
 
     @Test
     fun heightInDpNamed() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"heightInDpNamed" => [
                 {:height, [], [[height: 100]]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.height(100.dp))
-        assertEquals(result, modifier)
+            """,
+            Modifier.height(100.dp)
+        )
     }
 
     @Test
     fun heightInDpNamedWithInvalidValueMustFail() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"heightInDpNamedWithInvalidValueMustFail" => [
                 {:height, [], [[height: "100"]]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.height(100.dp))
-        assertNotSame(result, modifier)
+            """,
+            Modifier
+        )
     }
 
     @Test
     fun heightIntrinsicTest() {
-        val style = """
-            %{"heightIntrinsicTest" => [
-                {:height, [], [{:., :IntrinsicSize, :Min}]},
-            ]}
+        assertModifierFromStyle(
             """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.height(IntrinsicSize.Min))
-        assertNotSame(result, modifier)
+            %{"heightIntrinsicTest" => [
+                {:height, [], [{:., [], [:IntrinsicSize, :Min]}]},
+            ]}
+            """,
+            Modifier.height(IntrinsicSize.Min)
+        )
+    }
+
+    @Test
+    fun heightIntrinsicNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"heightIntrinsicTest" => [
+                {:height, [], [[intrinsicSize: {:., [], [:IntrinsicSize, :Min]}]]},
+            ]}
+            """,
+            Modifier.height(IntrinsicSize.Min)
+        )
     }
 
     @Test
     fun aspectRatioTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"aspectRatioTest" => [
                 {:aspectRatio, [], [1.33]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.aspectRatio(1.33f)
-        assertEquals(result, modifier)
+            """,
+            Modifier.aspectRatio(1.33f)
+        )
     }
 
     @Test
     fun aspectRatioWithMatchConstraintsTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"aspectRatioWithMatchConstraintsTest" => [
                 {:aspectRatio, [], [1.33, true]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.aspectRatio(1.33f, true)
-        assertEquals(result, modifier)
+            """,
+            Modifier.aspectRatio(1.33f, true)
+        )
     }
 
     @Test
     fun aspectRatioWithNamedParamsTest() {
-        val style = """
-            %{"aspectRatioWithNamedParamsTest" => [
-                {:aspectRatio, [], [[ratio: 1.33, matchConstraints: true]]},
-            ]}
+        assertModifierFromStyle(
             """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.aspectRatio(1.33f, true)
-        assertEquals(result, modifier)
+            %{"aspectRatioWithNamedParamsTest" => [
+                {:aspectRatio, [], [[matchHeightConstraintsFirst: true, ratio: 1.33]]},
+            ]}
+            """,
+            Modifier.aspectRatio(1.33f, true)
+        )
     }
 
     @Test
     fun fillMaxHeightTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"fillMaxHeightTest" => [
                 {:fillMaxHeight, [], []},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.fillMaxHeight()
-        assertEquals(result, modifier)
+            """,
+            Modifier.fillMaxHeight()
+        )
     }
 
     @Test
     fun fillMaxHeightWithFractionTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"fillMaxHeightWithFractionTest" => [
                 {:fillMaxHeight, [], [0.5]},
             ]}
+            """,
+            Modifier.fillMaxHeight(0.5f)
+        )
+    }
+
+    @Test
+    fun fillMaxHeightWithFractionNamedTest() {
+        assertModifierFromStyle(
             """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.fillMaxHeight(0.5f)
-        assertEquals(result, modifier)
+            %{"fillMaxHeightWithFractionTest" => [
+                {:fillMaxHeight, [], [[fraction: 0.5]]},
+            ]}
+            """,
+            Modifier.fillMaxHeight(0.5f)
+        )
     }
 
     @Test
     fun fillMaxWidthTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"fillMaxWidthTest" => [
                 {:fillMaxWidth, [], []},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.fillMaxWidth()
-        assertEquals(result, modifier)
+            """,
+            Modifier.fillMaxWidth()
+        )
     }
 
     @Test
     fun fillMaxWidthWithFractionTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"fillMaxWidthWithFractionTest" => [
                 {:fillMaxWidth, [], [0.5]},
             ]}
+            """,
+            Modifier.fillMaxWidth(0.5f)
+        )
+    }
+
+    @Test
+    fun fillMaxWidthWithFractionNamedTest() {
+        assertModifierFromStyle(
             """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.fillMaxWidth(0.5f)
-        assertEquals(result, modifier)
+            %{"fillMaxWidthWithFractionTest" => [
+                {:fillMaxWidth, [], [[fraction: 0.5]]},
+            ]}
+            """,
+            Modifier.fillMaxWidth(0.5f)
+        )
     }
 
     @Test
     fun widthInDp() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"widthInDp" => [
                 {:width, [], [100]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.width(100.dp))
-        assertEquals(result, modifier)
+            """,
+            Modifier.width(100.dp)
+        )
     }
 
     @Test
     fun widthInDpWithInvalidValueMustFail() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"widthInDpWithInvalidValueMustFail" => [
                 {:width, [], ["100"]},
             ]}
-            """
-        val modifier = Modifier.fromStyle(style, null)
-        assertEquals(modifier, Modifier)
+            """,
+            Modifier
+        )
     }
 
     @Test
     fun widthInDpNamed() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"widthInDpNamed" => [
                 {:width, [], [[width: 100]]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.width(100.dp))
-        assertEquals(result, modifier)
+            """,
+            Modifier.width(100.dp)
+        )
     }
 
     @Test
     fun widthInDpNamedWithInvalidValueMustFail() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"widthInDpNamedWithInvalidValueMustFail" => [
                 {:width, [], [[width: "100"]]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.height(100.dp))
-        assertNotSame(result, modifier)
+            """,
+            Modifier
+        )
     }
 
     @Test
     fun widthIntrinsicTest() {
-        val style = """
-            %{"widthIntrinsicTest" => [
-                {:width, [], [{:., :IntrinsicSize, :Min}]},
-            ]}
+        assertModifierFromStyle(
             """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.width(IntrinsicSize.Min))
-        assertNotSame(result, modifier)
+            %{"widthIntrinsicTest" => [
+                {:width, [], [{:., [], [:IntrinsicSize, :Min]}]},
+            ]}
+            """,
+            Modifier.width(IntrinsicSize.Min)
+        )
+    }
+
+    @Test
+    fun widthIntrinsicNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"widthIntrinsicTest" => [
+                {:width, [], [[intrinsicSize: {:., [], [:IntrinsicSize, :Min]}]]},
+            ]}
+            """,
+            Modifier.width(IntrinsicSize.Min)
+        )
     }
 
     @Test
     fun sizeTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"sizeTest" => [
                 {:size, [], [50]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.size(50.dp))
-        assertNotSame(result, modifier)
-    }
-
-    @Test
-    fun sizeWHTest() {
-        val style = """
-            %{"sizeWHTest" => [
-                {:size, [], [50, 100]},
-            ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.size(50.dp, 100.dp))
-        assertNotSame(result, modifier)
+            """,
+            Modifier.size(50.dp)
+        )
     }
 
     @Test
     fun sizeNamedTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
+            %{"sizeTest" => [
+                {:size, [], [[size: 50]]},
+            ]}
+            """,
+            Modifier.size(50.dp)
+        )
+    }
+
+    @Test
+    fun sizeWHTest() {
+        assertModifierFromStyle(
+            """
+            %{"sizeWHTest" => [
+                {:size, [], [50, 100]},
+            ]}
+            """,
+            Modifier.size(50.dp, 100.dp)
+        )
+    }
+
+    @Test
+    fun sizeWHNamedTest() {
+        assertModifierFromStyle(
+            """
             %{"sizeNamedTest" => [
                 {:size, [], [[height: 25, width: 50]]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.size(height = 25.dp, width = 50.dp))
-        assertNotSame(result, modifier)
+            """,
+            Modifier.size(height = 25.dp, width = 50.dp)
+        )
     }
 }
