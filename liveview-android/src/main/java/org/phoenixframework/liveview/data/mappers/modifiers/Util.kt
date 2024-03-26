@@ -139,9 +139,12 @@ internal fun singleArgumentFloatValue(
     argument: ModifierDataAdapter.ArgumentData
 ): Float? {
     return if (argument.isList) {
-        argument.listValue.find { it.name == argumentName }?.floatValue
+        val arg = argument.listValue.find { it.name == argumentName }
+        if (arg != null) {
+            if (arg.isInt) argument.intValue?.toFloat() else argument.floatValue
+        } else null
     } else if (argument.isNumber && (argument.name == argumentName || argument.name == null)) {
-        argument.floatValue
+        if (argument.isInt) argument.intValue?.toFloat() else argument.floatValue
     } else null
 }
 

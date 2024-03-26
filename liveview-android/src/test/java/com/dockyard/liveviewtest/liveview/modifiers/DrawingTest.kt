@@ -5,15 +5,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyle
 
 @RunWith(AndroidJUnit4::class)
 class DrawingTest : ModifierBaseTest() {
 
+    //region Alpha Modifier Tests
     @Test
     fun alphaTest() {
         assertModifierFromStyle(
@@ -38,6 +43,9 @@ class DrawingTest : ModifierBaseTest() {
         )
     }
 
+    //endregion
+
+    // region Clip Modifier Tests
     @Test
     fun clipTest() {
         assertModifierFromStyle(
@@ -116,4 +124,59 @@ class DrawingTest : ModifierBaseTest() {
             )
         )
     }
+
+    @Test
+    fun clipToBoundsTest() {
+        assertModifierFromStyle(
+            """
+            %{"clipToBoundsTest" => [
+                {:clipToBounds, [], []},
+            ]}
+            """,
+            Modifier.clipToBounds()
+        )
+    }
+
+    //endregion
+
+    @Test
+    fun safeDrawingPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"safeDrawingPaddingTest" => [
+                {:safeDrawingPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+
+    //region Z-Index Modifier Tests
+    @Test
+    fun zIndexTest() {
+        assertModifierFromStyle(
+            """
+            %{"zIndexTest" => [
+                {:zIndex, [], [2]},
+            ]}
+            """,
+            Modifier.zIndex(2f)
+        )
+    }
+
+    @Test
+    fun zIndexNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"zIndexNamedTest" => [
+                {:zIndex, [], [[zIndex: 0.5]]},
+            ]}
+            """,
+            Modifier.zIndex(0.5f)
+        )
+    }
+    //endregion
 }

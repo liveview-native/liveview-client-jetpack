@@ -4,9 +4,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.captionBarPadding
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,6 +22,8 @@ import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
 import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.SizeValues.fill
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Black
@@ -33,6 +41,7 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
 import org.phoenixframework.liveview.domain.base.ComposableTypes.column
 import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class ComposableViewShotTest : LiveViewComposableTest() {
     @Test
@@ -181,4 +190,123 @@ class ComposableViewShotTest : LiveViewComposableTest() {
                 """
         )
     }
+
+    //region Modifiers test
+    // These tests were defined here because these modifiers always create new instances make them
+    // not able to checking using equality, so we're testing relying on the final visual result.
+    @Test
+    fun captionBarPaddingTest() {
+        val style = """
+            %{'captionBarPaddingTest' => [
+                {:captionBarPadding, [], []},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(modifier = Modifier.captionBarPadding()) {
+                    Text(
+                        text = "Caption Bar Padding Test"
+                    )
+                }
+            },
+            template = """
+                <$box $attrStyle="$style">
+                    <$text $attrText="Caption Bar Padding Test" />
+                </$box>
+                """
+        )
+    }
+
+    @Test
+    fun displayCutoutPaddingTest() {
+        val style = """
+            %{'displayCutoutPadding' => [
+                {:displayCutoutPadding, [], []},
+            ]}
+            """
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(modifier = Modifier.displayCutoutPadding()) {
+                    Text(
+                        text = "Display Cutout Padding Test"
+                    )
+                }
+            },
+            template = """
+                <$box $attrStyle="$style">
+                    <$text $attrText="Display Cutout Padding Test" />
+                </$box>                
+                """
+        )
+    }
+
+    @Test
+    fun safeDrawingPaddingTest() {
+        val style = """
+            %{'safeDrawingPaddingTest' => [
+                {:safeDrawingPadding, [], []},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(modifier = Modifier.safeDrawingPadding()) {
+                    Text(
+                        text = "Safe Drawing Padding Test"
+                    )
+                }
+            },
+            template = """
+                <$box $attrStyle="$style">
+                    <$text $attrText="Safe Drawing Padding Test" />
+                </$box>                  
+                """
+        )
+    }
+
+    @Test
+    fun imePaddingTest() {
+        val style = """
+            %{'imePaddingTest' => [
+                {:imePadding, [], []},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(modifier = Modifier.imePadding()) {
+                    Text(
+                        text = "IME Padding Test"
+                    )
+                }
+            },
+            template = """
+                <$box $attrStyle="$style">
+                    <$text $attrText="IME Padding Test" />
+                </$box>                  
+                """
+        )
+    }
+
+    @Test
+    fun mandatorySystemGesturesPaddingTest() {
+        val style = """
+            %{'mandatorySystemGesturesPaddingTest' => [
+                {:mandatorySystemGesturesPadding, [], []},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(modifier = Modifier.mandatorySystemGesturesPadding()) {
+                    Text(
+                        text = "Mandatory System Gestures Padding Test"
+                    )
+                }
+            },
+            template = """
+                <$box $attrStyle="$style">
+                    <$text $attrText="Mandatory System Gestures Padding Test" />
+                </$box>                  
+                """
+        )
+    }
+    //endregion
 }

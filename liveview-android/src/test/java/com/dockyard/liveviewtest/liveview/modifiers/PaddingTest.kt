@@ -4,11 +4,69 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyle
 
 @RunWith(AndroidJUnit4::class)
 class PaddingTest : ModifierBaseTest() {
+
+    @Test
+    fun captionBarPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"captionBarPaddingTest" => [
+                {:captionBarPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+    @Test
+    fun displayCutoutPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"displayCutoutPadding" => [
+                {:displayCutoutPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+    @Test
+    fun imePaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"imePaddingTest" => [
+                {:imePadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+    @Test
+    fun mandatorySystemGesturesPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"mandatorySystemGesturesPaddingTest" => [
+                {:mandatorySystemGesturesPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
 
     @Test
     fun paddingAllTest() {
