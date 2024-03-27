@@ -10,8 +10,15 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.safeGesturesPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.systemGesturesPadding
+import androidx.compose.foundation.layout.waterfallPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -304,6 +311,167 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             template = """
                 <$box $attrStyle="$style">
                     <$text $attrText="Mandatory System Gestures Padding Test" />
+                </$box>                  
+                """
+        )
+    }
+
+    @Test
+    fun navigationBarsPaddingTest() {
+        val style = """
+            %{'navigationBarsPaddingTest' => [
+                {:navigationBarsPadding, [], []},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(modifier = Modifier.navigationBarsPadding()) {
+                    Text(
+                        text = "Navigation Bars Padding Test"
+                    )
+                }
+            },
+            template = """
+                <$box $attrStyle="$style">
+                    <$text $attrText="Navigation Bars Padding Test" />
+                </$box>                  
+                """
+        )
+    }
+
+    @Test
+    fun safeContentPaddingTest() {
+        val style = """
+            %{'safeContentPaddingTest' => [
+                {:safeContentPadding, [], []},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(modifier = Modifier.safeContentPadding()) {
+                    Text(
+                        text = "Safe Content Padding Test"
+                    )
+                }
+            },
+            template = """
+                <$box $attrStyle="$style">
+                    <$text $attrText="Safe Content Padding Test" />
+                </$box>                  
+                """
+        )
+    }
+
+    @Test
+    fun safeGesturesPaddingTest() {
+        val style = """
+            %{'safeGesturesPaddingTest' => [
+                {:safeGesturesPadding, [], []},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(modifier = Modifier.safeGesturesPadding()) {
+                    Text(
+                        text = "Safe Gestures Padding Test"
+                    )
+                }
+            },
+            template = """
+                <$box $attrStyle="$style">
+                    <$text $attrText="Safe Gestures Padding Test" />
+                </$box>                  
+                """
+        )
+    }
+
+    @Test
+    fun statusBarsPaddingTest() {
+        val style = """
+            %{'statusBarsPaddingTest' => [
+                {:statusBarsPadding, [], []},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(modifier = Modifier.statusBarsPadding()) {
+                    Text(
+                        text = "Status Bars Padding Test"
+                    )
+                }
+            },
+            template = """
+                <$box $attrStyle="$style">
+                    <$text $attrText="Status Bars Padding Test" />
+                </$box>                  
+                """
+        )
+    }
+
+    @Test
+    fun systemBarsPaddingTest() {
+        val style = """
+            %{'systemBarsPaddingTest' => [
+                {:systemBarsPadding, [], []},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(modifier = Modifier.systemBarsPadding()) {
+                    Text(
+                        text = "System Bars Padding Test"
+                    )
+                }
+            },
+            template = """
+                <$box $attrStyle="$style">
+                    <$text $attrText="System Bars Padding Test" />
+                </$box>                  
+                """
+        )
+    }
+
+    @Test
+    fun systemGesturesPaddingTest() {
+        val style = """
+            %{'systemGesturesPaddingTest' => [
+                {:systemGesturesPadding, [], []},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(modifier = Modifier.systemGesturesPadding()) {
+                    Text(
+                        text = "System Gestures Padding Test"
+                    )
+                }
+            },
+            template = """
+                <$box $attrStyle="$style">
+                    <$text $attrText="System Gestures Padding Test" />
+                </$box>                  
+                """
+        )
+    }
+
+    @Test
+    fun waterfallPaddingTest() {
+        val style = """
+            %{'waterfallPaddingTest' => [
+                {:waterfallPadding, [], []},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(modifier = Modifier.waterfallPadding()) {
+                    Text(
+                        text = "Waterfall Padding Test"
+                    )
+                }
+            },
+            template = """
+                <$box $attrStyle="$style">
+                    <$text $attrText="Waterfall Padding Test" />
                 </$box>                  
                 """
         )

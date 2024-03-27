@@ -5,7 +5,14 @@ import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.safeGesturesPadding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.systemGesturesPadding
+import androidx.compose.foundation.layout.waterfallPadding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import org.antlr.v4.runtime.CharStream
@@ -26,9 +33,16 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrFillMaxWidth
 import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrImePadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrMandatorySystemGesturesPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrNavigationBarsPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrSafeContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSafeDrawingPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrSafeGesturesPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStatusBarsPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrSystemBarsPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrSystemGesturesPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrWaterfallPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.Attrs.attrZIndex
 import org.phoenixframework.liveview.stylesheet.ElixirLexer
@@ -140,7 +154,14 @@ object ModifiersParser {
             attrDisplayCutoutPadding -> this.then(Modifier.displayCutoutPadding())
             attrImePadding -> this.then(Modifier.imePadding())
             attrMandatorySystemGesturesPadding -> this.then(Modifier.mandatorySystemGesturesPadding())
+            attrNavigationBarsPadding -> this.then(Modifier.navigationBarsPadding())
+            attrSafeContentPadding -> this.then(Modifier.safeContentPadding())
             attrSafeDrawingPadding -> this.then(Modifier.safeDrawingPadding())
+            attrSafeGesturesPadding -> this.then(Modifier.safeGesturesPadding())
+            attrStatusBarsPadding -> this.then(Modifier.statusBarsPadding())
+            attrSystemBarsPadding -> this.then(Modifier.systemBarsPadding())
+            attrSystemGesturesPadding -> this.then(Modifier.systemGesturesPadding())
+            attrWaterfallPadding -> this.then(Modifier.waterfallPadding())
             // Parameterized modifiers
             attrAlpha -> this.then(alphaFromStyle(argListContext))
             attrAlign -> this.then(singleArgumentObjectValue(argListContext, scope))
