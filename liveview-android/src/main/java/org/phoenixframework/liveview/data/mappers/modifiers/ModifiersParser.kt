@@ -164,7 +164,7 @@ object ModifiersParser {
             attrWaterfallPadding -> this.then(Modifier.waterfallPadding())
             // Parameterized modifiers
             attrAlpha -> this.then(alphaFromStyle(argListContext))
-            attrAlign -> this.then(singleArgumentObjectValue(argListContext, scope))
+            attrAlign -> this.then(alignFromStyle(argListContext, scope))
             attrAlignByBaseline -> this.then(alignByBaselineFromStyle(scope))
             attrAspectRatio -> this.then(aspectRatioFromStyle(argListContext))
             attrBackground -> this.then(backgroundFromStyle(argListContext))

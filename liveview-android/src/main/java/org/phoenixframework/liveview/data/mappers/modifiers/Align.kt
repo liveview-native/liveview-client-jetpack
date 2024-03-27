@@ -11,7 +11,7 @@ import org.phoenixframework.liveview.data.dto.alignmentFromString
 import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
 import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
 
-fun Modifier.singleArgumentObjectValue(
+fun Modifier.alignFromStyle(
     arguments: List<ModifierDataAdapter.ArgumentData>,
     scope: Any?
 ): Modifier {
@@ -25,19 +25,19 @@ fun Modifier.singleArgumentObjectValue(
 
     return when (scope) {
         is BoxScope -> scope.run {
-            this@singleArgumentObjectValue.then(
+            this@alignFromStyle.then(
                 Modifier.align(alignmentFromString(alignmentValue, Alignment.TopStart))
             )
         }
 
         is ColumnScope -> scope.run {
-            this@singleArgumentObjectValue.then(
+            this@alignFromStyle.then(
                 Modifier.align(horizontalAlignmentFromString(alignmentValue))
             )
         }
 
         is RowScope -> scope.run {
-            this@singleArgumentObjectValue.then(
+            this@alignFromStyle.then(
                 Modifier.align(verticalAlignmentFromString(alignmentValue))
             )
         }
