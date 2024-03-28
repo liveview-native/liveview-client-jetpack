@@ -7,89 +7,105 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyle
 
 @RunWith(AndroidJUnit4::class)
-class BorderTest {
-    @Before
-    fun clearStyleCacheTable() {
-        ModifiersParser.clearCacheTable()
-    }
+class BorderTest : ModifierBaseTest() {
 
     @Test
     fun borderWithColorTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"borderWithColorTest" => [
                 {:border, [], [2, {:., [], [:Color, :Red]}]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.border(2.dp, Color.Red))
-        assertEquals(result, modifier)
+            """,
+            Modifier.border(2.dp, Color.Red)
+        )
     }
 
     @Test
     fun borderWithColorNamedParamsTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"borderWithColorNamedParamsTest" => [
                 {:border, [], [[width: 2, color: {:., [], [:Color, :Red]}]]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.border(2.dp, Color.Red))
-        assertEquals(result, modifier)
+            """,
+            Modifier.border(2.dp, Color.Red)
+        )
     }
 
     @Test
     fun borderWithColorAndShapeTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"borderWithColorAndShapeTest" => [
                 {:border, [], [1, {:., [], [:Color, :Green]}, {:., [], [:CircleShape]}]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.border(1.dp, Color.Green, CircleShape))
-        assertEquals(result, modifier)
+            """,
+            Modifier.border(1.dp, Color.Green, CircleShape)
+        )
     }
 
     @Test
     fun borderWithColorAndShapeNamedParamsTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"borderWithColorAndShapeNamedParamsTest" => [
                 {:border, [], [[width: 1, color: {:., [], [:Color, :Green]}, shape: {:., [], [:CircleShape]}]]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.border(1.dp, Color.Green, CircleShape))
-        assertEquals(result, modifier)
+            """,
+            Modifier.border(1.dp, Color.Green, CircleShape)
+        )
     }
 
     @Test
     fun borderWithBorderStrokeTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"borderWithBorderStrokeTest" => [
                 {:border, [], [{:BorderStroke, [], [3, {:., [], [:Color, :Blue]}]} ]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.border(BorderStroke(3.dp, Color.Blue)))
-        assertEquals(result, modifier)
+            """,
+            Modifier.border(BorderStroke(3.dp, Color.Blue))
+        )
     }
 
     @Test
     fun borderWithBorderStrokeNamedParamsTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"borderWithBorderStrokeNamedParamsTest" => [
                 {:border, [], [[border: [{:BorderStroke, [], [3, {:., [], [:Color, :Blue]}]} ]]]},
             ]}
+            """,
+            Modifier.border(BorderStroke(3.dp, Color.Blue))
+        )
+    }
+
+    @Test
+    fun borderWithBorderStrokeAndShapeTest() {
+        assertModifierFromStyle(
             """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.border(BorderStroke(3.dp, Color.Blue)))
-        assertEquals(result, modifier)
+            %{"borderWithBorderStrokeAndShapeTest" => [
+                {:border, [], [{:BorderStroke, [], [3, {:., [], [:Color, :Blue]}]}, {:., [], [:CircleShape]}]},
+            ]}
+            """,
+            Modifier.border(BorderStroke(3.dp, Color.Blue), CircleShape)
+        )
+    }
+
+    @Test
+    fun borderWithBorderStrokeAndShapeNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"borderWithBorderStrokeAndShapeTest" => [
+                {:border, [], [[shape: {:., [], [:CircleShape]}, border: {:BorderStroke, [], [3, {:., [], [:Color, :Blue]}]}]]},
+            ]}
+            """,
+            Modifier.border(BorderStroke(3.dp, Color.Blue), CircleShape)
+        )
     }
 }

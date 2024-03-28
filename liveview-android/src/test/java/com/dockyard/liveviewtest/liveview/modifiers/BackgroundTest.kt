@@ -7,125 +7,105 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyle
 
 @RunWith(AndroidJUnit4::class)
-class BackgroundTest {
-    @Before
-    fun clearStyleCacheTable() {
-        ModifiersParser.clearCacheTable()
-    }
+class BackgroundTest : ModifierBaseTest() {
 
     @Test
     fun backgroundSystemColorTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"backgroundSystemColorTest" => [
               {:background, [], [{:., [], [:Color, :Red]} ]},
               ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.background(Color.Red))
-        assertEquals(result, modifier)
+            """,
+            Modifier.background(Color.Red)
+        )
     }
 
     @Test
     fun backgroundWithArgbColorTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"backgroundWithArgbColorTest" => [
               {:background, [], [{:Color, [], [255, 255, 0, 0]} ]},
               ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(
+            """,
             Modifier.background(Color(255, 255, 0, 0))
         )
-        assertEquals(result, modifier)
     }
 
     @Test
     fun backgroundWithSingleIntColorTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"backgroundWithSingleIntColorTest" => [
               {:background, [], [{:Color, [], [-16711732]} ]},
               ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.background(Color(-16711732)))
-        assertEquals(result, modifier)
+            """,
+            Modifier.background(Color(-16711732))
+        )
     }
 
     @Test
     fun backgroundWithNamedArgbColorArgsTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"backgroundWithNamedArgbColorArgsTest" => [
               {:background, [], [[color: {:Color, [], [255, 255, 0, 0]} ]]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(
+            """,
             Modifier.background(Color(255, 255, 0, 0))
         )
-        assertEquals(result, modifier)
     }
 
     @Test
     fun backgroundWithArgbColorNamedArgsTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"backgroundWithArgbColorNamedArgsTest" => [
               {:background, [], [{:Color, [], [[red: 255, green: 255, blue: 0, alpha: 0]]} ]},
               ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(
+            """,
             Modifier.background(Color(255, 255, 0, 0))
         )
-        assertEquals(result, modifier)
     }
 
     @Test
     fun backgroundWithCircleShapeTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"backgroundWithCircleShapeTest" => [
               {:background, [], [{:., [], [:Color, :Red]}, {:., [], [:CircleShape]} ]},
               ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(
+            """,
             Modifier.background(Color.Red, CircleShape)
         )
-        assertEquals(result, modifier)
     }
 
     @Test
     fun backgroundWithShapeTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"backgroundWithShapeTest" => [
               {:background, [], [{:., [], [:Color, :Red]}, {:RoundedCornerShape, [], [4, 0, 8, 16]} ]},
               ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(
+            """,
             Modifier.background(Color.Red, RoundedCornerShape(4.dp, 0.dp, 8.dp, 16.dp))
         )
-        assertEquals(result, modifier)
     }
 
     @Test
     fun backgroundWithColorAndShapeNamedArgs() {
-        val style = """
-            %{"backgroundWithColorAndShapeNamedArgs" => [
-              {:background, [], [[color: {:., [], [:Color, :Red]},  shape: {:., [], [:CircleShape]}] ]},
-              ]}
+        assertModifierFromStyle(
             """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(
+            %{"backgroundWithColorAndShapeNamedArgs" => [
+              {:background, [], [[color: {:., [], [:Color, :Red]}, shape: {:., [], [:CircleShape]}] ]},
+              ]}
+            """,
             Modifier.background(Color.Red, CircleShape)
         )
-        assertEquals(result, modifier)
     }
 }

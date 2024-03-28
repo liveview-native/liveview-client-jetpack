@@ -15,15 +15,13 @@ fun Modifier.alignFromStyle(
     arguments: List<ModifierDataAdapter.ArgumentData>,
     scope: Any?
 ): Modifier {
-    val alignmentParam = arguments.firstOrNull()
-    // We are not creating an Alignment object. We're just using the existing ones.
-    // So the type must be ".".
-    if (alignmentParam?.isDot == false) {
+    val alignmentParam = argsOrNamedArgs(arguments).firstOrNull()
+    if (alignmentParam == null || !alignmentParam.isDot) {
         return this
     }
-    val paramsToCreateTheAlignObject = alignmentParam?.listValue
-    val alignmentClass = paramsToCreateTheAlignObject?.getOrNull(0)?.stringValueWithoutColon
-    val alignmentValue = paramsToCreateTheAlignObject?.getOrNull(1)?.stringValueWithoutColon ?: ""
+
+    val alignmentValue = singleArgumentObjectValue("alignment", alignmentParam)?.second?.toString()
+        ?: return this
 
     return when (scope) {
         is BoxScope -> scope.run {

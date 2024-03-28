@@ -4,114 +4,261 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import junit.framework.TestCase.assertEquals
-import org.junit.Before
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyle
 
 @RunWith(AndroidJUnit4::class)
-class PaddingTest {
-    @Before
-    fun clearStyleCacheTable() {
-        ModifiersParser.clearCacheTable()
+class PaddingTest : ModifierBaseTest() {
+
+    @Test
+    fun captionBarPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"captionBarPaddingTest" => [
+                {:captionBarPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+    @Test
+    fun displayCutoutPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"displayCutoutPadding" => [
+                {:displayCutoutPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+    @Test
+    fun imePaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"imePaddingTest" => [
+                {:imePadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+    @Test
+    fun mandatorySystemGesturesPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"mandatorySystemGesturesPaddingTest" => [
+                {:mandatorySystemGesturesPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+    @Test
+    fun navigationBarsPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"navigationBarsPaddingTest" => [
+                {:navigationBarsPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+    @Test
+    fun safeContentPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"safeContentPaddingTest" => [
+                {:safeContentPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+    @Test
+    fun safeGesturesPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"safeGesturesPaddingTest" => [
+                {:safeGesturesPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+    @Test
+    fun statusBarsPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"statusBarsPaddingTest" => [
+                {:statusBarsPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+    @Test
+    fun systemBarsPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"systemBarsPaddingTest" => [
+                {:systemBarsPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+    @Test
+    fun systemGesturesPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"systemGesturesPaddingTest" => [
+                {:systemGesturesPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
+    @Test
+    fun waterfallPaddingTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"waterfallPaddingTest" => [
+                {:waterfallPadding, [], []},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
     }
 
     @Test
     fun paddingAllTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"paddingAllTest" => [
                 {:padding, [], [32]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.padding(32.dp))
-        assertEquals(result, modifier)
+            """,
+            Modifier.padding(32.dp)
+        )
     }
 
     @Test
     fun paddingAllNamedTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"paddingAllNamedTest" => [
                 {:padding, [], [[all: 32]]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.padding(32.dp))
-        assertEquals(result, modifier)
+            """,
+            Modifier.padding(32.dp)
+        )
     }
 
     @Test
     fun paddingHorizontalTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"paddingHorizontalTest" => [
                 {:padding, [], [[horizontal: 16]]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.padding(horizontal = 16.dp))
-        assertEquals(result, modifier)
+            """,
+            Modifier.padding(horizontal = 16.dp)
+        )
     }
 
     @Test
     fun paddingVerticalTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"paddingVerticalTest" => [
                 {:padding, [], [[vertical: 8]]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.padding(vertical = 8.dp))
-        assertEquals(result, modifier)
+            """,
+            Modifier.padding(vertical = 8.dp)
+        )
     }
 
     @Test
     fun paddingHVTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"paddingHVTest" => [
                 {:padding, [], [8, 16]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.padding(horizontal = 8.dp, vertical = 16.dp))
-        assertEquals(result, modifier)
+            """,
+            Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
+        )
     }
 
     @Test
     fun paddingHVNamedTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"paddingHVNamedTest" => [
                 {:padding, [], [[vertical: 16, horizontal: 8]]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.padding(vertical = 16.dp, horizontal = 8.dp))
-        assertEquals(result, modifier)
+            """,
+            Modifier.padding(vertical = 16.dp, horizontal = 8.dp)
+        )
     }
 
     @Test
     fun paddingBordersTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"paddingBordersTest" => [
                 {:padding, [], [4, 8, 16, 32]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier = Modifier.then(Modifier.padding(4.dp, 8.dp, 16.dp, 32.dp))
-        assertEquals(result, modifier)
+            """,
+            Modifier.padding(4.dp, 8.dp, 16.dp, 32.dp)
+        )
     }
 
     @Test
     fun paddingBordersNamedTest() {
-        val style = """
+        assertModifierFromStyle(
+            """
             %{"paddingBordersNamedTest" => [
                 {:padding, [], [[_end: 16, bottom: 32, start: 4, top: 8]]},
             ]}
-            """
-        val result = Modifier.fromStyle(style, null)
-        val modifier =
-            Modifier.then(Modifier.padding(end = 16.dp, bottom = 32.dp, start = 4.dp, top = 8.dp))
-        assertEquals(result, modifier)
+            """,
+            Modifier.padding(end = 16.dp, bottom = 32.dp, start = 4.dp, top = 8.dp)
+        )
     }
 }

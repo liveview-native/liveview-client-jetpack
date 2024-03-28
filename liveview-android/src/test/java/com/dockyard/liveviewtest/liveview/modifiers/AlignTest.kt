@@ -11,11 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase.assertEquals
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyle
 
 @RunWith(AndroidJUnit4::class)
@@ -24,16 +22,31 @@ class AlignTest {
     @get:Rule
     val composeRule = createAndroidComposeRule<ComponentActivity>()
 
-    @Before
-    fun clearStyleCacheTable() {
-        ModifiersParser.clearCacheTable()
-    }
-
     @Test
     fun boxAlignTest() {
         val style = """
             %{"boxAlignTest" => [
                 {:align, [], [{:., [], [:Alignment, :BottomEnd]}]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            Box {
+                result = Modifier.then(Modifier.fromStyle(style, this))
+                modifier = Modifier.then(Modifier.align(Alignment.BottomEnd))
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
+    }
+
+    @Test
+    fun boxAlignNamedParamTest() {
+        val style = """
+            %{"boxAlignTest" => [
+                {:align, [], [[alignment: {:., [], [:Alignment, :BottomEnd]}]]},
             ]}
             """
         var result: Modifier? = null
