@@ -119,6 +119,36 @@ class BackgroundTest : ModifierBaseTest() {
               {:background, [], [[
                 brush: {:., [], [
                   :Brush,
+                  {:sweepGradient, [], [
+                    [
+                      {:., [], [:Color, :Red]},
+                      {:., [], [:Color, :Blue]},
+                      {:., [], [:Color, :Green]}
+                    ], 
+                    {:Offset, [], [10, 20]}
+                  ]}
+                ]}, 
+                shape: {:., [], [:CircleShape]}
+              ]]}
+            ]}
+            """.trimStyle(),
+            Modifier.background(
+                Brush.sweepGradient(
+                    listOf(Color.Red, Color.Blue, Color.Green),
+                    Offset(10f, 20f)
+                ), CircleShape
+            )
+        )
+    }
+
+    @Test
+    fun backgroundWithBrushNamed() {
+        assertModifierFromStyle(
+            """
+            %{"backgroundWithColorAndShapeNamedArgs" => [
+              {:background, [], [[
+                brush: {:., [], [
+                  :Brush,
                   {:sweepGradient, [], [[
                     colors: [
                       {:., [], [:Color, :Red]},

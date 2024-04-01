@@ -121,15 +121,52 @@ class BorderTest : ModifierBaseTest() {
                     width: 2,
                     brush: {:., [], [
                         :Brush,
-                        {:horizontalGradient, [], [[
-                            colors: [
+                        {:horizontalGradient, [], [
+                            [
                                 {:., [], [:Color, :Red]},
                                 {:., [], [:Color, :Blue]},
                                 {:., [], [:Color, :Green]}
                             ],
+                            0.0,
+                            500.0,
+                            {:., [], [:TileMode, :Clamp]}
+                        ]}
+                    ]},
+                    shape: {:., [], [:CircleShape]}
+                ]]
+            }]}
+            """.trimStyle(),
+            Modifier.border(
+                2.dp,
+                Brush.horizontalGradient(
+                    colors = listOf(Color.Red, Color.Blue, Color.Green),
+                    startX = 0f,
+                    endX = 500f,
+                    tileMode = TileMode.Clamp,
+                ),
+                CircleShape
+            )
+        )
+    }
+
+    @Test
+    fun borderWithBrushHorizontalGradientNamed() {
+        assertModifierFromStyle(
+            """
+            %{"borderWithBrushHorizontalGradient" => [{
+                :border, [], [[
+                    width: 2,
+                    brush: {:., [], [
+                        :Brush,
+                        {:horizontalGradient, [], [[
+                            tileMode: {:., [], [:TileMode, :Clamp]},
+                            colors: [
+                                {:., [], [:Color, :Red]},
+                                {:., [], [:Color, :Blue]},
+                                {:., [], [:Color, :Green]}
+                            ],                            
                             startX: 0.0,
-                            endX: 500.0,
-                            tileMode: {:., [], [:TileMode, :Clamp]}
+                            endX: 500.0
                         ]]}
                     ]},
                     shape: {:., [], [:CircleShape]}
@@ -158,15 +195,53 @@ class BorderTest : ModifierBaseTest() {
                     width: 2,
                     brush: {:., [], [
                         :Brush,
-                        {:verticalGradient, [], [[
-                            colors: [
+                        {:verticalGradient, [], [
+                            [
                                 {:., [], [:Color, :Red]},
                                 {:., [], [:Color, :Blue]},
                                 {:., [], [:Color, :Green]}
                             ],
+                            0.0,
+                            500.0,
+                            {:., [], [:TileMode, :Decal]}
+                        ]}
+                    ]},
+                    shape: {:., [], [:CircleShape]}
+                ]]
+            }]}
+            """.trimStyle(),
+
+            Modifier.border(
+                2.dp,
+                Brush.verticalGradient(
+                    colors = listOf(Color.Red, Color.Blue, Color.Green),
+                    startY = 0f,
+                    endY = 500f,
+                    tileMode = TileMode.Decal,
+                ),
+                CircleShape
+            )
+        )
+    }
+
+    @Test
+    fun borderWithBrushVerticalGradientNamed() {
+        assertModifierFromStyle(
+            """
+            %{"borderWithBrushVerticalGradient" => [{
+                :border, [], [[
+                    width: 2,
+                    brush: {:., [], [
+                        :Brush,
+                        {:verticalGradient, [], [[
                             startY: 0.0,
                             endY: 500.0,
-                            tileMode: {:., [], [:TileMode, :Decal]}
+                            tileMode: {:., [], [:TileMode, :Decal]},                        
+                            colors: [
+                                {:., [], [:Color, :Red]},
+                                {:., [], [:Color, :Blue]},
+                                {:., [], [:Color, :Green]}
+                            ]
                         ]]}
                     ]},
                     shape: {:., [], [:CircleShape]}
@@ -196,14 +271,52 @@ class BorderTest : ModifierBaseTest() {
                     width: 2,
                     brush: {:., [], [
                         :Brush,
+                        {:linearGradient, [], [
+                            [
+                                {:., [], [:Color, :Red]},
+                                {:., [], [:Color, :Blue]},
+                                {:., [], [:Color, :Green]}
+                            ], 
+                            {:Offset, [], [1, 2]},
+                            {:Offset, [], [3, 4]},
+                            {:., [], [:TileMode, :Mirror]}
+                        ]}
+                    ]},
+                    shape: {:., [], [:CircleShape]}
+                ]]
+            }]}
+            """.trimStyle(),
+
+            Modifier.border(
+                2.dp,
+                Brush.linearGradient(
+                    colors = listOf(Color.Red, Color.Blue, Color.Green),
+                    tileMode = TileMode.Mirror,
+                    start = Offset(1f, 2f),
+                    end = Offset(3f, 4f),
+                ),
+                CircleShape
+            )
+        )
+    }
+
+    @Test
+    fun borderWithBrushLinearGradientNamed() {
+        assertModifierFromStyle(
+            """
+            %{"borderWithBrushLinearGradient" => [{
+                :border, [], [[
+                    width: 2,
+                    brush: {:., [], [
+                        :Brush,
                         {:linearGradient, [], [[
+                            start: {:Offset, [], [1, 2]},
+                            _end: {:Offset, [], [3, 4]},                        
                             colors: [
                                 {:., [], [:Color, :Red]},
                                 {:., [], [:Color, :Blue]},
                                 {:., [], [:Color, :Green]}
                             ], 
-                            start: {:Offset, [], [1, 2]},
-                            _end: {:Offset, [], [3, 4]},
                             tileMode: {:., [], [:TileMode, :Mirror]}
                         ]]}
                     ]},
@@ -227,6 +340,44 @@ class BorderTest : ModifierBaseTest() {
 
     @Test
     fun borderWithBrushRadialGradient() {
+        assertModifierFromStyle(
+            """
+            %{"borderWithBrushLinearGradient" => [{
+                :border, [], [[
+                    width: 2,
+                    brush: {:., [], [
+                        :Brush,
+                        {:radialGradient, [], [
+                            [
+                                {:., [], [:Color, :Red]},
+                                {:., [], [:Color, :Blue]},
+                                {:., [], [:Color, :Green]}
+                            ], 
+                            {:Offset, [], [10, 20]},
+                            50.0,
+                            {:., [], [:TileMode, :Repeated]}
+                        ]}
+                    ]},
+                    shape: {:., [], [:CircleShape]}
+                ]]
+            }]}
+            """.trimStyle(),
+
+            Modifier.border(
+                2.dp,
+                Brush.radialGradient(
+                    colors = listOf(Color.Red, Color.Blue, Color.Green),
+                    center = Offset(10f, 20f),
+                    radius = 50f,
+                    tileMode = TileMode.Repeated,
+                ),
+                CircleShape
+            )
+        )
+    }
+
+    @Test
+    fun borderWithBrushRadialGradientNamed() {
         assertModifierFromStyle(
             """
             %{"borderWithBrushLinearGradient" => [{
@@ -265,6 +416,40 @@ class BorderTest : ModifierBaseTest() {
 
     @Test
     fun borderWithBrushSweepGradient() {
+        assertModifierFromStyle(
+            """
+            %{"borderWithBrushSweepGradient" => [{
+                :border, [], [[
+                    width: 2,
+                    brush: {:., [], [
+                        :Brush,
+                        {:sweepGradient, [], [
+                            [
+                                {:., [], [:Color, :Red]},
+                                {:., [], [:Color, :Blue]},
+                                {:., [], [:Color, :Green]}
+                            ], 
+                            {:Offset, [], [10, 20]}
+                        ]}
+                    ]},
+                    shape: {:., [], [:CircleShape]}
+                ]]
+            }]}
+            """.trimStyle(),
+
+            Modifier.border(
+                2.dp,
+                Brush.sweepGradient(
+                    colors = listOf(Color.Red, Color.Blue, Color.Green),
+                    center = Offset(10f, 20f),
+                ),
+                CircleShape
+            )
+        )
+    }
+
+    @Test
+    fun borderWithBrushSweepGradientNamed() {
         assertModifierFromStyle(
             """
             %{"borderWithBrushSweepGradient" => [{

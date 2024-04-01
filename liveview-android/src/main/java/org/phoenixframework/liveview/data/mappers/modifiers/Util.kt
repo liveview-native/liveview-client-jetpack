@@ -140,105 +140,107 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
         return null
 
     val functionToCreateBrush = argsToCreateBrush[1].type
-    val argsToTheFunctionToCreateBrush = argsOrNamedArgs(argsToCreateBrush[1].listValue)
+    var argsToTheFunctionToCreateBrush = argsToCreateBrush[1].listValue
     if (argsToTheFunctionToCreateBrush.isEmpty())
         return null
 
+    // The color param is required. We're trying to find the argument named "colors"
+    val colorsArg =
+        argsToTheFunctionToCreateBrush.firstOrNull()?.listValue?.find { it.name == "colors" }
+    // if we found this argument, we're going to use named parameters
+    val colors: List<Color> = if (colorsArg != null) {
+        argsToTheFunctionToCreateBrush = argsOrNamedArgs(argsToCreateBrush[1].listValue)
+        colorsFromArguments(colorsArg.listValue)
+    } else {
+        argsToTheFunctionToCreateBrush.firstOrNull()?.let {
+            colorsFromArguments(it.listValue)
+        } ?: return null
+    }
+
     return when (functionToCreateBrush) {
         "horizontalGradient" -> {
-            val colors =
-                colorsFromArguments(argsOrNamedArgs(argsToTheFunctionToCreateBrush[0].listValue))
-            val startX = argsToTheFunctionToCreateBrush.getOrNull(1)
+            val startX = argOrNamedArg(argsToTheFunctionToCreateBrush, "startX", 1)
                 ?.let { singleArgumentFloatValue("startX", it) }
-            val endX = argsToTheFunctionToCreateBrush.getOrNull(2)
+            val endX = argOrNamedArg(argsToTheFunctionToCreateBrush, "endX", 2)
                 ?.let { singleArgumentFloatValue("endX", it) }
-            val tileMode =
-                singleArgumentObjectValue("tileMode", argsToTheFunctionToCreateBrush[3])?.let {
-                    tileModeFromString(it.second.toString(), TileMode.Repeated)
-                } ?: TileMode.Repeated
+            val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, "tileMode", 3)?.let {
+                singleArgumentObjectValue("tileMode", it)?.let { pair ->
+                    tileModeFromString(pair.second.toString(), TileMode.Clamp)
+                }
+            }
 
             // TODO Implement overloaded version
             Brush.horizontalGradient(
                 colors = colors,
                 startX = startX ?: 0f,
                 endX = endX ?: Float.POSITIVE_INFINITY,
-                tileMode = tileMode
+                tileMode = tileMode ?: TileMode.Clamp
             )
         }
 
         "verticalGradient" -> {
-            val colors =
-                colorsFromArguments(argsOrNamedArgs(argsToTheFunctionToCreateBrush[0].listValue))
-            val startX = argsToTheFunctionToCreateBrush.getOrNull(1)
+            val startY = argOrNamedArg(argsToTheFunctionToCreateBrush, "startY", 1)
                 ?.let { singleArgumentFloatValue("startY", it) }
-            val endX = argsToTheFunctionToCreateBrush.getOrNull(2)
+            val endY = argOrNamedArg(argsToTheFunctionToCreateBrush, "endY", 2)
                 ?.let { singleArgumentFloatValue("endY", it) }
-            val tileMode =
-                singleArgumentObjectValue("tileMode", argsToTheFunctionToCreateBrush[3])?.let {
-                    tileModeFromString(it.second.toString(), TileMode.Repeated)
-                } ?: TileMode.Repeated
+            val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, "tileMode", 3)?.let {
+                singleArgumentObjectValue("tileMode", it)?.let { pair ->
+                    tileModeFromString(pair.second.toString(), TileMode.Clamp)
+                }
+            }
 
             // TODO Implement overloaded version
             Brush.verticalGradient(
                 colors = colors,
-                startY = startX ?: 0f,
-                endY = endX ?: Float.POSITIVE_INFINITY,
-                tileMode = tileMode
+                startY = startY ?: 0f,
+                endY = endY ?: Float.POSITIVE_INFINITY,
+                tileMode = tileMode ?: TileMode.Clamp
             )
         }
 
         "linearGradient" -> {
-            val colors =
-                colorsFromArguments(argsOrNamedArgs(argsToTheFunctionToCreateBrush[0].listValue))
-            val start =
-                argsToTheFunctionToCreateBrush.getOrNull(1)?.let { offsetFromArgument("start", it) }
-            val end =
-                argsToTheFunctionToCreateBrush.getOrNull(2)?.let { offsetFromArgument("_end", it) }
-
-            val tileMode =
-                singleArgumentObjectValue("tileMode", argsToTheFunctionToCreateBrush[3])?.let {
-                    tileModeFromString(it.second.toString(), TileMode.Repeated)
-                } ?: TileMode.Repeated
+            val start = argOrNamedArg(argsToTheFunctionToCreateBrush, "start", 1)
+                ?.let { offsetFromArgument("start", it) }
+            val end = argOrNamedArg(argsToTheFunctionToCreateBrush, "_end", 2)
+                ?.let { offsetFromArgument("_end", it) }
+            val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, "tileMode", 3)?.let {
+                singleArgumentObjectValue("tileMode", it)?.let { pair ->
+                    tileModeFromString(pair.second.toString(), TileMode.Clamp)
+                }
+            }
 
             // TODO Implement overloaded version
             Brush.linearGradient(
                 colors = colors,
                 start = start ?: Offset.Zero,
                 end = end ?: Offset.Infinite,
-                tileMode = tileMode
+                tileMode = tileMode ?: TileMode.Clamp
             )
         }
 
         "radialGradient" -> {
-            val colors =
-                colorsFromArguments(argsOrNamedArgs(argsToTheFunctionToCreateBrush[0].listValue))
-            val centerOffset =
-                argsToTheFunctionToCreateBrush.getOrNull(1)
-                    ?.let { offsetFromArgument("center", it) }
-            val radius =
-                argsToTheFunctionToCreateBrush.getOrNull(2)
-                    ?.let { singleArgumentFloatValue("radius", it) }
-
-            val tileMode =
-                singleArgumentObjectValue("tileMode", argsToTheFunctionToCreateBrush[3])?.let {
-                    tileModeFromString(it.second.toString(), TileMode.Repeated)
-                } ?: TileMode.Repeated
+            val centerOffset = argOrNamedArg(argsToTheFunctionToCreateBrush, "center", 1)
+                ?.let { offsetFromArgument("center", it) }
+            val radius = argOrNamedArg(argsToTheFunctionToCreateBrush, "radius", 2)
+                ?.let { singleArgumentFloatValue("radius", it) }
+            val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, "tileMode", 3)?.let {
+                singleArgumentObjectValue("tileMode", it)?.let { pair ->
+                    tileModeFromString(pair.second.toString(), TileMode.Clamp)
+                }
+            }
 
             // TODO Implement overloaded version
             Brush.radialGradient(
                 colors = colors,
                 center = centerOffset ?: Offset.Unspecified,
                 radius = radius ?: Float.POSITIVE_INFINITY,
-                tileMode = tileMode
+                tileMode = tileMode ?: TileMode.Clamp
             )
         }
 
         "sweepGradient" -> {
-            val colors =
-                colorsFromArguments(argsOrNamedArgs(argsToTheFunctionToCreateBrush[0].listValue))
-            val centerOffset =
-                argsToTheFunctionToCreateBrush.getOrNull(1)
-                    ?.let { offsetFromArgument("center", it) }
+            val centerOffset = argOrNamedArg(argsToTheFunctionToCreateBrush, "center", 1)
+                ?.let { offsetFromArgument("center", it) }
 
             // TODO Implement overloaded version
             Brush.sweepGradient(
@@ -251,12 +253,20 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
     }
 }
 
-
+// FIXME This function does not work when the first argument is a list
 internal fun argsOrNamedArgs(
     arguments: List<ModifierDataAdapter.ArgumentData>
 ): List<ModifierDataAdapter.ArgumentData> =
     if (arguments.firstOrNull()?.isList == true) arguments.first().listValue
     else arguments
+
+internal fun argOrNamedArg(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    name: String,
+    index: Int
+): ModifierDataAdapter.ArgumentData? {
+    return (arguments.find { it.name == name } ?: arguments.getOrNull(index))
+}
 
 internal fun intrinsicSizeFromArgument(argument: ModifierDataAdapter.ArgumentData): IntrinsicSize? {
     val clazz = argument.listValue.firstOrNull()?.stringValueWithoutColon
