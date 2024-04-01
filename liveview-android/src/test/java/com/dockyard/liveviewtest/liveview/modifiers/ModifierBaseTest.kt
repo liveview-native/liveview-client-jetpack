@@ -21,4 +21,7 @@ abstract class ModifierBaseTest {
         val modifier = Modifier.then(targetModifier)
         assertEquals(result, modifier)
     }
+
+    fun String.trimStyle(): String =
+        this.lines().joinToString("") { it.trim().replace("\n", "") }
 }

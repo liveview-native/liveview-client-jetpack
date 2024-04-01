@@ -4,11 +4,15 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.constants.ShapeValues
+import org.phoenixframework.liveview.data.dto.tileModeFromString
 import org.phoenixframework.liveview.domain.extensions.toColor
 
 internal fun shapeFromStyle(argument: ModifierDataAdapter.ArgumentData): Shape? {
@@ -51,8 +55,37 @@ internal fun shapeFromStyle(argument: ModifierDataAdapter.ArgumentData): Shape? 
     }
 }
 
+fun colorsFromArguments(arguments: List<ModifierDataAdapter.ArgumentData>): List<Color> {
+    return argsOrNamedArgs(arguments).mapNotNull {
+        colorFromArgument(it)
+    }
+}
+
+fun offsetFromArgument(argumentName: String, argument: ModifierDataAdapter.ArgumentData): Offset? {
+    val pair = singleArgumentObjectValue(argumentName, argument)
+    return pair?.let { (clazz, args) ->
+        if (clazz == "Offset") {
+            (args as? List<ModifierDataAdapter.ArgumentData>)?.mapNotNull {
+                if (it.isInt) it.intValue?.toFloat() else it.floatValue
+            }?.let {
+                if (it.size == 2) Offset(it[0], it[1]) else null
+            }
+
+        } else {
+            when (args.toString()) {
+                "Zero" -> Offset.Zero
+                "Infinite" -> Offset.Infinite
+                "Unspecified" -> Offset.Unspecified
+                else -> null
+            }
+        }
+    }
+}
+
 fun colorFromArgument(argument: ModifierDataAdapter.ArgumentData): Color? {
     val argsToCreateArg = argument.listValue
+    if (argsToCreateArg.isEmpty()) return null
+
     val clazz = argsToCreateArg[0].stringValue
 
     // If it's is a "." argument, it's because we're using a predefined color (e.g.: Color.Red)
@@ -92,6 +125,132 @@ internal fun borderStrokeFromArgument(argument: ModifierDataAdapter.ArgumentData
         color
     ) else null
 }
+
+internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? {
+    val clazz = if (argument.isDot)
+        argument.listValue.getOrNull(0)?.stringValueWithoutColon ?: ""
+    else
+        argument.type
+
+    if (clazz != "Brush") {
+        return null
+    }
+    val argsToCreateBrush = argument.listValue
+    if (argsToCreateBrush.size < 2)
+        return null
+
+    val functionToCreateBrush = argsToCreateBrush[1].type
+    val argsToTheFunctionToCreateBrush = argsOrNamedArgs(argsToCreateBrush[1].listValue)
+    if (argsToTheFunctionToCreateBrush.isEmpty())
+        return null
+
+    return when (functionToCreateBrush) {
+        "horizontalGradient" -> {
+            val colors =
+                colorsFromArguments(argsOrNamedArgs(argsToTheFunctionToCreateBrush[0].listValue))
+            val startX = argsToTheFunctionToCreateBrush.getOrNull(1)
+                ?.let { singleArgumentFloatValue("startX", it) }
+            val endX = argsToTheFunctionToCreateBrush.getOrNull(2)
+                ?.let { singleArgumentFloatValue("endX", it) }
+            val tileMode =
+                singleArgumentObjectValue("tileMode", argsToTheFunctionToCreateBrush[3])?.let {
+                    tileModeFromString(it.second.toString(), TileMode.Repeated)
+                } ?: TileMode.Repeated
+
+            // TODO Implement overloaded version
+            Brush.horizontalGradient(
+                colors = colors,
+                startX = startX ?: 0f,
+                endX = endX ?: Float.POSITIVE_INFINITY,
+                tileMode = tileMode
+            )
+        }
+
+        "verticalGradient" -> {
+            val colors =
+                colorsFromArguments(argsOrNamedArgs(argsToTheFunctionToCreateBrush[0].listValue))
+            val startX = argsToTheFunctionToCreateBrush.getOrNull(1)
+                ?.let { singleArgumentFloatValue("startY", it) }
+            val endX = argsToTheFunctionToCreateBrush.getOrNull(2)
+                ?.let { singleArgumentFloatValue("endY", it) }
+            val tileMode =
+                singleArgumentObjectValue("tileMode", argsToTheFunctionToCreateBrush[3])?.let {
+                    tileModeFromString(it.second.toString(), TileMode.Repeated)
+                } ?: TileMode.Repeated
+
+            // TODO Implement overloaded version
+            Brush.verticalGradient(
+                colors = colors,
+                startY = startX ?: 0f,
+                endY = endX ?: Float.POSITIVE_INFINITY,
+                tileMode = tileMode
+            )
+        }
+
+        "linearGradient" -> {
+            val colors =
+                colorsFromArguments(argsOrNamedArgs(argsToTheFunctionToCreateBrush[0].listValue))
+            val start =
+                argsToTheFunctionToCreateBrush.getOrNull(1)?.let { offsetFromArgument("start", it) }
+            val end =
+                argsToTheFunctionToCreateBrush.getOrNull(2)?.let { offsetFromArgument("_end", it) }
+
+            val tileMode =
+                singleArgumentObjectValue("tileMode", argsToTheFunctionToCreateBrush[3])?.let {
+                    tileModeFromString(it.second.toString(), TileMode.Repeated)
+                } ?: TileMode.Repeated
+
+            // TODO Implement overloaded version
+            Brush.linearGradient(
+                colors = colors,
+                start = start ?: Offset.Zero,
+                end = end ?: Offset.Infinite,
+                tileMode = tileMode
+            )
+        }
+
+        "radialGradient" -> {
+            val colors =
+                colorsFromArguments(argsOrNamedArgs(argsToTheFunctionToCreateBrush[0].listValue))
+            val centerOffset =
+                argsToTheFunctionToCreateBrush.getOrNull(1)
+                    ?.let { offsetFromArgument("center", it) }
+            val radius =
+                argsToTheFunctionToCreateBrush.getOrNull(2)
+                    ?.let { singleArgumentFloatValue("radius", it) }
+
+            val tileMode =
+                singleArgumentObjectValue("tileMode", argsToTheFunctionToCreateBrush[3])?.let {
+                    tileModeFromString(it.second.toString(), TileMode.Repeated)
+                } ?: TileMode.Repeated
+
+            // TODO Implement overloaded version
+            Brush.radialGradient(
+                colors = colors,
+                center = centerOffset ?: Offset.Unspecified,
+                radius = radius ?: Float.POSITIVE_INFINITY,
+                tileMode = tileMode
+            )
+        }
+
+        "sweepGradient" -> {
+            val colors =
+                colorsFromArguments(argsOrNamedArgs(argsToTheFunctionToCreateBrush[0].listValue))
+            val centerOffset =
+                argsToTheFunctionToCreateBrush.getOrNull(1)
+                    ?.let { offsetFromArgument("center", it) }
+
+            // TODO Implement overloaded version
+            Brush.sweepGradient(
+                colors = colors,
+                center = centerOffset ?: Offset.Unspecified,
+            )
+        }
+
+        else -> null
+    }
+}
+
 
 internal fun argsOrNamedArgs(
     arguments: List<ModifierDataAdapter.ArgumentData>

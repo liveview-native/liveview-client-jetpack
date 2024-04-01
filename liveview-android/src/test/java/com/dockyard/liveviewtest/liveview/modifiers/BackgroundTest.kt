@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -106,6 +108,36 @@ class BackgroundTest : ModifierBaseTest() {
               ]}
             """,
             Modifier.background(Color.Red, CircleShape)
+        )
+    }
+
+    @Test
+    fun backgroundWithBrush() {
+        assertModifierFromStyle(
+            """
+            %{"backgroundWithColorAndShapeNamedArgs" => [
+              {:background, [], [[
+                brush: {:., [], [
+                  :Brush,
+                  {:sweepGradient, [], [[
+                    colors: [
+                      {:., [], [:Color, :Red]},
+                      {:., [], [:Color, :Blue]},
+                      {:., [], [:Color, :Green]}
+                    ], 
+                    center: {:Offset, [], [10, 20]}
+                  ]]}
+                ]}, 
+                shape: {:., [], [:CircleShape]}
+              ]]}
+            ]}
+            """.trimStyle(),
+            Modifier.background(
+                Brush.sweepGradient(
+                    listOf(Color.Red, Color.Blue, Color.Green),
+                    Offset(10f, 20f)
+                ), CircleShape
+            )
         )
     }
 }

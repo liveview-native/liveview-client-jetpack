@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.SecureFlagPolicy
@@ -18,6 +19,7 @@ import org.phoenixframework.liveview.data.constants.ContentScaleValues
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
 import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
 import org.phoenixframework.liveview.data.constants.SecureFlagPolicyValues
+import org.phoenixframework.liveview.data.constants.TileModeValues
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
 import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
 import org.phoenixframework.liveview.data.mappers.JsonParser
@@ -61,6 +63,21 @@ internal fun alignmentFromString(alignment: String, defaultValue: Alignment): Al
         AlignmentValues.bottomStart -> Alignment.BottomStart
         AlignmentValues.bottomCenter -> Alignment.BottomCenter
         AlignmentValues.bottomEnd -> Alignment.BottomEnd
+        else -> defaultValue
+    }
+
+/**
+ * Returns an `TileMode` object from a String.
+ * @param tileMode string to be converted to an `TileMode`.
+ * @param defaultValue default value to be used in case of [tileMode] does not match with
+ * any supported value.
+ */
+internal fun tileModeFromString(tileMode: String, defaultValue: TileMode): TileMode =
+    when (tileMode) {
+        TileModeValues.clamp -> TileMode.Clamp
+        TileModeValues.decal -> TileMode.Decal
+        TileModeValues.mirror -> TileMode.Mirror
+        TileModeValues.repeated -> TileMode.Repeated
         else -> defaultValue
     }
 
