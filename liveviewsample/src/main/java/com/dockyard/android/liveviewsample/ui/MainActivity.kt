@@ -10,7 +10,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            LiveView(url = "http://10.0.2.2:4000")
+            LiveView(url = "http://10.0.2.2:4000/users/register?_format=jetpack")
         }
     }
 }
