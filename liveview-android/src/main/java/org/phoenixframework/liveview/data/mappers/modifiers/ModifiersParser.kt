@@ -44,6 +44,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrSystemBarsPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSystemGesturesPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrWaterfallPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsetsPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrZIndex
 import org.phoenixframework.liveview.stylesheet.ElixirLexer
 import org.phoenixframework.liveview.stylesheet.ElixirParser
@@ -61,11 +62,16 @@ object ModifiersParser {
 
     fun Modifier.fromStyle(string: String, scope: Any?): Modifier {
         // Simple substring logic to extract the style name in order to check if it was parsed already
-        val firstQuote = string.indexOf("\"")
+        val stylePrefix = "%{"
+        val styleStart = string.indexOf(stylePrefix)
+        val styleEnd = string.indexOf("=>")
+        if (styleStart < 0 || styleEnd <= styleStart) {
+            return this
+        }
         val styleKey = string.substring(
-            startIndex = firstQuote + 1,
-            endIndex = string.indexOf("\"", firstQuote + 1)
-        )
+            startIndex = styleStart + stylePrefix.length,
+            endIndex = styleEnd - 1
+        ).trim().replace("\"", "").replace("'", "")
         modifiersCacheTable[styleKey]?.let {
             return this.then(it)
         }
@@ -176,6 +182,7 @@ object ModifiersParser {
             attrPadding -> this.then(paddingFromStyle(argListContext))
             attrSize -> this.then(sizeFromStyle(argListContext))
             attrWidth -> this.then(widthFromStyle(argListContext))
+            attrWindowInsetsPadding -> this.then(windowInsetsPaddingFromStyle(argListContext))
             attrZIndex -> this.then(zIndexFromStyle(argListContext))
             else -> this
         }

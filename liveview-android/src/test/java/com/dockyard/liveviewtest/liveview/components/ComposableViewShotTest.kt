@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.systemGesturesPadding
 import androidx.compose.foundation.layout.waterfallPadding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
+import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
@@ -242,7 +245,7 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             template = """
                 <$box $attrStyle="$style">
                     <$text $attrText="Display Cutout Padding Test" />
-                </$box>                
+                </$box>
                 """
         )
     }
@@ -265,7 +268,7 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             template = """
                 <$box $attrStyle="$style">
                     <$text $attrText="Safe Drawing Padding Test" />
-                </$box>                  
+                </$box>
                 """
         )
     }
@@ -288,7 +291,7 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             template = """
                 <$box $attrStyle="$style">
                     <$text $attrText="IME Padding Test" />
-                </$box>                  
+                </$box>
                 """
         )
     }
@@ -311,7 +314,7 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             template = """
                 <$box $attrStyle="$style">
                     <$text $attrText="Mandatory System Gestures Padding Test" />
-                </$box>                  
+                </$box>
                 """
         )
     }
@@ -334,7 +337,7 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             template = """
                 <$box $attrStyle="$style">
                     <$text $attrText="Navigation Bars Padding Test" />
-                </$box>                  
+                </$box>
                 """
         )
     }
@@ -357,7 +360,7 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             template = """
                 <$box $attrStyle="$style">
                     <$text $attrText="Safe Content Padding Test" />
-                </$box>                  
+                </$box>
                 """
         )
     }
@@ -380,7 +383,7 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             template = """
                 <$box $attrStyle="$style">
                     <$text $attrText="Safe Gestures Padding Test" />
-                </$box>                  
+                </$box>
                 """
         )
     }
@@ -403,7 +406,7 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             template = """
                 <$box $attrStyle="$style">
                     <$text $attrText="Status Bars Padding Test" />
-                </$box>                  
+                </$box>
                 """
         )
     }
@@ -426,7 +429,7 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             template = """
                 <$box $attrStyle="$style">
                     <$text $attrText="System Bars Padding Test" />
-                </$box>                  
+                </$box>
                 """
         )
     }
@@ -449,7 +452,7 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             template = """
                 <$box $attrStyle="$style">
                     <$text $attrText="System Gestures Padding Test" />
-                </$box>                  
+                </$box>
                 """
         )
     }
@@ -472,6 +475,38 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             template = """
                 <$box $attrStyle="$style">
                     <$text $attrText="Waterfall Padding Test" />
+                </$box>
+                """
+        )
+    }
+
+    @Test
+    fun windowInsetsPaddingTest() {
+        val style = """
+            %{'windowInsetsPadding' => [ 
+                {:windowInsetsPadding, [], [{:WindowInsets, [], [10, 20, 30, 40]}]} 
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(
+                    modifier = Modifier.windowInsetsPadding(
+                        WindowInsets(
+                            10.dp,
+                            20.dp,
+                            30.dp,
+                            40.dp
+                        )
+                    )
+                ) {
+                    Text(
+                        text = "Window Insets Padding Test"
+                    )
+                }
+            },
+            template = """
+                <$box $attrClass="$style">
+                    <$text $attrText="Window Insets Padding Test" />
                 </$box>                  
                 """
         )

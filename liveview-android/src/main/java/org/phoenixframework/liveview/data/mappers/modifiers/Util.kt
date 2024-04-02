@@ -2,6 +2,7 @@ package org.phoenixframework.liveview.data.mappers.modifiers
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.geometry.Offset
@@ -251,6 +252,22 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
 
         else -> null
     }
+}
+
+internal fun windowInsetsFromArgument(argument: ModifierDataAdapter.ArgumentData): WindowInsets? {
+    return if (argument.type == "WindowInsets") {
+        val left = (argument.listValue.find { it.name == "left" }
+            ?: argument.listValue.getOrNull(0))?.intValue?.dp
+        val top = (argument.listValue.find { it.name == "top" }
+            ?: argument.listValue.getOrNull(1))?.intValue?.dp
+        val right =
+            (argument.listValue.find { it.name == "right" }
+                ?: argument.listValue.getOrNull(2))?.intValue?.dp
+        val bottom =
+            (argument.listValue.find { it.name == "bottom" }
+                ?: argument.listValue.getOrNull(3))?.intValue?.dp
+        WindowInsets(left ?: 0.dp, top ?: 0.dp, right ?: 0.dp, bottom ?: 0.dp)
+    } else null
 }
 
 // FIXME This function does not work when the first argument is a list

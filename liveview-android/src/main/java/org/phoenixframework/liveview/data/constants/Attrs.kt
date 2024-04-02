@@ -198,6 +198,7 @@ object Attrs {
     const val attrWidth = "width"
     const val attrWithDismissAction = "withDismissAction"
     const val attrWindowInsets = "windowInsets"
+    const val attrWindowInsetsPadding = "windowInsetsPadding"
     const val attrYearRange = "yearRange"
     const val attrZIndex = "zIndex"
 }

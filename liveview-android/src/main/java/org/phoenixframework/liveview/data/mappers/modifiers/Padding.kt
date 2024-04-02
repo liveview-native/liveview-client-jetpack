@@ -1,6 +1,7 @@
 package org.phoenixframework.liveview.data.mappers.modifiers
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -83,4 +84,12 @@ fun Modifier.paddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>)
         else -> null
     }
     return paddingModifier?.let { this.then(it) } ?: this
+}
+
+fun Modifier.windowInsetsPaddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    return argOrNamedArg(arguments, "insets", 0)?.let { arg ->
+        windowInsetsFromArgument(arg)?.let {
+            this.then(Modifier.windowInsetsPadding(it))
+        }
+    } ?: this
 }

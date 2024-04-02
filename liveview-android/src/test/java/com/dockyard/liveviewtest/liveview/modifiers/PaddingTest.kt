@@ -261,4 +261,18 @@ class PaddingTest : ModifierBaseTest() {
             Modifier.padding(end = 16.dp, bottom = 32.dp, start = 4.dp, top = 8.dp)
         )
     }
+
+    @Test
+    fun windowInsetsPadding() {
+        val result = Modifier.fromStyle(
+            """
+            %{"windowInsetsPadding" => [
+                {:windowInsetsPadding, [], [{:WindowInsets, [], [10, 20, 30, 40]}]},
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
 }
