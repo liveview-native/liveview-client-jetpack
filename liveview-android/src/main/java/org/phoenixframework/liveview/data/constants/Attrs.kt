@@ -156,6 +156,7 @@ object Attrs {
     const val attrSheetSwipeEnabled = "sheetSwipeEnabled"
     const val attrSheetTonalElevation = "sheetTonalElevation"
     const val attrSheetValue = "sheetValue"
+    const val attrShadow = "shadow"
     const val attrShadowElevation = "shadowElevation"
     const val attrShowModeToggle = "show-mode-toggle"
     const val attrSingleLine = "singleLine"

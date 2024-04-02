@@ -38,6 +38,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSafeContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSafeDrawingPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSafeGesturesPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrShadow
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrStatusBarsPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSystemBarsPadding
@@ -180,6 +181,7 @@ object ModifiersParser {
             attrFillMaxWidth -> this.then(fillMaxWidthFromStyle(argListContext))
             attrHeight -> this.then(heightFromStyle(argListContext))
             attrPadding -> this.then(paddingFromStyle(argListContext))
+            attrShadow -> this.then(shadowFromStyle(argListContext))
             attrSize -> this.then(sizeFromStyle(argListContext))
             attrWidth -> this.then(widthFromStyle(argListContext))
             attrWindowInsetsPadding -> this.then(windowInsetsPaddingFromStyle(argListContext))

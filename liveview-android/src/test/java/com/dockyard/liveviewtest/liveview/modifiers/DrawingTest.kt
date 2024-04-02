@@ -153,6 +153,26 @@ class DrawingTest : ModifierBaseTest() {
         assertNotEquals(result, Modifier)
     }
 
+    @Test
+    fun shadowTest() {
+        val result = Modifier.fromStyle(
+            """
+            %{"shadowTest" => [
+                {:shadow, [], [[
+                    elevation: 4,
+                    shape: {:., [], [:CircleShape]},
+                    clip: false,
+                    ambientColor: {:., [], [:Color, :Blue]},
+                    spotColor: {:., [], [:Color, :Green]}    
+                ]]}
+            ]}
+            """, null
+        )
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assertNotEquals(result, Modifier)
+    }
+
 
     //region Z-Index Modifier Tests
     @Test
