@@ -82,7 +82,7 @@ object SocketService {
             SOCKET_PARAM_CSRF_TOKEN to payload?.phxCSRFToken,
             SOCKET_PARAM_MOUNTS to 0,
             SOCKET_PARAM_CLIENT_ID to uuid,
-            SOCKET_PARAM_PLATFORM to PLATFORM_JETPACK
+            SOCKET_PARAM_FORMAT to FORMAT_JETPACK
         )
 
         val socketQueryParams =
@@ -90,7 +90,8 @@ object SocketService {
                 acc + "${entry.key}=${entry.value}&"
             }
 
-        val socketUrl = "${socketBaseUrl}/live/websocket?$socketQueryParams"
+        val separator = if (socketBaseUrl.indexOf('?') > -1) '&' else '?'
+        val socketUrl = "${socketBaseUrl}$separator$socketQueryParams"
         Log.d(TAG, "connectToLiveViewSocket::socketUrl=$socketUrl")
         phxSocket = Socket(url = socketUrl, client = okHttpClient).apply {
             logger = { Log.d(TAG, it) }
@@ -126,8 +127,8 @@ object SocketService {
                         SOCKET_PARAM_CSRF_TOKEN to phxLiveViewPayload.phxCSRFToken,
                         SOCKET_PARAM_MOUNTS to 0,
                         SOCKET_PARAM_CLIENT_ID to uuid,
-                        SOCKET_PARAM_PLATFORM to PLATFORM_JETPACK
-                    )
+                        SOCKET_PARAM_FORMAT to FORMAT_JETPACK,
+                    ),
         )
         return phxSocket?.channel(
             topic = "lv:${phxLiveViewPayload.phxId}",
@@ -148,7 +149,7 @@ object SocketService {
             return
         }
         Log.d(TAG, "connectLiveReloadSocket::wsBaseUrl=$socketBaseUrl")
-        val uri = Uri.parse(socketBaseUrl).buildUpon().path("/phoenix/live_reload/socket").build()
+        val uri = Uri.parse(socketBaseUrl).buildUpon().path("/phoenix/live_reload/socket/websocket").build()
         Log.d(TAG, "connectLiveReloadSocket::uri=$uri")
 
         liveReloadSocket = Socket(url = uri.toString(), client = okHttpClient).apply {
@@ -182,11 +183,8 @@ object SocketService {
                     .body?.string()
                     ?.let { Jsoup.parse(it) }
 
-                val metaTags: Elements? = doc?.getElementsByTag(TAG_META)
-                val metaTagWithCsrfToken = metaTags?.find { theElement ->
-                    theElement.attr(ATTR_NAME) == VALUE_ATTR_CSRF_TOKEN
-                }
-                val csrfToken = metaTagWithCsrfToken?.attr(ATTR_CONTENT)
+                val csrfTokenTag: Elements? = doc?.getElementsByTag(TAG_CSRF_TOKEN)
+                val csrfToken = csrfTokenTag?.attr(ATTR_VALUE)
 
                 val theLiveViewMetaDataElement =
                     doc?.body()?.getElementsByAttribute(ATTR_DATA_PHX_MAIN)
@@ -211,14 +209,12 @@ object SocketService {
     private const val TAG = "LVN_SocketService"
 
     // Initial payload constants
-    private const val TAG_META = "meta"
-    private const val ATTR_NAME = "name"
-    private const val ATTR_CONTENT = "content"
     private const val ATTR_DATA_PHX_MAIN = "data-phx-main"
     private const val ATTR_DATA_PHX_SESSION = "data-phx-session"
     private const val ATTR_DATA_PHX_STATIC = "data-phx-static"
     private const val ATTR_ID = "id"
-    private const val VALUE_ATTR_CSRF_TOKEN = "csrf-token"
+    private const val ATTR_VALUE = "value"
+    private const val TAG_CSRF_TOKEN = "csrf-token"
 
     private const val CHANNEL_PARAM_SESSION = "session"
     private const val CHANNEL_PARAM_STATIC = "static"
@@ -229,9 +225,9 @@ object SocketService {
     private const val SOCKET_PARAM_CSRF_TOKEN = "_csrf_token"
     private const val SOCKET_PARAM_MOUNTS = "_mounts"
     private const val SOCKET_PARAM_CLIENT_ID = "client_id"
-    private const val SOCKET_PARAM_PLATFORM = "_platform"
+    private const val SOCKET_PARAM_FORMAT = "_format"
 
-    private const val PLATFORM_JETPACK = "jetpack"
+    private const val FORMAT_JETPACK = "jetpack"
 
     sealed class Events {
         data object NotConnected : Events()

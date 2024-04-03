@@ -251,6 +251,13 @@ object TextStyleValues {
     const val labelSmall = "labelSmall"
 }
 
+object TileModeValues {
+    const val clamp = "Clamp"
+    const val decal = "Decal"
+    const val mirror = "Mirror"
+    const val repeated = "Repeated"
+}
+
 object TimePickerLayoutTypeValues {
     const val horizontal = "horizontal"
     const val vertical = "vertical"

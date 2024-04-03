@@ -31,7 +31,7 @@ fun LiveView(url: String) {
     val webSocketBaseUrl = remember(url) {
         val uri = Uri.parse(url)
         val webSocketScheme = if (uri.scheme == "https") "wss" else "ws"
-        uri.buildUpon().scheme(webSocketScheme).build().toString()
+        uri.buildUpon().scheme(webSocketScheme).path("live/websocket").build().toString()
     }
     val themeData by ThemeHolder.themeData.collectAsState()
 

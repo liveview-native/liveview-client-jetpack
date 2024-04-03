@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.data.mappers.modifiers
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
@@ -14,6 +15,7 @@ fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
     var borderShape: Shape? = null
     var borderColor: Color? = null
     var borderWidth: Dp? = null
+    var borderBrush: Brush? = null
 
     val borderArguments = argsOrNamedArgs(arguments)
     if (arguments.firstOrNull()?.isList == true) {
@@ -29,6 +31,9 @@ fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
 
         arg = borderArguments.find { it.name == "shape" }
         if (arg != null) borderShape = shapeFromStyle(arg)
+
+        arg = borderArguments.find { it.name == "brush" }
+        if (arg != null) borderBrush = brushFromStyle(arg)
 
     } else {
         // Ordered params
@@ -47,6 +52,9 @@ fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
                     borderWidth = (borderArgument.intValue ?: 0).dp
 
                 borderArgument.isDot -> {
+                    val b = brushFromStyle(borderArgument)
+                    if (b != null) borderBrush = b
+
                     val c = colorFromArgument(borderArgument)
                     if (c != null) borderColor = c
 
@@ -55,6 +63,9 @@ fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
                 }
             }
         }
+    }
+    if (borderBrush != null && borderWidth != null && borderShape != null) {
+        return this.then(Modifier.border(borderWidth, borderBrush, borderShape))
     }
     if (borderStroke != null) {
         return this.then(Modifier.border(borderStroke, borderShape ?: RectangleShape))
