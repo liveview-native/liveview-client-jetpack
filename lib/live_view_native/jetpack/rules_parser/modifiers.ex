@@ -200,8 +200,8 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
         inside_key_value_pair?
       },
       {
-        swift_range(),
-        ~s'a Swift range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’'
+        kotlin_range(),
+        ~s'a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’'
       },
       {
         literal(error_parser: empty(), generate_error?: false),

@@ -238,9 +238,16 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       assert parse(input) == output
     end
 
-    test "parses Implicit Member Expressions" do
+    test "parses member expressions" do
       input = "color(.red)"
       output = {:color, [], [{:., [], [nil, :red]}]}
+
+      assert parse(input) == output
+    end
+
+    test "numerical member expressions" do
+      input = "textSize(1.dp, 10.5.em)"
+      output = {:textSize, [], [{:., [1, :dp]}, {:., [10.5, :em]}]}
 
       assert parse(input) == output
     end

@@ -36,7 +36,7 @@ defmodule LiveViewNative.Jetpack.RulesParser.Expressions do
     Enum.reduce(combinators, empty(), &concat(&2, &1))
   end
 
-  defp swift_range(combinator) do
+  defp kotlin_range(combinator) do
     nil_ = replace(empty(), nil)
 
     choice([
@@ -51,10 +51,10 @@ defmodule LiveViewNative.Jetpack.RulesParser.Expressions do
       # foo(..<Baz.qux)
       seq([nil_, string("..<"), combinator])
     ])
-    |> post_traverse({PostProcessors, :to_swift_range_ast, []})
+    |> post_traverse({PostProcessors, :to_kotlin_range_ast, []})
   end
 
-  def swift_range() do
+  def kotlin_range() do
     scoped_atom =
       type_name(generate_error?: false)
       |> ignore(string("."))
@@ -62,9 +62,9 @@ defmodule LiveViewNative.Jetpack.RulesParser.Expressions do
       |> post_traverse({PostProcessors, :to_scoped_atom, []})
 
     choice([
-      swift_range(scoped_atom),
-      swift_range(integer()),
-      swift_range(double_quoted_string())
+      kotlin_range(scoped_atom),
+      kotlin_range(integer()),
+      kotlin_range(double_quoted_string())
     ])
   end
 
