@@ -1,5 +1,6 @@
 defmodule LiveViewNative.Jetpack.RulesParser.Expressions do
   @moduledoc false
+
   import NimbleParsec
   import LiveViewNative.Jetpack.RulesParser.Parser
   import LiveViewNative.Jetpack.RulesParser.Tokens
@@ -7,11 +8,13 @@ defmodule LiveViewNative.Jetpack.RulesParser.Expressions do
 
   def enclosed(start \\ empty(), open, combinator, close, opts) do
     allow_empty? = Keyword.get(opts, :allow_empty?, true)
+    generate_error? = Keyword.get(opts, :generate_error?, true)
 
     close =
       expect(
         ignore(string(close)),
         error_message: "expected ‘#{close}’",
+        generate_error?: generate_error?,
         error_parser: optional(non_whitespace(also_ignore: String.to_charlist(close)))
       )
 
@@ -33,7 +36,7 @@ defmodule LiveViewNative.Jetpack.RulesParser.Expressions do
     Enum.reduce(combinators, empty(), &concat(&2, &1))
   end
 
-  defp kotlin_range(combinator) do
+  defp swift_range(combinator) do
     nil_ = replace(empty(), nil)
 
     choice([
@@ -48,10 +51,10 @@ defmodule LiveViewNative.Jetpack.RulesParser.Expressions do
       # foo(..<Baz.qux)
       seq([nil_, string("..<"), combinator])
     ])
-    |> post_traverse({PostProcessors, :to_kotlin_range_ast, []})
+    |> post_traverse({PostProcessors, :to_swift_range_ast, []})
   end
 
-  def kotlin_range() do
+  def swift_range() do
     scoped_atom =
       type_name(generate_error?: false)
       |> ignore(string("."))
@@ -59,9 +62,9 @@ defmodule LiveViewNative.Jetpack.RulesParser.Expressions do
       |> post_traverse({PostProcessors, :to_scoped_atom, []})
 
     choice([
-      kotlin_range(scoped_atom),
-      kotlin_range(integer()),
-      kotlin_range(double_quoted_string())
+      swift_range(scoped_atom),
+      swift_range(integer()),
+      swift_range(double_quoted_string())
     ])
   end
 

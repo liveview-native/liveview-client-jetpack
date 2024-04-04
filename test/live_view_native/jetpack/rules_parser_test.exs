@@ -120,6 +120,13 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
          [[color: {:., [], [:Color, {:., [], [:red, {:shadow, [], [{:., [], [nil, :thick]}]}]}]}]]}
 
       assert parse(input) == output
+
+      input = "foregroundStyle(Color(.displayP3, red: 0.4627, green: 0.8392, blue: 1.0).opacity(0.25))"
+
+      output =
+        {:foregroundStyle, [], [{:., [], [{:Color, [], [{:., [], [nil, :displayP3]}, [red: 0.4627, green: 0.8392, blue: 1.0]]}, {:opacity, [], [0.25]}]}]}
+
+      assert parse(input) == output
     end
 
     test "parses naked chained IME" do
@@ -130,6 +137,27 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       assert parse(input) == output
     end
 
+    test "parses non-key-value lists" do
+      input = ~s/Gradient([0, 1, 2])/
+      output = {:Gradient, [], [[0, 1, 2]]}
+      assert parse(input) == output
+
+      input = ~s/Gradient([0, 1, 2], 3)/
+      output = {:Gradient, [], [[0, 1, 2], 3]}
+      assert parse(input) == output
+
+      input = ~s/Gradient(colors: [0, 1, 2])/
+      output = {:Gradient, [], [[colors: [0, 1, 2]]]}
+      assert parse(input) == output
+
+      input = ~s/Gradient(colors: [Color.red, Color.blue])/
+      output = {:Gradient, [], [[colors: [{:., [], [:Color, :red]}, {:., [], [:Color, :blue]}]]]}
+      assert parse(input) == output
+
+      input = ~s/Gradient(colors: ["red", "blue"])/
+      output = {:Gradient, [], [[colors: ["red", "blue"]]]}
+      assert parse(input) == output
+    end
 
     test "parses multiple modifiers" do
       input = "font(.largeTitle) bold(true) italic(true)"
@@ -197,7 +225,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "parses key/value pairs" do
-      input = ~s|foo(bar: "baz", qux: .quux)|
+      input = ~s|foo(bar = "baz", qux = .quux)|
       output = {:foo, [], [[bar: "baz", qux: {:., [], [nil, :quux]}]]}
 
       assert parse(input) == output
@@ -394,7 +422,8 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
           |
 
         Expected ‘()’ or ‘(<modifier_arguments>)’ where <modifier_arguments> are a comma separated list of:
-         - a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’
+         - a list of values eg ‘[1, 2, 3]’, ‘["red", "blue"]’ or ‘[Color.red, Color.blue]’
+         - a Swift range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’
          - a number, string, nil, boolean or :atom
          - an event eg ‘event(\"search-event\", throttle: 10_000)’
          - an attribute eg ‘attr(\"placeholder\")’
@@ -478,7 +507,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: missing colon" do
-      input = "abc(def: 11, b: [lineWidth a, l: 2a])"
+      input = "abc(def = 11, b = [lineWidth a, l = 2a])"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -489,7 +518,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
         """
         Unsupported input:
           |
-        1 | abc(def: 11, b: [lineWidth‎ a, l: 2a])
+        1 | abc(def = 11, b = [lineWidth‎ a, l = 2a])
           |                           ^
           |
 
@@ -501,7 +530,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: double nesting" do
-      input = "abc(def: 11, b: lineWidth: a, l: 2a]"
+      input = "abc(def = 11, b = lineWidth: a, l = 2a]"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -512,7 +541,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
         """
         Unsupported input:
           |
-        1 | abc(def: 11, b: lineWidth: a, l: 2a]
+        1 | abc(def = 11, b = lineWidth = a, l = 2a]
           |                          ^
           |
 
@@ -524,7 +553,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: invalid value" do
-      input = "abc(def: 11, b: [lineWidth: 1lineWidth])"
+      input = "abc(def = 11, b = [lineWidth = 1lineWidth])"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -535,7 +564,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
         """
         Unsupported input:
           |
-        1 | abc(def: 11, b: [lineWidth: 1lineWidth])
+        1 | abc(def = 11, b = [lineWidth = 1lineWidth])
           |                              ^^^^^^^^^
           |
 
@@ -547,7 +576,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: invalid value (2)" do
-      input = "abc(def: 11, b: [lineWidth: :1])"
+      input = "abc(def = 11, b = [lineWidth = :1])"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -558,7 +587,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
         """
         Unsupported input:
           |
-        1 | abc(def: 11, b: [lineWidth: :1])
+        1 | abc(def = 11, b = [lineWidth = :1])
           |                              ^
           |
 
@@ -570,7 +599,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: invalid value (3)" do
-      input = "abc(def: 11, b: :1)"
+      input = "abc(def = 11, b = :1)"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -581,7 +610,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
         """
         Unsupported input:
           |
-        1 | abc(def: 11, b: :1)
+        1 | abc(def = 11, b = :1)
           |                  ^
           |
 
@@ -593,7 +622,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword list: missing closing brace" do
-      input = "abc(def: 11, b: [lineWidth: 1)"
+      input = "abc(def = 11, b = [lineWidth = 1)"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -604,7 +633,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
         """
         Unsupported input:
           |
-        1 | abc(def: 11, b: [lineWidth: 1)
+        1 | abc(def = 11, b = [lineWidth = 1)
           |                              ^
           |
 
@@ -655,7 +684,8 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
           |
 
         Expected one of the following:
-         - a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’
+         - a list of values eg ‘[1, 2, 3]’, ‘["red", "blue"]’ or ‘[Color.red, Color.blue]’
+         - a Swift range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’
          - a number, string, nil, boolean or :atom
          - an event eg ‘event("search-event", throttle: 10_000)’
          - an attribute eg ‘attr("placeholder")’

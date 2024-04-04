@@ -1,5 +1,6 @@
 defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
   @moduledoc false
+
   import NimbleParsec
   import LiveViewNative.Jetpack.RulesParser.Tokens
   import LiveViewNative.Jetpack.RulesParser.Expressions
@@ -86,7 +87,7 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
     |> post_traverse({PostProcessors, :to_scoped_ime_ast, []})
 
   defparsecp(
-    :ime,
+    :ime1,
     start()
     |> choice([
       # Scoped
@@ -108,6 +109,30 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
       ])
     )
     |> post_traverse({PostProcessors, :chain_ast, []})
+  )
+
+  defparsecp(
+    :ime2,
+    # Color(.displayP3, red: 0.4627, green: 0.8392, blue: 1.0)
+    parsec(:nested_modifier)
+    |> times(
+      choice([
+        # <other_ime>.#{color}
+        ime_function.(false),
+        # <other_ime>.red
+        dotted_ime.(false)
+      ]),
+      min: 1
+    )
+    |> post_traverse({PostProcessors, :chain_ast, []})
+  )
+
+  defparsecp(
+    :ime,
+    choice([
+      parsec(:ime1),
+      parsec(:ime2)
+    ])
   )
 
   defcombinator(
@@ -166,13 +191,17 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
   @modifier_arguments fn inside_key_value_pair? ->
     [
       {
+        parsec(:non_kv_list),
+        ~s'a list of values eg ‘[1, 2, 3]’, ‘["red", "blue"]’ or ‘[Color.red, Color.blue]’'
+      },
+      {
         parsec(:key_value_list),
         ~s'a keyword list eg ‘[style: :dashed]’, ‘[size: 12]’ or ‘[lineWidth: lineWidth]’',
         inside_key_value_pair?
       },
       {
-        kotlin_range(),
-        ~s'a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’'
+        swift_range(),
+        ~s'a Swift range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’'
       },
       {
         literal(error_parser: empty(), generate_error?: false),
@@ -217,6 +246,26 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
       @modifier_arguments.(true),
       error_parser: non_whitespace(also_ignore: String.to_charlist(")"))
     )
+  )
+
+  defcombinator(
+    :non_kv_list,
+    enclosed(
+      "[",
+      comma_separated_list(
+        one_of(
+          @modifier_arguments.(true),
+          error_parser: non_whitespace(also_ignore: String.to_charlist(")"))
+        ),
+        generate_error?: false,
+        allow_empty?: true
+      ),
+      "]",
+      allow_empty?: true,
+      generate_error?: false,
+      error_parser: non_whitespace(also_ignore: String.to_charlist(")],"))
+    )
+    |> wrap()
   )
 
   defcombinator(
