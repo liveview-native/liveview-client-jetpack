@@ -11,10 +11,42 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import org.phoenixframework.liveview.data.constants.RoleValues
 import org.phoenixframework.liveview.data.constants.ShapeValues
 import org.phoenixframework.liveview.data.dto.tileModeFromString
 import org.phoenixframework.liveview.domain.extensions.toColor
+
+internal fun eventFromStyle(argument: ModifierDataAdapter.ArgumentData): Pair<String, Any?>? {
+    return if (argument.type == "__event__") {
+        val (event, args) = Pair(
+            argument.listValue.getOrNull(0)?.stringValue,
+            argument.listValue.getOrNull(1)?.listValue?.map { it.value }
+        )
+        if (event != null && args != null) {
+            val pushArgs = if (args.isEmpty()) null else if (args.size == 1) args.first() else null
+            event to pushArgs
+        } else null
+    } else null
+}
+
+internal fun roleFromStyle(argument: ModifierDataAdapter.ArgumentData): Role? {
+    val clazz = argument.listValue.getOrNull(0)?.stringValueWithoutColon
+    val roleType = argument.listValue.getOrNull(1)?.stringValueWithoutColon
+    return if (clazz == "Role" && roleType != null) {
+        when (roleType) {
+            RoleValues.button -> Role.Button
+            RoleValues.checkbox -> Role.Checkbox
+            RoleValues.switch -> Role.Switch
+            RoleValues.radioButton -> Role.RadioButton
+            RoleValues.tab -> Role.Tab
+            RoleValues.image -> Role.Image
+            RoleValues.dropdownList -> Role.DropdownList
+            else -> null
+        }
+    } else null
+}
 
 internal fun shapeFromStyle(argument: ModifierDataAdapter.ArgumentData): Shape? {
     val clazz = if (argument.isDot)

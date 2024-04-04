@@ -146,7 +146,7 @@ class DrawingTest : ModifierBaseTest() {
             %{"safeDrawingPaddingTest" => [
                 {:safeDrawingPadding, [], []},
             ]}
-            """, null
+            """
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -166,7 +166,7 @@ class DrawingTest : ModifierBaseTest() {
                     spotColor: {:., [], [:Color, :Green]}    
                 ]]}
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).

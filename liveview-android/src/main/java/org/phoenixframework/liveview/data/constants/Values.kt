@@ -134,6 +134,16 @@ object LineBreakValues {
     const val heading = "heading"
 }
 
+object RoleValues {
+    const val button = "Button"
+    const val checkbox = "Checkbox"
+    const val switch = "Switch"
+    const val radioButton = "RadioButton"
+    const val tab = "Tab"
+    const val image = "Image"
+    const val dropdownList = "DropdownList"
+}
+
 object ScrollBehaviorValues {
     const val exitUntilCollapsed = "exitUntilCollapsed"
     const val enterAlways = "enterAlways"

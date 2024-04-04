@@ -19,7 +19,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"captionBarPaddingTest" => [
                 {:captionBarPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -33,7 +33,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"displayCutoutPadding" => [
                 {:displayCutoutPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -47,7 +47,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"imePaddingTest" => [
                 {:imePadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -61,7 +61,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"mandatorySystemGesturesPaddingTest" => [
                 {:mandatorySystemGesturesPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -75,7 +75,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"navigationBarsPaddingTest" => [
                 {:navigationBarsPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -89,7 +89,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"safeContentPaddingTest" => [
                 {:safeContentPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -103,7 +103,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"safeGesturesPaddingTest" => [
                 {:safeGesturesPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -117,7 +117,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"statusBarsPaddingTest" => [
                 {:statusBarsPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -131,7 +131,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"systemBarsPaddingTest" => [
                 {:systemBarsPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -145,7 +145,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"systemGesturesPaddingTest" => [
                 {:systemGesturesPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -159,7 +159,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"waterfallPaddingTest" => [
                 {:waterfallPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -269,7 +269,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"windowInsetsPadding" => [
                 {:windowInsetsPadding, [], [{:WindowInsets, [], [10, 20, 30, 40]}]},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).

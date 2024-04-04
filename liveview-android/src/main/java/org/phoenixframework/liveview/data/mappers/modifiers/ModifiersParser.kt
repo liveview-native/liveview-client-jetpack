@@ -27,6 +27,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrAspectRatio
 import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrCaptionBarPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrClickable
 import org.phoenixframework.liveview.data.constants.Attrs.attrClip
 import org.phoenixframework.liveview.data.constants.Attrs.attrClipToBounds
 import org.phoenixframework.liveview.data.constants.Attrs.attrDisplayCutoutPadding
@@ -52,6 +53,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrWaterfallPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsetsPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrZIndex
+import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.stylesheet.ElixirLexer
 import org.phoenixframework.liveview.stylesheet.ElixirParser
 import org.phoenixframework.liveview.stylesheet.ElixirParser.ListContext
@@ -66,7 +68,11 @@ object ModifiersParser {
         modifiersCacheTable.clear()
     }
 
-    fun Modifier.fromStyle(string: String, scope: Any?): Modifier {
+    fun Modifier.fromStyle(
+        string: String,
+        scope: Any? = null,
+        pushEvent: PushEvent? = null
+    ): Modifier {
         // Simple substring logic to extract the style name in order to check if it was parsed already
         val stylePrefix = "%{"
         val styleStart = string.indexOf(stylePrefix)
@@ -132,7 +138,8 @@ object ModifiersParser {
                         handlerModifier(
                             name,
                             modifierDataAdapter.arguments,
-                            scope
+                            scope,
+                            pushEvent,
                         ).let { modifier ->
                             parsedModifier = parsedModifier.then(modifier)
                         }
@@ -157,7 +164,8 @@ object ModifiersParser {
     private fun Modifier.handlerModifier(
         modifierId: String,
         argListContext: List<ModifierDataAdapter.ArgumentData>,
-        scope: Any?
+        scope: Any?,
+        pushEvent: PushEvent?
     ): Modifier {
         return when (modifierId) {
             // No param modifiers
@@ -183,6 +191,7 @@ object ModifiersParser {
             attrAspectRatio -> this.then(aspectRatioFromStyle(argListContext))
             attrBackground -> this.then(backgroundFromStyle(argListContext))
             attrBorder -> this.then(borderFromStyle(argListContext))
+            attrClickable -> this.then(clickableFromStyle(argListContext, pushEvent))
             attrClip -> this.then(clipFromStyle(argListContext))
             attrFillMaxHeight -> this.then(fillMaxHeightFromStyle(argListContext))
             attrFillMaxWidth -> this.then(fillMaxWidthFromStyle(argListContext))

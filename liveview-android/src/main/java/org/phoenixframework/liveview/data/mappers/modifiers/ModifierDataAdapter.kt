@@ -97,7 +97,13 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
             is ElixirParser.SingleLineStringExprContext ->
                 argValueFromContext(argumentKey, expression)
 
+            is ElixirParser.SingleLineCharlistExprContext ->
+                argValueFromContext(argumentKey, expression)
+
             is ElixirParser.MultiLineStringExprContext ->
+                argValueFromContext(argumentKey, expression)
+
+            is ElixirParser.MultiLineCharlistExprContext ->
                 argValueFromContext(argumentKey, expression)
 
             is ElixirParser.UnaryExprContext -> {
@@ -122,9 +128,33 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
 
     private fun argValueFromContext(
         argumentKey: String?,
+        argumentValueExpression: ElixirParser.SingleLineCharlistExprContext
+    ): ArgumentData {
+        val stringWithQuotes = argumentValueExpression.SINGLE_LINE_CHARLIST().text
+        return ArgumentData(
+            argumentKey,
+            TypeString,
+            stringWithQuotes.substring(1, stringWithQuotes.lastIndex)
+        )
+    }
+
+    private fun argValueFromContext(
+        argumentKey: String?,
         argumentValueExpression: ElixirParser.MultiLineStringExprContext
     ): ArgumentData {
         val stringWithTripleQuotes = argumentValueExpression.MULTI_LINE_STRING().text
+        return ArgumentData(
+            argumentKey,
+            TypeString,
+            stringWithTripleQuotes.substring(3, stringWithTripleQuotes.lastIndex - 2)
+        )
+    }
+
+    private fun argValueFromContext(
+        argumentKey: String?,
+        argumentValueExpression: ElixirParser.MultiLineCharlistExprContext
+    ): ArgumentData {
+        val stringWithTripleQuotes = argumentValueExpression.MULTI_LINE_CHARLIST().text
         return ArgumentData(
             argumentKey,
             TypeString,
