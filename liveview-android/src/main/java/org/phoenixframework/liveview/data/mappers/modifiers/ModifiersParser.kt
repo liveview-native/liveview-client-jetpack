@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.systemGesturesPadding
 import androidx.compose.foundation.layout.waterfallPadding
+import androidx.compose.foundation.progressSemantics
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import org.antlr.v4.runtime.CharStream
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
+import org.phoenixframework.liveview.data.constants.Attrs.attrAbsoluteOffset
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlignByBaseline
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlpha
@@ -32,9 +34,12 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrFillMaxHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrFillMaxWidth
 import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrImePadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrLayoutId
 import org.phoenixframework.liveview.data.constants.Attrs.attrMandatorySystemGesturesPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrNavigationBarsPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrOffset
 import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrProgressSemantics
 import org.phoenixframework.liveview.data.constants.Attrs.attrSafeContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSafeDrawingPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSafeGesturesPadding
@@ -162,6 +167,7 @@ object ModifiersParser {
             attrImePadding -> this.then(Modifier.imePadding())
             attrMandatorySystemGesturesPadding -> this.then(Modifier.mandatorySystemGesturesPadding())
             attrNavigationBarsPadding -> this.then(Modifier.navigationBarsPadding())
+            attrProgressSemantics -> this.then(Modifier.progressSemantics())
             attrSafeContentPadding -> this.then(Modifier.safeContentPadding())
             attrSafeDrawingPadding -> this.then(Modifier.safeDrawingPadding())
             attrSafeGesturesPadding -> this.then(Modifier.safeGesturesPadding())
@@ -170,6 +176,7 @@ object ModifiersParser {
             attrSystemGesturesPadding -> this.then(Modifier.systemGesturesPadding())
             attrWaterfallPadding -> this.then(Modifier.waterfallPadding())
             // Parameterized modifiers
+            attrAbsoluteOffset -> this.then(absoluteOffsetFromStyle(argListContext))
             attrAlpha -> this.then(alphaFromStyle(argListContext))
             attrAlign -> this.then(alignFromStyle(argListContext, scope))
             attrAlignByBaseline -> this.then(alignByBaselineFromStyle(scope))
@@ -180,6 +187,8 @@ object ModifiersParser {
             attrFillMaxHeight -> this.then(fillMaxHeightFromStyle(argListContext))
             attrFillMaxWidth -> this.then(fillMaxWidthFromStyle(argListContext))
             attrHeight -> this.then(heightFromStyle(argListContext))
+            attrLayoutId -> this.then(layoutIdFromStyle(argListContext))
+            attrOffset -> this.then(offsetFromStyle(argListContext))
             attrPadding -> this.then(paddingFromStyle(argListContext))
             attrShadow -> this.then(shadowFromStyle(argListContext))
             attrSize -> this.then(sizeFromStyle(argListContext))

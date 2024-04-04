@@ -1,6 +1,7 @@
 package org.phoenixframework.liveview.data.constants
 
 object Attrs {
+    const val attrAbsoluteOffset = "absoluteOffset"
     const val attrActionColor = "actionColor"
     const val attrActionContentColor = "actionContentColor"
     const val attrActionEvent = "actionEvent"
@@ -98,6 +99,7 @@ object Attrs {
     const val attrIsOpen = "isOpen"
     const val attrIs24Hour = "is24Hour"
     const val attrKeyboardType = "keyboardType"
+    const val attrLayoutId = "layoutId"
     const val attrLayoutType = "layoutType"
     const val attrLeft = "left"
     const val attrLetterSpacing = "letterSpacing"
@@ -128,6 +130,7 @@ object Attrs {
     const val attrPhxThrottle = "phx-throttle"
     const val attrPhxValue = "phx-value"
     const val attrPhxValueNamed = "phx-value-"
+    const val attrProgressSemantics = "progressSemantics"
     const val attrPropagateMinConstraints = "propagateMinConstraints"
     const val attrQuery = "query"
     const val attrOnActiveChanged = "onActiveChanged"

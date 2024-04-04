@@ -94,13 +94,42 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
             is ElixirParser.TupleExprContext ->
                 argValueFromContext(argumentKey, expression)
 
+            is ElixirParser.SingleLineStringExprContext ->
+                argValueFromContext(argumentKey, expression)
+
+            is ElixirParser.MultiLineStringExprContext ->
+                argValueFromContext(argumentKey, expression)
+
             is ElixirParser.UnaryExprContext -> {
                 argValueFromContext(argumentKey, expression)
             }
 
-
             else -> null
         }
+    }
+
+    private fun argValueFromContext(
+        argumentKey: String?,
+        argumentValueExpression: ElixirParser.SingleLineStringExprContext
+    ): ArgumentData {
+        val stringWithQuotes = argumentValueExpression.SINGLE_LINE_STRING().text
+        return ArgumentData(
+            argumentKey,
+            TypeString,
+            stringWithQuotes.substring(1, stringWithQuotes.lastIndex)
+        )
+    }
+
+    private fun argValueFromContext(
+        argumentKey: String?,
+        argumentValueExpression: ElixirParser.MultiLineStringExprContext
+    ): ArgumentData {
+        val stringWithTripleQuotes = argumentValueExpression.MULTI_LINE_STRING().text
+        return ArgumentData(
+            argumentKey,
+            TypeString,
+            stringWithTripleQuotes.substring(3, stringWithTripleQuotes.lastIndex - 2)
+        )
     }
 
     private fun argValueFromContext(
@@ -305,6 +334,7 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
         private const val TypeFloat = "Float"
         private const val TypeInt = "Int"
         private const val TypeList = "List"
+        private const val TypeString = "String"
         private const val TypeUnary = "Unary"
     }
 }
