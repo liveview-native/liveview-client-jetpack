@@ -1,16 +1,24 @@
 package org.phoenixframework.liveview.data.mappers.modifiers
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFrom
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
 private const val ARG_HORIZONTAL = "horizontal"
 private const val ARG_VERTICAL = "vertical"
 private const val ARG_START = "start"
-private const val ARG_END = "_end" //TODO "end" is a reserved word in Elixir
+private const val ARG_END = "end"
 private const val ARG_TOP = "top"
 private const val ARG_BOTTOM = "bottom"
+private const val ARG_BEFORE = "before"
+private const val ARG_AFTER = "after"
+private const val ARG_ALIGNMENT_LINE = "alignmentLine"
+private const val ARG_INSETS = "insets"
 
 fun Modifier.paddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     // Supporting both named and no-named params
@@ -86,8 +94,64 @@ fun Modifier.paddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>)
     return paddingModifier?.let { this.then(it) } ?: this
 }
 
+fun Modifier.paddingFromFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    // Supporting both named and no-named params
+    val params = argsOrNamedArgs(arguments)
+    val alignArg = argOrNamedArg(params, ARG_ALIGNMENT_LINE, 0)
+    val topArg = argOrNamedArg(params, ARG_BEFORE, 1)
+    val bottomArg = argOrNamedArg(params, ARG_AFTER, 2)
+
+    val alignmentLine = alignArg?.let { alignmentLineFromStyle(it) } ?: return this
+
+    val topDp = topArg?.let { dpFromStyle(it) }
+    val bottomDp = bottomArg?.let { dpFromStyle(it) }
+    if (topDp != null || bottomDp != null) {
+        return this.then(
+            Modifier.paddingFrom(alignmentLine, topDp ?: Dp.Unspecified, bottomDp ?: Dp.Unspecified)
+        )
+    }
+    val topSp = topArg?.let { spFromStyle(it) }
+    val bottomSp = bottomArg?.let { spFromStyle(it) }
+    if (topSp != null || bottomSp != null) {
+        return this.then(
+            Modifier.paddingFrom(
+                alignmentLine,
+                topSp ?: TextUnit.Unspecified,
+                bottomSp ?: TextUnit.Unspecified
+            )
+        )
+    }
+    return this
+}
+
+fun Modifier.paddingFromBaselineFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    // Supporting both named and no-named params
+    val params = argsOrNamedArgs(arguments)
+    val topArg = argOrNamedArg(params, ARG_TOP, 0)
+    val bottomArg = argOrNamedArg(params, ARG_BOTTOM, 1)
+
+    val topDp = topArg?.let { dpFromStyle(it) }
+    val bottomDp = bottomArg?.let { dpFromStyle(it) }
+    if (topDp != null || bottomDp != null) {
+        return this.then(
+            Modifier.paddingFromBaseline(topDp ?: Dp.Unspecified, bottomDp ?: Dp.Unspecified)
+        )
+    }
+    val topSp = topArg?.let { spFromStyle(it) }
+    val bottomSp = bottomArg?.let { spFromStyle(it) }
+    if (topSp != null || bottomSp != null) {
+        return this.then(
+            Modifier.paddingFromBaseline(
+                topSp ?: TextUnit.Unspecified,
+                bottomSp ?: TextUnit.Unspecified
+            )
+        )
+    }
+    return this
+}
+
 fun Modifier.windowInsetsPaddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
-    return argOrNamedArg(arguments, "insets", 0)?.let { arg ->
+    return argOrNamedArg(arguments, ARG_INSETS, 0)?.let { arg ->
         windowInsetsFromArgument(arg)?.let {
             this.then(Modifier.windowInsetsPadding(it))
         }

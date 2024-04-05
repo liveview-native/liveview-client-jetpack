@@ -11,12 +11,50 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.layout.AlignmentLine
+import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.phoenixframework.liveview.data.constants.RoleValues
 import org.phoenixframework.liveview.data.constants.ShapeValues
 import org.phoenixframework.liveview.data.dto.tileModeFromString
 import org.phoenixframework.liveview.domain.extensions.toColor
+
+internal fun alignmentLineFromStyle(argument: ModifierDataAdapter.ArgumentData): AlignmentLine? {
+    return if (argument.type == ".") {
+        when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
+            "FirstBaseline" -> FirstBaseline
+            "LastBaseline" -> LastBaseline
+            else -> null
+        }
+    } else null
+}
+
+internal fun dpFromStyle(argument: ModifierDataAdapter.ArgumentData): Dp? {
+    return if (argument.type == ".") {
+        if (argument.listValue.getOrNull(1)?.stringValueWithoutColon == "dp") {
+            val value = argument.listValue.getOrNull(0)
+            if (value?.isFloat == true) value.floatValue?.dp
+            else if (value?.isInt == true) value.intValue?.dp
+            else null
+        } else null
+    } else null
+}
+
+internal fun spFromStyle(argument: ModifierDataAdapter.ArgumentData): TextUnit? {
+    return if (argument.type == ".") {
+        if (argument.listValue.getOrNull(1)?.stringValueWithoutColon == "sp") {
+            val value = argument.listValue.getOrNull(0)
+            if (value?.isFloat == true) value.floatValue?.sp
+            else if (value?.isInt == true) value.intValue?.sp
+            else null
+        } else null
+    } else null
+}
 
 internal fun eventFromStyle(argument: ModifierDataAdapter.ArgumentData): Pair<String, Any?>? {
     return if (argument.type == "__event__") {
@@ -234,8 +272,8 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
         "linearGradient" -> {
             val start = argOrNamedArg(argsToTheFunctionToCreateBrush, "start", 1)
                 ?.let { offsetFromArgument("start", it) }
-            val end = argOrNamedArg(argsToTheFunctionToCreateBrush, "_end", 2)
-                ?.let { offsetFromArgument("_end", it) }
+            val end = argOrNamedArg(argsToTheFunctionToCreateBrush, "end", 2)
+                ?.let { offsetFromArgument("end", it) }
             val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, "tileMode", 3)?.let {
                 singleArgumentObjectValue("tileMode", it)?.let { pair ->
                     tileModeFromString(pair.second.toString(), TileMode.Clamp)

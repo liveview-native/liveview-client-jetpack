@@ -176,7 +176,12 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
                 }
         }
         argumentEntriesList?.short_map_entries()?.short_map_entry()?.forEach { argumentEntry ->
-            val argumentEntryKey = argumentEntry.variable().text
+            val argumentEntryKey = try {
+                argumentEntry.variable().text
+            } catch (_: Exception) {
+                // special case to read Elixir reserved words like "end" and "after"
+                argumentEntry.children?.getOrNull(0)?.text
+            }
             argValueFromContext(argumentEntryKey, argumentEntry.expression())
                 ?.let {
                     result.add(it)

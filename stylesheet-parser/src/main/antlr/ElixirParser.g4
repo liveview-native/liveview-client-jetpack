@@ -221,7 +221,8 @@ short_map_entries
     ;
 
 short_map_entry
-    : variable ':' expression
+    : (variable | END | AFTER) ':' expression  // Change to allow named params uses "end" and "after"
+    // variable ':' expression
     ;
 
 anonymous_function

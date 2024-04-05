@@ -120,6 +120,8 @@ object Attrs {
     const val attrOverflow = "overflow"
     const val attrOnDismissRequest = "onDismissRequest"
     const val attrPadding = "padding"
+    const val attrPaddingFrom = "paddingFrom"
+    const val attrPaddingFromBaseline = "paddingFromBaseline"
     const val attrPageCount = "pageCount"
     const val attrPageSize = "pageSize"
     const val attrPageSpacing = "pageSpacing"

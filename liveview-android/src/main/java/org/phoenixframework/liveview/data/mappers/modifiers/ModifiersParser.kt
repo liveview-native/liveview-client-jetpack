@@ -40,6 +40,8 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrMandatorySystemGes
 import org.phoenixframework.liveview.data.constants.Attrs.attrNavigationBarsPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrOffset
 import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrPaddingFrom
+import org.phoenixframework.liveview.data.constants.Attrs.attrPaddingFromBaseline
 import org.phoenixframework.liveview.data.constants.Attrs.attrProgressSemantics
 import org.phoenixframework.liveview.data.constants.Attrs.attrSafeContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSafeDrawingPadding
@@ -199,6 +201,8 @@ object ModifiersParser {
             attrLayoutId -> this.then(layoutIdFromStyle(argListContext))
             attrOffset -> this.then(offsetFromStyle(argListContext))
             attrPadding -> this.then(paddingFromStyle(argListContext))
+            attrPaddingFrom -> this.then(paddingFromFromStyle(argListContext))
+            attrPaddingFromBaseline -> this.then(paddingFromBaselineFromStyle(argListContext))
             attrShadow -> this.then(shadowFromStyle(argListContext))
             attrSize -> this.then(sizeFromStyle(argListContext))
             attrWidth -> this.then(widthFromStyle(argListContext))

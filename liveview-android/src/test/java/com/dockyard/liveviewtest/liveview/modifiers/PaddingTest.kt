@@ -1,8 +1,13 @@
 package com.dockyard.liveviewtest.liveview.modifiers
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFrom
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
@@ -255,10 +260,118 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingBordersNamedTest" => [
-                {:padding, [], [[_end: 16, bottom: 32, start: 4, top: 8]]},
+                {:padding, [], [[end: 16, bottom: 32, start: 4, top: 8]]},
             ]}
             """,
             Modifier.padding(end = 16.dp, bottom = 32.dp, start = 4.dp, top = 8.dp)
+        )
+    }
+
+    @Test
+    fun paddingFromDpTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromDpTest" => [
+                {:paddingFrom, [], [{:., [], [:FirstBaseline]}, {:., [], [16.0, :dp]}, {:., [], [32.0, :dp]}]},
+            ]}
+            """.trimStyle(),
+            Modifier.paddingFrom(FirstBaseline, 16.0.dp, 32.0.dp)
+        )
+    }
+
+    @Test
+    fun paddingFromDpNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromDpNamedTest" => [
+              {:paddingFrom, [], [[
+                alignmentLine: {:., [], [:LastBaseline]}, 
+                before: {:., [], [16.0, :dp]}, 
+                after: {:., [], [32.0, :dp]}
+              ]]}
+            ]}
+            """.trimStyle(),
+            Modifier.paddingFrom(alignmentLine = LastBaseline, before = 16.0.dp, after = 32.0.dp)
+        )
+    }
+
+    @Test
+    fun paddingFromSpTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromSpTest" => [
+                {:paddingFrom, [], [
+                  {:., [], [:FirstBaseline]}, 
+                  {:., [], [16.0, :sp]}, 
+                  {:., [], [32.0, :sp]}
+                ]},
+            ]}
+            """.trimStyle(),
+            Modifier.paddingFrom(FirstBaseline, 16.0.sp, 32.0.sp)
+        )
+    }
+
+    @Test
+    fun paddingFromSpNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromSpNamedTest" => [
+                {:paddingFrom, [], [[
+                  alignmentLine: {:., [], [:LastBaseline]},
+                  before: {:., [], [16.0, :sp]}, 
+                  after: {:., [], [32.0, :sp]}
+                ]]},
+            ]}
+            """.trimStyle(),
+            Modifier.paddingFrom(alignmentLine = LastBaseline, before = 16.0.sp, after = 32.0.sp)
+        )
+    }
+
+    @Test
+    fun paddingFromBaselineDpTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromBaselineDpTest" => [
+                {:paddingFromBaseline, [], [{:., [], [16.0, :dp]}, {:., [], [32.0, :dp]}]},
+            ]}
+            """,
+            Modifier.paddingFromBaseline(16.0.dp, 32.0.dp)
+        )
+    }
+
+    @Test
+    fun paddingFromBaselineDpNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromBaselineDpNamedTest" => [
+                {:paddingFromBaseline, [], [[top: {:., [], [16.0, :dp]}, bottom: {:., [], [32.0, :dp]}]]},
+            ]}
+            """,
+            Modifier.paddingFromBaseline(top = 16.0.dp, bottom = 32.0.dp)
+        )
+    }
+
+    @Test
+    fun paddingFromBaselineSpTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromBaselineSpTest" => [
+                {:paddingFromBaseline, [], [{:., [], [16.0, :sp]}, {:., [], [32.0, :sp]}]},
+            ]}
+            """,
+            Modifier.paddingFromBaseline(16.0.sp, 32.0.sp)
+        )
+    }
+
+    @Test
+    fun paddingFromBaselineSpNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromBaselineSpNamedTest" => [
+                {:paddingFromBaseline, [], [[top: {:., [], [16.0, :sp]}, bottom: {:., [], [32.0, :sp]}]]},
+            ]}
+            """,
+            Modifier.paddingFromBaseline(top = 16.0.sp, bottom = 32.0.sp)
         )
     }
 
