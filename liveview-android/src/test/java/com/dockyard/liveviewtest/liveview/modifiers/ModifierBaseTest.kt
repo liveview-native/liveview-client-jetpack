@@ -17,7 +17,7 @@ abstract class ModifierBaseTest {
     }
 
     protected fun assertModifierFromStyle(style: String, targetModifier: Modifier) {
-        val result = Modifier.fromStyle(style, null)
+        val result = Modifier.fromStyle(style)
         val modifier = Modifier.then(targetModifier)
         assertEquals(result, modifier)
     }

@@ -9,6 +9,14 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argBorder
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argBrush
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argColor
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argShape
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argWidth
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeBorderStroke
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeShape
 
 fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     var borderStroke: BorderStroke? = null
@@ -20,32 +28,32 @@ fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
     val borderArguments = argsOrNamedArgs(arguments)
     if (arguments.firstOrNull()?.isList == true) {
         // Named args
-        var arg = borderArguments.find { it.name == "color" }
+        var arg = borderArguments.find { it.name == argColor }
         if (arg != null) borderColor = colorFromArgument(arg)
 
-        arg = borderArguments.find { it.name == "width" }
+        arg = borderArguments.find { it.name == argWidth }
         if (arg != null) borderWidth = (arg.intValue ?: 0).dp
 
-        arg = borderArguments.find { it.name == "border" }
+        arg = borderArguments.find { it.name == argBorder }
         if (arg != null) borderStroke = borderStrokeFromArgument(arg)
 
-        arg = borderArguments.find { it.name == "shape" }
+        arg = borderArguments.find { it.name == argShape }
         if (arg != null) borderShape = shapeFromStyle(arg)
 
-        arg = borderArguments.find { it.name == "brush" }
+        arg = borderArguments.find { it.name == argBrush }
         if (arg != null) borderBrush = brushFromStyle(arg)
 
     } else {
         // Ordered params
         for (borderArgument in arguments) {
             when {
-                borderArgument.type == "BorderStroke" ->
+                borderArgument.type == typeBorderStroke ->
                     borderStroke = borderStrokeFromArgument(borderArgument)
 
-                borderArgument.type == "Color" ->
+                borderArgument.type == typeColor ->
                     borderColor = colorFromArgument(borderArgument)
 
-                borderArgument.type == "Shape" ->
+                borderArgument.type == typeShape ->
                     borderShape = shapeFromStyle(borderArgument)
 
                 borderArgument.isInt ->

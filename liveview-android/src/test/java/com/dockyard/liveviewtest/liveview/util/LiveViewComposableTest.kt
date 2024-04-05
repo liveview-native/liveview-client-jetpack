@@ -17,6 +17,7 @@ import org.junit.Rule
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.BuildConfig.IS_RECORDING_SHOT_TEST
 import org.phoenixframework.liveview.domain.LiveViewCoordinator
+import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
@@ -43,6 +44,7 @@ abstract class LiveViewComposableTest {
             wsBaseUrl = "",
             route = null
         ),
+        pushEvent: PushEvent = coordinator::pushEvent,
         onBeforeScreenShot: ((ComposeContentTestRule) -> Unit)? = null
     ) {
         composeRule.setContent {
@@ -55,7 +57,7 @@ abstract class LiveViewComposableTest {
                 if (state.children.isNotEmpty()) {
                     PhxLiveView(
                         composableNode = state.children.first(),
-                        pushEvent = coordinator::pushEvent
+                        pushEvent = pushEvent
                     )
                 }
             }

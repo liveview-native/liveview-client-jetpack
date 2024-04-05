@@ -7,48 +7,45 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argFraction
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argHeight
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argIntrinsicSize
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argMatchHeightConstraintFirst
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argRatio
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argSize
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argWidth
 
 fun Modifier.aspectRatioFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val params = argsOrNamedArgs(arguments)
-    val ratio = params.find { it.isNumber }?.let {
-        singleArgumentFloatValue("ratio", it)
-    }
-    val matchConstraints = params.find { it.isBoolean }?.let {
-        singleArgumentBooleanValue("matchHeightConstraintsFirst", it)
-    }
+    val ratio = argOrNamedArg(params, argRatio, 0)?.floatValue
+    val matchConstraints = argOrNamedArg(params, argMatchHeightConstraintFirst, 1)?.booleanValue
     return ratio?.let {
         this.then(Modifier.aspectRatio(it, matchConstraints ?: false))
     } ?: this
 }
 
 fun Modifier.fillMaxHeightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
-    val fraction = argsOrNamedArgs(arguments).firstOrNull()?.let {
-        singleArgumentFloatValue("fraction", it)
-    } ?: 1f
+    val args = argsOrNamedArgs(arguments)
+    val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
     return this.then(Modifier.fillMaxHeight(fraction))
 }
 
 fun Modifier.fillMaxWidthFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
-    val fraction = argsOrNamedArgs(arguments).firstOrNull()?.let {
-        singleArgumentFloatValue("fraction", it)
-    } ?: 1f
+    val args = argsOrNamedArgs(arguments)
+    val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
     return this.then(Modifier.fillMaxWidth(fraction))
 }
 
 fun Modifier.heightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
-    if (arguments.isNotEmpty()) {
-        argsOrNamedArgs(arguments).firstOrNull()?.let { arg ->
-            val intHeight = singleArgumentIntValue("height", arg)
-            if (intHeight != null) {
-                return this.then(Modifier.height(intHeight.dp))
-            }
-            if (arg.name == "intrinsicSize" || arg.isDot) {
-                return intrinsicSizeFromArgument(arg)?.let {
-                    this.then(Modifier.height(intrinsicSize = it))
-                } ?: this
-            }
-        }
+    val args = argsOrNamedArgs(arguments)
+    val height = argOrNamedArg(args, argHeight, 0)?.let { dpFromStyle(it) }
+    if (height != null) {
+        return this.then(Modifier.height(height))
+    }
+    val intrinsicSize =
+        argOrNamedArg(args, argIntrinsicSize, 0)?.let { intrinsicSizeFromArgument(it) }
+    if (intrinsicSize != null) {
+        return this.then(Modifier.height(intrinsicSize = intrinsicSize))
     }
     return this
 }
@@ -58,16 +55,16 @@ fun Modifier.sizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): M
 
     return when (params.size) {
         1 -> {
-            singleArgumentIntValue("size", params.first())?.let {
-                this.then(Modifier.size(it.dp))
+            argOrNamedArg(params, argSize, 0)?.let { dpFromStyle(it) }?.let {
+                this.then(Modifier.size(it))
             } ?: this
         }
 
         2 -> {
-            val width = params.find { it.name == "width" }?.intValue ?: params[0].intValue
-            val height = params.find { it.name == "height" }?.intValue ?: params[1].intValue
+            val width = argOrNamedArg(params, argWidth, 0)?.let { dpFromStyle(it) }
+            val height = argOrNamedArg(params, argHeight, 1)?.let { dpFromStyle(it) }
             if (width != null && height != null)
-                this.then(Modifier.size(width.dp, height.dp))
+                this.then(Modifier.size(width, height))
             else
                 this
         }
@@ -77,18 +74,15 @@ fun Modifier.sizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): M
 }
 
 fun Modifier.widthFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
-    if (arguments.isNotEmpty()) {
-        argsOrNamedArgs(arguments).firstOrNull()?.let { arg ->
-            val intWidth = singleArgumentIntValue("width", arg)
-            if (intWidth != null) {
-                return this.then(Modifier.width(intWidth.dp))
-            }
-            if (arg.name == "intrinsicSize" || arg.isDot) {
-                return intrinsicSizeFromArgument(arg)?.let {
-                    this.then(Modifier.width(intrinsicSize = it))
-                } ?: this
-            }
-        }
+    val args = argsOrNamedArgs(arguments)
+    val height = argOrNamedArg(args, argWidth, 0)?.let { dpFromStyle(it) }
+    if (height != null) {
+        return this.then(Modifier.width(height))
+    }
+    val intrinsicSize =
+        argOrNamedArg(args, argIntrinsicSize, 0)?.let { intrinsicSizeFromArgument(it) }
+    if (intrinsicSize != null) {
+        return this.then(Modifier.width(intrinsicSize = intrinsicSize))
     }
     return this
 }

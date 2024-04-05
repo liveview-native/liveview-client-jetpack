@@ -21,7 +21,7 @@ class SizeTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"heightInDp" => [
-                {:height, [], [100]},
+                {:height, [], [{:., [], [100, :dp]}]},
             ]}
             """,
             Modifier.height(100.dp)
@@ -45,7 +45,7 @@ class SizeTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"heightInDpNamed" => [
-                {:height, [], [[height: 100]]},
+                {:height, [], [[height: {:., [], [100, :dp]}]]},
             ]}
             """,
             Modifier.height(100.dp)
@@ -201,7 +201,7 @@ class SizeTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"widthInDp" => [
-                {:width, [], [100]},
+                {:width, [], [{:., [], [100,:dp]}]},
             ]}
             """,
             Modifier.width(100.dp)
@@ -225,7 +225,7 @@ class SizeTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"widthInDpNamed" => [
-                {:width, [], [[width: 100]]},
+                {:width, [], [[width: {:., [], [100,:dp]}]]},
             ]}
             """,
             Modifier.width(100.dp)
@@ -273,7 +273,7 @@ class SizeTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"sizeTest" => [
-                {:size, [], [50]},
+                {:size, [], [{:., [], [50,:dp]}]},
             ]}
             """,
             Modifier.size(50.dp)
@@ -285,7 +285,7 @@ class SizeTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"sizeTest" => [
-                {:size, [], [[size: 50]]},
+                {:size, [], [[size: {:., [], [50,:dp]}]]},
             ]}
             """,
             Modifier.size(50.dp)
@@ -297,7 +297,7 @@ class SizeTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"sizeWHTest" => [
-                {:size, [], [50, 100]},
+                {:size, [], [{:., [], [50,:dp]}, {:., [], [100,:dp]}]},
             ]}
             """,
             Modifier.size(50.dp, 100.dp)
@@ -309,7 +309,7 @@ class SizeTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"sizeNamedTest" => [
-                {:size, [], [[height: 25, width: 50]]},
+                {:size, [], [[height: {:., [], [25,:dp]}, width: {:., [], [50,:dp]}]]},
             ]}
             """,
             Modifier.size(height = 25.dp, width = 50.dp)

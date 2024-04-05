@@ -421,10 +421,10 @@ abstract class ComposableBuilder {
         )
     }
 
-    private fun modifier(string: String, scope: Any?) = apply {
+    private fun modifier(string: String, scope: Any?, pushEvent: PushEvent?) = apply {
         val modifier = this.commonProps.modifier
         this.commonProps = this.commonProps.copy(
-            modifier = modifier.then(Modifier.fromStyle(string, scope))
+            modifier = modifier.then(Modifier.fromStyle(string, scope, pushEvent))
         )
     }
 
@@ -444,7 +444,7 @@ abstract class ComposableBuilder {
         when (attribute.name) {
             attrAspectRatio -> aspectRatio(attribute.value)
             attrBackground -> background(attribute.value)
-            attrClass -> modifier(attribute.value, scope)
+            attrClass -> modifier(attribute.value, scope, pushEvent)
             attrClip -> clip(attribute.value)
             attrHeight -> height(attribute.value)
             attrHorizontalPadding -> paddingHorizontal(attribute.value)

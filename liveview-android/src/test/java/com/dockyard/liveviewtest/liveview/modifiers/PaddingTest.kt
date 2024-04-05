@@ -1,8 +1,13 @@
 package com.dockyard.liveviewtest.liveview.modifiers
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFrom
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
@@ -19,7 +24,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"captionBarPaddingTest" => [
                 {:captionBarPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -33,7 +38,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"displayCutoutPadding" => [
                 {:displayCutoutPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -47,7 +52,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"imePaddingTest" => [
                 {:imePadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -61,7 +66,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"mandatorySystemGesturesPaddingTest" => [
                 {:mandatorySystemGesturesPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -75,7 +80,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"navigationBarsPaddingTest" => [
                 {:navigationBarsPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -89,7 +94,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"safeContentPaddingTest" => [
                 {:safeContentPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -103,7 +108,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"safeGesturesPaddingTest" => [
                 {:safeGesturesPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -117,7 +122,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"statusBarsPaddingTest" => [
                 {:statusBarsPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -131,7 +136,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"systemBarsPaddingTest" => [
                 {:systemBarsPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -145,7 +150,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"systemGesturesPaddingTest" => [
                 {:systemGesturesPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -159,7 +164,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"waterfallPaddingTest" => [
                 {:waterfallPadding, [], []},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
@@ -171,7 +176,7 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingAllTest" => [
-                {:padding, [], [32]},
+                {:padding, [], [{:., [], [32, :dp]}]},
             ]}
             """,
             Modifier.padding(32.dp)
@@ -183,7 +188,7 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingAllNamedTest" => [
-                {:padding, [], [[all: 32]]},
+                {:padding, [], [[all: {:., [], [32, :dp]}]]},
             ]}
             """,
             Modifier.padding(32.dp)
@@ -195,7 +200,7 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingHorizontalTest" => [
-                {:padding, [], [[horizontal: 16]]},
+                {:padding, [], [[horizontal: {:., [], [16, :dp]}]]},
             ]}
             """,
             Modifier.padding(horizontal = 16.dp)
@@ -207,7 +212,7 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingVerticalTest" => [
-                {:padding, [], [[vertical: 8]]},
+                {:padding, [], [[vertical: {:., [], [8, :dp]}]]},
             ]}
             """,
             Modifier.padding(vertical = 8.dp)
@@ -219,10 +224,10 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingHVTest" => [
-                {:padding, [], [8, 16]},
+                {:padding, [], [{:., [], [8, :dp]}, {:., [], [16, :dp]}]},
             ]}
             """,
-            Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
+            Modifier.padding(8.dp, 16.dp)
         )
     }
 
@@ -231,7 +236,7 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingHVNamedTest" => [
-                {:padding, [], [[vertical: 16, horizontal: 8]]},
+                {:padding, [], [[vertical: {:., [], [16, :dp]}, horizontal: {:., [], [8, :dp]}]]},
             ]}
             """,
             Modifier.padding(vertical = 16.dp, horizontal = 8.dp)
@@ -243,7 +248,12 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingBordersTest" => [
-                {:padding, [], [4, 8, 16, 32]},
+                {:padding, [], [
+                  {:., [], [4, :dp]}, 
+                  {:., [], [8, :dp]}, 
+                  {:., [], [16, :dp]}, 
+                  {:., [], [32, :dp]}
+                ]},
             ]}
             """,
             Modifier.padding(4.dp, 8.dp, 16.dp, 32.dp)
@@ -255,10 +265,123 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingBordersNamedTest" => [
-                {:padding, [], [[_end: 16, bottom: 32, start: 4, top: 8]]},
+                {:padding, [], [[
+                  end: {:., [], [16, :dp]}, 
+                  bottom: {:., [], [32, :dp]}, 
+                  start: {:., [], [4, :dp]}, 
+                  top: {:., [], [8, :dp]}
+                ]]},
             ]}
             """,
             Modifier.padding(end = 16.dp, bottom = 32.dp, start = 4.dp, top = 8.dp)
+        )
+    }
+
+    @Test
+    fun paddingFromDpTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromDpTest" => [
+                {:paddingFrom, [], [{:., [], [:FirstBaseline]}, {:., [], [16.0, :dp]}, {:., [], [32.0, :dp]}]},
+            ]}
+            """.trimStyle(),
+            Modifier.paddingFrom(FirstBaseline, 16.0.dp, 32.0.dp)
+        )
+    }
+
+    @Test
+    fun paddingFromDpNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromDpNamedTest" => [
+              {:paddingFrom, [], [[
+                alignmentLine: {:., [], [:LastBaseline]}, 
+                before: {:., [], [16.0, :dp]}, 
+                after: {:., [], [32.0, :dp]}
+              ]]}
+            ]}
+            """.trimStyle(),
+            Modifier.paddingFrom(alignmentLine = LastBaseline, before = 16.0.dp, after = 32.0.dp)
+        )
+    }
+
+    @Test
+    fun paddingFromSpTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromSpTest" => [
+                {:paddingFrom, [], [
+                  {:., [], [:FirstBaseline]}, 
+                  {:., [], [16.0, :sp]}, 
+                  {:., [], [32.0, :sp]}
+                ]},
+            ]}
+            """.trimStyle(),
+            Modifier.paddingFrom(FirstBaseline, 16.0.sp, 32.0.sp)
+        )
+    }
+
+    @Test
+    fun paddingFromSpNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromSpNamedTest" => [
+                {:paddingFrom, [], [[
+                  alignmentLine: {:., [], [:LastBaseline]},
+                  before: {:., [], [16.0, :sp]}, 
+                  after: {:., [], [32.0, :sp]}
+                ]]},
+            ]}
+            """.trimStyle(),
+            Modifier.paddingFrom(alignmentLine = LastBaseline, before = 16.0.sp, after = 32.0.sp)
+        )
+    }
+
+    @Test
+    fun paddingFromBaselineDpTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromBaselineDpTest" => [
+                {:paddingFromBaseline, [], [{:., [], [16.0, :dp]}, {:., [], [32.0, :dp]}]},
+            ]}
+            """,
+            Modifier.paddingFromBaseline(16.0.dp, 32.0.dp)
+        )
+    }
+
+    @Test
+    fun paddingFromBaselineDpNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromBaselineDpNamedTest" => [
+                {:paddingFromBaseline, [], [[top: {:., [], [16.0, :dp]}, bottom: {:., [], [32.0, :dp]}]]},
+            ]}
+            """,
+            Modifier.paddingFromBaseline(top = 16.0.dp, bottom = 32.0.dp)
+        )
+    }
+
+    @Test
+    fun paddingFromBaselineSpTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromBaselineSpTest" => [
+                {:paddingFromBaseline, [], [{:., [], [16.0, :sp]}, {:., [], [32.0, :sp]}]},
+            ]}
+            """,
+            Modifier.paddingFromBaseline(16.0.sp, 32.0.sp)
+        )
+    }
+
+    @Test
+    fun paddingFromBaselineSpNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"paddingFromBaselineSpNamedTest" => [
+                {:paddingFromBaseline, [], [[top: {:., [], [16.0, :sp]}, bottom: {:., [], [32.0, :sp]}]]},
+            ]}
+            """,
+            Modifier.paddingFromBaseline(top = 16.0.sp, bottom = 32.0.sp)
         )
     }
 
@@ -269,7 +392,7 @@ class PaddingTest : ModifierBaseTest() {
             %{"windowInsetsPadding" => [
                 {:windowInsetsPadding, [], [{:WindowInsets, [], [10, 20, 30, 40]}]},
             ]}
-            """, null
+            """,
         )
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).

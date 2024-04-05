@@ -311,7 +311,7 @@ class BorderTest : ModifierBaseTest() {
                         :Brush,
                         {:linearGradient, [], [[
                             start: {:Offset, [], [1, 2]},
-                            _end: {:Offset, [], [3, 4]},                        
+                            end: {:Offset, [], [3, 4]},                        
                             colors: [
                                 {:., [], [:Color, :Red]},
                                 {:., [], [:Color, :Blue]},

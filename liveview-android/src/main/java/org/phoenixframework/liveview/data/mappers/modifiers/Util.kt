@@ -11,10 +11,110 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.layout.AlignmentLine
+import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import org.phoenixframework.liveview.data.constants.AlignmentLineValues
+import org.phoenixframework.liveview.data.constants.BrushFunctions
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlpha
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argBlue
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argBottom
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argBottomEnd
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argBottomStart
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argCenter
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argColors
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argEnd
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argEndX
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argEndY
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argGreen
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argLeft
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argRadius
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argRed
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argRight
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argStart
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argStartX
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argStartY
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argTileMode
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argTop
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argTopEnd
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argTopStart
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeBrush
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeEvent
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeIntrinsicSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeOffset
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeRole
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitDp
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitSp
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeWindowInsets
+import org.phoenixframework.liveview.data.constants.OffsetValues
+import org.phoenixframework.liveview.data.constants.RoleValues
 import org.phoenixframework.liveview.data.constants.ShapeValues
 import org.phoenixframework.liveview.data.dto.tileModeFromString
 import org.phoenixframework.liveview.domain.extensions.toColor
+
+internal fun alignmentLineFromStyle(argument: ModifierDataAdapter.ArgumentData): AlignmentLine? {
+    return if (argument.isDot) {
+        when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
+            AlignmentLineValues.firstBaseline -> FirstBaseline
+            AlignmentLineValues.lastBaseline -> LastBaseline
+            else -> null
+        }
+    } else null
+}
+
+internal fun dpFromStyle(argument: ModifierDataAdapter.ArgumentData): Dp? {
+    return if (argument.isDot && argument.listValue.getOrNull(1)?.stringValueWithoutColon == typeUnitDp) {
+        val value = argument.listValue.getOrNull(0)
+        if (value?.isFloat == true) value.floatValue?.dp
+        else if (value?.isInt == true) value.intValue?.dp
+        else null
+    } else null
+}
+
+internal fun spFromStyle(argument: ModifierDataAdapter.ArgumentData): TextUnit? {
+    return if (argument.isDot && argument.listValue.getOrNull(1)?.stringValueWithoutColon == typeUnitSp) {
+        val value = argument.listValue.getOrNull(0)
+        if (value?.isFloat == true) value.floatValue?.sp
+        else if (value?.isInt == true) value.intValue?.sp
+        else null
+    } else null
+}
+
+internal fun eventFromStyle(argument: ModifierDataAdapter.ArgumentData): Pair<String, Any?>? {
+    return if (argument.type == typeEvent) {
+        val (event, args) = Pair(
+            argument.listValue.getOrNull(0)?.stringValue,
+            argument.listValue.getOrNull(1)?.listValue?.map { it.value }
+        )
+        if (event != null && args != null) {
+            val pushArgs = if (args.isEmpty()) null else if (args.size == 1) args.first() else null
+            event to pushArgs
+        } else null
+    } else null
+}
+
+internal fun roleFromStyle(argument: ModifierDataAdapter.ArgumentData): Role? {
+    val clazz = argument.listValue.getOrNull(0)?.stringValueWithoutColon
+    val roleType = argument.listValue.getOrNull(1)?.stringValueWithoutColon
+    return if (clazz == typeRole && roleType != null) {
+        when (roleType) {
+            RoleValues.button -> Role.Button
+            RoleValues.checkbox -> Role.Checkbox
+            RoleValues.switch -> Role.Switch
+            RoleValues.radioButton -> Role.RadioButton
+            RoleValues.tab -> Role.Tab
+            RoleValues.image -> Role.Image
+            RoleValues.dropdownList -> Role.DropdownList
+            else -> null
+        }
+    } else null
+}
 
 internal fun shapeFromStyle(argument: ModifierDataAdapter.ArgumentData): Shape? {
     val clazz = if (argument.isDot)
@@ -31,23 +131,25 @@ internal fun shapeFromStyle(argument: ModifierDataAdapter.ArgumentData): Shape? 
                 if (argsToCreateArg.firstOrNull()?.isList == true) {
                     val namedArgs = argsToCreateArg.first().listValue
                     listOf(
-                        namedArgs.find { it.name == "topStart" }?.intValue ?: 0,
-                        namedArgs.find { it.name == "topEnd" }?.intValue ?: 0,
-                        namedArgs.find { it.name == "bottomEnd" }?.intValue ?: 0,
-                        namedArgs.find { it.name == "bottomStart" }?.intValue ?: 0,
+                        namedArgs.find { it.name == argTopStart }?.let { dpFromStyle(it) }
+                            ?: 0.dp,
+                        namedArgs.find { it.name == argTopEnd }?.let { dpFromStyle(it) } ?: 0.dp,
+                        namedArgs.find { it.name == argBottomEnd }?.let { dpFromStyle(it) }
+                            ?: 0.dp,
+                        namedArgs.find { it.name == argBottomStart }?.let { dpFromStyle(it) }
+                            ?: 0.dp,
                     )
                 } else {
-                    argsToCreateArg.map { it.intValue }
+                    argsToCreateArg.map { dpFromStyle(it) }
                 }
-
             return if (cornerSizeParts.size == 1) {
-                cornerSizeParts.firstOrNull()?.let { RoundedCornerShape(it.dp) }
+                cornerSizeParts.firstOrNull()?.let { RoundedCornerShape(it) }
             } else if (cornerSizeParts.any { it != null }) {
                 RoundedCornerShape(
-                    (cornerSizeParts.getOrNull(0) ?: 0).dp,
-                    (cornerSizeParts.getOrNull(1) ?: 0).dp,
-                    (cornerSizeParts.getOrNull(2) ?: 0).dp,
-                    (cornerSizeParts.getOrNull(3) ?: 0).dp,
+                    cornerSizeParts.getOrNull(0) ?: 0.dp,
+                    cornerSizeParts.getOrNull(1) ?: 0.dp,
+                    cornerSizeParts.getOrNull(2) ?: 0.dp,
+                    cornerSizeParts.getOrNull(3) ?: 0.dp,
                 )
             } else null
         }
@@ -62,10 +164,10 @@ fun colorsFromArguments(arguments: List<ModifierDataAdapter.ArgumentData>): List
     }
 }
 
-fun offsetFromArgument(argumentName: String, argument: ModifierDataAdapter.ArgumentData): Offset? {
-    val pair = singleArgumentObjectValue(argumentName, argument)
+fun offsetFromArgument(argument: ModifierDataAdapter.ArgumentData): Offset? {
+    val pair = singleArgumentObjectValue(argument)
     return pair?.let { (clazz, args) ->
-        if (clazz == "Offset") {
+        if (clazz == typeOffset) {
             (args as? List<ModifierDataAdapter.ArgumentData>)?.mapNotNull {
                 if (it.isInt) it.intValue?.toFloat() else it.floatValue
             }?.let {
@@ -74,9 +176,9 @@ fun offsetFromArgument(argumentName: String, argument: ModifierDataAdapter.Argum
 
         } else {
             when (args.toString()) {
-                "Zero" -> Offset.Zero
-                "Infinite" -> Offset.Infinite
-                "Unspecified" -> Offset.Unspecified
+                OffsetValues.zero -> Offset.Zero
+                OffsetValues.infinite -> Offset.Infinite
+                OffsetValues.unspecified -> Offset.Unspecified
                 else -> null
             }
         }
@@ -87,29 +189,25 @@ fun colorFromArgument(argument: ModifierDataAdapter.ArgumentData): Color? {
     val argsToCreateArg = argument.listValue
     if (argsToCreateArg.isEmpty()) return null
 
-    val clazz = argsToCreateArg[0].stringValue
+    val clazz = argsToCreateArg[0].stringValueWithoutColon
 
     // If it's is a "." argument, it's because we're using a predefined color (e.g.: Color.Red)
-    if (argument.isDot && clazz == ":Color") {
+    if (argument.isDot && clazz == typeColor) {
         val value = argsToCreateArg[1].stringValueWithoutColon?.lowercase()
         return "system-$value".toColor()
 
         // If the first argument is a Color, then it's necessary to instantiate the Color object
-    } else if (argument.type == "Color") {
+    } else if (argument.type == typeColor) {
         val colorArgbParts =
             if (argsToCreateArg.first().isList) argsToCreateArg.first().listValue else argsToCreateArg
         return if (colorArgbParts.size == 1) {
             Color(colorArgbParts.first().intValue ?: 0)
         } else {
             Color(
-                colorArgbParts.find { it.name == "red" }?.intValue
-                    ?: colorArgbParts.getOrNull(0)?.intValue ?: 0,
-                colorArgbParts.find { it.name == "green" }?.intValue
-                    ?: colorArgbParts.getOrNull(1)?.intValue ?: 0,
-                colorArgbParts.find { it.name == "blue" }?.intValue
-                    ?: colorArgbParts.getOrNull(2)?.intValue ?: 0,
-                colorArgbParts.find { it.name == "alpha" }?.intValue
-                    ?: colorArgbParts.getOrNull(3)?.intValue ?: 0,
+                argOrNamedArg(colorArgbParts, argRed, 0)?.intValue ?: 0,
+                argOrNamedArg(colorArgbParts, argGreen, 1)?.intValue ?: 0,
+                argOrNamedArg(colorArgbParts, argBlue, 2)?.intValue ?: 0,
+                argOrNamedArg(colorArgbParts, argAlpha, 3)?.intValue ?: 0,
             )
         }
     }
@@ -133,7 +231,7 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
     else
         argument.type
 
-    if (clazz != "Brush") {
+    if (clazz != typeBrush) {
         return null
     }
     val argsToCreateBrush = argument.listValue
@@ -147,7 +245,7 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
 
     // The color param is required. We're trying to find the argument named "colors"
     val colorsArg =
-        argsToTheFunctionToCreateBrush.firstOrNull()?.listValue?.find { it.name == "colors" }
+        argsToTheFunctionToCreateBrush.firstOrNull()?.listValue?.find { it.name == argColors }
     // if we found this argument, we're going to use named parameters
     val colors: List<Color> = if (colorsArg != null) {
         argsToTheFunctionToCreateBrush = argsOrNamedArgs(argsToCreateBrush[1].listValue)
@@ -159,13 +257,11 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
     }
 
     return when (functionToCreateBrush) {
-        "horizontalGradient" -> {
-            val startX = argOrNamedArg(argsToTheFunctionToCreateBrush, "startX", 1)
-                ?.let { singleArgumentFloatValue("startX", it) }
-            val endX = argOrNamedArg(argsToTheFunctionToCreateBrush, "endX", 2)
-                ?.let { singleArgumentFloatValue("endX", it) }
-            val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, "tileMode", 3)?.let {
-                singleArgumentObjectValue("tileMode", it)?.let { pair ->
+        BrushFunctions.horizontalGradient -> {
+            val startX = argOrNamedArg(argsToTheFunctionToCreateBrush, argStartX, 1)?.floatValue
+            val endX = argOrNamedArg(argsToTheFunctionToCreateBrush, argEndX, 2)?.floatValue
+            val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, argTileMode, 3)?.let {
+                singleArgumentObjectValue(it)?.let { pair ->
                     tileModeFromString(pair.second.toString(), TileMode.Clamp)
                 }
             }
@@ -179,13 +275,11 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
             )
         }
 
-        "verticalGradient" -> {
-            val startY = argOrNamedArg(argsToTheFunctionToCreateBrush, "startY", 1)
-                ?.let { singleArgumentFloatValue("startY", it) }
-            val endY = argOrNamedArg(argsToTheFunctionToCreateBrush, "endY", 2)
-                ?.let { singleArgumentFloatValue("endY", it) }
-            val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, "tileMode", 3)?.let {
-                singleArgumentObjectValue("tileMode", it)?.let { pair ->
+        BrushFunctions.verticalGradient -> {
+            val startY = argOrNamedArg(argsToTheFunctionToCreateBrush, argStartY, 1)?.floatValue
+            val endY = argOrNamedArg(argsToTheFunctionToCreateBrush, argEndY, 2)?.floatValue
+            val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, argTileMode, 3)?.let {
+                singleArgumentObjectValue(it)?.let { pair ->
                     tileModeFromString(pair.second.toString(), TileMode.Clamp)
                 }
             }
@@ -199,13 +293,13 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
             )
         }
 
-        "linearGradient" -> {
-            val start = argOrNamedArg(argsToTheFunctionToCreateBrush, "start", 1)
-                ?.let { offsetFromArgument("start", it) }
-            val end = argOrNamedArg(argsToTheFunctionToCreateBrush, "_end", 2)
-                ?.let { offsetFromArgument("_end", it) }
-            val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, "tileMode", 3)?.let {
-                singleArgumentObjectValue("tileMode", it)?.let { pair ->
+        BrushFunctions.linearGradient -> {
+            val start = argOrNamedArg(argsToTheFunctionToCreateBrush, argStart, 1)
+                ?.let { offsetFromArgument(it) }
+            val end = argOrNamedArg(argsToTheFunctionToCreateBrush, argEnd, 2)
+                ?.let { offsetFromArgument(it) }
+            val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, argTileMode, 3)?.let {
+                singleArgumentObjectValue(it)?.let { pair ->
                     tileModeFromString(pair.second.toString(), TileMode.Clamp)
                 }
             }
@@ -219,13 +313,12 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
             )
         }
 
-        "radialGradient" -> {
-            val centerOffset = argOrNamedArg(argsToTheFunctionToCreateBrush, "center", 1)
-                ?.let { offsetFromArgument("center", it) }
-            val radius = argOrNamedArg(argsToTheFunctionToCreateBrush, "radius", 2)
-                ?.let { singleArgumentFloatValue("radius", it) }
-            val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, "tileMode", 3)?.let {
-                singleArgumentObjectValue("tileMode", it)?.let { pair ->
+        BrushFunctions.radialGradient -> {
+            val centerOffset = argOrNamedArg(argsToTheFunctionToCreateBrush, argCenter, 1)
+                ?.let { offsetFromArgument(it) }
+            val radius = argOrNamedArg(argsToTheFunctionToCreateBrush, argRadius, 2)?.floatValue
+            val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, argTileMode, 3)?.let {
+                singleArgumentObjectValue(it)?.let { pair ->
                     tileModeFromString(pair.second.toString(), TileMode.Clamp)
                 }
             }
@@ -239,9 +332,9 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
             )
         }
 
-        "sweepGradient" -> {
-            val centerOffset = argOrNamedArg(argsToTheFunctionToCreateBrush, "center", 1)
-                ?.let { offsetFromArgument("center", it) }
+        BrushFunctions.sweepGradient -> {
+            val centerOffset = argOrNamedArg(argsToTheFunctionToCreateBrush, argCenter, 1)
+                ?.let { offsetFromArgument(it) }
 
             // TODO Implement overloaded version
             Brush.sweepGradient(
@@ -255,17 +348,11 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
 }
 
 internal fun windowInsetsFromArgument(argument: ModifierDataAdapter.ArgumentData): WindowInsets? {
-    return if (argument.type == "WindowInsets") {
-        val left = (argument.listValue.find { it.name == "left" }
-            ?: argument.listValue.getOrNull(0))?.intValue?.dp
-        val top = (argument.listValue.find { it.name == "top" }
-            ?: argument.listValue.getOrNull(1))?.intValue?.dp
-        val right =
-            (argument.listValue.find { it.name == "right" }
-                ?: argument.listValue.getOrNull(2))?.intValue?.dp
-        val bottom =
-            (argument.listValue.find { it.name == "bottom" }
-                ?: argument.listValue.getOrNull(3))?.intValue?.dp
+    return if (argument.type == typeWindowInsets) {
+        val left = argOrNamedArg(argument.listValue, argLeft, 0)?.let { dpFromStyle(it) }
+        val top = argOrNamedArg(argument.listValue, argTop, 1)?.let { dpFromStyle(it) }
+        val right = argOrNamedArg(argument.listValue, argRight, 2)?.let { dpFromStyle(it) }
+        val bottom = argOrNamedArg(argument.listValue, argBottom, 3)?.let { dpFromStyle(it) }
         WindowInsets(left ?: 0.dp, top ?: 0.dp, right ?: 0.dp, bottom ?: 0.dp)
     } else null
 }
@@ -288,59 +375,19 @@ internal fun argOrNamedArg(
 internal fun intrinsicSizeFromArgument(argument: ModifierDataAdapter.ArgumentData): IntrinsicSize? {
     val clazz = argument.listValue.firstOrNull()?.stringValueWithoutColon
     val clazzValue = argument.listValue.getOrNull(1)?.stringValueWithoutColon
-    if (clazz == "IntrinsicSize" && clazzValue != null) {
+    if (clazz == typeIntrinsicSize && clazzValue != null) {
         return try {
             IntrinsicSize.valueOf(clazzValue)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
             null
         }
     }
     return null
 }
 
-internal fun singleArgumentIntValue(
-    argumentName: String,
-    argument: ModifierDataAdapter.ArgumentData
-): Int? {
-    return if (argument.isList) {
-        argument.listValue.find { it.name == argumentName }?.intValue
-    } else if (argument.isInt && (argument.name == argumentName || argument.name == null)) {
-        argument.intValue
-    } else null
-}
-
-internal fun singleArgumentBooleanValue(
-    argumentName: String,
-    argument: ModifierDataAdapter.ArgumentData
-): Boolean? {
-    return if (argument.isList) {
-        argument.listValue.find { it.name == argumentName }?.booleanValue
-    } else if (argument.isBoolean && (argument.name == argumentName || argument.name == null)) {
-        argument.booleanValue
-    } else null
-}
-
-internal fun singleArgumentFloatValue(
-    argumentName: String,
-    argument: ModifierDataAdapter.ArgumentData
-): Float? {
-    return if (argument.isList) {
-        val arg = argument.listValue.find { it.name == argumentName }
-        if (arg != null) {
-            if (arg.isInt) argument.intValue?.toFloat() else argument.floatValue
-        } else null
-    } else if (argument.isNumber && (argument.name == argumentName || argument.name == null)) {
-        if (argument.isInt) argument.intValue?.toFloat() else argument.floatValue
-    } else null
-}
-
 internal fun singleArgumentObjectValue(
-    argumentName: String,
     argument: ModifierDataAdapter.ArgumentData
 ): Pair<String, Any>? {
-    if (argument.name != null && argument.name != argumentName) {
-        return null
-    }
     if (argument.isDot) {
         val clazz = argument.listValue.getOrNull(0)?.stringValueWithoutColon
         val value = argument.listValue.getOrNull(1)?.stringValueWithoutColon

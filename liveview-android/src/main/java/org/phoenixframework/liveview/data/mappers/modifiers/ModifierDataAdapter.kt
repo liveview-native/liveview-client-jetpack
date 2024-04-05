@@ -94,13 +94,72 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
             is ElixirParser.TupleExprContext ->
                 argValueFromContext(argumentKey, expression)
 
+            is ElixirParser.SingleLineStringExprContext ->
+                argValueFromContext(argumentKey, expression)
+
+            is ElixirParser.SingleLineCharlistExprContext ->
+                argValueFromContext(argumentKey, expression)
+
+            is ElixirParser.MultiLineStringExprContext ->
+                argValueFromContext(argumentKey, expression)
+
+            is ElixirParser.MultiLineCharlistExprContext ->
+                argValueFromContext(argumentKey, expression)
+
             is ElixirParser.UnaryExprContext -> {
                 argValueFromContext(argumentKey, expression)
             }
 
-
             else -> null
         }
+    }
+
+    private fun argValueFromContext(
+        argumentKey: String?,
+        argumentValueExpression: ElixirParser.SingleLineStringExprContext
+    ): ArgumentData {
+        val stringWithQuotes = argumentValueExpression.SINGLE_LINE_STRING().text
+        return ArgumentData(
+            argumentKey,
+            TypeString,
+            stringWithQuotes.substring(1, stringWithQuotes.lastIndex)
+        )
+    }
+
+    private fun argValueFromContext(
+        argumentKey: String?,
+        argumentValueExpression: ElixirParser.SingleLineCharlistExprContext
+    ): ArgumentData {
+        val stringWithQuotes = argumentValueExpression.SINGLE_LINE_CHARLIST().text
+        return ArgumentData(
+            argumentKey,
+            TypeString,
+            stringWithQuotes.substring(1, stringWithQuotes.lastIndex)
+        )
+    }
+
+    private fun argValueFromContext(
+        argumentKey: String?,
+        argumentValueExpression: ElixirParser.MultiLineStringExprContext
+    ): ArgumentData {
+        val stringWithTripleQuotes = argumentValueExpression.MULTI_LINE_STRING().text
+        return ArgumentData(
+            argumentKey,
+            TypeString,
+            stringWithTripleQuotes.substring(3, stringWithTripleQuotes.lastIndex - 2)
+        )
+    }
+
+    private fun argValueFromContext(
+        argumentKey: String?,
+        argumentValueExpression: ElixirParser.MultiLineCharlistExprContext
+    ): ArgumentData {
+        val stringWithTripleQuotes = argumentValueExpression.MULTI_LINE_CHARLIST().text
+        return ArgumentData(
+            argumentKey,
+            TypeString,
+            stringWithTripleQuotes.substring(3, stringWithTripleQuotes.lastIndex - 2)
+        )
     }
 
     private fun argValueFromContext(
@@ -117,7 +176,12 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
                 }
         }
         argumentEntriesList?.short_map_entries()?.short_map_entry()?.forEach { argumentEntry ->
-            val argumentEntryKey = argumentEntry.variable().text
+            val argumentEntryKey = try {
+                argumentEntry.variable().text
+            } catch (_: Exception) {
+                // special case to read Elixir reserved words like "end" and "after"
+                argumentEntry.children?.getOrNull(0)?.text
+            }
             argValueFromContext(argumentEntryKey, argumentEntry.expression())
                 ?.let {
                     result.add(it)
@@ -269,14 +333,17 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
         val isList: Boolean
             get() = type == TypeList
 
-        val isNumber: Boolean
-            get() = type == TypeInt || type == TypeFloat
-
         val booleanValue: Boolean?
             get() = value as? Boolean
 
         val floatValue: Float?
-            get() = value as? Float
+            get() {
+                return if (value is Int) {
+                    value.toFloat()
+                } else {
+                    value as? Float
+                }
+            }
 
         val intValue: Int?
             get() = value as? Int
@@ -305,6 +372,7 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
         private const val TypeFloat = "Float"
         private const val TypeInt = "Int"
         private const val TypeList = "List"
+        private const val TypeString = "String"
         private const val TypeUnary = "Unary"
     }
 }
