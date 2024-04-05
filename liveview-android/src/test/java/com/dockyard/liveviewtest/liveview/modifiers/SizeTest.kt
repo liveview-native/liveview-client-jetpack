@@ -13,6 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.unit.dp
@@ -461,6 +465,123 @@ class SizeTest : ModifierBaseTest() {
             ]}
             """,
             Modifier.width(IntrinsicSize.Min)
+        )
+    }
+
+    @Test
+    fun wrapContentHeightTest() {
+        assertModifierFromStyle(
+            """
+            %{"wrapContentHeightTest" => [
+                {:wrapContentHeight, [], []},
+            ]}
+            """,
+            Modifier.wrapContentHeight()
+        )
+    }
+
+    @Test
+    fun wrapContentHeightWithParamsTest() {
+        assertModifierFromStyle(
+            """
+            %{"wrapContentHeightWithParamsTest" => [
+                {:wrapContentHeight, [], [{:., [], [:Alignment, :Top]}, false]},
+            ]}
+            """,
+            Modifier.wrapContentHeight(Alignment.Top, false)
+        )
+    }
+
+    @Test
+    fun wrapContentHeightWithNamedParamsTest() {
+        assertModifierFromStyle(
+            """
+            %{"wrapContentHeightWithNamedParamsTest" => [
+              {:wrapContentHeight, [], [[
+                align: {:., [], [:Alignment, :Top]}, 
+                unbounded: false
+              ]]},
+            ]}
+            """,
+            Modifier.wrapContentHeight(align = Alignment.Top, unbounded = false)
+        )
+    }
+
+    @Test
+    fun wrapContentSizeTest() {
+        assertModifierFromStyle(
+            """
+            %{"wrapContentSizeTest" => [
+                {:wrapContentSize, [], []},
+            ]}
+            """,
+            Modifier.wrapContentSize()
+        )
+    }
+
+    @Test
+    fun wrapContentSizeWithParamsTest() {
+        assertModifierFromStyle(
+            """
+            %{"wrapContentSizeWithParamsTest" => [
+                {:wrapContentSize, [], [{:., [], [:Alignment, :BottomEnd]}, false]},
+            ]}
+            """,
+            Modifier.wrapContentSize(Alignment.BottomEnd, false)
+        )
+    }
+
+    @Test
+    fun wrapContentSizeWithNamedParamsTest() {
+        assertModifierFromStyle(
+            """
+            %{"wrapContentSizeWithNamedParamsTest" => [
+              {:wrapContentSize, [], [[
+                align: {:., [], [:Alignment, :BottomEnd]}, 
+                unbounded: false
+              ]]},
+            ]}
+            """,
+            Modifier.wrapContentSize(align = Alignment.BottomEnd, unbounded = false)
+        )
+    }
+
+    @Test
+    fun wrapContentWidthTest() {
+        assertModifierFromStyle(
+            """
+            %{"wrapContentWidthTest" => [
+                {:wrapContentWidth, [], []},
+            ]}
+            """,
+            Modifier.wrapContentWidth()
+        )
+    }
+
+    @Test
+    fun wrapContentWidthWithParamsTest() {
+        assertModifierFromStyle(
+            """
+            %{"wrapContentWidthWithParamsTest" => [
+                {:wrapContentWidth, [], [{:., [], [:Alignment, :End]}, false]},
+            ]}
+            """,
+            Modifier.wrapContentWidth(Alignment.End, false)
+        )
+    }
+
+    @Test
+    fun wrapContentWidthWithNamedParamsTest() {
+        assertModifierFromStyle(
+            """
+            %{"wrapContentWidthWithNamedParamsTest" => [
+              {:wrapContentWidth, [], [[
+                align: {:., [], [:Alignment, :End]}, 
+                unbounded: false
+              ]]},
+            ]}
+            """,
+            Modifier.wrapContentWidth(align = Alignment.End, unbounded = false)
         )
     }
 }

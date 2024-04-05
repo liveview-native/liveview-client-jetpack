@@ -60,6 +60,9 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidthIn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWindowInsetsPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWrapContentHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWrapContentSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWrapContentWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierZIndex
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.stylesheet.ElixirLexer
@@ -219,6 +222,9 @@ object ModifiersParser {
             modifierWidth -> this.then(widthFromStyle(argListContext))
             modifierWidthIn -> this.then(widthInFromStyle(argListContext))
             modifierWindowInsetsPadding -> this.then(windowInsetsPaddingFromStyle(argListContext))
+            modifierWrapContentHeight -> this.then(wrapContentHeightFromStyle(argListContext))
+            modifierWrapContentSize -> this.then(wrapContentSizeFromStyle(argListContext))
+            modifierWrapContentWidth -> this.then(wrapContentWidthFromStyle(argListContext))
             modifierZIndex -> this.then(zIndexFromStyle(argListContext))
             else -> this
         }

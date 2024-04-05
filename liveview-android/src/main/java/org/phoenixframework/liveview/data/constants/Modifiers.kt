@@ -45,11 +45,15 @@ object ModifierNames {
     const val modifierWidth = "width"
     const val modifierWidthIn = "widthIn"
     const val modifierWindowInsetsPadding = "windowInsetsPadding"
+    const val modifierWrapContentHeight = "wrapContentHeight"
+    const val modifierWrapContentSize = "wrapContentSize"
+    const val modifierWrapContentWidth = "wrapContentWidth"
     const val modifierZIndex = "zIndex"
 }
 
 object ModifierArgs {
     const val argAfter = "after"
+    const val argAlign = "align"
     const val argAlignment = "alignment"
     const val argAlignmentLine = "alignmentLine"
     const val argAlpha = "alpha"
@@ -98,6 +102,7 @@ object ModifierArgs {
     const val argTop = "top"
     const val argTopEnd = "topEnd"
     const val argTopStart = "topStart"
+    const val argUnbounded = "unbounded"
     const val argVertical = "vertical"
     const val argX = "x"
     const val argY = "y"
