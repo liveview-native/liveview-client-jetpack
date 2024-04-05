@@ -1,5 +1,46 @@
 package org.phoenixframework.liveview.data.constants
 
+object ModifierNames {
+    // No param modifiers
+    const val modifierCaptionBarPadding = "captionBarPadding"
+    const val modifierClipToBounds = "clipToBounds"
+    const val modifierDisplayCutoutPadding = "displayCutoutPadding"
+    const val modifierImePadding = "imePadding"
+    const val modifierMandatorySystemGesturesPadding = "mandatorySystemGesturesPadding"
+    const val modifierNavigationBarsPadding = "navigationBarsPadding"
+    const val modifierProgressSemantics = "progressSemantics"
+    const val modifierSafeContentPadding = "safeContentPadding"
+    const val modifierSafeDrawingPadding = "safeDrawingPadding"
+    const val modifierSafeGesturesPadding = "safeGesturesPadding"
+    const val modifierStatusBarsPadding = "statusBarsPadding"
+    const val modifierSystemBarsPadding = "systemBarsPadding"
+    const val modifierSystemGesturesPadding = "systemGesturesPadding"
+    const val modifierWaterfallPadding = "waterfallPadding"
+    // Modifiers with params
+    const val modifierAbsoluteOffset = "absoluteOffset"
+    const val modifierAlpha = "alpha"
+    const val modifierAlign = "align"
+    const val modifierAlignByBaseline = "alignByBaseline"
+    const val modifierAspectRatio = "aspectRatio"
+    const val modifierBackground = "background"
+    const val modifierBorder = "border"
+    const val modifierClickable = "clickable"
+    const val modifierClip = "clip"
+    const val modifierFillMaxHeight = "fillMaxHeight"
+    const val modifierFillMaxWidth = "fillMaxWidth"
+    const val modifierHeight = "height"
+    const val modifierLayoutId = "layoutId"
+    const val modifierOffset = "offset"
+    const val modifierPadding = "padding"
+    const val modifierPaddingFrom = "paddingFrom"
+    const val modifierPaddingFromBaseline = "paddingFromBaseline"
+    const val modifierShadow = "shadow"
+    const val modifierSize = "size"
+    const val modifierWidth = "width"
+    const val modifierWindowInsetsPadding = "windowInsetsPadding"
+    const val modifierZIndex = "zIndex"
+}
+
 object ModifierArgs {
     const val argAfter = "after"
     const val argAlignment = "alignment"

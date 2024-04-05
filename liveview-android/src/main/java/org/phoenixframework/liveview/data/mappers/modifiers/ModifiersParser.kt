@@ -19,42 +19,42 @@ import androidx.compose.ui.draw.clipToBounds
 import org.antlr.v4.runtime.CharStream
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
-import org.phoenixframework.liveview.data.constants.Attrs.attrAbsoluteOffset
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlignByBaseline
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlpha
-import org.phoenixframework.liveview.data.constants.Attrs.attrAspectRatio
-import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
-import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
-import org.phoenixframework.liveview.data.constants.Attrs.attrCaptionBarPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrClickable
-import org.phoenixframework.liveview.data.constants.Attrs.attrClip
-import org.phoenixframework.liveview.data.constants.Attrs.attrClipToBounds
-import org.phoenixframework.liveview.data.constants.Attrs.attrDisplayCutoutPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrFillMaxHeight
-import org.phoenixframework.liveview.data.constants.Attrs.attrFillMaxWidth
-import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
-import org.phoenixframework.liveview.data.constants.Attrs.attrImePadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrLayoutId
-import org.phoenixframework.liveview.data.constants.Attrs.attrMandatorySystemGesturesPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrNavigationBarsPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrOffset
-import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrPaddingFrom
-import org.phoenixframework.liveview.data.constants.Attrs.attrPaddingFromBaseline
-import org.phoenixframework.liveview.data.constants.Attrs.attrProgressSemantics
-import org.phoenixframework.liveview.data.constants.Attrs.attrSafeContentPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrSafeDrawingPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrSafeGesturesPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrShadow
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
-import org.phoenixframework.liveview.data.constants.Attrs.attrStatusBarsPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrSystemBarsPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrSystemGesturesPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrWaterfallPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
-import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsetsPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrZIndex
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAbsoluteOffset
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlignByBaseline
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlpha
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAspectRatio
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBorder
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierCaptionBarPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClickable
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClip
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClipToBounds
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierDisplayCutoutPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImePadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierLayoutId
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMandatorySystemGesturesPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierNavigationBarsPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierOffset
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPaddingFrom
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPaddingFromBaseline
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierProgressSemantics
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeContentPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeDrawingPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeGesturesPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierShadow
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierStatusBarsPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemBarsPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemGesturesPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWaterfallPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWindowInsetsPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierZIndex
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.stylesheet.ElixirLexer
 import org.phoenixframework.liveview.stylesheet.ElixirParser
@@ -171,43 +171,43 @@ object ModifiersParser {
     ): Modifier {
         return when (modifierId) {
             // No param modifiers
-            attrCaptionBarPadding -> this.then(Modifier.captionBarPadding())
-            attrClipToBounds -> this.then(Modifier.clipToBounds())
-            attrDisplayCutoutPadding -> this.then(Modifier.displayCutoutPadding())
-            attrImePadding -> this.then(Modifier.imePadding())
-            attrMandatorySystemGesturesPadding -> this.then(Modifier.mandatorySystemGesturesPadding())
-            attrNavigationBarsPadding -> this.then(Modifier.navigationBarsPadding())
-            attrProgressSemantics -> this.then(Modifier.progressSemantics())
-            attrSafeContentPadding -> this.then(Modifier.safeContentPadding())
-            attrSafeDrawingPadding -> this.then(Modifier.safeDrawingPadding())
-            attrSafeGesturesPadding -> this.then(Modifier.safeGesturesPadding())
-            attrStatusBarsPadding -> this.then(Modifier.statusBarsPadding())
-            attrSystemBarsPadding -> this.then(Modifier.systemBarsPadding())
-            attrSystemGesturesPadding -> this.then(Modifier.systemGesturesPadding())
-            attrWaterfallPadding -> this.then(Modifier.waterfallPadding())
+            modifierCaptionBarPadding -> this.then(Modifier.captionBarPadding())
+            modifierClipToBounds -> this.then(Modifier.clipToBounds())
+            modifierDisplayCutoutPadding -> this.then(Modifier.displayCutoutPadding())
+            modifierImePadding -> this.then(Modifier.imePadding())
+            modifierMandatorySystemGesturesPadding -> this.then(Modifier.mandatorySystemGesturesPadding())
+            modifierNavigationBarsPadding -> this.then(Modifier.navigationBarsPadding())
+            modifierProgressSemantics -> this.then(Modifier.progressSemantics())
+            modifierSafeContentPadding -> this.then(Modifier.safeContentPadding())
+            modifierSafeDrawingPadding -> this.then(Modifier.safeDrawingPadding())
+            modifierSafeGesturesPadding -> this.then(Modifier.safeGesturesPadding())
+            modifierStatusBarsPadding -> this.then(Modifier.statusBarsPadding())
+            modifierSystemBarsPadding -> this.then(Modifier.systemBarsPadding())
+            modifierSystemGesturesPadding -> this.then(Modifier.systemGesturesPadding())
+            modifierWaterfallPadding -> this.then(Modifier.waterfallPadding())
             // Parameterized modifiers
-            attrAbsoluteOffset -> this.then(absoluteOffsetFromStyle(argListContext))
-            attrAlpha -> this.then(alphaFromStyle(argListContext))
-            attrAlign -> this.then(alignFromStyle(argListContext, scope))
-            attrAlignByBaseline -> this.then(alignByBaselineFromStyle(scope))
-            attrAspectRatio -> this.then(aspectRatioFromStyle(argListContext))
-            attrBackground -> this.then(backgroundFromStyle(argListContext))
-            attrBorder -> this.then(borderFromStyle(argListContext))
-            attrClickable -> this.then(clickableFromStyle(argListContext, pushEvent))
-            attrClip -> this.then(clipFromStyle(argListContext))
-            attrFillMaxHeight -> this.then(fillMaxHeightFromStyle(argListContext))
-            attrFillMaxWidth -> this.then(fillMaxWidthFromStyle(argListContext))
-            attrHeight -> this.then(heightFromStyle(argListContext))
-            attrLayoutId -> this.then(layoutIdFromStyle(argListContext))
-            attrOffset -> this.then(offsetFromStyle(argListContext))
-            attrPadding -> this.then(paddingFromStyle(argListContext))
-            attrPaddingFrom -> this.then(paddingFromFromStyle(argListContext))
-            attrPaddingFromBaseline -> this.then(paddingFromBaselineFromStyle(argListContext))
-            attrShadow -> this.then(shadowFromStyle(argListContext))
-            attrSize -> this.then(sizeFromStyle(argListContext))
-            attrWidth -> this.then(widthFromStyle(argListContext))
-            attrWindowInsetsPadding -> this.then(windowInsetsPaddingFromStyle(argListContext))
-            attrZIndex -> this.then(zIndexFromStyle(argListContext))
+            modifierAbsoluteOffset -> this.then(absoluteOffsetFromStyle(argListContext))
+            modifierAlpha -> this.then(alphaFromStyle(argListContext))
+            modifierAlign -> this.then(alignFromStyle(argListContext, scope))
+            modifierAlignByBaseline -> this.then(alignByBaselineFromStyle(scope))
+            modifierAspectRatio -> this.then(aspectRatioFromStyle(argListContext))
+            modifierBackground -> this.then(backgroundFromStyle(argListContext))
+            modifierBorder -> this.then(borderFromStyle(argListContext))
+            modifierClickable -> this.then(clickableFromStyle(argListContext, pushEvent))
+            modifierClip -> this.then(clipFromStyle(argListContext))
+            modifierFillMaxHeight -> this.then(fillMaxHeightFromStyle(argListContext))
+            modifierFillMaxWidth -> this.then(fillMaxWidthFromStyle(argListContext))
+            modifierHeight -> this.then(heightFromStyle(argListContext))
+            modifierLayoutId -> this.then(layoutIdFromStyle(argListContext))
+            modifierOffset -> this.then(offsetFromStyle(argListContext))
+            modifierPadding -> this.then(paddingFromStyle(argListContext))
+            modifierPaddingFrom -> this.then(paddingFromFromStyle(argListContext))
+            modifierPaddingFromBaseline -> this.then(paddingFromBaselineFromStyle(argListContext))
+            modifierShadow -> this.then(shadowFromStyle(argListContext))
+            modifierSize -> this.then(sizeFromStyle(argListContext))
+            modifierWidth -> this.then(widthFromStyle(argListContext))
+            modifierWindowInsetsPadding -> this.then(windowInsetsPaddingFromStyle(argListContext))
+            modifierZIndex -> this.then(zIndexFromStyle(argListContext))
             else -> this
         }
     }
