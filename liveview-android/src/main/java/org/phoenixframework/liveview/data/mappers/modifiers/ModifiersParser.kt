@@ -56,6 +56,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierStatus
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemBarsPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemGesturesPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWaterfallPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidthIn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWindowInsetsPadding
@@ -214,6 +215,7 @@ object ModifiersParser {
             modifierPaddingFromBaseline -> this.then(paddingFromBaselineFromStyle(argListContext))
             modifierShadow -> this.then(shadowFromStyle(argListContext))
             modifierSize -> this.then(sizeFromStyle(argListContext))
+            modifierWeight -> this.then(weightFromStyle(argListContext, scope))
             modifierWidth -> this.then(widthFromStyle(argListContext))
             modifierWidthIn -> this.then(widthInFromStyle(argListContext))
             modifierWindowInsetsPadding -> this.then(windowInsetsPaddingFromStyle(argListContext))

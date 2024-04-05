@@ -41,6 +41,7 @@ object ModifierNames {
     const val modifierPaddingFromBaseline = "paddingFromBaseline"
     const val modifierShadow = "shadow"
     const val modifierSize = "size"
+    const val modifierWeight = "weight"
     const val modifierWidth = "width"
     const val modifierWidthIn = "widthIn"
     const val modifierWindowInsetsPadding = "windowInsetsPadding"
@@ -69,6 +70,7 @@ object ModifierArgs {
     const val argEnd = "end"
     const val argEndX = "endX"
     const val argEndY = "endY"
+    const val argFill = "fill"
     const val argFraction = "fraction"
     const val argGreen = "green"
     const val argHeight = "height"
@@ -99,6 +101,7 @@ object ModifierArgs {
     const val argVertical = "vertical"
     const val argX = "x"
     const val argY = "y"
+    const val argWeight = "weight"
     const val argWidth = "width"
     const val argZIndex = "zIndex"
 }

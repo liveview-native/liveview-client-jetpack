@@ -2,7 +2,9 @@ package com.dockyard.liveviewtest.liveview.modifiers
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -348,6 +350,46 @@ class SizeTest : ModifierBaseTest() {
             """,
             Modifier.size(height = 25.dp, width = 50.dp)
         )
+    }
+
+    @Test
+    fun rowWeightTest() {
+        val style = """
+            %{"rowWeightTest" => [
+                {:weight, [], [0.5, false]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            Row {
+                result = Modifier.then(Modifier.fromStyle(style, this))
+                modifier = Modifier.then(Modifier.weight(0.5f, false))
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
+    }
+
+    @Test
+    fun columnWeightTest() {
+        val style = """
+            %{"columnWeightTest" => [
+                {:weight, [], [[weight: 0.5, fill: false]]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            Column {
+                result = Modifier.then(Modifier.fromStyle(style, this))
+                modifier = Modifier.then(Modifier.weight(0.5f, false))
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
     }
 
     @Test

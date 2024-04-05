@@ -1,6 +1,8 @@
 package org.phoenixframework.liveview.data.mappers.modifiers
 
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argFill
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argFraction
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argHeight
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argIntrinsicSize
@@ -20,6 +23,7 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argMax
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argMin
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argRatio
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argSize
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argWeight
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argWidth
 
 fun Modifier.aspectRatioFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
@@ -107,6 +111,32 @@ fun Modifier.sizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): M
             else
                 this
         }
+
+        else -> this
+    }
+}
+
+fun Modifier.weightFromStyle(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    scope: Any?
+): Modifier {
+    val params = argsOrNamedArgs(arguments)
+    val weight = argOrNamedArg(params, argWeight, 0)?.floatValue ?: return this
+    val fill = argOrNamedArg(params, argFill, 1)?.booleanValue
+    return when (scope) {
+        is RowScope ->
+            scope.run {
+                this@weightFromStyle.then(
+                    Modifier.weight(weight, fill ?: true)
+                )
+            }
+
+        is ColumnScope ->
+            scope.run {
+                this@weightFromStyle.then(
+                    Modifier.weight(weight, fill ?: true)
+                )
+            }
 
         else -> this
     }
