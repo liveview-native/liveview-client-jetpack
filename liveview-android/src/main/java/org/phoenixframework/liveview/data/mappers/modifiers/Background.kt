@@ -5,6 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlpha
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argBrush
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argColor
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argShape
 
 fun Modifier.backgroundFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     var color: Color? = null
@@ -14,16 +18,16 @@ fun Modifier.backgroundFromStyle(arguments: List<ModifierDataAdapter.ArgumentDat
     val backgroundArgs = argsOrNamedArgs(arguments)
     if (arguments.firstOrNull()?.isList == true) {
         // Named args
-        backgroundArgs.find { it.name == "color" }?.let { arg ->
+        backgroundArgs.find { it.name == argColor }?.let { arg ->
             colorFromArgument(arg)?.let { color = it }
         }
-        backgroundArgs.find { it.name == "shape" }?.let { arg ->
+        backgroundArgs.find { it.name == argShape }?.let { arg ->
             shapeFromStyle(arg)?.let { shape = it }
         }
-        backgroundArgs.find { it.name == "brush" }?.let { arg ->
+        backgroundArgs.find { it.name == argBrush }?.let { arg ->
             brushFromStyle(arg)?.let { brush = it }
         }
-        backgroundArgs.find { it.name == "alpha" }?.let { arg ->
+        backgroundArgs.find { it.name == argAlpha }?.let { arg ->
             arg.floatValue?.let { alpha = it }
         }
     } else {

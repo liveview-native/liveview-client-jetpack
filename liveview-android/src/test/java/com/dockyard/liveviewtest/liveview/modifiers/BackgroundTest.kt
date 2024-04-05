@@ -92,10 +92,18 @@ class BackgroundTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"backgroundWithShapeTest" => [
-              {:background, [], [{:., [], [:Color, :Red]}, {:RoundedCornerShape, [], [4, 0, 8, 16]} ]},
-              ]}
+              {:background, [], [
+                {:., [], [:Color, :Red]}, 
+                {:RoundedCornerShape, [], [
+                  {:., [], [4, :dp]}, 
+                  {:., [], [24, :dp]}, 
+                  {:., [], [8, :dp]}, 
+                  {:., [], [16, :dp]}
+                ]} 
+              ]},
+            ]}
             """,
-            Modifier.background(Color.Red, RoundedCornerShape(4.dp, 0.dp, 8.dp, 16.dp))
+            Modifier.background(Color.Red, RoundedCornerShape(4.dp, 24.dp, 8.dp, 16.dp))
         )
     }
 

@@ -176,7 +176,7 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingAllTest" => [
-                {:padding, [], [32]},
+                {:padding, [], [{:., [], [32, :dp]}]},
             ]}
             """,
             Modifier.padding(32.dp)
@@ -188,7 +188,7 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingAllNamedTest" => [
-                {:padding, [], [[all: 32]]},
+                {:padding, [], [[all: {:., [], [32, :dp]}]]},
             ]}
             """,
             Modifier.padding(32.dp)
@@ -200,7 +200,7 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingHorizontalTest" => [
-                {:padding, [], [[horizontal: 16]]},
+                {:padding, [], [[horizontal: {:., [], [16, :dp]}]]},
             ]}
             """,
             Modifier.padding(horizontal = 16.dp)
@@ -212,7 +212,7 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingVerticalTest" => [
-                {:padding, [], [[vertical: 8]]},
+                {:padding, [], [[vertical: {:., [], [8, :dp]}]]},
             ]}
             """,
             Modifier.padding(vertical = 8.dp)
@@ -224,10 +224,10 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingHVTest" => [
-                {:padding, [], [8, 16]},
+                {:padding, [], [{:., [], [8, :dp]}, {:., [], [16, :dp]}]},
             ]}
             """,
-            Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
+            Modifier.padding(8.dp, 16.dp)
         )
     }
 
@@ -236,7 +236,7 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingHVNamedTest" => [
-                {:padding, [], [[vertical: 16, horizontal: 8]]},
+                {:padding, [], [[vertical: {:., [], [16, :dp]}, horizontal: {:., [], [8, :dp]}]]},
             ]}
             """,
             Modifier.padding(vertical = 16.dp, horizontal = 8.dp)
@@ -248,7 +248,12 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingBordersTest" => [
-                {:padding, [], [4, 8, 16, 32]},
+                {:padding, [], [
+                  {:., [], [4, :dp]}, 
+                  {:., [], [8, :dp]}, 
+                  {:., [], [16, :dp]}, 
+                  {:., [], [32, :dp]}
+                ]},
             ]}
             """,
             Modifier.padding(4.dp, 8.dp, 16.dp, 32.dp)
@@ -260,7 +265,12 @@ class PaddingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"paddingBordersNamedTest" => [
-                {:padding, [], [[end: 16, bottom: 32, start: 4, top: 8]]},
+                {:padding, [], [[
+                  end: {:., [], [16, :dp]}, 
+                  bottom: {:., [], [32, :dp]}, 
+                  start: {:., [], [4, :dp]}, 
+                  top: {:., [], [8, :dp]}
+                ]]},
             ]}
             """,
             Modifier.padding(end = 16.dp, bottom = 32.dp, start = 4.dp, top = 8.dp)

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.FlowRowScope
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlignment
 import org.phoenixframework.liveview.data.dto.alignmentFromString
 import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
 import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
@@ -15,13 +16,11 @@ fun Modifier.alignFromStyle(
     arguments: List<ModifierDataAdapter.ArgumentData>,
     scope: Any?
 ): Modifier {
-    val alignmentParam = argsOrNamedArgs(arguments).firstOrNull()
-    if (alignmentParam == null || !alignmentParam.isDot) {
-        return this
-    }
+    val alignmentParam = argsOrNamedArgs(arguments)
 
-    val alignmentValue = singleArgumentObjectValue("alignment", alignmentParam)?.second?.toString()
-        ?: return this
+    val alignmentValue = argOrNamedArg(alignmentParam, argAlignment, 0)?.let {
+        singleArgumentObjectValue(it)?.second?.toString()
+    } ?: return this
 
     return when (scope) {
         is BoxScope -> scope.run {

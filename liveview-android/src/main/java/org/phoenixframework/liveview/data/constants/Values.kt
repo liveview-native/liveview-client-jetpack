@@ -1,5 +1,10 @@
 package org.phoenixframework.liveview.data.constants
 
+object AlignmentLineValues {
+    const val firstBaseline = "FirstBaseline"
+    const val lastBaseline = "LastBaseline"
+}
+
 object AlignmentValues {
     const val topStart = "TopStart"
     const val topCenter = "TopCenter"
@@ -10,6 +15,14 @@ object AlignmentValues {
     const val bottomStart = "BottomStart"
     const val bottomCenter = "BottomCenter"
     const val bottomEnd = "BottomEnd"
+}
+
+object BrushFunctions {
+    const val horizontalGradient = "horizontalGradient"
+    const val verticalGradient = "verticalGradient"
+    const val linearGradient = "linearGradient"
+    const val radialGradient = "radialGradient"
+    const val sweepGradient = "sweepGradient"
 }
 
 object ContentScaleValues {
@@ -132,6 +145,12 @@ object LineBreakValues {
     const val simple = "simple"
     const val paragraph = "paragraph"
     const val heading = "heading"
+}
+
+object OffsetValues {
+    const val zero = "Zero"
+    const val infinite = "Infinite"
+    const val unspecified = "Unspecified"
 }
 
 object RoleValues {

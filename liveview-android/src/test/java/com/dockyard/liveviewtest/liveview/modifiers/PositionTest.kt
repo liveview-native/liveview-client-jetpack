@@ -16,7 +16,7 @@ class PositionTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"offsetTest" => [
-                {:offset, [], [10, 20]},
+                {:offset, [], [{:., [], [10, :dp]}, {:., [], [20, :dp]}]},
             ]}
             """,
             Modifier.offset(10.dp, 20.dp)
@@ -28,7 +28,7 @@ class PositionTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"offsetNamedTest" => [
-                {:offset, [], [[y: 20, x: 10]]},
+                {:offset, [], [[y: {:., [], [20, :dp]}, x: {:., [], [10, :dp]}]]},
             ]}
             """,
             Modifier.offset(y = 20.dp, x = 10.dp)
@@ -40,7 +40,7 @@ class PositionTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"absoluteOffsetTest" => [
-                {:absoluteOffset, [], [10, 20]},
+                {:absoluteOffset, [], [{:., [], [10, :dp]}, {:., [], [20, :dp]}]},
             ]}
             """,
             Modifier.absoluteOffset(10.dp, 20.dp)
@@ -52,7 +52,7 @@ class PositionTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"absoluteOffsetNamedTest" => [
-                {:absoluteOffset, [], [[y: 20, x: 10]]},
+                {:absoluteOffset, [], [[y: {:., [], [20, :dp]}, x: {:., [], [10, :dp]}]]},
             ]}
             """,
             Modifier.absoluteOffset(y = 20.dp, x = 10.dp)

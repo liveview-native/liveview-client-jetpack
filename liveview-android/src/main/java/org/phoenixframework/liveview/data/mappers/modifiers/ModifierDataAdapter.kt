@@ -333,14 +333,17 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
         val isList: Boolean
             get() = type == TypeList
 
-        val isNumber: Boolean
-            get() = type == TypeInt || type == TypeFloat
-
         val booleanValue: Boolean?
             get() = value as? Boolean
 
         val floatValue: Float?
-            get() = value as? Float
+            get() {
+                return if (value is Int) {
+                    value.toFloat()
+                } else {
+                    value as? Float
+                }
+            }
 
         val intValue: Int?
             get() = value as? Int

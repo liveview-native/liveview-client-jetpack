@@ -365,7 +365,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                     spotColor: {:., [], [:Color, :Green]}    
                 ]]},
                 {:background, [], [{:., [], [:Color, :White]}]},
-                {:padding, [], [16]}
+                {:padding, [], [{:., [], [16, :dp]}]}
             ]}
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
@@ -498,7 +498,14 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
     fun windowInsetsPaddingTest() {
         val style = """
             %{'windowInsetsPadding' => [ 
-                {:windowInsetsPadding, [], [{:WindowInsets, [], [10, 20, 30, 40]}]} 
+              {:windowInsetsPadding, [], [
+                {:WindowInsets, [], [
+                  {:., [], [10, :dp]}, 
+                  {:., [], [20, :dp]}, 
+                  {:., [], [30, :dp]}, 
+                  {:., [], [40, :dp]}
+                ]}
+              ]} 
             ]}
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(

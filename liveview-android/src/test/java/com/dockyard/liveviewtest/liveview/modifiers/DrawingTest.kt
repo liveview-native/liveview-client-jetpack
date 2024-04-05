@@ -51,7 +51,7 @@ class DrawingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"clipTest" => [
-                {:clip, [], [{:RoundedCornerShape, [], [16]}]},
+                {:clip, [], [{:RoundedCornerShape, [], [{:., [], [16, :dp]}]}]},
             ]}
             """,
             Modifier.clip(RoundedCornerShape(16.dp))
@@ -63,7 +63,14 @@ class DrawingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"clipTestWith4Corners" => [
-                {:clip, [], [{:RoundedCornerShape, [], [4, 8, 16, 32]}]},
+                {:clip, [], [
+                  {:RoundedCornerShape, [], [
+                    {:., [], [4, :dp]}, 
+                    {:., [], [8, :dp]}, 
+                    {:., [], [16, :dp]},
+                    {:., [], [32, :dp]}
+                  ]}
+                ]},
             ]}
             """,
             Modifier.clip(RoundedCornerShape(4.dp, 8.dp, 16.dp, 32.dp))
@@ -99,7 +106,12 @@ class DrawingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"clipRoundedCornerWith2Args" => [
-                {:clip, [], [{:RoundedCornerShape, [], [[topStart: 12, bottomEnd: 32]]}]},
+              {:clip, [], [
+                {:RoundedCornerShape, [], [[
+                  topStart: {:., [], [12, :dp]}, 
+                  bottomEnd: {:., [], [32, :dp]}
+                ]]}
+              ]},
             ]}
             """,
             Modifier.clip(RoundedCornerShape(topStart = 12.dp, bottomEnd = 32.dp))
@@ -111,7 +123,14 @@ class DrawingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"clipRoundedCornerWithNamedArgs" => [
-                {:clip, [], [{:RoundedCornerShape, [], [[topStart: 4, topEnd: 8, bottomStart: 16, bottomEnd: 32]]}]},
+              {:clip, [], [
+                {:RoundedCornerShape, [], [[
+                  topStart: {:., [], [4, :dp]}, 
+                  topEnd: {:., [], [8, :dp]}, 
+                  bottomStart: {:., [], [16, :dp]}, 
+                  bottomEnd: {:., [], [32, :dp]}
+                ]]}
+              ]},
             ]}
             """,
             Modifier.clip(
