@@ -20,6 +20,7 @@ import org.antlr.v4.runtime.CharStream
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAbsoluteOffset
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAbsolutePadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlignByBaseline
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlpha
@@ -32,11 +33,14 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClip
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClipToBounds
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierDisplayCutoutPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeightIn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImePadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierLayoutId
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMandatorySystemGesturesPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMatchParentSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierNavigationBarsPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierOffset
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
@@ -53,6 +57,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystem
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemGesturesPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWaterfallPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidthIn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWindowInsetsPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierZIndex
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -187,6 +192,7 @@ object ModifiersParser {
             modifierWaterfallPadding -> this.then(Modifier.waterfallPadding())
             // Parameterized modifiers
             modifierAbsoluteOffset -> this.then(absoluteOffsetFromStyle(argListContext))
+            modifierAbsolutePadding -> this.then(absolutePaddingFromStyle(argListContext))
             modifierAlpha -> this.then(alphaFromStyle(argListContext))
             modifierAlign -> this.then(alignFromStyle(argListContext, scope))
             modifierAlignByBaseline -> this.then(alignByBaselineFromStyle(scope))
@@ -196,9 +202,12 @@ object ModifiersParser {
             modifierClickable -> this.then(clickableFromStyle(argListContext, pushEvent))
             modifierClip -> this.then(clipFromStyle(argListContext))
             modifierFillMaxHeight -> this.then(fillMaxHeightFromStyle(argListContext))
+            modifierFillMaxSize -> this.then(fillMaxSizeFromStyle(argListContext))
             modifierFillMaxWidth -> this.then(fillMaxWidthFromStyle(argListContext))
             modifierHeight -> this.then(heightFromStyle(argListContext))
+            modifierHeightIn -> this.then(heightInFromStyle(argListContext))
             modifierLayoutId -> this.then(layoutIdFromStyle(argListContext))
+            modifierMatchParentSize -> this.then(matchParentSizeFromStyle(scope))
             modifierOffset -> this.then(offsetFromStyle(argListContext))
             modifierPadding -> this.then(paddingFromStyle(argListContext))
             modifierPaddingFrom -> this.then(paddingFromFromStyle(argListContext))
@@ -206,6 +215,7 @@ object ModifiersParser {
             modifierShadow -> this.then(shadowFromStyle(argListContext))
             modifierSize -> this.then(sizeFromStyle(argListContext))
             modifierWidth -> this.then(widthFromStyle(argListContext))
+            modifierWidthIn -> this.then(widthInFromStyle(argListContext))
             modifierWindowInsetsPadding -> this.then(windowInsetsPaddingFromStyle(argListContext))
             modifierZIndex -> this.then(zIndexFromStyle(argListContext))
             else -> this

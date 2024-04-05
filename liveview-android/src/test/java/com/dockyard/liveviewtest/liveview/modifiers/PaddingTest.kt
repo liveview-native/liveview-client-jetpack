@@ -1,5 +1,6 @@
 package com.dockyard.liveviewtest.liveview.modifiers
 
+import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.paddingFromBaseline
@@ -16,6 +17,40 @@ import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.from
 
 @RunWith(AndroidJUnit4::class)
 class PaddingTest : ModifierBaseTest() {
+
+    @Test
+    fun absolutePaddingTest() {
+        assertModifierFromStyle(
+            """
+            %{"absolutePaddingTest" => [
+              {:absolutePadding, [], [
+                {:., [], [4, :dp]},
+                {:., [], [8, :dp]},
+                {:., [], [16, :dp]},
+                {:., [], [32, :dp]},
+              ]},
+            ]}
+            """,
+            Modifier.absolutePadding(4.dp, 8.dp, 16.dp, 32.dp)
+        )
+    }
+
+    @Test
+    fun absolutePaddingNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"absolutePaddingNamedTest" => [
+              {:absolutePadding, [], [[
+                top: {:., [], [4, :dp]},
+                left: {:., [], [8, :dp]},
+                bottom: {:., [], [16, :dp]},
+                right: {:., [], [32, :dp]}
+              ]]}
+            ]}
+            """.trimStyle(),
+            Modifier.absolutePadding(top = 4.dp, left = 8.dp, bottom = 16.dp, right = 32.dp)
+        )
+    }
 
     @Test
     fun captionBarPaddingTest() {

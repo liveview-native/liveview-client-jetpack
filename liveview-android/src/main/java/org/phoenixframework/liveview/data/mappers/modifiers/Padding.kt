@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.data.mappers.modifiers
 
+import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.paddingFromBaseline
@@ -15,9 +16,29 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argBottom
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argEnd
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argHorizontal
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argInsets
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argLeft
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argRight
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argStart
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argTop
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argVertical
+
+fun Modifier.absolutePaddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    val params = argsOrNamedArgs(arguments)
+    val left = argOrNamedArg(params, argLeft, 0)?.let { dpFromStyle(it) }
+    val top = argOrNamedArg(params, argTop, 1)?.let { dpFromStyle(it) }
+    val right = argOrNamedArg(params, argRight, 2)?.let { dpFromStyle(it) }
+    val bottom = argOrNamedArg(params, argBottom, 3)?.let { dpFromStyle(it) }
+    return if (left != null || top != null || right != null || bottom != null) {
+        this.then(
+            Modifier.absolutePadding(
+                left = left ?: 0.dp,
+                top = top ?: 0.dp,
+                right = right ?: 0.dp,
+                bottom = bottom ?: 0.dp,
+            )
+        )
+    } else this
+}
 
 fun Modifier.paddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     // Supporting both named and no-named params
