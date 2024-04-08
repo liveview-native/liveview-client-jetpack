@@ -16,6 +16,7 @@ import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,6 +33,7 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argEnd
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argEndX
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argEndY
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argGreen
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argHeight
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argLeft
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argRadius
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argRed
@@ -43,8 +45,10 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argTileMode
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argTop
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argTopEnd
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argTopStart
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argWidth
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeBrush
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDpSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeEvent
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeIntrinsicSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeOffset
@@ -65,6 +69,17 @@ internal fun alignmentLineFromStyle(argument: ModifierDataAdapter.ArgumentData):
             AlignmentLineValues.lastBaseline -> LastBaseline
             else -> null
         }
+    } else null
+}
+
+internal fun dpSizeFromStyle(argument: ModifierDataAdapter.ArgumentData): DpSize? {
+    return if (argument.type == typeDpSize) {
+        val args = argsOrNamedArgs(argument.listValue)
+        val width = argOrNamedArg(args, argWidth, 0)?.let { dpFromStyle(it) }
+        val height = argOrNamedArg(args, argHeight, 1)?.let { dpFromStyle(it) }
+        if (width != null && height != null) {
+            DpSize(width = width, height = height)
+        } else null
     } else null
 }
 

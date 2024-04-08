@@ -11,7 +11,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredHeightIn
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.requiredSizeIn
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
@@ -19,6 +26,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
@@ -309,10 +317,270 @@ class SizeTest : ModifierBaseTest() {
     }
 
     @Test
-    fun sizeTest() {
+    fun requiredHeightInDpTest() {
         assertModifierFromStyle(
             """
-            %{"sizeTest" => [
+            %{"requiredHeightInDpTest" => [
+                {:requiredHeight, [], [{:., [], [50,:dp]}]},
+            ]}
+            """,
+            Modifier.requiredHeight(50.dp)
+        )
+    }
+
+    @Test
+    fun requiredHeightInDpNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredHeightInDpNamedTest" => [
+                {:requiredHeight, [], [[height: {:., [], [50,:dp]}]]},
+            ]}
+            """,
+            Modifier.requiredHeight(height = 50.dp)
+        )
+    }
+
+    @Test
+    fun requiredHeightIntrinsicTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredHeightIntrinsicTest" => [
+                {:requiredHeight, [], [{:., [], [:IntrinsicSize, :Min]}]},
+            ]}
+            """,
+            Modifier.requiredHeight(IntrinsicSize.Min)
+        )
+    }
+
+    @Test
+    fun requiredHeightIntrinsicNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredHeightIntrinsicNamedTest" => [
+                {:requiredHeight, [], [[intrinsicSize: {:., [], [:IntrinsicSize, :Max]}]]},
+            ]}
+            """,
+            Modifier.requiredHeight(intrinsicSize = IntrinsicSize.Max)
+        )
+    }
+
+    @Test
+    fun requiredHeightInTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredHeightInTest" => [
+                {:requiredHeightIn, [], [{:., [], [50,:dp]}, {:., [], [100,:dp]}]},
+            ]}
+            """,
+            Modifier.requiredHeightIn(50.dp, 100.dp)
+        )
+    }
+
+    @Test
+    fun requiredHeightInNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredHeightIntrinsicNamedTest" => [
+                {:requiredHeightIn, [], [[min: {:., [], [50,:dp]}, max: {:., [], [100,:dp]}]]},
+            ]}
+            """,
+            Modifier.requiredHeightIn(min = 50.dp, max = 100.dp)
+        )
+    }
+
+    @Test
+    fun requiredSizeInDpTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredSizeInDpTest" => [
+                {:requiredSize, [], [{:., [], [50,:dp]}]},
+            ]}
+            """,
+            Modifier.requiredSize(50.dp)
+        )
+    }
+
+    @Test
+    fun requiredSizeInDpNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredSizeInDpNamedTest" => [
+                {:requiredSize, [], [[height: {:., [], [50,:dp]}]]},
+            ]}
+            """,
+            Modifier.requiredSize(size = 50.dp)
+        )
+    }
+
+    @Test
+    fun requiredSizeInWHDpTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredSizeInWHDpTest" => [
+                {:requiredSize, [], [{:., [], [50,:dp]}, {:., [], [100,:dp]}]},
+            ]}
+            """,
+            Modifier.requiredSize(50.dp, 100.dp)
+        )
+    }
+
+    @Test
+    fun requiredSizeInWHDpNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredSizeInWHDpNamedTest" => [
+                {:requiredSize, [], [[width: {:., [], [50,:dp]}, height: {:., [], [100,:dp]}]]},
+            ]}
+            """,
+            Modifier.requiredSize(width = 50.dp, height = 100.dp)
+        )
+    }
+
+    @Test
+    fun requiredSizeInDpSizeTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredSizeInDpSizeTest" => [
+                {:requiredSize, [], [{:DpSize, [], [{:., [], [50,:dp]}, {:., [], [100,:dp]}]}]},
+            ]}
+            """,
+            Modifier.requiredSize(DpSize(50.dp, 100.dp))
+        )
+    }
+
+    @Test
+    fun requiredSizeInDpSizeNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredSizeInWHDpNamedTest" => [
+                {:requiredSize, [], [[
+                  size: {:DpSize, [], [[
+                    width: {:., [], [50,:dp]}, 
+                    height: {:., [], [100,:dp]}
+                  ]]}
+                ]]},
+            ]}
+            """.trimStyle(),
+            Modifier.requiredSize(size = DpSize(width = 50.dp, height = 100.dp))
+        )
+    }
+
+    @Test
+    fun requiredSizeInTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredSizeInTest" => [
+              {:requiredSizeIn, [], [
+                {:., [], [50,:dp]}, 
+                {:., [], [100,:dp]},
+                {:., [], [150,:dp]},
+                {:., [], [200,:dp]},
+              ]},
+            ]}
+            """.trimStyle(),
+            Modifier.requiredSizeIn(50.dp, 100.dp, 150.dp, 200.dp)
+        )
+    }
+
+    @Test
+    fun requiredSizeInNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredSizeInNamedTest" => [
+              {:requiredSizeIn, [], [[
+                minHeight: {:., [], [50,:dp]}, 
+                maxHeight: {:., [], [100,:dp]},
+                minWidth: {:., [], [150,:dp]},
+                maxWidth: {:., [], [200,:dp]}
+              ]]}
+            ]}
+            """.trimStyle(),
+            Modifier.requiredSizeIn(
+                minHeight = 50.dp,
+                maxHeight = 100.dp,
+                minWidth = 150.dp,
+                maxWidth = 200.dp
+            )
+        )
+    }
+
+    @Test
+    fun requiredWidthInDpTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredWidthInDpTest" => [
+                {:requiredWidth, [], [{:., [], [50,:dp]}]},
+            ]}
+            """,
+            Modifier.requiredWidth(50.dp)
+        )
+    }
+
+    @Test
+    fun requiredWidthInDpNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredWidthInDpNamedTest" => [
+                {:requiredWidth, [], [[width: {:., [], [50,:dp]}]]},
+            ]}
+            """,
+            Modifier.requiredWidth(width = 50.dp)
+        )
+    }
+
+    @Test
+    fun requiredWidthIntrinsicTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredWidthIntrinsicTest" => [
+                {:requiredWidth, [], [{:., [], [:IntrinsicSize, :Min]}]},
+            ]}
+            """,
+            Modifier.requiredWidth(IntrinsicSize.Min)
+        )
+    }
+
+    @Test
+    fun requiredWidthIntrinsicNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredWidthIntrinsicNamedTest" => [
+                {:requiredWidth, [], [[intrinsicSize: {:., [], [:IntrinsicSize, :Max]}]]},
+            ]}
+            """,
+            Modifier.requiredWidth(intrinsicSize = IntrinsicSize.Max)
+        )
+    }
+
+    @Test
+    fun requiredWidthInTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredWidthInTest" => [
+                {:requiredWidthIn, [], [{:., [], [50,:dp]}, {:., [], [100,:dp]}]},
+            ]}
+            """,
+            Modifier.requiredWidthIn(50.dp, 100.dp)
+        )
+    }
+
+    @Test
+    fun requiredWidthInNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"requiredWidthInNamedTest" => [
+                {:requiredWidthIn, [], [[min: {:., [], [50,:dp]}, max: {:., [], [100,:dp]}]]},
+            ]}
+            """,
+            Modifier.requiredWidthIn(min = 50.dp, max = 100.dp)
+        )
+    }
+
+    @Test
+    fun sizeInDpTest() {
+        assertModifierFromStyle(
+            """
+            %{"sizeInDpTest" => [
                 {:size, [], [{:., [], [50,:dp]}]},
             ]}
             """,
@@ -321,14 +589,87 @@ class SizeTest : ModifierBaseTest() {
     }
 
     @Test
-    fun sizeNamedTest() {
+    fun sizeInDpNamedTest() {
         assertModifierFromStyle(
             """
-            %{"sizeTest" => [
+            %{"sizeInDpNamedTest" => [
                 {:size, [], [[size: {:., [], [50,:dp]}]]},
             ]}
             """,
             Modifier.size(50.dp)
+        )
+    }
+
+    @Test
+    fun sizeInDpSizeTest() {
+        assertModifierFromStyle(
+            """
+            %{"sizeInDpSizeTest" => [
+              {:size, [], [{
+                :DpSize, [], [
+                  {:., [], [50,:dp]}, 
+                  {:., [], [100,:dp]}
+                ]
+              }]}
+            ]}
+            """.trimStyle(),
+            Modifier.size(50.dp, 100.dp)
+        )
+    }
+
+    @Test
+    fun sizeInDpSizeNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"sizeInDpSizeNamedTest" => [
+              {:size, [], [[
+                size: {:DpSize, [], [[
+                  height: {:., [], [100,:dp]}, 
+                  width: {:., [], [50,:dp]}
+                ]]}
+              ]]},
+            ]}
+            """.trimStyle(),
+            Modifier.size(DpSize(height = 100.dp, width = 50.dp))
+        )
+    }
+
+    @Test
+    fun sizeInTest() {
+        assertModifierFromStyle(
+            """
+            %{"sizeInTest" => [
+              {:sizeIn, [], [
+                {:., [], [50,:dp]}, 
+                {:., [], [100,:dp]},
+                {:., [], [150,:dp]},
+                {:., [], [200,:dp]}
+              ]}
+            ]}
+            """.trimStyle(),
+            Modifier.sizeIn(50.dp, 100.dp, 150.dp, 200.dp)
+        )
+    }
+
+    @Test
+    fun sizeInNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"sizeInNamedTest" => [
+              {:sizeIn, [], [[
+                minHeight: {:., [], [50,:dp]}, 
+                minWidth: {:., [], [100,:dp]},
+                maxHeight: {:., [], [150,:dp]},
+                maxWidth: {:., [], [200,:dp]}
+              ]]}
+            ]}
+            """.trimStyle(),
+            Modifier.sizeIn(
+                minHeight = 50.dp,
+                minWidth = 100.dp,
+                maxHeight = 150.dp,
+                maxWidth = 200.dp
+            )
         )
     }
 

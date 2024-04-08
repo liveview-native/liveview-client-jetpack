@@ -9,7 +9,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredHeightIn
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.requiredSizeIn
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -25,12 +32,17 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argHeight
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argIntrinsicSize
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argMatchHeightConstraintFirst
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argMax
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argMaxHeight
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argMaxWidth
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argMin
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argMinHeight
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argMinWidth
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argRatio
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argSize
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argUnbounded
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argWeight
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argWidth
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDpSize
 import org.phoenixframework.liveview.data.dto.alignmentFromString
 import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
 import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
@@ -102,14 +114,123 @@ fun Modifier.matchParentSizeFromStyle(scope: Any?): Modifier {
     }
 }
 
+fun Modifier.requiredHeightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val reqHeightInDp = argOrNamedArg(args, argHeight, 0)?.let { dpFromStyle(it) }
+    if (reqHeightInDp != null) {
+        return this.then(Modifier.requiredHeight(height = reqHeightInDp))
+    }
+    val reqIntrinsicSize =
+        argOrNamedArg(args, argIntrinsicSize, 0)?.let { intrinsicSizeFromArgument(it) }
+    if (reqIntrinsicSize != null) {
+        return this.then(Modifier.requiredHeight(intrinsicSize = reqIntrinsicSize))
+    }
+    return this
+}
+
+fun Modifier.requiredHeightInFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val min = argOrNamedArg(args, argMin, 0)?.let { dpFromStyle(it) }
+    val max = argOrNamedArg(args, argMax, 1)?.let { dpFromStyle(it) }
+    if (min != null || max != null) {
+        return this.then(
+            Modifier.requiredHeightIn(
+                min = min ?: Dp.Unspecified,
+                max = max ?: Dp.Unspecified
+            )
+        )
+    }
+    return this
+}
+
+fun Modifier.requiredSizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    return when (args.size) {
+        1 -> {
+            argOrNamedArg(args, argSize, 0)?.let { reqSize ->
+                if (reqSize.type == typeDpSize) {
+                    dpSizeFromStyle(reqSize)?.let { reqSizeInDpSize ->
+                        this.then(Modifier.requiredSize(reqSizeInDpSize))
+                    }
+                } else {
+                    dpFromStyle(reqSize)?.let { reqSizeInDp ->
+                        this.then(Modifier.requiredSize(reqSizeInDp))
+                    }
+                }
+            } ?: this
+        }
+
+        2 -> {
+            val width = argOrNamedArg(args, argWidth, 0)?.let { dpFromStyle(it) }
+            val height = argOrNamedArg(args, argHeight, 1)?.let { dpFromStyle(it) }
+            if (width != null && height != null) {
+                this.then(Modifier.requiredSize(width = width, height = height))
+            } else this
+        }
+
+        else -> this
+    }
+}
+
+fun Modifier.requiredSizeInFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val minWidth = argOrNamedArg(args, argMinWidth, 0)?.let { dpFromStyle(it) }
+    val minHeight = argOrNamedArg(args, argMinHeight, 1)?.let { dpFromStyle(it) }
+    val maxWidth = argOrNamedArg(args, argMaxWidth, 2)?.let { dpFromStyle(it) }
+    val maxHeight = argOrNamedArg(args, argMaxHeight, 3)?.let { dpFromStyle(it) }
+    return this.then(
+        Modifier.requiredSizeIn(
+            minWidth = minWidth ?: Dp.Unspecified,
+            minHeight = minHeight ?: Dp.Unspecified,
+            maxWidth = maxWidth ?: Dp.Unspecified,
+            maxHeight = maxHeight ?: Dp.Unspecified,
+        )
+    )
+}
+
+fun Modifier.requiredWidthFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val reqWidthInDp = argOrNamedArg(args, argWidth, 0)?.let { dpFromStyle(it) }
+    if (reqWidthInDp != null) {
+        return this.then(Modifier.requiredWidth(width = reqWidthInDp))
+    }
+    val reqIntrinsicSize =
+        argOrNamedArg(args, argIntrinsicSize, 0)?.let { intrinsicSizeFromArgument(it) }
+    if (reqIntrinsicSize != null) {
+        return this.then(Modifier.requiredWidth(intrinsicSize = reqIntrinsicSize))
+    }
+    return this
+}
+
+fun Modifier.requiredWidthInFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val min = argOrNamedArg(args, argMin, 0)?.let { dpFromStyle(it) }
+    val max = argOrNamedArg(args, argMax, 1)?.let { dpFromStyle(it) }
+    if (min != null || max != null) {
+        return this.then(
+            Modifier.requiredWidthIn(
+                min = min ?: Dp.Unspecified,
+                max = max ?: Dp.Unspecified
+            )
+        )
+    }
+    return this
+}
+
 fun Modifier.sizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val params = argsOrNamedArgs(arguments)
 
     return when (params.size) {
         1 -> {
-            argOrNamedArg(params, argSize, 0)?.let { dpFromStyle(it) }?.let {
-                this.then(Modifier.size(it))
-            } ?: this
+            val sizeInDp = argOrNamedArg(params, argSize, 0)?.let { dpFromStyle(it) }
+            if (sizeInDp != null) {
+                this.then(Modifier.size(sizeInDp))
+            } else {
+                val sizeInDpSize = argOrNamedArg(params, argSize, 0)?.let { dpSizeFromStyle(it) }
+                if (sizeInDpSize != null) {
+                    this.then(Modifier.size(sizeInDpSize))
+                } else this
+            }
         }
 
         2 -> {
@@ -123,6 +244,22 @@ fun Modifier.sizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): M
 
         else -> this
     }
+}
+
+fun Modifier.sizeInFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    val params = argsOrNamedArgs(arguments)
+    val minWidth = argOrNamedArg(params, argMinWidth, 0)?.let { dpFromStyle(it) }
+    val minHeight = argOrNamedArg(params, argMinHeight, 1)?.let { dpFromStyle(it) }
+    val maxWidth = argOrNamedArg(params, argMaxWidth, 2)?.let { dpFromStyle(it) }
+    val maxHeight = argOrNamedArg(params, argMaxHeight, 3)?.let { dpFromStyle(it) }
+    return this.then(
+        Modifier.sizeIn(
+            minWidth = minWidth ?: Dp.Unspecified,
+            minHeight = minHeight ?: Dp.Unspecified,
+            maxWidth = maxWidth ?: Dp.Unspecified,
+            maxHeight = maxHeight ?: Dp.Unspecified,
+        )
+    )
 }
 
 fun Modifier.weightFromStyle(
