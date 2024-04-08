@@ -47,11 +47,18 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPaddin
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPaddingFrom
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPaddingFromBaseline
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierProgressSemantics
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequiredHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequiredHeightIn
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequiredSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequiredSizeIn
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequiredWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequiredWidthIn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeContentPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeDrawingPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeGesturesPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierShadow
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSizeIn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierStatusBarsPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemBarsPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemGesturesPadding
@@ -216,8 +223,15 @@ object ModifiersParser {
             modifierPadding -> this.then(paddingFromStyle(argListContext))
             modifierPaddingFrom -> this.then(paddingFromFromStyle(argListContext))
             modifierPaddingFromBaseline -> this.then(paddingFromBaselineFromStyle(argListContext))
+            modifierRequiredHeight -> this.then(requiredHeightFromStyle(argListContext))
+            modifierRequiredHeightIn -> this.then(requiredHeightInFromStyle(argListContext))
+            modifierRequiredSize -> this.then(requiredSizeFromStyle(argListContext))
+            modifierRequiredSizeIn -> this.then(requiredSizeInFromStyle(argListContext))
+            modifierRequiredWidth -> this.then(requiredWidthFromStyle(argListContext))
+            modifierRequiredWidthIn -> this.then(requiredWidthInFromStyle(argListContext))
             modifierShadow -> this.then(shadowFromStyle(argListContext))
             modifierSize -> this.then(sizeFromStyle(argListContext))
+            modifierSizeIn -> this.then(sizeInFromStyle(argListContext))
             modifierWeight -> this.then(weightFromStyle(argListContext, scope))
             modifierWidth -> this.then(widthFromStyle(argListContext))
             modifierWidthIn -> this.then(widthInFromStyle(argListContext))
