@@ -19,6 +19,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.phoenixframework.Channel
 import org.phoenixframework.Socket
+import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.data.repository.PhoenixLiveViewPayload
 import java.util.UUID
 
@@ -149,7 +150,10 @@ object SocketService {
             return
         }
         Log.d(TAG, "connectLiveReloadSocket::wsBaseUrl=$socketBaseUrl")
-        val uri = Uri.parse(socketBaseUrl).buildUpon().path("/phoenix/live_reload/socket/websocket").build()
+        val uri = Uri.parse(socketBaseUrl)
+            .buildUpon()
+            .path("/phoenix/live_reload/socket/websocket")
+            .build()
         Log.d(TAG, "connectLiveReloadSocket::uri=$uri")
 
         liveReloadSocket = Socket(url = uri.toString(), client = okHttpClient).apply {
@@ -186,6 +190,9 @@ object SocketService {
                 val csrfTokenTag: Elements? = doc?.getElementsByTag(TAG_CSRF_TOKEN)
                 val csrfToken = csrfTokenTag?.attr(ATTR_VALUE)
 
+                val styleTag: Elements? = doc?.getElementsByTag(TAG_STYLE)
+                val stylePath = styleTag?.attr(ATTR_URL)
+
                 val theLiveViewMetaDataElement =
                     doc?.body()?.getElementsByAttribute(ATTR_DATA_PHX_MAIN)
 
@@ -197,10 +204,50 @@ object SocketService {
                     phxStatic = theLiveViewMetaDataElement?.attr(ATTR_DATA_PHX_STATIC),
                     phxId = theLiveViewMetaDataElement?.attr(ATTR_ID),
                     phxCSRFToken = csrfToken,
-                    liveReloadEnabled = liveReloadEnabled
+                    liveReloadEnabled = liveReloadEnabled,
+                    stylePath = stylePath
                 )
             } catch (e: Exception) {
                 Log.e(TAG, "SocketService::Error: ${e.message}", e)
+                null
+            }
+        }
+    }
+
+    suspend fun loadThemeData(httpBaseUrl: String): Map<String, Any> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val request = Request.Builder()
+                    .url("$httpBaseUrl/assets/android_style.json")
+                    .build()
+                val result = okHttpClient.newCall(request).execute().body?.string()
+                JsonParser.parse(result ?: "") ?: emptyMap()
+
+            } catch (e: Exception) {
+                Log.d(TAG, "loadThemeData", e)
+                emptyMap()
+            }
+        }
+    }
+
+    suspend fun loadStyleData(httpBaseUrl: String): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val uri = Uri.parse(httpBaseUrl)
+                    .buildUpon()
+                    .path(payload?.stylePath)
+                    .build()
+                val request = Request.Builder()
+                    .url(uri.toString())
+                    .build()
+                val styleContent = okHttpClient.newCall(request)
+                    .execute()
+                    .body
+                    ?.string()
+                // FIXME Remove the call below when the Range is supported
+                styleContent?.replace("...", "..")
+            } catch (e: Exception) {
+                Log.d(TAG, "loadStyleData", e)
                 null
             }
         }
@@ -214,7 +261,10 @@ object SocketService {
     private const val ATTR_DATA_PHX_STATIC = "data-phx-static"
     private const val ATTR_ID = "id"
     private const val ATTR_VALUE = "value"
+    private const val ATTR_URL = "url"
+
     private const val TAG_CSRF_TOKEN = "csrf-token"
+    private const val TAG_STYLE = "style"
 
     private const val CHANNEL_PARAM_SESSION = "session"
     private const val CHANNEL_PARAM_STATIC = "static"

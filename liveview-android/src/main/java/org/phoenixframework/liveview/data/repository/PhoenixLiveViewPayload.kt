@@ -5,5 +5,6 @@ data class PhoenixLiveViewPayload(
     val phxStatic: String? = null,
     val phxId: String? = null,
     val phxCSRFToken: String? = null,
-    val liveReloadEnabled: Boolean = false
+    val liveReloadEnabled: Boolean = false,
+    val stylePath: String? = null,
 )

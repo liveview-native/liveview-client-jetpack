@@ -17,6 +17,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.SizeValues.fill
 import org.phoenixframework.liveview.data.core.CoreNodeElement
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.data.repository.Repository
 import org.phoenixframework.liveview.data.service.ChannelService
 import org.phoenixframework.liveview.data.service.SocketService
@@ -87,6 +88,14 @@ class LiveViewCoordinator(
                         SocketService.Events.Opened -> {
                             if (ThemeHolder.isEmpty) {
                                 ThemeHolder.updateThemeData(repository.loadThemeData())
+                            }
+                            if (ModifiersParser.isEmpty) {
+                                repository.loadStyleData()?.let { styleFileContentAsString ->
+                                    ModifiersParser.fromStyleFile(
+                                        styleFileContentAsString,
+                                        ::pushEvent
+                                    )
+                                }
                             }
                             joinLiveViewChannel()
                             connectLiveReload()

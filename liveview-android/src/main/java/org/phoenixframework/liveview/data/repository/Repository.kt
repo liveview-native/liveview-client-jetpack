@@ -1,14 +1,9 @@
 package org.phoenixframework.liveview.data.repository
 
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.data.service.ChannelService
 import org.phoenixframework.liveview.data.service.SocketService
 
@@ -22,10 +17,6 @@ class Repository(
 
     val liveSocketConnectionFlow = socketService.connectionFlow
     val liveReloadSocketConnectionFlow = socketService.liveReloadConnectionFlow
-
-    private val okHttpClient: OkHttpClient by lazy {
-        OkHttpClient()
-    }
 
     suspend fun connectToLiveViewSocket() {
         Log.i(TAG, "connectToLiveViewSocket")
@@ -121,18 +112,11 @@ class Repository(
     }
 
     suspend fun loadThemeData(): Map<String, Any> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val request = Request.Builder()
-                    .url("$httpBaseUrl/assets/android_style.json")
-                    .build()
-                val result = okHttpClient.newCall(request).execute().body?.string()
-                JsonParser.parse(result ?: "") ?: emptyMap()
+        return socketService.loadThemeData(httpBaseUrl)
+    }
 
-            } catch (e: Exception) {
-                emptyMap()
-            }
-        }
+    suspend fun loadStyleData(): String? {
+        return socketService.loadStyleData(httpBaseUrl)
     }
 
     companion object {
