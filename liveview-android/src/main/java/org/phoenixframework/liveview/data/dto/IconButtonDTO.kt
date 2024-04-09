@@ -83,6 +83,7 @@ internal class IconButtonDTO private constructor(props: Properties) :
                     ),
                     enabled = enabled,
                     colors = getIconButtonColors(colors),
+                    modifier = props.commonProps.modifier
                     // TODO interactionSource: MutableInteractionSource,
                 ) {
                     composableNode.children.forEach {
