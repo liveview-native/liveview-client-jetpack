@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.systemGesturesPadding
 import androidx.compose.foundation.layout.waterfallPadding
 import androidx.compose.foundation.progressSemantics
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import org.antlr.v4.runtime.CharStream
@@ -31,16 +32,21 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierCaptio
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClickable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClip
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClipToBounds
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierDefaultMinSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierDisplayCutoutPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillParentMaxHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillParentMaxSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillParentMaxWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeightIn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImePadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierLayoutId
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMandatorySystemGesturesPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMatchParentSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMinimumInteractiveComponentSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierNavigationBarsPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierOffset
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
@@ -66,7 +72,11 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWaterf
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidthIn
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWindowInsetsBottomHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWindowInsetsEndWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWindowInsetsPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWindowInsetsStartWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWindowInsetsTopHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWrapContentHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWrapContentSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWrapContentWidth
@@ -192,6 +202,7 @@ object ModifiersParser {
             modifierDisplayCutoutPadding -> this.then(Modifier.displayCutoutPadding())
             modifierImePadding -> this.then(Modifier.imePadding())
             modifierMandatorySystemGesturesPadding -> this.then(Modifier.mandatorySystemGesturesPadding())
+            modifierMinimumInteractiveComponentSize -> this.then(Modifier.minimumInteractiveComponentSize())
             modifierNavigationBarsPadding -> this.then(Modifier.navigationBarsPadding())
             modifierProgressSemantics -> this.then(Modifier.progressSemantics())
             modifierSafeContentPadding -> this.then(Modifier.safeContentPadding())
@@ -212,6 +223,28 @@ object ModifiersParser {
             modifierBorder -> this.then(borderFromStyle(argListContext))
             modifierClickable -> this.then(clickableFromStyle(argListContext, pushEvent))
             modifierClip -> this.then(clipFromStyle(argListContext))
+            modifierDefaultMinSize -> this.then(defaultMinSizeFromStyle(argListContext))
+            modifierFillParentMaxHeight -> this.then(
+                fillParentMaxHeightFromStyle(
+                    argListContext,
+                    scope
+                )
+            )
+
+            modifierFillParentMaxSize -> this.then(
+                fillParentMaxSizeFromStyle(
+                    argListContext,
+                    scope
+                )
+            )
+
+            modifierFillParentMaxWidth -> this.then(
+                fillParentMaxWidthFromStyle(
+                    argListContext,
+                    scope
+                )
+            )
+
             modifierFillMaxHeight -> this.then(fillMaxHeightFromStyle(argListContext))
             modifierFillMaxSize -> this.then(fillMaxSizeFromStyle(argListContext))
             modifierFillMaxWidth -> this.then(fillMaxWidthFromStyle(argListContext))
@@ -233,6 +266,20 @@ object ModifiersParser {
             modifierSize -> this.then(sizeFromStyle(argListContext))
             modifierSizeIn -> this.then(sizeInFromStyle(argListContext))
             modifierWeight -> this.then(weightFromStyle(argListContext, scope))
+            modifierWindowInsetsBottomHeight -> this.then(
+                windowInsetsBottomHeightFromStyle(
+                    argListContext
+                )
+            )
+
+            modifierWindowInsetsEndWidth -> this.then(windowInsetsEndWidthFromStyle(argListContext))
+            modifierWindowInsetsStartWidth -> this.then(
+                windowInsetsStartWidthFromStyle(
+                    argListContext
+                )
+            )
+
+            modifierWindowInsetsTopHeight -> this.then(windowInsetsTopHeightFromStyle(argListContext))
             modifierWidth -> this.then(widthFromStyle(argListContext))
             modifierWidthIn -> this.then(widthInFromStyle(argListContext))
             modifierWindowInsetsPadding -> this.then(windowInsetsPaddingFromStyle(argListContext))

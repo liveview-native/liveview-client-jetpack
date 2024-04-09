@@ -363,13 +363,22 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
 }
 
 internal fun windowInsetsFromArgument(argument: ModifierDataAdapter.ArgumentData): WindowInsets? {
-    return if (argument.type == typeWindowInsets) {
-        val left = argOrNamedArg(argument.listValue, argLeft, 0)?.let { dpFromStyle(it) }
-        val top = argOrNamedArg(argument.listValue, argTop, 1)?.let { dpFromStyle(it) }
-        val right = argOrNamedArg(argument.listValue, argRight, 2)?.let { dpFromStyle(it) }
-        val bottom = argOrNamedArg(argument.listValue, argBottom, 3)?.let { dpFromStyle(it) }
-        WindowInsets(left ?: 0.dp, top ?: 0.dp, right ?: 0.dp, bottom ?: 0.dp)
-    } else null
+    if (argument.type == typeWindowInsets) {
+        val args = argsOrNamedArgs(argument.listValue)
+        val left = argOrNamedArg(args, argLeft, 0)?.intValue
+        val top = argOrNamedArg(args, argTop, 1)?.intValue
+        val right = argOrNamedArg(args, argRight, 2)?.intValue
+        val bottom = argOrNamedArg(args, argBottom, 3)?.intValue
+        if (left != null || top != null || right != null || bottom != null) {
+            return WindowInsets(left ?: 0, top ?: 0, right ?: 0, bottom ?: 0)
+        }
+
+        val leftDp = argOrNamedArg(args, argLeft, 0)?.let { dpFromStyle(it) }
+        val topDp = argOrNamedArg(args, argTop, 1)?.let { dpFromStyle(it) }
+        val rightDp = argOrNamedArg(args, argRight, 2)?.let { dpFromStyle(it) }
+        val bottomDp = argOrNamedArg(args, argBottom, 3)?.let { dpFromStyle(it) }
+        return WindowInsets(leftDp ?: 0.dp, topDp ?: 0.dp, rightDp ?: 0.dp, bottomDp ?: 0.dp)
+    } else return null
 }
 
 // FIXME This function does not work when the first argument is a list

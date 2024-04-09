@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.systemGesturesPadding
 import androidx.compose.foundation.layout.waterfallPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -33,6 +34,7 @@ import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues
+import org.phoenixframework.liveview.data.constants.AlignmentValues.center
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
@@ -277,6 +279,32 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             template = """
                 <$box $attrClass="$style">
                     <$text $attrText="Mandatory System Gestures Padding Test" />
+                </$box>
+                """
+        )
+    }
+
+    @Test
+    fun minimumInteractiveComponentSizeTest() {
+        val style = """
+            %{'minimumInteractiveComponentSizeTest' => [
+                {:minimumInteractiveComponentSize, [], []},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(
+                    modifier = Modifier.minimumInteractiveComponentSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "A"
+                    )
+                }
+            },
+            template = """
+                <$box $attrClass="$style" $attrContentAlignment="$center">
+                    <$text $attrText="A" />
                 </$box>
                 """
         )

@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,9 +22,14 @@ import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.windowInsetsEndWidth
+import androidx.compose.foundation.layout.windowInsetsStartWidth
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -78,6 +85,39 @@ class SizeTest : ModifierBaseTest() {
     }
 
     @Test
+    fun defaultMinSizeTest() {
+        assertModifierFromStyle(
+            """
+            %{"defaultMinSizeTest" => [
+              {:defaultMinSize, [], [
+                {:., [], [50,:dp]}, 
+                {:., [], [100,:dp]},
+              ]},
+            ]}
+            """.trimStyle(),
+            Modifier.defaultMinSize(50.dp, 100.dp)
+        )
+    }
+
+    @Test
+    fun defaultMinSizeNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"defaultMinSizeNamedTest" => [
+              {:defaultMinSize, [], [[
+                minHeight: {:., [], [50,:dp]}, 
+                minWidth: {:., [], [150,:dp]}
+              ]]}
+            ]}
+            """.trimStyle(),
+            Modifier.defaultMinSize(
+                minHeight = 50.dp,
+                minWidth = 150.dp,
+            )
+        )
+    }
+
+    @Test
     fun fillMaxHeightTest() {
         assertModifierFromStyle(
             """
@@ -105,7 +145,7 @@ class SizeTest : ModifierBaseTest() {
     fun fillMaxHeightWithFractionNamedTest() {
         assertModifierFromStyle(
             """
-            %{"fillMaxHeightWithFractionTest" => [
+            %{"fillMaxHeightWithFractionNamedTest" => [
                 {:fillMaxHeight, [], [[fraction: 0.5]]},
             ]}
             """,
@@ -177,12 +217,144 @@ class SizeTest : ModifierBaseTest() {
     fun fillMaxWidthWithFractionNamedTest() {
         assertModifierFromStyle(
             """
-            %{"fillMaxWidthWithFractionTest" => [
+            %{"fillMaxWidthWithFractionNamedTest" => [
                 {:fillMaxWidth, [], [[fraction: 0.5]]},
             ]}
             """,
             Modifier.fillMaxWidth(0.5f)
         )
+    }
+
+    @Test
+    fun fillParentMaxHeightTest() {
+        val style = """
+            %{"fillParentMaxHeightTest" => [
+                {:fillParentMaxHeight, [], [0.5]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            LazyColumn {
+                item {
+                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    modifier = Modifier.then(Modifier.fillParentMaxHeight(0.5f))
+                }
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
+    }
+
+    @Test
+    fun fillParentMaxHeightNamedTest() {
+        val style = """
+            %{"fillParentMaxHeightNamedTest" => [
+                {:fillParentMaxHeight, [], [[faction: 0.5]]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            LazyColumn {
+                item {
+                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    modifier = Modifier.then(Modifier.fillParentMaxHeight(fraction = 0.5f))
+                }
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
+    }
+
+    @Test
+    fun fillParentMaxSizeTest() {
+        val style = """
+            %{"fillParentMaxSizeTest" => [
+                {:fillParentMaxSize, [], [0.5]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            LazyColumn {
+                item {
+                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    modifier = Modifier.then(Modifier.fillParentMaxSize(0.5f))
+                }
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
+    }
+
+    @Test
+    fun fillParentMaxSizeNamedTest() {
+        val style = """
+            %{"fillParentMaxSizeNamedTest" => [
+                {:fillParentMaxSize, [], [[faction: 0.5]]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            LazyColumn {
+                item {
+                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    modifier = Modifier.then(Modifier.fillParentMaxSize(fraction = 0.5f))
+                }
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
+    }
+
+    @Test
+    fun fillParentMaxWidthTest() {
+        val style = """
+            %{"fillParentMaxWidthTest" => [
+                {:fillParentMaxWidth, [], [0.5]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            LazyColumn {
+                item {
+                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    modifier = Modifier.then(Modifier.fillParentMaxWidth(0.5f))
+                }
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
+    }
+
+    @Test
+    fun fillParentMaxWidthNamedTest() {
+        val style = """
+            %{"fillParentMaxWidthNamedTest" => [
+                {:fillParentMaxWidth, [], [[faction: 0.5]]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            LazyColumn {
+                item {
+                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    modifier = Modifier.then(Modifier.fillParentMaxWidth(fraction = 0.5f))
+                }
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
     }
 
     @Test
@@ -288,7 +460,7 @@ class SizeTest : ModifierBaseTest() {
     fun heightIntrinsicNamedTest() {
         assertModifierFromStyle(
             """
-            %{"heightIntrinsicTest" => [
+            %{"heightIntrinsicNamedTest" => [
                 {:height, [], [[intrinsicSize: {:., [], [:IntrinsicSize, :Min]}]]},
             ]}
             """,
@@ -299,7 +471,7 @@ class SizeTest : ModifierBaseTest() {
     @Test
     fun matchParentSizeTest() {
         val style = """
-            %{"boxAlignTest" => [
+            %{"matchParentSizeTest" => [
                 {:matchParentSize, [], []},
             ]}
             """
@@ -380,7 +552,7 @@ class SizeTest : ModifierBaseTest() {
     fun requiredHeightInNamedTest() {
         assertModifierFromStyle(
             """
-            %{"requiredHeightIntrinsicNamedTest" => [
+            %{"requiredHeightInNamedTest" => [
                 {:requiredHeightIn, [], [[min: {:., [], [50,:dp]}, max: {:., [], [100,:dp]}]]},
             ]}
             """,
@@ -452,7 +624,7 @@ class SizeTest : ModifierBaseTest() {
     fun requiredSizeInDpSizeNamedTest() {
         assertModifierFromStyle(
             """
-            %{"requiredSizeInWHDpNamedTest" => [
+            %{"requiredSizeInDpSizeNamedTest" => [
                 {:requiredSize, [], [[
                   size: {:DpSize, [], [[
                     width: {:., [], [50,:dp]}, 
@@ -689,7 +861,7 @@ class SizeTest : ModifierBaseTest() {
     fun sizeWHNamedTest() {
         assertModifierFromStyle(
             """
-            %{"sizeNamedTest" => [
+            %{"sizeWHNamedTest" => [
                 {:size, [], [[height: {:., [], [25,:dp]}, width: {:., [], [50,:dp]}]]},
             ]}
             """,
@@ -698,9 +870,9 @@ class SizeTest : ModifierBaseTest() {
     }
 
     @Test
-    fun rowWeightTest() {
+    fun weightRowTest() {
         val style = """
-            %{"rowWeightTest" => [
+            %{"weightRowTest" => [
                 {:weight, [], [0.5, false]},
             ]}
             """
@@ -718,9 +890,9 @@ class SizeTest : ModifierBaseTest() {
     }
 
     @Test
-    fun columnWeightTest() {
+    fun weightColumnTest() {
         val style = """
-            %{"columnWeightTest" => [
+            %{"weightColumnTest" => [
                 {:weight, [], [[weight: 0.5, fill: false]]},
             ]}
             """
@@ -735,6 +907,154 @@ class SizeTest : ModifierBaseTest() {
         assert(result != null)
         assert(modifier != null)
         assertEquals(result, modifier)
+    }
+
+    @Test
+    fun windowInsetsBottomHeightTest() {
+        assertModifierFromStyle(
+            """
+            %{"windowInsetsBottomHeightTest" => [
+                {:windowInsetsBottomHeight, [], [{:WindowInsets, [], [8, 16, 24, 32]}]},
+            ]}
+            """,
+            Modifier.windowInsetsBottomHeight(WindowInsets(8, 16, 24, 32))
+        )
+    }
+
+    @Test
+    fun windowInsetsBottomHeightNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"windowInsetsBottomHeightNamedTest" => [
+              {:windowInsetsBottomHeight, [], [[
+                insets: {:WindowInsets, [], [
+                  {:., [], [8,:dp]}, 
+                  {:., [], [16,:dp]},
+                  {:., [], [24,:dp]},
+                  {:., [], [32,:dp]}
+                ]}
+              ]]},
+            ]}
+            """,
+            Modifier.windowInsetsBottomHeight(WindowInsets(8.dp, 16.dp, 24.dp, 32.dp))
+        )
+    }
+
+    @Test
+    fun windowInsetsEndWidthTest() {
+        assertModifierFromStyle(
+            """
+            %{"windowInsetsEndWidthTest" => [
+              {:windowInsetsEndWidth, [], [
+                {:WindowInsets, [], [
+                  {:., [], [8,:dp]}, 
+                  {:., [], [16,:dp]},
+                  {:., [], [24,:dp]},
+                  {:., [], [32,:dp]}
+                ]}
+              ]},
+            ]}
+            """,
+            Modifier.windowInsetsEndWidth(WindowInsets(8.dp, 16.dp, 24.dp, 32.dp))
+        )
+    }
+
+    @Test
+    fun windowInsetsEndWidthNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"windowInsetsEndWidthNamedTest" => [
+              {:windowInsetsEndWidth, [], [[
+                insets: {:WindowInsets, [], [8, 16, 24, 32]}
+              ]]},
+            ]}
+            """,
+            Modifier.windowInsetsEndWidth(WindowInsets(8, 16, 24, 32))
+        )
+    }
+
+    @Test
+    fun windowInsetsStartWidthTest() {
+        assertModifierFromStyle(
+            """
+            %{"windowInsetsStartWidthTest" => [
+              {:windowInsetsStartWidth, [], [
+                {:WindowInsets, [], [[
+                  left: {:., [], [8,:dp]}, 
+                  top: {:., [], [16,:dp]},
+                  right: {:., [], [24,:dp]},
+                  bottom: {:., [], [32,:dp]}
+                ]]}
+              ]},
+            ]}
+            """,
+            Modifier.windowInsetsStartWidth(
+                WindowInsets(
+                    left = 8.dp,
+                    top = 16.dp,
+                    right = 24.dp,
+                    bottom = 32.dp
+                )
+            )
+        )
+    }
+
+    @Test
+    fun windowInsetsStartWidthNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"windowInsetsStartWidthNamedTest" => [
+              {:windowInsetsStartWidth, [], [[
+                insets: {:WindowInsets, [], [[
+                  left: 8, top: 16, right: 24, bottom: 32
+                ]]}
+              ]]},
+            ]}
+            """.trimStyle(),
+            Modifier.windowInsetsStartWidth(WindowInsets(8, 16, 24, 32))
+        )
+    }
+
+    @Test
+    fun windowInsetsTopHeightTest() {
+        assertModifierFromStyle(
+            """
+            %{"windowInsetsTopHeightTest" => [
+              {:windowInsetsTopHeight, [], [
+                {:WindowInsets, [], [[
+                  left: {:., [], [8,:dp]}, 
+                  top: {:., [], [16,:dp]},
+                  right: {:., [], [24,:dp]},
+                  bottom: {:., [], [32,:dp]}
+                ]]}
+              ]},
+            ]}
+            """,
+            Modifier.windowInsetsTopHeight(
+                WindowInsets(
+                    left = 8.dp,
+                    top = 16.dp,
+                    right = 24.dp,
+                    bottom = 32.dp
+                )
+            )
+        )
+    }
+
+    @Test
+    fun windowInsetsTopHeightNamedTest() {
+        assertModifierFromStyle(
+            """
+            %{"windowInsetsTopHeightNamedTest" => [
+              {:windowInsetsTopHeight, [], [[
+                insets: {:WindowInsets, [], [[
+                  left: 8, top: 16, right: 24, bottom: 32
+                ]]}
+              ]]},
+            ]}
+            """.trimStyle(),
+            Modifier.windowInsetsTopHeight(WindowInsets(8, 16, 24, 32))
+        )
     }
 
     @Test
@@ -801,7 +1121,7 @@ class SizeTest : ModifierBaseTest() {
     fun widthIntrinsicNamedTest() {
         assertModifierFromStyle(
             """
-            %{"widthIntrinsicTest" => [
+            %{"widthIntrinsicNamedTest" => [
                 {:width, [], [[intrinsicSize: {:., [], [:IntrinsicSize, :Min]}]]},
             ]}
             """,

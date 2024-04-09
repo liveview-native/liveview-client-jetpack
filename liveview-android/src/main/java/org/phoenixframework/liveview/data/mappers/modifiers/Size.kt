@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,9 +20,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.windowInsetsEndWidth
+import androidx.compose.foundation.layout.windowInsetsStartWidth
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -29,6 +35,7 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlign
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argFill
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argFraction
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argHeight
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argInsets
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argIntrinsicSize
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argMatchHeightConstraintFirst
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argMax
@@ -56,6 +63,18 @@ fun Modifier.aspectRatioFromStyle(arguments: List<ModifierDataAdapter.ArgumentDa
     } ?: this
 }
 
+fun Modifier.defaultMinSizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    val params = argsOrNamedArgs(arguments)
+    val minWidth = argOrNamedArg(params, argMinWidth, 0)?.let { dpFromStyle(it) }
+    val minHeight = argOrNamedArg(params, argMinHeight, 1)?.let { dpFromStyle(it) }
+    return this.then(
+        Modifier.defaultMinSize(
+            minWidth = minWidth ?: Dp.Unspecified,
+            minHeight = minHeight ?: Dp.Unspecified,
+        )
+    )
+}
+
 fun Modifier.fillMaxHeightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
     val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
@@ -72,6 +91,63 @@ fun Modifier.fillMaxWidthFromStyle(arguments: List<ModifierDataAdapter.ArgumentD
     val args = argsOrNamedArgs(arguments)
     val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
     return this.then(Modifier.fillMaxWidth(fraction))
+}
+
+fun Modifier.fillParentMaxHeightFromStyle(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    scope: Any?
+): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
+    return when (scope) {
+        is LazyItemScope -> {
+            scope.run {
+                this@fillParentMaxHeightFromStyle.then(
+                    Modifier.fillParentMaxHeight(fraction)
+                )
+            }
+        }
+
+        else -> this
+    }
+}
+
+fun Modifier.fillParentMaxSizeFromStyle(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    scope: Any?
+): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
+    return when (scope) {
+        is LazyItemScope -> {
+            scope.run {
+                this@fillParentMaxSizeFromStyle.then(
+                    Modifier.fillParentMaxSize(fraction)
+                )
+            }
+        }
+
+        else -> this
+    }
+}
+
+fun Modifier.fillParentMaxWidthFromStyle(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    scope: Any?
+): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
+    return when (scope) {
+        is LazyItemScope -> {
+            scope.run {
+                this@fillParentMaxWidthFromStyle.then(
+                    Modifier.fillParentMaxWidth(fraction)
+                )
+            }
+        }
+
+        else -> this
+    }
 }
 
 fun Modifier.heightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
@@ -286,6 +362,38 @@ fun Modifier.weightFromStyle(
 
         else -> this
     }
+}
+
+fun Modifier.windowInsetsBottomHeightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val insets = argOrNamedArg(args, argInsets, 0)?.let { windowInsetsFromArgument(it) }
+    return if (insets != null) {
+        this.then(Modifier.windowInsetsBottomHeight(insets))
+    } else this
+}
+
+fun Modifier.windowInsetsEndWidthFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val insets = argOrNamedArg(args, argInsets, 0)?.let { windowInsetsFromArgument(it) }
+    return if (insets != null) {
+        this.then(Modifier.windowInsetsEndWidth(insets))
+    } else this
+}
+
+fun Modifier.windowInsetsStartWidthFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val insets = argOrNamedArg(args, argInsets, 0)?.let { windowInsetsFromArgument(it) }
+    return if (insets != null) {
+        this.then(Modifier.windowInsetsStartWidth(insets))
+    } else this
+}
+
+fun Modifier.windowInsetsTopHeightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val insets = argOrNamedArg(args, argInsets, 0)?.let { windowInsetsFromArgument(it) }
+    return if (insets != null) {
+        this.then(Modifier.windowInsetsTopHeight(insets))
+    } else this
 }
 
 fun Modifier.widthFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
