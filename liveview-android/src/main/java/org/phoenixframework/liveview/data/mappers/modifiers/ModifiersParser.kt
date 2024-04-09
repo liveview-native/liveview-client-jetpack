@@ -37,6 +37,9 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierDispla
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillParentMaxHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillParentMaxSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillParentMaxWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeightIn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImePadding
@@ -221,6 +224,27 @@ object ModifiersParser {
             modifierClickable -> this.then(clickableFromStyle(argListContext, pushEvent))
             modifierClip -> this.then(clipFromStyle(argListContext))
             modifierDefaultMinSize -> this.then(defaultMinSizeFromStyle(argListContext))
+            modifierFillParentMaxHeight -> this.then(
+                fillParentMaxHeightFromStyle(
+                    argListContext,
+                    scope
+                )
+            )
+
+            modifierFillParentMaxSize -> this.then(
+                fillParentMaxSizeFromStyle(
+                    argListContext,
+                    scope
+                )
+            )
+
+            modifierFillParentMaxWidth -> this.then(
+                fillParentMaxWidthFromStyle(
+                    argListContext,
+                    scope
+                )
+            )
+
             modifierFillMaxHeight -> this.then(fillMaxHeightFromStyle(argListContext))
             modifierFillMaxSize -> this.then(fillMaxSizeFromStyle(argListContext))
             modifierFillMaxWidth -> this.then(fillMaxWidthFromStyle(argListContext))
@@ -242,9 +266,19 @@ object ModifiersParser {
             modifierSize -> this.then(sizeFromStyle(argListContext))
             modifierSizeIn -> this.then(sizeInFromStyle(argListContext))
             modifierWeight -> this.then(weightFromStyle(argListContext, scope))
-            modifierWindowInsetsBottomHeight -> this.then(windowInsetsBottomHeightFromStyle(argListContext))
+            modifierWindowInsetsBottomHeight -> this.then(
+                windowInsetsBottomHeightFromStyle(
+                    argListContext
+                )
+            )
+
             modifierWindowInsetsEndWidth -> this.then(windowInsetsEndWidthFromStyle(argListContext))
-            modifierWindowInsetsStartWidth -> this.then(windowInsetsStartWidthFromStyle(argListContext))
+            modifierWindowInsetsStartWidth -> this.then(
+                windowInsetsStartWidthFromStyle(
+                    argListContext
+                )
+            )
+
             modifierWindowInsetsTopHeight -> this.then(windowInsetsTopHeightFromStyle(argListContext))
             modifierWidth -> this.then(widthFromStyle(argListContext))
             modifierWidthIn -> this.then(widthInFromStyle(argListContext))

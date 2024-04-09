@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -222,6 +223,138 @@ class SizeTest : ModifierBaseTest() {
             """,
             Modifier.fillMaxWidth(0.5f)
         )
+    }
+
+    @Test
+    fun fillParentMaxHeightTest() {
+        val style = """
+            %{"fillParentMaxHeightTest" => [
+                {:fillParentMaxHeight, [], [0.5]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            LazyColumn {
+                item {
+                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    modifier = Modifier.then(Modifier.fillParentMaxHeight(0.5f))
+                }
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
+    }
+
+    @Test
+    fun fillParentMaxHeightNamedTest() {
+        val style = """
+            %{"fillParentMaxHeightNamedTest" => [
+                {:fillParentMaxHeight, [], [[faction: 0.5]]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            LazyColumn {
+                item {
+                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    modifier = Modifier.then(Modifier.fillParentMaxHeight(fraction = 0.5f))
+                }
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
+    }
+
+    @Test
+    fun fillParentMaxSizeTest() {
+        val style = """
+            %{"fillParentMaxSizeTest" => [
+                {:fillParentMaxSize, [], [0.5]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            LazyColumn {
+                item {
+                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    modifier = Modifier.then(Modifier.fillParentMaxSize(0.5f))
+                }
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
+    }
+
+    @Test
+    fun fillParentMaxSizeNamedTest() {
+        val style = """
+            %{"fillParentMaxSizeNamedTest" => [
+                {:fillParentMaxSize, [], [[faction: 0.5]]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            LazyColumn {
+                item {
+                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    modifier = Modifier.then(Modifier.fillParentMaxSize(fraction = 0.5f))
+                }
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
+    }
+
+    @Test
+    fun fillParentMaxWidthTest() {
+        val style = """
+            %{"fillParentMaxWidthTest" => [
+                {:fillParentMaxWidth, [], [0.5]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            LazyColumn {
+                item {
+                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    modifier = Modifier.then(Modifier.fillParentMaxWidth(0.5f))
+                }
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
+    }
+
+    @Test
+    fun fillParentMaxWidthNamedTest() {
+        val style = """
+            %{"fillParentMaxWidthNamedTest" => [
+                {:fillParentMaxWidth, [], [[faction: 0.5]]},
+            ]}
+            """
+        var result: Modifier? = null
+        var modifier: Modifier? = null
+        composeRule.setContent {
+            LazyColumn {
+                item {
+                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    modifier = Modifier.then(Modifier.fillParentMaxWidth(fraction = 0.5f))
+                }
+            }
+        }
+        assert(result != null)
+        assert(modifier != null)
+        assertEquals(result, modifier)
     }
 
     @Test

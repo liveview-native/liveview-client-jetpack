@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -90,6 +91,63 @@ fun Modifier.fillMaxWidthFromStyle(arguments: List<ModifierDataAdapter.ArgumentD
     val args = argsOrNamedArgs(arguments)
     val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
     return this.then(Modifier.fillMaxWidth(fraction))
+}
+
+fun Modifier.fillParentMaxHeightFromStyle(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    scope: Any?
+): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
+    return when (scope) {
+        is LazyItemScope -> {
+            scope.run {
+                this@fillParentMaxHeightFromStyle.then(
+                    Modifier.fillParentMaxHeight(fraction)
+                )
+            }
+        }
+
+        else -> this
+    }
+}
+
+fun Modifier.fillParentMaxSizeFromStyle(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    scope: Any?
+): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
+    return when (scope) {
+        is LazyItemScope -> {
+            scope.run {
+                this@fillParentMaxSizeFromStyle.then(
+                    Modifier.fillParentMaxSize(fraction)
+                )
+            }
+        }
+
+        else -> this
+    }
+}
+
+fun Modifier.fillParentMaxWidthFromStyle(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    scope: Any?
+): Modifier {
+    val args = argsOrNamedArgs(arguments)
+    val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
+    return when (scope) {
+        is LazyItemScope -> {
+            scope.run {
+                this@fillParentMaxWidthFromStyle.then(
+                    Modifier.fillParentMaxWidth(fraction)
+                )
+            }
+        }
+
+        else -> this
+    }
 }
 
 fun Modifier.heightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
