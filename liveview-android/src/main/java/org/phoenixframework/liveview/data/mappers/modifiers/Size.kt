@@ -28,6 +28,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
@@ -38,6 +40,7 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argHeight
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argInsets
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argIntrinsicSize
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argMatchHeightConstraintFirst
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argMatchTextFieldWidth
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argMax
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argMaxHeight
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argMaxWidth
@@ -73,6 +76,22 @@ fun Modifier.defaultMinSizeFromStyle(arguments: List<ModifierDataAdapter.Argumen
             minHeight = minHeight ?: Dp.Unspecified,
         )
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+fun Modifier.exposedDropdownSizeFromStyle(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    scope: Any?
+): Modifier {
+    return if (scope is ExposedDropdownMenuBoxScope) {
+        val params = argsOrNamedArgs(arguments)
+        val matchTextFieldWidth = argOrNamedArg(params, argMatchTextFieldWidth, 0)?.booleanValue
+        scope.run {
+            this@exposedDropdownSizeFromStyle.then(
+                Modifier.exposedDropdownSize(matchTextFieldWidth = matchTextFieldWidth ?: true)
+            )
+        }
+    } else this
 }
 
 fun Modifier.fillMaxHeightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {

@@ -33,6 +33,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClip
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClipToBounds
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierDefaultMinSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierDisplayCutoutPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierExposedDropdownSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
@@ -225,6 +226,13 @@ object ModifiersParser {
             modifierClickable -> this.then(clickableFromStyle(argListContext, pushEvent))
             modifierClip -> this.then(clipFromStyle(argListContext))
             modifierDefaultMinSize -> this.then(defaultMinSizeFromStyle(argListContext))
+            modifierExposedDropdownSize -> this.then(
+                exposedDropdownSizeFromStyle(
+                    argListContext,
+                    scope
+                )
+            )
+
             modifierFillParentMaxHeight -> this.then(
                 fillParentMaxHeightFromStyle(
                     argListContext,
