@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.systemGesturesPadding
 import androidx.compose.foundation.layout.waterfallPadding
-import androidx.compose.foundation.progressSemantics
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -59,15 +58,18 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequir
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequiredSizeIn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequiredWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequiredWidthIn
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRotate
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeContentPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeDrawingPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeGesturesPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierScale
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierShadow
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSizeIn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierStatusBarsPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemBarsPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemGesturesPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTestTag
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWaterfallPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
@@ -204,7 +206,6 @@ object ModifiersParser {
             modifierMandatorySystemGesturesPadding -> this.then(Modifier.mandatorySystemGesturesPadding())
             modifierMinimumInteractiveComponentSize -> this.then(Modifier.minimumInteractiveComponentSize())
             modifierNavigationBarsPadding -> this.then(Modifier.navigationBarsPadding())
-            modifierProgressSemantics -> this.then(Modifier.progressSemantics())
             modifierSafeContentPadding -> this.then(Modifier.safeContentPadding())
             modifierSafeDrawingPadding -> this.then(Modifier.safeDrawingPadding())
             modifierSafeGesturesPadding -> this.then(Modifier.safeGesturesPadding())
@@ -256,15 +257,19 @@ object ModifiersParser {
             modifierPadding -> this.then(paddingFromStyle(argListContext))
             modifierPaddingFrom -> this.then(paddingFromFromStyle(argListContext))
             modifierPaddingFromBaseline -> this.then(paddingFromBaselineFromStyle(argListContext))
+            modifierProgressSemantics -> this.then(progressSemanticsFromStyle(argListContext))
             modifierRequiredHeight -> this.then(requiredHeightFromStyle(argListContext))
             modifierRequiredHeightIn -> this.then(requiredHeightInFromStyle(argListContext))
             modifierRequiredSize -> this.then(requiredSizeFromStyle(argListContext))
             modifierRequiredSizeIn -> this.then(requiredSizeInFromStyle(argListContext))
             modifierRequiredWidth -> this.then(requiredWidthFromStyle(argListContext))
             modifierRequiredWidthIn -> this.then(requiredWidthInFromStyle(argListContext))
+            modifierRotate -> this.then(rotateFromStyle(argListContext))
+            modifierScale -> this.then(scaleFromStyle(argListContext))
             modifierShadow -> this.then(shadowFromStyle(argListContext))
             modifierSize -> this.then(sizeFromStyle(argListContext))
             modifierSizeIn -> this.then(sizeInFromStyle(argListContext))
+            modifierTestTag -> this.then(testTagFromStyle(argListContext))
             modifierWeight -> this.then(weightFromStyle(argListContext, scope))
             modifierWindowInsetsBottomHeight -> this.then(
                 windowInsetsBottomHeightFromStyle(

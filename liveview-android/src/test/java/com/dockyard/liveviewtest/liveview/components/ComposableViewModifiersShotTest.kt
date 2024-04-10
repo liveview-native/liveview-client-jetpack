@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.systemGesturesPadding
 import androidx.compose.foundation.layout.waterfallPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.progressSemantics
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.ui.Alignment
@@ -26,14 +27,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.SemanticsProperties.ProgressBarRangeInfo
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.AlignmentValues
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
@@ -421,7 +426,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrSize="200" $attrContentAlignment="${AlignmentValues.center}">
+                <$box $attrSize="200" $attrContentAlignment="$center">
                     <$box $attrClass="$style">
                         <$text $attrText="Shadow Test" />
                     </$box>
@@ -496,6 +501,194 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                     <$text $attrText="System Gestures Padding Test" />
                 </$box>
                 """
+        )
+    }
+
+    @Test
+    fun testTagTest() {
+        val style = """
+            %{'testTagTest' => [
+                {:testTag, [], ['myTestTag']},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box {
+                    Text(
+                        text = "Test Tag Test",
+                        modifier = Modifier.testTag("myTestTag")
+                    )
+                }
+            },
+            template = """
+                <$box>
+                    <$text $attrText="Test Tag Test" $attrClass="$style"/>
+                </$box>
+                """,
+            onBeforeScreenShot = { rule ->
+                rule.onNodeWithTag("myTestTag").assertExists()
+            }
+        )
+    }
+
+    @Test
+    fun testTagNamedTest() {
+        val style = """
+            %{'testTagTest' => [
+                {:testTag, [], [[tag: 'myTestTag']]},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box {
+                    Text(
+                        text = "Test Tag Test",
+                        modifier = Modifier.testTag(tag = "myTestTag")
+                    )
+                }
+            },
+            template = """
+                <$box>
+                    <$text $attrText="Test Tag Test" $attrClass="$style"/>
+                </$box>
+                """,
+            onBeforeScreenShot = { rule ->
+                rule.onNodeWithTag("myTestTag").assertExists()
+            }
+        )
+    }
+
+    @Test
+    fun testProgressSemanticsTest() {
+        val style = """
+            %{'testProgressSemanticsTest' => [
+                {:progressSemantics, [], []},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box {
+                    Text(
+                        text = "Progress semantics",
+                        modifier = Modifier.progressSemantics()
+                    )
+                }
+            },
+            template = """
+                <$box>
+                    <$text $attrText="Progress semantics" $attrClass="$style"/>
+                </$box>
+                """,
+            onBeforeScreenShot = { rule ->
+                rule.onNode(SemanticsMatcher.keyIsDefined(ProgressBarRangeInfo)).assertExists()
+            }
+        )
+    }
+
+    @Test
+    fun testProgressSemanticsValueTest() {
+        val style = """
+            %{'testProgressSemanticsValueTest' => [
+                {:progressSemantics, [], [0.5]},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box {
+                    Text(
+                        text = "Progress semantics",
+                        modifier = Modifier.progressSemantics(value = 0.5f)
+                    )
+                }
+            },
+            template = """
+                <$box>
+                    <$text $attrText="Progress semantics" $attrClass="$style"/>
+                </$box>
+                """,
+            onBeforeScreenShot = { rule ->
+                rule.onNode(SemanticsMatcher.keyIsDefined(ProgressBarRangeInfo)).assertExists()
+                rule.onNode(
+                    SemanticsMatcher.expectValue(
+                        ProgressBarRangeInfo,
+                        ProgressBarRangeInfo(0.5f, 0f..1f)
+                    )
+                ).assertExists()
+            }
+        )
+    }
+
+    @Test
+    fun testProgressSemanticsValueAndRangeTest() {
+        val style = """
+            %{'testProgressSemanticsValueAndRangeTest' => [
+                {:progressSemantics, [], [50.0, {:.., [], [10.0, 100.0]}]},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box {
+                    Text(
+                        text = "Progress semantics",
+                        modifier = Modifier.progressSemantics(value = 50f, valueRange = 10f..100f)
+                    )
+                }
+            },
+            template = """
+                <$box>
+                    <$text $attrText="Progress semantics" $attrClass="$style"/>
+                </$box>
+                """,
+            onBeforeScreenShot = { rule ->
+                rule.onNode(SemanticsMatcher.keyIsDefined(ProgressBarRangeInfo)).assertExists()
+                rule.onNode(
+                    SemanticsMatcher.expectValue(
+                        ProgressBarRangeInfo,
+                        ProgressBarRangeInfo(50f, 10f..100f)
+                    )
+                ).assertExists()
+            }
+        )
+    }
+
+    @Test
+    fun testProgressSemanticsValuesNamedTest() {
+        val style = """
+            %{'testProgressSemanticsValuesNamedTest' => [
+              {:progressSemantics, [], [[
+                value: 50.0, 
+                valueRange: {:.., [], [10.0, 100.0]}, 
+                steps: 5
+              ]]},
+            ]}
+            """.toJsonForTemplate()
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box {
+                    Text(
+                        text = "Progress semantics",
+                        modifier = Modifier.progressSemantics(
+                            value = 50f,
+                            valueRange = 10f..100f,
+                            steps = 5
+                        )
+                    )
+                }
+            },
+            template = """
+                <$box>
+                    <$text $attrText="Progress semantics" $attrClass="$style"/>
+                </$box>
+                """,
+            onBeforeScreenShot = { rule ->
+                rule.onNode(SemanticsMatcher.keyIsDefined(ProgressBarRangeInfo)).assertExists()
+                rule.onNode(
+                    SemanticsMatcher.expectValue(
+                        ProgressBarRangeInfo,
+                        ProgressBarRangeInfo(50f, 10f..100f, 5)
+                    )
+                ).assertExists()
+            }
         )
     }
 
