@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.systemGesturesPadding
 import androidx.compose.foundation.layout.waterfallPadding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -46,6 +48,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImePad
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierLayoutId
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMandatorySystemGesturesPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMatchParentSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMenuAnchor
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMinimumInteractiveComponentSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierNavigationBarsPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierOffset
@@ -192,6 +195,7 @@ object ModifiersParser {
         } else this
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     private fun Modifier.handlerModifier(
         modifierId: String,
         argListContext: List<ModifierDataAdapter.ArgumentData>,
@@ -205,6 +209,15 @@ object ModifiersParser {
             modifierDisplayCutoutPadding -> this.then(Modifier.displayCutoutPadding())
             modifierImePadding -> this.then(Modifier.imePadding())
             modifierMandatorySystemGesturesPadding -> this.then(Modifier.mandatorySystemGesturesPadding())
+            modifierMenuAnchor -> {
+                if (scope is ExposedDropdownMenuBoxScope) {
+                    scope.run {
+                        this@handlerModifier.then(Modifier.menuAnchor())
+                    }
+
+                } else this
+            }
+
             modifierMinimumInteractiveComponentSize -> this.then(Modifier.minimumInteractiveComponentSize())
             modifierNavigationBarsPadding -> this.then(Modifier.navigationBarsPadding())
             modifierSafeContentPadding -> this.then(Modifier.safeContentPadding())

@@ -7,6 +7,7 @@ object ModifierNames {
     const val modifierDisplayCutoutPadding = "displayCutoutPadding"
     const val modifierImePadding = "imePadding"
     const val modifierMandatorySystemGesturesPadding = "mandatorySystemGesturesPadding"
+    const val modifierMenuAnchor = "menuAnchor"
     const val modifierMinimumInteractiveComponentSize = "minimumInteractiveComponentSize"
     const val modifierNavigationBarsPadding = "navigationBarsPadding"
     const val modifierProgressSemantics = "progressSemantics"
