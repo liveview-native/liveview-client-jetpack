@@ -52,6 +52,7 @@ import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDpSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeEvent
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeIntrinsicSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeOffset
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeRange
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeRole
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitDp
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitSp
@@ -111,6 +112,22 @@ internal fun eventFromStyle(argument: ModifierDataAdapter.ArgumentData): Pair<St
             val pushArgs = if (args.isEmpty()) null else if (args.size == 1) args.first() else null
             event to pushArgs
         } else null
+    } else null
+}
+
+internal fun floatRangeFromArgument(argument: ModifierDataAdapter.ArgumentData): ClosedFloatingPointRange<Float>? {
+    return if (argument.type == typeRange && argument.listValue.size == 2) {
+        val start = argument.listValue[0].floatValue
+        val end = argument.listValue[1].floatValue
+        if (start != null && end != null) start..end else null
+    } else null
+}
+
+internal fun intRangeFromArgument(argument: ModifierDataAdapter.ArgumentData): IntRange? {
+    return if (argument.type == typeRange && argument.listValue.size == 2) {
+        val start = argument.listValue[0].intValue
+        val end = argument.listValue[1].intValue
+        if (start != null && end != null) start..end else null
     } else null
 }
 

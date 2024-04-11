@@ -30,6 +30,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -37,6 +39,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -115,6 +118,46 @@ class SizeTest : ModifierBaseTest() {
                 minWidth = 150.dp,
             )
         )
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Test
+    fun exposedDropdownSizeTest() {
+        val style = """
+            %{"exposedDropdownSizeTest" => [
+                {:exposedDropdownSize, [], [false]},
+            ]}
+            """
+        var result: Modifier? = null
+        composeRule.setContent {
+            ExposedDropdownMenuBox(expanded = false, onExpandedChange = {}) {
+                result = Modifier.then(Modifier.fromStyle(style, this))
+            }
+        }
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assert(result != null)
+        assertNotEquals(result, Modifier)
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Test
+    fun exposedDropdownSizeNamedTest() {
+        val style = """
+            %{"exposedDropdownSizeNamedTest" => [
+                {:exposedDropdownSize, [], [[matchTextFieldWidth: false]]},
+            ]}
+            """
+        var result: Modifier? = null
+        composeRule.setContent {
+            ExposedDropdownMenuBox(expanded = false, onExpandedChange = {}) {
+                result = Modifier.then(Modifier.fromStyle(style, this))
+            }
+        }
+        // This Modifier always creates a different instance, so it cannot be compared.
+        // So we're just checking whether it is being processed (being not an empty modifier).
+        assert(result != null)
+        assertNotEquals(result, Modifier)
     }
 
     @Test
