@@ -35,7 +35,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       bold(true)
       italic(true)
       """}
-      
+
       output = [
         {:font, [file: __ENV__.file, line: line, module: __ENV__.module, source: "font(.largeTitle)"], [{:., [file: __ENV__.file, line: line, module: __ENV__.module, source: "font(.largeTitle)"], [nil, :largeTitle]}]},
         {:bold, [file: __ENV__.file, line: line + 1, module: __ENV__.module, source: "bold(true)"], [true]},
@@ -342,7 +342,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
 
   describe "Sheet test" do
     test "ensure the jetpack sheet compiles as expected" do
-      output = MockSheet.compile_ast(["color-red"], target: :all)
+      output = MockSheet.compile_ast(["color-red"])
 
       assert output == %{"color-red" => [
         {:color, [], [{:., [], [nil, :red]}]}
@@ -350,7 +350,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "ensure to_ime doesn't double print ast node" do
-      output = MockSheet.compile_ast(["button-plain"], target: :all)
+      output = MockSheet.compile_ast(["button-plain"])
 
       assert output == %{"button-plain" => [
         {:buttonStyle, [], [{:., [], [nil, :plain]}]}
@@ -358,7 +358,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "can compile custom classes using the RULES sigil" do
-      output = MockSheet.compile_ast(["color-blue"], target: :all)
+      output = MockSheet.compile_ast(["color-blue"])
 
       assert output == %{"color-blue" => [
         {:color, [], [{:., [], [nil, :blue]}]}

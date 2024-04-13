@@ -41,3 +41,5 @@ live_view_native_jetpack-*.tar
 
 # Common OS files
 .DS_Store
+
+.priv/static
