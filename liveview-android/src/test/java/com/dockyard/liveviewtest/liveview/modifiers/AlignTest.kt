@@ -14,7 +14,8 @@ import junit.framework.TestCase.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyle
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyleName
 
 @RunWith(AndroidJUnit4::class)
 class AlignTest {
@@ -31,10 +32,11 @@ class AlignTest {
             """
         var result: Modifier? = null
         var modifier: Modifier? = null
+        ModifiersParser.fromStyleFile(style, null)
         composeRule.setContent {
             Box {
-                result = Modifier.then(Modifier.fromStyle(style, this))
-                modifier = Modifier.then(Modifier.align(Alignment.BottomEnd))
+                result = Modifier.fromStyleName("boxAlignTest", this, null)
+                modifier = Modifier.align(Alignment.BottomEnd)
             }
         }
         assert(result != null)
@@ -45,15 +47,16 @@ class AlignTest {
     @Test
     fun boxAlignNamedParamTest() {
         val style = """
-            %{"boxAlignTest" => [
+            %{"boxAlignNamedParamTest" => [
                 {:align, [], [[alignment: {:., [], [:Alignment, :BottomEnd]}]]},
             ]}
             """
+        ModifiersParser.fromStyleFile(style, null)
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             Box {
-                result = Modifier.then(Modifier.fromStyle(style, this))
+                result = Modifier.fromStyleName("boxAlignNamedParamTest", this, null)
                 modifier = Modifier.then(Modifier.align(Alignment.BottomEnd))
             }
         }
@@ -69,12 +72,13 @@ class AlignTest {
                 {:align, [], [{:., [], [:Alignment, :End]}]},
             ]}
             """
+        ModifiersParser.fromStyleFile(style, null)
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             Column {
-                result = Modifier.then(Modifier.fromStyle(style, this))
-                modifier = Modifier.then(Modifier.align(Alignment.End))
+                result = Modifier.fromStyleName("columnAlignTest", this, null)
+                modifier = Modifier.align(Alignment.End)
             }
         }
         assert(result != null)
@@ -89,12 +93,13 @@ class AlignTest {
                 {:align, [], [{:., [], [:Alignment, :Bottom]}]},
             ]}
             """
+        ModifiersParser.fromStyleFile(style, null)
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             Row {
-                result = Modifier.then(Modifier.fromStyle(style, this))
-                modifier = Modifier.then(Modifier.align(Alignment.Bottom))
+                result = Modifier.fromStyleName("rowAlignTest", this, null)
+                modifier = Modifier.align(Alignment.Bottom)
             }
         }
         assert(result != null)
@@ -109,12 +114,13 @@ class AlignTest {
                 {:alignByBaseline, [], []},
             ]}
             """
+        ModifiersParser.fromStyleFile(style, null)
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             Row {
-                result = Modifier.then(Modifier.fromStyle(style, this))
-                modifier = Modifier.then(Modifier.alignByBaseline())
+                result = Modifier.fromStyleName("rowAlignByBaselineTest", this, null)
+                modifier = Modifier.alignByBaseline()
             }
         }
         assert(result != null)
@@ -130,12 +136,13 @@ class AlignTest {
                 {:alignByBaseline, [], []},
             ]}
             """
+        ModifiersParser.fromStyleFile(style, null)
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             FlowRow {
-                result = Modifier.then(Modifier.fromStyle(style, this))
-                modifier = Modifier.then(Modifier.alignByBaseline())
+                result = Modifier.fromStyleName("flowRowAlignByBaselineTest", this, null)
+                modifier = Modifier.alignByBaseline()
             }
         }
         assert(result != null)

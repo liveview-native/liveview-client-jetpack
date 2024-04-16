@@ -10,7 +10,8 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyle
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyleName
 
 @RunWith(AndroidJUnit4::class)
 class OtherTest {
@@ -26,10 +27,11 @@ class OtherTest {
                 {:menuAnchor, [], []},
             ]}
             """
+        ModifiersParser.fromStyleFile(style)
         var result: Modifier? = null
         composeRule.setContent {
             ExposedDropdownMenuBox(expanded = false, onExpandedChange = {}) {
-                result = Modifier.then(Modifier.fromStyle(style, this))
+                result = Modifier.then(Modifier.fromStyleName("menuAnchorTest", this))
             }
         }
         assert(result != null)

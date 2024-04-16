@@ -44,18 +44,22 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
 import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.domain.base.PushEvent
 
 class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun captionBarPaddingTest() {
-        val style = """
-            %{'captionBarPaddingTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"captionBarPaddingTest" => [
                 {:captionBarPadding, [], []},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(modifier = Modifier.captionBarPadding()) {
@@ -65,7 +69,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style">
+                <$box $attrClass="captionBarPaddingTest">
                     <$text $attrText="Caption Bar Padding Test" />
                 </$box>
                 """
@@ -75,13 +79,19 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
     @Test
     fun clickableTest() {
         var counter = 0
-        val style = """
-           %{'clickableTest' => [
+        val pushEvent: PushEvent = { _, _, _, _ ->
+            // Changing the counter value to check if the button is clicked
+            counter = 10
+        }
+        ModifiersParser.fromStyleFile(
+            """
+           %{"clickableTest" => [
               {:clickable, [], [
-                {:__event__, [], ['my-click-event', []]}
+                {:__event__, [], ["my-click-event", []]}
               ]}
             ]}  
-            """.toJsonForTemplate()
+            """, pushEvent
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box {
@@ -97,16 +107,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$box>
-                    <$text $attrClass="$style" $attrText="Clickable" />
+                    <$text $attrClass="clickableTest" $attrText="Clickable" />
                 </$box>
                 """,
             onBeforeScreenShot = { rule ->
                 rule.onNodeWithText("Clickable").performClick()
             },
-            pushEvent = { _, _, _, _ ->
-                // Changing the counter value to check if the button is clicked
-                counter = 10
-            },
+            pushEvent = pushEvent,
             delayBeforeScreenshot = 200,
         )
         assertEquals(10, counter)
@@ -115,13 +122,20 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
     @Test
     fun clickableNamedTest() {
         var counter = 0
-        val style = """
-           %{'clickableNamedTest' => [
+        val pushEvent: PushEvent = { _, _, _, _ ->
+            // Changing the counter value to check if the button is clicked
+            counter = 10
+        }
+        ModifiersParser.fromStyleFile(
+            """
+           %{"clickableNamedTest" => [
               {:clickable, [], [[
                 onClick: {:__event__, [], ['my-click-event', []]}
               ]]}
             ]}  
-            """.toJsonForTemplate()
+            """,
+            pushEvent
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box {
@@ -137,16 +151,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$box>
-                    <$text $attrClass="$style" $attrText="Clickable" />
+                    <$text $attrClass="clickableNamedTest" $attrText="Clickable" />
                 </$box>
                 """,
             onBeforeScreenShot = { rule ->
                 rule.onNodeWithText("Clickable").performClick()
             },
-            pushEvent = { _, _, _, _ ->
-                // Changing the counter value to check if the button is clicked
-                counter = 10
-            },
+            pushEvent = pushEvent,
             delayBeforeScreenshot = 200,
         )
         assertEquals(10, counter)
@@ -155,8 +166,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
     @Test
     fun clickableTestWithOtherParams() {
         var counter = 0
-        val style = """
-           %{'clickableTestWithOtherParams' => [
+        val pushEvent: PushEvent = { _, _, _, _ ->
+            // Changing the counter value to check if the button is clicked
+            counter = 10
+        }
+        ModifiersParser.fromStyleFile(
+            """
+           %{"clickableTestWithOtherParams" => [
               {:clickable, [], [[
                 enabled: true, 
                 onClickLabel: 'onClickLabel', 
@@ -164,7 +180,8 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 onClick: {:__event__, [], ['my-click-event', []]}
               ]]}
             ]}  
-            """.toJsonForTemplate()
+            """, pushEvent
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box {
@@ -183,27 +200,26 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$box>
-                    <$text $attrClass="$style" $attrText="Clickable" />
+                    <$text $attrClass="clickableTestWithOtherParams" $attrText="Clickable" />
                 </$box>
                 """,
             onBeforeScreenShot = { rule ->
                 rule.onNodeWithText("Clickable").performClick()
             },
-            pushEvent = { _, _, _, _ ->
-                // Changing the counter value to check if the button is clicked
-                counter = 10
-            },
+            pushEvent = pushEvent,
         )
         assertEquals(10, counter)
     }
 
     @Test
     fun displayCutoutPaddingTest() {
-        val style = """
-            %{'displayCutoutPadding' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"displayCutoutPadding" => [
                 {:displayCutoutPadding, [], []},
             ]}
             """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(modifier = Modifier.displayCutoutPadding()) {
@@ -213,7 +229,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style">
+                <$box $attrClass="displayCutoutPadding">
                     <$text $attrText="Display Cutout Padding Test" />
                 </$box>
                 """
@@ -222,11 +238,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun safeDrawingPaddingTest() {
-        val style = """
-            %{'safeDrawingPaddingTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"safeDrawingPaddingTest" => [
                 {:safeDrawingPadding, [], []},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(modifier = Modifier.safeDrawingPadding()) {
@@ -236,7 +254,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style">
+                <$box $attrClass="safeDrawingPaddingTest">
                     <$text $attrText="Safe Drawing Padding Test" />
                 </$box>
                 """
@@ -245,11 +263,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun imePaddingTest() {
-        val style = """
-            %{'imePaddingTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"imePaddingTest" => [
                 {:imePadding, [], []},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(modifier = Modifier.imePadding()) {
@@ -259,7 +279,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style">
+                <$box $attrClass="imePaddingTest">
                     <$text $attrText="IME Padding Test" />
                 </$box>
                 """
@@ -268,11 +288,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun mandatorySystemGesturesPaddingTest() {
-        val style = """
-            %{'mandatorySystemGesturesPaddingTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"mandatorySystemGesturesPaddingTest" => [
                 {:mandatorySystemGesturesPadding, [], []},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(modifier = Modifier.mandatorySystemGesturesPadding()) {
@@ -282,7 +304,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style">
+                <$box $attrClass="mandatorySystemGesturesPaddingTest">
                     <$text $attrText="Mandatory System Gestures Padding Test" />
                 </$box>
                 """
@@ -291,11 +313,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun minimumInteractiveComponentSizeTest() {
-        val style = """
-            %{'minimumInteractiveComponentSizeTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"minimumInteractiveComponentSizeTest" => [
                 {:minimumInteractiveComponentSize, [], []},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(
@@ -308,7 +332,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style" $attrContentAlignment="$center">
+                <$box $attrClass="minimumInteractiveComponentSizeTest" $attrContentAlignment="$center">
                     <$text $attrText="A" />
                 </$box>
                 """
@@ -317,11 +341,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun navigationBarsPaddingTest() {
-        val style = """
-            %{'navigationBarsPaddingTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"navigationBarsPaddingTest" => [
                 {:navigationBarsPadding, [], []},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(modifier = Modifier.navigationBarsPadding()) {
@@ -331,7 +357,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style">
+                <$box $attrClass="navigationBarsPaddingTest">
                     <$text $attrText="Navigation Bars Padding Test" />
                 </$box>
                 """
@@ -340,11 +366,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun safeContentPaddingTest() {
-        val style = """
-            %{'safeContentPaddingTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"safeContentPaddingTest" => [
                 {:safeContentPadding, [], []},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(modifier = Modifier.safeContentPadding()) {
@@ -354,7 +382,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style">
+                <$box $attrClass="safeContentPaddingTest">
                     <$text $attrText="Safe Content Padding Test" />
                 </$box>
                 """
@@ -363,11 +391,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun safeGesturesPaddingTest() {
-        val style = """
-            %{'safeGesturesPaddingTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"safeGesturesPaddingTest" => [
                 {:safeGesturesPadding, [], []},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(modifier = Modifier.safeGesturesPadding()) {
@@ -377,7 +407,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style">
+                <$box $attrClass="safeGesturesPaddingTest">
                     <$text $attrText="Safe Gestures Padding Test" />
                 </$box>
                 """
@@ -388,8 +418,9 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
     // https://github.com/robolectric/robolectric/issues/8081
     @Test
     fun shadowTest() {
-        val style = """
-            %{'shadowTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"shadowTest" => [
                 {:shadow, [], [[
                     elevation: 8,
                     shape: {:., [], [:RectangleShape]},
@@ -400,7 +431,8 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 {:background, [], [{:., [], [:Color, :White]}]},
                 {:padding, [], [{:., [], [16, :dp]}]}
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(
@@ -427,7 +459,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$box $attrSize="200" $attrContentAlignment="$center">
-                    <$box $attrClass="$style">
+                    <$box $attrClass="shadowTest">
                         <$text $attrText="Shadow Test" />
                     </$box>
                 </$box>
@@ -437,11 +469,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun statusBarsPaddingTest() {
-        val style = """
-            %{'statusBarsPaddingTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"statusBarsPaddingTest" => [
                 {:statusBarsPadding, [], []},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(modifier = Modifier.statusBarsPadding()) {
@@ -451,7 +485,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style">
+                <$box $attrClass="statusBarsPaddingTest">
                     <$text $attrText="Status Bars Padding Test" />
                 </$box>
                 """
@@ -460,11 +494,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun systemBarsPaddingTest() {
-        val style = """
-            %{'systemBarsPaddingTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"systemBarsPaddingTest" => [
                 {:systemBarsPadding, [], []},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(modifier = Modifier.systemBarsPadding()) {
@@ -474,7 +510,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style">
+                <$box $attrClass="systemBarsPaddingTest">
                     <$text $attrText="System Bars Padding Test" />
                 </$box>
                 """
@@ -483,11 +519,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun systemGesturesPaddingTest() {
-        val style = """
-            %{'systemGesturesPaddingTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"systemGesturesPaddingTest" => [
                 {:systemGesturesPadding, [], []},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(modifier = Modifier.systemGesturesPadding()) {
@@ -497,7 +535,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style">
+                <$box $attrClass="systemGesturesPaddingTest">
                     <$text $attrText="System Gestures Padding Test" />
                 </$box>
                 """
@@ -506,11 +544,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun testTagTest() {
-        val style = """
-            %{'testTagTest' => [
-                {:testTag, [], ['myTestTag']},
+        ModifiersParser.fromStyleFile(
+            """
+            %{"testTagTest" => [
+                {:testTag, [], ["myTestTag"]},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box {
@@ -522,7 +562,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$box>
-                    <$text $attrText="Test Tag Test" $attrClass="$style"/>
+                    <$text $attrText="Test Tag Test" $attrClass="testTagTest"/>
                 </$box>
                 """,
             onBeforeScreenShot = { rule ->
@@ -533,11 +573,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun testTagNamedTest() {
-        val style = """
-            %{'testTagTest' => [
-                {:testTag, [], [[tag: 'myTestTag']]},
+        ModifiersParser.fromStyleFile(
+            """
+            %{"testTagTest" => [
+                {:testTag, [], [[tag: "myTestTag"]]},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box {
@@ -549,7 +591,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$box>
-                    <$text $attrText="Test Tag Test" $attrClass="$style"/>
+                    <$text $attrText="Test Tag Test" $attrClass="testTagTest"/>
                 </$box>
                 """,
             onBeforeScreenShot = { rule ->
@@ -560,11 +602,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun testProgressSemanticsTest() {
-        val style = """
-            %{'testProgressSemanticsTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"testProgressSemanticsTest" => [
                 {:progressSemantics, [], []},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box {
@@ -576,7 +620,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$box>
-                    <$text $attrText="Progress semantics" $attrClass="$style"/>
+                    <$text $attrText="Progress semantics" $attrClass="testProgressSemanticsTest"/>
                 </$box>
                 """,
             onBeforeScreenShot = { rule ->
@@ -587,11 +631,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun testProgressSemanticsValueTest() {
-        val style = """
-            %{'testProgressSemanticsValueTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"testProgressSemanticsValueTest" => [
                 {:progressSemantics, [], [0.5]},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box {
@@ -603,7 +649,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$box>
-                    <$text $attrText="Progress semantics" $attrClass="$style"/>
+                    <$text $attrText="Progress semantics" $attrClass="testProgressSemanticsValueTest"/>
                 </$box>
                 """,
             onBeforeScreenShot = { rule ->
@@ -620,11 +666,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun testProgressSemanticsValueAndRangeTest() {
-        val style = """
-            %{'testProgressSemanticsValueAndRangeTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"testProgressSemanticsValueAndRangeTest" => [
                 {:progressSemantics, [], [50.0, {:.., [], [10.0, 100.0]}]},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box {
@@ -636,7 +684,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$box>
-                    <$text $attrText="Progress semantics" $attrClass="$style"/>
+                    <$text $attrText="Progress semantics" $attrClass="testProgressSemanticsValueAndRangeTest"/>
                 </$box>
                 """,
             onBeforeScreenShot = { rule ->
@@ -653,15 +701,17 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun testProgressSemanticsValuesNamedTest() {
-        val style = """
-            %{'testProgressSemanticsValuesNamedTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"testProgressSemanticsValuesNamedTest" => [
               {:progressSemantics, [], [[
                 value: 50.0, 
                 valueRange: {:.., [], [10.0, 100.0]}, 
                 steps: 5
               ]]},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box {
@@ -677,7 +727,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$box>
-                    <$text $attrText="Progress semantics" $attrClass="$style"/>
+                    <$text $attrText="Progress semantics" $attrClass="testProgressSemanticsValuesNamedTest"/>
                 </$box>
                 """,
             onBeforeScreenShot = { rule ->
@@ -694,11 +744,13 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun waterfallPaddingTest() {
-        val style = """
-            %{'waterfallPaddingTest' => [
+        ModifiersParser.fromStyleFile(
+            """
+            %{"waterfallPaddingTest" => [
                 {:waterfallPadding, [], []},
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(modifier = Modifier.waterfallPadding()) {
@@ -708,7 +760,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style">
+                <$box $attrClass="waterfallPaddingTest">
                     <$text $attrText="Waterfall Padding Test" />
                 </$box>
                 """
@@ -717,8 +769,9 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
     @Test
     fun windowInsetsPaddingTest() {
-        val style = """
-            %{'windowInsetsPadding' => [ 
+        ModifiersParser.fromStyleFile(
+            """
+            %{"windowInsetsPadding" => [ 
               {:windowInsetsPadding, [], [
                 {:WindowInsets, [], [
                   {:., [], [10, :dp]}, 
@@ -728,7 +781,8 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 ]}
               ]} 
             ]}
-            """.toJsonForTemplate()
+            """
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Box(
@@ -747,7 +801,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrClass="$style">
+                <$box $attrClass="windowInsetsPadding">
                     <$text $attrText="Window Insets Padding Test" />
                 </$box>                  
                 """

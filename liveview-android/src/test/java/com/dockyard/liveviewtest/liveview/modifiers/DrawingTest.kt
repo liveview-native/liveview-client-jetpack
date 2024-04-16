@@ -13,7 +13,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyle
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyleName
 
 @RunWith(AndroidJUnit4::class)
 class DrawingTest : ModifierBaseTest() {
@@ -160,13 +161,14 @@ class DrawingTest : ModifierBaseTest() {
 
     @Test
     fun safeDrawingPaddingTest() {
-        val result = Modifier.fromStyle(
+        ModifiersParser.fromStyleFile(
             """
             %{"safeDrawingPaddingTest" => [
                 {:safeDrawingPadding, [], []},
             ]}
             """
         )
+        val result = Modifier.fromStyleName("safeDrawingPaddingTest")
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
         assertNotEquals(result, Modifier)
@@ -174,7 +176,7 @@ class DrawingTest : ModifierBaseTest() {
 
     @Test
     fun shadowTest() {
-        val result = Modifier.fromStyle(
+        ModifiersParser.fromStyleFile(
             """
             %{"shadowTest" => [
                 {:shadow, [], [[
@@ -187,6 +189,7 @@ class DrawingTest : ModifierBaseTest() {
             ]}
             """,
         )
+        val result = Modifier.fromStyleName("shadowTest")
         // This Modifier always creates a different instance, so it cannot be compared.
         // So we're just checking whether it is being processed (being not an empty modifier).
         assertNotEquals(result, Modifier)

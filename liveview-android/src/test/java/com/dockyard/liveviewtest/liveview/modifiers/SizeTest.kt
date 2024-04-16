@@ -43,7 +43,8 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyle
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyleName
 
 @RunWith(AndroidJUnit4::class)
 class SizeTest : ModifierBaseTest() {
@@ -123,15 +124,17 @@ class SizeTest : ModifierBaseTest() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Test
     fun exposedDropdownSizeTest() {
-        val style = """
+        ModifiersParser.fromStyleFile(
+            """
             %{"exposedDropdownSizeTest" => [
                 {:exposedDropdownSize, [], [false]},
             ]}
             """
+        )
         var result: Modifier? = null
         composeRule.setContent {
             ExposedDropdownMenuBox(expanded = false, onExpandedChange = {}) {
-                result = Modifier.then(Modifier.fromStyle(style, this))
+                result = Modifier.then(Modifier.fromStyleName("exposedDropdownSizeTest", this))
             }
         }
         // This Modifier always creates a different instance, so it cannot be compared.
@@ -143,15 +146,17 @@ class SizeTest : ModifierBaseTest() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Test
     fun exposedDropdownSizeNamedTest() {
-        val style = """
+        ModifiersParser.fromStyleFile(
+            """
             %{"exposedDropdownSizeNamedTest" => [
                 {:exposedDropdownSize, [], [[matchTextFieldWidth: false]]},
             ]}
             """
+        )
         var result: Modifier? = null
         composeRule.setContent {
             ExposedDropdownMenuBox(expanded = false, onExpandedChange = {}) {
-                result = Modifier.then(Modifier.fromStyle(style, this))
+                result = Modifier.then(Modifier.fromStyleName("exposedDropdownSizeNamedTest", this))
             }
         }
         // This Modifier always creates a different instance, so it cannot be compared.
@@ -270,17 +275,19 @@ class SizeTest : ModifierBaseTest() {
 
     @Test
     fun fillParentMaxHeightTest() {
-        val style = """
+        ModifiersParser.fromStyleFile(
+            """
             %{"fillParentMaxHeightTest" => [
                 {:fillParentMaxHeight, [], [0.5]},
             ]}
             """
+        )
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             LazyColumn {
                 item {
-                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    result = Modifier.then(Modifier.fromStyleName("fillParentMaxHeightTest", this))
                     modifier = Modifier.then(Modifier.fillParentMaxHeight(0.5f))
                 }
             }
@@ -292,17 +299,20 @@ class SizeTest : ModifierBaseTest() {
 
     @Test
     fun fillParentMaxHeightNamedTest() {
-        val style = """
+        ModifiersParser.fromStyleFile(
+            """
             %{"fillParentMaxHeightNamedTest" => [
                 {:fillParentMaxHeight, [], [[faction: 0.5]]},
             ]}
             """
+        )
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             LazyColumn {
                 item {
-                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    result =
+                        Modifier.then(Modifier.fromStyleName("fillParentMaxHeightNamedTest", this))
                     modifier = Modifier.then(Modifier.fillParentMaxHeight(fraction = 0.5f))
                 }
             }
@@ -314,17 +324,19 @@ class SizeTest : ModifierBaseTest() {
 
     @Test
     fun fillParentMaxSizeTest() {
-        val style = """
+        ModifiersParser.fromStyleFile(
+            """
             %{"fillParentMaxSizeTest" => [
                 {:fillParentMaxSize, [], [0.5]},
             ]}
             """
+        )
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             LazyColumn {
                 item {
-                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    result = Modifier.then(Modifier.fromStyleName("fillParentMaxSizeTest", this))
                     modifier = Modifier.then(Modifier.fillParentMaxSize(0.5f))
                 }
             }
@@ -336,17 +348,20 @@ class SizeTest : ModifierBaseTest() {
 
     @Test
     fun fillParentMaxSizeNamedTest() {
-        val style = """
+        ModifiersParser.fromStyleFile(
+            """
             %{"fillParentMaxSizeNamedTest" => [
                 {:fillParentMaxSize, [], [[faction: 0.5]]},
             ]}
             """
+        )
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             LazyColumn {
                 item {
-                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    result =
+                        Modifier.then(Modifier.fromStyleName("fillParentMaxSizeNamedTest", this))
                     modifier = Modifier.then(Modifier.fillParentMaxSize(fraction = 0.5f))
                 }
             }
@@ -358,17 +373,19 @@ class SizeTest : ModifierBaseTest() {
 
     @Test
     fun fillParentMaxWidthTest() {
-        val style = """
+        ModifiersParser.fromStyleFile(
+            """
             %{"fillParentMaxWidthTest" => [
                 {:fillParentMaxWidth, [], [0.5]},
             ]}
             """
+        )
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             LazyColumn {
                 item {
-                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    result = Modifier.then(Modifier.fromStyleName("fillParentMaxWidthTest", this))
                     modifier = Modifier.then(Modifier.fillParentMaxWidth(0.5f))
                 }
             }
@@ -380,17 +397,20 @@ class SizeTest : ModifierBaseTest() {
 
     @Test
     fun fillParentMaxWidthNamedTest() {
-        val style = """
+        ModifiersParser.fromStyleFile(
+            """
             %{"fillParentMaxWidthNamedTest" => [
                 {:fillParentMaxWidth, [], [[faction: 0.5]]},
             ]}
             """
+        )
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             LazyColumn {
                 item {
-                    result = Modifier.then(Modifier.fromStyle(style, this))
+                    result =
+                        Modifier.then(Modifier.fromStyleName("fillParentMaxWidthNamedTest", this))
                     modifier = Modifier.then(Modifier.fillParentMaxWidth(fraction = 0.5f))
                 }
             }
@@ -513,17 +533,19 @@ class SizeTest : ModifierBaseTest() {
 
     @Test
     fun matchParentSizeTest() {
-        val style = """
+        ModifiersParser.fromStyleFile(
+            """
             %{"matchParentSizeTest" => [
                 {:matchParentSize, [], []},
             ]}
             """
+        )
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             Box {
-                result = Modifier.then(Modifier.fromStyle(style, this))
-                modifier = Modifier.then(Modifier.matchParentSize())
+                result = Modifier.fromStyleName("matchParentSizeTest", this)
+                modifier = Modifier.matchParentSize()
             }
         }
         assert(result != null)
@@ -914,16 +936,18 @@ class SizeTest : ModifierBaseTest() {
 
     @Test
     fun weightRowTest() {
-        val style = """
+        ModifiersParser.fromStyleFile(
+            """
             %{"weightRowTest" => [
                 {:weight, [], [0.5, false]},
             ]}
             """
+        )
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             Row {
-                result = Modifier.then(Modifier.fromStyle(style, this))
+                result = Modifier.then(Modifier.fromStyleName("weightRowTest", this))
                 modifier = Modifier.then(Modifier.weight(0.5f, false))
             }
         }
@@ -934,16 +958,18 @@ class SizeTest : ModifierBaseTest() {
 
     @Test
     fun weightColumnTest() {
-        val style = """
+        ModifiersParser.fromStyleFile(
+            """
             %{"weightColumnTest" => [
                 {:weight, [], [[weight: 0.5, fill: false]]},
             ]}
             """
+        )
         var result: Modifier? = null
         var modifier: Modifier? = null
         composeRule.setContent {
             Column {
-                result = Modifier.then(Modifier.fromStyle(style, this))
+                result = Modifier.then(Modifier.fromStyleName("weightColumnTest", this))
                 modifier = Modifier.then(Modifier.weight(0.5f, false))
             }
         }
