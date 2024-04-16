@@ -28,6 +28,11 @@ internal data class PlaceholderModifierNodeElement(
     }
 }
 
+/**
+ * This Modifier serves as placeholder for modifiers that requires a context and need to be
+ * evaluated at runtime. Since the order of modifiers matter, this placeholder just occupy the
+ * modifier slot until the real modifier is evaluated.
+ */
 fun Modifier.placeholderModifier(
     modifierName: String,
     argListContext: List<ModifierDataAdapter.ArgumentData>
