@@ -130,8 +130,8 @@ fun Modifier.paddingFromFromStyle(arguments: List<ModifierDataAdapter.ArgumentDa
             Modifier.paddingFrom(alignmentLine, topDp ?: Dp.Unspecified, bottomDp ?: Dp.Unspecified)
         )
     }
-    val topSp = topArg?.let { spFromStyle(it) }
-    val bottomSp = bottomArg?.let { spFromStyle(it) }
+    val topSp = topArg?.let { textUnitFromStyle(it) }
+    val bottomSp = bottomArg?.let { textUnitFromStyle(it) }
     if (topSp != null || bottomSp != null) {
         return this.then(
             Modifier.paddingFrom(
@@ -157,8 +157,8 @@ fun Modifier.paddingFromBaselineFromStyle(arguments: List<ModifierDataAdapter.Ar
             Modifier.paddingFromBaseline(topDp ?: Dp.Unspecified, bottomDp ?: Dp.Unspecified)
         )
     }
-    val topSp = topArg?.let { spFromStyle(it) }
-    val bottomSp = bottomArg?.let { spFromStyle(it) }
+    val topSp = topArg?.let { textUnitFromStyle(it) }
+    val bottomSp = bottomArg?.let { textUnitFromStyle(it) }
     if (topSp != null || bottomSp != null) {
         return this.then(
             Modifier.paddingFromBaseline(

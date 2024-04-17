@@ -57,7 +57,7 @@ import org.phoenixframework.liveview.data.dto.alignmentFromString
 import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
 import org.phoenixframework.liveview.data.dto.onClickFromString
 import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyle
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyleName
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.KEY_PHX_VALUE
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.toColor
@@ -424,7 +424,7 @@ abstract class ComposableBuilder {
     private fun modifier(string: String, scope: Any?, pushEvent: PushEvent?) = apply {
         val modifier = this.commonProps.modifier
         this.commonProps = this.commonProps.copy(
-            modifier = modifier.then(Modifier.fromStyle(string, scope, pushEvent))
+            modifier = modifier.then(Modifier.fromStyleName(string, scope, pushEvent))
         )
     }
 

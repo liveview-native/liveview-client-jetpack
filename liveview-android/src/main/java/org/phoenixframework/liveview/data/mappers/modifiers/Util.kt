@@ -18,7 +18,9 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import org.phoenixframework.liveview.data.constants.AlignmentLineValues
 import org.phoenixframework.liveview.data.constants.BrushFunctions
@@ -48,13 +50,19 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argTopStart
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argWidth
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeBrush
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDpSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeEvent
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeIntrinsicSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeOffset
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeRange
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeRole
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnit
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnitEm
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnitSp
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnitType
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitDp
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitEm
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitSp
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeWindowInsets
 import org.phoenixframework.liveview.data.constants.OffsetValues
@@ -90,15 +98,37 @@ internal fun dpFromStyle(argument: ModifierDataAdapter.ArgumentData): Dp? {
         if (value?.isFloat == true) value.floatValue?.dp
         else if (value?.isInt == true) value.intValue?.dp
         else null
+    } else if (argument.type == typeDp) {
+        val value = argument.listValue.getOrNull(0)
+        if (value?.isFloat == true) value.floatValue?.dp
+        else if (value?.isInt == true) value.intValue?.dp
+        else null
     } else null
 }
 
-internal fun spFromStyle(argument: ModifierDataAdapter.ArgumentData): TextUnit? {
-    return if (argument.isDot && argument.listValue.getOrNull(1)?.stringValueWithoutColon == typeUnitSp) {
+internal fun textUnitFromStyle(argument: ModifierDataAdapter.ArgumentData): TextUnit? {
+    return if (argument.isDot) {
         val value = argument.listValue.getOrNull(0)
-        if (value?.isFloat == true) value.floatValue?.sp
-        else if (value?.isInt == true) value.intValue?.sp
-        else null
+        val type = argument.listValue.getOrNull(1)?.stringValueWithoutColon
+        if (type == typeUnitSp) {
+            if (value?.isFloat == true) value.floatValue?.sp
+            else if (value?.isInt == true) value.intValue?.sp
+            else null
+        } else if (type == typeUnitEm) {
+            if (value?.isFloat == true) value.floatValue?.em
+            else if (value?.isInt == true) value.intValue?.em
+            else null
+        } else null
+    } else if (argument.type == typeTextUnit) {
+        val value = argument.listValue.getOrNull(0)?.floatValue
+        val argsToCreateTextUnit = argument.listValue.getOrNull(1)?.listValue
+        val textUnitClass = argsToCreateTextUnit?.getOrNull(0)?.stringValueWithoutColon
+        val textUnitType = argsToCreateTextUnit?.getOrNull(1)?.stringValueWithoutColon
+        if (textUnitClass == typeTextUnitType && textUnitType == typeTextUnitSp && value != null) {
+            TextUnit(value, TextUnitType.Sp)
+        } else if (textUnitClass == typeTextUnitType && textUnitType == typeTextUnitEm && value != null) {
+            TextUnit(value, TextUnitType.Em)
+        } else null
     } else null
 }
 
