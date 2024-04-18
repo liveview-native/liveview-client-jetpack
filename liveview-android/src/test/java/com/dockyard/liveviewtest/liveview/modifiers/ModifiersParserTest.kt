@@ -14,7 +14,7 @@ import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyleName
 
 @RunWith(AndroidJUnit4::class)
-class ModifiersParserTest: ModifierBaseTest() {
+class ModifiersParserTest : ModifierBaseTest() {
 
     @Test
     fun parseEmptyFileTest() {
