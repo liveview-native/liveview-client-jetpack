@@ -174,7 +174,7 @@ internal object ModifiersParser {
         val elixirParser = ElixirParser(commonTokenStream)
 
         // The stylesheet is a map, therefore the root expression must be a map expression
-        val rootExpression = elixirParser.parse().block().expression().first()
+        val rootExpression = elixirParser.parse()?.block()?.expression()?.firstOrNull()
         val mapExprContext: MapExprContext
         if (rootExpression is MapExprContext) {
             mapExprContext = rootExpression
@@ -183,7 +183,7 @@ internal object ModifiersParser {
         }
 
         val mapContext = mapExprContext.map()
-        val mapEntryContext = mapContext.map_entries().map_entry().map { mapEntryContext ->
+        val mapEntryContext = mapContext?.map_entries()?.map_entry()?.map { mapEntryContext ->
             // The map key is the style name and the map value contain the list of modifiers
             val styleName = mapEntryContext.expression(0).text.replace("\"", "")
             val mapValueContext = mapEntryContext.expression(1)
