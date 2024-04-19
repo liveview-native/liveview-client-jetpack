@@ -144,20 +144,12 @@ class LiveViewCoordinator(
                         }
 
                         message.payload.containsKey(ChannelService.MESSAGE_EVENT_DIFF) -> {
-                            try {
-                                parseTemplate(
-                                    getJsonFieldAsString(
-                                        ChannelService.MESSAGE_EVENT_DIFF,
-                                        message.payloadJson
-                                    )
+                            parseTemplate(
+                                getJsonFieldAsString(
+                                    ChannelService.MESSAGE_EVENT_DIFF,
+                                    message.payloadJson
                                 )
-                            } catch (e: Exception) {
-                                Log.e(
-                                    TAG,
-                                    "message.payload.containsKey(ChannelService.MESSAGE_EVENT_DIFF)",
-                                    e
-                                )
-                            }
+                            )
                         }
                     }
                 }
