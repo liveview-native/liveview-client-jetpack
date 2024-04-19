@@ -1,6 +1,5 @@
 package org.phoenixframework.liveview.ui.phx_components
 
-import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -8,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
@@ -26,13 +24,6 @@ private const val ARG_ROUTE = "route"
 
 @Composable
 fun LiveView(url: String) {
-    // The WebSocket URL is the same of the HTTP URL,
-    // so we just copy the HTTP URL changing the schema (protocol)
-    val webSocketBaseUrl = remember(url) {
-        val uri = Uri.parse(url)
-        val webSocketScheme = if (uri.scheme == "https") "wss" else "ws"
-        uri.buildUpon().scheme(webSocketScheme).path("live/websocket").build().toString()
-    }
     val themeData by ThemeHolder.themeData.collectAsState()
 
     LiveViewNativeTheme(themeData = themeData) {
@@ -52,7 +43,6 @@ fun LiveView(url: String) {
                         navController = navController,
                         backStackEntry = backStackEntry,
                         httpBaseUrl = url,
-                        wsBaseUrl = webSocketBaseUrl,
                     )
                 }
             }
@@ -65,13 +55,11 @@ private fun NavDestination(
     navController: NavController,
     backStackEntry: NavBackStackEntry,
     httpBaseUrl: String,
-    wsBaseUrl: String,
 ) {
     val route = backStackEntry.arguments?.getString(ARG_ROUTE)
-    val httpUrl = if (route == null) httpBaseUrl else "$httpBaseUrl$route"
     val liveViewCoordinator = viewModel<LiveViewCoordinator>(
         viewModelStoreOwner = backStackEntry,
-        factory = LiveViewCoordinator.Factory(httpUrl, wsBaseUrl, route)
+        factory = LiveViewCoordinator.Factory(httpBaseUrl, route)
     )
 
     val state by liveViewCoordinator.composableTree.collectAsState()

@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.domain
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -14,8 +15,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.phoenixframework.Message
 import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.VerticalArrangementValues.center
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.data.repository.Repository
@@ -109,7 +112,7 @@ class LiveViewCoordinator(
 
     private fun joinLiveViewChannel() {
         channelJob = viewModelScope.launch(Dispatchers.IO) {
-            repository.joinLiveViewChannel(true)
+            repository.joinLiveViewChannel(redirect = instanceCount > 1)
                 .catch { cause: Throwable ->
                     Log.e(TAG, "joinLiveViewChannel::Error", cause)
                     getDomFromThrowable(cause)
@@ -137,16 +140,28 @@ class LiveViewCoordinator(
 
                         // Diff messages
                         message.event == ChannelService.MESSAGE_EVENT_DIFF -> {
-                            parseTemplate(message.payloadJson)
+                            try {
+                                parseTemplate(message.payloadJson)
+                            } catch (e: Exception) {
+                                Log.e(TAG, "message.event == ChannelService.MESSAGE_EVENT_DIFF", e)
+                            }
                         }
 
                         message.payload.containsKey(ChannelService.MESSAGE_EVENT_DIFF) -> {
-                            parseTemplate(
-                                getJsonFieldAsString(
-                                    ChannelService.MESSAGE_EVENT_DIFF,
-                                    message.payloadJson
+                            try {
+                                parseTemplate(
+                                    getJsonFieldAsString(
+                                        ChannelService.MESSAGE_EVENT_DIFF,
+                                        message.payloadJson
+                                    )
                                 )
-                            )
+                            } catch (e: Exception) {
+                                Log.e(
+                                    TAG,
+                                    "message.payload.containsKey(ChannelService.MESSAGE_EVENT_DIFF)",
+                                    e
+                                )
+                            }
                         }
                     }
                 }
@@ -313,7 +328,8 @@ class LiveViewCoordinator(
         val errorHtml = when (cause) {
             is ConnectException -> {
                 """
-                <$column>
+                <$column $attrVerticalArrangement="$center">
+                    <$text $attrPadding='16'>Error</$text>
                     <$text $attrWidth='$fill' $attrPadding='16'>${cause.message}</$text>
                     <$text $attrWidth='$fill' $attrPadding='16'>
                         This probably means your localhost server isn't running...\n
@@ -325,7 +341,8 @@ class LiveViewCoordinator(
 
             else -> {
                 """
-                <$column>
+                <$column $attrVerticalArrangement="$center">
+                    <$text $attrPadding='16'>Error</$text>
                     <$text $attrWidth='$fill' $attrPadding='16'>${cause.message}</$text>
                 </$column>
                 """.trimMargin()
@@ -359,12 +376,27 @@ class LiveViewCoordinator(
 
     class Factory(
         private val httpBaseUrl: String,
-        private val wsBaseUrl: String,
         private val route: String?,
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            Log.d(TAG, "Creating VM:: httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
-            return LiveViewCoordinator(httpBaseUrl, wsBaseUrl, route) as T
+            // The WebSocket URL is the same of the HTTP URL,
+            // so we just copy the HTTP URL changing the schema (protocol)
+            val uri = Uri.parse(httpBaseUrl)
+            val webSocketScheme = if (uri.scheme == "https") "wss" else "ws"
+            val wsBaseUrl =
+                uri.buildUpon().scheme(webSocketScheme).path("live/websocket").build().toString()
+
+            val httpUrl = if (route == null) httpBaseUrl else {
+                val uriBuilder = Uri.parse(httpBaseUrl).buildUpon()
+                if (route.startsWith('/')) {
+                    uriBuilder.path(route)
+                } else {
+                    uriBuilder.appendPath(route)
+                }
+                uriBuilder.toString()
+            }
+
+            return LiveViewCoordinator(httpUrl, wsBaseUrl, route) as T
         }
     }
 
