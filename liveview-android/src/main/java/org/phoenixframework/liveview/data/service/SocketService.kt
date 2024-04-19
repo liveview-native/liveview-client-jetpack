@@ -182,7 +182,9 @@ object SocketService {
     suspend fun loadInitialPayload(url: String) {
         payload = withContext(Dispatchers.IO) {
             try {
-                val doc: Document? = newHttpCall(url)
+                val uri = Uri.parse(url).buildUpon()
+                    .appendQueryParameter(SOCKET_PARAM_FORMAT, FORMAT_JETPACK)
+                val doc: Document? = newHttpCall(uri.toString())
                     .execute()
                     .body?.string()
                     ?.let { Jsoup.parse(it) }
@@ -217,8 +219,10 @@ object SocketService {
     suspend fun loadThemeData(httpBaseUrl: String): Map<String, Any> {
         return withContext(Dispatchers.IO) {
             try {
+                val uri = Uri.parse(httpBaseUrl).buildUpon()
+                    .path("/assets/android_style.json")
                 val request = Request.Builder()
-                    .url("$httpBaseUrl/assets/android_style.json")
+                    .url(uri.toString())
                     .build()
                 val result = okHttpClient.newCall(request).execute().body?.string()
                 JsonParser.parse(result ?: "") ?: emptyMap()
