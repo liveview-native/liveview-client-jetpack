@@ -34,7 +34,7 @@ import org.phoenixframework.liveview.lib.NodeRef
 import java.net.ConnectException
 
 class LiveViewCoordinator(
-    private val httpBaseUrl: String,
+    internal val httpBaseUrl: String,
     private val wsBaseUrl: String,
     private val route: String?,
 ) : ViewModel() {

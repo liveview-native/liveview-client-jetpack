@@ -3,10 +3,14 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
+import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlignment
@@ -15,6 +19,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContentDescription
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
 import org.phoenixframework.liveview.data.constants.Attrs.attrCrossFade
 import org.phoenixframework.liveview.data.constants.Attrs.attrUrl
+import org.phoenixframework.liveview.data.constants.Templates
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.CommonComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
@@ -23,6 +28,9 @@ import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.ui.phx_components.LocalHttpUrl
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
+import java.net.URI
 
 /**
  * A composable that executes an image request asynchronously and renders the result.
@@ -49,17 +57,47 @@ internal class AsyncImageDTO private constructor(props: Properties) :
         val contentScale = props.contentScale
         val alpha = props.alpha
 
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(imageUrl)
-                .crossfade(crossFade)
-                .build(),
+        val baseUrl = LocalHttpUrl.current
+        val resolvedImageUrl = remember(imageUrl) {
+            val baseUri = URI.create(baseUrl)
+            val relativeUri = baseUri.resolve(imageUrl)
+            relativeUri.toString()
+        }
+        val loadingComposable = remember(composableNode?.children) {
+            composableNode?.children?.find { it.node?.template == Templates.templateLoading }
+        }
+        val errorComposable = remember(composableNode?.children) {
+            composableNode?.children?.find { it.node?.template == Templates.templateError }
+        }
+        val model = ImageRequest.Builder(LocalContext.current)
+            .decoderFactory(SvgDecoder.Factory())
+            .data(resolvedImageUrl)
+            .crossfade(crossFade)
+            .build()
+        SubcomposeAsyncImage(
+            model = model,
             contentDescription = contentDescription,
             modifier = props.commonProps.modifier,
             alignment = alignment,
             contentScale = contentScale,
             alpha = alpha
-        )
+        ) {
+            when (painter.state) {
+                is AsyncImagePainter.State.Loading -> {
+                    loadingComposable?.let { loading ->
+                        PhxLiveView(loading, pushEvent, composableNode, null, this)
+                    }
+                }
+
+                is AsyncImagePainter.State.Error -> {
+                    errorComposable?.let { error ->
+                        PhxLiveView(error, pushEvent, composableNode, null, this)
+                    }
+                }
+
+                else -> SubcomposeAsyncImageContent()
+            }
+        }
     }
 
     @Stable
