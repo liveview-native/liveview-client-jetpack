@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -64,10 +66,12 @@ private fun NavDestination(
 
     val state by liveViewCoordinator.composableTree.collectAsState()
     if (state.children.isNotEmpty()) {
-        PhxLiveView(
-            composableNode = state.children.first(),
-            pushEvent = liveViewCoordinator::pushEvent
-        )
+        CompositionLocalProvider(LocalHttpUrl provides liveViewCoordinator.httpBaseUrl) {
+            PhxLiveView(
+                composableNode = state.children.first(),
+                pushEvent = liveViewCoordinator::pushEvent
+            )
+        }
     }
 
     LaunchedEffect(liveViewCoordinator) {
@@ -92,3 +96,11 @@ private fun NavDestination(
         }
     }
 }
+
+/**
+ * Some components (like AsyncImage) might require some resources using the relative URL. This
+ * composition local, provides base URL of the current LiveView, and the child components can
+ * access it using LocalHttpUrl.current and use URI.resolve to access the resource relative to the
+ * current URL. See AsyncImage for more details.
+ */
+val LocalHttpUrl = compositionLocalOf { "" }
