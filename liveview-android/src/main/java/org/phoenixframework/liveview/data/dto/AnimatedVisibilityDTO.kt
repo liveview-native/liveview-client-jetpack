@@ -3,11 +3,17 @@ package org.phoenixframework.liveview.data.dto
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandIn
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import kotlinx.collections.immutable.ImmutableList
@@ -57,24 +63,57 @@ internal class AnimatedVisibilityDTO private constructor(props: Properties) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        AnimatedVisibility(
-            visible = props.visible,
-            label = props.label,
-            modifier = props.commonProps.modifier,
-            enter = props.enter,
-            exit = props.exit,
-        ) {
-            composableNode?.children?.forEach {
-                PhxLiveView(it, pushEvent, composableNode, null, this)
+        when (props.scope) {
+            is RowScope -> {
+                props.scope.AnimatedVisibility(
+                    visible = props.visible,
+                    label = props.label,
+                    modifier = props.commonProps.modifier,
+                    enter = props.enter,
+                    exit = props.exit,
+                ) {
+                    composableNode?.children?.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null, this)
+                    }
+                }
+            }
+
+            is ColumnScope -> {
+                props.scope.AnimatedVisibility(
+                    visible = props.visible,
+                    label = props.label,
+                    modifier = props.commonProps.modifier,
+                    enter = props.enter,
+                    exit = props.exit,
+                ) {
+                    composableNode?.children?.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null, this)
+                    }
+                }
+            }
+
+            else -> {
+                AnimatedVisibility(
+                    visible = props.visible,
+                    label = props.label,
+                    modifier = props.commonProps.modifier,
+                    enter = props.enter,
+                    exit = props.exit,
+                ) {
+                    composableNode?.children?.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null, this)
+                    }
+                }
             }
         }
+
     }
 
-    internal class Builder : ComposableBuilder() {
+    internal class Builder(private val scope: Any?) : ComposableBuilder() {
         private var label: String = "AnimatedVisibility"
         private var visible: Boolean = true
-        private var enter: EnterTransition = fadeIn() + expandIn()
-        private var exit: ExitTransition = shrinkOut() + fadeOut()
+        private var enter: EnterTransition? = null
+        private var exit: ExitTransition? = null
 
         /**
          * Enter transition in JSON format. The supported animations are:
@@ -177,11 +216,36 @@ internal class AnimatedVisibilityDTO private constructor(props: Properties) :
             this.visible = visible.toBooleanStrictOrNull() ?: true
         }
 
-        fun build() = AnimatedVisibilityDTO(Properties(visible, label, enter, exit, commonProps))
+        fun build(): AnimatedVisibilityDTO {
+            val (enterTrans, exitTrans) = when (scope) {
+                is ColumnScope -> {
+                    (fadeIn() + expandVertically()) to (fadeOut() + shrinkVertically())
+                }
+
+                is RowScope -> {
+                    (fadeIn() + expandHorizontally()) to (fadeOut() + shrinkHorizontally())
+                }
+
+                else -> {
+                    (fadeIn() + expandIn()) to (shrinkOut() + fadeOut())
+                }
+            }
+            return AnimatedVisibilityDTO(
+                Properties(
+                    scope,
+                    visible,
+                    label,
+                    enterTrans,
+                    exitTrans,
+                    commonProps
+                )
+            )
+        }
     }
 
     @Stable
     data class Properties(
+        val scope: Any?,
         val visible: Boolean,
         val label: String,
         val enter: EnterTransition,
@@ -198,7 +262,7 @@ internal object AnimatedVisibilityDtoFactory :
         pushEvent: PushEvent?,
         scope: Any?,
     ) = attributes.fold(
-        AnimatedVisibilityDTO.Builder()
+        AnimatedVisibilityDTO.Builder(scope)
     ) { builder, attribute ->
         when (attribute.name) {
             attrEnter -> builder.enter(attribute.value)
