@@ -1,25 +1,92 @@
 package org.phoenixframework.liveview.data.dto
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOut
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.SecureFlagPolicy
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import org.phoenixframework.liveview.data.constants.AlignmentValues
 import org.phoenixframework.liveview.data.constants.Attrs.attrBottom
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrLeft
+import org.phoenixframework.liveview.data.constants.Attrs.attrPivotFractionX
+import org.phoenixframework.liveview.data.constants.Attrs.attrPivotFractionY
 import org.phoenixframework.liveview.data.constants.Attrs.attrRight
 import org.phoenixframework.liveview.data.constants.Attrs.attrTop
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.ContentScaleValues
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argClip
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argExpandFrom
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argHeight
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialAlpha
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialHeight
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialOffset
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialOffsetX
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialOffsetY
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialScale
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialSize
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialWidth
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argShrinkTowards
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetAlpha
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetHeight
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetOffset
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetOffsetX
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetOffsetY
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetScale
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetSize
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetWidth
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTransformOrigin
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argWidth
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argX
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argY
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.expandHorizontally
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.expandIn
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.expandVertically
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.fadeIn
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.fadeOut
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.scaleIn
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.scaleOut
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.shrinkHorizontally
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.shrinkOut
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.shrinkVertically
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.slideIn
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.slideInHorizontally
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.slideInVertically
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.slideOut
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.slideOutHorizontally
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.slideOutVertically
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
 import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
 import org.phoenixframework.liveview.data.constants.SecureFlagPolicyValues
 import org.phoenixframework.liveview.data.constants.TileModeValues
+import org.phoenixframework.liveview.data.constants.TransformOriginValues
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
 import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
 import org.phoenixframework.liveview.data.mappers.JsonParser
@@ -37,7 +104,7 @@ import org.phoenixframework.liveview.domain.extensions.toColor
  * represents. The supported values are: `left`, `top`, `bottom`, and `right`.
  */
 fun windowInsetsFromString(insets: String): WindowInsets {
-    val map = JsonParser.parse<Map<String, String>>(insets)
+    val map = JsonParser.parse<Map<String, Number>>(insets)
     return WindowInsets(
         left = (map?.get(attrLeft)?.toInt() ?: 0).dp,
         top = (map?.get(attrTop)?.toInt() ?: 0).dp,
@@ -164,7 +231,7 @@ internal fun horizontalArrangementFromString(horizontalArrangement: String) =
  */
 internal fun verticalAlignmentFromString(verticalAlignment: String) = when (verticalAlignment) {
     VerticalAlignmentValues.top -> Alignment.Top
-    VerticalAlignmentValues.center -> Alignment.CenterVertically
+    VerticalAlignmentValues.centerVertically -> Alignment.CenterVertically
     else -> Alignment.Bottom
 }
 
@@ -197,9 +264,9 @@ internal fun colorsFromString(colors: String): Map<String, String>? {
     }
 }
 
-internal fun elevationsFromString(colors: String): Map<String, String>? {
+internal fun elevationsFromString(elevations: String): Map<String, String>? {
     return try {
-        JsonParser.parse(colors)
+        JsonParser.parse(elevations)
     } catch (e: Exception) {
         e.printStackTrace()
         null
@@ -214,7 +281,7 @@ internal fun borderFromString(border: String): BorderStroke? {
             val map = JsonParser.parse<Map<String, Any>>(border)
             if (map != null) {
                 borderCache[key] = BorderStroke(
-                    (map[attrWidth].toString().toIntOrNull() ?: 1).dp,
+                    (map[attrWidth].toString().toFloatOrNull() ?: 1f).dp,
                     map[attrColor].toString().toColor()
                 )
             }
@@ -231,5 +298,274 @@ internal fun secureFlagPolicyFromString(securePolicy: String): SecureFlagPolicy 
         SecureFlagPolicyValues.secureOn -> SecureFlagPolicy.SecureOn
         SecureFlagPolicyValues.secureOff -> SecureFlagPolicy.SecureOff
         else -> SecureFlagPolicy.Inherit
+    }
+}
+
+internal fun enterTransitionFromString(animationJson: String): EnterTransition? {
+
+    val jsonElement = JsonParser.parse<JsonElement>(animationJson)
+    val jsonArray = if (jsonElement is JsonObject) {
+        JsonArray(1).apply {
+            add(jsonElement)
+        }
+    } else if (jsonElement is JsonArray && jsonElement.size() > 0) {
+        jsonElement.asJsonArray
+    } else return null
+
+    var result: EnterTransition? = null
+    for (i in 0 until jsonArray.size()) {
+        val currentJsonElement = jsonArray.get(i)?.asJsonObject
+        // each JSON element is supposed to have just one field containing the transition params.
+        // e.g: {"expandHorizontally": {"expandFrom": "Center", "clip": true, "initialWidth": 100}}
+        val animationType = currentJsonElement?.entrySet()?.firstOrNull()?.key
+        val animationParams = currentJsonElement?.entrySet()?.firstOrNull()?.value?.asJsonObject
+        val transition = when (animationType) {
+            expandHorizontally -> {
+                val expandFrom = animationParams?.get(argExpandFrom)?.let {
+                    horizontalAlignmentFromString(it.asString)
+                } ?: Alignment.End
+                val clip = animationParams?.get(argClip)?.asBoolean ?: true
+                val initialWidth = animationParams?.get(argInitialWidth)?.asInt ?: 0
+                expandHorizontally(
+                    // TODO animationSpec: FiniteAnimationSpec
+                    expandFrom = expandFrom,
+                    clip = clip,
+                    initialWidth = { initialWidth }
+                )
+            }
+
+            expandIn -> {
+                val expandFrom = animationParams?.get(argExpandFrom)?.let {
+                    alignmentFromString(it.asString, Alignment.BottomEnd)
+                } ?: Alignment.BottomEnd
+                val clip = animationParams?.get(argClip)?.asBoolean ?: true
+                val initialSize = animationParams?.get(argInitialSize)?.asJsonObject?.let {
+                    val width = it.get(argWidth)?.asInt ?: 0
+                    val height = it.get(argHeight)?.asInt ?: 0
+                    IntSize(width, height)
+                } ?: IntSize.Zero
+                expandIn(
+                    // TODO animationSpec: FiniteAnimationSpec
+                    expandFrom = expandFrom,
+                    clip = clip,
+                    initialSize = { initialSize }
+                )
+            }
+
+            expandVertically -> {
+                val expandFrom = animationParams?.get(argExpandFrom)?.let {
+                    verticalAlignmentFromString(it.asString)
+                } ?: Alignment.Bottom
+                val clip = animationParams?.get(argClip)?.asBoolean ?: true
+                val initialHeight = animationParams?.get(argInitialHeight)?.asInt ?: 0
+                expandVertically(
+                    // TODO animationSpec: FiniteAnimationSpec
+                    expandFrom = expandFrom,
+                    clip = clip,
+                    initialHeight = { initialHeight }
+                )
+            }
+
+            fadeIn -> {
+                val initialAlpha = animationParams?.get(argInitialAlpha)?.asFloat ?: 0f
+                fadeIn(
+                    // TODO animationSpec: FiniteAnimationSpec,
+                    initialAlpha = initialAlpha
+                )
+            }
+
+            scaleIn -> {
+                val initialScale = animationParams?.get(argInitialScale)?.asFloat ?: 0f
+                val transformOrigin = animationParams?.get(argTransformOrigin)?.let {
+                    transformOriginFromString(it.toString())
+                } ?: TransformOrigin.Center
+                scaleIn(
+                    // TODO animationSpec: FiniteAnimationSpec,
+                    initialScale = initialScale,
+                    transformOrigin = transformOrigin
+                )
+            }
+
+            slideIn -> {
+                val initialOffset = animationParams?.get(argInitialOffset)?.asJsonObject?.let {
+                    val x = it.get(argX)?.asInt ?: 0
+                    val y = it.get(argY)?.asInt ?: 0
+                    IntOffset(x, y)
+                } ?: IntOffset.Zero
+                slideIn(
+                    // TODO animationSpec: FiniteAnimationSpec,
+                    initialOffset = { initialOffset }
+                )
+            }
+
+            slideInHorizontally -> {
+                val initialOffsetX = animationParams?.get(argInitialOffsetX)?.asInt
+                slideInHorizontally(
+                    // TODO animationSpec: FiniteAnimationSpec,
+                    initialOffsetX = { initialOffsetX ?: (-it / 2) }
+                )
+            }
+
+            slideInVertically -> {
+                val initialOffsetY = animationParams?.get(argInitialOffsetY)?.asInt
+                slideInVertically(
+                    // TODO animationSpec: FiniteAnimationSpec,
+                    initialOffsetY = { initialOffsetY ?: (-it / 2) }
+                )
+            }
+
+            else -> null
+        }
+        if (transition != null) {
+            if (result == null) {
+                result = transition
+            } else {
+                result += transition
+            }
+        }
+    }
+
+    return result
+}
+
+internal fun exitTransitionFromString(animationJson: String): ExitTransition? {
+
+    val jsonElement = JsonParser.parse<JsonElement>(animationJson)
+    val jsonArray = if (jsonElement is JsonObject) {
+        JsonArray(1).apply {
+            add(jsonElement)
+        }
+    } else if (jsonElement is JsonArray && jsonElement.size() > 0) {
+        jsonElement.asJsonArray
+    } else return null
+
+    var result: ExitTransition? = null
+    for (i in 0 until jsonArray.size()) {
+        val currentJsonElement = jsonArray.get(i)?.asJsonObject
+
+        // each JSON element is supposed to have just one field containing the transition params.
+        // e.g: {"expandHorizontally": {"expandFrom": "Center", "clip": true, "initialWidth": 100}}
+        val animationType = currentJsonElement?.entrySet()?.firstOrNull()?.key
+        val animationParams = currentJsonElement?.entrySet()?.firstOrNull()?.value?.asJsonObject
+        val transition = when (animationType) {
+            fadeOut -> {
+                val targetAlpha = animationParams?.get(argTargetAlpha)?.asFloat ?: 0f
+                fadeOut(
+                    // TODO animationSpec: FiniteAnimationSpec,
+                    targetAlpha = targetAlpha
+                )
+            }
+
+            scaleOut -> {
+                val targetScale = animationParams?.get(argTargetScale)?.asFloat ?: 0f
+                val transformOrigin = animationParams?.get(argTransformOrigin)?.let {
+                    transformOriginFromString(it.toString())
+                } ?: TransformOrigin.Center
+                scaleOut(
+                    // TODO animationSpec: FiniteAnimationSpec,
+                    targetScale = targetScale,
+                    transformOrigin = transformOrigin
+                )
+            }
+
+            slideOut -> {
+                val targetOffset = animationParams?.get(argTargetOffset)?.asJsonObject?.let {
+                    val x = it.get(argX)?.asInt ?: 0
+                    val y = it.get(argY)?.asInt ?: 0
+                    IntOffset(x, y)
+                } ?: IntOffset.Zero
+                slideOut(
+                    // TODO animationSpec: FiniteAnimationSpec,
+                    targetOffset = { targetOffset }
+                )
+            }
+
+            slideOutHorizontally -> {
+                val initialOffsetX = animationParams?.get(argTargetOffsetX)?.asInt
+                slideOutHorizontally(
+                    // TODO animationSpec: FiniteAnimationSpec,
+                    targetOffsetX = { initialOffsetX ?: (-it / 2) }
+                )
+            }
+
+            slideOutVertically -> {
+                val targetOffsetY = animationParams?.get(argTargetOffsetY)?.asInt
+                slideOutVertically(
+                    // TODO animationSpec: FiniteAnimationSpec,
+                    targetOffsetY = { targetOffsetY ?: (-it / 2) }
+                )
+            }
+
+            shrinkHorizontally -> {
+                val shrinkTowards = animationParams?.get(argShrinkTowards)?.let {
+                    horizontalAlignmentFromString(it.asString)
+                } ?: Alignment.End
+                val clip = animationParams?.get(argClip)?.asBoolean ?: true
+                val targetWidth = animationParams?.get(argTargetWidth)?.asInt ?: 0
+                shrinkHorizontally(
+                    // TODO animationSpec: FiniteAnimationSpec
+                    shrinkTowards = shrinkTowards,
+                    clip = clip,
+                    targetWidth = { targetWidth }
+                )
+            }
+
+
+            shrinkOut -> {
+                val shrinkTowards = animationParams?.get(argShrinkTowards)?.let {
+                    alignmentFromString(it.asString, Alignment.BottomEnd)
+                } ?: Alignment.BottomEnd
+                val clip = animationParams?.get(argClip)?.asBoolean ?: true
+                val targetSize = animationParams?.get(argTargetSize)?.asJsonObject?.let {
+                    val width = it.get(argWidth)?.asInt ?: 0
+                    val height = it.get(argHeight)?.asInt ?: 0
+                    IntSize(width, height)
+                } ?: IntSize.Zero
+                shrinkOut(
+                    // TODO animationSpec: FiniteAnimationSpec
+                    shrinkTowards = shrinkTowards,
+                    clip = clip,
+                    targetSize = { targetSize }
+                )
+            }
+
+            shrinkVertically -> {
+                val expandFrom = animationParams?.get(argShrinkTowards)?.let {
+                    verticalAlignmentFromString(it.asString)
+                } ?: Alignment.Bottom
+                val clip = animationParams?.get(argClip)?.asBoolean ?: true
+                val targetHeight = animationParams?.get(argTargetHeight)?.asInt ?: 0
+                shrinkVertically(
+                    // TODO animationSpec: FiniteAnimationSpec
+                    shrinkTowards = expandFrom,
+                    clip = clip,
+                    targetHeight = { targetHeight }
+                )
+            }
+
+
+            else -> null
+        }
+        if (transition != null) {
+            if (result == null) {
+                result = transition
+            } else {
+                result += transition
+            }
+        }
+    }
+
+    return result
+}
+
+internal fun transformOriginFromString(string: String): TransformOrigin {
+    return if (string == TransformOriginValues.center) {
+        TransformOrigin.Center
+    } else {
+        val map = JsonParser.parse<Map<String, Double>>(string)
+        TransformOrigin(
+            pivotFractionX = map?.get(attrPivotFractionX)?.toFloat() ?: 0f,
+            pivotFractionY = map?.get(attrPivotFractionY)?.toFloat() ?: 0f
+        )
     }
 }

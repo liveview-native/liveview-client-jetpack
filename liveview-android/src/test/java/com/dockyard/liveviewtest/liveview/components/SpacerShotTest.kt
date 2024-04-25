@@ -14,7 +14,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignmen
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues.centerHorizontally
-import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.center
+import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.centerVertically
 import org.phoenixframework.liveview.domain.base.ComposableTypes.column
 import org.phoenixframework.liveview.domain.base.ComposableTypes.row
 import org.phoenixframework.liveview.domain.base.ComposableTypes.spacer
@@ -36,7 +36,7 @@ class SpacerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$row $attrVerticalAlignment="$center">
+                <$row $attrVerticalAlignment="$centerVertically">
                     <$text>Left</$text>
                     <$column $attrHorizontalAlignment="$centerHorizontally">
                         <$text>Top</$text>

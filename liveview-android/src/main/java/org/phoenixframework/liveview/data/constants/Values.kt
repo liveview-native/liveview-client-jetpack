@@ -40,6 +40,51 @@ object DatePickerDisplayModeValues {
     const val picker = "picker"
 }
 
+object EnterExitTransitionFunctions {
+    const val expandHorizontally = "expandHorizontally"
+    const val expandIn = "expandIn"
+    const val expandVertically = "expandVertically"
+    const val fadeIn = "fadeIn"
+    const val fadeOut = "fadeOut"
+    const val scaleIn = "scaleIn"
+    const val scaleOut = "scaleOut"
+    const val slideOut = "slideOut"
+    const val slideOutHorizontally = "slideOutHorizontally"
+    const val slideOutVertically = "slideOutVertically"
+    const val shrinkHorizontally = "shrinkHorizontally"
+    const val shrinkOut = "shrinkOut"
+    const val shrinkVertically = "shrinkVertically"
+    const val slideIn = "slideIn"
+    const val slideInVertically = "slideInVertically"
+    const val slideInHorizontally = "slideInHorizontally"
+
+    // Argument names used for the functions above
+    const val argClip = "clip"
+    const val argExpandFrom = "expandFrom"
+    const val argHeight = "height"
+    const val argInitialAlpha = "initialAlpha"
+    const val argInitialHeight = "initialHeight"
+    const val argInitialOffset = "initialOffset"
+    const val argInitialOffsetX = "initialOffsetX"
+    const val argInitialOffsetY = "initialOffsetY"
+    const val argInitialScale = "initialScale"
+    const val argInitialSize = "initialSize"
+    const val argInitialWidth = "initialWidth"
+    const val argShrinkTowards = "shrinkTowards"
+    const val argTargetAlpha = "targetAlpha"
+    const val argTargetHeight = "targetHeight"
+    const val argTargetOffset = "targetOffset"
+    const val argTargetOffsetX = "targetOffsetX"
+    const val argTargetOffsetY = "targetOffsetY"
+    const val argTargetScale = "targetScale"
+    const val argTargetSize = "targetSize"
+    const val argTargetWidth = "targetWidth"
+    const val argTransformOrigin = "transformOrigin"
+    const val argWidth = "width"
+    const val argX = "x"
+    const val argY = "y"
+}
+
 object FabPositionValues {
     const val start = "start"
     const val end = "end"
@@ -292,9 +337,13 @@ object TimePickerLayoutTypeValues {
     const val vertical = "vertical"
 }
 
+object TransformOriginValues {
+    const val center = "Center"
+}
+
 object VerticalAlignmentValues {
     const val top = "Top"
-    const val center = "Center"
+    const val centerVertically = "CenterVertically"
     const val bottom = "Bottom"
 }
 

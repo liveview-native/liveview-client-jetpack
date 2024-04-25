@@ -179,7 +179,7 @@ class RowShotTest : LiveViewComposableTest() {
                   <$row 
                     $attrWidth="$fill" 
                     $attrHeight="$contentHeight" 
-                    $attrVerticalAlignment="${VerticalAlignmentValues.center}">
+                    $attrVerticalAlignment="${VerticalAlignmentValues.centerVertically}">
                     $horizontalContentTestTemplate
                   </$row>
                   <$row 
@@ -277,7 +277,7 @@ class RowShotTest : LiveViewComposableTest() {
             template = """
                 <$row $attrWidth="$fill" $attrHeight="200">
                   <$text $attrAlign="${VerticalAlignmentValues.top}">Top</$text>
-                  <$text $attrAlign="${VerticalAlignmentValues.center}">Center</$text>
+                  <$text $attrAlign="${VerticalAlignmentValues.centerVertically}">Center</$text>
                   <$text $attrAlign="${VerticalAlignmentValues.bottom}">Bottom</$text>
                 </$row>
                 """
