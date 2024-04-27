@@ -10,19 +10,19 @@ defmodule LiveViewNative.Jetpack.RulesParser.PostProcessors do
       empty()
       |> PostProcessors.inspect()
       |> combinator
-      |> PostProcessors.inspect()
+      |> PostProcessors.inspect(label: "combinator")
 
     This function is extremely useful for debugging, do not remove
     """
-    def inspect(combinator) do
+    def inspect(combinator, opts \\ []) do
       NimbleParsec.pre_traverse(
         combinator,
-        {LiveViewNative.Jetpack.RulesParser.PostProcessors, :do_inspect, []}
+        {LiveViewNative.Jetpack.RulesParser.PostProcessors, :do_inspect, [opts]}
       )
     end
 
-    def do_inspect(rest, args, context, position, _byte_offset) do
-      IO.inspect({rest, args, context, position})
+    def do_inspect(rest, args, context, position, _byte_offset, opts) do
+      IO.inspect({rest, args, context, position}, opts)
       {rest, args, context}
     end
   end
@@ -158,6 +158,10 @@ defmodule LiveViewNative.Jetpack.RulesParser.PostProcessors do
       ) do
     annotations = context_to_annotation(context.context, line)
     {rest, [{Elixir, annotations, {:to_atom, variable_annotations, [variable]}}], context}
+  end
+
+  def number_ime(rest, [member_expression, number], context, {_line, _}, _byte_offset) do
+    {rest, [{:., [number, member_expression]}], context}
   end
 
   def to_keyword_tuple_ast(rest, [arg1, arg2], context, {_line, _}, _byte_offset) do

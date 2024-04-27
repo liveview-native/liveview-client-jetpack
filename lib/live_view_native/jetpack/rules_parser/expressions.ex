@@ -103,16 +103,20 @@ defmodule LiveViewNative.Jetpack.RulesParser.Expressions do
     end
   end
 
-  def key_value_pair(opts \\ []) do
+  def key_value_pair(connector, opts \\ []) do
     colon =
       if opts[:generate_error?] do
         # require that the colon be provided
-        expect(ignore(string(":")), error_message: "expected ‘:’")
+        expect(ignore(string(connector)), error_message: "expected ‘#{connector}’")
       else
-        ignore(string(":"))
+        ignore(string(connector))
       end
 
-    key = concat(word(), colon)
+    key =
+      word()
+      |> concat(ignore_whitespace())
+      |> concat(colon)
+
     value = parsec(:key_value_pairs_arguments)
 
     ignore_whitespace()
@@ -122,7 +126,18 @@ defmodule LiveViewNative.Jetpack.RulesParser.Expressions do
     |> post_traverse({PostProcessors, :to_keyword_tuple_ast, []})
   end
 
-  def key_value_pairs(opts \\ []) do
-    wrap(comma_separated_list(key_value_pair(opts), opts))
+  def key_value_pairs(connector, opts \\ []) do
+    wrap(
+      # Match first pair
+      key_value_pair(connector, Keyword.put(opts, :generate_error?, false))
+      |> choice([
+        # then try for more pairs
+        ignore(string(","))
+        |> ignore_whitespace()
+        |> concat(comma_separated_list(key_value_pair(connector, opts), opts)),
+        # otherwise, stop
+        ignore_whitespace()
+      ])
+    )
   end
 end
