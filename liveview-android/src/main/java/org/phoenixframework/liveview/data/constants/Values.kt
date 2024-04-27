@@ -85,11 +85,68 @@ object EnterExitTransitionFunctions {
     const val argY = "y"
 }
 
+object EasingValues {
+    const val ease = "Ease"
+    const val easeOut = "EaseOut"
+    const val easeIn = "EaseIn"
+    const val easeInOut = "EaseInOut"
+    const val easeInSine = "EaseInSine"
+    const val easeOutSine = "EaseOutSine"
+    const val easeInOutSine = "EaseInOutSine"
+    const val easeInCubic = "EaseInCubic"
+    const val easeOutCubic = "EaseOutCubic"
+    const val easeInOutCubic = "EaseInOutCubic"
+    const val easeInQuint = "EaseInQuint"
+    const val easeOutQuint = "EaseOutQuint"
+    const val easeInOutQuint = "EaseInOutQuint"
+    const val easeInCirc = "EaseInCirc"
+    const val easeOutCirc = "EaseOutCirc"
+    const val easeInOutCirc = "EaseInOutCirc"
+    const val easeInQuad = "EaseInQuad"
+    const val easeOutQuad = "EaseOutQuad"
+    const val easeInOutQuad = "EaseInOutQuad"
+    const val easeInQuart = "EaseInQuart"
+    const val easeOutQuart = "EaseOutQuart"
+    const val easeInOutQuart = "EaseInOutQuart"
+    const val easeInExpo = "EaseInExpo"
+    const val easeOutExpo = "EaseOutExpo"
+    const val easeInOutExpo = "EaseInOutExpo"
+    const val easeInBack = "EaseInBack"
+    const val easeOutBack = "EaseOutBack"
+    const val easeInOutBack = "EaseInOutBack"
+    const val easeInElastic = "EaseInElastic"
+    const val easeOutElastic = "EaseOutElastic"
+    const val easeInOutElastic = "EaseInOutElastic"
+    const val easeOutBounce = "EaseOutBounce"
+    const val easeInBounce = "EaseInBounce"
+    const val easeInOutBounce = "EaseInOutBounce"
+}
+
 object FabPositionValues {
     const val start = "start"
     const val end = "end"
     const val center = "center"
     const val endOverlay = "endOverlay"
+}
+
+object FiniteAnimationSpecFunctions {
+    const val tween = "tween"
+    const val spring = "spring"
+    const val keyframes = "keyframes"
+    const val keyframesWithSpline = "keyframesWithSpline"
+    const val repeatable = "repeatable"
+    const val snap = "snap"
+
+    const val argAnimation = "animation"
+    const val argDampingRatio = "dampingRatio"
+    const val argDelayMillis = "delayMillis"
+    const val argDurationMillis = "durationMillis"
+    const val argEasing = "easing"
+    const val argIterations = "iterations"
+    const val argRepeatMode = "repeatMode"
+    const val argInitialStartOffset = "initialStartOffset"
+    const val argStiffness = "stiffness"
+    const val argValue = "value"
 }
 
 object FontStyleValues {
@@ -196,6 +253,11 @@ object OffsetValues {
     const val zero = "Zero"
     const val infinite = "Infinite"
     const val unspecified = "Unspecified"
+}
+
+object RepeatModeValues {
+    const val restart = "Restart"
+    const val reverse = "Reverse"
 }
 
 object RoleValues {

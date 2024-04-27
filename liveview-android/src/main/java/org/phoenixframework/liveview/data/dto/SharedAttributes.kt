@@ -2,6 +2,41 @@ package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.Ease
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseInBack
+import androidx.compose.animation.core.EaseInBounce
+import androidx.compose.animation.core.EaseInCirc
+import androidx.compose.animation.core.EaseInCubic
+import androidx.compose.animation.core.EaseInElastic
+import androidx.compose.animation.core.EaseInExpo
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.EaseInOutBack
+import androidx.compose.animation.core.EaseInOutBounce
+import androidx.compose.animation.core.EaseInOutCirc
+import androidx.compose.animation.core.EaseInOutCubic
+import androidx.compose.animation.core.EaseInOutElastic
+import androidx.compose.animation.core.EaseInOutExpo
+import androidx.compose.animation.core.EaseInOutQuad
+import androidx.compose.animation.core.EaseInOutQuart
+import androidx.compose.animation.core.EaseInOutQuint
+import androidx.compose.animation.core.EaseInOutSine
+import androidx.compose.animation.core.EaseInQuad
+import androidx.compose.animation.core.EaseInQuart
+import androidx.compose.animation.core.EaseInQuint
+import androidx.compose.animation.core.EaseInSine
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.EaseOutBack
+import androidx.compose.animation.core.EaseOutBounce
+import androidx.compose.animation.core.EaseOutCirc
+import androidx.compose.animation.core.EaseOutCubic
+import androidx.compose.animation.core.EaseOutElastic
+import androidx.compose.animation.core.EaseOutExpo
+import androidx.compose.animation.core.EaseOutQuad
+import androidx.compose.animation.core.EaseOutQuart
+import androidx.compose.animation.core.EaseOutQuint
+import androidx.compose.animation.core.EaseOutSine
+import androidx.compose.animation.core.Easing
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.expandVertically
@@ -42,6 +77,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrRight
 import org.phoenixframework.liveview.data.constants.Attrs.attrTop
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.ContentScaleValues
+import org.phoenixframework.liveview.data.constants.EasingValues
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argClip
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argExpandFrom
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argHeight
@@ -567,5 +603,45 @@ internal fun transformOriginFromString(string: String): TransformOrigin {
             pivotFractionX = map?.get(attrPivotFractionX)?.toFloat() ?: 0f,
             pivotFractionY = map?.get(attrPivotFractionY)?.toFloat() ?: 0f
         )
+    }
+}
+
+internal fun easingFromString(string: String): Easing? {
+    return when (string) {
+        EasingValues.ease -> Ease
+        EasingValues.easeOut -> EaseOut
+        EasingValues.easeIn -> EaseIn
+        EasingValues.easeInOut -> EaseInOut
+        EasingValues.easeInSine -> EaseInSine
+        EasingValues.easeOutSine -> EaseOutSine
+        EasingValues.easeInOutSine -> EaseInOutSine
+        EasingValues.easeInCubic -> EaseInCubic
+        EasingValues.easeOutCubic -> EaseOutCubic
+        EasingValues.easeInOutCubic -> EaseInOutCubic
+        EasingValues.easeInQuint -> EaseInQuint
+        EasingValues.easeOutQuint -> EaseOutQuint
+        EasingValues.easeInOutQuint -> EaseInOutQuint
+        EasingValues.easeInCirc -> EaseInCirc
+        EasingValues.easeOutCirc -> EaseOutCirc
+        EasingValues.easeInOutCirc -> EaseInOutCirc
+        EasingValues.easeInQuad -> EaseInQuad
+        EasingValues.easeOutQuad -> EaseOutQuad
+        EasingValues.easeInOutQuad -> EaseInOutQuad
+        EasingValues.easeInQuart -> EaseInQuart
+        EasingValues.easeOutQuart -> EaseOutQuart
+        EasingValues.easeInOutQuart -> EaseInOutQuart
+        EasingValues.easeInExpo -> EaseInExpo
+        EasingValues.easeOutExpo -> EaseOutExpo
+        EasingValues.easeInOutExpo -> EaseInOutExpo
+        EasingValues.easeInBack -> EaseInBack
+        EasingValues.easeOutBack -> EaseOutBack
+        EasingValues.easeInOutBack -> EaseInOutBack
+        EasingValues.easeInElastic -> EaseInElastic
+        EasingValues.easeOutElastic -> EaseOutElastic
+        EasingValues.easeInOutElastic -> EaseInOutElastic
+        EasingValues.easeOutBounce -> EaseOutBounce
+        EasingValues.easeInBounce -> EaseInBounce
+        EasingValues.easeInOutBounce -> EaseInOutBounce
+        else -> null
     }
 }

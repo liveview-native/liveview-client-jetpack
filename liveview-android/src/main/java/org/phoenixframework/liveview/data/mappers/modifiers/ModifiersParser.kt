@@ -27,6 +27,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAbsolu
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlignByBaseline
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlpha
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAnimateContentSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAspectRatio
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBorder
@@ -290,6 +291,7 @@ internal object ModifiersParser {
             modifierAbsoluteOffset -> Modifier.absoluteOffsetFromStyle(argListContext)
             modifierAbsolutePadding -> Modifier.absolutePaddingFromStyle(argListContext)
             modifierAlpha -> Modifier.alphaFromStyle(argListContext)
+            modifierAnimateContentSize -> Modifier.animateContentSizeFromStyle(argListContext)
             modifierAspectRatio -> Modifier.aspectRatioFromStyle(argListContext)
             modifierBackground -> Modifier.backgroundFromStyle(argListContext)
             modifierBorder -> Modifier.borderFromStyle(argListContext)
