@@ -291,7 +291,7 @@ internal object ModifiersParser {
             modifierAbsoluteOffset -> Modifier.absoluteOffsetFromStyle(argListContext)
             modifierAbsolutePadding -> Modifier.absolutePaddingFromStyle(argListContext)
             modifierAlpha -> Modifier.alphaFromStyle(argListContext)
-            modifierAnimateContentSize -> Modifier.animateContentSizeFromStyle(argListContext)
+            modifierAnimateContentSize -> Modifier.animateContentSizeFromStyle(argListContext, pushEvent)
             modifierAspectRatio -> Modifier.aspectRatioFromStyle(argListContext)
             modifierBackground -> Modifier.backgroundFromStyle(argListContext)
             modifierBorder -> Modifier.borderFromStyle(argListContext)

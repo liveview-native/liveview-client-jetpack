@@ -99,6 +99,7 @@ object ModifierArgs {
     const val argEndX = "endX"
     const val argEndY = "endY"
     const val argFill = "fill"
+    const val argFinishedListener = "finishedListener"
     const val argFraction = "fraction"
     const val argGreen = "green"
     const val argHeight = "height"
