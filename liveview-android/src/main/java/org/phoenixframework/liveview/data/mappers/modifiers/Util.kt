@@ -1,5 +1,18 @@
 package org.phoenixframework.liveview.data.mappers.modifiers
 
+import androidx.compose.animation.core.DurationBasedAnimationSpec
+import androidx.compose.animation.core.ExperimentalAnimationSpecApi
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.StartOffset
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.keyframesWithSpline
+import androidx.compose.animation.core.repeatable
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.WindowInsets
@@ -17,6 +30,7 @@ import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -24,6 +38,17 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import org.phoenixframework.liveview.data.constants.AlignmentLineValues
 import org.phoenixframework.liveview.data.constants.BrushFunctions
+import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions
+import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argAnimation
+import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argDampingRatio
+import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argDelayMillis
+import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argDurationMillis
+import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argEasing
+import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argInitialStartOffset
+import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argIterations
+import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argRepeatMode
+import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argStiffness
+import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argValue
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlpha
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argBlue
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argBottom
@@ -53,10 +78,12 @@ import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDpSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeEvent
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeIntSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeIntrinsicSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeOffset
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeRange
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeRole
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeStartOffset
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnit
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnitEm
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnitSp
@@ -66,8 +93,10 @@ import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitEm
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitSp
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeWindowInsets
 import org.phoenixframework.liveview.data.constants.OffsetValues
+import org.phoenixframework.liveview.data.constants.RepeatModeValues
 import org.phoenixframework.liveview.data.constants.RoleValues
 import org.phoenixframework.liveview.data.constants.ShapeValues
+import org.phoenixframework.liveview.data.dto.easingFromString
 import org.phoenixframework.liveview.data.dto.tileModeFromString
 import org.phoenixframework.liveview.domain.extensions.toColor
 
@@ -193,13 +222,10 @@ internal fun shapeFromStyle(argument: ModifierDataAdapter.ArgumentData): Shape? 
                 if (argsToCreateArg.firstOrNull()?.isList == true) {
                     val namedArgs = argsToCreateArg.first().listValue
                     listOf(
-                        namedArgs.find { it.name == argTopStart }?.let { dpFromStyle(it) }
-                            ?: 0.dp,
+                        namedArgs.find { it.name == argTopStart }?.let { dpFromStyle(it) } ?: 0.dp,
                         namedArgs.find { it.name == argTopEnd }?.let { dpFromStyle(it) } ?: 0.dp,
-                        namedArgs.find { it.name == argBottomEnd }?.let { dpFromStyle(it) }
-                            ?: 0.dp,
-                        namedArgs.find { it.name == argBottomStart }?.let { dpFromStyle(it) }
-                            ?: 0.dp,
+                        namedArgs.find { it.name == argBottomEnd }?.let { dpFromStyle(it) } ?: 0.dp,
+                        namedArgs.find { it.name == argBottomStart }?.let { dpFromStyle(it) } ?: 0.dp,
                     )
                 } else {
                     argsToCreateArg.map { dpFromStyle(it) }
@@ -281,10 +307,7 @@ internal fun borderStrokeFromArgument(argument: ModifierDataAdapter.ArgumentData
         if (argument.isList) argument.listValue.first().listValue else argument.listValue
     val width = borderStrokeArguments.getOrNull(0)?.intValue?.dp
     val color = colorFromArgument(borderStrokeArguments[1])
-    return if (width != null && color != null) BorderStroke(
-        width,
-        color
-    ) else null
+    return if (width != null && color != null) BorderStroke(width, color) else null
 }
 
 internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? {
@@ -297,13 +320,11 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
         return null
     }
     val argsToCreateBrush = argument.listValue
-    if (argsToCreateBrush.size < 2)
-        return null
+    if (argsToCreateBrush.size < 2) return null
 
     val functionToCreateBrush = argsToCreateBrush[1].type
     var argsToTheFunctionToCreateBrush = argsToCreateBrush[1].listValue
-    if (argsToTheFunctionToCreateBrush.isEmpty())
-        return null
+    if (argsToTheFunctionToCreateBrush.isEmpty()) return null
 
     // The color param is required. We're trying to find the argument named "colors"
     val colorsArg =
@@ -356,10 +377,12 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
         }
 
         BrushFunctions.linearGradient -> {
-            val start = argOrNamedArg(argsToTheFunctionToCreateBrush, argStart, 1)
-                ?.let { offsetFromArgument(it) }
-            val end = argOrNamedArg(argsToTheFunctionToCreateBrush, argEnd, 2)
-                ?.let { offsetFromArgument(it) }
+            val start = argOrNamedArg(argsToTheFunctionToCreateBrush, argStart, 1)?.let {
+                offsetFromArgument(it)
+            }
+            val end = argOrNamedArg(argsToTheFunctionToCreateBrush, argEnd, 2)?.let {
+                offsetFromArgument(it)
+            }
             val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, argTileMode, 3)?.let {
                 singleArgumentObjectValue(it)?.let { pair ->
                     tileModeFromString(pair.second.toString(), TileMode.Clamp)
@@ -376,8 +399,9 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
         }
 
         BrushFunctions.radialGradient -> {
-            val centerOffset = argOrNamedArg(argsToTheFunctionToCreateBrush, argCenter, 1)
-                ?.let { offsetFromArgument(it) }
+            val centerOffset = argOrNamedArg(argsToTheFunctionToCreateBrush, argCenter, 1)?.let {
+                offsetFromArgument(it)
+            }
             val radius = argOrNamedArg(argsToTheFunctionToCreateBrush, argRadius, 2)?.floatValue
             val tileMode = argOrNamedArg(argsToTheFunctionToCreateBrush, argTileMode, 3)?.let {
                 singleArgumentObjectValue(it)?.let { pair ->
@@ -395,8 +419,9 @@ internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? 
         }
 
         BrushFunctions.sweepGradient -> {
-            val centerOffset = argOrNamedArg(argsToTheFunctionToCreateBrush, argCenter, 1)
-                ?.let { offsetFromArgument(it) }
+            val centerOffset = argOrNamedArg(argsToTheFunctionToCreateBrush, argCenter, 1)?.let {
+                offsetFromArgument(it)
+            }
 
             // TODO Implement overloaded version
             Brush.sweepGradient(
@@ -436,9 +461,7 @@ internal fun argsOrNamedArgs(
     else arguments
 
 internal fun argOrNamedArg(
-    arguments: List<ModifierDataAdapter.ArgumentData>,
-    name: String,
-    index: Int
+    arguments: List<ModifierDataAdapter.ArgumentData>, name: String, index: Int
 ): ModifierDataAdapter.ArgumentData? {
     return (arguments.find { it.name == name } ?: arguments.getOrNull(index))
 }
@@ -456,6 +479,24 @@ internal fun intrinsicSizeFromArgument(argument: ModifierDataAdapter.ArgumentDat
     return null
 }
 
+internal fun repeatModeFromArgument(argument: ModifierDataAdapter.ArgumentData): RepeatMode? {
+    return if (argument.isDot) {
+        when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
+            RepeatModeValues.restart -> RepeatMode.Restart
+            RepeatModeValues.reverse -> RepeatMode.Reverse
+            else -> null
+        }
+    } else null
+}
+
+internal fun startOffsetFromArgument(argument: ModifierDataAdapter.ArgumentData): StartOffset? {
+    return if (argument.type == typeStartOffset) {
+        val args = argsOrNamedArgs(argument.listValue)
+        val value = argOrNamedArg(args, argValue, 0)?.intValue ?: 0
+        StartOffset(value)
+    } else null
+}
+
 internal fun singleArgumentObjectValue(
     argument: ModifierDataAdapter.ArgumentData
 ): Pair<String, Any>? {
@@ -471,4 +512,101 @@ internal fun singleArgumentObjectValue(
         return clazz to value
     }
     return null
+}
+
+internal fun intSizeFromArgument(argument: ModifierDataAdapter.ArgumentData): IntSize? {
+    return if (argument.type == typeIntSize) {
+        val w = argOrNamedArg(argument.listValue, argWidth, 0)?.intValue
+        val h = argOrNamedArg(argument.listValue, argHeight, 1)?.intValue
+        if (w != null && h != null) {
+            return IntSize(w, h)
+        } else null
+    } else null
+}
+
+/*
+FiniteAnimationSpec is the interface that all non-infinite AnimationSpecs implement, including:
+TweenSpec, SpringSpec, KeyframesSpec, RepeatableSpec, SnapSpec, etc.
+ */
+@OptIn(ExperimentalAnimationSpecApi::class)
+internal fun <T> finiteAnimationSpecFromArg(argument: ModifierDataAdapter.ArgumentData): FiniteAnimationSpec<T>? {
+    val defaultDurationMillis = 300
+    val argsForFunction = argsOrNamedArgs(argument.listValue)
+
+    return when (argument.type) {
+        FiniteAnimationSpecFunctions.tween -> {
+            val duration = argOrNamedArg(argsForFunction, argDurationMillis, 0)?.intValue
+                ?: defaultDurationMillis
+            val delay = argOrNamedArg(argsForFunction, argDelayMillis, 1)?.intValue ?: 0
+            val ease = argOrNamedArg(argsForFunction, argEasing, 2)?.let { easeArg ->
+                easeArg.listValue.firstOrNull()?.stringValueWithoutColon?.let { easingFromString(it) }
+            } ?: FastOutSlowInEasing
+            tween(
+                durationMillis = duration, delayMillis = delay, easing = ease
+            )
+        }
+
+        FiniteAnimationSpecFunctions.spring -> {
+            val dampingRatio = argOrNamedArg(argsForFunction, argDampingRatio, 0)?.floatValue
+                ?: Spring.DampingRatioNoBouncy
+            val stiffness = argOrNamedArg(argsForFunction, argStiffness, 1)?.floatValue
+                ?: Spring.StiffnessMedium
+            spring(
+                dampingRatio = dampingRatio,
+                stiffness = stiffness,
+                // TODO  visibilityThreshold =
+            )
+        }
+
+        FiniteAnimationSpecFunctions.keyframes -> {
+            val duration = argOrNamedArg(argsForFunction, argDurationMillis, 0)?.intValue
+                ?: defaultDurationMillis
+            val delay = argOrNamedArg(argsForFunction, argDelayMillis, 1)?.intValue ?: 0
+            keyframes {
+                // TODO KeyframesSpecConfig
+                this.durationMillis = duration
+                this.delayMillis = delay
+            }
+        }
+
+        FiniteAnimationSpecFunctions.keyframesWithSpline -> {
+            val duration = argOrNamedArg(argsForFunction, argDurationMillis, 0)?.intValue
+                ?: defaultDurationMillis
+            val delay = argOrNamedArg(argsForFunction, argDelayMillis, 1)?.intValue ?: 0
+            keyframesWithSpline {
+                // TODO KeyframesWithSplineSpecConfig
+                this.durationMillis = duration
+                this.delayMillis = delay
+            }
+        }
+
+        FiniteAnimationSpecFunctions.repeatable -> {
+            val iterations =
+                argOrNamedArg(argsForFunction, argIterations, 0)?.intValue ?: defaultDurationMillis
+            val animation = argOrNamedArg(argsForFunction, argAnimation, 1)?.let {
+                finiteAnimationSpecFromArg<T>(it)
+            }
+            val repeatMode = argOrNamedArg(argsForFunction, argRepeatMode, 2)?.let {
+                repeatModeFromArgument(it)
+            } ?: RepeatMode.Restart
+            val startOffset = argOrNamedArg(argsForFunction, argInitialStartOffset, 3)?.let {
+                startOffsetFromArgument(it)
+            } ?: StartOffset(0)
+            if (animation is DurationBasedAnimationSpec) {
+                repeatable(
+                    iterations = iterations,
+                    animation = animation,
+                    repeatMode = repeatMode,
+                    initialStartOffset = startOffset,
+                )
+            } else null
+        }
+
+        FiniteAnimationSpecFunctions.snap -> {
+            val delay = argOrNamedArg(argsForFunction, argDelayMillis, 1)?.intValue ?: 0
+            snap(delayMillis = delay)
+        }
+
+        else -> null
+    }
 }

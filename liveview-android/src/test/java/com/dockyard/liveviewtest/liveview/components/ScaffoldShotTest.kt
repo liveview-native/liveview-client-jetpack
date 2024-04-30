@@ -26,16 +26,20 @@ import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
+import org.phoenixframework.liveview.data.constants.Attrs.attrBottom
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentWindowInsets
 import org.phoenixframework.liveview.data.constants.Attrs.attrFabPosition
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.data.constants.Attrs.attrLeft
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.data.constants.Attrs.attrRight
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.data.constants.Attrs.attrTop
 import org.phoenixframework.liveview.data.constants.FabPositionValues
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
 import org.phoenixframework.liveview.data.constants.SizeValues.fill
@@ -481,7 +485,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$scaffold $attrContentWindowInsets="{'left': '32', 'top': '96', 'right': '72', 'bottom': '120'}">
+                <$scaffold $attrContentWindowInsets="{'$attrLeft': 32, '$attrTop': 96, '$attrRight': 72, '$attrBottom': 120}">
                     <$box $attrTemplate="$templateBody" $attrSize="$fill">
                         <$text $attrAlign="${AlignmentValues.topStart}">Top|Left</$text>
                         <$text $attrAlign="${AlignmentValues.topEnd}">Top|Right</$text>

@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.domain.factory
 import kotlinx.collections.immutable.persistentListOf
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.dto.AlertDialogDtoFactory
+import org.phoenixframework.liveview.data.dto.AnimatedVisibilityDtoFactory
 import org.phoenixframework.liveview.data.dto.AsyncImageDtoFactory
 import org.phoenixframework.liveview.data.dto.BackHandlerDtoFactory
 import org.phoenixframework.liveview.data.dto.BadgedBoxDtoFactory
@@ -72,6 +73,7 @@ object ComposableNodeFactory {
     init {
         ComposableRegistry.run {
             registerComponent(ComposableTypes.alertDialog, AlertDialogDtoFactory)
+            registerComponent(ComposableTypes.animatedVisibility, AnimatedVisibilityDtoFactory)
             registerComponent(ComposableTypes.assistChip, ChipDtoFactory)
             registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
             registerComponent(ComposableTypes.backHandler, BackHandlerDtoFactory)
