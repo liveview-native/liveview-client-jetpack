@@ -3,6 +3,7 @@ package org.phoenixframework.liveview.data.mappers.modifiers
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argEnabled
@@ -12,6 +13,7 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnDoubleClic
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnLongClick
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnLongClickLabel
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argRole
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argSelected
 import org.phoenixframework.liveview.data.dto.onClickFromString
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -131,4 +133,29 @@ fun Modifier.combinedClickableFromStyle(
             )
         )
     } ?: this
+}
+
+fun Modifier.selectableFromStyle(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    pushEvent: PushEvent?
+): Modifier {
+    val args = argsOrNamedArgs(arguments)
+
+    val selected = argOrNamedArg(args, argSelected, 0)?.booleanValue
+    val enabled = argOrNamedArg(args, argEnabled, 1)?.booleanValue ?: true
+    val role = argOrNamedArg(args, argRole, 2)?.let { roleFromStyle(it) }
+    val event = argOrNamedArg(args, argOnClick, 3)?.let { eventFromStyle(it) }
+
+    return if (event != null && selected != null) {
+        Modifier.selectable(
+            selected = selected,
+            enabled = enabled,
+            role = role,
+            onClick = {
+                val (eventName, eventArgs) = event
+                val clickFunction = onClickFromString(pushEvent, eventName, eventArgs)
+                clickFunction.invoke()
+            }
+        )
+    } else this
 }

@@ -70,6 +70,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeCo
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeDrawingPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeGesturesPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierScale
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSelectable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierShadow
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSizeIn
@@ -327,6 +328,7 @@ internal object ModifiersParser {
             modifierRequiredWidthIn -> Modifier.requiredWidthInFromStyle(argListContext)
             modifierRotate -> Modifier.rotateFromStyle(argListContext)
             modifierScale -> Modifier.scaleFromStyle(argListContext)
+            modifierSelectable -> Modifier.selectableFromStyle(argListContext, pushEvent)
             modifierShadow -> Modifier.shadowFromStyle(argListContext)
             modifierSize -> Modifier.sizeFromStyle(argListContext)
             modifierSizeIn -> Modifier.sizeInFromStyle(argListContext)
