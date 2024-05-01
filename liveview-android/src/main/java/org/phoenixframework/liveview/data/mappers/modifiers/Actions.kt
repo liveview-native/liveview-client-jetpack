@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argEnabled
@@ -12,6 +13,7 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnClickLabel
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnDoubleClick
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnLongClick
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnLongClickLabel
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnValueChange
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argRole
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argSelected
 import org.phoenixframework.liveview.data.dto.onClickFromString
@@ -155,6 +157,37 @@ fun Modifier.selectableFromStyle(
                 val (eventName, eventArgs) = event
                 val clickFunction = onClickFromString(pushEvent, eventName, eventArgs)
                 clickFunction.invoke()
+            }
+        )
+    } else this
+}
+
+fun Modifier.toggleableFromStyle(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    pushEvent: PushEvent?
+): Modifier {
+    val args = argsOrNamedArgs(arguments)
+
+    val value = argOrNamedArg(args, argSelected, 0)?.booleanValue
+    val enabled = argOrNamedArg(args, argEnabled, 1)?.booleanValue ?: true
+    val role = argOrNamedArg(args, argRole, 2)?.let { roleFromStyle(it) }
+    val event = argOrNamedArg(args, argOnValueChange, 3)?.let { eventFromStyle(it) }
+
+    return if (event != null && value != null) {
+        Modifier.toggleable(
+            value = value,
+            enabled = enabled,
+            role = role,
+            onValueChange = { newValue ->
+                val (eventName, _) = event
+                if (eventName.isNotEmpty()) {
+                    pushEvent?.invoke(
+                        ComposableBuilder.EVENT_TYPE_CHANGE,
+                        eventName,
+                        newValue,
+                        null
+                    )
+                }
             }
         )
     } else this

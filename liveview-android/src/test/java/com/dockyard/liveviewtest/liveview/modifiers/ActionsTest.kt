@@ -264,4 +264,40 @@ class ActionsTest : BaseComposableModifierTest() {
         }
         assertEquals(10, counter)
     }
+
+    @Test
+    fun toggleableTest() {
+        var value = true
+        val pushEvent: PushEvent = { _, _, newValue, _ ->
+            // Changing the counter value to check if the button is clicked
+            value = newValue as Boolean
+        }
+        ModifiersParser.fromStyleFile(
+            """
+           %{"toggleableTest" => [
+              {:toggleable, [], [[
+                value: $value,
+                onValueChange: {:__event__, [], ['my-click-event', []]}
+              ]]}
+            ]}
+            """,
+            pushEvent
+        )
+        composeRule.run {
+            setContent {
+                ViewFromTemplate(
+                    template = """
+                        <${ComposableTypes.box}>
+                            <${ComposableTypes.text} 
+                                ${attrClass}="toggleableTest" 
+                                ${attrText}="Toggleable" />
+                        </${ComposableTypes.box}>
+                        """,
+                    pushEvent = pushEvent,
+                )
+            }
+            onNodeWithText("Toggleable").performClick()
+        }
+        assertEquals(false, value)
+    }
 }
