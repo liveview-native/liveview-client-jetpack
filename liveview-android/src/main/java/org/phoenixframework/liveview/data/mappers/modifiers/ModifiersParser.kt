@@ -35,6 +35,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierCaptio
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClickable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClip
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClipToBounds
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierCombinedClickable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierDefaultMinSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierDisplayCutoutPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierExposedDropdownSize
@@ -291,12 +292,21 @@ internal object ModifiersParser {
             modifierAbsoluteOffset -> Modifier.absoluteOffsetFromStyle(argListContext)
             modifierAbsolutePadding -> Modifier.absolutePaddingFromStyle(argListContext)
             modifierAlpha -> Modifier.alphaFromStyle(argListContext)
-            modifierAnimateContentSize -> Modifier.animateContentSizeFromStyle(argListContext, pushEvent)
+            modifierAnimateContentSize -> Modifier.animateContentSizeFromStyle(
+                argListContext,
+                pushEvent
+            )
+
             modifierAspectRatio -> Modifier.aspectRatioFromStyle(argListContext)
             modifierBackground -> Modifier.backgroundFromStyle(argListContext)
             modifierBorder -> Modifier.borderFromStyle(argListContext)
             modifierClickable -> Modifier.clickableFromStyle(argListContext, pushEvent)
             modifierClip -> Modifier.clipFromStyle(argListContext)
+            modifierCombinedClickable -> Modifier.combinedClickableFromStyle(
+                argListContext,
+                pushEvent
+            )
+
             modifierDefaultMinSize -> Modifier.defaultMinSizeFromStyle(argListContext)
             modifierFillMaxHeight -> Modifier.fillMaxHeightFromStyle(argListContext)
             modifierFillMaxSize -> Modifier.fillMaxSizeFromStyle(argListContext)

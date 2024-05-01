@@ -563,9 +563,11 @@ abstract class ComposableBuilder {
     }
 
     companion object {
-        internal const val EVENT_TYPE_CLICK = "click"
         internal const val EVENT_TYPE_CHANGE = "change"
+        internal const val EVENT_TYPE_CLICK = "click"
+        internal const val EVENT_TYPE_DOUBLE_CLICK = "double-click"
         internal const val EVENT_TYPE_KEY_UP = "keyup"
+        internal const val EVENT_TYPE_LONG_CLICK = "long-click"
         internal const val EVENT_TYPE_BLUR = "blur"
         internal const val EVENT_TYPE_SUBMIT = "submit"
 

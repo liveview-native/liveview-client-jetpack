@@ -28,7 +28,7 @@ import org.robolectric.annotation.GraphicsMode
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = RobolectricDeviceQualifiers.Pixel5)
 @OptIn(ExperimentalRoborazziApi::class)
-abstract class LiveViewComposableTest {
+abstract class LiveViewComposableTest: BaseTest() {
     @get:Rule
     val composeRule = createAndroidComposeRule<ComponentActivity>()
     private val isRecording = IS_RECORDING_SHOT_TEST
@@ -81,12 +81,5 @@ abstract class LiveViewComposableTest {
                 composeRule.onRoot().captureRoboImage()
         }
     }
-
-    private fun String.templateToTest() =
-        this.trimIndent().trimMargin().trimEnd().replace("\"", "\\\"").lines().joinToString("")
-
-    protected fun String.toJsonForTemplate() =
-        this.trimIndent().trim().replace("\n", "")
-
 }
 

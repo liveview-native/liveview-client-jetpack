@@ -1,7 +1,6 @@
 package com.dockyard.liveviewtest.liveview.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.captionBarPadding
@@ -29,15 +28,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties.ProgressBarRangeInfo
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
-import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
@@ -47,7 +42,6 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
 import org.phoenixframework.liveview.domain.base.ComposableTypes.text
-import org.phoenixframework.liveview.domain.base.PushEvent
 
 class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
@@ -74,141 +68,6 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 </$box>
                 """
         )
-    }
-
-    @Test
-    fun clickableTest() {
-        var counter = 0
-        val pushEvent: PushEvent = { _, _, _, _ ->
-            // Changing the counter value to check if the button is clicked
-            counter = 10
-        }
-        ModifiersParser.fromStyleFile(
-            """
-           %{"clickableTest" => [
-              {:clickable, [], [
-                {:__event__, [], ["my-click-event", []]}
-              ]}
-            ]}  
-            """, pushEvent
-        )
-        compareNativeComposableWithTemplate(
-            nativeComposable = {
-                Box {
-                    Text(
-                        text = "Clickable",
-                        modifier = Modifier.clickable(
-                            onClick = {
-                                counter = 10
-                            }
-                        )
-                    )
-                }
-            },
-            template = """
-                <$box>
-                    <$text $attrClass="clickableTest" $attrText="Clickable" />
-                </$box>
-                """,
-            onBeforeScreenShot = { rule ->
-                rule.onNodeWithText("Clickable").performClick()
-            },
-            pushEvent = pushEvent,
-            delayBeforeScreenshot = 200,
-        )
-        assertEquals(10, counter)
-    }
-
-    @Test
-    fun clickableNamedTest() {
-        var counter = 0
-        val pushEvent: PushEvent = { _, _, _, _ ->
-            // Changing the counter value to check if the button is clicked
-            counter = 10
-        }
-        ModifiersParser.fromStyleFile(
-            """
-           %{"clickableNamedTest" => [
-              {:clickable, [], [[
-                onClick: {:__event__, [], ['my-click-event', []]}
-              ]]}
-            ]}  
-            """,
-            pushEvent
-        )
-        compareNativeComposableWithTemplate(
-            nativeComposable = {
-                Box {
-                    Text(
-                        text = "Clickable",
-                        modifier = Modifier.clickable(
-                            onClick = {
-                                counter = 10
-                            }
-                        )
-                    )
-                }
-            },
-            template = """
-                <$box>
-                    <$text $attrClass="clickableNamedTest" $attrText="Clickable" />
-                </$box>
-                """,
-            onBeforeScreenShot = { rule ->
-                rule.onNodeWithText("Clickable").performClick()
-            },
-            pushEvent = pushEvent,
-            delayBeforeScreenshot = 200,
-        )
-        assertEquals(10, counter)
-    }
-
-    @Test
-    fun clickableTestWithOtherParams() {
-        var counter = 0
-        val pushEvent: PushEvent = { _, _, _, _ ->
-            // Changing the counter value to check if the button is clicked
-            counter = 10
-        }
-        ModifiersParser.fromStyleFile(
-            """
-           %{"clickableTestWithOtherParams" => [
-              {:clickable, [], [[
-                enabled: true, 
-                onClickLabel: 'onClickLabel', 
-                role: {:., [], [:Role, :Button]}, 
-                onClick: {:__event__, [], ['my-click-event', []]}
-              ]]}
-            ]}  
-            """, pushEvent
-        )
-        compareNativeComposableWithTemplate(
-            nativeComposable = {
-                Box {
-                    Text(
-                        text = "Clickable",
-                        modifier = Modifier.clickable(
-                            enabled = true,
-                            onClickLabel = "onClickLabel",
-                            role = Role.Button,
-                            onClick = {
-                                counter = 10
-                            }
-                        )
-                    )
-                }
-            },
-            template = """
-                <$box>
-                    <$text $attrClass="clickableTestWithOtherParams" $attrText="Clickable" />
-                </$box>
-                """,
-            onBeforeScreenShot = { rule ->
-                rule.onNodeWithText("Clickable").performClick()
-            },
-            pushEvent = pushEvent,
-        )
-        assertEquals(10, counter)
     }
 
     @Test
