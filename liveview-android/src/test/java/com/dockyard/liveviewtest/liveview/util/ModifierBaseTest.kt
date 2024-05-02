@@ -1,4 +1,4 @@
-package com.dockyard.liveviewtest.liveview.modifiers
+package com.dockyard.liveviewtest.liveview.util
 
 import androidx.compose.ui.Modifier
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -10,7 +10,7 @@ import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.from
 import org.phoenixframework.liveview.domain.base.PushEvent
 
 @RunWith(AndroidJUnit4::class)
-abstract class ModifierBaseTest {
+abstract class ModifierBaseTest: BaseTest() {
 
     @Before
     fun clearStyleCacheTable() {
@@ -28,9 +28,6 @@ abstract class ModifierBaseTest {
         val result = Modifier.fromStyleName(styleName, scope, pushEvent)
         assertEquals(result, targetModifier)
     }
-
-    fun String.trimStyle(): String =
-        this.lines().joinToString("") { it.trim().replace("\n", "") }
 
     private fun getStyleName(styleContentString: String): String {
         // Simple substring logic to extract the style name

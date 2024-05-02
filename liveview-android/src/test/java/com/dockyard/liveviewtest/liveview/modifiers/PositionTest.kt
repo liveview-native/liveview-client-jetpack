@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.dockyard.liveviewtest.liveview.util.ModifierBaseTest
 import org.junit.Test
 import org.junit.runner.RunWith
 

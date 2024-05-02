@@ -3,6 +3,7 @@ package com.dockyard.liveviewtest.liveview.modifiers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.dockyard.liveviewtest.liveview.util.ModifierBaseTest
 import org.junit.Test
 import org.junit.runner.RunWith
 

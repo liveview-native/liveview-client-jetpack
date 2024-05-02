@@ -6,4 +6,7 @@ abstract class BaseTest {
 
     internal fun String.toJsonForTemplate() =
         this.trimIndent().trim().replace("\n", "")
+
+    internal fun String.trimStyle(): String =
+        this.lines().joinToString("") { it.trim().replace("\n", "") }
 }

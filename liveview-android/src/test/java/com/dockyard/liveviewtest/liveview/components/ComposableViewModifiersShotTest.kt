@@ -2,9 +2,13 @@ package com.dockyard.liveviewtest.liveview.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -41,9 +45,67 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
 import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 
 class ComposableViewModifiersShotTest : LiveViewComposableTest() {
+
+    @Test
+    fun alignColumnTest() {
+        ModifiersParser.fromStyleFile(
+            """
+            %{
+                "alignColumnTest" => [
+                    {:align, [], [{:., [], [:Alignment, :End]}]}
+                ], 
+                "fillColumnWidth" => [
+                    {:fillMaxWidth, [], []}
+                ]
+            }
+            """.trimStyle()
+        )
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(text = "Align", modifier = Modifier.align(Alignment.End))
+                }
+            },
+            template = """
+                <$column $attrClass="fillColumnWidth">
+                    <$text $attrText="Align" $attrClass="alignColumnTest"/>
+                </$column>
+                """
+        )
+    }
+
+    @Test
+    fun alignRowTest() {
+        ModifiersParser.fromStyleFile(
+            """
+            %{
+                "alignRowTest" => [
+                    {:align, [], [{:., [], [:Alignment, :End]}]}
+                ], 
+                "rowHeight100" => [
+                    {:height, [], [{:Dp, [], [100]}]}
+                ]
+            }
+            """.trimStyle()
+        )
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Row(modifier = Modifier.height(100.dp)) {
+                    Text(text = "Align", modifier = Modifier.align(Alignment.Bottom))
+                }
+            },
+            template = """
+                <$row $attrClass="rowHeight100">
+                    <$text $attrText="Align" $attrClass="alignRowTest"/>
+                </$row>
+                """
+        )
+    }
 
     @Test
     fun captionBarPaddingTest() {
