@@ -1,11 +1,9 @@
 package com.dockyard.liveviewtest.liveview.util
 
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -13,7 +11,6 @@ import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.captureScreenRoboImage
-import org.junit.Rule
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.BuildConfig.IS_RECORDING_SHOT_TEST
 import org.phoenixframework.liveview.domain.LiveViewCoordinator
@@ -28,9 +25,8 @@ import org.robolectric.annotation.GraphicsMode
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = RobolectricDeviceQualifiers.Pixel5)
 @OptIn(ExperimentalRoborazziApi::class)
-abstract class LiveViewComposableTest: BaseTest() {
-    @get:Rule
-    val composeRule = createAndroidComposeRule<ComponentActivity>()
+abstract class LiveViewComposableTest : BaseTest() {
+
     private val isRecording = IS_RECORDING_SHOT_TEST
 
     fun compareNativeComposableWithTemplate(

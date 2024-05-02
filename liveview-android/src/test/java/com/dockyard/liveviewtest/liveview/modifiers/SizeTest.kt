@@ -50,9 +50,6 @@ import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.from
 @RunWith(AndroidJUnit4::class)
 class SizeTest : ModifierBaseTest() {
 
-    @get:Rule
-    val composeRule = createAndroidComposeRule<ComponentActivity>()
-
     @Test
     fun aspectRatioTest() {
         assertModifierFromStyle(

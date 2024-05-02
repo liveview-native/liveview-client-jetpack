@@ -1,24 +1,23 @@
 package com.dockyard.liveviewtest.liveview.util
 
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Rule
+import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
+import org.robolectric.annotation.Config
+import org.robolectric.annotation.GraphicsMode
 
 
 @RunWith(AndroidJUnit4::class)
-abstract class BaseComposableModifierTest: BaseTest() {
-
-    @get:Rule
-    val composeRule = createAndroidComposeRule<ComponentActivity>()
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
+@Config(qualifiers = RobolectricDeviceQualifiers.Pixel5)
+abstract class BaseComposableModifierTest : BaseTest() {
 
     @Composable
     fun ViewFromTemplate(
