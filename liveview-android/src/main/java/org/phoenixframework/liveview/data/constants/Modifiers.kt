@@ -24,6 +24,7 @@ object ModifierNames {
     const val modifierAbsolutePadding = "absolutePadding"
     const val modifierAlpha = "alpha"
     const val modifierAlign = "align"
+    const val modifierAlignBy = "alignBy"
     const val modifierAlignByBaseline = "alignByBaseline"
     const val modifierAnimateContentSize = "animateContentSize"
     const val modifierAspectRatio = "aspectRatio"

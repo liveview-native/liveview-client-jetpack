@@ -24,9 +24,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.Dp
@@ -101,12 +102,24 @@ import org.phoenixframework.liveview.data.constants.ShapeValues
 import org.phoenixframework.liveview.data.dto.easingFromString
 import org.phoenixframework.liveview.data.dto.tileModeFromString
 import org.phoenixframework.liveview.domain.extensions.toColor
+import kotlin.math.max
+import kotlin.math.min
 
-internal fun alignmentLineFromArgument(argument: ModifierDataAdapter.ArgumentData): AlignmentLine? {
+internal fun horizontalAlignmentLineFromArgument(argument: ModifierDataAdapter.ArgumentData): HorizontalAlignmentLine? {
     return if (argument.isDot) {
         when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
             AlignmentLineValues.firstBaseline -> FirstBaseline
             AlignmentLineValues.lastBaseline -> LastBaseline
+            else -> null
+        }
+    } else null
+}
+
+internal fun verticalAlignmentLineFromArgument(argument: ModifierDataAdapter.ArgumentData): VerticalAlignmentLine? {
+    return if (argument.isDot) {
+        when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
+            AlignmentLineValues.firstBaseline -> VerticalAlignmentLine(::min)
+            AlignmentLineValues.lastBaseline -> VerticalAlignmentLine(::max)
             else -> null
         }
     } else null

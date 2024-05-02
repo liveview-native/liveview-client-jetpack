@@ -30,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.SemanticsProperties.ProgressBarRangeInfo
@@ -39,15 +41,19 @@ import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
+import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues.centerHorizontally
+import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.centerVertically
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
 import org.phoenixframework.liveview.domain.base.ComposableTypes.column
 import org.phoenixframework.liveview.domain.base.ComposableTypes.row
 import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import kotlin.math.max
 
 class ComposableViewModifiersShotTest : LiveViewComposableTest() {
 
@@ -102,6 +108,74 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             template = """
                 <$row $attrClass="rowHeight100">
                     <$text $attrText="Align" $attrClass="alignRowTest"/>
+                </$row>
+                """
+        )
+    }
+
+    @Test
+    fun alignByColumnTest() {
+        ModifiersParser.fromStyleFile(
+            """
+            %{
+                "alignByColumnTest" => [
+                    {:alignBy, [], [{:., [], [:LastBaseline]}]}
+                ], 
+                "fillColumnWidth" => [
+                    {:fillMaxWidth, [], []},
+                    {:height, [], [{:Dp, [], [50]}]}
+                ]
+            }
+            """.trimStyle()
+        )
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                ) {
+                    Text(text = "Text1", Modifier.align(Alignment.CenterHorizontally))
+                    Text(
+                        text = "AlignBy",
+                        modifier = Modifier.alignBy(VerticalAlignmentLine(::max))
+                    )
+                }
+            },
+            template = """
+                <$column $attrClass="fillColumnWidth">
+                    <$text $attrText="Text1" $attrAlign="$centerHorizontally" />
+                    <$text $attrText="AlignBy" $attrClass="alignByColumnTest"/>
+                </$column>
+                """
+        )
+    }
+
+    @Test
+    fun alignByRowTest() {
+        ModifiersParser.fromStyleFile(
+            """
+            %{
+                "alignByRowTest" => [
+                    {:alignBy, [], [{:., [], [:LastBaseline]}]}
+                ], 
+                "rowHeight100" => [
+                    {:height, [], [{:Dp, [], [100]}]}
+                ]
+            }
+            """.trimStyle()
+        )
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Row(modifier = Modifier.height(100.dp)) {
+                    Text(text = "Text1", Modifier.align(Alignment.CenterVertically))
+                    Text(text = "AlignBy", modifier = Modifier.alignBy(LastBaseline))
+                }
+            },
+            template = """
+                <$row $attrClass="rowHeight100">
+                    <$text $attrText="Text1" $attrAlign="$centerVertically" />
+                    <$text $attrText="AlignBy" $attrClass="alignByRowTest"/>
                 </$row>
                 """
         )

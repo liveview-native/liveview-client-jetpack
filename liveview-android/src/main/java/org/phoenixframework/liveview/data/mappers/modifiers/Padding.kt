@@ -121,7 +121,7 @@ fun Modifier.paddingFromFromStyle(arguments: List<ModifierDataAdapter.ArgumentDa
     val topArg = argOrNamedArg(params, argBefore, 1)
     val bottomArg = argOrNamedArg(params, argAfter, 2)
 
-    val alignmentLine = alignArg?.let { alignmentLineFromArgument(it) } ?: return this
+    val alignmentLine = alignArg?.let { horizontalAlignmentLineFromArgument(it) } ?: return this
 
     val topDp = topArg?.let { dpFromArgument(it) }
     val bottomDp = bottomArg?.let { dpFromArgument(it) }

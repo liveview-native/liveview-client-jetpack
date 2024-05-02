@@ -25,6 +25,7 @@ import org.antlr.v4.runtime.CommonTokenStream
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAbsoluteOffset
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAbsolutePadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlignBy
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlignByBaseline
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlpha
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAnimateContentSize
@@ -231,6 +232,11 @@ internal object ModifiersParser {
 
             modifierAlign -> {
                 if (scope != null) Modifier.alignFromStyle(argListContext, scope)
+                else Modifier.placeholderModifier(modifierId, argListContext)
+            }
+
+            modifierAlignBy -> {
+                if (scope != null) Modifier.alignByFromStyle(argListContext, scope)
                 else Modifier.placeholderModifier(modifierId, argListContext)
             }
 
