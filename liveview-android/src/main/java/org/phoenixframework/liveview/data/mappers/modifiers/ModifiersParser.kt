@@ -79,6 +79,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystem
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemGesturesPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTestTag
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierToggleable
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTriStateToggleable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWaterfallPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
@@ -335,6 +336,7 @@ internal object ModifiersParser {
             modifierSizeIn -> Modifier.sizeInFromStyle(argListContext)
             modifierTestTag -> Modifier.testTagFromStyle(argListContext)
             modifierToggleable -> Modifier.toggleableFromStyle(argListContext, pushEvent)
+            modifierTriStateToggleable -> Modifier.triStateToggleableFromStyle(argListContext, pushEvent)
             modifierWindowInsetsBottomHeight -> Modifier.windowInsetsBottomHeightFromStyle(
                 argListContext
             )

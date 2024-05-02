@@ -22,10 +22,10 @@ fun Modifier.backgroundFromStyle(arguments: List<ModifierDataAdapter.ArgumentDat
             colorFromArgument(arg)?.let { color = it }
         }
         backgroundArgs.find { it.name == argShape }?.let { arg ->
-            shapeFromStyle(arg)?.let { shape = it }
+            shapeFromArgument(arg)?.let { shape = it }
         }
         backgroundArgs.find { it.name == argBrush }?.let { arg ->
-            brushFromStyle(arg)?.let { brush = it }
+            brushFromArgument(arg)?.let { brush = it }
         }
         backgroundArgs.find { it.name == argAlpha }?.let { arg ->
             arg.floatValue?.let { alpha = it }
@@ -36,10 +36,10 @@ fun Modifier.backgroundFromStyle(arguments: List<ModifierDataAdapter.ArgumentDat
             colorFromArgument(arg)?.let { color = it }
         }
         backgroundArgs.getOrNull(0)?.let { arg ->
-            brushFromStyle(arg)?.let { brush = it }
+            brushFromArgument(arg)?.let { brush = it }
         }
         backgroundArgs.getOrNull(1)?.let { arg ->
-            shapeFromStyle(arg)?.let { shape = it }
+            shapeFromArgument(arg)?.let { shape = it }
         }
         backgroundArgs.getOrNull(2)?.let { arg ->
             arg.floatValue?.let { alpha = it }

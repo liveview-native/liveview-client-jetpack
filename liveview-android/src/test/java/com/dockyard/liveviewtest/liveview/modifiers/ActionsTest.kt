@@ -1,5 +1,6 @@
 package com.dockyard.liveviewtest.liveview.modifiers
 
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.test.doubleClick
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithText
@@ -299,5 +300,77 @@ class ActionsTest : BaseComposableModifierTest() {
             onNodeWithText("Toggleable").performClick()
         }
         assertEquals(false, value)
+    }
+
+    @Test
+    fun triStateToggleableTest() {
+        var value = ToggleableState.Off
+        val pushEvent: PushEvent = { _, _, _, _ ->
+            // Changing the counter value to check if the button is clicked
+            value = ToggleableState.On
+        }
+        ModifiersParser.fromStyleFile(
+            """
+           %{"triStateToggleableTest" => [
+              {:triStateToggleable, [], [[
+                state: {:., [], [:ToggleableState, :Off]},
+                onClick: {:__event__, [], ['my-click-event', []]}
+              ]]}
+            ]}
+            """,
+            pushEvent
+        )
+        composeRule.run {
+            setContent {
+                ViewFromTemplate(
+                    template = """
+                        <${ComposableTypes.box}>
+                            <${ComposableTypes.text} 
+                                ${attrClass}="triStateToggleableTest" 
+                                ${attrText}="TriStateToggleable" />
+                        </${ComposableTypes.box}>
+                        """,
+                    pushEvent = pushEvent,
+                )
+            }
+            onNodeWithText("TriStateToggleable").performClick()
+        }
+        assertEquals(ToggleableState.On, value)
+    }
+
+    @Test
+    fun triStateToggleableUsingConstructorTest() {
+        var value = ToggleableState(true)
+        val pushEvent: PushEvent = { _, _, _, _ ->
+            // Changing the counter value to check if the button is clicked
+            value = ToggleableState(false)
+        }
+        ModifiersParser.fromStyleFile(
+            """
+           %{"triStateToggleableUsingConstructorTest" => [
+              {:triStateToggleable, [], [[
+                state: {:ToggleableState, [], [true]},
+                onClick: {:__event__, [], ['my-click-event', []]}
+              ]]}
+            ]}
+            """,
+            pushEvent
+        )
+        composeRule.run {
+            setContent {
+                ViewFromTemplate(
+                    template = """
+                        <${ComposableTypes.box}>
+                            <${ComposableTypes.text} 
+                                ${attrClass}="triStateToggleableUsingConstructorTest" 
+                                ${attrText}="TriStateToggleable" />
+                        </${ComposableTypes.box}>
+                        """,
+                    pushEvent = pushEvent,
+                )
+            }
+            onNodeWithText("TriStateToggleable").performClick()
+        }
+        assertEquals(ToggleableState.Off, value)
     }
 }

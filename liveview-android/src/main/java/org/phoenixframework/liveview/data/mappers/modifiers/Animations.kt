@@ -24,7 +24,7 @@ fun Modifier.animateContentSizeFromStyle(
         visibilityThreshold = IntSize.VisibilityThreshold
     )
     val event = argOrNamedArg(modifierArgs, ModifierArgs.argFinishedListener, 1)?.let {
-        eventFromStyle(it)
+        eventFromArgument(it)
     }
     return this.then(
         Modifier.animateContentSize(

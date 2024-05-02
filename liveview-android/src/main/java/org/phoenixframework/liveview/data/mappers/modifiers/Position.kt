@@ -9,8 +9,8 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argY
 
 fun Modifier.offsetFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val x = argOrNamedArg(args, argX, 0)?.let { dpFromStyle(it) }
-    val y = argOrNamedArg(args, argY, 1)?.let { dpFromStyle(it) }
+    val x = argOrNamedArg(args, argX, 0)?.let { dpFromArgument(it) }
+    val y = argOrNamedArg(args, argY, 1)?.let { dpFromArgument(it) }
     return if (x != null || y != null) {
         this.then(Modifier.offset(x ?: 0.dp, y ?: 0.dp))
     } else this
@@ -18,8 +18,8 @@ fun Modifier.offsetFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
 
 fun Modifier.absoluteOffsetFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val x = argOrNamedArg(args, argX, 0)?.let { dpFromStyle(it) }
-    val y = argOrNamedArg(args, argY, 1)?.let { dpFromStyle(it) }
+    val x = argOrNamedArg(args, argX, 0)?.let { dpFromArgument(it) }
+    val y = argOrNamedArg(args, argY, 1)?.let { dpFromArgument(it) }
     return if (x != null || y != null) {
         this.then(Modifier.absoluteOffset(x ?: 0.dp, y ?: 0.dp))
     } else this

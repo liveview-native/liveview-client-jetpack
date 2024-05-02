@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.selection.triStateToggleable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argEnabled
@@ -16,6 +17,7 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnLongClickL
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnValueChange
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argRole
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argSelected
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argState
 import org.phoenixframework.liveview.data.dto.onClickFromString
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -36,12 +38,12 @@ fun Modifier.clickableFromStyle(
         enabled = true
         onClickLabel = null
         role = null
-        event = argOrNamedArg(args, argOnClick, 0)?.let { eventFromStyle(it) }
+        event = argOrNamedArg(args, argOnClick, 0)?.let { eventFromArgument(it) }
     } else {
         enabled = argOrNamedArg(args, argEnabled, 0)?.booleanValue
         onClickLabel = argOrNamedArg(args, argOnClickLabel, 1)?.stringValue
-        role = argOrNamedArg(args, argRole, 2)?.let { roleFromStyle(it) }
-        event = argOrNamedArg(args, argOnClick, 3)?.let { eventFromStyle(it) }
+        role = argOrNamedArg(args, argRole, 2)?.let { roleFromArgument(it) }
+        event = argOrNamedArg(args, argOnClick, 3)?.let { eventFromArgument(it) }
     }
     return event?.let {
         this.then(
@@ -84,15 +86,15 @@ fun Modifier.combinedClickableFromStyle(
         onLongClickLabel = null
         onLongClickEvent = null
         onDoubleClickEvent = null
-        onClickEvent = argOrNamedArg(args, argOnClick, 0)?.let { eventFromStyle(it) }
+        onClickEvent = argOrNamedArg(args, argOnClick, 0)?.let { eventFromArgument(it) }
     } else {
         enabled = argOrNamedArg(args, argEnabled, 0)?.booleanValue
         onClickLabel = argOrNamedArg(args, argOnClickLabel, 1)?.stringValue
-        role = argOrNamedArg(args, argRole, 2)?.let { roleFromStyle(it) }
+        role = argOrNamedArg(args, argRole, 2)?.let { roleFromArgument(it) }
         onLongClickLabel = argOrNamedArg(args, argOnLongClickLabel, 3)?.stringValue
-        onLongClickEvent = argOrNamedArg(args, argOnLongClick, 4)?.let { eventFromStyle(it) }
-        onDoubleClickEvent = argOrNamedArg(args, argOnDoubleClick, 5)?.let { eventFromStyle(it) }
-        onClickEvent = argOrNamedArg(args, argOnClick, 6)?.let { eventFromStyle(it) }
+        onLongClickEvent = argOrNamedArg(args, argOnLongClick, 4)?.let { eventFromArgument(it) }
+        onDoubleClickEvent = argOrNamedArg(args, argOnDoubleClick, 5)?.let { eventFromArgument(it) }
+        onClickEvent = argOrNamedArg(args, argOnClick, 6)?.let { eventFromArgument(it) }
     }
     return onClickEvent?.let { clickEvent ->
         this.then(
@@ -145,8 +147,8 @@ fun Modifier.selectableFromStyle(
 
     val selected = argOrNamedArg(args, argSelected, 0)?.booleanValue
     val enabled = argOrNamedArg(args, argEnabled, 1)?.booleanValue ?: true
-    val role = argOrNamedArg(args, argRole, 2)?.let { roleFromStyle(it) }
-    val event = argOrNamedArg(args, argOnClick, 3)?.let { eventFromStyle(it) }
+    val role = argOrNamedArg(args, argRole, 2)?.let { roleFromArgument(it) }
+    val event = argOrNamedArg(args, argOnClick, 3)?.let { eventFromArgument(it) }
 
     return if (event != null && selected != null) {
         Modifier.selectable(
@@ -170,8 +172,8 @@ fun Modifier.toggleableFromStyle(
 
     val value = argOrNamedArg(args, argSelected, 0)?.booleanValue
     val enabled = argOrNamedArg(args, argEnabled, 1)?.booleanValue ?: true
-    val role = argOrNamedArg(args, argRole, 2)?.let { roleFromStyle(it) }
-    val event = argOrNamedArg(args, argOnValueChange, 3)?.let { eventFromStyle(it) }
+    val role = argOrNamedArg(args, argRole, 2)?.let { roleFromArgument(it) }
+    val event = argOrNamedArg(args, argOnValueChange, 3)?.let { eventFromArgument(it) }
 
     return if (event != null && value != null) {
         Modifier.toggleable(
@@ -188,6 +190,31 @@ fun Modifier.toggleableFromStyle(
                         null
                     )
                 }
+            }
+        )
+    } else this
+}
+
+fun Modifier.triStateToggleableFromStyle(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    pushEvent: PushEvent?
+): Modifier {
+    val args = argsOrNamedArgs(arguments)
+
+    val state = argOrNamedArg(args, argState, 0)?.let { toggleableStateFromArgument(it) }
+    val enabled = argOrNamedArg(args, argEnabled, 1)?.booleanValue ?: true
+    val role = argOrNamedArg(args, argRole, 2)?.let { roleFromArgument(it) }
+    val event = argOrNamedArg(args, argOnClick, 3)?.let { eventFromArgument(it) }
+
+    return if (state != null && event != null) {
+        Modifier.triStateToggleable(
+            state = state,
+            enabled = enabled,
+            role = role,
+            onClick = {
+                val (eventName, eventArgs) = event
+                val clickFunction = onClickFromString(pushEvent, eventName, eventArgs)
+                clickFunction.invoke()
             }
         )
     } else this
