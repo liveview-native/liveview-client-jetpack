@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlignment
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlignmentLine
 import org.phoenixframework.liveview.data.dto.alignmentFromString
 import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
 import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
@@ -39,6 +40,41 @@ fun Modifier.alignFromStyle(
             this@alignFromStyle.then(
                 Modifier.align(verticalAlignmentFromString(alignmentValue))
             )
+        }
+
+        else -> this
+    }
+}
+
+fun Modifier.alignByFromStyle(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    scope: Any?
+): Modifier {
+    val alignmentParam = argsOrNamedArgs(arguments)
+
+    val alignmentValue = argOrNamedArg(alignmentParam, argAlignmentLine, 0)
+
+    return when (scope) {
+        is ColumnScope -> scope.run {
+            alignmentValue?.let {
+                verticalAlignmentLineFromArgument(it)
+
+            }?.let {
+                this@alignByFromStyle.then(
+                    Modifier.alignBy(it)
+                )
+            } ?: this@alignByFromStyle
+        }
+
+        is RowScope -> scope.run {
+            alignmentValue?.let {
+                horizontalAlignmentLineFromArgument(it)
+
+            }?.let {
+                this@alignByFromStyle.then(
+                    Modifier.alignBy(it)
+                )
+            } ?: this@alignByFromStyle
         }
 
         else -> this

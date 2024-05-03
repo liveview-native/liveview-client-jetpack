@@ -25,6 +25,7 @@ import org.antlr.v4.runtime.CommonTokenStream
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAbsoluteOffset
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAbsolutePadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlignBy
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlignByBaseline
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlpha
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAnimateContentSize
@@ -35,6 +36,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierCaptio
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClickable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClip
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClipToBounds
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierCombinedClickable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierDefaultMinSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierDisplayCutoutPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierExposedDropdownSize
@@ -69,6 +71,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeCo
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeDrawingPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeGesturesPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierScale
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSelectable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierShadow
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSizeIn
@@ -76,6 +79,8 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierStatus
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemBarsPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemGesturesPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTestTag
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierToggleable
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTriStateToggleable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWaterfallPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
@@ -230,6 +235,11 @@ internal object ModifiersParser {
                 else Modifier.placeholderModifier(modifierId, argListContext)
             }
 
+            modifierAlignBy -> {
+                if (scope != null) Modifier.alignByFromStyle(argListContext, scope)
+                else Modifier.placeholderModifier(modifierId, argListContext)
+            }
+
             modifierAlignByBaseline -> {
                 if (scope != null)
                     Modifier.alignByBaselineFromStyle(scope)
@@ -291,12 +301,21 @@ internal object ModifiersParser {
             modifierAbsoluteOffset -> Modifier.absoluteOffsetFromStyle(argListContext)
             modifierAbsolutePadding -> Modifier.absolutePaddingFromStyle(argListContext)
             modifierAlpha -> Modifier.alphaFromStyle(argListContext)
-            modifierAnimateContentSize -> Modifier.animateContentSizeFromStyle(argListContext, pushEvent)
+            modifierAnimateContentSize -> Modifier.animateContentSizeFromStyle(
+                argListContext,
+                pushEvent
+            )
+
             modifierAspectRatio -> Modifier.aspectRatioFromStyle(argListContext)
             modifierBackground -> Modifier.backgroundFromStyle(argListContext)
             modifierBorder -> Modifier.borderFromStyle(argListContext)
             modifierClickable -> Modifier.clickableFromStyle(argListContext, pushEvent)
             modifierClip -> Modifier.clipFromStyle(argListContext)
+            modifierCombinedClickable -> Modifier.combinedClickableFromStyle(
+                argListContext,
+                pushEvent
+            )
+
             modifierDefaultMinSize -> Modifier.defaultMinSizeFromStyle(argListContext)
             modifierFillMaxHeight -> Modifier.fillMaxHeightFromStyle(argListContext)
             modifierFillMaxSize -> Modifier.fillMaxSizeFromStyle(argListContext)
@@ -317,10 +336,13 @@ internal object ModifiersParser {
             modifierRequiredWidthIn -> Modifier.requiredWidthInFromStyle(argListContext)
             modifierRotate -> Modifier.rotateFromStyle(argListContext)
             modifierScale -> Modifier.scaleFromStyle(argListContext)
+            modifierSelectable -> Modifier.selectableFromStyle(argListContext, pushEvent)
             modifierShadow -> Modifier.shadowFromStyle(argListContext)
             modifierSize -> Modifier.sizeFromStyle(argListContext)
             modifierSizeIn -> Modifier.sizeInFromStyle(argListContext)
             modifierTestTag -> Modifier.testTagFromStyle(argListContext)
+            modifierToggleable -> Modifier.toggleableFromStyle(argListContext, pushEvent)
+            modifierTriStateToggleable -> Modifier.triStateToggleableFromStyle(argListContext, pushEvent)
             modifierWindowInsetsBottomHeight -> Modifier.windowInsetsBottomHeightFromStyle(
                 argListContext
             )

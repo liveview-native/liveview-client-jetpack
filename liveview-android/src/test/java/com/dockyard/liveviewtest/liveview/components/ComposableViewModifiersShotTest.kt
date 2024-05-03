@@ -1,11 +1,14 @@
 package com.dockyard.liveviewtest.liveview.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -27,29 +30,156 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsProperties.ProgressBarRangeInfo
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
-import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
+import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues.centerHorizontally
+import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.centerVertically
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
+import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.row
 import org.phoenixframework.liveview.domain.base.ComposableTypes.text
-import org.phoenixframework.liveview.domain.base.PushEvent
+import kotlin.math.max
 
 class ComposableViewModifiersShotTest : LiveViewComposableTest() {
+
+    @Test
+    fun alignColumnTest() {
+        ModifiersParser.fromStyleFile(
+            """
+            %{
+                "alignColumnTest" => [
+                    {:align, [], [{:., [], [:Alignment, :End]}]}
+                ], 
+                "fillColumnWidth" => [
+                    {:fillMaxWidth, [], []}
+                ]
+            }
+            """.trimStyle()
+        )
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(text = "Align", modifier = Modifier.align(Alignment.End))
+                }
+            },
+            template = """
+                <$column $attrClass="fillColumnWidth">
+                    <$text $attrText="Align" $attrClass="alignColumnTest"/>
+                </$column>
+                """
+        )
+    }
+
+    @Test
+    fun alignRowTest() {
+        ModifiersParser.fromStyleFile(
+            """
+            %{
+                "alignRowTest" => [
+                    {:align, [], [{:., [], [:Alignment, :End]}]}
+                ], 
+                "rowHeight100" => [
+                    {:height, [], [{:Dp, [], [100]}]}
+                ]
+            }
+            """.trimStyle()
+        )
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Row(modifier = Modifier.height(100.dp)) {
+                    Text(text = "Align", modifier = Modifier.align(Alignment.Bottom))
+                }
+            },
+            template = """
+                <$row $attrClass="rowHeight100">
+                    <$text $attrText="Align" $attrClass="alignRowTest"/>
+                </$row>
+                """
+        )
+    }
+
+    @Test
+    fun alignByColumnTest() {
+        ModifiersParser.fromStyleFile(
+            """
+            %{
+                "alignByColumnTest" => [
+                    {:alignBy, [], [{:., [], [:LastBaseline]}]}
+                ], 
+                "fillColumnWidth" => [
+                    {:fillMaxWidth, [], []},
+                    {:height, [], [{:Dp, [], [50]}]}
+                ]
+            }
+            """.trimStyle()
+        )
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                ) {
+                    Text(text = "Text1", Modifier.align(Alignment.CenterHorizontally))
+                    Text(
+                        text = "AlignBy",
+                        modifier = Modifier.alignBy(VerticalAlignmentLine(::max))
+                    )
+                }
+            },
+            template = """
+                <$column $attrClass="fillColumnWidth">
+                    <$text $attrText="Text1" $attrAlign="$centerHorizontally" />
+                    <$text $attrText="AlignBy" $attrClass="alignByColumnTest"/>
+                </$column>
+                """
+        )
+    }
+
+    @Test
+    fun alignByRowTest() {
+        ModifiersParser.fromStyleFile(
+            """
+            %{
+                "alignByRowTest" => [
+                    {:alignBy, [], [{:., [], [:LastBaseline]}]}
+                ], 
+                "rowHeight100" => [
+                    {:height, [], [{:Dp, [], [100]}]}
+                ]
+            }
+            """.trimStyle()
+        )
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Row(modifier = Modifier.height(100.dp)) {
+                    Text(text = "Text1", Modifier.align(Alignment.CenterVertically))
+                    Text(text = "AlignBy", modifier = Modifier.alignBy(LastBaseline))
+                }
+            },
+            template = """
+                <$row $attrClass="rowHeight100">
+                    <$text $attrText="Text1" $attrAlign="$centerVertically" />
+                    <$text $attrText="AlignBy" $attrClass="alignByRowTest"/>
+                </$row>
+                """
+        )
+    }
 
     @Test
     fun captionBarPaddingTest() {
@@ -74,141 +204,6 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 </$box>
                 """
         )
-    }
-
-    @Test
-    fun clickableTest() {
-        var counter = 0
-        val pushEvent: PushEvent = { _, _, _, _ ->
-            // Changing the counter value to check if the button is clicked
-            counter = 10
-        }
-        ModifiersParser.fromStyleFile(
-            """
-           %{"clickableTest" => [
-              {:clickable, [], [
-                {:__event__, [], ["my-click-event", []]}
-              ]}
-            ]}  
-            """, pushEvent
-        )
-        compareNativeComposableWithTemplate(
-            nativeComposable = {
-                Box {
-                    Text(
-                        text = "Clickable",
-                        modifier = Modifier.clickable(
-                            onClick = {
-                                counter = 10
-                            }
-                        )
-                    )
-                }
-            },
-            template = """
-                <$box>
-                    <$text $attrClass="clickableTest" $attrText="Clickable" />
-                </$box>
-                """,
-            onBeforeScreenShot = { rule ->
-                rule.onNodeWithText("Clickable").performClick()
-            },
-            pushEvent = pushEvent,
-            delayBeforeScreenshot = 200,
-        )
-        assertEquals(10, counter)
-    }
-
-    @Test
-    fun clickableNamedTest() {
-        var counter = 0
-        val pushEvent: PushEvent = { _, _, _, _ ->
-            // Changing the counter value to check if the button is clicked
-            counter = 10
-        }
-        ModifiersParser.fromStyleFile(
-            """
-           %{"clickableNamedTest" => [
-              {:clickable, [], [[
-                onClick: {:__event__, [], ['my-click-event', []]}
-              ]]}
-            ]}  
-            """,
-            pushEvent
-        )
-        compareNativeComposableWithTemplate(
-            nativeComposable = {
-                Box {
-                    Text(
-                        text = "Clickable",
-                        modifier = Modifier.clickable(
-                            onClick = {
-                                counter = 10
-                            }
-                        )
-                    )
-                }
-            },
-            template = """
-                <$box>
-                    <$text $attrClass="clickableNamedTest" $attrText="Clickable" />
-                </$box>
-                """,
-            onBeforeScreenShot = { rule ->
-                rule.onNodeWithText("Clickable").performClick()
-            },
-            pushEvent = pushEvent,
-            delayBeforeScreenshot = 200,
-        )
-        assertEquals(10, counter)
-    }
-
-    @Test
-    fun clickableTestWithOtherParams() {
-        var counter = 0
-        val pushEvent: PushEvent = { _, _, _, _ ->
-            // Changing the counter value to check if the button is clicked
-            counter = 10
-        }
-        ModifiersParser.fromStyleFile(
-            """
-           %{"clickableTestWithOtherParams" => [
-              {:clickable, [], [[
-                enabled: true, 
-                onClickLabel: 'onClickLabel', 
-                role: {:., [], [:Role, :Button]}, 
-                onClick: {:__event__, [], ['my-click-event', []]}
-              ]]}
-            ]}  
-            """, pushEvent
-        )
-        compareNativeComposableWithTemplate(
-            nativeComposable = {
-                Box {
-                    Text(
-                        text = "Clickable",
-                        modifier = Modifier.clickable(
-                            enabled = true,
-                            onClickLabel = "onClickLabel",
-                            role = Role.Button,
-                            onClick = {
-                                counter = 10
-                            }
-                        )
-                    )
-                }
-            },
-            template = """
-                <$box>
-                    <$text $attrClass="clickableTestWithOtherParams" $attrText="Clickable" />
-                </$box>
-                """,
-            onBeforeScreenShot = { rule ->
-                rule.onNodeWithText("Clickable").performClick()
-            },
-            pushEvent = pushEvent,
-        )
-        assertEquals(10, counter)
     }
 
     @Test

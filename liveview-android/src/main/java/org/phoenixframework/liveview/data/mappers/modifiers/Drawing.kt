@@ -24,7 +24,7 @@ fun Modifier.alphaFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): 
 
 fun Modifier.clipFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val argument = argsOrNamedArgs(arguments).firstOrNull()
-    return argument?.let { shapeFromStyle(it) }?.let { this.then(Modifier.clip(it)) } ?: this
+    return argument?.let { shapeFromArgument(it) }?.let { this.then(Modifier.clip(it)) } ?: this
 }
 
 fun Modifier.shadowFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
@@ -32,7 +32,7 @@ fun Modifier.shadowFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
 
     val elevation = argOrNamedArg(args, argElevation, 0)?.intValue
     val shape = argOrNamedArg(args, argShape, 1)?.let {
-        shapeFromStyle(it)
+        shapeFromArgument(it)
     }
     val clip = argOrNamedArg(args, argClip, 2)?.booleanValue
     val ambientColor = argOrNamedArg(args, argAmbientColor, 3)?.let {

@@ -38,10 +38,10 @@ fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
         if (arg != null) borderStroke = borderStrokeFromArgument(arg)
 
         arg = borderArguments.find { it.name == argShape }
-        if (arg != null) borderShape = shapeFromStyle(arg)
+        if (arg != null) borderShape = shapeFromArgument(arg)
 
         arg = borderArguments.find { it.name == argBrush }
-        if (arg != null) borderBrush = brushFromStyle(arg)
+        if (arg != null) borderBrush = brushFromArgument(arg)
 
     } else {
         // Ordered params
@@ -54,19 +54,19 @@ fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
                     borderColor = colorFromArgument(borderArgument)
 
                 borderArgument.type == typeShape ->
-                    borderShape = shapeFromStyle(borderArgument)
+                    borderShape = shapeFromArgument(borderArgument)
 
                 borderArgument.isInt ->
                     borderWidth = (borderArgument.intValue ?: 0).dp
 
                 borderArgument.isDot -> {
-                    val b = brushFromStyle(borderArgument)
+                    val b = brushFromArgument(borderArgument)
                     if (b != null) borderBrush = b
 
                     val c = colorFromArgument(borderArgument)
                     if (c != null) borderColor = c
 
-                    val s = shapeFromStyle(borderArgument)
+                    val s = shapeFromArgument(borderArgument)
                     if (s != null) borderShape = s
                 }
             }

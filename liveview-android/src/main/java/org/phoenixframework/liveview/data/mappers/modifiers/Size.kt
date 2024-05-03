@@ -68,8 +68,8 @@ fun Modifier.aspectRatioFromStyle(arguments: List<ModifierDataAdapter.ArgumentDa
 
 fun Modifier.defaultMinSizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val params = argsOrNamedArgs(arguments)
-    val minWidth = argOrNamedArg(params, argMinWidth, 0)?.let { dpFromStyle(it) }
-    val minHeight = argOrNamedArg(params, argMinHeight, 1)?.let { dpFromStyle(it) }
+    val minWidth = argOrNamedArg(params, argMinWidth, 0)?.let { dpFromArgument(it) }
+    val minHeight = argOrNamedArg(params, argMinHeight, 1)?.let { dpFromArgument(it) }
     return this.then(
         Modifier.defaultMinSize(
             minWidth = minWidth ?: Dp.Unspecified,
@@ -171,7 +171,7 @@ fun Modifier.fillParentMaxWidthFromStyle(
 
 fun Modifier.heightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val height = argOrNamedArg(args, argHeight, 0)?.let { dpFromStyle(it) }
+    val height = argOrNamedArg(args, argHeight, 0)?.let { dpFromArgument(it) }
     if (height != null) {
         return this.then(Modifier.height(height))
     }
@@ -185,8 +185,8 @@ fun Modifier.heightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
 
 fun Modifier.heightInFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val min = argOrNamedArg(args, argMin, 0)?.let { dpFromStyle(it) }
-    val max = argOrNamedArg(args, argMax, 1)?.let { dpFromStyle(it) }
+    val min = argOrNamedArg(args, argMin, 0)?.let { dpFromArgument(it) }
+    val max = argOrNamedArg(args, argMax, 1)?.let { dpFromArgument(it) }
     return this.then(
         Modifier.heightIn(
             min = min ?: Dp.Unspecified,
@@ -211,7 +211,7 @@ fun Modifier.matchParentSizeFromStyle(scope: Any?): Modifier {
 
 fun Modifier.requiredHeightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val reqHeightInDp = argOrNamedArg(args, argHeight, 0)?.let { dpFromStyle(it) }
+    val reqHeightInDp = argOrNamedArg(args, argHeight, 0)?.let { dpFromArgument(it) }
     if (reqHeightInDp != null) {
         return this.then(Modifier.requiredHeight(height = reqHeightInDp))
     }
@@ -225,8 +225,8 @@ fun Modifier.requiredHeightFromStyle(arguments: List<ModifierDataAdapter.Argumen
 
 fun Modifier.requiredHeightInFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val min = argOrNamedArg(args, argMin, 0)?.let { dpFromStyle(it) }
-    val max = argOrNamedArg(args, argMax, 1)?.let { dpFromStyle(it) }
+    val min = argOrNamedArg(args, argMin, 0)?.let { dpFromArgument(it) }
+    val max = argOrNamedArg(args, argMax, 1)?.let { dpFromArgument(it) }
     if (min != null || max != null) {
         return this.then(
             Modifier.requiredHeightIn(
@@ -244,11 +244,11 @@ fun Modifier.requiredSizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentD
         1 -> {
             argOrNamedArg(args, argSize, 0)?.let { reqSize ->
                 if (reqSize.type == typeDpSize) {
-                    dpSizeFromStyle(reqSize)?.let { reqSizeInDpSize ->
+                    dpSizeFromArgument(reqSize)?.let { reqSizeInDpSize ->
                         this.then(Modifier.requiredSize(reqSizeInDpSize))
                     }
                 } else {
-                    dpFromStyle(reqSize)?.let { reqSizeInDp ->
+                    dpFromArgument(reqSize)?.let { reqSizeInDp ->
                         this.then(Modifier.requiredSize(reqSizeInDp))
                     }
                 }
@@ -256,8 +256,8 @@ fun Modifier.requiredSizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentD
         }
 
         2 -> {
-            val width = argOrNamedArg(args, argWidth, 0)?.let { dpFromStyle(it) }
-            val height = argOrNamedArg(args, argHeight, 1)?.let { dpFromStyle(it) }
+            val width = argOrNamedArg(args, argWidth, 0)?.let { dpFromArgument(it) }
+            val height = argOrNamedArg(args, argHeight, 1)?.let { dpFromArgument(it) }
             if (width != null && height != null) {
                 this.then(Modifier.requiredSize(width = width, height = height))
             } else this
@@ -269,10 +269,10 @@ fun Modifier.requiredSizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentD
 
 fun Modifier.requiredSizeInFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val minWidth = argOrNamedArg(args, argMinWidth, 0)?.let { dpFromStyle(it) }
-    val minHeight = argOrNamedArg(args, argMinHeight, 1)?.let { dpFromStyle(it) }
-    val maxWidth = argOrNamedArg(args, argMaxWidth, 2)?.let { dpFromStyle(it) }
-    val maxHeight = argOrNamedArg(args, argMaxHeight, 3)?.let { dpFromStyle(it) }
+    val minWidth = argOrNamedArg(args, argMinWidth, 0)?.let { dpFromArgument(it) }
+    val minHeight = argOrNamedArg(args, argMinHeight, 1)?.let { dpFromArgument(it) }
+    val maxWidth = argOrNamedArg(args, argMaxWidth, 2)?.let { dpFromArgument(it) }
+    val maxHeight = argOrNamedArg(args, argMaxHeight, 3)?.let { dpFromArgument(it) }
     return this.then(
         Modifier.requiredSizeIn(
             minWidth = minWidth ?: Dp.Unspecified,
@@ -285,7 +285,7 @@ fun Modifier.requiredSizeInFromStyle(arguments: List<ModifierDataAdapter.Argumen
 
 fun Modifier.requiredWidthFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val reqWidthInDp = argOrNamedArg(args, argWidth, 0)?.let { dpFromStyle(it) }
+    val reqWidthInDp = argOrNamedArg(args, argWidth, 0)?.let { dpFromArgument(it) }
     if (reqWidthInDp != null) {
         return this.then(Modifier.requiredWidth(width = reqWidthInDp))
     }
@@ -299,8 +299,8 @@ fun Modifier.requiredWidthFromStyle(arguments: List<ModifierDataAdapter.Argument
 
 fun Modifier.requiredWidthInFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val min = argOrNamedArg(args, argMin, 0)?.let { dpFromStyle(it) }
-    val max = argOrNamedArg(args, argMax, 1)?.let { dpFromStyle(it) }
+    val min = argOrNamedArg(args, argMin, 0)?.let { dpFromArgument(it) }
+    val max = argOrNamedArg(args, argMax, 1)?.let { dpFromArgument(it) }
     if (min != null || max != null) {
         return this.then(
             Modifier.requiredWidthIn(
@@ -317,11 +317,11 @@ fun Modifier.sizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): M
 
     return when (params.size) {
         1 -> {
-            val sizeInDp = argOrNamedArg(params, argSize, 0)?.let { dpFromStyle(it) }
+            val sizeInDp = argOrNamedArg(params, argSize, 0)?.let { dpFromArgument(it) }
             if (sizeInDp != null) {
                 this.then(Modifier.size(sizeInDp))
             } else {
-                val sizeInDpSize = argOrNamedArg(params, argSize, 0)?.let { dpSizeFromStyle(it) }
+                val sizeInDpSize = argOrNamedArg(params, argSize, 0)?.let { dpSizeFromArgument(it) }
                 if (sizeInDpSize != null) {
                     this.then(Modifier.size(sizeInDpSize))
                 } else this
@@ -329,8 +329,8 @@ fun Modifier.sizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): M
         }
 
         2 -> {
-            val width = argOrNamedArg(params, argWidth, 0)?.let { dpFromStyle(it) }
-            val height = argOrNamedArg(params, argHeight, 1)?.let { dpFromStyle(it) }
+            val width = argOrNamedArg(params, argWidth, 0)?.let { dpFromArgument(it) }
+            val height = argOrNamedArg(params, argHeight, 1)?.let { dpFromArgument(it) }
             if (width != null && height != null)
                 this.then(Modifier.size(width, height))
             else
@@ -343,10 +343,10 @@ fun Modifier.sizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): M
 
 fun Modifier.sizeInFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val params = argsOrNamedArgs(arguments)
-    val minWidth = argOrNamedArg(params, argMinWidth, 0)?.let { dpFromStyle(it) }
-    val minHeight = argOrNamedArg(params, argMinHeight, 1)?.let { dpFromStyle(it) }
-    val maxWidth = argOrNamedArg(params, argMaxWidth, 2)?.let { dpFromStyle(it) }
-    val maxHeight = argOrNamedArg(params, argMaxHeight, 3)?.let { dpFromStyle(it) }
+    val minWidth = argOrNamedArg(params, argMinWidth, 0)?.let { dpFromArgument(it) }
+    val minHeight = argOrNamedArg(params, argMinHeight, 1)?.let { dpFromArgument(it) }
+    val maxWidth = argOrNamedArg(params, argMaxWidth, 2)?.let { dpFromArgument(it) }
+    val maxHeight = argOrNamedArg(params, argMaxHeight, 3)?.let { dpFromArgument(it) }
     return this.then(
         Modifier.sizeIn(
             minWidth = minWidth ?: Dp.Unspecified,
@@ -417,7 +417,7 @@ fun Modifier.windowInsetsTopHeightFromStyle(arguments: List<ModifierDataAdapter.
 
 fun Modifier.widthFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val height = argOrNamedArg(args, argWidth, 0)?.let { dpFromStyle(it) }
+    val height = argOrNamedArg(args, argWidth, 0)?.let { dpFromArgument(it) }
     if (height != null) {
         return this.then(Modifier.width(height))
     }
@@ -431,8 +431,8 @@ fun Modifier.widthFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): 
 
 fun Modifier.widthInFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val min = argOrNamedArg(args, argMin, 0)?.let { dpFromStyle(it) }
-    val max = argOrNamedArg(args, argMax, 1)?.let { dpFromStyle(it) }
+    val min = argOrNamedArg(args, argMin, 0)?.let { dpFromArgument(it) }
+    val max = argOrNamedArg(args, argMax, 1)?.let { dpFromArgument(it) }
     return this.then(
         Modifier.widthIn(
             min = min ?: Dp.Unspecified,

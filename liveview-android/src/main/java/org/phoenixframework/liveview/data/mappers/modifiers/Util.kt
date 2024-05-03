@@ -24,10 +24,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.layout.AlignmentLine
 import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntSize
@@ -88,6 +90,7 @@ import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnit
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnitEm
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnitSp
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnitType
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeToggleableState
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitDp
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitEm
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitSp
@@ -99,8 +102,10 @@ import org.phoenixframework.liveview.data.constants.ShapeValues
 import org.phoenixframework.liveview.data.dto.easingFromString
 import org.phoenixframework.liveview.data.dto.tileModeFromString
 import org.phoenixframework.liveview.domain.extensions.toColor
+import kotlin.math.max
+import kotlin.math.min
 
-internal fun alignmentLineFromStyle(argument: ModifierDataAdapter.ArgumentData): AlignmentLine? {
+internal fun horizontalAlignmentLineFromArgument(argument: ModifierDataAdapter.ArgumentData): HorizontalAlignmentLine? {
     return if (argument.isDot) {
         when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
             AlignmentLineValues.firstBaseline -> FirstBaseline
@@ -110,18 +115,28 @@ internal fun alignmentLineFromStyle(argument: ModifierDataAdapter.ArgumentData):
     } else null
 }
 
-internal fun dpSizeFromStyle(argument: ModifierDataAdapter.ArgumentData): DpSize? {
+internal fun verticalAlignmentLineFromArgument(argument: ModifierDataAdapter.ArgumentData): VerticalAlignmentLine? {
+    return if (argument.isDot) {
+        when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
+            AlignmentLineValues.firstBaseline -> VerticalAlignmentLine(::min)
+            AlignmentLineValues.lastBaseline -> VerticalAlignmentLine(::max)
+            else -> null
+        }
+    } else null
+}
+
+internal fun dpSizeFromArgument(argument: ModifierDataAdapter.ArgumentData): DpSize? {
     return if (argument.type == typeDpSize) {
         val args = argsOrNamedArgs(argument.listValue)
-        val width = argOrNamedArg(args, argWidth, 0)?.let { dpFromStyle(it) }
-        val height = argOrNamedArg(args, argHeight, 1)?.let { dpFromStyle(it) }
+        val width = argOrNamedArg(args, argWidth, 0)?.let { dpFromArgument(it) }
+        val height = argOrNamedArg(args, argHeight, 1)?.let { dpFromArgument(it) }
         if (width != null && height != null) {
             DpSize(width = width, height = height)
         } else null
     } else null
 }
 
-internal fun dpFromStyle(argument: ModifierDataAdapter.ArgumentData): Dp? {
+internal fun dpFromArgument(argument: ModifierDataAdapter.ArgumentData): Dp? {
     return if (argument.isDot && argument.listValue.getOrNull(1)?.stringValueWithoutColon == typeUnitDp) {
         val value = argument.listValue.getOrNull(0)
         if (value?.isFloat == true) value.floatValue?.dp
@@ -135,7 +150,7 @@ internal fun dpFromStyle(argument: ModifierDataAdapter.ArgumentData): Dp? {
     } else null
 }
 
-internal fun textUnitFromStyle(argument: ModifierDataAdapter.ArgumentData): TextUnit? {
+internal fun textUnitFromArgument(argument: ModifierDataAdapter.ArgumentData): TextUnit? {
     return if (argument.isDot) {
         val value = argument.listValue.getOrNull(0)
         val type = argument.listValue.getOrNull(1)?.stringValueWithoutColon
@@ -161,7 +176,7 @@ internal fun textUnitFromStyle(argument: ModifierDataAdapter.ArgumentData): Text
     } else null
 }
 
-internal fun eventFromStyle(argument: ModifierDataAdapter.ArgumentData): Pair<String, Any?>? {
+internal fun eventFromArgument(argument: ModifierDataAdapter.ArgumentData): Pair<String, Any?>? {
     return if (argument.type == typeEvent) {
         val (event, args) = Pair(
             argument.listValue.getOrNull(0)?.stringValue,
@@ -190,7 +205,7 @@ internal fun intRangeFromArgument(argument: ModifierDataAdapter.ArgumentData): I
     } else null
 }
 
-internal fun roleFromStyle(argument: ModifierDataAdapter.ArgumentData): Role? {
+internal fun roleFromArgument(argument: ModifierDataAdapter.ArgumentData): Role? {
     val clazz = argument.listValue.getOrNull(0)?.stringValueWithoutColon
     val roleType = argument.listValue.getOrNull(1)?.stringValueWithoutColon
     return if (clazz == typeRole && roleType != null) {
@@ -207,7 +222,7 @@ internal fun roleFromStyle(argument: ModifierDataAdapter.ArgumentData): Role? {
     } else null
 }
 
-internal fun shapeFromStyle(argument: ModifierDataAdapter.ArgumentData): Shape? {
+internal fun shapeFromArgument(argument: ModifierDataAdapter.ArgumentData): Shape? {
     val clazz = if (argument.isDot)
         argument.listValue.getOrNull(0)?.stringValueWithoutColon ?: ""
     else
@@ -222,13 +237,16 @@ internal fun shapeFromStyle(argument: ModifierDataAdapter.ArgumentData): Shape? 
                 if (argsToCreateArg.firstOrNull()?.isList == true) {
                     val namedArgs = argsToCreateArg.first().listValue
                     listOf(
-                        namedArgs.find { it.name == argTopStart }?.let { dpFromStyle(it) } ?: 0.dp,
-                        namedArgs.find { it.name == argTopEnd }?.let { dpFromStyle(it) } ?: 0.dp,
-                        namedArgs.find { it.name == argBottomEnd }?.let { dpFromStyle(it) } ?: 0.dp,
-                        namedArgs.find { it.name == argBottomStart }?.let { dpFromStyle(it) } ?: 0.dp,
+                        namedArgs.find { it.name == argTopStart }?.let { dpFromArgument(it) }
+                            ?: 0.dp,
+                        namedArgs.find { it.name == argTopEnd }?.let { dpFromArgument(it) } ?: 0.dp,
+                        namedArgs.find { it.name == argBottomEnd }?.let { dpFromArgument(it) }
+                            ?: 0.dp,
+                        namedArgs.find { it.name == argBottomStart }?.let { dpFromArgument(it) }
+                            ?: 0.dp,
                     )
                 } else {
-                    argsToCreateArg.map { dpFromStyle(it) }
+                    argsToCreateArg.map { dpFromArgument(it) }
                 }
             return if (cornerSizeParts.size == 1) {
                 cornerSizeParts.firstOrNull()?.let { RoundedCornerShape(it) }
@@ -310,7 +328,7 @@ internal fun borderStrokeFromArgument(argument: ModifierDataAdapter.ArgumentData
     return if (width != null && color != null) BorderStroke(width, color) else null
 }
 
-internal fun brushFromStyle(argument: ModifierDataAdapter.ArgumentData): Brush? {
+internal fun brushFromArgument(argument: ModifierDataAdapter.ArgumentData): Brush? {
     val clazz = if (argument.isDot)
         argument.listValue.getOrNull(0)?.stringValueWithoutColon ?: ""
     else
@@ -445,10 +463,10 @@ internal fun windowInsetsFromArgument(argument: ModifierDataAdapter.ArgumentData
             return WindowInsets(left ?: 0, top ?: 0, right ?: 0, bottom ?: 0)
         }
 
-        val leftDp = argOrNamedArg(args, argLeft, 0)?.let { dpFromStyle(it) }
-        val topDp = argOrNamedArg(args, argTop, 1)?.let { dpFromStyle(it) }
-        val rightDp = argOrNamedArg(args, argRight, 2)?.let { dpFromStyle(it) }
-        val bottomDp = argOrNamedArg(args, argBottom, 3)?.let { dpFromStyle(it) }
+        val leftDp = argOrNamedArg(args, argLeft, 0)?.let { dpFromArgument(it) }
+        val topDp = argOrNamedArg(args, argTop, 1)?.let { dpFromArgument(it) }
+        val rightDp = argOrNamedArg(args, argRight, 2)?.let { dpFromArgument(it) }
+        val bottomDp = argOrNamedArg(args, argBottom, 3)?.let { dpFromArgument(it) }
         return WindowInsets(leftDp ?: 0.dp, topDp ?: 0.dp, rightDp ?: 0.dp, bottomDp ?: 0.dp)
     } else return null
 }
@@ -609,4 +627,16 @@ internal fun <T> finiteAnimationSpecFromArg(argument: ModifierDataAdapter.Argume
 
         else -> null
     }
+}
+
+fun toggleableStateFromArgument(argument: ModifierDataAdapter.ArgumentData): ToggleableState? {
+    return if (argument.type == typeToggleableState) {
+        argument.listValue.firstOrNull()?.booleanValue?.let {
+            ToggleableState(it)
+        }
+    } else if (argument.isDot && argument.listValue.firstOrNull()?.stringValueWithoutColon == typeToggleableState) {
+        argument.listValue.getOrNull(1)?.stringValueWithoutColon?.let {
+            ToggleableState.valueOf(it)
+        }
+    } else null
 }

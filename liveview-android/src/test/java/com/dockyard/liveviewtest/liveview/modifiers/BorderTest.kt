@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.dockyard.liveviewtest.liveview.util.ModifierBaseTest
 import org.junit.Test
 import org.junit.runner.RunWith
 

@@ -24,10 +24,10 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argVertical
 
 fun Modifier.absolutePaddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val params = argsOrNamedArgs(arguments)
-    val left = argOrNamedArg(params, argLeft, 0)?.let { dpFromStyle(it) }
-    val top = argOrNamedArg(params, argTop, 1)?.let { dpFromStyle(it) }
-    val right = argOrNamedArg(params, argRight, 2)?.let { dpFromStyle(it) }
-    val bottom = argOrNamedArg(params, argBottom, 3)?.let { dpFromStyle(it) }
+    val left = argOrNamedArg(params, argLeft, 0)?.let { dpFromArgument(it) }
+    val top = argOrNamedArg(params, argTop, 1)?.let { dpFromArgument(it) }
+    val right = argOrNamedArg(params, argRight, 2)?.let { dpFromArgument(it) }
+    val bottom = argOrNamedArg(params, argBottom, 3)?.let { dpFromArgument(it) }
     return if (left != null || top != null || right != null || bottom != null) {
         this.then(
             Modifier.absolutePadding(
@@ -46,7 +46,7 @@ fun Modifier.paddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>)
     val paddingModifier = when (params.size) {
         1 -> {
             val paddingValue = params.firstOrNull()
-            val dpValue = paddingValue?.let { dpFromStyle(it) }
+            val dpValue = paddingValue?.let { dpFromArgument(it) }
             dpValue?.let {
                 when (paddingValue.name) {
                     argHorizontal -> Modifier.padding(horizontal = it)
@@ -65,9 +65,9 @@ fun Modifier.paddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>)
             when (paddingValue?.name) {
                 argHorizontal, argVertical, null -> {
                     val horizontalPadding = argOrNamedArg(params, argHorizontal, 0)
-                    val horizontalPaddingDp = horizontalPadding?.let { dpFromStyle(it) }
+                    val horizontalPaddingDp = horizontalPadding?.let { dpFromArgument(it) }
                     val verticalPadding = argOrNamedArg(params, argVertical, 1)
-                    val verticalPaddingDp = verticalPadding?.let { dpFromStyle(it) }
+                    val verticalPaddingDp = verticalPadding?.let { dpFromArgument(it) }
 
                     if (horizontalPaddingDp != null && verticalPaddingDp != null)
                         Modifier.padding(
@@ -79,11 +79,11 @@ fun Modifier.paddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>)
 
                 else -> {
                     Modifier.padding(
-                        start = params.find { it.name == argStart }?.let { dpFromStyle(it) }
+                        start = params.find { it.name == argStart }?.let { dpFromArgument(it) }
                             ?: 0.dp,
-                        top = params.find { it.name == argTop }?.let { dpFromStyle(it) } ?: 0.dp,
-                        end = params.find { it.name == argEnd }?.let { dpFromStyle(it) } ?: 0.dp,
-                        bottom = params.find { it.name == argBottom }?.let { dpFromStyle(it) }
+                        top = params.find { it.name == argTop }?.let { dpFromArgument(it) } ?: 0.dp,
+                        end = params.find { it.name == argEnd }?.let { dpFromArgument(it) } ?: 0.dp,
+                        bottom = params.find { it.name == argBottom }?.let { dpFromArgument(it) }
                             ?: 0.dp,
                     )
                 }
@@ -92,13 +92,13 @@ fun Modifier.paddingFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>)
 
         3, 4 -> {
             val paddingValues = if (params.any { it.name == null }) {
-                params.map { dpFromStyle(it) ?: 0.dp }
+                params.map { dpFromArgument(it) ?: 0.dp }
             } else {
                 listOf(
-                    params.find { it.name == argStart }?.let { dpFromStyle(it) } ?: 0.dp,
-                    params.find { it.name == argTop }?.let { dpFromStyle(it) } ?: 0.dp,
-                    params.find { it.name == argEnd }?.let { dpFromStyle(it) } ?: 0.dp,
-                    params.find { it.name == argBottom }?.let { dpFromStyle(it) } ?: 0.dp
+                    params.find { it.name == argStart }?.let { dpFromArgument(it) } ?: 0.dp,
+                    params.find { it.name == argTop }?.let { dpFromArgument(it) } ?: 0.dp,
+                    params.find { it.name == argEnd }?.let { dpFromArgument(it) } ?: 0.dp,
+                    params.find { it.name == argBottom }?.let { dpFromArgument(it) } ?: 0.dp
                 )
             }
             Modifier.padding(
@@ -121,17 +121,17 @@ fun Modifier.paddingFromFromStyle(arguments: List<ModifierDataAdapter.ArgumentDa
     val topArg = argOrNamedArg(params, argBefore, 1)
     val bottomArg = argOrNamedArg(params, argAfter, 2)
 
-    val alignmentLine = alignArg?.let { alignmentLineFromStyle(it) } ?: return this
+    val alignmentLine = alignArg?.let { horizontalAlignmentLineFromArgument(it) } ?: return this
 
-    val topDp = topArg?.let { dpFromStyle(it) }
-    val bottomDp = bottomArg?.let { dpFromStyle(it) }
+    val topDp = topArg?.let { dpFromArgument(it) }
+    val bottomDp = bottomArg?.let { dpFromArgument(it) }
     if (topDp != null || bottomDp != null) {
         return this.then(
             Modifier.paddingFrom(alignmentLine, topDp ?: Dp.Unspecified, bottomDp ?: Dp.Unspecified)
         )
     }
-    val topSp = topArg?.let { textUnitFromStyle(it) }
-    val bottomSp = bottomArg?.let { textUnitFromStyle(it) }
+    val topSp = topArg?.let { textUnitFromArgument(it) }
+    val bottomSp = bottomArg?.let { textUnitFromArgument(it) }
     if (topSp != null || bottomSp != null) {
         return this.then(
             Modifier.paddingFrom(
@@ -150,15 +150,15 @@ fun Modifier.paddingFromBaselineFromStyle(arguments: List<ModifierDataAdapter.Ar
     val topArg = argOrNamedArg(params, argTop, 0)
     val bottomArg = argOrNamedArg(params, argBottom, 1)
 
-    val topDp = topArg?.let { dpFromStyle(it) }
-    val bottomDp = bottomArg?.let { dpFromStyle(it) }
+    val topDp = topArg?.let { dpFromArgument(it) }
+    val bottomDp = bottomArg?.let { dpFromArgument(it) }
     if (topDp != null || bottomDp != null) {
         return this.then(
             Modifier.paddingFromBaseline(topDp ?: Dp.Unspecified, bottomDp ?: Dp.Unspecified)
         )
     }
-    val topSp = topArg?.let { textUnitFromStyle(it) }
-    val bottomSp = bottomArg?.let { textUnitFromStyle(it) }
+    val topSp = topArg?.let { textUnitFromArgument(it) }
+    val bottomSp = bottomArg?.let { textUnitFromArgument(it) }
     if (topSp != null || bottomSp != null) {
         return this.then(
             Modifier.paddingFromBaseline(
