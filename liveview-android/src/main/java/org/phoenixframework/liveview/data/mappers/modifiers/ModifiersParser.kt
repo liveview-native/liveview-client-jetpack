@@ -2,6 +2,7 @@ package org.phoenixframework.liveview.data.mappers.modifiers
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.focusGroup
 import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.imePadding
@@ -19,6 +20,7 @@ import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.focus.focusTarget
 import org.antlr.v4.runtime.CharStream
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
@@ -46,6 +48,9 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMa
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillParentMaxHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillParentMaxSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillParentMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFocusGroup
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFocusTarget
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFocusable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeightIn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImePadding
@@ -56,6 +61,9 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMenuAn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMinimumInteractiveComponentSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierNavigationBarsPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierOffset
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierOnFocusChanged
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierOnFocusEvent
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierOnFocusedBoundsChanged
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPaddingFrom
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPaddingFromBaseline
@@ -286,6 +294,8 @@ internal object ModifiersParser {
             modifierCaptionBarPadding -> Modifier.captionBarPadding()
             modifierClipToBounds -> Modifier.clipToBounds()
             modifierDisplayCutoutPadding -> Modifier.displayCutoutPadding()
+            modifierFocusTarget -> Modifier.focusTarget()
+            modifierFocusGroup -> Modifier.focusGroup()
             modifierImePadding -> Modifier.imePadding()
             modifierMandatorySystemGesturesPadding -> Modifier.mandatorySystemGesturesPadding()
             modifierMinimumInteractiveComponentSize -> Modifier.minimumInteractiveComponentSize()
@@ -320,10 +330,18 @@ internal object ModifiersParser {
             modifierFillMaxHeight -> Modifier.fillMaxHeightFromStyle(argListContext)
             modifierFillMaxSize -> Modifier.fillMaxSizeFromStyle(argListContext)
             modifierFillMaxWidth -> Modifier.fillMaxWidthFromStyle(argListContext)
+            modifierFocusable -> Modifier.focusableFromStyle(argListContext)
             modifierHeight -> Modifier.heightFromStyle(argListContext)
             modifierHeightIn -> Modifier.heightInFromStyle(argListContext)
             modifierLayoutId -> Modifier.layoutIdFromStyle(argListContext)
             modifierOffset -> Modifier.offsetFromStyle(argListContext)
+            modifierOnFocusedBoundsChanged -> Modifier.onFocusedBoundsChangedFromStyle(
+                argListContext,
+                pushEvent
+            )
+
+            modifierOnFocusChanged -> Modifier.onFocusChangedFromStyle(argListContext, pushEvent)
+            modifierOnFocusEvent -> Modifier.onFocusEventFromStyle(argListContext, pushEvent)
             modifierPadding -> Modifier.paddingFromStyle(argListContext)
             modifierPaddingFrom -> Modifier.paddingFromFromStyle(argListContext)
             modifierPaddingFromBaseline -> Modifier.paddingFromBaselineFromStyle(argListContext)
@@ -342,7 +360,11 @@ internal object ModifiersParser {
             modifierSizeIn -> Modifier.sizeInFromStyle(argListContext)
             modifierTestTag -> Modifier.testTagFromStyle(argListContext)
             modifierToggleable -> Modifier.toggleableFromStyle(argListContext, pushEvent)
-            modifierTriStateToggleable -> Modifier.triStateToggleableFromStyle(argListContext, pushEvent)
+            modifierTriStateToggleable -> Modifier.triStateToggleableFromStyle(
+                argListContext,
+                pushEvent
+            )
+
             modifierWindowInsetsBottomHeight -> Modifier.windowInsetsBottomHeightFromStyle(
                 argListContext
             )
