@@ -105,220 +105,18 @@ import org.phoenixframework.liveview.domain.extensions.toColor
 import kotlin.math.max
 import kotlin.math.min
 
-internal fun horizontalAlignmentLineFromArgument(argument: ModifierDataAdapter.ArgumentData): HorizontalAlignmentLine? {
-    return if (argument.isDot) {
-        when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
-            AlignmentLineValues.firstBaseline -> FirstBaseline
-            AlignmentLineValues.lastBaseline -> LastBaseline
-            else -> null
-        }
-    } else null
+internal fun argOrNamedArg(
+    arguments: List<ModifierDataAdapter.ArgumentData>, name: String, index: Int
+): ModifierDataAdapter.ArgumentData? {
+    return (arguments.find { it.name == name } ?: arguments.getOrNull(index))
 }
 
-internal fun verticalAlignmentLineFromArgument(argument: ModifierDataAdapter.ArgumentData): VerticalAlignmentLine? {
-    return if (argument.isDot) {
-        when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
-            AlignmentLineValues.firstBaseline -> VerticalAlignmentLine(::min)
-            AlignmentLineValues.lastBaseline -> VerticalAlignmentLine(::max)
-            else -> null
-        }
-    } else null
-}
-
-internal fun dpSizeFromArgument(argument: ModifierDataAdapter.ArgumentData): DpSize? {
-    return if (argument.type == typeDpSize) {
-        val args = argsOrNamedArgs(argument.listValue)
-        val width = argOrNamedArg(args, argWidth, 0)?.let { dpFromArgument(it) }
-        val height = argOrNamedArg(args, argHeight, 1)?.let { dpFromArgument(it) }
-        if (width != null && height != null) {
-            DpSize(width = width, height = height)
-        } else null
-    } else null
-}
-
-internal fun dpFromArgument(argument: ModifierDataAdapter.ArgumentData): Dp? {
-    return if (argument.isDot && argument.listValue.getOrNull(1)?.stringValueWithoutColon == typeUnitDp) {
-        val value = argument.listValue.getOrNull(0)
-        if (value?.isFloat == true) value.floatValue?.dp
-        else if (value?.isInt == true) value.intValue?.dp
-        else null
-    } else if (argument.type == typeDp) {
-        val value = argument.listValue.getOrNull(0)
-        if (value?.isFloat == true) value.floatValue?.dp
-        else if (value?.isInt == true) value.intValue?.dp
-        else null
-    } else null
-}
-
-internal fun textUnitFromArgument(argument: ModifierDataAdapter.ArgumentData): TextUnit? {
-    return if (argument.isDot) {
-        val value = argument.listValue.getOrNull(0)
-        val type = argument.listValue.getOrNull(1)?.stringValueWithoutColon
-        if (type == typeUnitSp) {
-            if (value?.isFloat == true) value.floatValue?.sp
-            else if (value?.isInt == true) value.intValue?.sp
-            else null
-        } else if (type == typeUnitEm) {
-            if (value?.isFloat == true) value.floatValue?.em
-            else if (value?.isInt == true) value.intValue?.em
-            else null
-        } else null
-    } else if (argument.type == typeTextUnit) {
-        val value = argument.listValue.getOrNull(0)?.floatValue
-        val argsToCreateTextUnit = argument.listValue.getOrNull(1)?.listValue
-        val textUnitClass = argsToCreateTextUnit?.getOrNull(0)?.stringValueWithoutColon
-        val textUnitType = argsToCreateTextUnit?.getOrNull(1)?.stringValueWithoutColon
-        if (textUnitClass == typeTextUnitType && textUnitType == typeTextUnitSp && value != null) {
-            TextUnit(value, TextUnitType.Sp)
-        } else if (textUnitClass == typeTextUnitType && textUnitType == typeTextUnitEm && value != null) {
-            TextUnit(value, TextUnitType.Em)
-        } else null
-    } else null
-}
-
-internal fun eventFromArgument(argument: ModifierDataAdapter.ArgumentData): Pair<String, Any?>? {
-    return if (argument.type == typeEvent) {
-        val (event, args) = Pair(
-            argument.listValue.getOrNull(0)?.stringValue,
-            argument.listValue.getOrNull(1)?.listValue?.map { it.value }
-        )
-        if (event != null && args != null) {
-            val pushArgs = if (args.isEmpty()) null else if (args.size == 1) args.first() else null
-            event to pushArgs
-        } else null
-    } else null
-}
-
-internal fun floatRangeFromArgument(argument: ModifierDataAdapter.ArgumentData): ClosedFloatingPointRange<Float>? {
-    return if (argument.type == typeRange && argument.listValue.size == 2) {
-        val start = argument.listValue[0].floatValue
-        val end = argument.listValue[1].floatValue
-        if (start != null && end != null) start..end else null
-    } else null
-}
-
-internal fun intRangeFromArgument(argument: ModifierDataAdapter.ArgumentData): IntRange? {
-    return if (argument.type == typeRange && argument.listValue.size == 2) {
-        val start = argument.listValue[0].intValue
-        val end = argument.listValue[1].intValue
-        if (start != null && end != null) start..end else null
-    } else null
-}
-
-internal fun roleFromArgument(argument: ModifierDataAdapter.ArgumentData): Role? {
-    val clazz = argument.listValue.getOrNull(0)?.stringValueWithoutColon
-    val roleType = argument.listValue.getOrNull(1)?.stringValueWithoutColon
-    return if (clazz == typeRole && roleType != null) {
-        when (roleType) {
-            RoleValues.button -> Role.Button
-            RoleValues.checkbox -> Role.Checkbox
-            RoleValues.switch -> Role.Switch
-            RoleValues.radioButton -> Role.RadioButton
-            RoleValues.tab -> Role.Tab
-            RoleValues.image -> Role.Image
-            RoleValues.dropdownList -> Role.DropdownList
-            else -> null
-        }
-    } else null
-}
-
-internal fun shapeFromArgument(argument: ModifierDataAdapter.ArgumentData): Shape? {
-    val clazz = if (argument.isDot)
-        argument.listValue.getOrNull(0)?.stringValueWithoutColon ?: ""
-    else
-        argument.type
-    val argsToCreateArg = argument.listValue
-
-    return when (clazz) {
-        ShapeValues.circle -> CircleShape
-        ShapeValues.rectangle -> RectangleShape
-        ShapeValues.roundedCorner -> {
-            val cornerSizeParts =
-                if (argsToCreateArg.firstOrNull()?.isList == true) {
-                    val namedArgs = argsToCreateArg.first().listValue
-                    listOf(
-                        namedArgs.find { it.name == argTopStart }?.let { dpFromArgument(it) }
-                            ?: 0.dp,
-                        namedArgs.find { it.name == argTopEnd }?.let { dpFromArgument(it) } ?: 0.dp,
-                        namedArgs.find { it.name == argBottomEnd }?.let { dpFromArgument(it) }
-                            ?: 0.dp,
-                        namedArgs.find { it.name == argBottomStart }?.let { dpFromArgument(it) }
-                            ?: 0.dp,
-                    )
-                } else {
-                    argsToCreateArg.map { dpFromArgument(it) }
-                }
-            return if (cornerSizeParts.size == 1) {
-                cornerSizeParts.firstOrNull()?.let { RoundedCornerShape(it) }
-            } else if (cornerSizeParts.any { it != null }) {
-                RoundedCornerShape(
-                    cornerSizeParts.getOrNull(0) ?: 0.dp,
-                    cornerSizeParts.getOrNull(1) ?: 0.dp,
-                    cornerSizeParts.getOrNull(2) ?: 0.dp,
-                    cornerSizeParts.getOrNull(3) ?: 0.dp,
-                )
-            } else null
-        }
-
-        else -> null
-    }
-}
-
-fun colorsFromArguments(arguments: List<ModifierDataAdapter.ArgumentData>): List<Color> {
-    return argsOrNamedArgs(arguments).mapNotNull {
-        colorFromArgument(it)
-    }
-}
-
-fun offsetFromArgument(argument: ModifierDataAdapter.ArgumentData): Offset? {
-    val pair = singleArgumentObjectValue(argument)
-    return pair?.let { (clazz, args) ->
-        if (clazz == typeOffset) {
-            (args as? List<ModifierDataAdapter.ArgumentData>)?.mapNotNull {
-                if (it.isInt) it.intValue?.toFloat() else it.floatValue
-            }?.let {
-                if (it.size == 2) Offset(it[0], it[1]) else null
-            }
-
-        } else {
-            when (args.toString()) {
-                OffsetValues.zero -> Offset.Zero
-                OffsetValues.infinite -> Offset.Infinite
-                OffsetValues.unspecified -> Offset.Unspecified
-                else -> null
-            }
-        }
-    }
-}
-
-fun colorFromArgument(argument: ModifierDataAdapter.ArgumentData): Color? {
-    val argsToCreateArg = argument.listValue
-    if (argsToCreateArg.isEmpty()) return null
-
-    val clazz = argsToCreateArg[0].stringValueWithoutColon
-
-    // If it's is a "." argument, it's because we're using a predefined color (e.g.: Color.Red)
-    if (argument.isDot && clazz == typeColor) {
-        val value = argsToCreateArg[1].stringValueWithoutColon?.lowercase()
-        return "system-$value".toColor()
-
-        // If the first argument is a Color, then it's necessary to instantiate the Color object
-    } else if (argument.type == typeColor) {
-        val colorArgbParts =
-            if (argsToCreateArg.first().isList) argsToCreateArg.first().listValue else argsToCreateArg
-        return if (colorArgbParts.size == 1) {
-            Color(colorArgbParts.first().intValue ?: 0)
-        } else {
-            Color(
-                argOrNamedArg(colorArgbParts, argRed, 0)?.intValue ?: 0,
-                argOrNamedArg(colorArgbParts, argGreen, 1)?.intValue ?: 0,
-                argOrNamedArg(colorArgbParts, argBlue, 2)?.intValue ?: 0,
-                argOrNamedArg(colorArgbParts, argAlpha, 3)?.intValue ?: 0,
-            )
-        }
-    }
-    return null
-}
+// FIXME This function does not work when the first argument is a list
+internal fun argsOrNamedArgs(
+    arguments: List<ModifierDataAdapter.ArgumentData>
+): List<ModifierDataAdapter.ArgumentData> =
+    if (arguments.firstOrNull()?.isList == true) arguments.first().listValue
+    else arguments
 
 internal fun borderStrokeFromArgument(argument: ModifierDataAdapter.ArgumentData): BorderStroke? {
     val borderStrokeArguments =
@@ -452,92 +250,75 @@ internal fun brushFromArgument(argument: ModifierDataAdapter.ArgumentData): Brus
     }
 }
 
-internal fun windowInsetsFromArgument(argument: ModifierDataAdapter.ArgumentData): WindowInsets? {
-    if (argument.type == typeWindowInsets) {
-        val args = argsOrNamedArgs(argument.listValue)
-        val left = argOrNamedArg(args, argLeft, 0)?.intValue
-        val top = argOrNamedArg(args, argTop, 1)?.intValue
-        val right = argOrNamedArg(args, argRight, 2)?.intValue
-        val bottom = argOrNamedArg(args, argBottom, 3)?.intValue
-        if (left != null || top != null || right != null || bottom != null) {
-            return WindowInsets(left ?: 0, top ?: 0, right ?: 0, bottom ?: 0)
-        }
+fun colorFromArgument(argument: ModifierDataAdapter.ArgumentData): Color? {
+    val argsToCreateArg = argument.listValue
+    if (argsToCreateArg.isEmpty()) return null
 
-        val leftDp = argOrNamedArg(args, argLeft, 0)?.let { dpFromArgument(it) }
-        val topDp = argOrNamedArg(args, argTop, 1)?.let { dpFromArgument(it) }
-        val rightDp = argOrNamedArg(args, argRight, 2)?.let { dpFromArgument(it) }
-        val bottomDp = argOrNamedArg(args, argBottom, 3)?.let { dpFromArgument(it) }
-        return WindowInsets(leftDp ?: 0.dp, topDp ?: 0.dp, rightDp ?: 0.dp, bottomDp ?: 0.dp)
-    } else return null
-}
+    val clazz = argsToCreateArg[0].stringValueWithoutColon
 
-// FIXME This function does not work when the first argument is a list
-internal fun argsOrNamedArgs(
-    arguments: List<ModifierDataAdapter.ArgumentData>
-): List<ModifierDataAdapter.ArgumentData> =
-    if (arguments.firstOrNull()?.isList == true) arguments.first().listValue
-    else arguments
+    // If it's is a "." argument, it's because we're using a predefined color (e.g.: Color.Red)
+    if (argument.isDot && clazz == typeColor) {
+        val value = argsToCreateArg[1].stringValueWithoutColon?.lowercase()
+        return "system-$value".toColor()
 
-internal fun argOrNamedArg(
-    arguments: List<ModifierDataAdapter.ArgumentData>, name: String, index: Int
-): ModifierDataAdapter.ArgumentData? {
-    return (arguments.find { it.name == name } ?: arguments.getOrNull(index))
-}
-
-internal fun intrinsicSizeFromArgument(argument: ModifierDataAdapter.ArgumentData): IntrinsicSize? {
-    val clazz = argument.listValue.firstOrNull()?.stringValueWithoutColon
-    val clazzValue = argument.listValue.getOrNull(1)?.stringValueWithoutColon
-    if (clazz == typeIntrinsicSize && clazzValue != null) {
-        return try {
-            IntrinsicSize.valueOf(clazzValue)
-        } catch (e: Exception) {
-            null
+        // If the first argument is a Color, then it's necessary to instantiate the Color object
+    } else if (argument.type == typeColor) {
+        val colorArgbParts =
+            if (argsToCreateArg.first().isList) argsToCreateArg.first().listValue else argsToCreateArg
+        return if (colorArgbParts.size == 1) {
+            Color(colorArgbParts.first().intValue ?: 0)
+        } else {
+            Color(
+                argOrNamedArg(colorArgbParts, argRed, 0)?.intValue ?: 0,
+                argOrNamedArg(colorArgbParts, argGreen, 1)?.intValue ?: 0,
+                argOrNamedArg(colorArgbParts, argBlue, 2)?.intValue ?: 0,
+                argOrNamedArg(colorArgbParts, argAlpha, 3)?.intValue ?: 0,
+            )
         }
     }
     return null
 }
 
-internal fun repeatModeFromArgument(argument: ModifierDataAdapter.ArgumentData): RepeatMode? {
-    return if (argument.isDot) {
-        when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
-            RepeatModeValues.restart -> RepeatMode.Restart
-            RepeatModeValues.reverse -> RepeatMode.Reverse
-            else -> null
-        }
-    } else null
-}
-
-internal fun startOffsetFromArgument(argument: ModifierDataAdapter.ArgumentData): StartOffset? {
-    return if (argument.type == typeStartOffset) {
-        val args = argsOrNamedArgs(argument.listValue)
-        val value = argOrNamedArg(args, argValue, 0)?.intValue ?: 0
-        StartOffset(value)
-    } else null
-}
-
-internal fun singleArgumentObjectValue(
-    argument: ModifierDataAdapter.ArgumentData
-): Pair<String, Any>? {
-    if (argument.isDot) {
-        val clazz = argument.listValue.getOrNull(0)?.stringValueWithoutColon
-        val value = argument.listValue.getOrNull(1)?.stringValueWithoutColon
-        if (clazz != null && value != null) {
-            return clazz to value
-        }
-    } else {
-        val clazz = argument.type
-        val value = argument.listValue
-        return clazz to value
+fun colorsFromArguments(arguments: List<ModifierDataAdapter.ArgumentData>): List<Color> {
+    return argsOrNamedArgs(arguments).mapNotNull {
+        colorFromArgument(it)
     }
-    return null
 }
 
-internal fun intSizeFromArgument(argument: ModifierDataAdapter.ArgumentData): IntSize? {
-    return if (argument.type == typeIntSize) {
-        val w = argOrNamedArg(argument.listValue, argWidth, 0)?.intValue
-        val h = argOrNamedArg(argument.listValue, argHeight, 1)?.intValue
-        if (w != null && h != null) {
-            return IntSize(w, h)
+internal fun dpFromArgument(argument: ModifierDataAdapter.ArgumentData): Dp? {
+    return if (argument.isDot && argument.listValue.getOrNull(1)?.stringValueWithoutColon == typeUnitDp) {
+        val value = argument.listValue.getOrNull(0)
+        if (value?.isFloat == true) value.floatValue?.dp
+        else if (value?.isInt == true) value.intValue?.dp
+        else null
+    } else if (argument.type == typeDp) {
+        val value = argument.listValue.getOrNull(0)
+        if (value?.isFloat == true) value.floatValue?.dp
+        else if (value?.isInt == true) value.intValue?.dp
+        else null
+    } else null
+}
+
+internal fun dpSizeFromArgument(argument: ModifierDataAdapter.ArgumentData): DpSize? {
+    return if (argument.type == typeDpSize) {
+        val args = argsOrNamedArgs(argument.listValue)
+        val width = argOrNamedArg(args, argWidth, 0)?.let { dpFromArgument(it) }
+        val height = argOrNamedArg(args, argHeight, 1)?.let { dpFromArgument(it) }
+        if (width != null && height != null) {
+            DpSize(width = width, height = height)
+        } else null
+    } else null
+}
+
+internal fun eventFromArgument(argument: ModifierDataAdapter.ArgumentData): Pair<String, Any?>? {
+    return if (argument.type == typeEvent) {
+        val (event, args) = Pair(
+            argument.listValue.getOrNull(0)?.stringValue,
+            argument.listValue.getOrNull(1)?.listValue?.map { it.value }
+        )
+        if (event != null && args != null) {
+            val pushArgs = if (args.isEmpty()) null else if (args.size == 1) args.first() else null
+            event to pushArgs
         } else null
     } else null
 }
@@ -629,6 +410,196 @@ internal fun <T> finiteAnimationSpecFromArg(argument: ModifierDataAdapter.Argume
     }
 }
 
+internal fun floatRangeFromArgument(argument: ModifierDataAdapter.ArgumentData): ClosedFloatingPointRange<Float>? {
+    return if (argument.type == typeRange && argument.listValue.size == 2) {
+        val start = argument.listValue[0].floatValue
+        val end = argument.listValue[1].floatValue
+        if (start != null && end != null) start..end else null
+    } else null
+}
+
+internal fun horizontalAlignmentLineFromArgument(argument: ModifierDataAdapter.ArgumentData): HorizontalAlignmentLine? {
+    return if (argument.isDot) {
+        when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
+            AlignmentLineValues.firstBaseline -> FirstBaseline
+            AlignmentLineValues.lastBaseline -> LastBaseline
+            else -> null
+        }
+    } else null
+}
+
+internal fun intRangeFromArgument(argument: ModifierDataAdapter.ArgumentData): IntRange? {
+    return if (argument.type == typeRange && argument.listValue.size == 2) {
+        val start = argument.listValue[0].intValue
+        val end = argument.listValue[1].intValue
+        if (start != null && end != null) start..end else null
+    } else null
+}
+
+internal fun intrinsicSizeFromArgument(argument: ModifierDataAdapter.ArgumentData): IntrinsicSize? {
+    val clazz = argument.listValue.firstOrNull()?.stringValueWithoutColon
+    val clazzValue = argument.listValue.getOrNull(1)?.stringValueWithoutColon
+    if (clazz == typeIntrinsicSize && clazzValue != null) {
+        return try {
+            IntrinsicSize.valueOf(clazzValue)
+        } catch (e: Exception) {
+            null
+        }
+    }
+    return null
+}
+
+internal fun intSizeFromArgument(argument: ModifierDataAdapter.ArgumentData): IntSize? {
+    return if (argument.type == typeIntSize) {
+        val w = argOrNamedArg(argument.listValue, argWidth, 0)?.intValue
+        val h = argOrNamedArg(argument.listValue, argHeight, 1)?.intValue
+        if (w != null && h != null) {
+            return IntSize(w, h)
+        } else null
+    } else null
+}
+
+fun offsetFromArgument(argument: ModifierDataAdapter.ArgumentData): Offset? {
+    val pair = singleArgumentObjectValue(argument)
+    return pair?.let { (clazz, args) ->
+        if (clazz == typeOffset) {
+            (args as? List<ModifierDataAdapter.ArgumentData>)?.mapNotNull {
+                if (it.isInt) it.intValue?.toFloat() else it.floatValue
+            }?.let {
+                if (it.size == 2) Offset(it[0], it[1]) else null
+            }
+
+        } else {
+            when (args.toString()) {
+                OffsetValues.zero -> Offset.Zero
+                OffsetValues.infinite -> Offset.Infinite
+                OffsetValues.unspecified -> Offset.Unspecified
+                else -> null
+            }
+        }
+    }
+}
+
+internal fun repeatModeFromArgument(argument: ModifierDataAdapter.ArgumentData): RepeatMode? {
+    return if (argument.isDot) {
+        when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
+            RepeatModeValues.restart -> RepeatMode.Restart
+            RepeatModeValues.reverse -> RepeatMode.Reverse
+            else -> null
+        }
+    } else null
+}
+
+internal fun roleFromArgument(argument: ModifierDataAdapter.ArgumentData): Role? {
+    val clazz = argument.listValue.getOrNull(0)?.stringValueWithoutColon
+    val roleType = argument.listValue.getOrNull(1)?.stringValueWithoutColon
+    return if (clazz == typeRole && roleType != null) {
+        when (roleType) {
+            RoleValues.button -> Role.Button
+            RoleValues.checkbox -> Role.Checkbox
+            RoleValues.switch -> Role.Switch
+            RoleValues.radioButton -> Role.RadioButton
+            RoleValues.tab -> Role.Tab
+            RoleValues.image -> Role.Image
+            RoleValues.dropdownList -> Role.DropdownList
+            else -> null
+        }
+    } else null
+}
+
+internal fun shapeFromArgument(argument: ModifierDataAdapter.ArgumentData): Shape? {
+    val clazz = if (argument.isDot)
+        argument.listValue.getOrNull(0)?.stringValueWithoutColon ?: ""
+    else
+        argument.type
+    val argsToCreateArg = argument.listValue
+
+    return when (clazz) {
+        ShapeValues.circle -> CircleShape
+        ShapeValues.rectangle -> RectangleShape
+        ShapeValues.roundedCorner -> {
+            val cornerSizeParts =
+                if (argsToCreateArg.firstOrNull()?.isList == true) {
+                    val namedArgs = argsToCreateArg.first().listValue
+                    listOf(
+                        namedArgs.find { it.name == argTopStart }?.let { dpFromArgument(it) }
+                            ?: 0.dp,
+                        namedArgs.find { it.name == argTopEnd }?.let { dpFromArgument(it) } ?: 0.dp,
+                        namedArgs.find { it.name == argBottomEnd }?.let { dpFromArgument(it) }
+                            ?: 0.dp,
+                        namedArgs.find { it.name == argBottomStart }?.let { dpFromArgument(it) }
+                            ?: 0.dp,
+                    )
+                } else {
+                    argsToCreateArg.map { dpFromArgument(it) }
+                }
+            return if (cornerSizeParts.size == 1) {
+                cornerSizeParts.firstOrNull()?.let { RoundedCornerShape(it) }
+            } else if (cornerSizeParts.any { it != null }) {
+                RoundedCornerShape(
+                    cornerSizeParts.getOrNull(0) ?: 0.dp,
+                    cornerSizeParts.getOrNull(1) ?: 0.dp,
+                    cornerSizeParts.getOrNull(2) ?: 0.dp,
+                    cornerSizeParts.getOrNull(3) ?: 0.dp,
+                )
+            } else null
+        }
+
+        else -> null
+    }
+}
+
+internal fun singleArgumentObjectValue(
+    argument: ModifierDataAdapter.ArgumentData
+): Pair<String, Any>? {
+    if (argument.isDot) {
+        val clazz = argument.listValue.getOrNull(0)?.stringValueWithoutColon
+        val value = argument.listValue.getOrNull(1)?.stringValueWithoutColon
+        if (clazz != null && value != null) {
+            return clazz to value
+        }
+    } else {
+        val clazz = argument.type
+        val value = argument.listValue
+        return clazz to value
+    }
+    return null
+}
+
+internal fun startOffsetFromArgument(argument: ModifierDataAdapter.ArgumentData): StartOffset? {
+    return if (argument.type == typeStartOffset) {
+        val args = argsOrNamedArgs(argument.listValue)
+        val value = argOrNamedArg(args, argValue, 0)?.intValue ?: 0
+        StartOffset(value)
+    } else null
+}
+
+internal fun textUnitFromArgument(argument: ModifierDataAdapter.ArgumentData): TextUnit? {
+    return if (argument.isDot) {
+        val value = argument.listValue.getOrNull(0)
+        val type = argument.listValue.getOrNull(1)?.stringValueWithoutColon
+        if (type == typeUnitSp) {
+            if (value?.isFloat == true) value.floatValue?.sp
+            else if (value?.isInt == true) value.intValue?.sp
+            else null
+        } else if (type == typeUnitEm) {
+            if (value?.isFloat == true) value.floatValue?.em
+            else if (value?.isInt == true) value.intValue?.em
+            else null
+        } else null
+    } else if (argument.type == typeTextUnit) {
+        val value = argument.listValue.getOrNull(0)?.floatValue
+        val argsToCreateTextUnit = argument.listValue.getOrNull(1)?.listValue
+        val textUnitClass = argsToCreateTextUnit?.getOrNull(0)?.stringValueWithoutColon
+        val textUnitType = argsToCreateTextUnit?.getOrNull(1)?.stringValueWithoutColon
+        if (textUnitClass == typeTextUnitType && textUnitType == typeTextUnitSp && value != null) {
+            TextUnit(value, TextUnitType.Sp)
+        } else if (textUnitClass == typeTextUnitType && textUnitType == typeTextUnitEm && value != null) {
+            TextUnit(value, TextUnitType.Em)
+        } else null
+    } else null
+}
+
 fun toggleableStateFromArgument(argument: ModifierDataAdapter.ArgumentData): ToggleableState? {
     return if (argument.type == typeToggleableState) {
         argument.listValue.firstOrNull()?.booleanValue?.let {
@@ -639,4 +610,33 @@ fun toggleableStateFromArgument(argument: ModifierDataAdapter.ArgumentData): Tog
             ToggleableState.valueOf(it)
         }
     } else null
+}
+
+internal fun verticalAlignmentLineFromArgument(argument: ModifierDataAdapter.ArgumentData): VerticalAlignmentLine? {
+    return if (argument.isDot) {
+        when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
+            AlignmentLineValues.firstBaseline -> VerticalAlignmentLine(::min)
+            AlignmentLineValues.lastBaseline -> VerticalAlignmentLine(::max)
+            else -> null
+        }
+    } else null
+}
+
+internal fun windowInsetsFromArgument(argument: ModifierDataAdapter.ArgumentData): WindowInsets? {
+    if (argument.type == typeWindowInsets) {
+        val args = argsOrNamedArgs(argument.listValue)
+        val left = argOrNamedArg(args, argLeft, 0)?.intValue
+        val top = argOrNamedArg(args, argTop, 1)?.intValue
+        val right = argOrNamedArg(args, argRight, 2)?.intValue
+        val bottom = argOrNamedArg(args, argBottom, 3)?.intValue
+        if (left != null || top != null || right != null || bottom != null) {
+            return WindowInsets(left ?: 0, top ?: 0, right ?: 0, bottom ?: 0)
+        }
+
+        val leftDp = argOrNamedArg(args, argLeft, 0)?.let { dpFromArgument(it) }
+        val topDp = argOrNamedArg(args, argTop, 1)?.let { dpFromArgument(it) }
+        val rightDp = argOrNamedArg(args, argRight, 2)?.let { dpFromArgument(it) }
+        val bottomDp = argOrNamedArg(args, argBottom, 3)?.let { dpFromArgument(it) }
+        return WindowInsets(leftDp ?: 0.dp, topDp ?: 0.dp, rightDp ?: 0.dp, bottomDp ?: 0.dp)
+    } else return null
 }
