@@ -70,9 +70,12 @@ class BorderTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"borderWithBorderStrokeTest" => [
-                {:border, [], [{:BorderStroke, [], [3, {:., [], [:Color, :Blue]}]} ]},
+                {:border, [], [{:BorderStroke, [], [
+                    {:Dp, [], [3]}, 
+                    {:., [], [:Color, :Blue]}]} 
+                ]},
             ]}
-            """,
+            """.trimStyle(),
             Modifier.border(BorderStroke(3.dp, Color.Blue))
         )
     }
@@ -82,9 +85,14 @@ class BorderTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"borderWithBorderStrokeNamedParamsTest" => [
-                {:border, [], [[border: [{:BorderStroke, [], [3, {:., [], [:Color, :Blue]}]} ]]]},
+                {:border, [], [[
+                    border: {:BorderStroke, [], [
+                        {:Dp, [], [3]}, 
+                        {:., [], [:Color, :Blue]}
+                    ]}
+                ]]}
             ]}
-            """,
+            """.trimStyle(),
             Modifier.border(BorderStroke(3.dp, Color.Blue))
         )
     }
@@ -94,9 +102,13 @@ class BorderTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"borderWithBorderStrokeAndShapeTest" => [
-                {:border, [], [{:BorderStroke, [], [3, {:., [], [:Color, :Blue]}]}, {:., [], [:CircleShape]}]},
+                {:border, [], [{:BorderStroke, [], [
+                    {:Dp, [], [3]}, 
+                    {:., [], [:Color, :Blue]}]}, 
+                    {:., [], [:CircleShape]}
+                ]},
             ]}
-            """,
+            """.trimStyle(),
             Modifier.border(BorderStroke(3.dp, Color.Blue), CircleShape)
         )
     }
@@ -106,9 +118,12 @@ class BorderTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"borderWithBorderStrokeAndShapeTest" => [
-                {:border, [], [[shape: {:., [], [:CircleShape]}, border: {:BorderStroke, [], [3, {:., [], [:Color, :Blue]}]}]]},
+                {:border, [], [[
+                    shape: {:., [], [:CircleShape]}, 
+                    border: {:BorderStroke, [], [{:Dp, [], [3]}, {:., [], [:Color, :Blue]}]}
+                ]]},
             ]}
-            """,
+            """.trimStyle(),
             Modifier.border(BorderStroke(3.dp, Color.Blue), CircleShape)
         )
     }

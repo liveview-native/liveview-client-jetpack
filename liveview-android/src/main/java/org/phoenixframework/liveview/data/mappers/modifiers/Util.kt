@@ -57,6 +57,7 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argBottom
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argBottomEnd
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argBottomStart
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argCenter
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argColor
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argColors
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argEnd
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argEndX
@@ -75,6 +76,7 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argTop
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argTopEnd
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argTopStart
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argWidth
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeBorderStroke
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeBrush
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
@@ -108,7 +110,8 @@ import kotlin.math.min
 internal fun argOrNamedArg(
     arguments: List<ModifierDataAdapter.ArgumentData>, name: String, index: Int
 ): ModifierDataAdapter.ArgumentData? {
-    return (arguments.find { it.name == name } ?: arguments.getOrNull(index))
+    return arguments.find { it.name == name }
+        ?: if (arguments.all { it.name === null }) arguments.getOrNull(index) else null
 }
 
 // FIXME This function does not work when the first argument is a list
@@ -119,11 +122,12 @@ internal fun argsOrNamedArgs(
     else arguments
 
 internal fun borderStrokeFromArgument(argument: ModifierDataAdapter.ArgumentData): BorderStroke? {
-    val borderStrokeArguments =
-        if (argument.isList) argument.listValue.first().listValue else argument.listValue
-    val width = borderStrokeArguments.getOrNull(0)?.intValue?.dp
-    val color = colorFromArgument(borderStrokeArguments[1])
-    return if (width != null && color != null) BorderStroke(width, color) else null
+    return if (argument.type == typeBorderStroke) {
+        val borderStrokeArguments = argsOrNamedArgs(argument.listValue)
+        val width = argOrNamedArg(borderStrokeArguments, argWidth, 0)?.let { dpFromArgument(it) }
+        val color = argOrNamedArg(borderStrokeArguments, argColor, 1)?.let { colorFromArgument(it) }
+        if (width != null && color != null) BorderStroke(width, color) else null
+    } else null
 }
 
 internal fun brushFromArgument(argument: ModifierDataAdapter.ArgumentData): Brush? {
@@ -459,30 +463,27 @@ internal fun intSizeFromArgument(argument: ModifierDataAdapter.ArgumentData): In
     } else null
 }
 
-fun offsetFromArgument(argument: ModifierDataAdapter.ArgumentData): Offset? {
-    val pair = singleArgumentObjectValue(argument)
-    return pair?.let { (clazz, args) ->
-        if (clazz == typeOffset) {
-            (args as? List<ModifierDataAdapter.ArgumentData>)?.mapNotNull {
-                if (it.isInt) it.intValue?.toFloat() else it.floatValue
-            }?.let {
-                if (it.size == 2) Offset(it[0], it[1]) else null
-            }
-
-        } else {
-            when (args.toString()) {
-                OffsetValues.zero -> Offset.Zero
-                OffsetValues.infinite -> Offset.Infinite
-                OffsetValues.unspecified -> Offset.Unspecified
-                else -> null
-            }
+internal fun offsetFromArgument(argument: ModifierDataAdapter.ArgumentData): Offset? {
+    return if (argument.type == typeOffset) {
+        argument.listValue.mapNotNull {
+            if (it.isInt) it.intValue?.toFloat() else it.floatValue
+        }.let {
+            if (it.size == 2) Offset(it[0], it[1]) else null
         }
-    }
+
+    } else if (argument.isDot) {
+        when (argument.listValue.getOrNull(1)?.stringValueWithoutColon) {
+            OffsetValues.zero -> Offset.Zero
+            OffsetValues.infinite -> Offset.Infinite
+            OffsetValues.unspecified -> Offset.Unspecified
+            else -> null
+        }
+    } else null
 }
 
 internal fun repeatModeFromArgument(argument: ModifierDataAdapter.ArgumentData): RepeatMode? {
     return if (argument.isDot) {
-        when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
+        when (argument.listValue.getOrNull(1)?.stringValueWithoutColon) {
             RepeatModeValues.restart -> RepeatMode.Restart
             RepeatModeValues.reverse -> RepeatMode.Reverse
             else -> null
@@ -512,37 +513,30 @@ internal fun shapeFromArgument(argument: ModifierDataAdapter.ArgumentData): Shap
         argument.listValue.getOrNull(0)?.stringValueWithoutColon ?: ""
     else
         argument.type
-    val argsToCreateArg = argument.listValue
 
     return when (clazz) {
         ShapeValues.circle -> CircleShape
         ShapeValues.rectangle -> RectangleShape
         ShapeValues.roundedCorner -> {
-            val cornerSizeParts =
-                if (argsToCreateArg.firstOrNull()?.isList == true) {
-                    val namedArgs = argsToCreateArg.first().listValue
-                    listOf(
-                        namedArgs.find { it.name == argTopStart }?.let { dpFromArgument(it) }
-                            ?: 0.dp,
-                        namedArgs.find { it.name == argTopEnd }?.let { dpFromArgument(it) } ?: 0.dp,
-                        namedArgs.find { it.name == argBottomEnd }?.let { dpFromArgument(it) }
-                            ?: 0.dp,
-                        namedArgs.find { it.name == argBottomStart }?.let { dpFromArgument(it) }
-                            ?: 0.dp,
-                    )
-                } else {
-                    argsToCreateArg.map { dpFromArgument(it) }
-                }
+            val cornerSizeParts = argsOrNamedArgs(argument.listValue)
             return if (cornerSizeParts.size == 1) {
-                cornerSizeParts.firstOrNull()?.let { RoundedCornerShape(it) }
-            } else if (cornerSizeParts.any { it != null }) {
+                cornerSizeParts.firstOrNull()?.let {
+                    dpFromArgument(it)
+                }?.let {
+                    RoundedCornerShape(it)
+                }
+            } else {
                 RoundedCornerShape(
-                    cornerSizeParts.getOrNull(0) ?: 0.dp,
-                    cornerSizeParts.getOrNull(1) ?: 0.dp,
-                    cornerSizeParts.getOrNull(2) ?: 0.dp,
-                    cornerSizeParts.getOrNull(3) ?: 0.dp,
+                    argOrNamedArg(cornerSizeParts, argTopStart, 0)?.let { dpFromArgument(it) }
+                        ?: 0.dp,
+                    argOrNamedArg(cornerSizeParts, argTopEnd, 1)?.let { dpFromArgument(it) }
+                        ?: 0.dp,
+                    argOrNamedArg(cornerSizeParts, argBottomEnd, 2)?.let { dpFromArgument(it) }
+                        ?: 0.dp,
+                    argOrNamedArg(cornerSizeParts, argBottomStart, 3)?.let { dpFromArgument(it) }
+                        ?: 0.dp,
                 )
-            } else null
+            }
         }
 
         else -> null

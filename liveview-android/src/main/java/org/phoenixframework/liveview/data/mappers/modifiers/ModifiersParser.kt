@@ -127,27 +127,8 @@ internal object ModifiersParser {
             val modifiersList = mutableListOf<Modifier>()
             tupleExpressionList.forEach { tupleExpr ->
                 try {
-                    // Each tuple has 3 expressions:
-                    // modifier name, meta data, and arguments to create the modifier
-                    val modifierDataAdapter = ModifierDataAdapter(tupleExpr)
-                    val modifierName = modifierDataAdapter.modifierName
-                    if (modifierName != null) {
-                        try {
-                            handleModifier(
-                                modifierName,
-                                modifierDataAdapter.arguments,
-                                null,
-                                pushEvent,
-                            )?.let { parsedModifier ->
-                                modifiersList.add(parsedModifier)
-                            }
-                        } catch (e: Exception) {
-                            Log.e(
-                                TAG,
-                                "Error parsing modifier: $modifierName -> ${modifierDataAdapter.metaData}",
-                                e
-                            )
-                        }
+                    fromTupleExpression(tupleExpr, pushEvent)?.let {
+                        modifiersList.add(it)
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "Error creating modifier data from tuple", e)
@@ -155,6 +136,25 @@ internal object ModifiersParser {
             }
             if (modifiersList.isNotEmpty()) {
                 modifiersCacheTable[styleName] = modifiersList
+            }
+        }
+    }
+
+    private fun fromTupleExpression(tupleExpr: TupleExprContext, pushEvent: PushEvent?): Modifier? {
+        // Each tuple has 3 expressions:
+        // modifier name, meta data, and arguments to create the modifier
+        return ModifierDataAdapter(tupleExpr).let { modifierDataAdapter ->
+            modifierDataAdapter.modifierName?.let { modifierName ->
+                try {
+                    handleModifier(modifierName, modifierDataAdapter.arguments, null, pushEvent)
+                } catch (e: Exception) {
+                    Log.e(
+                        TAG,
+                        "Error parsing modifier: $modifierName -> ${modifierDataAdapter.metaData}",
+                        e
+                    )
+                    null
+                }
             }
         }
     }
@@ -181,14 +181,8 @@ internal object ModifiersParser {
     }
 
     private fun parseStyleFileContent(fileContent: String): List<Pair<String, List<TupleExprContext>>>? {
-        // Parsing String using Elixir parser
-        val charStream: CharStream = CharStreams.fromString(fileContent)
-        val elixirLexer = ElixirLexer(charStream)
-        val commonTokenStream = CommonTokenStream(elixirLexer)
-        val elixirParser = ElixirParser(commonTokenStream)
-
         // The stylesheet is a map, therefore the root expression must be a map expression
-        val rootExpression = elixirParser.parse()?.block()?.expression()?.firstOrNull()
+        val rootExpression = parseElixirContent(fileContent)
         val mapExprContext: MapExprContext
         if (rootExpression is MapExprContext) {
             mapExprContext = rootExpression
@@ -217,6 +211,17 @@ internal object ModifiersParser {
                 .filterIsInstance<TupleExprContext>()
         }
         return mapEntryContext
+    }
+
+    internal fun parseElixirContent(fileContent: String): ElixirParser.ExpressionContext? {
+        // Parsing String using Elixir parser
+        val charStream: CharStream = CharStreams.fromString(fileContent)
+        val elixirLexer = ElixirLexer(charStream)
+        val commonTokenStream = CommonTokenStream(elixirLexer)
+        val elixirParser = ElixirParser(commonTokenStream)
+
+        // The stylesheet is a map, therefore the root expression must be a map expression
+        return elixirParser.parse()?.block()?.expression()?.firstOrNull()
     }
 
     @SuppressLint("ModifierFactoryExtensionFunction")
