@@ -3,8 +3,10 @@ package org.phoenixframework.liveview.data.mappers.modifiers
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.focusGroup
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.imeNestedScroll
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -15,12 +17,16 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.systemGesturesPadding
 import androidx.compose.foundation.layout.waterfallPadding
+import androidx.compose.foundation.preferKeepClear
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.focusTarget
+import androidx.compose.ui.graphics.toolingGraphicsLayer
 import org.antlr.v4.runtime.CharStream
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
@@ -54,6 +60,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFocusT
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFocusable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeightIn
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImeNestedScroll
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImePadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierLayoutId
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMandatorySystemGesturesPadding
@@ -68,6 +75,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierOnFocu
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPaddingFrom
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPaddingFromBaseline
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPreferKeepClear
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierProgressSemantics
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequiredHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequiredHeightIn
@@ -81,14 +89,17 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeDr
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeGesturesPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierScale
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSelectable
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSelectableGroup
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierShadow
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSizeIn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierStatusBarsPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemBarsPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemGestureExclusion
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemGesturesPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTestTag
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierToggleable
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierToolingGraphicsLayer
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTriStateToggleable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWaterfallPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
@@ -226,7 +237,7 @@ internal object ModifiersParser {
     }
 
     @SuppressLint("ModifierFactoryExtensionFunction")
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
     private fun handleModifier(
         modifierId: String,
         argListContext: List<ModifierDataAdapter.ArgumentData>,
@@ -310,15 +321,20 @@ internal object ModifiersParser {
             modifierFocusTarget -> Modifier.focusTarget()
             modifierFocusGroup -> Modifier.focusGroup()
             modifierImePadding -> Modifier.imePadding()
+            modifierImeNestedScroll -> Modifier.imeNestedScroll()
             modifierMandatorySystemGesturesPadding -> Modifier.mandatorySystemGesturesPadding()
             modifierMinimumInteractiveComponentSize -> Modifier.minimumInteractiveComponentSize()
             modifierNavigationBarsPadding -> Modifier.navigationBarsPadding()
+            modifierPreferKeepClear -> Modifier.preferKeepClear()
             modifierSafeContentPadding -> Modifier.safeContentPadding()
             modifierSafeDrawingPadding -> Modifier.safeDrawingPadding()
             modifierSafeGesturesPadding -> Modifier.safeGesturesPadding()
+            modifierSelectableGroup -> Modifier.selectableGroup()
             modifierStatusBarsPadding -> Modifier.statusBarsPadding()
             modifierSystemBarsPadding -> Modifier.systemBarsPadding()
             modifierSystemGesturesPadding -> Modifier.systemGesturesPadding()
+            modifierSystemGestureExclusion -> Modifier.systemGestureExclusion()
+            modifierToolingGraphicsLayer -> Modifier.toolingGraphicsLayer()
             modifierWaterfallPadding -> Modifier.waterfallPadding()
             // Parameterized modifiers
             modifierAbsoluteOffset -> Modifier.absoluteOffsetFromStyle(argListContext)
