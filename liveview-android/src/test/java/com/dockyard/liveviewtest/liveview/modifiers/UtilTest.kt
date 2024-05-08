@@ -12,23 +12,42 @@ import androidx.compose.animation.core.repeatable
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOut
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -38,16 +57,24 @@ import com.dockyard.liveviewtest.liveview.util.ModifierBaseTest
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.phoenixframework.liveview.data.constants.AlignmentValues
+import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
+import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifierDataAdapter
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
+import org.phoenixframework.liveview.data.mappers.modifiers.alignmentFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.borderStrokeFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.brushFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.colorFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.dpFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.dpSizeFromArgument
+import org.phoenixframework.liveview.data.mappers.modifiers.enterTransitionFromArgument
+import org.phoenixframework.liveview.data.mappers.modifiers.exitTransitionFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.finiteAnimationSpecFromArg
 import org.phoenixframework.liveview.data.mappers.modifiers.floatRangeFromArgument
+import org.phoenixframework.liveview.data.mappers.modifiers.horizontalAlignmentFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.horizontalAlignmentLineFromArgument
+import org.phoenixframework.liveview.data.mappers.modifiers.intOffsetFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.intRangeFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.intSizeFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.intrinsicSizeFromArgument
@@ -58,11 +85,50 @@ import org.phoenixframework.liveview.data.mappers.modifiers.shapeFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.startOffsetFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.textUnitFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.toggleableStateFromArgument
+import org.phoenixframework.liveview.data.mappers.modifiers.transformOriginFromArgument
+import org.phoenixframework.liveview.data.mappers.modifiers.verticalAlignmentFromArgument
 import org.phoenixframework.liveview.data.mappers.modifiers.windowInsetsFromArgument
 import org.phoenixframework.liveview.stylesheet.ElixirParser.TupleExprContext
 
 @RunWith(AndroidJUnit4::class)
 class UtilTest : ModifierBaseTest() {
+
+    @Test
+    fun alignmentTest() {
+        val aligns = listOf(
+            Alignment.TopStart,
+            Alignment.TopCenter,
+            Alignment.TopEnd,
+            Alignment.CenterStart,
+            Alignment.Center,
+            Alignment.CenterEnd,
+            Alignment.BottomStart,
+            Alignment.BottomCenter,
+            Alignment.BottomEnd
+        )
+        val alignsText = listOf(
+            AlignmentValues.topStart,
+            AlignmentValues.topCenter,
+            AlignmentValues.topEnd,
+            AlignmentValues.centerStart,
+            AlignmentValues.center,
+            AlignmentValues.centerEnd,
+            AlignmentValues.bottomStart,
+            AlignmentValues.bottomCenter,
+            AlignmentValues.bottomEnd
+        )
+        aligns.forEachIndexed { index, alignment ->
+            val expr = ModifiersParser.parseElixirContent(
+                """
+                {:., [], [{:., [], [:Alignment, :${alignsText[index]}]}]}
+                """.trimStyle()
+            )
+
+            val alignmentFromStyle =
+                alignmentFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+            assertEquals(alignment, alignmentFromStyle)
+        }
+    }
 
     @Test
     fun borderStrokeTest() {
@@ -72,9 +138,8 @@ class UtilTest : ModifierBaseTest() {
             """.trimStyle()
         )
 
-        val borderFromStyle = ModifierDataAdapter(expr as TupleExprContext).let {
-            borderStrokeFromArgument(it.arguments.first())
-        }
+        val borderFromStyle =
+            borderStrokeFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
         val border = BorderStroke(2.dp, Color.Red)
         assertEquals(border, borderFromStyle)
     }
@@ -537,6 +602,758 @@ class UtilTest : ModifierBaseTest() {
     }
 
     @Test
+    fun enterTransitionList() {
+        val expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:fadeIn, [], []},
+                {:expandIn, [], []}
+            ]}
+            """.trimStyle()
+        )
+        val transitionFromStyle = enterTransitionFromArgument(
+            *(ModifierDataAdapter(expr as TupleExprContext).arguments.toTypedArray())
+        )
+        val transition = fadeIn() + expandIn()
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun enterTransitionExpandHorizontallyTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:expandHorizontally, [], []},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = expandHorizontally()
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:expandHorizontally, [], [[
+                    animationSpec: {:tween, [], []}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = expandHorizontally(animationSpec = tween())
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:expandHorizontally, [], [[
+                    expandFrom: {:., [], [:Alignment, :CenterHorizontally]}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = expandHorizontally(expandFrom = Alignment.CenterHorizontally)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:expandHorizontally, [], [[
+                    expandFrom: {:., [], [:Alignment, :CenterHorizontally]},
+                    clip: false
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = expandHorizontally(expandFrom = Alignment.CenterHorizontally, clip = false)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun enterTransitionExpandInTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:expandIn, [], []},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = expandIn()
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:expandIn, [], [[
+                    animationSpec: {:tween, [], []}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = expandIn(animationSpec = tween())
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:expandIn, [], [[
+                    expandFrom: {:., [], [:Alignment, :Center]}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = expandIn(expandFrom = Alignment.Center)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:expandIn, [], [[
+                    expandFrom: {:., [], [:Alignment, :BottomEnd]},
+                    clip: false
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = expandIn(expandFrom = Alignment.BottomEnd, clip = false)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun enterTransitionExpandVerticallyTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:expandVertically, [], []},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = expandVertically()
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:expandVertically, [], [[
+                    animationSpec: {:tween, [], []}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = expandVertically(animationSpec = tween())
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:expandVertically, [], [[
+                    expandFrom: {:., [], [:Alignment, :CenterVertically]}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = expandVertically(expandFrom = Alignment.CenterVertically)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:expandVertically, [], [[
+                    expandFrom: {:., [], [:Alignment, :CenterVertically]},
+                    clip: false
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = expandVertically(expandFrom = Alignment.CenterVertically, clip = false)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun enterTransitionFadeInTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:fadeIn, [], []},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = fadeIn()
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:fadeIn, [], [[
+                    initialAlpha: 0.5
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = fadeIn(initialAlpha = 0.5f)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:fadeIn, [], [[
+                    initialAlpha: 0.5,
+                    animationSpec: {:tween, [], []}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = fadeIn(initialAlpha = 0.5f, animationSpec = tween())
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun enterTransitionScaleInTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:scaleIn, [], []},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = scaleIn()
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:scaleIn, [], [[
+                    initialScale: 0.5
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = scaleIn(initialScale = 0.5f)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:scaleIn, [], [[
+                    animationSpec: {:tween, [], []},
+                    initialScale: 0.5,
+                    transformOrigin: {:TransformOrigin, [], [0.75, 0.25]}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = scaleIn(
+            animationSpec = tween(),
+            initialScale = 0.5f,
+            transformOrigin = TransformOrigin(.75f, .25f)
+        )
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun enterTransitionSlideInTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:slideIn, [], [[
+                    initialOffset: {:IntOffset, [], [10, 20]}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = slideIn { IntOffset(10, 20) }
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:slideIn, [], [[
+                    animationSpec: {:tween, [], []},
+                    initialOffset: {:IntOffset, [], [10, 20]}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = slideIn(animationSpec = tween()) { IntOffset(10, 20) }
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun enterTransitionSlideInHorizontallyTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:slideInHorizontally, [], [[ initialOffsetX: 50 ]]},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = slideInHorizontally { 50 }
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:slideInHorizontally, [], [[
+                    animationSpec: {:tween, [], []},
+                    initialOffsetX: 60
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = slideInHorizontally(animationSpec = tween()) { 60 }
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun enterTransitionSlideInVerticallyTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:slideInVertically, [], [[ initialOffsetY: 50 ]]},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = slideInVertically { 50 }
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:slideInVertically, [], [[ 
+                    initialOffsetY: 60, 
+                    animationSpec: {:tween, [], []} 
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            enterTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = slideInVertically(animationSpec = tween()) { 60 }
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun exitTransitionList() {
+        val expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:fadeOut, [], []},
+                {:shrinkOut, [], []}
+            ]}
+            """.trimStyle()
+        )
+        val transitionFromStyle = exitTransitionFromArgument(
+            *(ModifierDataAdapter(expr as TupleExprContext).arguments.toTypedArray())
+        )
+        val transition = fadeOut() + shrinkOut()
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun exitTransitionFadeOutTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:fadeOut, [], []},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = fadeOut()
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:fadeOut, [], [[
+                    targetAlpha: 0.5
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = fadeOut(targetAlpha = 0.5f)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:fadeOut, [], [[
+                    targetAlpha: 0.5,
+                    animationSpec: {:tween, [], []}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = fadeOut(targetAlpha = 0.5f, animationSpec = tween())
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun exitTransitionScaleOutTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:scaleOut, [], []},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = scaleOut()
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:scaleOut, [], [[
+                    targetScale: 0.5
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = scaleOut(targetScale = 0.5f)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:scaleOut, [], [[
+                    animationSpec: {:tween, [], []},
+                    targetScale: 0.5,
+                    transformOrigin: {:TransformOrigin, [], [0.75, 0.25]}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = scaleOut(
+            animationSpec = tween(),
+            targetScale = 0.5f,
+            transformOrigin = TransformOrigin(.75f, .25f)
+        )
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun exitTransitionSlideOutTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:slideOut, [], [[
+                    targetOffset: {:IntOffset, [], [10, 20]}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = slideOut { IntOffset(10, 20) }
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:slideOut, [], [[
+                    animationSpec: {:tween, [], []},
+                    targetOffset: {:IntOffset, [], [10, 20]}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = slideOut(animationSpec = tween()) { IntOffset(10, 20) }
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun exitTransitionSlideOutHorizontallyTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:slideOutHorizontally, [], [[ targetOffsetX: 50 ]]},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = slideOutHorizontally { 50 }
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:slideOutHorizontally, [], [[
+                    animationSpec: {:tween, [], []},
+                    targetOffsetX: 60
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = slideOutHorizontally(animationSpec = tween()) { 60 }
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun exitTransitionSlideOutVerticallyTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:slideOutVertically, [], [[ targetOffsetY: 50 ]]},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = slideOutVertically { 50 }
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:slideOutVertically, [], [[ 
+                    targetOffsetY: 60, 
+                    animationSpec: {:tween, [], []} 
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = slideOutVertically(animationSpec = tween()) { 60 }
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun exitTransitionShrinkHorizontallyTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:shrinkHorizontally, [], []},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = shrinkHorizontally()
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:shrinkHorizontally, [], [[
+                    animationSpec: {:tween, [], []}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = shrinkHorizontally(animationSpec = tween())
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:shrinkHorizontally, [], [[
+                    shrinkTowards: {:., [], [:Alignment, :CenterHorizontally]}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = shrinkHorizontally(shrinkTowards = Alignment.CenterHorizontally)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:shrinkHorizontally, [], [[
+                    shrinkTowards: {:., [], [:Alignment, :CenterHorizontally]},
+                    clip: false
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = shrinkHorizontally(shrinkTowards = Alignment.CenterHorizontally, clip = false)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun exitTransitionShrinkOutTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:shrinkOut, [], []},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = shrinkOut()
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:shrinkOut, [], [[
+                    animationSpec: {:tween, [], []}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = shrinkOut(animationSpec = tween())
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:shrinkOut, [], [[
+                    shrinkTowards: {:., [], [:Alignment, :Center]}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = shrinkOut(shrinkTowards = Alignment.Center)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:shrinkOut, [], [[
+                    shrinkTowards: {:., [], [:Alignment, :BottomEnd]},
+                    clip: false
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = shrinkOut(shrinkTowards = Alignment.BottomEnd, clip = false)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
+    fun exitTransitionShrinkVerticallyTest() {
+        var expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:shrinkVertically, [], []},
+            ]}
+            """.trimStyle()
+        )
+        var transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        var transition = shrinkVertically()
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:shrinkVertically, [], [[
+                    animationSpec: {:tween, [], []}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = shrinkVertically(animationSpec = tween())
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:shrinkVertically, [], [[
+                    shrinkTowards: {:., [], [:Alignment, :CenterVertically]}
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = shrinkVertically(shrinkTowards = Alignment.CenterVertically)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+
+        expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:shrinkVertically, [], [[
+                    shrinkTowards: {:., [], [:Alignment, :CenterVertically]},
+                    clip: false
+                ]]},
+            ]}
+            """.trimStyle()
+        )
+        transitionFromStyle =
+            exitTransitionFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        transition = shrinkVertically(shrinkTowards = Alignment.CenterVertically, clip = false)
+        assertEquals(transition.toString(), transitionFromStyle.toString())
+    }
+
+    @Test
     fun finiteAnimationSpecTweenTest() {
         val expr = ModifiersParser.parseElixirContent(
             """
@@ -615,7 +1432,7 @@ class UtilTest : ModifierBaseTest() {
         )
         assertEquals(
             finiteAnimationSpec.config.durationMillis,
-            (finiteAnimationSpecFromStyle as KeyframesSpec).config.durationMillis
+            finiteAnimationSpecFromStyle.config.durationMillis
         )
     }
 
@@ -639,7 +1456,7 @@ class UtilTest : ModifierBaseTest() {
         )
         assertEquals(
             finiteAnimationSpec.config.durationMillis,
-            (finiteAnimationSpecFromStyle as KeyframesSpec).config.durationMillis
+            finiteAnimationSpecFromStyle.config.durationMillis
         )
     }
 
@@ -663,7 +1480,7 @@ class UtilTest : ModifierBaseTest() {
         )
         assertEquals(
             finiteAnimationSpec.config.durationMillis,
-            (finiteAnimationSpecFromStyle as KeyframesWithSplineSpec).config.durationMillis
+            finiteAnimationSpecFromStyle.config.durationMillis
         )
     }
 
@@ -688,7 +1505,7 @@ class UtilTest : ModifierBaseTest() {
         )
         assertEquals(
             finiteAnimationSpec.config.durationMillis,
-            (finiteAnimationSpecFromStyle as KeyframesWithSplineSpec).config.durationMillis
+            finiteAnimationSpecFromStyle.config.durationMillis
         )
     }
 
@@ -744,6 +1561,32 @@ class UtilTest : ModifierBaseTest() {
     }
 
     @Test
+    fun horizontalAlignmentTest() {
+        val aligns = listOf(
+            Alignment.Start,
+            Alignment.CenterHorizontally,
+            Alignment.End
+        )
+        val alignsText = listOf(
+            HorizontalAlignmentValues.start,
+            HorizontalAlignmentValues.centerHorizontally,
+            HorizontalAlignmentValues.end
+        )
+        aligns.forEachIndexed { index, horizontalAlign ->
+            val expr = ModifiersParser.parseElixirContent(
+                """
+                {:., [], [
+                    {:., [], [:Alignment, :${alignsText[index]}]}
+                ]}
+                """.trimStyle()
+            )
+            val horizontalAlignmentFromStyle =
+                horizontalAlignmentFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+            assertEquals(horizontalAlign, horizontalAlignmentFromStyle)
+        }
+    }
+
+    @Test
     fun horizontalAlignmentLineTest() {
         var expr = ModifiersParser.parseElixirContent(
             """
@@ -768,6 +1611,21 @@ class UtilTest : ModifierBaseTest() {
             horizontalAlignmentLineFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
         horizontalAlignmentLine = LastBaseline
         assertEquals(horizontalAlignmentLine, horizontalAlignmentLineFromStyle)
+    }
+
+    @Test
+    fun intOffsetTest() {
+        val expr = ModifiersParser.parseElixirContent(
+            """
+            {:., [], [
+                {:IntOffset, [], [15, 35]}
+            ]}
+            """.trimStyle()
+        )
+        val intOffsetFromStyle =
+            intOffsetFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        val intOffset = IntOffset(15, 35)
+        assertEquals(intOffset, intOffsetFromStyle)
     }
 
     @Test
@@ -1062,6 +1920,47 @@ class UtilTest : ModifierBaseTest() {
             toggleableStateFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
         toggleableState = ToggleableState.Off
         assertEquals(toggleableState, toggleableStateFromStyle)
+    }
+
+    @Test
+    fun transformOriginTest() {
+        val expr = ModifiersParser.parseElixirContent(
+            """
+                {:., [], [
+                    {:TransformOrigin, [], [10, 20]}
+                ]}
+                """.trimStyle()
+        )
+        val transformOrigin = TransformOrigin(10f, 20f)
+        val transformOriginFromStyle =
+            transformOriginFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+        assertEquals(transformOrigin, transformOriginFromStyle)
+    }
+
+    @Test
+    fun verticalAlignmentTest() {
+        val aligns = listOf(
+            Alignment.Top,
+            Alignment.CenterVertically,
+            Alignment.Bottom
+        )
+        val alignsText = listOf(
+            VerticalAlignmentValues.top,
+            VerticalAlignmentValues.centerVertically,
+            VerticalAlignmentValues.bottom
+        )
+        aligns.forEachIndexed { index, horizontalAlign ->
+            val expr = ModifiersParser.parseElixirContent(
+                """
+                {:., [], [
+                    {:., [], [:Alignment, :${alignsText[index]}]}
+                ]}
+                """.trimStyle()
+            )
+            val verticalAlignmentFromStyle =
+                verticalAlignmentFromArgument(ModifierDataAdapter(expr as TupleExprContext).arguments.first())
+            assertEquals(horizontalAlign, verticalAlignmentFromStyle)
+        }
     }
 
     @Test

@@ -31,6 +31,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlignB
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlignByBaseline
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlpha
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAnimateContentSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAnimateEnterExit
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAspectRatio
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBorder
@@ -256,6 +257,13 @@ internal object ModifiersParser {
             modifierAlignByBaseline -> {
                 if (scope != null)
                     Modifier.alignByBaselineFromStyle(scope)
+                else
+                    Modifier.placeholderModifier(modifierId, argListContext)
+            }
+
+            modifierAnimateEnterExit -> {
+                if (scope != null)
+                    Modifier.animateEnterExitFromStyle(argListContext, scope)
                 else
                     Modifier.placeholderModifier(modifierId, argListContext)
             }

@@ -29,6 +29,7 @@ object ModifierNames {
     const val modifierAlignBy = "alignBy"
     const val modifierAlignByBaseline = "alignByBaseline"
     const val modifierAnimateContentSize = "animateContentSize"
+    const val modifierAnimateEnterExit = "animateEnterExit"
     const val modifierAspectRatio = "aspectRatio"
     const val modifierBackground = "background"
     const val modifierBorder = "border"
@@ -109,6 +110,8 @@ object ModifierArgs {
     const val argEnd = "end"
     const val argEndX = "endX"
     const val argEndY = "endY"
+    const val argEnter = "enter"
+    const val argExit = "exit"
     const val argFill = "fill"
     const val argFinishedListener = "finishedListener"
     const val argFraction = "fraction"
@@ -169,6 +172,7 @@ object ModifierArgs {
 }
 
 object ModifierTypes {
+    const val typeAlignment = "Alignment"
     const val typeBorderStroke = "BorderStroke"
     const val typeBrush = "Brush"
     const val typeColor = "Color"
@@ -176,6 +180,7 @@ object ModifierTypes {
     const val typeDpSize = "DpSize"
     const val typeEvent = "__event__"
     const val typeIntrinsicSize = "IntrinsicSize"
+    const val typeIntOffset = "IntOffset"
     const val typeIntSize = "IntSize"
     const val typeOffset = "Offset"
     const val typeRange = ".."
@@ -187,6 +192,7 @@ object ModifierTypes {
     const val typeTextUnitEm = "Em"
     const val typeTextUnitSp = "Sp"
     const val typeToggleableState = "ToggleableState"
+    const val typeTransformOrigin = "TransformOrigin"
     const val typeUnitDp = "dp"
     const val typeUnitEm = "em"
     const val typeUnitSp = "sp"

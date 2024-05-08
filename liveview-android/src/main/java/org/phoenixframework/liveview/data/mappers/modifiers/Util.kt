@@ -1,5 +1,7 @@
 package org.phoenixframework.liveview.data.mappers.modifiers
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.DurationBasedAnimationSpec
 import androidx.compose.animation.core.ExperimentalAnimationSpecApi
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -7,23 +9,42 @@ import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.StartOffset
+import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.keyframesWithSpline
 import androidx.compose.animation.core.repeatable
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOut
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.HorizontalAlignmentLine
 import androidx.compose.ui.layout.LastBaseline
@@ -32,6 +53,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -39,7 +61,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import org.phoenixframework.liveview.data.constants.AlignmentLineValues
+import org.phoenixframework.liveview.data.constants.AlignmentValues
+import org.phoenixframework.liveview.data.constants.Attrs.attrPivotFractionX
+import org.phoenixframework.liveview.data.constants.Attrs.attrPivotFractionY
 import org.phoenixframework.liveview.data.constants.BrushFunctions
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argClip
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argExpandFrom
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialAlpha
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialOffset
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialOffsetX
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialScale
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialSize
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialWidth
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argShrinkTowards
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetAlpha
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetOffset
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetOffsetX
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetOffsetY
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetScale
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTargetWidth
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argTransformOrigin
 import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions
 import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argAnimation
 import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argDampingRatio
@@ -51,7 +93,9 @@ import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions
 import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argRepeatMode
 import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argStiffness
 import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions.argValue
+import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlpha
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argAnimationSpec
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argBlue
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argBottom
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argBottomEnd
@@ -76,12 +120,14 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argTop
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argTopEnd
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argTopStart
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argWidth
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeAlignment
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeBorderStroke
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeBrush
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDpSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeEvent
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeIntOffset
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeIntSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeIntrinsicSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeOffset
@@ -93,6 +139,7 @@ import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnitEm
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnitSp
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTextUnitType
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeToggleableState
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeTransformOrigin
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitDp
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitEm
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeUnitSp
@@ -101,11 +148,30 @@ import org.phoenixframework.liveview.data.constants.OffsetValues
 import org.phoenixframework.liveview.data.constants.RepeatModeValues
 import org.phoenixframework.liveview.data.constants.RoleValues
 import org.phoenixframework.liveview.data.constants.ShapeValues
+import org.phoenixframework.liveview.data.constants.TransformOriginValues
+import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
 import org.phoenixframework.liveview.data.dto.easingFromString
 import org.phoenixframework.liveview.data.dto.tileModeFromString
 import org.phoenixframework.liveview.domain.extensions.toColor
 import kotlin.math.max
 import kotlin.math.min
+
+internal fun alignmentFromArgument(argument: ModifierDataAdapter.ArgumentData): Alignment? {
+    return if (argument.isDot && argument.listValue.getOrNull(0)?.stringValueWithoutColon == typeAlignment) {
+        when (argument.listValue.getOrNull(1)?.stringValueWithoutColon) {
+            AlignmentValues.topStart -> Alignment.TopStart
+            AlignmentValues.topCenter -> Alignment.TopCenter
+            AlignmentValues.topEnd -> Alignment.TopEnd
+            AlignmentValues.centerStart -> Alignment.CenterStart
+            AlignmentValues.center -> Alignment.Center
+            AlignmentValues.centerEnd -> Alignment.CenterEnd
+            AlignmentValues.bottomStart -> Alignment.BottomStart
+            AlignmentValues.bottomCenter -> Alignment.BottomCenter
+            AlignmentValues.bottomEnd -> Alignment.BottomEnd
+            else -> null
+        }
+    } else null
+}
 
 internal fun argOrNamedArg(
     arguments: List<ModifierDataAdapter.ArgumentData>, name: String, index: Int
@@ -314,6 +380,329 @@ internal fun dpSizeFromArgument(argument: ModifierDataAdapter.ArgumentData): DpS
     } else null
 }
 
+internal fun enterTransitionFromArgument(vararg arguments: ModifierDataAdapter.ArgumentData): EnterTransition? {
+
+    var result: EnterTransition? = null
+    for (i in arguments.indices) {
+        val currentFunction = arguments[i]
+        val animationType = currentFunction.type
+        val animationParams = argsOrNamedArgs(currentFunction.listValue)
+
+        val transition = when (animationType) {
+            EnterExitTransitionFunctions.expandHorizontally -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg(it)
+                } ?: spring(
+                    stiffness = Spring.StiffnessMediumLow,
+                    visibilityThreshold = IntSize.VisibilityThreshold
+                )
+                val expandFrom = argOrNamedArg(animationParams, argExpandFrom, 1)?.let {
+                    horizontalAlignmentFromArgument(it)
+                } ?: Alignment.End
+                val clip = argOrNamedArg(animationParams, argClip, 2)?.booleanValue ?: true
+                val initialWidth = argOrNamedArg(animationParams, argInitialWidth, 3)?.intValue ?: 0
+                expandHorizontally(
+                    animationSpec = animateSpec,
+                    expandFrom = expandFrom,
+                    clip = clip,
+                    initialWidth = { initialWidth }
+                )
+            }
+
+            EnterExitTransitionFunctions.expandIn -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg(it)
+                } ?: spring(
+                    stiffness = Spring.StiffnessMediumLow,
+                    visibilityThreshold = IntSize.VisibilityThreshold
+                )
+                val expandFrom = argOrNamedArg(animationParams, argExpandFrom, 1)?.let {
+                    alignmentFromArgument(it)
+                } ?: Alignment.BottomEnd
+                val clip = argOrNamedArg(animationParams, argClip, 2)?.booleanValue ?: true
+                val initialSize = argOrNamedArg(animationParams, argInitialSize, 3)?.let {
+                    intSizeFromArgument(it)
+                } ?: IntSize.Zero
+                expandIn(
+                    animationSpec = animateSpec,
+                    expandFrom = expandFrom,
+                    clip = clip,
+                    initialSize = { initialSize }
+                )
+            }
+
+            EnterExitTransitionFunctions.expandVertically -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg(it)
+                } ?: spring(
+                    stiffness = Spring.StiffnessMediumLow,
+                    visibilityThreshold = IntSize.VisibilityThreshold
+                )
+                val expandFrom = argOrNamedArg(animationParams, argExpandFrom, 1)?.let {
+                    verticalAlignmentFromArgument(it)
+                } ?: Alignment.Bottom
+                val clip = argOrNamedArg(animationParams, argClip, 2)?.booleanValue ?: true
+                val initialSize = argOrNamedArg(animationParams, argInitialSize, 3)?.intValue ?: 0
+                expandVertically(
+                    animationSpec = animateSpec,
+                    expandFrom = expandFrom,
+                    clip = clip,
+                    initialHeight = { initialSize }
+                )
+            }
+
+            EnterExitTransitionFunctions.fadeIn -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg<Float>(it)
+                } ?: spring(stiffness = Spring.StiffnessMediumLow)
+                val initialAlpha =
+                    argOrNamedArg(animationParams, argInitialAlpha, 1)?.floatValue ?: 0f
+                fadeIn(
+                    animationSpec = animateSpec,
+                    initialAlpha = initialAlpha
+                )
+            }
+
+            EnterExitTransitionFunctions.scaleIn -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg<Float>(it)
+                } ?: spring(stiffness = Spring.StiffnessMediumLow)
+                val initialScale =
+                    argOrNamedArg(animationParams, argInitialScale, 1)?.floatValue ?: 0f
+                val transformOrigin = argOrNamedArg(animationParams, argTransformOrigin, 2)?.let {
+                    transformOriginFromArgument(it)
+                } ?: TransformOrigin.Center
+                scaleIn(
+                    animationSpec = animateSpec,
+                    initialScale = initialScale,
+                    transformOrigin = transformOrigin
+                )
+            }
+
+            EnterExitTransitionFunctions.slideIn -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg(it)
+                } ?: spring(
+                    stiffness = Spring.StiffnessMediumLow,
+                    visibilityThreshold = IntOffset.VisibilityThreshold
+                )
+
+                val initialOffset = argOrNamedArg(animationParams, argInitialOffset, 1)?.let {
+                    intOffsetFromArgument(it)
+                } ?: IntOffset.Zero
+                slideIn(
+                    animationSpec = animateSpec,
+                    initialOffset = { initialOffset }
+                )
+            }
+
+            EnterExitTransitionFunctions.slideInHorizontally -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg(it)
+                } ?: spring(
+                    stiffness = Spring.StiffnessMediumLow,
+                    visibilityThreshold = IntOffset.VisibilityThreshold
+                )
+
+                val initialOffset = argOrNamedArg(animationParams, argInitialOffsetX, 1)?.intValue
+
+                slideInHorizontally(
+                    animationSpec = animateSpec,
+                    initialOffsetX = { initialOffset ?: (-it / 2) }
+                )
+            }
+
+            EnterExitTransitionFunctions.slideInVertically -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg(it)
+                } ?: spring(
+                    stiffness = Spring.StiffnessMediumLow,
+                    visibilityThreshold = IntOffset.VisibilityThreshold
+                )
+
+                val initialOffset = argOrNamedArg(animationParams, argInitialOffsetX, 1)?.intValue
+
+                slideInVertically(
+                    animationSpec = animateSpec,
+                    initialOffsetY = { initialOffset ?: (-it / 2) }
+                )
+            }
+
+            else -> null
+        }
+        if (transition != null) {
+            if (result == null) {
+                result = transition
+            } else {
+                result += transition
+            }
+        }
+    }
+
+    return result
+}
+
+internal fun exitTransitionFromArgument(vararg arguments: ModifierDataAdapter.ArgumentData): ExitTransition? {
+
+    var result: ExitTransition? = null
+    for (i in arguments.indices) {
+        val currentFunction = arguments[i]
+        val animationType = currentFunction.type
+        val animationParams = argsOrNamedArgs(currentFunction.listValue)
+
+        val transition = when (animationType) {
+            EnterExitTransitionFunctions.fadeOut -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg<Float>(it)
+                } ?: spring(stiffness = Spring.StiffnessMediumLow)
+                val targetAlpha =
+                    argOrNamedArg(animationParams, argTargetAlpha, 1)?.floatValue ?: 0f
+                fadeOut(
+                    animationSpec = animateSpec,
+                    targetAlpha = targetAlpha
+                )
+            }
+
+            EnterExitTransitionFunctions.scaleOut -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg<Float>(it)
+                } ?: spring(stiffness = Spring.StiffnessMediumLow)
+                val targetScale =
+                    argOrNamedArg(animationParams, argTargetScale, 1)?.floatValue ?: 0f
+                val transformOrigin = argOrNamedArg(animationParams, argTransformOrigin, 2)?.let {
+                    transformOriginFromArgument(it)
+                } ?: TransformOrigin.Center
+                scaleOut(
+                    animationSpec = animateSpec,
+                    targetScale = targetScale,
+                    transformOrigin = transformOrigin
+                )
+            }
+
+            EnterExitTransitionFunctions.slideOut -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg(it)
+                } ?: spring(
+                    stiffness = Spring.StiffnessMediumLow,
+                    visibilityThreshold = IntOffset.VisibilityThreshold
+                )
+                val targetOffset = argOrNamedArg(animationParams, argTargetOffset, 1)?.let {
+                    intOffsetFromArgument(it)
+                } ?: IntOffset.Zero
+                slideOut(
+                    animationSpec = animateSpec,
+                    targetOffset = { targetOffset }
+                )
+            }
+
+            EnterExitTransitionFunctions.slideOutHorizontally -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg(it)
+                } ?: spring(
+                    stiffness = Spring.StiffnessMediumLow,
+                    visibilityThreshold = IntOffset.VisibilityThreshold
+                )
+                val targetOffsetX = argOrNamedArg(animationParams, argTargetOffsetX, 1)?.intValue
+
+                slideOutHorizontally(
+                    animationSpec = animateSpec,
+                    targetOffsetX = { targetOffsetX ?: (-it / 2) }
+                )
+            }
+
+            EnterExitTransitionFunctions.slideOutVertically -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg(it)
+                } ?: spring(
+                    stiffness = Spring.StiffnessMediumLow,
+                    visibilityThreshold = IntOffset.VisibilityThreshold
+                )
+
+                val targetOffsetY = argOrNamedArg(animationParams, argTargetOffsetY, 1)?.intValue
+
+                slideOutVertically(
+                    animationSpec = animateSpec,
+                    targetOffsetY = { targetOffsetY ?: (-it / 2) }
+                )
+            }
+
+            EnterExitTransitionFunctions.shrinkHorizontally -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg(it)
+                } ?: spring(
+                    stiffness = Spring.StiffnessMediumLow,
+                    visibilityThreshold = IntSize.VisibilityThreshold
+                )
+                val shrinkTowards = argOrNamedArg(animationParams, argShrinkTowards, 1)?.let {
+                    horizontalAlignmentFromArgument(it)
+                } ?: Alignment.End
+                val clip = argOrNamedArg(animationParams, argClip, 2)?.booleanValue ?: true
+                val targetWidth = argOrNamedArg(animationParams, argTargetWidth, 3)?.intValue ?: 0
+                shrinkHorizontally(
+                    animationSpec = animateSpec,
+                    shrinkTowards = shrinkTowards,
+                    clip = clip,
+                    targetWidth = { targetWidth }
+                )
+            }
+
+            EnterExitTransitionFunctions.shrinkOut -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg(it)
+                } ?: spring(
+                    stiffness = Spring.StiffnessMediumLow,
+                    visibilityThreshold = IntSize.VisibilityThreshold
+                )
+                val shrinkTowards = argOrNamedArg(animationParams, argShrinkTowards, 1)?.let {
+                    alignmentFromArgument(it)
+                } ?: Alignment.BottomEnd
+                val clip = argOrNamedArg(animationParams, argClip, 2)?.booleanValue ?: true
+                val targetSize =
+                    argOrNamedArg(animationParams, argTargetScale, 3)?.let {
+                        intSizeFromArgument(it)
+                    }
+                shrinkOut(
+                    animationSpec = animateSpec,
+                    shrinkTowards = shrinkTowards,
+                    clip = clip,
+                    targetSize = { targetSize ?: IntSize.Zero }
+                )
+            }
+
+            EnterExitTransitionFunctions.shrinkVertically -> {
+                val animateSpec = argOrNamedArg(animationParams, argAnimationSpec, 0)?.let {
+                    finiteAnimationSpecFromArg(it)
+                } ?: spring(
+                    stiffness = Spring.StiffnessMediumLow,
+                    visibilityThreshold = IntSize.VisibilityThreshold
+                )
+                val shrinkTowards = argOrNamedArg(animationParams, argShrinkTowards, 1)?.let {
+                    verticalAlignmentFromArgument(it)
+                } ?: Alignment.Bottom
+                val clip = argOrNamedArg(animationParams, argClip, 2)?.booleanValue ?: true
+                val targetHeight = argOrNamedArg(animationParams, argInitialSize, 3)?.intValue ?: 0
+                shrinkVertically(
+                    animationSpec = animateSpec,
+                    shrinkTowards = shrinkTowards,
+                    clip = clip,
+                    targetHeight = { targetHeight }
+                )
+            }
+
+            else -> null
+        }
+        if (transition != null) {
+            if (result == null) {
+                result = transition
+            } else {
+                result += transition
+            }
+        }
+    }
+
+    return result
+}
+
 internal fun eventFromArgument(argument: ModifierDataAdapter.ArgumentData): Pair<String, Any?>? {
     return if (argument.type == typeEvent) {
         val (event, args) = Pair(
@@ -422,6 +811,17 @@ internal fun floatRangeFromArgument(argument: ModifierDataAdapter.ArgumentData):
     } else null
 }
 
+internal fun horizontalAlignmentFromArgument(argument: ModifierDataAdapter.ArgumentData): Alignment.Horizontal? {
+    return if (argument.isDot && argument.listValue.getOrNull(0)?.stringValueWithoutColon == typeAlignment) {
+        when (argument.listValue.getOrNull(1)?.stringValueWithoutColon) {
+            HorizontalAlignmentValues.start -> Alignment.Start
+            HorizontalAlignmentValues.centerHorizontally -> Alignment.CenterHorizontally
+            HorizontalAlignmentValues.end -> Alignment.End
+            else -> null
+        }
+    } else null
+}
+
 internal fun horizontalAlignmentLineFromArgument(argument: ModifierDataAdapter.ArgumentData): HorizontalAlignmentLine? {
     return if (argument.isDot) {
         when (argument.listValue.getOrNull(0)?.stringValueWithoutColon) {
@@ -429,6 +829,14 @@ internal fun horizontalAlignmentLineFromArgument(argument: ModifierDataAdapter.A
             AlignmentLineValues.lastBaseline -> LastBaseline
             else -> null
         }
+    } else null
+}
+
+internal fun intOffsetFromArgument(argument: ModifierDataAdapter.ArgumentData): IntOffset? {
+    return if (argument.type == typeIntOffset && argument.listValue.size == 2) {
+        val x = argument.listValue[0].intValue
+        val y = argument.listValue[1].intValue
+        if (x != null && y != null) IntOffset(x, y) else null
     } else null
 }
 
@@ -602,6 +1010,33 @@ fun toggleableStateFromArgument(argument: ModifierDataAdapter.ArgumentData): Tog
     } else if (argument.isDot && argument.listValue.firstOrNull()?.stringValueWithoutColon == typeToggleableState) {
         argument.listValue.getOrNull(1)?.stringValueWithoutColon?.let {
             ToggleableState.valueOf(it)
+        }
+    } else null
+}
+
+internal fun transformOriginFromArgument(argument: ModifierDataAdapter.ArgumentData): TransformOrigin? {
+    val args = argsOrNamedArgs(argument.listValue)
+    return if (argument.isDot) {
+        val clazz = args.getOrNull(0)?.stringValueWithoutColon
+        val value = args.getOrNull(1)?.stringValueWithoutColon
+        if (clazz == typeTransformOrigin && value == TransformOriginValues.center) {
+            TransformOrigin.Center
+        } else null
+    } else if (argument.type == typeTransformOrigin) {
+        TransformOrigin(
+            pivotFractionX = argOrNamedArg(args, attrPivotFractionX, 0)?.floatValue ?: 0f,
+            pivotFractionY = argOrNamedArg(args, attrPivotFractionY, 1)?.floatValue ?: 0f,
+        )
+    } else null
+}
+
+internal fun verticalAlignmentFromArgument(argument: ModifierDataAdapter.ArgumentData): Alignment.Vertical? {
+    return if (argument.isDot && argument.listValue.getOrNull(0)?.stringValueWithoutColon == typeAlignment) {
+        when (argument.listValue.getOrNull(1)?.stringValueWithoutColon) {
+            VerticalAlignmentValues.top -> Alignment.Top
+            VerticalAlignmentValues.centerVertically -> Alignment.CenterVertically
+            VerticalAlignmentValues.bottom -> Alignment.Bottom
+            else -> null
         }
     } else null
 }

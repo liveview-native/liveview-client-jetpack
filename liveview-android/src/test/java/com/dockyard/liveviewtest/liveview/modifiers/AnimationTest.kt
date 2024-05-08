@@ -1,5 +1,8 @@
 package com.dockyard.liveviewtest.liveview.modifiers
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.EaseInBounce
 import androidx.compose.animation.core.ExperimentalAnimationSpecApi
@@ -11,9 +14,14 @@ import androidx.compose.animation.core.repeatable
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.inspectable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dockyard.liveviewtest.liveview.util.ModifierBaseTest
+import junit.framework.TestCase
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
