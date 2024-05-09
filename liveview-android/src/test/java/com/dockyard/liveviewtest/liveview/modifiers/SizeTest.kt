@@ -1,6 +1,5 @@
 package com.dockyard.liveviewtest.liveview.modifiers
 
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -34,14 +33,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dockyard.liveviewtest.liveview.util.ModifierBaseTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
@@ -300,7 +297,7 @@ class SizeTest : ModifierBaseTest() {
         ModifiersParser.fromStyleFile(
             """
             %{"fillParentMaxHeightNamedTest" => [
-                {:fillParentMaxHeight, [], [[faction: 0.5]]},
+                {:fillParentMaxHeight, [], [[fraction: 0.5]]},
             ]}
             """
         )
@@ -349,7 +346,7 @@ class SizeTest : ModifierBaseTest() {
         ModifiersParser.fromStyleFile(
             """
             %{"fillParentMaxSizeNamedTest" => [
-                {:fillParentMaxSize, [], [[faction: 0.5]]},
+                {:fillParentMaxSize, [], [[fraction: 0.5]]},
             ]}
             """
         )
@@ -398,7 +395,7 @@ class SizeTest : ModifierBaseTest() {
         ModifiersParser.fromStyleFile(
             """
             %{"fillParentMaxWidthNamedTest" => [
-                {:fillParentMaxWidth, [], [[faction: 0.5]]},
+                {:fillParentMaxWidth, [], [[fraction: 0.5]]},
             ]}
             """
         )
@@ -640,7 +637,7 @@ class SizeTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"requiredSizeInDpNamedTest" => [
-                {:requiredSize, [], [[height: {:., [], [50,:dp]}]]},
+                {:requiredSize, [], [[size: {:Dp, [], [50]}]]},
             ]}
             """,
             Modifier.requiredSize(size = 50.dp)

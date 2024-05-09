@@ -18,6 +18,7 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnValueChang
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argRole
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argSelected
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argState
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argValue
 import org.phoenixframework.liveview.data.dto.onClickFromString
 import org.phoenixframework.liveview.domain.base.ComposableBuilder
 import org.phoenixframework.liveview.domain.base.PushEvent
@@ -170,7 +171,7 @@ fun Modifier.toggleableFromStyle(
 ): Modifier {
     val args = argsOrNamedArgs(arguments)
 
-    val value = argOrNamedArg(args, argSelected, 0)?.booleanValue
+    val value = argOrNamedArg(args, argValue, 0)?.booleanValue
     val enabled = argOrNamedArg(args, argEnabled, 1)?.booleanValue ?: true
     val role = argOrNamedArg(args, argRole, 2)?.let { roleFromArgument(it) }
     val event = argOrNamedArg(args, argOnValueChange, 3)?.let { eventFromArgument(it) }

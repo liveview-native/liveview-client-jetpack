@@ -3,8 +3,10 @@ package org.phoenixframework.liveview.data.mappers.modifiers
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.focusGroup
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.imeNestedScroll
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -15,12 +17,16 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.systemGesturesPadding
 import androidx.compose.foundation.layout.waterfallPadding
+import androidx.compose.foundation.preferKeepClear
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.focusTarget
+import androidx.compose.ui.graphics.toolingGraphicsLayer
 import org.antlr.v4.runtime.CharStream
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
@@ -31,6 +37,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlignB
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlignByBaseline
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlpha
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAnimateContentSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAnimateEnterExit
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAspectRatio
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBorder
@@ -53,6 +60,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFocusT
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFocusable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeightIn
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImeNestedScroll
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImePadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierLayoutId
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMandatorySystemGesturesPadding
@@ -67,6 +75,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierOnFocu
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPaddingFrom
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPaddingFromBaseline
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPreferKeepClear
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierProgressSemantics
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequiredHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierRequiredHeightIn
@@ -80,14 +89,17 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeDr
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSafeGesturesPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierScale
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSelectable
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSelectableGroup
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierShadow
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSizeIn
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierStatusBarsPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemBarsPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemGestureExclusion
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSystemGesturesPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTestTag
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierToggleable
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierToolingGraphicsLayer
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTriStateToggleable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWaterfallPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
@@ -127,27 +139,8 @@ internal object ModifiersParser {
             val modifiersList = mutableListOf<Modifier>()
             tupleExpressionList.forEach { tupleExpr ->
                 try {
-                    // Each tuple has 3 expressions:
-                    // modifier name, meta data, and arguments to create the modifier
-                    val modifierDataAdapter = ModifierDataAdapter(tupleExpr)
-                    val modifierName = modifierDataAdapter.modifierName
-                    if (modifierName != null) {
-                        try {
-                            handleModifier(
-                                modifierName,
-                                modifierDataAdapter.arguments,
-                                null,
-                                pushEvent,
-                            )?.let { parsedModifier ->
-                                modifiersList.add(parsedModifier)
-                            }
-                        } catch (e: Exception) {
-                            Log.e(
-                                TAG,
-                                "Error parsing modifier: $modifierName -> ${modifierDataAdapter.metaData}",
-                                e
-                            )
-                        }
+                    fromTupleExpression(tupleExpr, pushEvent)?.let {
+                        modifiersList.add(it)
                     }
                 } catch (e: Exception) {
                     Log.e(TAG, "Error creating modifier data from tuple", e)
@@ -155,6 +148,25 @@ internal object ModifiersParser {
             }
             if (modifiersList.isNotEmpty()) {
                 modifiersCacheTable[styleName] = modifiersList
+            }
+        }
+    }
+
+    private fun fromTupleExpression(tupleExpr: TupleExprContext, pushEvent: PushEvent?): Modifier? {
+        // Each tuple has 3 expressions:
+        // modifier name, meta data, and arguments to create the modifier
+        return ModifierDataAdapter(tupleExpr).let { modifierDataAdapter ->
+            modifierDataAdapter.modifierName?.let { modifierName ->
+                try {
+                    handleModifier(modifierName, modifierDataAdapter.arguments, null, pushEvent)
+                } catch (e: Exception) {
+                    Log.e(
+                        TAG,
+                        "Error parsing modifier: $modifierName -> ${modifierDataAdapter.metaData}",
+                        e
+                    )
+                    null
+                }
             }
         }
     }
@@ -181,14 +193,8 @@ internal object ModifiersParser {
     }
 
     private fun parseStyleFileContent(fileContent: String): List<Pair<String, List<TupleExprContext>>>? {
-        // Parsing String using Elixir parser
-        val charStream: CharStream = CharStreams.fromString(fileContent)
-        val elixirLexer = ElixirLexer(charStream)
-        val commonTokenStream = CommonTokenStream(elixirLexer)
-        val elixirParser = ElixirParser(commonTokenStream)
-
         // The stylesheet is a map, therefore the root expression must be a map expression
-        val rootExpression = elixirParser.parse()?.block()?.expression()?.firstOrNull()
+        val rootExpression = parseElixirContent(fileContent)
         val mapExprContext: MapExprContext
         if (rootExpression is MapExprContext) {
             mapExprContext = rootExpression
@@ -219,8 +225,19 @@ internal object ModifiersParser {
         return mapEntryContext
     }
 
+    internal fun parseElixirContent(fileContent: String): ElixirParser.ExpressionContext? {
+        // Parsing String using Elixir parser
+        val charStream: CharStream = CharStreams.fromString(fileContent)
+        val elixirLexer = ElixirLexer(charStream)
+        val commonTokenStream = CommonTokenStream(elixirLexer)
+        val elixirParser = ElixirParser(commonTokenStream)
+
+        // The stylesheet is a map, therefore the root expression must be a map expression
+        return elixirParser.parse()?.block()?.expression()?.firstOrNull()
+    }
+
     @SuppressLint("ModifierFactoryExtensionFunction")
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
     private fun handleModifier(
         modifierId: String,
         argListContext: List<ModifierDataAdapter.ArgumentData>,
@@ -251,6 +268,13 @@ internal object ModifiersParser {
             modifierAlignByBaseline -> {
                 if (scope != null)
                     Modifier.alignByBaselineFromStyle(scope)
+                else
+                    Modifier.placeholderModifier(modifierId, argListContext)
+            }
+
+            modifierAnimateEnterExit -> {
+                if (scope != null)
+                    Modifier.animateEnterExitFromStyle(argListContext, scope)
                 else
                     Modifier.placeholderModifier(modifierId, argListContext)
             }
@@ -297,15 +321,20 @@ internal object ModifiersParser {
             modifierFocusTarget -> Modifier.focusTarget()
             modifierFocusGroup -> Modifier.focusGroup()
             modifierImePadding -> Modifier.imePadding()
+            modifierImeNestedScroll -> Modifier.imeNestedScroll()
             modifierMandatorySystemGesturesPadding -> Modifier.mandatorySystemGesturesPadding()
             modifierMinimumInteractiveComponentSize -> Modifier.minimumInteractiveComponentSize()
             modifierNavigationBarsPadding -> Modifier.navigationBarsPadding()
+            modifierPreferKeepClear -> Modifier.preferKeepClear()
             modifierSafeContentPadding -> Modifier.safeContentPadding()
             modifierSafeDrawingPadding -> Modifier.safeDrawingPadding()
             modifierSafeGesturesPadding -> Modifier.safeGesturesPadding()
+            modifierSelectableGroup -> Modifier.selectableGroup()
             modifierStatusBarsPadding -> Modifier.statusBarsPadding()
             modifierSystemBarsPadding -> Modifier.systemBarsPadding()
             modifierSystemGesturesPadding -> Modifier.systemGesturesPadding()
+            modifierSystemGestureExclusion -> Modifier.systemGestureExclusion()
+            modifierToolingGraphicsLayer -> Modifier.toolingGraphicsLayer()
             modifierWaterfallPadding -> Modifier.waterfallPadding()
             // Parameterized modifiers
             modifierAbsoluteOffset -> Modifier.absoluteOffsetFromStyle(argListContext)

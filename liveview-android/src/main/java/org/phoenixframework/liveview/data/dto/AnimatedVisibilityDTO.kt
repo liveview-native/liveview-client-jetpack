@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.Modifier
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnter
 import org.phoenixframework.liveview.data.constants.Attrs.attrExit
@@ -163,7 +164,7 @@ internal class AnimatedVisibilityDTO private constructor(props: Properties) :
          * `fadeOut`, `scaleOut`, `slideOut`, `slideOutHorizontally`, `slideOutVertically`,
          * `shrinkHorizontally`, `shrinkOut`, `shrinkVertically`.
          * ```
-         * <AnimatedVisibility visible={"#{@isVisible}"} enter="oneOfTheAnimationsBelow">
+         * <AnimatedVisibility visible={"#{@isVisible}"} exit="oneOfTheAnimationsBelow">
          * ...
          * {"shrinkHorizontally": {}}
          * {"shrinkHorizontally": {"shrinkTowards": "CenterHorizontally"}}

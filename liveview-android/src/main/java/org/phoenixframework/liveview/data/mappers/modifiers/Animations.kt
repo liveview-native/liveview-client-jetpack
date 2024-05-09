@@ -1,13 +1,21 @@
 package org.phoenixframework.liveview.data.mappers.modifiers
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkOut
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntSize
 import org.phoenixframework.liveview.data.constants.ModifierArgs
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argAnimationSpec
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argEnter
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argExit
 import org.phoenixframework.liveview.data.dto.onClickFromString
 import org.phoenixframework.liveview.domain.base.PushEvent
 
@@ -44,4 +52,28 @@ fun Modifier.animateContentSizeFromStyle(
             }
         )
     )
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+fun Modifier.animateEnterExitFromStyle(
+    arguments: List<ModifierDataAdapter.ArgumentData>,
+    scope: Any?,
+): Modifier {
+    val modifierArgs = argsOrNamedArgs(arguments)
+    val enterTransition = argOrNamedArg(modifierArgs, argEnter, 0)?.let {
+        enterTransitionFromArgument(it)
+    } ?: (fadeIn() + expandIn())
+    val exitTransition = argOrNamedArg(modifierArgs, argExit, 1)?.let {
+        exitTransitionFromArgument(it)
+    } ?: (fadeOut() + shrinkOut())
+    return if (scope is AnimatedVisibilityScope) {
+        scope.run {
+            this@animateEnterExitFromStyle.then(
+                Modifier.animateEnterExit(
+                    enter = enterTransition,
+                    exit = exitTransition
+                )
+            )
+        }
+    } else this
 }
