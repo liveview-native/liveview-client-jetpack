@@ -346,7 +346,7 @@ internal class TextDTO private constructor(props: Properties) :
          * Sets the text style using Material Design naming convention.
          *
          * @param style text style based on Material Design naming convention. See the supported
-         * values at [org.phoenixframework.liveview.data.constants.TextStyleValues].
+         * values at [org.phoenixframework.liveview.data.constants.ThemeTextStyleValues].
          */
         fun style(style: String) = apply {
             this.style = style

@@ -89,7 +89,7 @@ class LiveViewCoordinator(
                         }
 
                         SocketService.Events.Opened -> {
-                            if (ThemeHolder.isEmpty) {
+                            if (ThemeHolder.themeData.value == null) {
                                 ThemeHolder.updateThemeData(repository.loadThemeData())
                             }
                             if (ModifiersParser.isEmpty) {
