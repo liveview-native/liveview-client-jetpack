@@ -399,7 +399,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
          - an event eg ‘event(\"search-event\", throttle: 10_000)’
          - an attribute eg ‘attr(\"placeholder\")’
          - an IME eg ‘Color.red’ or ‘.largeTitle’’
-         - a list of keyword pairs eg ‘style: :dashed’, ‘size: 12’ or  ‘style: [lineWidth: 1]’
+         - a list of keyword pairs eg ‘style = :dashed’, ‘size: 12’ or  ‘style = [lineWidth = 1]’
          - a modifier eg ‘bold()’
          - a variable defined in the class header eg ‘color_name’
         """
@@ -478,7 +478,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: missing colon" do
-      input = "abc(def: 11, b: [lineWidth a, l: 2a])"
+      input = "abc(def = 11, b = [lineWidth a, l = 2a])"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -501,7 +501,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: double nesting" do
-      input = "abc(def: 11, b: lineWidth: a, l: 2a]"
+      input = "abc(def = 11, b = lineWidth: a, l = 2a]"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -524,7 +524,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: invalid value" do
-      input = "abc(def: 11, b: [lineWidth: 1lineWidth])"
+      input = "abc(def = 11, b = [lineWidth = 1lineWidth])"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -547,7 +547,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: invalid value (2)" do
-      input = "abc(def: 11, b: [lineWidth: :1])"
+      input = "abc(def = 11, b = [lineWidth = :1])"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -570,7 +570,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: invalid value (3)" do
-      input = "abc(def: 11, b: :1)"
+      input = "abc(def = 11, b = :1)"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -593,7 +593,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword list: missing closing brace" do
-      input = "abc(def: 11, b: [lineWidth: 1)"
+      input = "abc(def = 11, b = [lineWidth = 1)"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -660,7 +660,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
          - an event eg ‘event("search-event", throttle: 10_000)’
          - an attribute eg ‘attr("placeholder")’
          - an IME eg ‘Color.red’ or ‘.largeTitle’’
-         - a list of keyword pairs eg ‘style: :dashed’, ‘size: 12’ or  ‘style: [lineWidth: 1]’
+         - a list of keyword pairs eg ‘style: :dashed’, ‘size: 12’ or  ‘style = [lineWidth = 1]’
          - a modifier eg ‘bold()’
          - a variable defined in the class header eg ‘color_name’
         """
