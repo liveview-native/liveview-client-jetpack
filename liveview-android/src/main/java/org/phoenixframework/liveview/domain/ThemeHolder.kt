@@ -186,6 +186,13 @@ internal object ThemeHolder {
             ThemeColorsValues.outline -> colorScheme?.outline
             ThemeColorsValues.outlineVariant -> colorScheme?.outlineVariant
             ThemeColorsValues.scrim -> colorScheme?.scrim
+            ThemeColorsValues.surfaceBright -> colorScheme?.surfaceBright
+            ThemeColorsValues.surfaceContainer -> colorScheme?.surfaceContainer
+            ThemeColorsValues.surfaceContainerHigh -> colorScheme?.surfaceContainerHigh
+            ThemeColorsValues.surfaceContainerHighest -> colorScheme?.surfaceContainerHighest
+            ThemeColorsValues.surfaceContainerLow -> colorScheme?.surfaceContainerLow
+            ThemeColorsValues.surfaceContainerLowest -> colorScheme?.surfaceContainerLowest
+            ThemeColorsValues.surfaceDim -> colorScheme?.surfaceDim
             else -> null
         }
     }

@@ -417,6 +417,13 @@ object ThemeColorsValues {
     const val outline = "outline"
     const val outlineVariant = "outlineVariant"
     const val scrim = "scrim"
+    const val surfaceBright = "surfaceBright"
+    const val surfaceContainer = "surfaceContainer"
+    const val surfaceContainerHigh = "surfaceContainerHigh"
+    const val surfaceContainerHighest = "surfaceContainerHighest"
+    const val surfaceContainerLow = "surfaceContainerLow"
+    const val surfaceContainerLowest = "surfaceContainerLowest"
+    const val surfaceDim = "surfaceDim"
 }
 
 object ThemeShapesValues {

@@ -27,7 +27,7 @@ internal fun LiveViewNativeTheme(
         )
     }
     val context = LocalContext.current
-    LaunchedEffect(darkTheme, dynamicColor) {
-        ThemeHolder.loadDefaultTheme(context, darkTheme)
+    LaunchedEffect(context, darkTheme) {
+        ThemeHolder.loadDefaultTheme(context, dynamicColor, darkTheme)
     }
 }
