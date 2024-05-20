@@ -1,5 +1,6 @@
 defmodule LiveViewNative.Jetpack.RulesParser do
   @moduledoc false
+
   alias LiveViewNative.Jetpack.RulesParser.Modifiers
   alias LiveViewNative.Jetpack.RulesParser.Parser
 
@@ -28,7 +29,7 @@ defmodule LiveViewNative.Jetpack.RulesParser do
       |> Keyword.put(:module, module)
       |> Keyword.put(:line, line)
 
-      result =
+    result =
       rules
       |> Modifiers.modifiers(opts)
       |> Parser.error_from_result()

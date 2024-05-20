@@ -1,6 +1,31 @@
 defmodule LiveViewNative.Jetpack.RulesParser.PostProcessors do
   @moduledoc false
+
   import LiveViewNative.Jetpack.RulesParser.Parser.Annotations
+
+  if Mix.env() == :test do
+    @doc """
+    You can view the input/output of any compinator by doing
+
+      empty()
+      |> PostProcessors.inspect()
+      |> combinator
+      |> PostProcessors.inspect(label: "combinator")
+
+    This function is extremely useful for debugging, do not remove
+    """
+    def inspect(combinator, opts \\ []) do
+      NimbleParsec.pre_traverse(
+        combinator,
+        {LiveViewNative.Jetpack.RulesParser.PostProcessors, :do_inspect, [opts]}
+      )
+    end
+
+    def do_inspect(rest, args, context, position, _byte_offset, opts) do
+      IO.inspect({rest, args, context, position}, opts)
+      {rest, args, context}
+    end
+  end
 
   def to_attr_ast(rest, [attr, "attr"], context, {line, _}, _byte_offset) when is_binary(attr) do
     {rest, [{:__attr__, context_to_annotation(context.context, line), attr}], context}
@@ -30,45 +55,27 @@ defmodule LiveViewNative.Jetpack.RulesParser.PostProcessors do
     {rest,
      [
        {Elixir, context_to_annotation(context.context, line),
-        {String.to_atom(variable_name), context_to_annotation(context.context, line), context.variable_context}}
+        {String.to_atom(variable_name), context_to_annotation(context.context, line),
+         context.variable_context}}
      ], context}
   end
 
-  def to_dotted_ime_ast(
-        rest,
-        [[], variable_name],
-        context,
-        {line, _},
-        _offset,
-        _is_initial = true
-      ) do
-    {rest,
-     [{:., context_to_annotation(context.context, line), [nil, String.to_atom(variable_name)]}],
-     context}
-  end
+  def to_dotted_ime_ast(rest, [args, variable_name], context, {line, _}, _offset, is_initial) do
+    ime =
+      if args == [] do
+        String.to_atom(variable_name)
+      else
+        {String.to_atom(variable_name), context_to_annotation(context.context, line), args}
+      end
 
-  def to_dotted_ime_ast(
-        rest,
-        [args, variable_name],
-        context,
-        {line, _},
-        _offset,
-        _is_initial = true
-      ) do
-    {rest,
-     [
-       {:., context_to_annotation(context.context, line),
-        [nil, {String.to_atom(variable_name), context_to_annotation(context.context, line), args}]}
-     ], context}
-  end
+    wrapped_ime =
+      if is_initial do
+        [{:., context_to_annotation(context.context, line), [nil, ime]}]
+      else
+        [ime]
+      end
 
-  def to_dotted_ime_ast(rest, [[], variable_name], context, {_line, _}, _offset, false) do
-    {rest, [String.to_atom(variable_name)], context}
-  end
-
-  def to_dotted_ime_ast(rest, [args, variable_name], context, {line, _}, _offset, false) do
-    {rest, [{String.to_atom(variable_name), context_to_annotation(context.context, line), args}],
-     context}
+    {rest, wrapped_ime, context}
   end
 
   def to_scoped_ime_ast(rest, [[] = _args, variable_name, scope], context, _, _byte_offset) do
@@ -151,6 +158,10 @@ defmodule LiveViewNative.Jetpack.RulesParser.PostProcessors do
       ) do
     annotations = context_to_annotation(context.context, line)
     {rest, [{Elixir, annotations, {:to_atom, variable_annotations, [variable]}}], context}
+  end
+
+  def number_ime(rest, [member_expression, number], context, {_line, _}, _byte_offset) do
+    {rest, [{:., [number, member_expression]}], context}
   end
 
   def to_keyword_tuple_ast(rest, [arg1, arg2], context, {_line, _}, _byte_offset) do

@@ -1,5 +1,6 @@
 defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
   @moduledoc false
+
   import NimbleParsec
   import LiveViewNative.Jetpack.RulesParser.Tokens
   import LiveViewNative.Jetpack.RulesParser.Expressions
@@ -7,8 +8,22 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
   alias LiveViewNative.Jetpack.RulesParser.PostProcessors
 
   defcombinator(
-    :key_value_list,
-    enclosed("[", key_value_pairs(generate_error?: true, allow_empty?: false), "]",
+    :key_value_list_colon,
+    enclosed(
+      "[",
+      key_value_pairs(":", generate_error?: true, allow_empty?: false),
+      "]",
+      allow_empty?: false,
+      error_parser: non_whitespace(also_ignore: String.to_charlist(")],"))
+    )
+  )
+
+  defcombinator(
+    :key_value_list_equals,
+    enclosed(
+      "[",
+      key_value_pairs("=", generate_error?: true, allow_empty?: false),
+      "]",
       allow_empty?: false,
       error_parser: non_whitespace(also_ignore: String.to_charlist(")],"))
     )
@@ -86,7 +101,7 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
     |> post_traverse({PostProcessors, :to_scoped_ime_ast, []})
 
   defparsecp(
-    :ime,
+    :ime1,
     start()
     |> choice([
       # Scoped
@@ -108,6 +123,46 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
       ])
     )
     |> post_traverse({PostProcessors, :chain_ast, []})
+  )
+
+  defparsecp(
+    :ime2,
+    # Color(.displayP3, red: 0.4627, green: 0.8392, blue: 1.0)
+    parsec(:nested_modifier)
+    |> times(
+      choice([
+        # <other_ime>.#{color}
+        ime_function.(false),
+        # <other_ime>.red
+        dotted_ime.(false)
+      ]),
+      min: 1
+    )
+    |> post_traverse({PostProcessors, :chain_ast, []})
+  )
+
+  defparsecp(
+    :number_ime,
+    # 1.dp or 10.5.em
+    number()
+    |> concat(
+      choice([
+        # <other_ime>.#{color}
+        ime_function.(false),
+        # <other_ime>.red
+        dotted_ime.(false)
+      ])
+    )
+    |> post_traverse({PostProcessors, :number_ime, []})
+  )
+
+  defparsecp(
+    :ime,
+    choice([
+      parsec(:ime1),
+      parsec(:ime2),
+      parsec(:number_ime)
+    ])
   )
 
   defcombinator(
@@ -142,8 +197,8 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
       expect(
         choice([
           ignore(enclosed("[", ignore_whitespace(), "]", [])),
-          parsec(:key_value_list),
-          key_value_pairs(allow_empty?: false)
+          parsec(:key_value_list_colon),
+          key_value_pairs(":", allow_empty?: false)
         ]),
         error_message: "‘event’ expects a keyword list as the second argument",
         error_parser: optional(non_whitespace(also_ignore: String.to_charlist(")],")))
@@ -166,13 +221,27 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
   @modifier_arguments fn inside_key_value_pair? ->
     [
       {
-        parsec(:key_value_list),
+        parsec(:non_kv_list),
+        ~s'a list of values eg ‘[1, 2, 3]’, ‘["red", "blue"]’ or ‘[Color.red, Color.blue]’'
+      },
+      # Not expected for kotlin
+      {
+        parsec(:key_value_list_colon),
         ~s'a keyword list eg ‘[style: :dashed]’, ‘[size: 12]’ or ‘[lineWidth: lineWidth]’',
+        inside_key_value_pair?
+      },
+      {
+        parsec(:key_value_list_equals),
+        ~s'a keyword list eg ‘[style = dashed]’, ‘[size = 12]’ or ‘[lineWidth = lineWidth]’',
         inside_key_value_pair?
       },
       {
         kotlin_range(),
         ~s'a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’'
+      },
+      {
+        parsec(:ime),
+        ~s'an IME eg ‘Color.red’ or ‘.largeTitle’’'
       },
       {
         literal(error_parser: empty(), generate_error?: false),
@@ -191,8 +260,13 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
         ~s'an IME eg ‘Color.red’ or ‘.largeTitle’’'
       },
       {
-        key_value_pairs(generate_error?: false, allow_empty?: false),
+        key_value_pairs(":", generate_error?: false, allow_empty?: false),
         ~s'a list of keyword pairs eg ‘style: :dashed’, ‘size: 12’ or  ‘style: [lineWidth: 1]’',
+        not inside_key_value_pair?
+      },
+      {
+        key_value_pairs("=", generate_error?: false, allow_empty?: false),
+        ~s'a list of keyword pairs eg ‘style = dashed’, ‘size = 12’ or  ‘style = [lineWidth = 1]’',
         not inside_key_value_pair?
       },
       {
@@ -217,6 +291,26 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
       @modifier_arguments.(true),
       error_parser: non_whitespace(also_ignore: String.to_charlist(")"))
     )
+  )
+
+  defcombinator(
+    :non_kv_list,
+    enclosed(
+      "[",
+      comma_separated_list(
+        one_of(
+          @modifier_arguments.(true),
+          error_parser: non_whitespace(also_ignore: String.to_charlist(")"))
+        ),
+        generate_error?: false,
+        allow_empty?: true
+      ),
+      "]",
+      allow_empty?: true,
+      generate_error?: false,
+      error_parser: non_whitespace(also_ignore: String.to_charlist(")],"))
+    )
+    |> wrap()
   )
 
   defcombinator(

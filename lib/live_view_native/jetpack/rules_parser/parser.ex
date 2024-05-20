@@ -1,5 +1,6 @@
 defmodule LiveViewNative.Jetpack.RulesParser.Parser do
   @moduledoc false
+
   import NimbleParsec
   alias LiveViewNative.Jetpack.RulesParser.Parser.Context
   alias LiveViewNative.Jetpack.RulesParser.Parser.Error
@@ -12,6 +13,7 @@ defmodule LiveViewNative.Jetpack.RulesParser.Parser do
     {_, names} = Enum.unzip(named_choices)
 
     names
+    |> Enum.filter(& &1)
     |> Enum.map(&(" - " <> &1))
     |> Enum.join("\n")
   end

@@ -120,6 +120,13 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
          [[color: {:., [], [:Color, {:., [], [:red, {:shadow, [], [{:., [], [nil, :thick]}]}]}]}]]}
 
       assert parse(input) == output
+
+      input = "foregroundStyle(Color(.displayP3, red: 0.4627, green: 0.8392, blue: 1.0).opacity(0.25))"
+
+      output =
+        {:foregroundStyle, [], [{:., [], [{:Color, [], [{:., [], [nil, :displayP3]}, [red: 0.4627, green: 0.8392, blue: 1.0]]}, {:opacity, [], [0.25]}]}]}
+
+      assert parse(input) == output
     end
 
     test "parses naked chained IME" do
@@ -130,6 +137,27 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       assert parse(input) == output
     end
 
+    test "parses non-key-value lists" do
+      input = ~s/Gradient([0, 1, 2])/
+      output = {:Gradient, [], [[0, 1, 2]]}
+      assert parse(input) == output
+
+      input = ~s/Gradient([0, 1, 2], 3)/
+      output = {:Gradient, [], [[0, 1, 2], 3]}
+      assert parse(input) == output
+
+      input = ~s/Gradient(colors: [0, 1, 2])/
+      output = {:Gradient, [], [[colors: [0, 1, 2]]]}
+      assert parse(input) == output
+
+      input = ~s/Gradient(colors: [Color.red, Color.blue])/
+      output = {:Gradient, [], [[colors: [{:., [], [:Color, :red]}, {:., [], [:Color, :blue]}]]]}
+      assert parse(input) == output
+
+      input = ~s/Gradient(colors: ["red", "blue"])/
+      output = {:Gradient, [], [[colors: ["red", "blue"]]]}
+      assert parse(input) == output
+    end
 
     test "parses multiple modifiers" do
       input = "font(.largeTitle) bold(true) italic(true)"
@@ -197,7 +225,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "parses key/value pairs" do
-      input = ~s|foo(bar: "baz", qux: .quux)|
+      input = ~s|foo(bar = "baz", qux = .quux)|
       output = {:foo, [], [[bar: "baz", qux: {:., [], [nil, :quux]}]]}
 
       assert parse(input) == output
@@ -210,9 +238,16 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       assert parse(input) == output
     end
 
-    test "parses Implicit Member Expressions" do
+    test "parses member expressions" do
       input = "color(.red)"
       output = {:color, [], [{:., [], [nil, :red]}]}
+
+      assert parse(input) == output
+    end
+
+    test "numerical member expressions" do
+      input = "textSize(1.dp, 10.5.em)"
+      output = {:textSize, [], [{:., [1, :dp]}, {:., [10.5, :em]}]}
 
       assert parse(input) == output
     end
@@ -394,12 +429,15 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
           |
 
         Expected ‘()’ or ‘(<modifier_arguments>)’ where <modifier_arguments> are a comma separated list of:
+         - a list of values eg ‘[1, 2, 3]’, ‘[\"red\", \"blue\"]’ or ‘[Color.red, Color.blue]’
          - a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’
+         - an IME eg ‘Color.red’ or ‘.largeTitle’’
          - a number, string, nil, boolean or :atom
          - an event eg ‘event(\"search-event\", throttle: 10_000)’
          - an attribute eg ‘attr(\"placeholder\")’
          - an IME eg ‘Color.red’ or ‘.largeTitle’’
          - a list of keyword pairs eg ‘style: :dashed’, ‘size: 12’ or  ‘style: [lineWidth: 1]’
+         - a list of keyword pairs eg ‘style = dashed’, ‘size = 12’ or  ‘style = [lineWidth = 1]’
          - a modifier eg ‘bold()’
          - a variable defined in the class header eg ‘color_name’
         """
@@ -477,8 +515,8 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       assert String.trim(error.description) == error_prefix
     end
 
-    test "invalid keyword pair: missing colon" do
-      input = "abc(def: 11, b: [lineWidth a, l: 2a])"
+    test "invalid keyword pair: missing equals" do
+      input = "abc(def = 11, b = [lineWidth a, l = 2a])"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -489,11 +527,22 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
         """
         Unsupported input:
           |
-        1 | abc(def: 11, b: [lineWidth‎ a, l: 2a])
-          |                           ^
+        1 | abc(def = 11, b = [lineWidth a, l = 2a])
+          |                   ^^^^^^^^^^
           |
 
-        expected ‘:’
+        Expected one of the following:
+         - a list of values eg ‘[1, 2, 3]’, ‘[\"red\", \"blue\"]’ or ‘[Color.red, Color.blue]’
+         - a keyword list eg ‘[style: :dashed]’, ‘[size: 12]’ or ‘[lineWidth: lineWidth]’
+         - a keyword list eg ‘[style = dashed]’, ‘[size = 12]’ or ‘[lineWidth = lineWidth]’
+         - a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’
+         - an IME eg ‘Color.red’ or ‘.largeTitle’’
+         - a number, string, nil, boolean or :atom
+         - an event eg ‘event(\"search-event\", throttle: 10_000)’
+         - an attribute eg ‘attr(\"placeholder\")’
+         - an IME eg ‘Color.red’ or ‘.largeTitle’’
+         - a modifier eg ‘bold()’
+         - a variable defined in the class header eg ‘color_name’
         """
         |> String.trim()
 
@@ -501,7 +550,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: double nesting" do
-      input = "abc(def: 11, b: lineWidth: a, l: 2a]"
+      input = "abc(def = 11, b = lineWidth = a, l = 2a]"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -512,8 +561,8 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
         """
         Unsupported input:
           |
-        1 | abc(def: 11, b: lineWidth: a, l: 2a]
-          |                          ^
+        1 | abc(def = 11, b = lineWidth = a, l = 2a]
+          |                             ^
           |
 
         expected ‘)’
@@ -524,7 +573,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: invalid value" do
-      input = "abc(def: 11, b: [lineWidth: 1lineWidth])"
+      input = "abc(def = 11, b = [lineWidth = 1lineWidth])"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -535,8 +584,8 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
         """
         Unsupported input:
           |
-        1 | abc(def: 11, b: [lineWidth: 1lineWidth])
-          |                              ^^^^^^^^^
+        1 | abc(def = 11, b = [lineWidth = 1lineWidth])
+          |                                 ^^^^^^^^^
           |
 
         Invalid suffix on number
@@ -547,7 +596,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: invalid value (2)" do
-      input = "abc(def: 11, b: [lineWidth: :1])"
+      input = "abc(def = 11, b = [lineWidth = :1])"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -558,8 +607,8 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
         """
         Unsupported input:
           |
-        1 | abc(def: 11, b: [lineWidth: :1])
-          |                              ^
+        1 | abc(def = 11, b = [lineWidth = :1])
+          |                                 ^
           |
 
         Expected an atom, but got ‘1’
@@ -570,7 +619,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: invalid value (3)" do
-      input = "abc(def: 11, b: :1)"
+      input = "abc(def = 11, b = :1)"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -581,8 +630,8 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
         """
         Unsupported input:
           |
-        1 | abc(def: 11, b: :1)
-          |                  ^
+        1 | abc(def = 11, b = :1)
+          |                    ^
           |
 
         Expected an atom, but got ‘1’
@@ -593,7 +642,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword list: missing closing brace" do
-      input = "abc(def: 11, b: [lineWidth: 1)"
+      input = "abc(def = 11, b = [lineWidth = 1)"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -604,8 +653,8 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
         """
         Unsupported input:
           |
-        1 | abc(def: 11, b: [lineWidth: 1)
-          |                              ^
+        1 | abc(def = 11, b = [lineWidth = 1)
+          |                                 ^
           |
 
         expected ‘]’
@@ -655,12 +704,15 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
           |
 
         Expected one of the following:
+         - a list of values eg ‘[1, 2, 3]’, ‘[\"red\", \"blue\"]’ or ‘[Color.red, Color.blue]’
          - a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’
+         - an IME eg ‘Color.red’ or ‘.largeTitle’’
          - a number, string, nil, boolean or :atom
-         - an event eg ‘event("search-event", throttle: 10_000)’
-         - an attribute eg ‘attr("placeholder")’
+         - an event eg ‘event(\"search-event\", throttle: 10_000)’
+         - an attribute eg ‘attr(\"placeholder\")’
          - an IME eg ‘Color.red’ or ‘.largeTitle’’
          - a list of keyword pairs eg ‘style: :dashed’, ‘size: 12’ or  ‘style: [lineWidth: 1]’
+         - a list of keyword pairs eg ‘style = dashed’, ‘size = 12’ or  ‘style = [lineWidth = 1]’
          - a modifier eg ‘bold()’
          - a variable defined in the class header eg ‘color_name’
         """
