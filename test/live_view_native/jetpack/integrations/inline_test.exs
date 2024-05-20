@@ -3,6 +3,7 @@ defmodule LiveViewNative.Jetpack.InlineRenderTest do
 
   import Phoenix.ConnTest
   import Phoenix.LiveViewTest
+  import LiveViewNativeTest
 
   @endpoint LiveViewNativeTest.Endpoint
 
@@ -11,13 +12,13 @@ defmodule LiveViewNative.Jetpack.InlineRenderTest do
   end
 
   test "can render the jetpack format", %{conn: conn} do
-    {:ok, lv, _body} = live(conn, "/inline?_format=jetpack")
+    {:ok, lv, _body} = native(conn, "/inline", :jetpack)
 
     assert lv |> element("text") |> render() =~ "Inline Jetpack Render 100"
   end
 
   test "can render the jetpack format with watch target", %{conn: conn} do
-    {:ok, lv, _body} = live(conn, "/inline?_format=jetpack&_interface[target]=watch")
+    {:ok, lv, _body} = native(conn, "/inline", :jetpack, %{"target" => "watch"})
 
     assert lv |> element("text") |> render() =~ "Watch Target Inline Jetpack Render 100"
   end
