@@ -1,6 +1,7 @@
 package com.dockyard.liveviewtest.liveview.modifiers
 
 import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.test.click
 import androidx.compose.ui.test.doubleClick
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithText
@@ -213,20 +214,12 @@ class ActionsTest : BaseComposableModifierTest() {
                     pushEvent = combinedClickablePushEvent,
                 )
             }
-            // For some reason, performClick is not performing click when onDoubleClick is declared.
-            // Therefore we are just testing the double click action.
-            // https://issuetracker.google.com/issues/338162116
-            // TODO uncomment the lines below when receive a reply from the open issue
-            //  (and change the assertion below)
-            // onNodeWithText("CombinedClickable").performClick()
-            // assertEquals(1, counter)
-
-            onNodeWithText("CombinedClickable")
-                .performTouchInput {
-                    doubleClick()
-                }
-
-            assertEquals(7, counter)
+            onNodeWithText("CombinedClickable").performTouchInput {
+                click()
+                advanceEventTime(viewConfiguration.doubleTapTimeoutMillis)
+                doubleClick()
+            }
+            assertEquals(8, counter)
         }
     }
 
