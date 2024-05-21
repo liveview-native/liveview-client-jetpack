@@ -1,55 +1,33 @@
 package org.phoenixframework.liveview.ui.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import kotlinx.collections.immutable.ImmutableMap
-import kotlinx.collections.immutable.persistentMapOf
+import org.phoenixframework.liveview.domain.ThemeHolder
 
 @Composable
-fun LiveViewNativeTheme(
+internal fun LiveViewNativeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
-    themeData: ImmutableMap<String, Any> = persistentMapOf(),
+    themeData: ThemeHolder.ThemeData?,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = getColorScheme(darkTheme, dynamicColor, themeData)
-    val shapes = shapesFromThemeData(
-        themeData["shapes"] as? Map<String, Any> ?: emptyMap()
-    )
-    val typography = typographyFromThemeData(
-        themeData["typography"] as? Map<String, Any> ?: emptyMap()
-    )
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = typography,
-        shapes = shapes,
-        content = content
-    )
-}
-
-@Composable
-private fun getColorScheme(
-    darkTheme: Boolean,
-    dynamicColor: Boolean = false,
-    themeData: Map<String, Any> = emptyMap(),
-): ColorScheme {
-    val colorsData = themeData["colors"] as? Map<String, Any> ?: emptyMap()
-    val lightColors = colorsData["lightColors"] as? Map<String, Any> ?: emptyMap()
-    val darkColors = colorsData["darkColors"] as? Map<String, Any> ?: emptyMap()
-    return when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    if (themeData != null) {
+        val colorScheme = remember(darkTheme, dynamicColor, themeData) {
+            themeData.getColorSchema(dynamicColor, darkTheme)
         }
-
-        darkTheme -> colorSchemeFromThemeData(darkColors, true)
-        else -> colorSchemeFromThemeData(lightColors, false)
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = themeData.typography,
+            shapes = themeData.shapes,
+            content = content
+        )
+    }
+    val context = LocalContext.current
+    LaunchedEffect(context, darkTheme) {
+        ThemeHolder.loadDefaultTheme(context, dynamicColor, darkTheme)
     }
 }

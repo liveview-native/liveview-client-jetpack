@@ -594,7 +594,7 @@ internal class TextFieldDTO private constructor(props: Properties) :
 
         /**
          * The style to be applied to the input text. Use the material design text styles.
-         * See the available values at [org.phoenixframework.liveview.data.constants.TextStyleValues].
+         * See the available values at [org.phoenixframework.liveview.data.constants.ThemeTextStyleValues].
          * ```
          * <TextField style="labelSmall" />
          * ```

@@ -1,31 +1,11 @@
 package org.phoenixframework.liveview.ui.theme
 
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.ui.graphics.Color
 import org.phoenixframework.liveview.domain.extensions.toColor
 
-private val purple80 = Color(0xFFD0BCFF)
-private val purpleGrey80 = Color(0xFFCCC2DC)
-private val pink80 = Color(0xFFEFB8C8)
-
-private val purple40 = Color(0xFF6650a4)
-private val purpleGrey40 = Color(0xFF625b71)
-private val pink40 = Color(0xFF7D5260)
-
 internal fun colorSchemeFromThemeData(
-    themeData: Map<String, Any>, darkTheme: Boolean
+    themeData: Map<String, Any>, defaultColors: ColorScheme
 ): ColorScheme {
-    val defaultColors = if (darkTheme) {
-        darkColorScheme(
-            primary = purple80, secondary = purpleGrey80, tertiary = pink80
-        )
-    } else {
-        lightColorScheme(
-            primary = purple40, secondary = purpleGrey40, tertiary = pink40
-        )
-    }
     return ColorScheme(
         primary = themeData["primary"]?.toString()?.toColor()
             ?: defaultColors.primary,

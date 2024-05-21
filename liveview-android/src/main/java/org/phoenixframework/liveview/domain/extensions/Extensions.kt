@@ -3,11 +3,12 @@ package org.phoenixframework.liveview.domain.extensions
 import androidx.compose.ui.graphics.Color
 import androidx.core.text.isDigitsOnly
 import org.phoenixframework.liveview.data.constants.SystemColorValues
+import org.phoenixframework.liveview.domain.ThemeHolder
 
 fun String.isNotEmptyAndIsDigitsOnly(): Boolean = this.isNotEmpty() && this.isDigitsOnly()
 
-internal fun String.toColor(): Color {
-    return when (this) {
+private fun systemColorFromString(string: String): Color? {
+    return when (string) {
         SystemColorValues.Red -> Color.Red
         SystemColorValues.Green -> Color.Green
         SystemColorValues.Blue -> Color.Blue
@@ -20,19 +21,27 @@ internal fun String.toColor(): Color {
         SystemColorValues.DarkGray -> Color.DarkGray
         SystemColorValues.Transparent -> Color.Transparent
         SystemColorValues.Cyan -> Color.Cyan
-        else -> {
-            var hexColorString = this
-                .removePrefix("0x")
-                .removePrefix("#")
-            // We're going to allow passing in RRGGBB or AARRGGBB
-            if (hexColorString.length == 6)
-                hexColorString = "FF$hexColorString"
-            try {
-                Color(hexColorString.toLong(16))
-            } catch (e: Exception) {
-                Color.Unspecified
-            }
-        }
+        else -> null
     }
+}
 
+private fun colorFromHex(string: String): Color? {
+    var hexColorString = string
+        .removePrefix("0x")
+        .removePrefix("#")
+    // We're going to allow passing in RRGGBB or AARRGGBB
+    if (hexColorString.length == 6)
+        hexColorString = "FF$hexColorString"
+    return try {
+        Color(hexColorString.toLong(16))
+    } catch (e: Exception) {
+        null
+    }
+}
+
+internal fun String.toColor(): Color {
+    return systemColorFromString(this)
+        ?: ThemeHolder.themeColorFromString(this)
+        ?: colorFromHex(this)
+        ?: Color.Unspecified
 }

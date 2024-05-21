@@ -369,7 +369,7 @@ object TextOverflowValues {
     const val visible = "visible"
 }
 
-object TextStyleValues {
+object ThemeTextStyleValues {
     const val displayLarge = "displayLarge"
     const val displayMedium = "displayMedium"
     const val displaySmall = "displaySmall"
@@ -385,6 +385,53 @@ object TextStyleValues {
     const val labelLarge = "labelLarge"
     const val labelMedium = "labelMedium"
     const val labelSmall = "labelSmall"
+}
+
+object ThemeColorsValues {
+    const val primary = "primary"
+    const val onPrimary = "onPrimary"
+    const val primaryContainer = "primaryContainer"
+    const val onPrimaryContainer = "onPrimaryContainer"
+    const val inversePrimary = "inversePrimary"
+    const val secondary = "secondary"
+    const val onSecondary = "onSecondary"
+    const val secondaryContainer = "secondaryContainer"
+    const val onSecondaryContainer = "onSecondaryContainer"
+    const val tertiary = "tertiary"
+    const val onTertiary = "onTertiary"
+    const val tertiaryContainer = "tertiaryContainer"
+    const val onTertiaryContainer = "onTertiaryContainer"
+    const val background = "background"
+    const val onBackground = "onBackground"
+    const val surface = "surface"
+    const val onSurface = "onSurface"
+    const val surfaceVariant = "surfaceVariant"
+    const val onSurfaceVariant = "onSurfaceVariant"
+    const val surfaceTint = "surfaceTint"
+    const val inverseSurface = "inverseSurface"
+    const val inverseOnSurface = "inverseOnSurface"
+    const val error = "error"
+    const val onError = "onError"
+    const val errorContainer = "errorContainer"
+    const val onErrorContainer = "onErrorContainer"
+    const val outline = "outline"
+    const val outlineVariant = "outlineVariant"
+    const val scrim = "scrim"
+    const val surfaceBright = "surfaceBright"
+    const val surfaceContainer = "surfaceContainer"
+    const val surfaceContainerHigh = "surfaceContainerHigh"
+    const val surfaceContainerHighest = "surfaceContainerHighest"
+    const val surfaceContainerLow = "surfaceContainerLow"
+    const val surfaceContainerLowest = "surfaceContainerLowest"
+    const val surfaceDim = "surfaceDim"
+}
+
+object ThemeShapesValues {
+    const val extraSmall = "extraSmall"
+    const val small = "small"
+    const val medium = "medium"
+    const val large = "large"
+    const val extraLarge = "extraLarge"
 }
 
 object TileModeValues {

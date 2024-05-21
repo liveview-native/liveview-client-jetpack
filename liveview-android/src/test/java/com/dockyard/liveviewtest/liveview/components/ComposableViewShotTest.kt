@@ -3,10 +3,13 @@ package com.dockyard.liveviewtest.liveview.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,8 +33,10 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Transparent
 import org.phoenixframework.liveview.data.constants.SystemColorValues.White
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.ThemeColorsValues
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
 import org.phoenixframework.liveview.domain.base.ComposableTypes.column
+import org.phoenixframework.liveview.domain.base.ComposableTypes.flowRow
 import org.phoenixframework.liveview.domain.base.ComposableTypes.row
 
 class ComposableViewShotTest : LiveViewComposableTest() {
@@ -178,6 +183,106 @@ class ComposableViewShotTest : LiveViewComposableTest() {
                     <$box $attrWidth="35%" $attrHeight="20%" $attrBackground="$Cyan"/>
                     <$box $attrWidth="15%" $attrHeight="10%" $attrBackground="$Yellow"/>
                 </$row>
+                """
+        )
+    }
+
+    @OptIn(ExperimentalLayoutApi::class)
+    @Test
+    fun themeColorTests() {
+        val stringColors = listOf(
+            ThemeColorsValues.primary,
+            ThemeColorsValues.onPrimary,
+            ThemeColorsValues.primaryContainer,
+            ThemeColorsValues.onPrimaryContainer,
+            ThemeColorsValues.inversePrimary,
+            ThemeColorsValues.secondary,
+            ThemeColorsValues.onSecondary,
+            ThemeColorsValues.secondaryContainer,
+            ThemeColorsValues.onSecondaryContainer,
+            ThemeColorsValues.tertiary,
+            ThemeColorsValues.onTertiary,
+            ThemeColorsValues.tertiaryContainer,
+            ThemeColorsValues.onTertiaryContainer,
+            ThemeColorsValues.background,
+            ThemeColorsValues.onBackground,
+            ThemeColorsValues.surface,
+            ThemeColorsValues.onSurface,
+            ThemeColorsValues.surfaceVariant,
+            ThemeColorsValues.onSurfaceVariant,
+            ThemeColorsValues.surfaceTint,
+            ThemeColorsValues.inverseSurface,
+            ThemeColorsValues.inverseOnSurface,
+            ThemeColorsValues.error,
+            ThemeColorsValues.onError,
+            ThemeColorsValues.errorContainer,
+            ThemeColorsValues.onErrorContainer,
+            ThemeColorsValues.outline,
+            ThemeColorsValues.outlineVariant,
+            ThemeColorsValues.scrim,
+            ThemeColorsValues.surfaceBright,
+            ThemeColorsValues.surfaceContainer,
+            ThemeColorsValues.surfaceContainerHigh,
+            ThemeColorsValues.surfaceContainerHighest,
+            ThemeColorsValues.surfaceContainerLow,
+            ThemeColorsValues.surfaceContainerLowest,
+            ThemeColorsValues.surfaceDim,
+        )
+        val boxes =
+            stringColors.joinToString("") { "<$box $attrSize=\"50\" $attrBackground=\"$it\"/>" }
+        println(boxes)
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                val colors = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.onPrimary,
+                    MaterialTheme.colorScheme.primaryContainer,
+                    MaterialTheme.colorScheme.onPrimaryContainer,
+                    MaterialTheme.colorScheme.inversePrimary,
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.onSecondary,
+                    MaterialTheme.colorScheme.secondaryContainer,
+                    MaterialTheme.colorScheme.onSecondaryContainer,
+                    MaterialTheme.colorScheme.tertiary,
+                    MaterialTheme.colorScheme.onTertiary,
+                    MaterialTheme.colorScheme.tertiaryContainer,
+                    MaterialTheme.colorScheme.onTertiaryContainer,
+                    MaterialTheme.colorScheme.background,
+                    MaterialTheme.colorScheme.onBackground,
+                    MaterialTheme.colorScheme.surface,
+                    MaterialTheme.colorScheme.onSurface,
+                    MaterialTheme.colorScheme.surfaceVariant,
+                    MaterialTheme.colorScheme.onSurfaceVariant,
+                    MaterialTheme.colorScheme.surfaceTint,
+                    MaterialTheme.colorScheme.inverseSurface,
+                    MaterialTheme.colorScheme.inverseOnSurface,
+                    MaterialTheme.colorScheme.error,
+                    MaterialTheme.colorScheme.onError,
+                    MaterialTheme.colorScheme.errorContainer,
+                    MaterialTheme.colorScheme.onErrorContainer,
+                    MaterialTheme.colorScheme.outline,
+                    MaterialTheme.colorScheme.outlineVariant,
+                    MaterialTheme.colorScheme.scrim,
+                    MaterialTheme.colorScheme.surfaceBright,
+                    MaterialTheme.colorScheme.surfaceContainer,
+                    MaterialTheme.colorScheme.surfaceContainerHigh,
+                    MaterialTheme.colorScheme.surfaceContainerHighest,
+                    MaterialTheme.colorScheme.surfaceContainerLow,
+                    MaterialTheme.colorScheme.surfaceContainerLowest,
+                    MaterialTheme.colorScheme.surfaceDim,
+
+                    )
+                FlowRow {
+                    colors.forEach {
+                        Box(
+                            modifier = Modifier
+                                .size(50.dp)
+                                .background(it)
+                        )
+                    }
+                }
+            }, template = """
+                <$flowRow>$boxes</$flowRow>
                 """
         )
     }

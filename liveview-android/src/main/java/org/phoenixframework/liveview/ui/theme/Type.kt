@@ -1,8 +1,6 @@
 package org.phoenixframework.liveview.ui.theme
 
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -26,7 +24,7 @@ import org.phoenixframework.liveview.data.constants.LineBreakValues
 import org.phoenixframework.liveview.data.constants.TextAlignValues
 import org.phoenixframework.liveview.data.constants.TextDecorationValues
 import org.phoenixframework.liveview.data.constants.TextDirectionValues
-import org.phoenixframework.liveview.data.constants.TextStyleValues
+import org.phoenixframework.liveview.domain.ThemeHolder
 import org.phoenixframework.liveview.domain.extensions.toColor
 
 internal val provider: GoogleFont.Provider by lazy {
@@ -34,51 +32,6 @@ internal val provider: GoogleFont.Provider by lazy {
         providerAuthority = "com.google.android.gms.fonts",
         providerPackage = "com.google.android.gms",
         certificates = R.array.com_google_android_gms_fonts_certs
-    )
-}
-
-@Suppress("UNCHECKED_CAST")
-internal fun typographyFromThemeData(fontData: Map<String, Any>): Typography {
-    val default = Typography(
-        bodyLarge = TextStyle(
-            fontFamily = FontFamily.Default,
-            fontWeight = FontWeight.Normal,
-            fontSize = 16.sp,
-            lineHeight = 24.sp,
-            letterSpacing = 0.5.sp
-        )
-    )
-    return Typography(
-        displayLarge = fontData["displayLarge"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.displayLarge,
-        displayMedium = fontData["displayMedium"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.displayMedium,
-        displaySmall = fontData["displaySmall"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.displaySmall,
-        headlineLarge = fontData["headlineLarge"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.headlineLarge,
-        headlineMedium = fontData["headlineMedium"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.headlineMedium,
-        headlineSmall = fontData["headlineSmall"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.headlineSmall,
-        titleLarge = fontData["titleLarge"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.titleLarge,
-        titleMedium = fontData["titleMedium"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.titleMedium,
-        titleSmall = fontData["titleSmall"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.titleSmall,
-        bodyLarge = fontData["bodyLarge"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.bodyLarge,
-        bodyMedium = fontData["bodyMedium"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.bodyMedium,
-        bodySmall = fontData["bodySmall"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.bodySmall,
-        labelLarge = fontData["labelLarge"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.labelLarge,
-        labelMedium = fontData["labelMedium"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.labelMedium,
-        labelSmall = fontData["labelSmall"]?.let { textStyleFromData(it as Map<String, Any>) }
-            ?: default.labelSmall,
     )
 }
 
@@ -226,23 +179,6 @@ internal fun textDirectionFromString(textDirection: String): TextDirection {
 
 @Composable
 internal fun textStyleFromString(textStyle: String?): TextStyle {
-    return when (textStyle) {
-        null -> LocalTextStyle.current
-        TextStyleValues.displayLarge -> MaterialTheme.typography.displayLarge
-        TextStyleValues.displayMedium -> MaterialTheme.typography.displayMedium
-        TextStyleValues.displaySmall -> MaterialTheme.typography.displaySmall
-        TextStyleValues.headlineLarge -> MaterialTheme.typography.headlineLarge
-        TextStyleValues.headlineMedium -> MaterialTheme.typography.headlineMedium
-        TextStyleValues.headlineSmall -> MaterialTheme.typography.headlineSmall
-        TextStyleValues.titleLarge -> MaterialTheme.typography.titleLarge
-        TextStyleValues.titleMedium -> MaterialTheme.typography.titleMedium
-        TextStyleValues.titleSmall -> MaterialTheme.typography.titleSmall
-        TextStyleValues.bodyLarge -> MaterialTheme.typography.bodyLarge
-        TextStyleValues.bodyMedium -> MaterialTheme.typography.bodyMedium
-        TextStyleValues.bodySmall -> MaterialTheme.typography.bodySmall
-        TextStyleValues.labelLarge -> MaterialTheme.typography.labelLarge
-        TextStyleValues.labelMedium -> MaterialTheme.typography.labelMedium
-        TextStyleValues.labelSmall -> MaterialTheme.typography.labelSmall
-        else -> LocalTextStyle.current
-    }
+    if (textStyle == null) return LocalTextStyle.current
+    return ThemeHolder.themeTextStyleFromString(textStyle) ?: LocalTextStyle.current
 }
