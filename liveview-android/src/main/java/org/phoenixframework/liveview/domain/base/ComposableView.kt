@@ -566,7 +566,6 @@ abstract class ComposableBuilder {
         internal const val EVENT_TYPE_CHANGE = "change"
         internal const val EVENT_TYPE_CLICK = "click"
         internal const val EVENT_TYPE_DOUBLE_CLICK = "double-click"
-        internal const val EVENT_TYPE_FOCUSED_BOUNDS_CHANGED = "focused-bounds-changed"
         internal const val EVENT_TYPE_FOCUS_CHANGED = "focus-changed"
         internal const val EVENT_TYPE_FOCUS_EVENT = "focus-event"
         internal const val EVENT_TYPE_KEY_UP = "keyup"

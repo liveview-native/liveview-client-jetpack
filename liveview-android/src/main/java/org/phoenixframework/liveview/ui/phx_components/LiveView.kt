@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.phoenixframework.liveview.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.domain.ThemeHolder
+import org.phoenixframework.liveview.domain.base.ErrorView
 import org.phoenixframework.liveview.ui.theme.LiveViewNativeTheme
 
 private const val PHX_LIVE_VIEW_ROUTE = "phxLiveView"
@@ -64,32 +65,36 @@ private fun NavDestination(
         factory = LiveViewCoordinator.Factory(httpBaseUrl, route)
     )
 
-    val state by liveViewCoordinator.composableTree.collectAsState()
-    if (state.children.isNotEmpty()) {
+    val state by liveViewCoordinator.state.collectAsState()
+    if (state.composableTreeNode.children.isNotEmpty()) {
         CompositionLocalProvider(LocalHttpUrl provides liveViewCoordinator.httpBaseUrl) {
             PhxLiveView(
-                composableNode = state.children.first(),
+                composableNode = state.composableTreeNode.children.first(),
                 pushEvent = liveViewCoordinator::pushEvent
             )
         }
+    } else {
+        val error = state.throwable
+        if (error != null) {
+            ErrorView(throwable = error)
+        }
     }
 
-    LaunchedEffect(liveViewCoordinator) {
+    LaunchedEffect(state.navigationRequest) {
+        val navigationRequest = state.navigationRequest
         // Connecting to LiveView socket
         liveViewCoordinator.connectToLiveView()
-        liveViewCoordinator.navigation.collect { navigationRequest ->
-            if (navigationRequest != null) {
-                // Cancelling connection jobs
-                liveViewCoordinator.cancelConnectionJobs()
+        if (navigationRequest != null) {
+            // Cancelling connection jobs
+            liveViewCoordinator.cancelConnectionJobs()
 
-                val (newRoute, redirect) = navigationRequest
-                liveViewCoordinator.resetNavigation()
-                val routePath = "$PHX_LIVE_VIEW_ROUTE?$ARG_ROUTE=$newRoute"
-                navController.navigate(routePath) {
-                    if (redirect) {
-                        popUpTo(backStackEntry.destination.id) {
-                            inclusive = true
-                        }
+            val (newRoute, redirect) = navigationRequest
+            liveViewCoordinator.resetNavigation()
+            val routePath = "$PHX_LIVE_VIEW_ROUTE?$ARG_ROUTE=$newRoute"
+            navController.navigate(routePath) {
+                if (redirect) {
+                    popUpTo(backStackEntry.destination.id) {
+                        inclusive = true
                     }
                 }
             }

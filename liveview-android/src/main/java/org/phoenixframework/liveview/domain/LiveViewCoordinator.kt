@@ -14,26 +14,18 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.phoenixframework.Message
-import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
-import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
-import org.phoenixframework.liveview.data.constants.VerticalArrangementValues.center
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.data.repository.Repository
 import org.phoenixframework.liveview.data.service.ChannelService
 import org.phoenixframework.liveview.data.service.SocketService
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 import org.phoenixframework.liveview.domain.factory.ComposableNodeFactory
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.lib.Document
 import org.phoenixframework.liveview.lib.Node
 import org.phoenixframework.liveview.lib.NodeRef
-import java.net.ConnectException
 
-class LiveViewCoordinator(
+internal class LiveViewCoordinator(
     internal val httpBaseUrl: String,
     private val wsBaseUrl: String,
     private val route: String?,
@@ -42,11 +34,9 @@ class LiveViewCoordinator(
 
     private var document: Document = Document()
 
-    private val _composableTree = MutableStateFlow(ComposableTreeNode(screenId, 0, null))
-    val composableTree = _composableTree.asStateFlow()
-
-    private val _navigation = MutableStateFlow<NavigationRequest?>(null)
-    val navigation = _navigation.asStateFlow()
+    private val _state =
+        MutableStateFlow(LiveViewState(composableTreeNode = ComposableTreeNode(screenId, 0, null)))
+    val state = _state.asStateFlow()
 
     private var connectionJob: Job? = null
     private var channelJob: Job? = null
@@ -67,21 +57,18 @@ class LiveViewCoordinator(
 
         viewModelScope.launch(Dispatchers.IO) {
             connectionJob = launch {
-                repository.liveSocketConnectionFlow.collect {
-                    when (it) {
+                repository.liveSocketConnectionFlow.collect { event ->
+                    when (event) {
                         is SocketService.Events.PayloadLoadingError -> {
                             Log.d(TAG, "liveSocketConnectionFlow::PayloadLoadingError")
                         }
 
-                        is SocketService.Events.Error ->
+                        is SocketService.Events.Error -> {
                             Log.d(TAG, "liveSocketConnectionFlow::Events.Error")
+                        }
 
                         SocketService.Events.Closed -> {
                             Log.d(TAG, "liveSocketConnectionFlow::Events.Closed")
-                        }
-
-                        SocketService.Events.LiveReloadDisabled -> {
-                            Log.d(TAG, "liveSocketConnectionFlow::LiveReloadDisabled")
                         }
 
                         SocketService.Events.NotConnected -> {
@@ -89,24 +76,36 @@ class LiveViewCoordinator(
                         }
 
                         SocketService.Events.Opened -> {
-                            if (ThemeHolder.themeData.value == null) {
-                                ThemeHolder.updateThemeData(repository.loadThemeData())
-                            }
-                            if (ModifiersParser.isEmpty) {
-                                repository.loadStyleData()?.let { styleFileContentAsString ->
-                                    ModifiersParser.fromStyleFile(
-                                        styleFileContentAsString,
-                                        ::pushEvent
-                                    )
+                            try {
+                                if (ThemeHolder.themeData.value == null) {
+                                    ThemeHolder.updateThemeData(repository.loadThemeData())
                                 }
+                                if (ModifiersParser.isEmpty) {
+                                    repository.loadStyleData()?.let { styleFileContentAsString ->
+                                        ModifiersParser.fromStyleFile(
+                                            styleFileContentAsString,
+                                            ::pushEvent
+                                        )
+                                    }
+                                }
+                                joinLiveViewChannel()
+                                connectLiveReload()
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                setError(e)
                             }
-                            joinLiveViewChannel()
-                            connectLiveReload()
                         }
+                    }
+                    if (event is SocketService.Events.Error) {
+                        setError(event.throwable)
                     }
                 }
             }
-            repository.connectToLiveViewSocket()
+            try {
+                repository.connectToLiveViewSocket()
+            } catch (e: Exception) {
+                setError(e)
+            }
         }
     }
 
@@ -115,7 +114,7 @@ class LiveViewCoordinator(
             repository.joinLiveViewChannel(redirect = instanceCount > 1)
                 .catch { cause: Throwable ->
                     Log.e(TAG, "joinLiveViewChannel::Error", cause)
-                    getDomFromThrowable(cause)
+                    setError(cause)
                 }
                 .buffer()
                 .collect { message ->
@@ -170,9 +169,6 @@ class LiveViewCoordinator(
                         SocketService.Events.Closed ->
                             Log.d(TAG, "liveReloadSocketConnectionFlow::Closed")
 
-                        SocketService.Events.LiveReloadDisabled ->
-                            Log.d(TAG, "liveReloadSocketConnectionFlow::LiveReloadDisabled")
-
                         SocketService.Events.NotConnected ->
                             Log.d(TAG, "liveReloadSocketConnectionFlow::NotConnected")
 
@@ -183,7 +179,11 @@ class LiveViewCoordinator(
                     }
                 }
             }
-            repository.connectToReloadSocket()
+            try {
+                repository.connectToReloadSocket()
+            } catch (e: Exception) {
+                setError(e)
+            }
         }
     }
 
@@ -192,7 +192,7 @@ class LiveViewCoordinator(
             repository.joinReloadChannel()
                 .catch { cause: Throwable ->
                     Log.e(TAG, "joinLiveReloadChannel::error", cause)
-                    getDomFromThrowable(cause)
+                    setError(cause)
                 }
                 .buffer()
                 .collect {
@@ -229,7 +229,14 @@ class LiveViewCoordinator(
         message.payload[PAYLOAD_LIVE_REDIRECT]?.let { inputMap ->
             val redirectMap: Map<String, Any?> = inputMap as Map<String, Any?>
             viewModelScope.launch(Dispatchers.Main) {
-                _navigation.update { NavigationRequest(redirectMap["to"].toString(), false) }
+                _state.update {
+                    it.copy(
+                        navigationRequest = NavigationRequest(
+                            redirectMap["to"].toString(),
+                            false
+                        )
+                    )
+                }
             }
         }
     }
@@ -238,13 +245,20 @@ class LiveViewCoordinator(
         message.payload[PAYLOAD_REDIRECT]?.let { inputMap ->
             val redirectMap: Map<String, Any?> = inputMap as Map<String, Any?>
             viewModelScope.launch(Dispatchers.Main) {
-                _navigation.update { NavigationRequest(redirectMap["to"].toString(), true) }
+                _state.update {
+                    it.copy(
+                        navigationRequest = NavigationRequest(
+                            redirectMap["to"].toString(),
+                            true
+                        )
+                    )
+                }
             }
         }
     }
 
     internal fun resetNavigation() {
-        _navigation.update { null }
+        _state.update { it.copy(navigationRequest = null) }
     }
 
     internal fun parseTemplate(s: String) {
@@ -285,8 +299,8 @@ class LiveViewCoordinator(
             Log.i(TAG, "walkThroughDOM start")
             walkThroughDOM(document, rootElement, rootNode)
             Log.i(TAG, "walkThroughDOM complete")
-            _composableTree.update {
-                rootNode
+            _state.update {
+                it.copy(composableTreeNode = rootNode)
             }
 
         } catch (e: Exception) {
@@ -317,37 +331,15 @@ class LiveViewCoordinator(
         }
     }
 
-    private fun getDomFromThrowable(cause: Throwable) {
-        val errorHtml = when (cause) {
-            is ConnectException -> {
-                """
-                <$column $attrVerticalArrangement="$center">
-                    <$text $attrPadding='16'>Error</$text>
-                    <$text $attrWidth='$fill' $attrPadding='16'>${cause.message}</$text>
-                    <$text $attrWidth='$fill' $attrPadding='16'>
-                        This probably means your localhost server isn't running...\n
-                        Please start your server in the terminal using iex -S mix phx.server and rerun the android application
-                    </$text>
-                </$column>
-                """.trimMargin()
-            }
-
-            else -> {
-                """
-                <$column $attrVerticalArrangement="$center">
-                    <$text $attrPadding='16'>Error</$text>
-                    <$text $attrWidth='$fill' $attrPadding='16'>${cause.message}</$text>
-                </$column>
-                """.trimMargin()
-            }
-        }
-
-        parseTemplate(errorHtml)
-    }
-
     fun pushEvent(type: String, event: String, value: Any?, target: Int? = null) {
         Log.d(TAG, "pushEvent: type: $type, event: $event, value: $value, target: $target")
         repository.pushEvent(type, event, value, target)
+    }
+
+    private fun setError(throwable: Throwable?) {
+        _state.update {
+            it.copy(throwable = throwable)
+        }
     }
 
     override fun onCleared() {
@@ -396,6 +388,12 @@ class LiveViewCoordinator(
     data class NavigationRequest(
         val url: String,
         val redirect: Boolean,
+    )
+
+    internal data class LiveViewState(
+        val composableTreeNode: ComposableTreeNode,
+        val navigationRequest: NavigationRequest? = null,
+        val throwable: Throwable? = null,
     )
 
     companion object {

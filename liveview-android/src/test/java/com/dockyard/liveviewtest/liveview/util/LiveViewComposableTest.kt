@@ -31,7 +31,7 @@ abstract class LiveViewComposableTest : BaseTest() {
 
     private val isRecording = IS_RECORDING_SHOT_TEST
 
-    fun compareNativeComposableWithTemplate(
+    internal fun compareNativeComposableWithTemplate(
         nativeComposable: @Composable () -> Unit,
         template: String,
         testTag: String? = null,
@@ -51,12 +51,12 @@ abstract class LiveViewComposableTest : BaseTest() {
                 if (isRecording) {
                     nativeComposable()
                 } else {
-                    val state by coordinator.composableTree.collectAsState()
+                    val state by coordinator.state.collectAsState()
                     val json = "{\"s\": [\"${template.templateToTest()}\"]}"
                     coordinator.parseTemplate(json)
-                    if (state.children.isNotEmpty()) {
+                    if (state.composableTreeNode.children.isNotEmpty()) {
                         PhxLiveView(
-                            composableNode = state.children.first(),
+                            composableNode = state.composableTreeNode.children.first(),
                             pushEvent = pushEvent
                         )
                     }

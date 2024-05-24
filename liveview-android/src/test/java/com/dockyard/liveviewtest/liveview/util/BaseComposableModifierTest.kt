@@ -20,7 +20,7 @@ import org.robolectric.annotation.GraphicsMode
 abstract class BaseComposableModifierTest : BaseTest() {
 
     @Composable
-    fun ViewFromTemplate(
+    internal fun ViewFromTemplate(
         template: String,
         coordinator: LiveViewCoordinator = LiveViewCoordinator(
             httpBaseUrl = "",
@@ -29,10 +29,10 @@ abstract class BaseComposableModifierTest : BaseTest() {
         ),
         pushEvent: PushEvent = coordinator::pushEvent
     ) {
-        val state by coordinator.composableTree.collectAsState()
-        if (state.children.isNotEmpty()) {
+        val state by coordinator.state.collectAsState()
+        if (state.composableTreeNode.children.isNotEmpty()) {
             PhxLiveView(
-                composableNode = state.children.first(),
+                composableNode = state.composableTreeNode.children.first(),
                 pushEvent = pushEvent
             )
         }

@@ -13,7 +13,6 @@ import okhttp3.CookieJar
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
@@ -73,7 +72,7 @@ object SocketService {
         }
         if (payload == null) {
             _connection.update {
-                Events.PayloadLoadingError
+                Events.PayloadLoadingError(IllegalStateException("Initial payload is null"))
             }
             return
         }
@@ -102,8 +101,8 @@ object SocketService {
             onClose {
                 _connection.update { Events.Closed }
             }
-            onError { t, r ->
-                _connection.update { Events.Error(t, r) }
+            onError { t, _ ->
+                _connection.update { Events.Error(t) }
             }
             connect()
         }
@@ -143,9 +142,6 @@ object SocketService {
     }
 
     fun connectLiveReloadSocket(socketBaseUrl: String) {
-        if (payload?.liveReloadEnabled == false) {
-            _liveReloadConnection.update { Events.LiveReloadDisabled }
-        }
         if (liveReloadSocket?.isConnected == true) {
             return
         }
@@ -165,7 +161,7 @@ object SocketService {
                 _liveReloadConnection.update { Events.Closed }
             }
             onError { t, r ->
-                _liveReloadConnection.update { Events.Error(t, r) }
+                _liveReloadConnection.update { Events.Error(t) }
             }
             connect()
         }
@@ -287,10 +283,9 @@ object SocketService {
         data object NotConnected : Events()
         data object Opened : Events()
         data object Closed : Events()
-        data class Error(val throwable: Throwable, val request: Response?) :
+        open class Error(val throwable: Throwable) :
             Events()
 
-        data object LiveReloadDisabled : Events()
-        data object PayloadLoadingError : Events()
+        class PayloadLoadingError(t: Throwable) : Error(t)
     }
 }
