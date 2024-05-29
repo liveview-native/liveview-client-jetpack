@@ -193,8 +193,11 @@ internal object ModifiersParser {
     }
 
     private fun parseStyleFileContent(fileContent: String): List<Pair<String, List<TupleExprContext>>>? {
+        val rootExpression = parseElixirContent(
+            // The parser has some problems with line breaks, so we're removing them
+            fileContent.split('\n').joinToString("")
+        )
         // The stylesheet is a map, therefore the root expression must be a map expression
-        val rootExpression = parseElixirContent(fileContent)
         val mapExprContext: MapExprContext
         if (rootExpression is MapExprContext) {
             mapExprContext = rootExpression
