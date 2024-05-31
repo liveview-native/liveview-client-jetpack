@@ -67,24 +67,32 @@ defmodule LiveViewNative.Jetpack.RulesParser.Tokens do
   end
 
   def atom() do
-    ignore(string(":"))
-    |> concat(
-      choice([
-        double_quoted_string(),
-        variable_name()
-      ])
-      |> expect(
-        error_message: "Expected an atom",
-        error_parser:
-          choice([
-            non_whitespace(also_ignore: String.to_charlist("[](),"), fail_if_empty: true),
-            non_whitespace(also_ignore: String.to_charlist("]),"), fail_if_empty: true),
-            non_whitespace()
-          ]),
-        show_incorrect_text?: true
+    choice([
+      # Match CircleShape or Color
+      ascii_string([?A..?Z], 1)
+      |> ascii_string([?a..?z, ?A..?Z, ?0..?9, ?_], min: 0)
+      |> reduce({Enum, :join, [""]})
+      |> map({String, :to_atom, []}),
+      # Match :round or :red
+      ignore(string(":"))
+      |> concat(
+        choice([
+          double_quoted_string(),
+          variable_name()
+        ])
+        |> expect(
+          error_message: "Expected an atom",
+          error_parser:
+            choice([
+              non_whitespace(also_ignore: String.to_charlist("[](),"), fail_if_empty: true),
+              non_whitespace(also_ignore: String.to_charlist("]),"), fail_if_empty: true),
+              non_whitespace()
+            ]),
+          show_incorrect_text?: true
+        )
       )
-    )
-    |> map({String, :to_atom, []})
+      |> map({String, :to_atom, []})
+    ])
   end
 
   def double_quoted_string() do

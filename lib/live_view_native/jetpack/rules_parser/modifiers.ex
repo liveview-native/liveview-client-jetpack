@@ -244,6 +244,7 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
         ~s'an IME eg ‘Color.red’ or ‘.largeTitle’’'
       },
       {
+        # Must come after :ime parser
         literal(error_parser: empty(), generate_error?: false),
         ~s'a number, string, nil, boolean or :atom'
       },

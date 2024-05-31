@@ -106,6 +106,14 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       assert parse(input) == output
     end
 
+    test "parses atoms" do
+      input = "background(Color.Green, CircleShape)"
+
+      output = {:background, [], [{:., [], [:Color, :Green]}, :CircleShape]}
+
+      assert parse(input) == output
+    end
+
     test "parses chained IMEs" do
       input = "font(color: Color.red)"
 
