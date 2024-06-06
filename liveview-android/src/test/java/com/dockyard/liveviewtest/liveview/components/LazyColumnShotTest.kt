@@ -17,12 +17,12 @@ import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
 import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
 import org.phoenixframework.liveview.domain.base.ComposableTypes.lazyColumn
 import org.phoenixframework.liveview.domain.base.ComposableTypes.row
@@ -99,7 +99,7 @@ class LazyColumnShotTest : LiveViewComposableTest() {
                     this.rowsForNativeComposable(rowCount)
                 }
             }, template = """
-                <$lazyColumn $attrSize="$fill" 
+                <$lazyColumn $attrStyle="$modifierFillMaxSize()"
                   $attrVerticalArrangement="${VerticalArrangementValues.spaceAround}">
                   ${rowsForTemplate(rowCount)}
                 </$lazyColumn>
@@ -119,7 +119,7 @@ class LazyColumnShotTest : LiveViewComposableTest() {
                     this.rowsForNativeComposable(rowCount, false)
                 }
             }, template = """
-                <$lazyColumn $attrWidth="$fill" 
+                <$lazyColumn $attrStyle="$modifierFillMaxWidth()" 
                   $attrHorizontalAlignment="${HorizontalAlignmentValues.end}">
                   ${rowsForTemplate(rowCount, false)}
                 </$lazyColumn>

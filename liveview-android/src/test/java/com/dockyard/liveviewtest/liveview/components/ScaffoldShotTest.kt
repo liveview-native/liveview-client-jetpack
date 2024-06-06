@@ -37,12 +37,12 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrLeft
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrRight
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
 import org.phoenixframework.liveview.data.constants.Attrs.attrTop
 import org.phoenixframework.liveview.data.constants.FabPositionValues
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
 import org.phoenixframework.liveview.data.constants.Templates.templateBody
 import org.phoenixframework.liveview.data.constants.Templates.templateBottomBar
 import org.phoenixframework.liveview.data.constants.Templates.templateFab
@@ -77,7 +77,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$scaffold>
-                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrContentAlignment="$center" $attrTemplate="$templateBody">
                     <$text>Scaffold Body</$text> 
                   </$box>
                 </$scaffold>
@@ -105,7 +105,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$scaffold $attrContainerColor="#FFFF00FF" $attrContentColor="#FF0000FF">
-                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrContentAlignment="$center" $attrTemplate="$templateBody">
                     <$text>Scaffold Body</$text> 
                   </$box>
                 </$scaffold>
@@ -142,7 +142,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                   <$topAppBar $attrTemplate="$templateTopBar">
                     <$text $attrTemplate="$templateTitle">Top Bar</$text>
                   </$topAppBar>  
-                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrContentAlignment="$center" $attrTemplate="$templateBody">
                     <$text>Scaffold Body</$text> 
                   </$box>
                 </$scaffold>
@@ -211,7 +211,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                       <$icon $attrImageVector="$filled:VerticalDistribute" $attrTemplate="$templateIcon" />
                     </$navigationBarItem>     
                   </$navigationBar>               
-                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrContentAlignment="$center" $attrTemplate="$templateBody">
                     <$text>Scaffold Body</$text> 
                   </$box>
                 </$scaffold>
@@ -256,7 +256,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                   <$floatingActionButton $attrTemplate="$templateFab">
                     <$icon $attrImageVector="$filled:Add"/>
                   </$floatingActionButton>
-                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrContentAlignment="$center" $attrTemplate="$templateBody">
                     <$text>Scaffold Body</$text> 
                   </$box>
                 </$scaffold>
@@ -302,7 +302,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                   <$floatingActionButton $attrTemplate="$templateFab">
                     <$icon $attrImageVector="filled:Add"/>
                   </$floatingActionButton>
-                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrContentAlignment="$center" $attrTemplate="$templateBody">
                     <$text>Scaffold Body</$text> 
                   </$box>
                 </$scaffold>
@@ -379,7 +379,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                   <$floatingActionButton $attrTemplate="$templateFab">
                     <$icon $attrImageVector="filled:Add"/>
                   </$floatingActionButton>
-                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrContentAlignment="$center" $attrTemplate="$templateBody">
                     <$text>Scaffold Body</$text> 
                   </$box>
                 </$scaffold>
@@ -457,7 +457,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
                   <$floatingActionButton $attrTemplate="$templateFab">
                     <$icon $attrImageVector="filled:Add"/>
                   </$floatingActionButton>
-                  <$box $attrSize="$fill" $attrContentAlignment="$center" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrContentAlignment="$center" $attrTemplate="$templateBody">
                     <$text>Scaffold Body</$text> 
                   </$box>
                 </$scaffold>
@@ -486,7 +486,7 @@ class ScaffoldShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$scaffold $attrContentWindowInsets="{'$attrLeft': 32, '$attrTop': 96, '$attrRight': 72, '$attrBottom': 120}">
-                    <$box $attrTemplate="$templateBody" $attrSize="$fill">
+                    <$box $attrTemplate="$templateBody" $attrStyle="$modifierFillMaxSize()">
                         <$text $attrAlign="${AlignmentValues.topStart}">Top|Left</$text>
                         <$text $attrAlign="${AlignmentValues.topEnd}">Top|Right</$text>
                         <$text $attrAlign="${AlignmentValues.bottomStart}">Bottom|Left</$text>

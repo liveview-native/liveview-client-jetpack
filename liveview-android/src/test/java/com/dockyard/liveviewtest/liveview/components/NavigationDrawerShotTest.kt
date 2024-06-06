@@ -21,9 +21,9 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrIsOpen
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.Attrs.attrScrimColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.Templates.templateDrawerContent
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
@@ -171,7 +171,7 @@ class NavigationDrawerShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <$dismissibleNavigationDrawer $attrIsOpen="true" $attrPhxChange="" $attrSize="$fill">
+                <$dismissibleNavigationDrawer $attrIsOpen="true" $attrPhxChange="" $attrStyle="$modifierFillMaxSize()">
                   <$modalDrawerSheet $attrTemplate="$templateDrawerContent">
                     <$navigationDrawerItem $attrSelected="true">
                       <$text $attrTemplate="$templateLabel">Option 1</$text>

@@ -296,14 +296,28 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
 
         val tupleExpressions = tupleCtx.expressions_()
 
-        val argTypeExpression = tupleExpressions.expression(0) as ElixirParser.AtomExprContext
+        val clazz = when (val argTypeExpression = tupleExpressions.expression(0)) {
+            is ElixirParser.AtomExprContext -> argTypeExpression.ATOM().text.replace(":", "")
+            is ElixirParser.AliasExprContext -> argTypeExpression.ALIAS().text.replace(":", "")
+            else -> TypeUndefined
+        }
+
         val argMetaDataExpression = tupleExpressions.expression(1) as ElixirParser.ListExprContext
-        val argParamsExpression = tupleExpressions.expression(2) as ElixirParser.ListExprContext
 
-        val clazz = argTypeExpression.ATOM().text.replace(":", "")
+        val argsValues = when (val argParamsExpression = tupleExpressions.expression(2)) {
+            is ElixirParser.ListExprContext -> {
+                argParamsExpression.list().expressions_()?.expression()?.map {
+                    argValueFromContext(null, it)
+                }
+            }
 
-        val argsValues = argParamsExpression.list().expressions_()?.expression()?.map {
-            argValueFromContext(null, it)
+            is ElixirParser.TupleExprContext -> {
+                argParamsExpression.tuple().expressions_()?.expression()?.map {
+                    argValueFromContext(null, it)
+                }
+            }
+
+            else -> null
         }
 
         return ArgumentData(
@@ -318,6 +332,9 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
         val type: String,
         val value: Any?
     ) {
+        val isAtom: Boolean
+            get() = type == TypeAtom
+
         val isBoolean: Boolean
             get() = type == TypeBoolean
 
@@ -335,6 +352,9 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
 
         val isNumber: Boolean
             get() = type == TypeInt || type == TypeFloat
+
+        val isString: Boolean
+            get() = type == TypeString
 
         val booleanValue: Boolean?
             get() = value as? Boolean
@@ -377,6 +397,7 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
         private const val TypeList = "List"
         private const val TypeString = "String"
         private const val TypeUnary = "Unary"
+        private const val TypeUndefined = "<undefined>"
     }
 }
 

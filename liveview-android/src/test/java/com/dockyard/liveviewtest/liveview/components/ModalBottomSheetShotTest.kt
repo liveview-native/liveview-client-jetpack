@@ -17,13 +17,15 @@ import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
-import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetValue
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTestTag
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.SheetValues.expanded
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
 import org.phoenixframework.liveview.domain.base.ComposableTypes.modalBottomSheet
 import org.phoenixframework.liveview.domain.base.ComposableTypes.text
@@ -60,11 +62,11 @@ class ModalBottomSheetShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrSize="$fill" $attrTestTag="$testTag">
+                <$box $attrStyle="$modifierFillMaxSize()" $attrTestTag="$testTag">
                   <$modalBottomSheet $attrSheetValue="$expanded">
                     <$box 
                       $attrContentAlignment="${AlignmentValues.center}" 
-                      $attrWidth="$fill" $attrHeight="200">
+                      $attrStyle="$modifierFillMaxWidth();$modifierHeight($typeDp(200))">
                       <$text>BottomSheet Content</$text>
                     </$box>
                   </$modalBottomSheet>                

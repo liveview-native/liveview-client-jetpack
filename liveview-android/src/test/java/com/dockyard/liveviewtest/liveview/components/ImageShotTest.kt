@@ -16,11 +16,13 @@ import org.phoenixframework.liveview.data.constants.AlignmentValues
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
 import org.phoenixframework.liveview.data.constants.Attrs.attrResource
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.ContentScaleValues
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.domain.base.ComposableTypes.column
 import org.phoenixframework.liveview.domain.base.ComposableTypes.image
 import org.phoenixframework.liveview.test.R
@@ -74,12 +76,12 @@ class ImageShotTest : LiveViewComposableTest() {
 
             },
             template = """
-                <$column $attrSize="fill">
-                  <$image $attrResource="android_icon" $attrWeight="1" $attrWidth="$fill" 
+                <$column $attrStyle="$modifierFillMaxSize()">
+                  <$image $attrResource="android_icon" $attrWeight="1" $attrStyle="$modifierFillMaxWidth()" 
                     $attrAlignment="${AlignmentValues.topStart}"/>
-                  <$image $attrResource="android_icon" $attrWeight="1" $attrWidth="$fill" 
+                  <$image $attrResource="android_icon" $attrWeight="1" $attrStyle="$modifierFillMaxWidth()" 
                     $attrAlignment="${AlignmentValues.topCenter}"/>
-                  <$image $attrResource="android_icon" $attrWeight="1" $attrWidth="$fill" 
+                  <$image $attrResource="android_icon" $attrWeight="1" $attrStyle="$modifierFillMaxWidth()" 
                     $attrAlignment="${AlignmentValues.topEnd}"/>
                 </$column>
                 """
@@ -113,11 +115,11 @@ class ImageShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$column>
-                  <$image $attrResource="narwin" $attrSize="200" 
+                  <$image $attrResource="narwin" $attrStyle="$modifierSize($typeDp(200))" 
                     $attrContentScale="${ContentScaleValues.crop}"/>
-                  <$image $attrResource="narwin" $attrSize="200" 
+                  <$image $attrResource="narwin" $attrStyle="$modifierSize($typeDp(200))" 
                     $attrContentScale="${ContentScaleValues.fit}"/>
-                  <$image $attrResource="narwin" $attrSize="200" 
+                  <$image $attrResource="narwin" $attrStyle="$modifierSize($typeDp(200))"
                     $attrContentScale="${ContentScaleValues.inside}"/>
                 </$column>                
                 """
@@ -151,11 +153,11 @@ class ImageShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$column>
-                  <$image $attrResource="narwin" $attrSize="200" 
+                  <$image $attrResource="narwin" $attrStyle="$modifierSize($typeDp(200))" 
                     $attrContentScale="${ContentScaleValues.fillHeight}"/>
-                  <$image $attrResource="narwin" $attrSize="200" 
+                  <$image $attrResource="narwin" $attrStyle="$modifierSize($typeDp(200))"
                     $attrContentScale="${ContentScaleValues.fillWidth}"/>
-                  <$image $attrResource="narwin" $attrSize="200" 
+                  <$image $attrResource="narwin" $attrStyle="$modifierSize($typeDp(200))" 
                     $attrContentScale="${ContentScaleValues.fillBounds}"/>
                 </$column>                
                 """

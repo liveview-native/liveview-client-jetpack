@@ -20,18 +20,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
-import org.phoenixframework.liveview.data.constants.Attrs.attrClip
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
-import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrMinValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrSteps
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActiveTickColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActiveTrackColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledActiveTickColor
@@ -42,7 +38,18 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabled
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInactiveTickColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInactiveTrackColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrThumbColor
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClip
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
+import org.phoenixframework.liveview.data.constants.ShapeValues.roundedCorner
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Magenta
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.Templates.templateStartThumb
 import org.phoenixframework.liveview.data.constants.Templates.templateThumb
 import org.phoenixframework.liveview.data.constants.Templates.templateTrack
@@ -211,21 +218,21 @@ class SliderShotTest : LiveViewComposableTest() {
                 <$column>
                   <$slider $attrPhxValue="0.5">
                     <$box 
-                      $attrSize="40" $attrClip="4" 
-                      $attrBackground="#FFFF00FF" $attrTemplate="$templateThumb"/>
+                      $attrStyle="$modifierSize($typeDp(40));$modifierClip($roundedCorner($typeDp(4)));$modifierBackground($typeColor.$Magenta)"
+                      $attrTemplate="$templateThumb"/>
                   </$slider>
                   <$slider $attrPhxValue="0.5">
                     <$box 
-                      $attrWidth="$fill" $attrHeight="10" $attrClip="4" 
-                      $attrBackground="#FF00FF00" $attrTemplate="$templateTrack"/>
+                      $attrStyle="$modifierFillMaxWidth();$modifierClip($roundedCorner($typeDp(4)));$modifierHeight($typeDp(10));$modifierBackground($typeColor.$Green)" 
+                      $attrTemplate="$templateTrack"/>
                   </$slider>                  
                   <$slider $attrPhxValue="0.5">
                     <$box 
-                      $attrSize="40" $attrClip="4" 
-                      $attrBackground="#FFFF00FF" $attrTemplate="$templateThumb"/>
+                      $attrStyle="$modifierSize($typeDp(40));$modifierClip($roundedCorner($typeDp(4)));$modifierBackground($typeColor.$Magenta)" 
+                      $attrTemplate="$templateThumb"/>
                     <$box 
-                      $attrWidth="$fill" $attrHeight="10" $attrClip="4" 
-                      $attrBackground="#FF00FF00" $attrTemplate="$templateTrack"/>
+                      $attrStyle="$modifierFillMaxWidth();$modifierClip($roundedCorner($typeDp(4)));$modifierHeight($typeDp(10));$modifierBackground($typeColor.$Green)" 
+                      $attrTemplate="$templateTrack"/>
                   </$slider>
                 <$column>                                
                 """
@@ -432,27 +439,27 @@ class SliderShotTest : LiveViewComposableTest() {
                 <$column>
                   <$rangeSlider $attrPhxValue="0.5,0.7f">
                     <$box 
-                      $attrSize="40" $attrClip="4" 
-                      $attrBackground="#FFFF0000" $attrTemplate="$templateStartThumb"/>
+                      $attrStyle="$modifierSize($typeDp(40));$modifierClip($roundedCorner($typeDp(4)));$modifierBackground($typeColor.$Red)"
+                      $attrTemplate="$templateStartThumb"/>
                   </$rangeSlider>
                   <$rangeSlider $attrPhxValue="0.3,0.6">
                     <$box 
-                      $attrSize="40" $attrClip="4" 
-                      $attrBackground="#FFFF0000" $attrTemplate="$templateStartThumb"/>
+                      $attrStyle="$modifierSize($typeDp(40));$modifierClip($roundedCorner($typeDp(4)));$modifierBackground($typeColor.$Red)" 
+                      $attrTemplate="$templateStartThumb"/>
                     <$box 
-                      $attrWidth="$fill" $attrHeight="10" $attrClip="4" 
-                      $attrBackground="#FF00FF00" $attrTemplate="$templateTrack"/>
+                      $attrStyle="$modifierFillMaxWidth();$modifierClip($roundedCorner($typeDp(4)));$modifierHeight($typeDp(10));$modifierBackground($typeColor.$Green)"
+                      $attrTemplate="$templateTrack"/>
                   </$rangeSlider>                  
                   <$rangeSlider $attrPhxValue="0.4,0.8">
                     <$box 
-                      $attrSize="40" $attrClip="4" 
-                      $attrBackground="#FFFF0000" $attrTemplate="$templateStartThumb"/>
+                      $attrStyle="$modifierSize($typeDp(40));$modifierClip($roundedCorner($typeDp(4)));$modifierBackground($typeColor.$Red)" 
+                      $attrTemplate="$templateStartThumb"/>
                     <$box 
-                      $attrSize="40" $attrClip="4" 
-                      $attrBackground="#FF0000FF" $attrTemplate="endThumb"/>
+                      $attrStyle="$modifierSize($typeDp(40));$modifierClip($roundedCorner($typeDp(4)));$modifierBackground($typeColor.$Blue)" 
+                      $attrTemplate="endThumb"/>
                     <$box 
-                      $attrWidth="$fill" $attrHeight="10" $attrClip="4" 
-                      $attrBackground="#FF00FF00" $attrTemplate="$templateTrack"/>
+                      $attrStyle="$modifierFillMaxWidth();$modifierClip($roundedCorner($typeDp(4)));$modifierHeight($typeDp(10));$modifierBackground($typeColor.$Green)" 
+                      $attrTemplate="$templateTrack"/>
                   </$rangeSlider>
                 <$column>                                
                 """

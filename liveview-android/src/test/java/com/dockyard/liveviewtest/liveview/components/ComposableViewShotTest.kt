@@ -16,11 +16,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
-import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Black
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Cyan
@@ -70,19 +72,19 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$column>
-                    <$box $attrSize="40" $attrBackground="$Red" />
-                    <$box $attrSize="40" $attrBackground="$Green" />
-                    <$box $attrSize="40" $attrBackground="$Blue" />
-                    <$box $attrSize="40" $attrBackground="$Black" />
-                    <$box $attrSize="40" $attrBackground="$White" />
-                    <$box $attrSize="40" $attrBackground="$Gray" />
-                    <$box $attrSize="40" $attrBackground="$LightGray" />
-                    <$box $attrSize="40" $attrBackground="$DarkGray" />
-                    <$box $attrSize="40" $attrBackground="$Yellow" />
-                    <$box $attrSize="40" $attrBackground="$Magenta" />
-                    <$box $attrSize="40" $attrBackground="$Cyan" />
-                    <$box $attrSize="40" $attrBackground="$Transparent" />
-                    <$box $attrSize="40" $attrBackground="invalid-color" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Red)" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Green)" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Blue)" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Black)" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$White)" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Gray)" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$LightGray)" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$DarkGray)" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Yellow)" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Magenta)" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Cyan)" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Transparent)" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.Unspecified" />
                 </$column>
                 """
         )
@@ -117,18 +119,18 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$column>
-                    <$box $attrSize="40" $attrBackground="#FF0000" />
-                    <$box $attrSize="40" $attrBackground="#00FF00" />
-                    <$box $attrSize="40" $attrBackground="#0000FF" />
-                    <$box $attrSize="40" $attrBackground="#000000" />
-                    <$box $attrSize="40" $attrBackground="#FFFFFF" />
-                    <$box $attrSize="40" $attrBackground="#888888" />
-                    <$box $attrSize="40" $attrBackground="#CCCCCC" />
-                    <$box $attrSize="40" $attrBackground="#444444" />
-                    <$box $attrSize="40" $attrBackground="#FFFF00" />
-                    <$box $attrSize="40" $attrBackground="#FF00FF" />
-                    <$box $attrSize="40" $attrBackground="#00FFFF" />
-                    <$box $attrSize="40" $attrBackground="invalid-color" />
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Red)"/>
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Green)"/>
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Blue)"/>
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Black)"/>
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$White)"/>
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Gray)"/>
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$LightGray)"/>
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$DarkGray)"/>
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Yellow)"/>
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Magenta)"/>
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.$Cyan)"/>
+                    <$box $attrStyle="$modifierSize($typeDp(40));$modifierBackground($typeColor.Unspecified)"/>
                 </$column>
                 """
         )
@@ -176,12 +178,12 @@ class ComposableViewShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$row $attrHeight="50%" $attrWidth="$fill">
-                    <$box $attrWidth="10%" $attrHeight="70%" $attrBackground="$Red"/>
-                    <$box $attrWidth="15%" $attrHeight="50%" $attrBackground="$Green"/>
-                    <$box $attrWidth="25%" $attrHeight="40%" $attrBackground="$Blue"/>
-                    <$box $attrWidth="35%" $attrHeight="20%" $attrBackground="$Cyan"/>
-                    <$box $attrWidth="15%" $attrHeight="10%" $attrBackground="$Yellow"/>
+                <$row $attrStyle="$modifierFillMaxHeight(0.50);$modifierFillMaxWidth()">
+                    <$box $attrStyle="$modifierFillMaxWidth(0.10);$modifierFillMaxHeight(0.70);$modifierBackground($typeColor.$Red)"/>
+                    <$box $attrStyle="$modifierFillMaxWidth(0.15);$modifierFillMaxHeight(0.50);$modifierBackground($typeColor.$Green)"/>
+                    <$box $attrStyle="$modifierFillMaxWidth(0.25);$modifierFillMaxHeight(0.40);$modifierBackground($typeColor.$Blue)"/>
+                    <$box $attrStyle="$modifierFillMaxWidth(0.35);$modifierFillMaxHeight(0.20);$modifierBackground($typeColor.$Cyan)"/>
+                    <$box $attrStyle="$modifierFillMaxWidth(0.15);$modifierFillMaxHeight(0.10);$modifierBackground($typeColor.$Yellow)"/>
                 </$row>
                 """
         )
@@ -229,7 +231,9 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             ThemeColorsValues.surfaceDim,
         )
         val boxes =
-            stringColors.joinToString("") { "<$box $attrSize=\"50\" $attrBackground=\"$it\"/>" }
+            stringColors.joinToString("") {
+                "<$box $attrStyle=\"$modifierSize($typeDp(50));$modifierBackground($typeColor.$it)\"/>"
+            }
         println(boxes)
         compareNativeComposableWithTemplate(
             nativeComposable = {

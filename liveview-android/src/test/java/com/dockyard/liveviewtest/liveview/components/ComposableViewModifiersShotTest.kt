@@ -44,9 +44,11 @@ import org.phoenixframework.liveview.data.constants.AlignmentValues.center
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues.centerHorizontally
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.centerVertically
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
@@ -425,6 +427,9 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 ]]},
                 {:background, [], [{:., [], [:Color, :White]}]},
                 {:padding, [], [{:., [], [16, :dp]}]}
+            ],
+            "size(Dp(200))" => [
+                {:size, [], [{:Dp, [], [200]}]}
             ]}
             """
         )
@@ -453,7 +458,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrSize="200" $attrContentAlignment="$center">
+                <$box $attrStyle="$modifierSize($typeDp(200))" $attrContentAlignment="$center">
                     <$box $attrClass="shadowTest">
                         <$text $attrText="Shadow Test" />
                     </$box>

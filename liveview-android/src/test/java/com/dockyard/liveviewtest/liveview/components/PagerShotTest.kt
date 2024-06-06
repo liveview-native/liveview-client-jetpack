@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.sp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
-import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrCurrentPage
@@ -34,7 +33,10 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPageCount
 import org.phoenixframework.liveview.data.constants.Attrs.attrPageSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrPageSpacing
 import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
@@ -281,7 +283,7 @@ class PagerShotTest : LiveViewComposableTest() {
 
     private fun pagerTemplateTab(color: String, textContent: String): String {
         return """
-            <$box $attrContentAlignment="$center" $attrBackground="$color" $attrSize="fill">
+            <$box $attrContentAlignment="$center" $attrStyle="$modifierFillMaxSize();$modifierBackground($typeColor.$color)">
                 <$text $attrFontSize="24">$textContent</$text>
             </$box>
             """

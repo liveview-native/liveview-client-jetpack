@@ -23,16 +23,17 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrLineHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxLines
 import org.phoenixframework.liveview.data.constants.Attrs.attrMinLines
 import org.phoenixframework.liveview.data.constants.Attrs.attrOverflow
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextDecoration
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.FontStyleValues.italic
 import org.phoenixframework.liveview.data.constants.FontWeightValues
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
 import org.phoenixframework.liveview.data.constants.TextAlignValues
 import org.phoenixframework.liveview.data.constants.TextDecorationValues.lineThrough
 import org.phoenixframework.liveview.data.constants.TextDecorationValues.underline
 import org.phoenixframework.liveview.data.constants.TextOverflowValues
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.domain.base.ComposableTypes.column
 import org.phoenixframework.liveview.domain.base.ComposableTypes.text
 import org.phoenixframework.liveview.ui.theme.fontFamilyFromString
@@ -194,6 +195,9 @@ class TextShotTest : LiveViewComposableTest() {
 
     @Test
     fun textWithAlignTest() {
+        ModifiersParser.fromStyleFile(
+            """%{"$modifierFillMaxWidth()" => [{:$modifierFillMaxWidth, [], []}]}""".trimStyle()
+        )
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 Column {
@@ -220,11 +224,11 @@ class TextShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$column>
-                    <$text $attrWidth="$fill" $attrTextAlign="${TextAlignValues.start}">Text Start</$text>
-                    <$text $attrWidth="$fill" $attrTextAlign="${TextAlignValues.end}">Text End</$text>
-                    <$text $attrWidth="$fill" $attrTextAlign="${TextAlignValues.center}">Text Center</$text>
-                    <$text $attrWidth="$fill" $attrTextAlign="${TextAlignValues.justify}">$lorenIpsum</$text>
+                <$column $attrStyle="$modifierFillMaxWidth()">
+                    <$text $attrStyle="$modifierFillMaxWidth()" $attrTextAlign="${TextAlignValues.start}">Text Start</$text>
+                    <$text $attrStyle="$modifierFillMaxWidth()" $attrTextAlign="${TextAlignValues.end}">Text End</$text>
+                    <$text $attrStyle="$modifierFillMaxWidth()" $attrTextAlign="${TextAlignValues.center}">Text Center</$text>
+                    <$text $attrStyle="$modifierFillMaxWidth()" $attrTextAlign="${TextAlignValues.justify}">$lorenIpsum</$text>
                 </$column>
                 """
         )

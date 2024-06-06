@@ -17,15 +17,21 @@ import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
-import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
-import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
+import org.phoenixframework.liveview.data.constants.SystemColorValues.LightGray
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
 import org.phoenixframework.liveview.domain.base.ComposableTypes.column
@@ -48,9 +54,9 @@ class RowShotTest : LiveViewComposableTest() {
 
     private val contentHeight = 150
     private val horizontalContentTestTemplate = """
-            <$box $attrBackground="#FFFF0000"><$text>Red</$text></$box>
-            <$box $attrBackground="#FF00FF00"><$text>Green</$text></$box>
-            <$box $attrBackground="#FF0000FF"><$text>Blue</$text></$box>
+            <$box $attrStyle="$modifierBackground($typeColor.$Red)"><$text>Red</$text></$box>
+            <$box $attrStyle="$modifierBackground($typeColor.$Green)"><$text>Green</$text></$box>
+            <$box $attrStyle="$modifierBackground($typeColor.$Blue)"><$text>Blue</$text></$box>
             """
 
     @Test
@@ -107,27 +113,27 @@ class RowShotTest : LiveViewComposableTest() {
             }, template = """
                 <$column>
                   <$row 
-                    $attrWidth="$fill" 
+                    $attrStyle="$modifierFillMaxWidth()"
                     $attrHorizontalArrangement="${HorizontalArrangementValues.end}">
                     $horizontalContentTestTemplate
                   </$row>
                   <$row 
-                    $attrWidth="$fill" 
+                    $attrStyle="$modifierFillMaxWidth()"
                     $attrHorizontalArrangement="${HorizontalArrangementValues.center}">
                     $horizontalContentTestTemplate
                   </$row>
                   <$row 
-                    $attrWidth="$fill" 
+                    $attrStyle="$modifierFillMaxWidth()"
                     $attrHorizontalArrangement="${HorizontalArrangementValues.spaceAround}">
                     $horizontalContentTestTemplate
                   </$row>
                   <$row 
-                    $attrWidth="$fill" 
+                    $attrStyle="$modifierFillMaxWidth()"
                     $attrHorizontalArrangement="${HorizontalArrangementValues.spaceBetween}">
                     $horizontalContentTestTemplate
                   </$row>
                   <$row 
-                    $attrWidth="$fill" 
+                    $attrStyle="$modifierFillMaxWidth()"
                     $attrHorizontalArrangement="${HorizontalArrangementValues.spaceEvenly}">
                     $horizontalContentTestTemplate
                   </$row>
@@ -169,22 +175,19 @@ class RowShotTest : LiveViewComposableTest() {
 
             },
             template = """
-                <$column $attrWidth="$fill">
+                <$column $attrStyle="$modifierFillMaxWidth()">
                   <$row 
-                    $attrWidth="$fill" 
-                    $attrHeight="$contentHeight" 
+                    $attrStyle="$modifierFillMaxWidth();$modifierHeight($typeDp($contentHeight))"
                     $attrVerticalAlignment="${VerticalAlignmentValues.top}">
                     $horizontalContentTestTemplate
                   </$row>
                   <$row 
-                    $attrWidth="$fill" 
-                    $attrHeight="$contentHeight" 
+                    $attrStyle="$modifierFillMaxWidth();$modifierHeight($typeDp($contentHeight))" 
                     $attrVerticalAlignment="${VerticalAlignmentValues.centerVertically}">
                     $horizontalContentTestTemplate
                   </$row>
                   <$row 
-                    $attrWidth="$fill" 
-                    $attrHeight="$contentHeight" 
+                    $attrStyle="$modifierFillMaxWidth();$modifierHeight($typeDp($contentHeight))"
                     $attrVerticalAlignment="${VerticalAlignmentValues.bottom}">
                     $horizontalContentTestTemplate
                   </$row>
@@ -233,24 +236,21 @@ class RowShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$row $attrHeight="200" $attrWidth="$fill" $attrBackground="#FFCCCCCC">
+                <$row $attrStyle="$modifierFillMaxWidth();$modifierHeight($typeDp(200));$modifierBackground($typeColor.$LightGray)">
                   <$box 
-                    $attrBackground="#FFFF0000" 
-                    $attrWidth="$fill" 
+                    $attrStyle="$modifierFillMaxWidth();$modifierBackground($typeColor.$Red)"
                     $attrWeight="25" 
                     $attrContentAlignment="${AlignmentValues.center}">
                     <$text>25%</$text>
                   </$box>
-                  <$box 
-                    $attrBackground="#FF00FF00" 
-                    $attrWidth="$fill" 
+                  <$box
+                    $attrStyle="$modifierFillMaxWidth();$modifierBackground($typeColor.$Green)"
                     $attrWeight="35" 
                     $attrContentAlignment="${AlignmentValues.center}">
                     <$text>35%</$text>
                   </$box>
                   <$box 
-                    $attrBackground="#FF0000FF" 
-                    $attrWidth="$fill" 
+                    $attrStyle="$modifierFillMaxWidth();$modifierBackground($typeColor.$Blue)" 
                     $attrWeight="40" 
                     $attrContentAlignment="${AlignmentValues.center}">
                     <$text>40%</$text>
@@ -275,7 +275,7 @@ class RowShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$row $attrWidth="$fill" $attrHeight="200">
+                <$row $attrStyle="$modifierFillMaxWidth();$modifierHeight($typeDp(200))">
                   <$text $attrAlign="${VerticalAlignmentValues.top}">Top</$text>
                   <$text $attrAlign="${VerticalAlignmentValues.centerVertically}">Center</$text>
                   <$text $attrAlign="${VerticalAlignmentValues.bottom}">Bottom</$text>

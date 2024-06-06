@@ -15,19 +15,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
-import org.phoenixframework.liveview.data.constants.Attrs.attrClip
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrEdgePadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
-import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelectedTabIndex
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierClip
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.ShapeValues.circle
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Cyan
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
@@ -127,10 +129,7 @@ class TabRowShotTest : LiveViewComposableTest() {
                   $attrContentColor="$Yellow" >
                   <$box 
                     $attrTemplate="$templateDivider" 
-                    $attrWidth="$fill" 
-                    $attrHeight="4" 
-                    $attrClip="$circle" 
-                    $attrBackground="$Cyan" />
+                    $attrStyle="$modifierFillMaxWidth();$modifierHeight($typeDp(4));$modifierClip($circle);$modifierBackground($typeColor.$Cyan)" />
                   <$tab $attrSelected="true">
                     <$text $attrTemplate="$templateText">Tab 0</$text>
                   </$tab>

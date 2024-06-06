@@ -16,10 +16,10 @@ import org.junit.Before
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlpha
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrUrl
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.ContentScaleValues.fillHeight
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
 import org.phoenixframework.liveview.domain.base.ComposableTypes.asyncImage
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
 
@@ -55,7 +55,7 @@ class AsyncImageShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrWidth="$fill">
+                <$box $attrStyle="$modifierFillMaxWidth()">
                   <$asyncImage $attrUrl="$url" $attrAlpha="0.5" $attrContentScale="$fillHeight" />
                 </$box>    
                 """

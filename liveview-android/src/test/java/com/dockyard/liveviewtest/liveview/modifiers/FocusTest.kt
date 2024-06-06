@@ -65,7 +65,6 @@ class FocusTest : BaseComposableModifierTest() {
         var focusedCounter = 0
         var unfocusedCounter = 0
         val pushEvent: PushEvent = { _, _, value, _ ->
-            println(value)
             (value as? Map<*,*>)?.let {
                 if (it["hasFocus"] == true) focusedCounter++
                 if (it["hasFocus"] == false) unfocusedCounter++

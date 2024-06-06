@@ -25,10 +25,10 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrMaxLines
 import org.phoenixframework.liveview.data.constants.Attrs.attrMinLines
 import org.phoenixframework.liveview.data.constants.Attrs.attrOverflow
 import org.phoenixframework.liveview.data.constants.Attrs.attrSoftWrap
-import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextDecoration
+import org.phoenixframework.liveview.data.constants.Attrs.attrTextStyle
 import org.phoenixframework.liveview.data.constants.TextOverflowValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
@@ -411,10 +411,11 @@ internal object TextDtoFactory : ComposableViewFactory<TextDTO>() {
             attrMinLines -> builder.minLines(attribute.value)
             attrOverflow -> builder.overflow(attribute.value)
             attrSoftWrap -> builder.softWrap(attribute.value)
-            attrStyle -> builder.style(attribute.value)
             attrText -> builder.text(attribute.value)
             attrTextAlign -> builder.textAlign(attribute.value)
             attrTextDecoration -> builder.textDecoration(attribute.value)
+            // FIXME style attribute is used for modifiers, so I renamed to textStyle
+            attrTextStyle -> builder.style(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as TextDTO.Builder
     }

@@ -17,17 +17,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrInitialIsVisible
 import org.phoenixframework.liveview.data.constants.Attrs.attrIsPersistent
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrActionContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTitleContentColor
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.SystemColorValues.White
@@ -71,7 +74,7 @@ class TooltipShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrSize="200" $attrBackground="$Green">
+                <$box $attrStyle="$modifierSize($typeDp(200));$modifierBackground($typeColor.$Green)">
                   <$tooltipBox $attrInitialIsVisible="true" $attrIsPersistent="true">
                     <$plainTooltip $attrTemplate="$templateTooltip">
                       <$text>Tooltip</$text>
