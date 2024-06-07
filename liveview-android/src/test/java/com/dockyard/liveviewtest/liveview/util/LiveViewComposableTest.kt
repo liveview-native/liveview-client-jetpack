@@ -38,12 +38,16 @@ abstract class LiveViewComposableTest : BaseTest() {
 
     @Before
     fun setup() {
-        loadAppStylesMockFile(composeRule.activity)
+        if (!isRecording) {
+            loadAppStylesMockFile(composeRule.activity)
+        }
     }
 
     @After
     fun tearDown() {
-        ModifiersParser.clearCacheTable()
+        if (!isRecording) {
+            ModifiersParser.clearCacheTable()
+        }
     }
 
     internal fun compareNativeComposableWithTemplate(
@@ -102,8 +106,13 @@ abstract class LiveViewComposableTest : BaseTest() {
         private fun loadAppStylesMockFile(context: Context) {
             val inputStream = context.resources.openRawResource(R.raw.app_jetpack_styles)
             val bufferedReader = inputStream.bufferedReader()
-            val text = bufferedReader.use { it.readText() }
-            ModifiersParser.fromStyleFile(text)
+            try {
+                bufferedReader.use { it.readText() }.let { text ->
+                    ModifiersParser.fromStyleFile(text)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

@@ -17,7 +17,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
-import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedBorderColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedIconColor
@@ -35,6 +35,8 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnchecke
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedThumbColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedTrackColor
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.Templates.templateThumb
 import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
 import org.phoenixframework.liveview.domain.base.ComposableTypes.row
@@ -174,7 +176,7 @@ class SwitchShotTest : LiveViewComposableTest() {
                     )
                 }
             }, template = """
-                <$row $attrPadding="16">
+                <$row $attrStyle="$modifierPadding($typeDp(16))">
                   <$switch $attrChecked="true" $attrColors="$colorsForTemplate">
                     <$icon $attrImageVector="filled:Check" $attrTemplate="$templateThumb" />
                   </$switch>
@@ -189,7 +191,6 @@ class SwitchShotTest : LiveViewComposableTest() {
                   </$switch>                  
                 </$row>  
                 """
-
         )
     }
 }

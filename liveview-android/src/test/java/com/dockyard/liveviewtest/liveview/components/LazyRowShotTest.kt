@@ -15,12 +15,12 @@ import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
-import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
 import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
+import org.phoenixframework.liveview.data.constants.ModifierNames
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
@@ -37,7 +37,7 @@ class LazyRowShotTest : LiveViewComposableTest() {
             (1..count).forEach {
                 append(
                     """
-                    <$column $attrPadding="8">
+                    <$column $attrStyle="${ModifierNames.modifierPadding}($typeDp(8))">
                       <$text ${if (fill) "$attrWeight=\"1\"" else ""}>Item ${it}</$text>
                       <$text>#${it}</$text>
                     </$column>     

@@ -6,9 +6,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,10 +21,20 @@ import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argBottom
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argEnd
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argHorizontal
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argStart
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argTop
+import org.phoenixframework.liveview.data.constants.ModifierArgs.argVertical
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAspectRatio
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Black
@@ -42,6 +56,87 @@ import org.phoenixframework.liveview.domain.base.ComposableTypes.flowRow
 import org.phoenixframework.liveview.domain.base.ComposableTypes.row
 
 class ComposableViewShotTest : LiveViewComposableTest() {
+
+    @Test
+    fun aspectRatioTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Column {
+                    Box(
+                        modifier = Modifier
+                            .width(200.dp)
+                            .aspectRatio(1.33f)
+                            .background(Color.Red)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .height(200.dp)
+                            .aspectRatio(1.77f)
+                            .background(Color.Blue)
+                    )
+                }
+            },
+            template = """
+                <$column>
+                    <$box $attrStyle="$modifierWidth($typeDp(200));$modifierAspectRatio(1.33);$modifierBackground($typeColor.$Red)" />
+                    <$box $attrStyle="$modifierHeight($typeDp(200));$modifierAspectRatio(1.77);$modifierBackground($typeColor.$Blue)" />
+                </$column>
+                """
+        )
+    }
+
+    @Test
+    fun paddingTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Column {
+                    Row(Modifier.padding(bottom = 24.dp)) {
+                        Box(
+                            Modifier
+                                .padding(vertical = 16.dp)
+                                .size(50.dp)
+                                .background(Color.Cyan)
+                        )
+                        Box(
+                            Modifier
+                                .padding(start = 16.dp, end = 16.dp)
+                                .size(50.dp)
+                                .background(Color.Yellow)
+                        )
+                        Box(
+                            Modifier
+                                .padding(horizontal = 24.dp)
+                                .size(50.dp)
+                                .background(Color.Gray)
+                        )
+                        Box(
+                            Modifier
+                                .padding(top = 8.dp)
+                                .size(50.dp)
+                                .background(Color.Magenta)
+                        )
+                    }
+                    Box(
+                        Modifier
+                            .size(50.dp)
+                            .background(Color.DarkGray)
+                    )
+                }
+            },
+            template = """
+                <$column>
+                    <$row $attrStyle="$modifierPadding($argBottom = $typeDp(24))">
+                        <$box $attrStyle="$modifierPadding($argVertical = $typeDp(16));$modifierSize($typeDp(50));$modifierBackground($typeColor.$Cyan)" />
+                        <$box $attrStyle="$modifierPadding($argStart = $typeDp(16), $argEnd = $typeDp(16));$modifierSize($typeDp(50));$modifierBackground($typeColor.$Yellow)" />
+                        <$box $attrStyle="$modifierPadding($argHorizontal = $typeDp(24));$modifierSize($typeDp(50));$modifierBackground($typeColor.$Gray)" />
+                        <$box $attrStyle="$modifierPadding($argTop = $typeDp(8));$modifierSize($typeDp(50));$modifierBackground($typeColor.$Magenta)" />
+                    </$row>
+                    <$box $attrStyle="$modifierSize($typeDp(50));$modifierBackground($typeColor.$DarkGray)" />
+                </$column>
+                """
+        )
+    }
+
     @Test
     fun systemColorsShotTest() {
         compareNativeComposableWithTemplate(
@@ -234,7 +329,6 @@ class ComposableViewShotTest : LiveViewComposableTest() {
             stringColors.joinToString("") {
                 "<$box $attrStyle=\"$modifierSize($typeDp(50));$modifierBackground($typeColor.$it)\"/>"
             }
-        println(boxes)
         compareNativeComposableWithTemplate(
             nativeComposable = {
                 val colors = listOf(

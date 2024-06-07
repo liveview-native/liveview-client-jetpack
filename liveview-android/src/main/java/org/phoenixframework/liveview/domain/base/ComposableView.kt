@@ -5,33 +5,24 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
-import org.phoenixframework.liveview.data.constants.Attrs.attrAspectRatio
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrExposedDropdownSize
-import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrMatchParentSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrMenuAnchor
-import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValueNamed
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
-import org.phoenixframework.liveview.data.constants.Attrs.attrTestTag
-import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
 import org.phoenixframework.liveview.data.constants.ScrollingValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
@@ -42,7 +33,6 @@ import org.phoenixframework.liveview.data.dto.onClickFromString
 import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyleName
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.KEY_PHX_VALUE
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 
 /**
@@ -139,65 +129,6 @@ abstract class ComposableBuilder {
     }
 
     /**
-     * Apply [padding] dp of additional space along each edge of the content, left, top, right and
-     * bottom.
-     * ```
-     * <ComposableView padding="8" />
-     * ```
-     * @param padding int value for padding to be applied to the four edges.
-     */
-    private fun padding(padding: String) = apply {
-        if (padding.isNotEmptyAndIsDigitsOnly()) {
-            val modifier = this.commonProps.modifier
-            this.commonProps =
-                this.commonProps.copy(modifier = modifier.then(Modifier.padding(padding.toInt().dp)))
-        }
-    }
-
-    /**
-     * Apply [padding] dp space along the top and bottom edges of the content.
-     * ```
-     * <ComposableView verticalPadding="16" />
-     * ```
-     * @param padding int value for padding to be applied on top and bottom edges.
-     */
-    internal fun paddingVertical(padding: String) = apply {
-        if (padding.isNotEmptyAndIsDigitsOnly()) {
-            val modifier = this.commonProps.modifier
-            this.commonProps = this.commonProps.copy(
-                modifier = modifier.then(Modifier.padding(vertical = padding.toInt().dp))
-            )
-        }
-    }
-
-    /**
-     * Apply [padding] dp space along the left and right edges of the content.
-     * ```
-     * <ComposableView horizontalPadding="16" />
-     * ```
-     * @param padding int value for padding to be applied on left and right edges.
-     */
-    internal fun paddingHorizontal(padding: String) = apply {
-        if (padding.isNotEmptyAndIsDigitsOnly()) {
-            val modifier = this.commonProps.modifier
-            this.commonProps = this.commonProps.copy(
-                modifier = modifier.then(Modifier.padding(horizontal = padding.toInt().dp))
-            )
-        }
-    }
-
-    private fun handleFraction(value: String): Float? {
-        if (value.length > 1) {
-            // Value without the '%' sign
-            val percentageStr = value.substring(0, value.lastIndex)
-            if (percentageStr.isNotEmptyAndIsDigitsOnly()) {
-                return percentageStr.toFloat() / 100f
-            }
-        }
-        return null
-    }
-
-    /**
      * Sets the event name to be triggered on the server when the composable is clicked.
      *
      * ```
@@ -257,38 +188,6 @@ abstract class ComposableBuilder {
         )
     }
 
-    /**
-     * Attempts to size the content to match a specified aspect ratio by trying to match one of the
-     * incoming constraints.
-     *
-     * ```
-     * <Composable aspectRatio={"#{4/3}"} />
-     * ```
-     * @param aspectRatio a floating number representing the aspect ratio.
-     */
-    private fun aspectRatio(aspectRatio: String) = apply {
-        if (aspectRatio.isNotEmpty()) {
-            val modifier = this.commonProps.modifier
-            this.commonProps = this.commonProps.copy(
-                modifier = modifier.then(Modifier.aspectRatio(aspectRatio.toFloat()))
-            )
-        }
-    }
-
-    /**
-     * Tag used during the UI tests. It must be unique in the UI tree.
-     * ```
-     * <Composable testTag="myTag" />
-     * ```
-     * @param testTag tag used during the UI tests.
-     */
-    private fun testTag(testTag: String) = apply {
-        val modifier = this.commonProps.modifier
-        this.commonProps = this.commonProps.copy(
-            modifier = modifier.then(Modifier.testTag(testTag))
-        )
-    }
-
     private fun modifier(string: String, scope: Any?, pushEvent: PushEvent?) = apply {
         val modifier = this.commonProps.modifier
         this.commonProps = this.commonProps.copy(
@@ -310,15 +209,10 @@ abstract class ComposableBuilder {
         scope: Any?,
     ): ComposableBuilder {
         when (attribute.name) {
-            attrAspectRatio -> aspectRatio(attribute.value)
             attrClass -> modifier(attribute.value, scope, pushEvent)
-            attrHorizontalPadding -> paddingHorizontal(attribute.value)
-            attrPadding -> padding(attribute.value)
             attrPhxClick -> clickable(attribute.value, pushEvent)
             attrPhxValue -> value(attrPhxValue, attribute.value)
             attrStyle -> style(attribute.value, scope, pushEvent)
-            attrTestTag -> testTag(attribute.value)
-            attrVerticalPadding -> paddingVertical(attribute.value)
             else ->
                 if (attribute.name.startsWith(attrPhxValueNamed)) {
                     value(attribute.name, attribute.value)

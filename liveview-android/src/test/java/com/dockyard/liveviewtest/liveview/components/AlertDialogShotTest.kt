@@ -22,11 +22,12 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrIconContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
-import org.phoenixframework.liveview.data.constants.Attrs.attrTestTag
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrTitleContentColor
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTestTag
 import org.phoenixframework.liveview.data.constants.Templates.templateConfirmButton
 import org.phoenixframework.liveview.data.constants.Templates.templateDismissButton
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
@@ -73,8 +74,7 @@ class AlertDialogShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <$alertDialog 
-                  $attrTestTag="$testTag">
+                <$alertDialog $attrStyle="$modifierTestTag('$testTag')">
                   <$button 
                     $attrTemplate="$templateConfirmButton">
                     <$text>Confirm</$text>
@@ -130,7 +130,7 @@ class AlertDialogShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$alertDialog 
-                  $attrTestTag="$testTag" 
+                  $attrStyle="$modifierTestTag('$testTag')" 
                   $attrShape="4" 
                   $attrContainerColor="#FFF2DDE1"
                   $attrIconContentColor="#FFFF0000" 
@@ -176,7 +176,7 @@ class AlertDialogShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$basicAlertDialog $attrTestTag="$testTag">
+                <$basicAlertDialog $attrStyle="$modifierTestTag('$testTag')">
                   <$column>
                     <$text>Title</$text>
                     <$text>Message</$text>
