@@ -233,7 +233,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "parses key/value pairs" do
-      input = ~s|foo(bar = "baz", qux = .quux)|
+      input = ~s|foo(bar = "baz", qux=.quux)|
       output = {:foo, [], [[bar: "baz", qux: {:., [], [nil, :quux]}]]}
 
       assert parse(input) == output
