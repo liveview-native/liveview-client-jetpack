@@ -121,7 +121,7 @@ defmodule LiveViewNative.Jetpack.RulesParser.Expressions do
 
     ignore_whitespace()
     |> concat(key)
-    |> ignore(whitespace(min: 1))
+    |> ignore_whitespace()
     |> concat(value)
     |> post_traverse({PostProcessors, :to_keyword_tuple_ast, []})
   end
