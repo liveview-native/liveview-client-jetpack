@@ -1,7 +1,6 @@
 package org.phoenixframework.liveview.domain.base
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -13,7 +12,6 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrExposedDropdownSize
-import org.phoenixframework.liveview.data.constants.Attrs.attrMatchParentSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrMenuAnchor
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
@@ -211,19 +209,6 @@ abstract class ComposableBuilder {
                 }
         }
         when (scope) {
-            is BoxScope -> {
-                when (attribute.name) {
-                    attrMatchParentSize -> scope.run {
-                        if (attribute.value.toBoolean()) {
-                            val modifier = this@ComposableBuilder.commonProps.modifier
-                            this@ComposableBuilder.commonProps =
-                                this@ComposableBuilder.commonProps.copy(
-                                    modifier = modifier.then(Modifier.matchParentSize())
-                                )
-                        }
-                    }
-                }
-            }
 
             is ExposedDropdownMenuBoxScopeWrapper -> {
                 when (attribute.name) {
