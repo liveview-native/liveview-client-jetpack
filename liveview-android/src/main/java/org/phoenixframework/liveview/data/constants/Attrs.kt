@@ -7,7 +7,6 @@ object Attrs {
     const val attrActionLabel = "actionLabel"
     const val attrActionOnNewLine = "actionOnNewLine"
     const val attrActive = "active"
-    const val attrAlign = "align"
     const val attrAlignment = "alignment"
     const val attrAlpha = "alpha"
     const val attrAlwaysShowLabel = "alwaysShowLabel"

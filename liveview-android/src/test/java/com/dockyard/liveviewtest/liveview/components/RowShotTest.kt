@@ -16,16 +16,17 @@ import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
 import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeAlignment
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
@@ -276,9 +277,9 @@ class RowShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$row $attrStyle="$modifierFillMaxWidth();$modifierHeight($typeDp(200))">
-                  <$text $attrAlign="${VerticalAlignmentValues.top}">Top</$text>
-                  <$text $attrAlign="${VerticalAlignmentValues.centerVertically}">Center</$text>
-                  <$text $attrAlign="${VerticalAlignmentValues.bottom}">Bottom</$text>
+                  <$text $attrStyle="$modifierAlign($typeAlignment.${VerticalAlignmentValues.top})">Top</$text>
+                  <$text $attrStyle="$modifierAlign($typeAlignment.${VerticalAlignmentValues.centerVertically})">Center</$text>
+                  <$text $attrStyle="$modifierAlign($typeAlignment.${VerticalAlignmentValues.bottom})">Bottom</$text>
                 </$row>
                 """
         )

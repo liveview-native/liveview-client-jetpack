@@ -25,7 +25,6 @@ import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrBottom
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
@@ -42,7 +41,9 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
 import org.phoenixframework.liveview.data.constants.Attrs.attrTop
 import org.phoenixframework.liveview.data.constants.FabPositionValues
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeAlignment
 import org.phoenixframework.liveview.data.constants.Templates.templateBody
 import org.phoenixframework.liveview.data.constants.Templates.templateBottomBar
 import org.phoenixframework.liveview.data.constants.Templates.templateFab
@@ -487,10 +488,10 @@ class ScaffoldShotTest : LiveViewComposableTest() {
             template = """
                 <$scaffold $attrContentWindowInsets="{'$attrLeft': 32, '$attrTop': 96, '$attrRight': 72, '$attrBottom': 120}">
                     <$box $attrTemplate="$templateBody" $attrStyle="$modifierFillMaxSize()">
-                        <$text $attrAlign="${AlignmentValues.topStart}">Top|Left</$text>
-                        <$text $attrAlign="${AlignmentValues.topEnd}">Top|Right</$text>
-                        <$text $attrAlign="${AlignmentValues.bottomStart}">Bottom|Left</$text>
-                        <$text $attrAlign="${AlignmentValues.bottomEnd}">Bottom|End</$text>
+                        <$text $attrStyle="$modifierAlign($typeAlignment.${AlignmentValues.topStart})">Top|Left</$text>
+                        <$text $attrStyle="$modifierAlign($typeAlignment.${AlignmentValues.topEnd})">Top|Right</$text>
+                        <$text $attrStyle="$modifierAlign($typeAlignment.${AlignmentValues.bottomStart})">Bottom|Left</$text>
+                        <$text $attrStyle="$modifierAlign($typeAlignment.${AlignmentValues.bottomEnd})">Bottom|End</$text>
                     </$box>
                 </$scaffold>
                 """

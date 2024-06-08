@@ -17,17 +17,18 @@ import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeAlignment
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
@@ -269,9 +270,9 @@ class ColumnShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$column $attrStyle="$modifierSize($typeDp(100))">
-                  <$text $attrAlign="${HorizontalAlignmentValues.start}">Start</$text>
-                  <$text $attrAlign="${HorizontalAlignmentValues.centerHorizontally}">Center</$text>
-                  <$text $attrAlign="${HorizontalAlignmentValues.end}">End</$text>
+                  <$text $attrStyle="$modifierAlign($typeAlignment.${HorizontalAlignmentValues.start})">Start</$text>
+                  <$text $attrStyle="$modifierAlign($typeAlignment.${HorizontalAlignmentValues.centerHorizontally})">Center</$text>
+                  <$text $attrStyle="$modifierAlign($typeAlignment.${HorizontalAlignmentValues.end})">End</$text>
                 </$column>
                 """
         )

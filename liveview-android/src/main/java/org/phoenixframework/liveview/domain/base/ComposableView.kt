@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrExposedDropdownSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrMatchParentSize
@@ -27,10 +25,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
 import org.phoenixframework.liveview.data.constants.ScrollingValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxScopeWrapper
-import org.phoenixframework.liveview.data.dto.alignmentFromString
-import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
 import org.phoenixframework.liveview.data.dto.onClickFromString
-import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyleName
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.KEY_PHX_VALUE
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -221,21 +216,6 @@ abstract class ComposableBuilder {
         when (scope) {
             is BoxScope -> {
                 when (attribute.name) {
-                    attrAlign -> scope.run {
-                        val modifier = this@ComposableBuilder.commonProps.modifier
-                        this@ComposableBuilder.commonProps =
-                            this@ComposableBuilder.commonProps.copy(
-                                modifier = modifier.then(
-                                    Modifier.align(
-                                        alignmentFromString(
-                                            attribute.value,
-                                            Alignment.TopStart
-                                        )
-                                    )
-                                )
-                            )
-                    }
-
                     attrMatchParentSize -> scope.run {
                         if (attribute.value.toBoolean()) {
                             val modifier = this@ComposableBuilder.commonProps.modifier
@@ -259,16 +239,6 @@ abstract class ComposableBuilder {
                                 )
                         }
                     }
-
-                    attrAlign -> scope.run {
-                        val modifier = this@ComposableBuilder.commonProps.modifier
-                        this@ComposableBuilder.commonProps =
-                            this@ComposableBuilder.commonProps.copy(
-                                modifier = modifier.then(
-                                    Modifier.align(horizontalAlignmentFromString(attribute.value))
-                                )
-                            )
-                    }
                 }
             }
 
@@ -282,16 +252,6 @@ abstract class ComposableBuilder {
                                     modifier = modifier.then(Modifier.weight(it))
                                 )
                         }
-                    }
-
-                    attrAlign -> scope.run {
-                        val modifier = this@ComposableBuilder.commonProps.modifier
-                        this@ComposableBuilder.commonProps =
-                            this@ComposableBuilder.commonProps.copy(
-                                modifier = modifier.then(
-                                    Modifier.align(verticalAlignmentFromString(attribute.value))
-                                )
-                            )
                     }
                 }
             }

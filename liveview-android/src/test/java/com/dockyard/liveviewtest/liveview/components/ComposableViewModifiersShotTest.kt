@@ -41,13 +41,14 @@ import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues.centerHorizontally
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeAlignment
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.centerVertically
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
@@ -93,7 +94,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             """
             %{
                 "alignRowTest" => [
-                    {:align, [], [{:., [], [:Alignment, :End]}]}
+                    {:align, [], [{:., [], [:Alignment, :Bottom]}]}
                 ], 
                 "rowHeight100" => [
                     {:height, [], [{:Dp, [], [100]}]}
@@ -123,6 +124,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 "alignByColumnTest" => [
                     {:alignBy, [], [{:., [], [:LastBaseline]}]}
                 ], 
+                "align(Alignment.CenterHorizontally)" => [{:align, [], [{:., [], [:Alignment, :CenterHorizontally]}]}],
                 "fillColumnWidth" => [
                     {:fillMaxWidth, [], []},
                     {:height, [], [{:Dp, [], [50]}]}
@@ -146,7 +148,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$column $attrClass="fillColumnWidth">
-                    <$text $attrText="Text1" $attrAlign="$centerHorizontally" />
+                    <$text $attrText="Text1" $attrStyle="$modifierAlign($typeAlignment.$centerHorizontally)" />
                     <$text $attrText="AlignBy" $attrClass="alignByColumnTest"/>
                 </$column>
                 """
@@ -161,6 +163,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 "alignByRowTest" => [
                     {:alignBy, [], [{:., [], [:LastBaseline]}]}
                 ], 
+                "align(Alignment.CenterVertically)" => [{:align, [], [{:., [], [:Alignment, :CenterVertically]}]}],
                 "rowHeight100" => [
                     {:height, [], [{:Dp, [], [100]}]}
                 ]
@@ -176,7 +179,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$row $attrClass="rowHeight100">
-                    <$text $attrText="Text1" $attrAlign="$centerVertically" />
+                    <$text $attrText="Text1" $attrStyle="$modifierAlign($typeAlignment.$centerVertically)" />
                     <$text $attrText="AlignBy" $attrClass="alignByRowTest"/>
                 </$row>
                 """

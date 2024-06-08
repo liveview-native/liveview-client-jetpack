@@ -21,13 +21,14 @@ import org.phoenixframework.liveview.data.constants.AlignmentValues.bottomStart
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
 import org.phoenixframework.liveview.data.constants.AlignmentValues.topEnd
 import org.phoenixframework.liveview.data.constants.AlignmentValues.topStart
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeAlignment
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
@@ -65,9 +66,9 @@ class BoxShotTest : LiveViewComposableTest() {
             },
             template = """
               <$box $attrStyle="$modifierSize($typeDp(100));$modifierBackground($typeColor.$Red)">
-                <$icon $attrImageVector="filled:Android" $attrAlign="$topStart"/>
-                <$text $attrAlign="$center">Text</$text>
-                <$icon $attrImageVector="filled:Share" $attrAlign="$bottomEnd"/>
+                <$icon $attrImageVector="filled:Android" $attrStyle="$modifierAlign($typeAlignment.$topStart)" />
+                <$text $attrStyle="$modifierAlign($typeAlignment.$center)">Text</$text>
+                <$icon $attrImageVector="filled:Share" $attrStyle="$modifierAlign($typeAlignment.$bottomEnd)" />
               </$box>                
             """
         )
@@ -102,9 +103,9 @@ class BoxShotTest : LiveViewComposableTest() {
             },
             template = """
               <$box $attrStyle="$modifierWidth($typeDp(150));$modifierHeight($typeDp(100));$modifierBackground($typeColor.$Blue)">
-                <$icon $attrImageVector="filled:Android" $attrAlign="$topEnd"/>
-                <$text $attrAlign="$center">Text Center</$text>
-                <$icon $attrImageVector="filled:Share" $attrAlign="$bottomStart"/>
+                <$icon $attrImageVector="filled:Android" $attrStyle="$modifierAlign($typeAlignment.$topEnd)" />
+                <$text $attrStyle="$modifierAlign($typeAlignment.$center)">Text Center</$text>
+                <$icon $attrImageVector="filled:Share" $attrStyle="$modifierAlign($typeAlignment.$bottomStart)" />
               </$box>                
             """
         )

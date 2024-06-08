@@ -27,7 +27,6 @@ import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Ignore
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrFontSize
@@ -42,8 +41,10 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrSheetValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeAlignment
 import org.phoenixframework.liveview.data.constants.SheetValues.expanded
 import org.phoenixframework.liveview.data.constants.SheetValues.hidden
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
@@ -264,7 +265,7 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                 <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24" 
                   $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue">
                   <$box $attrStyle="$modifierFillMaxWidth()" $attrTemplate="$templateDragHandle">
-                    <$icon $attrImageVector="$filled:ArrowUpward" $attrAlign="$center" />
+                    <$icon $attrImageVector="$filled:ArrowUpward" $attrStyle="$modifierAlign($typeAlignment.$center)" />
                   </$box>
                   <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateSheetContent">
                     <$text>Sheet content</$text>
@@ -314,7 +315,7 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                 <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24" 
                   $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue">
                   <$box $attrStyle="$modifierFillMaxWidth()" $attrTemplate="$templateDragHandle">
-                    <$icon $attrImageVector="filled:ArrowUpward" $attrAlign="$center" />
+                    <$icon $attrImageVector="filled:ArrowUpward" $attrStyle="$modifierAlign($typeAlignment.$center)" />
                   </$box>
                   <$topAppBar $attrTemplate="$templateTopBar">
                     <$text $attrTemplate="$templateTitle">Title</$text>
@@ -370,7 +371,7 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                   $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue"
                   $attrContainerColor="$Red" $attrContentColor="$Green">
                   <$box $attrStyle="$modifierFillMaxWidth()" $attrTemplate="$templateDragHandle">
-                    <$icon $attrImageVector="filled:ArrowUpward" $attrAlign="$center" />
+                    <$icon $attrImageVector="filled:ArrowUpward" $attrStyle="$modifierAlign($typeAlignment.$center)" />
                   </$box>
                   <$topAppBar $attrTemplate="$templateTopBar">
                     <$text $attrTemplate="$templateTitle">Title</$text>
@@ -432,7 +433,7 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                   $attrContainerColor="$Red" $attrContentColor="$Green"
                   $attrSheetValue="$expanded">
                   <$box $attrStyle="$modifierFillMaxWidth()" $attrTemplate="$templateDragHandle">
-                    <$icon $attrImageVector="filled:ArrowUpward" $attrAlign="$center" />
+                    <$icon $attrImageVector="filled:ArrowUpward" $attrStyle="$modifierAlign($typeAlignment.$center)" />
                   </$box>
                   <$topAppBar $attrTemplate="$templateTopBar">
                     <$text $attrTemplate="$templateTitle">Title</$text>
@@ -500,7 +501,7 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                   $attrContainerColor="$Red" $attrContentColor="$Green"
                   $attrSheetValue="$hidden" $attrSheetSkipHiddenState="false">
                   <$box $attrStyle="$modifierFillMaxWidth()" $attrTemplate="$templateDragHandle">
-                    <$icon $attrImageVector="filled:ArrowUpward" $attrAlign="$center" />
+                    <$icon $attrImageVector="filled:ArrowUpward" $attrStyle="$modifierAlign($typeAlignment.$center)" />
                   </$box>
                   <$topAppBar $attrTemplate="$templateTopBar">
                     <$text $attrTemplate="$templateTitle">Title</$text>
