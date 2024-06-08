@@ -11,15 +11,12 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
-import org.phoenixframework.liveview.data.constants.Attrs.attrExposedDropdownSize
-import org.phoenixframework.liveview.data.constants.Attrs.attrMenuAnchor
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValueNamed
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.ScrollingValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxScopeWrapper
 import org.phoenixframework.liveview.data.dto.onClickFromString
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyleName
 import org.phoenixframework.liveview.domain.base.ComposableBuilder.Companion.KEY_PHX_VALUE
@@ -207,29 +204,6 @@ abstract class ComposableBuilder {
                 if (attribute.name.startsWith(attrPhxValueNamed)) {
                     value(attribute.name, attribute.value)
                 }
-        }
-        when (scope) {
-
-            is ExposedDropdownMenuBoxScopeWrapper -> {
-                when (attribute.name) {
-                    attrMenuAnchor -> scope.scope.run {
-                        val modifier = this@ComposableBuilder.commonProps.modifier
-                        this@ComposableBuilder.commonProps =
-                            this@ComposableBuilder.commonProps.copy(
-                                modifier = modifier.then(Modifier.menuAnchor())
-                            )
-                    }
-
-                    attrExposedDropdownSize -> scope.scope.run {
-                        val modifier = this@ComposableBuilder.commonProps.modifier
-                        this@ComposableBuilder.commonProps =
-                            this@ComposableBuilder.commonProps.copy(
-                                modifier =
-                                modifier.then(Modifier.exposedDropdownSize(attribute.value.toBoolean()))
-                            )
-                    }
-                }
-            }
         }
         return this
     }

@@ -10,10 +10,11 @@ import androidx.compose.ui.Modifier
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrExpanded
-import org.phoenixframework.liveview.data.constants.Attrs.attrMenuAnchor
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrReadOnly
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMenuAnchor
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
 import org.phoenixframework.liveview.domain.base.ComposableTypes.dropdownMenuItem
 import org.phoenixframework.liveview.domain.base.ComposableTypes.exposedDropdownMenu
@@ -53,7 +54,7 @@ class ExposedDropdownMenuBoxShotTest : LiveViewComposableTest() {
             template = """
                 <$box>
                   <$exposedDropdownMenuBox $attrExpanded="true">
-                    <$textField $attrPhxValue="Choose an option" $attrReadOnly="true" $attrMenuAnchor/>
+                    <$textField $attrPhxValue="Choose an option" $attrReadOnly="true" $attrStyle="$modifierMenuAnchor()" />
                     <$exposedDropdownMenu>
                         <$dropdownMenuItem $attrPhxClick="setDDOption" $attrPhxValue="A">
                           <$text>Option A</$text>

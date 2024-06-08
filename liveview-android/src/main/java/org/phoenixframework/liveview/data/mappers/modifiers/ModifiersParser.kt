@@ -21,7 +21,6 @@ import androidx.compose.foundation.preferKeepClear
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -114,6 +113,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWrapCo
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWrapContentSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWrapContentWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierZIndex
+import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxScopeWrapper
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.stylesheet.ElixirLexer
 import org.phoenixframework.liveview.stylesheet.ElixirParser
@@ -250,8 +250,8 @@ internal object ModifiersParser {
         return when (modifierId) {
             // Scoped Modifiers (will be handled at runtime)
             modifierMenuAnchor -> {
-                if (scope is ExposedDropdownMenuBoxScope) {
-                    scope.run {
+                if (scope is ExposedDropdownMenuBoxScopeWrapper) {
+                    scope.scope.run {
                         Modifier.menuAnchor()
                     }
 

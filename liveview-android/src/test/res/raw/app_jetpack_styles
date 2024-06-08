@@ -83,6 +83,7 @@
     "height(Dp(200))" => [{:height, [], [{:Dp, [], [200]}]}],
     "height(Dp(400))" => [{:height, [], [{:Dp, [], [400]}]}],
     "matchParentSize()" => [{:matchParentSize, [], []}],
+    "menuAnchor()" => [{:menuAnchor, [], []}],
     "padding(Dp(8))" => [{:padding, [], [{:Dp, [], [8]}]}],
     "padding(Dp(16))" => [{:padding, [], [{:Dp, [], [16]}]}],
     "padding(Dp(32))" => [{:padding, [], [{:Dp, [], [32]}]}],

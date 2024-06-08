@@ -43,7 +43,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrReadOnly
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrSingleLine
-import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.data.constants.Attrs.attrTextStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrVisualTransformation
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCursorColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledBorderColor
@@ -867,7 +867,8 @@ internal object TextFieldDtoFactory : ComposableViewFactory<TextFieldDTO>() {
                     attrReadOnly -> builder.readOnly(attribute.value)
                     attrShape -> builder.shape(attribute.value)
                     attrSingleLine -> builder.singleLine(attribute.value)
-                    attrStyle -> builder.textStyle(attribute.value)
+                    // FIXME style attribute is used for modifiers, so I renamed to textStyle
+                    attrTextStyle -> builder.textStyle(attribute.value)
                     attrVisualTransformation -> builder.visualTransformation(attribute.value)
                     else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
                 } as TextFieldDTO.Builder
