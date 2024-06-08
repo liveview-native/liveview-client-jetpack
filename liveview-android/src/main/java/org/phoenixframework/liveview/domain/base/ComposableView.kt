@@ -103,7 +103,7 @@ abstract class ComposableBuilder {
     )
         private set
 
-    private fun style(style: String, scope: Any?, pushEvent: PushEvent?) = apply {
+    private fun setStyleFromAttr(style: String, scope: Any?, pushEvent: PushEvent?) = apply {
         val modifier = this.commonProps.modifier
         this.commonProps = this.commonProps.copy(
             modifier = style
@@ -124,7 +124,7 @@ abstract class ComposableBuilder {
      * @param event event name defined on the server to handle the composable's click.
      * @param pushEvent function responsible to dispatch the server call.
      */
-    private fun clickable(event: String, pushEvent: PushEvent?) = apply {
+    private fun setPhxClickFromAttr(event: String, pushEvent: PushEvent?) = apply {
         val modifier = this.commonProps.modifier
         this.commonProps = this.commonProps.copy(
             modifier = modifier.then(
@@ -143,7 +143,7 @@ abstract class ComposableBuilder {
      * ```
      * @param value event name defined on the server to handle the composable's click.
      */
-    internal fun value(attributeName: String, value: Any) = apply {
+    internal fun setPhxValueFromAttr(attributeName: String, value: Any) = apply {
         if (attributeName == attrPhxValue) {
             val newMap = this.commonProps.value.toMutableMap()
             newMap[KEY_PHX_VALUE] = value
@@ -175,7 +175,7 @@ abstract class ComposableBuilder {
         )
     }
 
-    private fun modifier(string: String, scope: Any?, pushEvent: PushEvent?) = apply {
+    private fun setClassFromAttr(string: String, scope: Any?, pushEvent: PushEvent?) = apply {
         val modifier = this.commonProps.modifier
         this.commonProps = this.commonProps.copy(
             modifier = modifier.then(Modifier.fromStyleName(string, scope, pushEvent))
@@ -196,13 +196,13 @@ abstract class ComposableBuilder {
         scope: Any?,
     ): ComposableBuilder {
         when (attribute.name) {
-            attrClass -> modifier(attribute.value, scope, pushEvent)
-            attrPhxClick -> clickable(attribute.value, pushEvent)
-            attrPhxValue -> value(attrPhxValue, attribute.value)
-            attrStyle -> style(attribute.value, scope, pushEvent)
+            attrClass -> setClassFromAttr(attribute.value, scope, pushEvent)
+            attrPhxClick -> setPhxClickFromAttr(attribute.value, pushEvent)
+            attrPhxValue -> setPhxValueFromAttr(attrPhxValue, attribute.value)
+            attrStyle -> setStyleFromAttr(attribute.value, scope, pushEvent)
             else ->
                 if (attribute.name.startsWith(attrPhxValueNamed)) {
-                    value(attribute.name, attribute.value)
+                    setPhxValueFromAttr(attribute.name, attribute.value)
                 }
         }
         return this

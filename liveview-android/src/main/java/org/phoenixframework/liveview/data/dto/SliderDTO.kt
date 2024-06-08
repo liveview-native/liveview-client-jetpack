@@ -386,9 +386,9 @@ internal class SliderDTO private constructor(props: Properties) :
                 } catch (e: Exception) {
                     minValue..maxValue
                 }
-                this.value(attrPhxValue, floatArrayOf(range.start, range.endInclusive))
+                this.setPhxValueFromAttr(attrPhxValue, floatArrayOf(range.start, range.endInclusive))
             } else {
-                this.value(attrPhxValue, stringValue.toFloatOrNull() ?: 0f)
+                this.setPhxValueFromAttr(attrPhxValue, stringValue.toFloatOrNull() ?: 0f)
             }
         }
 
