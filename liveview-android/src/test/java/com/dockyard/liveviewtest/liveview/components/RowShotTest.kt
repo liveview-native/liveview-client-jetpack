@@ -20,12 +20,12 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
-import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
 import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeAlignment
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
@@ -239,20 +239,17 @@ class RowShotTest : LiveViewComposableTest() {
             template = """
                 <$row $attrStyle="$modifierFillMaxWidth();$modifierHeight($typeDp(200));$modifierBackground($typeColor.$LightGray)">
                   <$box 
-                    $attrStyle="$modifierFillMaxWidth();$modifierBackground($typeColor.$Red)"
-                    $attrWeight="25" 
+                    $attrStyle="$modifierFillMaxWidth();$modifierBackground($typeColor.$Red);$modifierWeight(25)"
                     $attrContentAlignment="${AlignmentValues.center}">
                     <$text>25%</$text>
                   </$box>
                   <$box
-                    $attrStyle="$modifierFillMaxWidth();$modifierBackground($typeColor.$Green)"
-                    $attrWeight="35" 
+                    $attrStyle="$modifierFillMaxWidth();$modifierBackground($typeColor.$Green);$modifierWeight(35)"
                     $attrContentAlignment="${AlignmentValues.center}">
                     <$text>35%</$text>
                   </$box>
                   <$box 
-                    $attrStyle="$modifierFillMaxWidth();$modifierBackground($typeColor.$Blue)" 
-                    $attrWeight="40" 
+                    $attrStyle="$modifierFillMaxWidth();$modifierBackground($typeColor.$Blue);$modifierWeight(40)" 
                     $attrContentAlignment="${AlignmentValues.center}">
                     <$text>40%</$text>
                   </$box>

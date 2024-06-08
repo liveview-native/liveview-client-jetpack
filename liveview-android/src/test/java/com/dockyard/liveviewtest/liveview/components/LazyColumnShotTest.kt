@@ -18,11 +18,11 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignmen
 import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
-import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
 import org.phoenixframework.liveview.domain.base.ComposableTypes.lazyColumn
@@ -38,7 +38,7 @@ class LazyColumnShotTest : LiveViewComposableTest() {
                 append(
                     """
                     <$row $attrStyle="$modifierPadding($typeDp(8))">
-                      <$text ${if (fill) "$attrWeight=\"1\"" else ""}>Item ${it}</$text>
+                      <$text ${if (fill) "$attrStyle=\"$modifierWeight(1)\"" else ""}>Item ${it}</$text>
                       <$text>#${it}</$text>
                     </$row>     
                     """

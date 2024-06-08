@@ -176,7 +176,6 @@ object Attrs {
     const val attrVisualTransformation = "visualTransformation"
     const val attrUnselectedContentColor = "unselectedContentColor"
     const val attrUsePlatformDefaultWidth = "usePlatformDefaultWidth"
-    const val attrWeight = "weight"
     const val attrWidth = "width"
     const val attrWithDismissAction = "withDismissAction"
     const val attrWindowInsets = "windowInsets"

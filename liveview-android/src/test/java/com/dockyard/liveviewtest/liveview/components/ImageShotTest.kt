@@ -17,11 +17,11 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
 import org.phoenixframework.liveview.data.constants.Attrs.attrResource
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
-import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
 import org.phoenixframework.liveview.data.constants.ContentScaleValues
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.domain.base.ComposableTypes.column
 import org.phoenixframework.liveview.domain.base.ComposableTypes.image
@@ -77,11 +77,11 @@ class ImageShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$column $attrStyle="$modifierFillMaxSize()">
-                  <$image $attrResource="android_icon" $attrWeight="1" $attrStyle="$modifierFillMaxWidth()" 
+                  <$image $attrResource="android_icon" $attrStyle="$modifierFillMaxWidth();$modifierWeight(1)" 
                     $attrAlignment="${AlignmentValues.topStart}"/>
-                  <$image $attrResource="android_icon" $attrWeight="1" $attrStyle="$modifierFillMaxWidth()" 
+                  <$image $attrResource="android_icon" $attrStyle="$modifierFillMaxWidth();$modifierWeight(1)" 
                     $attrAlignment="${AlignmentValues.topCenter}"/>
-                  <$image $attrResource="android_icon" $attrWeight="1" $attrStyle="$modifierFillMaxWidth()" 
+                  <$image $attrResource="android_icon" $attrStyle="$modifierFillMaxWidth();$modifierWeight(1)" 
                     $attrAlignment="${AlignmentValues.topEnd}"/>
                 </$column>
                 """

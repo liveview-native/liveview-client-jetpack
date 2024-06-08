@@ -2,9 +2,7 @@ package org.phoenixframework.liveview.domain.base
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -21,7 +19,6 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValueNamed
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
-import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
 import org.phoenixframework.liveview.data.constants.ScrollingValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxScopeWrapper
@@ -222,34 +219,6 @@ abstract class ComposableBuilder {
                             this@ComposableBuilder.commonProps =
                                 this@ComposableBuilder.commonProps.copy(
                                     modifier = modifier.then(Modifier.matchParentSize())
-                                )
-                        }
-                    }
-                }
-            }
-
-            is ColumnScope -> {
-                when (attribute.name) {
-                    attrWeight -> scope.run {
-                        attribute.value.toFloatOrNull()?.let {
-                            val modifier = this@ComposableBuilder.commonProps.modifier
-                            this@ComposableBuilder.commonProps =
-                                this@ComposableBuilder.commonProps.copy(
-                                    modifier = modifier.then(Modifier.weight(it))
-                                )
-                        }
-                    }
-                }
-            }
-
-            is RowScope -> {
-                when (attribute.name) {
-                    attrWeight -> scope.run {
-                        attribute.value.toFloatOrNull()?.let {
-                            val modifier = this@ComposableBuilder.commonProps.modifier
-                            this@ComposableBuilder.commonProps =
-                                this@ComposableBuilder.commonProps.copy(
-                                    modifier = modifier.then(Modifier.weight(it))
                                 )
                         }
                     }
