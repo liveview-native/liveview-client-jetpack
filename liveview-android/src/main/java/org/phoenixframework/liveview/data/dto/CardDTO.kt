@@ -54,10 +54,8 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * Material Design Card.
  * ```
  * <Card
- *   padding="16"
  *   elevation="{'defaultElevation': '10', 'pressedElevation': '2'}"
- *   phx-click="onClick"
- * >
+ *   phx-click="onClick">
  *   <Text>Card content</Text>
  * </Card>
  *

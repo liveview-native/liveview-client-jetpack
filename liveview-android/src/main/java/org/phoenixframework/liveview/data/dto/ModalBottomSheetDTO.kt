@@ -46,7 +46,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * You can define the `onChanged` event in order to be notified when the `sheetValue` changed.
  * ```
  * <ModalBottomSheet onChanged="updateSheetState">
- *   <Box contentAlignment="center" width="fill" height="200">
+ *   <Box contentAlignment="center" style="fillMaxWidth();height(200.dp)">
  *     <Text>BottomSheet Content</Text>
  *   </Box>
  * </ModalBottomSheet>

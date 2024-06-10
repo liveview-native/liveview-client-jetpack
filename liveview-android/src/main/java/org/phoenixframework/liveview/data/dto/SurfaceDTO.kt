@@ -50,23 +50,23 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * - checkable: the surface has a checked state and a change action that receives the new check
  * state as parameter.
  * ```
- * <Surface shape="12" color="system-blue" contentColor="system-white">
- *   <Text padding="16">Simple Surface</Text>
+ * <Surface shape="12" color="Blue" contentColor="White">
+ *   <Text style="padding(16.dp)">Simple Surface</Text>
  * </Surface>
  *
- * <Surface shape="12" color="system-blue" contentColor="system-white"
+ * <Surface shape="12" color="Blue" contentColor="White"
  *   phx-click="onClick">
- *   <Text padding="32">Clickable Surface</Text>
+ *   <Text style="padding(32.dp)">Clickable Surface</Text>
  * </Surface>
  *
- * <Surface shape="12" color="system-blue" contentColor="system-white"
+ * <Surface shape="12" color="Blue" contentColor="White"
  *   selected={"#{@isSelected}"} phx-click="selectItem">
- *   <Text padding="32">Selectable Surface</Text>
+ *   <Text style="padding(32.dp)">Selectable Surface</Text>
  * </Surface>
  *
- * <Surface shape="12" color="system-blue" contentColor="system-white"
+ * <Surface shape="12" color="Blue" contentColor="White"
  *   checked={"#{@isChecked}"} phx-change="toggleCheck">
- *   <Text padding="32">Checkable Surface</Text>
+ *   <Text style="padding(32.dp)">Checkable Surface</Text>
  * </Surface>
  * ```
  */
@@ -237,7 +237,7 @@ internal class SurfaceDTO private constructor(props: Properties) :
         }
 
         /**
-         * The background color. Use system-transparent to have no color.
+         * The background color. Use "Transparent" to have no color.
          */
         fun color(color: String) = apply {
             this.color = color.toColor()

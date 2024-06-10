@@ -23,7 +23,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 /**
  * A layout composable that places its children in a horizontal sequence.
  * ```
- * <Row width="fill" height="wrap" background="#FFCCCCCC">
+ * <Row style="fillMaxWidth().wrapContentWidth();background(Color.Gray)">
  *   // Children
  * </Row>
  * ```

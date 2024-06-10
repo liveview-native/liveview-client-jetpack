@@ -34,7 +34,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *   <ListItem template="content">
  *     <Text template="headlineContent">Headline</Text>
  *   </ListItem>
- *   <Box background="system-red" padding="12" template="backgroundContent" width="fill">
+ *   <Box style="fillMaxWidth();padding(12.dp).background(Color.Red) template="backgroundContent">
  *     <Icon imageVector="filled:Delete" />
  *   </Box>
  * </SwipeToDismissBox>

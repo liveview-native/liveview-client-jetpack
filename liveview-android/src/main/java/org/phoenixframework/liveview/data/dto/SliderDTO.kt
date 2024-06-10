@@ -72,16 +72,16 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * template.
  * ```
  * <Slider ...>
- *   <Box size="40" clip="4" background="#FFFF00FF" template="thumb"/>
- *   <Box width="fill" height="10" background="#FF0000FF" template="track"/>
+ *   <Box style="size(40.dp);clip(Rounde4.dp);background(Color.Green)" template="thumb"/>
+ *   <Box style="fillMaxWidth();height(10.dp);background(Color.Blue)" template="track"/>
  * </Slider>
  * ```
  * For the `RangeSlider` component, you can customize both start and end thumbs using "start-thumb"
  * and "end-thumb" templates respectively.
  * ```
  * <RangeSlider ...>
- *   <Box size="40" clip="4" background="#FFFF00FF" template="start-thumb"/>
- *   <Box size="40" clip="circle" background="#FF0000FF" template="end-thumb"/>
+ *   <Box style="size(40.dp);clip(RoundedCornerShape(4.dp, 4.dp, 4.dp, 4.dp);background(Color.Green)" template="start-thumb"/>
+ *   <Box style="size(40.dp);clip=Circle);background(Color.Red)" template="end-thumb"/>
  * </RangeSlider>
  * ```
  */
@@ -386,7 +386,10 @@ internal class SliderDTO private constructor(props: Properties) :
                 } catch (e: Exception) {
                     minValue..maxValue
                 }
-                this.setPhxValueFromAttr(attrPhxValue, floatArrayOf(range.start, range.endInclusive))
+                this.setPhxValueFromAttr(
+                    attrPhxValue,
+                    floatArrayOf(range.start, range.endInclusive)
+                )
             } else {
                 this.setPhxValueFromAttr(attrPhxValue, stringValue.toFloatOrNull() ?: 0f)
             }

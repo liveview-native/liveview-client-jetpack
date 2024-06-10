@@ -48,7 +48,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * available viewport size. By definition, pages in a Pager have the same size, defined by pageSize.
  * You can use beyondBoundsPageCount to place more pages before and after the visible pages.
  * ```
- * <Column size="fill">
+ * <Column style="fillMaxSize()">
  *   <TabRow selectedTabIndex={"#{@selectedTab}"}>
  *     <Tab selected={"#{@selectedTab == "0"}"} phx-click="selectTab" phx-value="0">
  *       <Text template="text">Tab 0</Text>
@@ -61,13 +61,13 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  *     </Tab>
  *   </TabRow>
  *   <HorizontalPager currentPage={"#{@selectedTab}"} pageCount="3" phx-change="selectTab">
- *     <Box contentAlignment="center" background="system-red" size="fill">
+ *     <Box contentAlignment="center" background="Red" style="fillMaxSize()">
  *       <Text fontSize="24">Red</Text>
  *     </Box>
- *     <Box contentAlignment="center" background="system-green" size="fill">
+ *     <Box contentAlignment="center" background="Green" style="fillMaxSize()">
  *       <Text fontSize="24">Green</Text>
  *     </Box>
- *     <Box contentAlignment="center" background="system-blue" size="fill">
+ *     <Box contentAlignment="center" background="Blue" style="fillMaxSize()">
  *       <Text fontSize="24">Blue</Text>
  *     </Box>
  *   </HorizontalPager>

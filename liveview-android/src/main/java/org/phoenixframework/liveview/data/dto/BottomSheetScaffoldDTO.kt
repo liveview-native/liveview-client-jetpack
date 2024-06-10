@@ -62,10 +62,10 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * - and the bottom sheet content using the "sheetContent" template.
  * ```
  * <BottomSheetScaffold>
- *   <Box size="fill" template="sheetContent">
+ *   <Box style="fillMaxSize()" template="sheetContent">
  *     <Text>Sheet content</Text>
  *   </Box>
- *   <Box size="fill" template="body">
+ *   <Box style="fillMaxSize()" template="body">
  *     <Text fontSize="24">Screen content</Text>
  *   </Box>
  * </BottomSheetScaffold>
@@ -79,16 +79,16 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  *   <%= if @showSnack do %>
  *     <Snackbar message="Hi there!" dismissEvent="hideSnackbar" />
  *   <% end %>
- *   <Box width="fill" template="dragHandle">
+ *   <Box style="fillMaxWidth()" template="dragHandle">
  *     <Icon imageVector="filled:ArrowUpward" align="center" />
  *   </Box>
  *   <TopAppBar template="topBar">
  *     <Text template="title">Title</Text>
  *   </TopAppBar>
- *   <Box size="fill" template="sheetContent">
+ *   <Box style="fillMaxSize()" template="sheetContent">
  *     <Text>Sheet content</Text>
  *   </Box>
- *   <Box size="fill" template="body">
+ *   <Box style="fillMaxSize()" template="body">
  *     <Text fontSize="24">Screen content</Text>
  *   </Box>
  * </BottomSheetScaffold>

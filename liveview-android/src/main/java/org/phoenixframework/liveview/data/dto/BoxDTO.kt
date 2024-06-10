@@ -22,10 +22,10 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 /**
  * The Box will organize the components of top of each other in a Z-order.
  * ```
- * <Box size="100" background="#FFFF0000">
- *   <Icon imageVector="filled:Add" align="topStart"/>
- *   <Text align="center">Text</Text>
- *   <Icon imageVector="filled:Share" align="bottomEnd"/>
+ * <Box style="size(100.dp);background(Color.Red)">
+ *   <Icon imageVector="filled:Add" style="align(Alignment.TopStart)"/>
+ *   <Text style="align(Alignment.Center)">Text</Text>
+ *   <Icon imageVector="filled:Share" style="align(Alignment.BottomEnd)"/>
  * </Box>
  * ```
  */
@@ -68,7 +68,7 @@ internal class BoxDTO private constructor(props: Properties) :
          * The default alignment inside the Box.
          *
          * ```
-         * <Box contentAlignment="bottomEnd">...</Box>
+         * <Box contentAlignment="Alignment.BbottomEnd">...</Box>
          * ```
          * @param contentAlignment children's alignment inside the Box. See the supported at
          * [org.phoenixframework.liveview.data.constants.AlignmentValues].

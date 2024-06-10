@@ -99,7 +99,7 @@ internal class NavigationRailDTO private constructor(props: Properties) :
         /**
          * The color used for the background of this navigation rail.
          * ```
-         * <NavigationRail containerColor="system-blue">...</NavigationRail>
+         * <NavigationRail containerColor="Blue">...</NavigationRail>
          * ```
          * @param color container color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
@@ -113,7 +113,7 @@ internal class NavigationRailDTO private constructor(props: Properties) :
         /**
          * The preferred color for content inside this navigation rail.
          * ```
-         * <NavigationRail contentColor="system-yellow">...</NavigationRail>
+         * <NavigationRail contentColor="Yellow">...</NavigationRail>
          * ```
          * @param color content color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.

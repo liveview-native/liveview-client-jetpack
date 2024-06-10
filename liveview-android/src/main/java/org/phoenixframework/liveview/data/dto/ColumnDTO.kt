@@ -23,7 +23,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 /**
  * A layout composable that places its children in a vertical sequence.
  * ```
- * <Column height="200" width="200" background="#FFCCCCCC">
+ * <Column style="height(200.dp);width(200.dp);background(Color.Gray)">
  *   // Children
  * </Column>
  * ```
