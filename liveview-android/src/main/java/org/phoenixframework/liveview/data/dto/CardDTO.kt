@@ -1,10 +1,7 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
@@ -15,7 +12,6 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -26,7 +22,6 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
-import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
@@ -49,7 +44,6 @@ import org.phoenixframework.liveview.domain.base.ComposableTypes
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.optional
 import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -86,18 +80,9 @@ internal class CardDTO private constructor(props: Properties) :
         val elevation = props.elevation
         val border = props.border
         val onClick = props.onClick
-        val hasVerticalScroll = props.commonProps.hasVerticalScrolling
-        val hasHorizontalScroll = props.commonProps.hasHorizontalScrolling
 
         val modifier = props.commonProps.modifier
             .paddingIfNotNull(paddingValues)
-            .optional(
-                hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
-            )
-            .optional(
-                hasHorizontalScroll,
-                Modifier.horizontalScroll(rememberScrollState())
-            )
         when (composableNode?.node?.tag) {
             ComposableTypes.card ->
                 onClick?.let { event ->
@@ -402,7 +387,6 @@ internal object CardDtoFactory : ComposableViewFactory<CardDTO>() {
             attrColors -> builder.cardColors(attribute.value)
             attrElevation -> builder.elevation(attribute.value)
             attrPhxClick -> builder.onClick(attribute.value)
-            attrScroll -> builder.scrolling(attribute.value)
             attrShape -> builder.shape(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as CardDTO.Builder

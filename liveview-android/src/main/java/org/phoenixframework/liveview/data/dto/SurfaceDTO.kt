@@ -1,16 +1,12 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
@@ -36,7 +32,6 @@ import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.optional
 import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -90,8 +85,6 @@ internal class SurfaceDTO private constructor(props: Properties) :
         val tonalElevation = props.tonalElevation
         val shadowElevation = props.shadowElevation
         val border = props.border
-        val hasVerticalScroll = props.commonProps.hasVerticalScrolling
-        val hasHorizontalScroll = props.commonProps.hasHorizontalScrolling
         val onClick = props.onClick
         val enabled = props.enabled
         val selected = props.selected
@@ -101,12 +94,6 @@ internal class SurfaceDTO private constructor(props: Properties) :
         val color = colorValue ?: MaterialTheme.colorScheme.surface
         val newModifier = props.commonProps.modifier
             .paddingIfNotNull(paddingValues)
-            .optional(
-                hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
-            )
-            .optional(
-                hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
-            )
         when {
             onClick != null && selected == null ->
                 Surface(

@@ -276,12 +276,6 @@ object ScrollBehaviorValues {
     const val pinnedScroll = "pinnedScroll"
 }
 
-object ScrollingValues {
-    const val horizontal = "horizontal"
-    const val vertical = "vertical"
-    const val both = "both"
-}
-
 object SecureFlagPolicyValues {
     const val secureOn = "secureOn"
     const val secureOff = "secureOff"

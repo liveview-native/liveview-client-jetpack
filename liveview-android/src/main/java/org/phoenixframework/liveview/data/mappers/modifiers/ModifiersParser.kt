@@ -59,6 +59,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFocusT
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFocusable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeightIn
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHorizontalScroll
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImeNestedScroll
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImePadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierLayoutId
@@ -100,6 +101,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTestTa
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierToggleable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierToolingGraphicsLayer
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTriStateToggleable
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierVerticalScroll
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWaterfallPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
@@ -365,6 +367,7 @@ internal object ModifiersParser {
             modifierFocusable -> Modifier.focusableFromStyle(argListContext)
             modifierHeight -> Modifier.heightFromStyle(argListContext)
             modifierHeightIn -> Modifier.heightInFromStyle(argListContext)
+            modifierHorizontalScroll -> Modifier.horizontalScrollFromStyle(argListContext)
             modifierLayoutId -> Modifier.layoutIdFromStyle(argListContext)
             modifierOffset -> Modifier.offsetFromStyle(argListContext)
             modifierOnFocusedBoundsChanged -> Modifier.onFocusedBoundsChangedFromStyle(
@@ -396,6 +399,8 @@ internal object ModifiersParser {
                 argListContext,
                 pushEvent
             )
+
+            modifierVerticalScroll -> Modifier.verticalScrollFromStyle(argListContext)
 
             modifierWindowInsetsBottomHeight -> Modifier.windowInsetsBottomHeightFromStyle(
                 argListContext

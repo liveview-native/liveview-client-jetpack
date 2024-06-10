@@ -15,7 +15,6 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValueNamed
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
-import org.phoenixframework.liveview.data.constants.ScrollingValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.dto.onClickFromString
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyleName
@@ -73,8 +72,6 @@ interface ComposableProperties {
 
 @Stable
 data class CommonComposableProperties(
-    val hasVerticalScrolling: Boolean,
-    val hasHorizontalScrolling: Boolean,
     val modifier: Modifier,
     val value: ImmutableMap<String, Any>
 ) {
@@ -96,8 +93,6 @@ data class CommonComposableProperties(
  */
 abstract class ComposableBuilder {
     var commonProps = CommonComposableProperties(
-        hasVerticalScrolling = false,
-        hasHorizontalScrolling = false,
         modifier = Modifier,
         value = persistentMapOf()
     )
@@ -154,25 +149,6 @@ abstract class ComposableBuilder {
             newMap[phxValueKey] = value
             this.commonProps = this.commonProps.copy(value = newMap.toImmutableMap())
         }
-    }
-
-    /**
-     * Modify element to allow to scroll when size of the content is bigger than max size available
-     * for it.
-     *
-     * ```
-     * <Composable scroll="vertical" />
-     * <Composable scroll="both" />
-     * ```
-     * @param scrolling scroll direction. Supported values are: `vertical`, `horizontal`, and `both`.
-     */
-    fun scrolling(scrolling: String) = apply {
-        this.commonProps = this.commonProps.copy(
-            hasHorizontalScrolling =
-            scrolling == ScrollingValues.horizontal || scrolling == ScrollingValues.both,
-            hasVerticalScrolling =
-            scrolling == ScrollingValues.vertical || scrolling == ScrollingValues.both,
-        )
     }
 
     private fun setClassFromAttr(string: String, scope: Any?, pushEvent: PushEvent?) = apply {
