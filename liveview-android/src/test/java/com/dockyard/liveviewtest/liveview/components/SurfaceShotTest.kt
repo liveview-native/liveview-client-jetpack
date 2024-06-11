@@ -14,11 +14,13 @@ import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrShadowElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
@@ -80,29 +82,29 @@ class SurfaceShotTest : LiveViewComposableTest() {
             template = """
                 <$column>
                   <$surface>
-                    <$text $attrPadding="16">Surface 1</$text>
+                    <$text $attrStyle="$modifierPadding($typeDp(16))">Surface 1</$text>
                   </$surface>
                   <$surface $attrColor="$Blue">
-                    <$text $attrPadding="16">Surface 2</$text>
+                    <$text $attrStyle="$modifierPadding($typeDp(16))">Surface 2</$text>
                   </$surface>
                   <$surface $attrColor="$Blue" $attrContentColor="$Yellow">
-                    <$text $attrPadding="16">Surface 3</$text>
+                    <$text $attrStyle="$modifierPadding($typeDp(16))">Surface 3</$text>
                   </$surface>
                   <$surface $attrColor="$Blue" $attrContentColor="$Yellow" $attrShape="12">
-                    <$text $attrPadding="16">Surface 4</$text>
+                    <$text $attrStyle="$modifierPadding($typeDp(16))">Surface 4</$text>
                   </$surface>    
                   <$surface $attrColor="$Blue" $attrContentColor="$Yellow" $attrShape="12" 
                     $attrBorder="{'$attrWidth': '2', '$attrColor': '$Green'}">
-                    <$text $attrPadding="16">Surface 5</$text>
+                    <$text $attrStyle="$modifierPadding($typeDp(16))">Surface 5</$text>
                   </$surface>     
                   <$surface $attrColor="$Blue" $attrContentColor="$Yellow" $attrShape="12" 
                     $attrBorder="{'$attrWidth': '2', '$attrColor': '$Green'}" $attrTonalElevation="4">
-                    <$text $attrPadding="16">Surface 6</$text>
+                    <$text $attrStyle="$modifierPadding($typeDp(16))">Surface 6</$text>
                   </$surface> 
                   <$surface $attrColor="$Blue" $attrContentColor="$Yellow" $attrShape="12" 
                     $attrBorder="{'$attrWidth': '2', '$attrColor': '$Green'}" $attrTonalElevation="4"
                     $attrShadowElevation="8">
-                    <$text $attrPadding="16">Surface 7</$text>
+                    <$text $attrStyle="$modifierPadding($typeDp(16))">Surface 7</$text>
                   </$surface>                                                                                                
                 </$column>
                 """

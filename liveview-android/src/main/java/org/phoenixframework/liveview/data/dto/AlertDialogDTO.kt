@@ -189,7 +189,7 @@ internal class AlertDialogDTO private constructor(props: Properties) :
          * ```
          * <AlertDialog containerColor="#FFFFFFFF" >...</AlertDialog>
          * ```
-         * @param containerColor the background color in AARRGGBB format or one of the `system-*`
+         * @param containerColor the background color in AARRGGBB format or one of the system
          * colors.
          */
         fun containerColor(containerColor: String) = apply {

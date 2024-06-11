@@ -276,12 +276,6 @@ object ScrollBehaviorValues {
     const val pinnedScroll = "pinnedScroll"
 }
 
-object ScrollingValues {
-    const val horizontal = "horizontal"
-    const val vertical = "vertical"
-    const val both = "both"
-}
-
 object SecureFlagPolicyValues {
     const val secureOn = "secureOn"
     const val secureOff = "secureOff"
@@ -298,13 +292,6 @@ object SheetValues {
     const val expanded = "expanded"
     const val partiallyExpanded = "partiallyExpanded"
     const val hidden = "hidden"
-}
-
-object SizeValues {
-    const val fill = "fill"
-    const val wrap = "wrap"
-    const val intrinsicMin = "intrinsicMin"
-    const val intrinsicMax = "intrinsicMax"
 }
 
 object SnackbarDurationValues {
@@ -326,18 +313,18 @@ object SwipeToDismissBoxValues {
 }
 
 object SystemColorValues {
-    const val Black = "system-black"
-    const val Blue = "system-blue"
-    const val Cyan = "system-cyan"
-    const val DarkGray = "system-dark-gray"
-    const val Gray = "system-gray"
-    const val Green = "system-green"
-    const val LightGray = "system-light-gray"
-    const val Magenta = "system-magenta"
-    const val Red = "system-red"
-    const val Transparent = "system-transparent"
-    const val White = "system-white"
-    const val Yellow = "system-yellow"
+    const val Black = "Black"
+    const val Blue = "Blue"
+    const val Cyan = "Cyan"
+    const val DarkGray = "DarkGray"
+    const val Gray = "Gray"
+    const val Green = "Green"
+    const val LightGray = "LightGray"
+    const val Magenta = "Magenta"
+    const val Red = "Red"
+    const val Transparent = "Transparent"
+    const val White = "White"
+    const val Yellow = "Yellow"
 }
 
 object TextAlignValues {

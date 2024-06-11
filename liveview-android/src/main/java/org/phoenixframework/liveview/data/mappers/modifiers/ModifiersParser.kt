@@ -21,7 +21,6 @@ import androidx.compose.foundation.preferKeepClear
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -60,6 +59,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFocusT
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFocusable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeightIn
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHorizontalScroll
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImeNestedScroll
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierImePadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierLayoutId
@@ -101,6 +101,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTestTa
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierToggleable
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierToolingGraphicsLayer
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTriStateToggleable
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierVerticalScroll
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWaterfallPadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
@@ -114,6 +115,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWrapCo
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWrapContentSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWrapContentWidth
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierZIndex
+import org.phoenixframework.liveview.data.dto.ExposedDropdownMenuBoxScopeWrapper
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.stylesheet.ElixirLexer
 import org.phoenixframework.liveview.stylesheet.ElixirParser
@@ -250,8 +252,8 @@ internal object ModifiersParser {
         return when (modifierId) {
             // Scoped Modifiers (will be handled at runtime)
             modifierMenuAnchor -> {
-                if (scope is ExposedDropdownMenuBoxScope) {
-                    scope.run {
+                if (scope is ExposedDropdownMenuBoxScopeWrapper) {
+                    scope.scope.run {
                         Modifier.menuAnchor()
                     }
 
@@ -365,6 +367,7 @@ internal object ModifiersParser {
             modifierFocusable -> Modifier.focusableFromStyle(argListContext)
             modifierHeight -> Modifier.heightFromStyle(argListContext)
             modifierHeightIn -> Modifier.heightInFromStyle(argListContext)
+            modifierHorizontalScroll -> Modifier.horizontalScrollFromStyle(argListContext)
             modifierLayoutId -> Modifier.layoutIdFromStyle(argListContext)
             modifierOffset -> Modifier.offsetFromStyle(argListContext)
             modifierOnFocusedBoundsChanged -> Modifier.onFocusedBoundsChangedFromStyle(
@@ -396,6 +399,8 @@ internal object ModifiersParser {
                 argListContext,
                 pushEvent
             )
+
+            modifierVerticalScroll -> Modifier.verticalScrollFromStyle(argListContext)
 
             modifierWindowInsetsBottomHeight -> Modifier.windowInsetsBottomHeightFromStyle(
                 argListContext

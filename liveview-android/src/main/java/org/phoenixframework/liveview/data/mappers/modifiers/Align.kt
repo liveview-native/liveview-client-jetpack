@@ -9,36 +9,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlignment
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlignmentLine
-import org.phoenixframework.liveview.data.dto.alignmentFromString
-import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
-import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
 
 fun Modifier.alignFromStyle(
     arguments: List<ModifierDataAdapter.ArgumentData>,
     scope: Any?
 ): Modifier {
     val alignmentParam = argsOrNamedArgs(arguments)
+    if (alignmentParam.isEmpty()) return this
 
-    val alignmentValue = argOrNamedArg(alignmentParam, argAlignment, 0)?.let {
-        singleArgumentObjectValue(it)?.second?.toString()
-    } ?: return this
+    val arg = argOrNamedArg(alignmentParam, argAlignment, 0) ?: return this
 
     return when (scope) {
         is BoxScope -> scope.run {
             this@alignFromStyle.then(
-                Modifier.align(alignmentFromString(alignmentValue, Alignment.TopStart))
+                Modifier.align(alignmentFromArgument(arg) ?: Alignment.TopStart)
             )
         }
 
         is ColumnScope -> scope.run {
             this@alignFromStyle.then(
-                Modifier.align(horizontalAlignmentFromString(alignmentValue))
+                Modifier.align(horizontalAlignmentFromArgument(arg) ?: Alignment.Start)
             )
         }
 
         is RowScope -> scope.run {
             this@alignFromStyle.then(
-                Modifier.align(verticalAlignmentFromString(alignmentValue))
+                Modifier.align(verticalAlignmentFromArgument(arg) ?: Alignment.Top)
             )
         }
 

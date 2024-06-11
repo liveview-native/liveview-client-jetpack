@@ -328,8 +328,8 @@ fun colorFromArgument(argument: ModifierDataAdapter.ArgumentData): Color? {
 
     // If it's is a "." argument, it's because we're using a predefined color (e.g.: Color.Red)
     if (argument.isDot && clazz == typeColor) {
-        val value = argsToCreateArg[1].stringValueWithoutColon?.lowercase()
-        return "system-$value".toColor()
+        val value = argsToCreateArg[1].stringValueWithoutColon
+        return value?.toColor()
 
         // If the first argument is a Color, then it's necessary to instantiate the Color object
     } else if (argument.type == typeColor) {
@@ -919,6 +919,8 @@ internal fun roleFromArgument(argument: ModifierDataAdapter.ArgumentData): Role?
 internal fun shapeFromArgument(argument: ModifierDataAdapter.ArgumentData): Shape? {
     val clazz = if (argument.isDot)
         argument.listValue.getOrNull(0)?.stringValueWithoutColon ?: ""
+    else if (argument.isAtom)
+        argument.stringValueWithoutColon
     else
         argument.type
 

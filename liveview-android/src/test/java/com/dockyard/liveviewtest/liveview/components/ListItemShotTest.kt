@@ -17,7 +17,7 @@ import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
 import org.phoenixframework.liveview.data.constants.Attrs.attrShadowElevation
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
@@ -26,7 +26,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrLeadingI
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrOverlineColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSupportingColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconColor
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Cyan
 import org.phoenixframework.liveview.data.constants.SystemColorValues.LightGray
@@ -128,7 +128,7 @@ class ListItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$column $attrSize="$fill">
+                <$column $attrStyle="$modifierFillMaxSize()">
                   <$listItem>
                     <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
                   </$listItem>
@@ -277,7 +277,7 @@ class ListItemShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$column $attrSize="$fill">
+                <$column $attrStyle="$modifierFillMaxSize()">
                   <$listItem $attrColors="$colorsForTemplate">
                     <$text $attrTemplate="$templateHeadlineContent">Headline</$text>
                   </$listItem>                 

@@ -27,7 +27,6 @@ import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Ignore
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrFontSize
@@ -39,13 +38,15 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrSheetPeekHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetSkipHiddenState
 import org.phoenixframework.liveview.data.constants.Attrs.attrSheetValue
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeAlignment
 import org.phoenixframework.liveview.data.constants.SheetValues.expanded
 import org.phoenixframework.liveview.data.constants.SheetValues.hidden
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
@@ -83,10 +84,10 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$bottomSheetScaffold>
-                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateSheetContent">
                     <$text>Sheet content</$text>
                   </$box>
-                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateBody">
                     <$text $attrFontSize="24">Screen content</$text>
                   </$box>
                 </$bottomSheetScaffold>                
@@ -121,10 +122,10 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
             template = """
                 <$bottomSheetScaffold>
                   <$snackbar $attrMessage="Hello World" />
-                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateSheetContent">
                     <$text>Sheet content</$text>
                   </$box>
-                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateBody">
                     <$text $attrFontSize="24">Screen content</$text>
                   </$box>
                 </$bottomSheetScaffold>                
@@ -152,10 +153,10 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$bottomSheetScaffold $attrSheetPeekHeight="60">
-                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateSheetContent">
                     <$text>Sheet content</$text>
                   </$box>
-                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateBody">
                     <$text $attrFontSize="24">Screen content</$text>
                   </$box>
                 </$bottomSheetScaffold>     
@@ -184,10 +185,10 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24">
-                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateSheetContent">
                     <$text>Sheet content</$text>
                   </$box>
-                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateBody">
                     <$text $attrFontSize="24">Screen content</$text>
                   </$box>
                 </$bottomSheetScaffold>              
@@ -219,10 +220,10 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
             template = """
                 <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24" 
                   $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue">
-                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateSheetContent">
                     <$text>Sheet content</$text>
                   </$box>
-                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateBody">
                     <$text $attrFontSize="24">Screen content</$text>
                   </$box>
                 </$bottomSheetScaffold>              
@@ -263,13 +264,13 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
             template = """
                 <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24" 
                   $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue">
-                  <$box $attrWidth="$fill" $attrTemplate="$templateDragHandle">
-                    <$icon $attrImageVector="$filled:ArrowUpward" $attrAlign="$center" />
+                  <$box $attrStyle="$modifierFillMaxWidth()" $attrTemplate="$templateDragHandle">
+                    <$icon $attrImageVector="$filled:ArrowUpward" $attrStyle="$modifierAlign($typeAlignment.$center)" />
                   </$box>
-                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateSheetContent">
                     <$text>Sheet content</$text>
                   </$box>
-                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateBody">
                     <$text $attrFontSize="24">Screen content</$text>
                   </$box>
                 </$bottomSheetScaffold>              
@@ -313,16 +314,16 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
             template = """
                 <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24" 
                   $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue">
-                  <$box $attrWidth="$fill" $attrTemplate="$templateDragHandle">
-                    <$icon $attrImageVector="filled:ArrowUpward" $attrAlign="$center" />
+                  <$box $attrStyle="$modifierFillMaxWidth()" $attrTemplate="$templateDragHandle">
+                    <$icon $attrImageVector="filled:ArrowUpward" $attrStyle="$modifierAlign($typeAlignment.$center)" />
                   </$box>
                   <$topAppBar $attrTemplate="$templateTopBar">
                     <$text $attrTemplate="$templateTitle">Title</$text>
                   </$topAppBar>
-                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateSheetContent">
                     <$text>Sheet content</$text>
                   </$box>
-                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateBody">
                     <$text $attrFontSize="24">Screen content</$text>
                   </$box>
                 </$bottomSheetScaffold>              
@@ -369,16 +370,16 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                 <$bottomSheetScaffold $attrSheetPeekHeight="60" $attrSheetShape="24" 
                   $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue"
                   $attrContainerColor="$Red" $attrContentColor="$Green">
-                  <$box $attrWidth="$fill" $attrTemplate="$templateDragHandle">
-                    <$icon $attrImageVector="filled:ArrowUpward" $attrAlign="$center" />
+                  <$box $attrStyle="$modifierFillMaxWidth()" $attrTemplate="$templateDragHandle">
+                    <$icon $attrImageVector="filled:ArrowUpward" $attrStyle="$modifierAlign($typeAlignment.$center)" />
                   </$box>
                   <$topAppBar $attrTemplate="$templateTopBar">
                     <$text $attrTemplate="$templateTitle">Title</$text>
                   </$topAppBar>
-                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateSheetContent">
                     <$text>Sheet content</$text>
                   </$box>
-                  <$box $attrSize="fill" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateBody">
                     <$text $attrFontSize="24">Screen content</$text>
                   </$box>
                 </$bottomSheetScaffold>              
@@ -431,16 +432,16 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                   $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue"
                   $attrContainerColor="$Red" $attrContentColor="$Green"
                   $attrSheetValue="$expanded">
-                  <$box $attrWidth="$fill" $attrTemplate="$templateDragHandle">
-                    <$icon $attrImageVector="filled:ArrowUpward" $attrAlign="$center" />
+                  <$box $attrStyle="$modifierFillMaxWidth()" $attrTemplate="$templateDragHandle">
+                    <$icon $attrImageVector="filled:ArrowUpward" $attrStyle="$modifierAlign($typeAlignment.$center)" />
                   </$box>
                   <$topAppBar $attrTemplate="$templateTopBar">
                     <$text $attrTemplate="$templateTitle">Title</$text>
                   </$topAppBar>
-                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateSheetContent">
                     <$text>Sheet content</$text>
                   </$box>
-                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateBody">
                     <$text $attrFontSize="24">Screen content</$text>
                   </$box>
                 </$bottomSheetScaffold>              
@@ -499,16 +500,16 @@ class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
                   $attrSheetContainerColor="$Yellow" $attrSheetContentColor="$Blue"
                   $attrContainerColor="$Red" $attrContentColor="$Green"
                   $attrSheetValue="$hidden" $attrSheetSkipHiddenState="false">
-                  <$box $attrWidth="$fill" $attrTemplate="$templateDragHandle">
-                    <$icon $attrImageVector="filled:ArrowUpward" $attrAlign="$center" />
+                  <$box $attrStyle="$modifierFillMaxWidth()" $attrTemplate="$templateDragHandle">
+                    <$icon $attrImageVector="filled:ArrowUpward" $attrStyle="$modifierAlign($typeAlignment.$center)" />
                   </$box>
                   <$topAppBar $attrTemplate="$templateTopBar">
                     <$text $attrTemplate="$templateTitle">Title</$text>
                   </$topAppBar>
-                  <$box $attrSize="$fill" $attrTemplate="$templateSheetContent">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateSheetContent">
                     <$text>Sheet content</$text>
                   </$box>
-                  <$box $attrSize="$fill" $attrTemplate="$templateBody">
+                  <$box $attrStyle="$modifierFillMaxSize()" $attrTemplate="$templateBody">
                     <$text $attrFontSize="24">Screen content</$text>
                   </$box>
                 </$bottomSheetScaffold>              

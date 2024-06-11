@@ -19,9 +19,11 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.Templates.templateBadge
 import org.phoenixframework.liveview.domain.base.ComposableTypes.badgedBox
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
@@ -50,7 +52,7 @@ class BadgeBoxShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrSize="100" $attrContentAlignment="$center">
+                <$box $attrStyle="$modifierSize($typeDp(100))" $attrContentAlignment="$center">
                   <$badgedBox $attrContainerColor="#FF0000FF" $attrContentColor="#FFFF0000">
                     <$text $attrTemplate="$templateBadge">+99</$text>
                     <$icon $attrImageVector="$filled:Add" />

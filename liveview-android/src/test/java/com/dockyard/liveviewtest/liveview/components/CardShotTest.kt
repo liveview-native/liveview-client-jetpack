@@ -19,11 +19,13 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrFontSize
-import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.domain.base.ComposableTypes.card
 import org.phoenixframework.liveview.domain.base.ComposableTypes.elevatedCard
 import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedCard
@@ -45,7 +47,7 @@ class CardShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$card>
-                  <$row $attrPadding="32">
+                  <$row $attrStyle="$modifierPadding($typeDp(32))">
                     <$text>Card Content 1</$text>
                     <$text>Card Content 2</$text>
                   </$row>
@@ -81,7 +83,7 @@ class CardShotTest : LiveViewComposableTest() {
                 <$card 
                   $attrShape="12" 
                   $attrColors="$colorsForTemplate">
-                  <$row $attrPadding="32">
+                  <$row $attrStyle="$modifierPadding($typeDp(32))">
                     <$text>Card Content 1</$text>
                     <$text>Card Content 2</$text>
                   </$row>
@@ -104,7 +106,7 @@ class CardShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$elevatedCard>
-                  <$text $attrPadding="48" $attrFontSize="24">Elevated Card</$text>
+                  <$text $attrStyle="$modifierPadding($typeDp(48))" $attrFontSize="24">Elevated Card</$text>
                 </$elevatedCard>
                 """
         )
@@ -116,7 +118,7 @@ class CardShotTest : LiveViewComposableTest() {
             nativeComposable = {
                 OutlinedCard {
                     Text(
-                        text = "Oulined Card",
+                        text = "Outlined Card",
                         fontSize = 16.sp,
                         modifier = Modifier.padding(32.dp)
                     )
@@ -124,7 +126,7 @@ class CardShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$outlinedCard>
-                  <$text $attrPadding="32" $attrFontSize="16">Oulined Card</$text>
+                  <$text $attrStyle="$modifierPadding($typeDp(32))" $attrFontSize="16">Outlined Card</$text>
                 </$outlinedCard>
                 """
         )
@@ -146,7 +148,7 @@ class CardShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$outlinedCard $attrBorder="{'$attrWidth': '2', '$attrColor': '#FF0000FF'}">
-                  <$text $attrPadding="32" $attrFontSize="24">Outlined Card</$text>
+                  <$text $attrStyle="$modifierPadding($typeDp(32))" $attrFontSize="24">Outlined Card</$text>
                 </$outlinedCard>
                 """
         )

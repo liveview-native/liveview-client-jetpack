@@ -14,15 +14,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
-import org.phoenixframework.liveview.data.constants.Attrs.attrPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
-import org.phoenixframework.liveview.data.constants.Attrs.attrWeight
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.ModifierNames
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
 import org.phoenixframework.liveview.domain.base.ComposableTypes.column
 import org.phoenixframework.liveview.domain.base.ComposableTypes.lazyRow
@@ -36,8 +37,8 @@ class LazyRowShotTest : LiveViewComposableTest() {
             (1..count).forEach {
                 append(
                     """
-                    <$column $attrPadding="8">
-                      <$text ${if (fill) "$attrWeight=\"1\"" else ""}>Item ${it}</$text>
+                    <$column $attrStyle="${ModifierNames.modifierPadding}($typeDp(8))">
+                      <$text ${if (fill) "$attrStyle=\"$modifierWeight(1)\"" else ""}>Item ${it}</$text>
                       <$text>#${it}</$text>
                     </$column>     
                     """
@@ -64,7 +65,7 @@ class LazyRowShotTest : LiveViewComposableTest() {
                     cellsForComposable(rowCount)
                 }
             }, template = """
-                <$lazyRow $attrHeight="150">
+                <$lazyRow $attrStyle="$modifierHeight($typeDp(150))">
                   ${cellForTemplate(rowCount)}
                 </$lazyRow>
                 """
@@ -80,7 +81,7 @@ class LazyRowShotTest : LiveViewComposableTest() {
                     cellsForComposable(rowCount)
                 }
             }, template = """
-                <$lazyRow $attrHeight="150" $attrReverseLayout="true">
+                <$lazyRow $attrStyle="$modifierHeight($typeDp(150))" $attrReverseLayout="true">
                   ${cellForTemplate(rowCount)}
                 </$lazyRow>
                 """
@@ -102,7 +103,7 @@ class LazyRowShotTest : LiveViewComposableTest() {
                 }
             }, template = """
                 <$lazyRow 
-                  $attrHeight="100" $attrWidth="$fill" 
+                  $attrStyle="$modifierFillMaxWidth();$modifierHeight($typeDp(100))"
                   $attrHorizontalArrangement="${HorizontalArrangementValues.spaceAround}">
                   ${cellForTemplate(rowCount)}
                 </$lazyRow>
@@ -125,7 +126,7 @@ class LazyRowShotTest : LiveViewComposableTest() {
                 }
             }, template = """
                 <$lazyRow 
-                  $attrWidth="$fill" $attrHeight="200" 
+                  $attrStyle="$modifierFillMaxWidth();$modifierHeight($typeDp(200))"
                   $attrVerticalAlignment="${VerticalAlignmentValues.bottom}">
                   ${cellForTemplate(rowCount, false)}
                 </$lazyRow>

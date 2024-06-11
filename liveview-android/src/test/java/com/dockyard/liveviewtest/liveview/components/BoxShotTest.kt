@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
@@ -21,12 +22,23 @@ import org.phoenixframework.liveview.data.constants.AlignmentValues.bottomStart
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
 import org.phoenixframework.liveview.data.constants.AlignmentValues.topEnd
 import org.phoenixframework.liveview.data.constants.AlignmentValues.topStart
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
-import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
-import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.data.constants.Attrs.attrText
+import org.phoenixframework.liveview.data.constants.Attrs.attrTextAlign
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierBackground
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMatchParentSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeAlignment
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.TextAlignValues
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
 import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
 import org.phoenixframework.liveview.domain.base.ComposableTypes.text
@@ -59,10 +71,10 @@ class BoxShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-              <$box $attrSize="100" $attrBackground="#FFFF0000">
-                <$icon $attrImageVector="filled:Android" $attrAlign="$topStart"/>
-                <$text $attrAlign="$center">Text</$text>
-                <$icon $attrImageVector="filled:Share" $attrAlign="$bottomEnd"/>
+              <$box $attrStyle="$modifierSize($typeDp(100));$modifierBackground($typeColor.$Red)">
+                <$icon $attrImageVector="filled:Android" $attrStyle="$modifierAlign($typeAlignment.$topStart)" />
+                <$text $attrStyle="$modifierAlign($typeAlignment.$center)">Text</$text>
+                <$icon $attrImageVector="filled:Share" $attrStyle="$modifierAlign($typeAlignment.$bottomEnd)" />
               </$box>                
             """
         )
@@ -96,11 +108,37 @@ class BoxShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-              <$box $attrWidth="150" $attrHeight="100" $attrBackground="#FF0000FF">
-                <$icon $attrImageVector="filled:Android" $attrAlign="$topEnd"/>
-                <$text $attrAlign="$center">Text Center</$text>
-                <$icon $attrImageVector="filled:Share" $attrAlign="$bottomStart"/>
+              <$box $attrStyle="$modifierWidth($typeDp(150));$modifierHeight($typeDp(100));$modifierBackground($typeColor.$Blue)">
+                <$icon $attrImageVector="filled:Android" $attrStyle="$modifierAlign($typeAlignment.$topEnd)" />
+                <$text $attrStyle="$modifierAlign($typeAlignment.$center)">Text Center</$text>
+                <$icon $attrImageVector="filled:Share" $attrStyle="$modifierAlign($typeAlignment.$bottomStart)" />
               </$box>                
+            """
+        )
+    }
+
+    @Test
+    fun boxWithChildMaxParentSizedTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box(
+                    Modifier
+                        .size(200.dp)
+                        .background(Color.Yellow)) {
+                    Text(
+                        text = "MaxParentSize",
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.matchParentSize()
+                    )
+                }
+            },
+            template = """
+                <$box $attrStyle="$modifierSize($typeDp(200));$modifierBackground($typeColor.$Yellow)">
+                    <$text
+                        $attrText="MaxParentSize" 
+                        $attrTextAlign="${TextAlignValues.center}"
+                        $attrStyle="$modifierMatchParentSize()" />
+                </$box>    
             """
         )
     }

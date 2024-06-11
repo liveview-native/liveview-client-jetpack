@@ -20,8 +20,8 @@ import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrInitialSelectedDateMillis
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
-import org.phoenixframework.liveview.data.constants.Attrs.attrTestTag
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCurrentYearContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDayContentColor
@@ -36,6 +36,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTodayCon
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTodayDateBorderColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrWeekdayContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrYearContentColor
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTestTag
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Black
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
 import org.phoenixframework.liveview.data.constants.SystemColorValues.DarkGray
@@ -82,7 +83,7 @@ class DatePickerDialogShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <$datePickerDialog $attrTestTag="$testTag">
+                <$datePickerDialog $attrStyle="$modifierTestTag('$testTag')">
                   <$outlinedButton $attrTemplate="$templateConfirmButton">
                     <$text>Confirm</$text>
                   </$outlinedButton>
@@ -177,7 +178,7 @@ class DatePickerDialogShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <$datePickerDialog $attrTestTag="$testTag" $attrColors="$colorsForTemplate">
+                <$datePickerDialog $attrStyle="$modifierTestTag('$testTag')" $attrColors="$colorsForTemplate">
                   <$outlinedButton $attrTemplate="$templateConfirmButton">
                     <$text>Confirm</$text>
                   </$outlinedButton>
@@ -287,7 +288,7 @@ class DatePickerDialogShotTest : LiveViewComposableTest() {
                 )
             },
             template = """
-                <$datePickerDialog $attrTestTag="$testTag">
+                <$datePickerDialog $attrStyle="$modifierTestTag('$testTag')">
                   <$outlinedButton $attrTemplate="$templateConfirmButton">
                     <$text>Confirm</$text>
                   </$outlinedButton>

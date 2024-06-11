@@ -12,14 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxItemsInEachColumn
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxItemsInEachRow
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
 import org.phoenixframework.liveview.domain.base.ComposableTypes.flowColumn
 import org.phoenixframework.liveview.domain.base.ComposableTypes.flowRow
@@ -45,7 +46,7 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$flowColumn $attrHeight="400">
+                <$flowColumn $attrStyle="$modifierHeight($typeDp(400))">
                     $childrenForTemplate
                 </$flowColumn>
                 """
@@ -147,7 +148,7 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$flowColumn 
-                  $attrSize="$fill" $attrMaxItemsInEachColumn="5" 
+                  $attrStyle="$modifierFillMaxSize()" $attrMaxItemsInEachColumn="5" 
                   $attrHorizontalArrangement="${HorizontalArrangementValues.spaceEvenly}" 
                   $attrVerticalArrangement="${VerticalArrangementValues.center}">
                     $childrenForTemplate
@@ -178,7 +179,7 @@ class FlowLayoutShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$flowRow $attrSize="$fill" $attrMaxItemsInEachRow="3" 
+                <$flowRow $attrStyle="$modifierFillMaxSize()" $attrMaxItemsInEachRow="3" 
                   $attrHorizontalArrangement="${HorizontalArrangementValues.spaceBetween}" 
                   $attrVerticalArrangement="${VerticalArrangementValues.bottom}">
                     $childrenForTemplate

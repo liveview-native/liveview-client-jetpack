@@ -84,7 +84,7 @@ class DrawingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"clipCircleTest" => [
-                {:clip, [], [{:., [], [:CircleShape]}]},
+                {:clip, [], [:CircleShape]},
             ]}
             """,
             Modifier.clip(CircleShape)
@@ -96,7 +96,7 @@ class DrawingTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"clipRectTest" => [
-                {:clip, [], [{:., [], [:RectangleShape]}]},
+                {:clip, [], [:RectangleShape]},
             ]}
             """,
             Modifier.clip(RectangleShape)

@@ -23,7 +23,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 /**
  * The vertically scrolling list that only composes and lays out the currently visible items.
  * ```
- * <LazyColumn width="fill" verticalArrangement="center" horizontalAlignment="center">
+ * <LazyColumn style="fillMaxWidth()" verticalArrangement="center" horizontalAlignment="center">
  *   // Children
  * </LazyColumn>
  * ```

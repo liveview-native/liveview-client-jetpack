@@ -11,9 +11,11 @@ import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues.centerHorizontally
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.centerVertically
 import org.phoenixframework.liveview.domain.base.ComposableTypes.column
 import org.phoenixframework.liveview.domain.base.ComposableTypes.row
@@ -40,7 +42,7 @@ class SpacerShotTest : LiveViewComposableTest() {
                     <$text>Left</$text>
                     <$column $attrHorizontalAlignment="$centerHorizontally">
                         <$text>Top</$text>
-                        <$spacer $attrSize="80" />
+                        <$spacer $attrStyle="$modifierSize($typeDp(80))" />
                         <$text>Bottom</$text>
                     </$column>
                     <$text>Right</$text>

@@ -14,10 +14,12 @@ import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrHeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrThickness
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
-import org.phoenixframework.liveview.data.constants.SizeValues.intrinsicMin
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeIntrinsicSize
 import org.phoenixframework.liveview.domain.base.ComposableTypes.column
 import org.phoenixframework.liveview.domain.base.ComposableTypes.horizontalDivider
 import org.phoenixframework.liveview.domain.base.ComposableTypes.row
@@ -37,7 +39,7 @@ class DividerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$column $attrWidth="100">
+                <$column $attrStyle="$modifierWidth($typeDp(100))">
                   <$text>Line 1</$text>
                   <$horizontalDivider />
                   <$text>Line 2</$text>
@@ -61,7 +63,7 @@ class DividerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$row $attrWidth="100" $attrHeight="$intrinsicMin">
+                <$row $attrStyle="$modifierWidth($typeDp(100));$modifierHeight($typeIntrinsicSize.Min)">
                   <$text>Cell 1</$text>
                   <$verticalDivider />
                   <$text>Cell 2</$text>
@@ -81,7 +83,7 @@ class DividerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$column $attrWidth="100">
+                <$column $attrStyle="$modifierWidth($typeDp(100))">
                   <$text>Line 1</$text>
                   <$horizontalDivider $attrThickness="2" $attrColor="#FFFF0000" />
                   <$text>Line 2</$text>
@@ -105,7 +107,7 @@ class DividerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$row $attrWidth="100" $attrHeight="$intrinsicMin">
+                <$row $attrStyle="$modifierWidth($typeDp(100));$modifierHeight($typeIntrinsicSize.Min)">
                   <$text>Cell 1</$text>
                   <$verticalDivider $attrThickness="2" $attrColor="#FFFF0000" />
                   <$text>Cell 2</$text>

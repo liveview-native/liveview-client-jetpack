@@ -23,15 +23,17 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangem
 import org.phoenixframework.liveview.data.constants.Attrs.attrMinSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
 import org.phoenixframework.liveview.data.constants.Attrs.attrRows
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrType
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
-import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
 import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
 import org.phoenixframework.liveview.data.constants.LazyGridColumnTypeValues.adaptive
 import org.phoenixframework.liveview.data.constants.LazyGridColumnTypeValues.fixed
-import org.phoenixframework.liveview.data.constants.SizeValues.fill
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
 import org.phoenixframework.liveview.domain.base.ComposableTypes.column
 import org.phoenixframework.liveview.domain.base.ComposableTypes.lazyHorizontalGrid
@@ -48,7 +50,7 @@ class LazyGridShotTest : LiveViewComposableTest() {
                     <$column 
                       $attrVerticalArrangement="${VerticalArrangementValues.center}" 
                       $attrHorizontalAlignment="${HorizontalAlignmentValues.centerHorizontally}" 
-                      $attrSize="100">
+                      $attrStyle="$modifierSize($typeDp(100))">
                       <$text>Item ${it}</$text>
                       <$text>#${it}</$text>
                     </$column>     
@@ -120,7 +122,7 @@ class LazyGridShotTest : LiveViewComposableTest() {
                 }
             }, template = """
                 <$lazyVerticalGrid 
-                  $attrSize="$fill" 
+                  $attrStyle="$modifierFillMaxSize()"
                   $attrVerticalArrangement="${VerticalArrangementValues.center}" 
                   $attrColumns="{'$attrType': '$fixed', '$attrCount': '3'}">
                   ${cellsForTemplate(cellCount)}
@@ -144,7 +146,7 @@ class LazyGridShotTest : LiveViewComposableTest() {
                 }
             }, template = """
                 <$lazyVerticalGrid 
-                  $attrSize="$fill" 
+                  $attrStyle="$modifierFillMaxSize()" 
                   $attrVerticalArrangement="${VerticalArrangementValues.center}" 
                   $attrHorizontalArrangement="${HorizontalArrangementValues.spaceBetween}" 
                   $attrColumns="{'$attrType': '$adaptive', '$attrMinSize': '100'}">
@@ -203,7 +205,7 @@ class LazyGridShotTest : LiveViewComposableTest() {
                 }
             }, template = """
                 <$lazyHorizontalGrid 
-                  $attrSize="$fill" 
+                  $attrStyle="$modifierFillMaxSize()"
                   $attrVerticalArrangement="${VerticalArrangementValues.center}" 
                   $attrColumns="{'$attrType': '$fixed', '$attrCount': '3'}">
                   ${cellsForTemplate(cellCount)}
@@ -227,7 +229,7 @@ class LazyGridShotTest : LiveViewComposableTest() {
                 }
             }, template = """
                 <$lazyHorizontalGrid 
-                  $attrWidth="$fill" 
+                  $attrStyle="$modifierFillMaxWidth()"
                   $attrVerticalArrangement="${VerticalArrangementValues.center}" 
                   $attrHorizontalArrangement="${HorizontalArrangementValues.spaceBetween}" 
                   $attrColumns="{'$attrType': '$adaptive', '$attrMinSize': '100'}">

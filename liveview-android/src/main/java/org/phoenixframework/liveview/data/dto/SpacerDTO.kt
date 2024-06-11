@@ -19,7 +19,7 @@ import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
  * Component that represents an empty space layout, whose size can be defined using width, height
  * and size attributes.
  * ```
- * <Spacer height="8" />
+ * <Spacer style="height(8.dp)" />
  * ```
  */
 internal class SpacerDTO private constructor(props: Properties) :

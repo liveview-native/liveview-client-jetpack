@@ -96,20 +96,32 @@ fun Modifier.exposedDropdownSizeFromStyle(
 
 fun Modifier.fillMaxHeightFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
-    return this.then(Modifier.fillMaxHeight(fraction))
+    return this.then(
+        if (args.isEmpty()) Modifier.fillMaxHeight() else {
+            val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
+            Modifier.fillMaxHeight(fraction)
+        }
+    )
 }
 
 fun Modifier.fillMaxSizeFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
-    return this.then(Modifier.fillMaxSize(fraction))
+    return this.then(
+        if (args.isEmpty()) Modifier.fillMaxSize() else {
+            val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
+            Modifier.fillMaxSize(fraction)
+        }
+    )
 }
 
 fun Modifier.fillMaxWidthFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val args = argsOrNamedArgs(arguments)
-    val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
-    return this.then(Modifier.fillMaxWidth(fraction))
+    return this.then(
+        if (args.isEmpty()) Modifier.fillMaxWidth() else {
+            val fraction = argOrNamedArg(args, argFraction, 0)?.floatValue ?: 1f
+            Modifier.fillMaxWidth(fraction)
+        }
+    )
 }
 
 fun Modifier.fillParentMaxHeightFromStyle(

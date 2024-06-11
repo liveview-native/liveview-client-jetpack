@@ -189,7 +189,7 @@ internal class TooltipDTO private constructor(props: Properties) :
         /**
          * RichTooltipColors that will be applied to the tooltip's container and content.
          * ```
-         * <RichTooltip colors="{'containerColor': 'system-red', 'contentColor': 'system-white'}">
+         * <RichTooltip colors="{'containerColor': 'Red', 'contentColor': 'White'}">
          *   ...</RichTooltip>
          * ```
          * @param colors an JSON formatted string, containing the rich tooltip colors. The color
@@ -225,7 +225,7 @@ internal class TooltipDTO private constructor(props: Properties) :
         /**
          * Color used for the background of this PlainTooltip.
          * ```
-         * <PlainTooltip containerColor="system-red">...</PlainTooltip>
+         * <PlainTooltip containerColor="Red">...</PlainTooltip>
          * ```
          * @param color container color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
@@ -239,7 +239,7 @@ internal class TooltipDTO private constructor(props: Properties) :
         /**
          * Preferred color for content inside this PlainTooltip.
          * ```
-         * <PlainTooltip containerColor="system-white">...</PlainTooltip>
+         * <PlainTooltip containerColor="White">...</PlainTooltip>
          * ```
          * @param color content color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.

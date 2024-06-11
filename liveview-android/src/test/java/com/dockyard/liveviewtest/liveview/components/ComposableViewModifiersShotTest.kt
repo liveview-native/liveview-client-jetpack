@@ -1,12 +1,14 @@
 package com.dockyard.liveviewtest.liveview.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.captionBarPadding
 import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
@@ -23,6 +25,8 @@ import androidx.compose.foundation.layout.systemGesturesPadding
 import androidx.compose.foundation.layout.waterfallPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.progressSemantics
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.ui.Alignment
@@ -36,17 +40,24 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.SemanticsProperties.ProgressBarRangeInfo
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.hasScrollAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.unit.dp
 import com.dockyard.liveviewtest.liveview.util.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
-import org.phoenixframework.liveview.data.constants.Attrs.attrSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues.centerHorizontally
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeAlignment
+import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.centerVertically
 import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.domain.base.ComposableTypes.box
@@ -91,7 +102,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             """
             %{
                 "alignRowTest" => [
-                    {:align, [], [{:., [], [:Alignment, :End]}]}
+                    {:align, [], [{:., [], [:Alignment, :Bottom]}]}
                 ], 
                 "rowHeight100" => [
                     {:height, [], [{:Dp, [], [100]}]}
@@ -121,6 +132,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 "alignByColumnTest" => [
                     {:alignBy, [], [{:., [], [:LastBaseline]}]}
                 ], 
+                "align(Alignment.CenterHorizontally)" => [{:align, [], [{:., [], [:Alignment, :CenterHorizontally]}]}],
                 "fillColumnWidth" => [
                     {:fillMaxWidth, [], []},
                     {:height, [], [{:Dp, [], [50]}]}
@@ -144,7 +156,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$column $attrClass="fillColumnWidth">
-                    <$text $attrText="Text1" $attrAlign="$centerHorizontally" />
+                    <$text $attrText="Text1" $attrStyle="$modifierAlign($typeAlignment.$centerHorizontally)" />
                     <$text $attrText="AlignBy" $attrClass="alignByColumnTest"/>
                 </$column>
                 """
@@ -159,6 +171,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 "alignByRowTest" => [
                     {:alignBy, [], [{:., [], [:LastBaseline]}]}
                 ], 
+                "align(Alignment.CenterVertically)" => [{:align, [], [{:., [], [:Alignment, :CenterVertically]}]}],
                 "rowHeight100" => [
                     {:height, [], [{:Dp, [], [100]}]}
                 ]
@@ -174,7 +187,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
             },
             template = """
                 <$row $attrClass="rowHeight100">
-                    <$text $attrText="Text1" $attrAlign="$centerVertically" />
+                    <$text $attrText="Text1" $attrStyle="$modifierAlign($typeAlignment.$centerVertically)" />
                     <$text $attrText="AlignBy" $attrClass="alignByRowTest"/>
                 </$row>
                 """
@@ -360,6 +373,92 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
     }
 
     @Test
+    fun scrollHorizontalTest() {
+        val testTag = "rowScroll"
+        val styleName = "scrollHorizontalTest"
+        ModifiersParser.fromStyleFile(
+            """
+            %{"$styleName" => [
+              {:fillMaxWidth, [], []},
+              {:horizontalScroll, [], []},
+              {:testTag, [], ["$testTag"]}
+            ]}
+            """
+        )
+        val texts = (1..100).joinToString(separator = "") {
+            "<$text>Item $it</$text>"
+        }
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .testTag(testTag)
+                ) {
+                    (1..100).forEach {
+                        Text(text = "Item $it")
+                    }
+                }
+            },
+            template = """
+                <$row $attrClass="$styleName">
+                    $texts
+                </$row>
+                """,
+            testTag = testTag,
+            onBeforeScreenShot = { rule ->
+                rule.onNodeWithTag(testTag, useUnmergedTree = true).assert(hasScrollAction())
+                rule.onNodeWithTag(testTag, useUnmergedTree = true)
+                    .performScrollToNode(hasText("Item 50"))
+            }
+        )
+    }
+
+    @Test
+    fun scrollVerticalTest() {
+        val testTag = "colScroll"
+        val styleName = "scrollVerticalTest"
+        ModifiersParser.fromStyleFile(
+            """
+            %{"$styleName" => [
+              {:fillMaxSize, [], []},
+              {:verticalScroll, [], []},
+              {:testTag, [], ["$testTag"]}
+            ]}
+            """
+        )
+        val texts = (1..100).joinToString(separator = "") {
+            "<$text>Item $it</$text>"
+        }
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .testTag(testTag)
+                ) {
+                    (1..100).forEach {
+                        Text(text = "Item $it")
+                    }
+                }
+            },
+            template = """
+                <$column $attrClass="$styleName">
+                    $texts
+                </$column>
+                """,
+            testTag = testTag,
+            onBeforeScreenShot = { rule ->
+                rule.onNodeWithTag(testTag, useUnmergedTree = true).assert(hasScrollAction())
+                rule.onNodeWithTag(testTag, useUnmergedTree = true)
+                    .performScrollToNode(hasText("Item 50"))
+            }
+        )
+    }
+
+    @Test
     fun safeContentPaddingTest() {
         ModifiersParser.fromStyleFile(
             """
@@ -425,6 +524,9 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 ]]},
                 {:background, [], [{:., [], [:Color, :White]}]},
                 {:padding, [], [{:., [], [16, :dp]}]}
+            ],
+            "size(Dp(200))" => [
+                {:size, [], [{:Dp, [], [200]}]}
             ]}
             """
         )
@@ -453,7 +555,7 @@ class ComposableViewModifiersShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$box $attrSize="200" $attrContentAlignment="$center">
+                <$box $attrStyle="$modifierSize($typeDp(200))" $attrContentAlignment="$center">
                     <$box $attrClass="shadowTest">
                         <$text $attrText="Shadow Test" />
                     </$box>

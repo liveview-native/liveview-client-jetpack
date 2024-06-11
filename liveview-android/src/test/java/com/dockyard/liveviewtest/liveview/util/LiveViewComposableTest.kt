@@ -1,5 +1,6 @@
 package com.dockyard.liveviewtest.liveview.util
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,11 +12,15 @@ import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.captureScreenRoboImage
+import org.junit.After
+import org.junit.Before
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.BuildConfig.IS_RECORDING_SHOT_TEST
+import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
 import org.phoenixframework.liveview.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.domain.ThemeHolder
 import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.test.R
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.LiveViewNativeTheme
 import org.robolectric.annotation.Config
@@ -30,6 +35,20 @@ import org.robolectric.annotation.GraphicsMode
 abstract class LiveViewComposableTest : BaseTest() {
 
     private val isRecording = IS_RECORDING_SHOT_TEST
+
+    @Before
+    fun setup() {
+        if (!isRecording) {
+            loadAppStylesMockFile(composeRule.activity)
+        }
+    }
+
+    @After
+    fun tearDown() {
+        if (!isRecording) {
+            ModifiersParser.clearCacheTable()
+        }
+    }
 
     internal fun compareNativeComposableWithTemplate(
         nativeComposable: @Composable () -> Unit,
@@ -80,6 +99,20 @@ abstract class LiveViewComposableTest : BaseTest() {
 
             else ->
                 composeRule.onRoot().captureRoboImage()
+        }
+    }
+
+    companion object {
+        private fun loadAppStylesMockFile(context: Context) {
+            val inputStream = context.resources.openRawResource(R.raw.app_jetpack_styles)
+            val bufferedReader = inputStream.bufferedReader()
+            try {
+                bufferedReader.use { it.readText() }.let { text ->
+                    ModifiersParser.fromStyleFile(text)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

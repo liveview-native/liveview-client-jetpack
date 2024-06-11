@@ -1,18 +1,13 @@
 package org.phoenixframework.liveview.data.dto
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
-import org.phoenixframework.liveview.data.constants.Attrs.attrScroll
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.base.CommonComposableProperties
@@ -21,7 +16,6 @@ import org.phoenixframework.liveview.domain.base.ComposableProperties
 import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.optional
 import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -29,7 +23,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 /**
  * A layout composable that places its children in a vertical sequence.
  * ```
- * <Column height="200" width="200" background="#FFCCCCCC">
+ * <Column style="height(200.dp);width(200.dp);background(Color.Gray)">
  *   // Children
  * </Column>
  * ```
@@ -45,18 +39,10 @@ internal class ColumnDTO private constructor(props: Properties) :
     ) {
         val verticalArrangement = props.verticalArrangement
         val horizontalAlignment = props.horizontalAlignment
-        val hasVerticalScroll = props.commonProps.hasVerticalScrolling
-        val hasHorizontalScroll = props.commonProps.hasHorizontalScrolling
 
         Column(
             modifier = props.commonProps.modifier
-                .paddingIfNotNull(paddingValues)
-                .optional(
-                    hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
-                )
-                .optional(
-                    hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
-                ),
+                .paddingIfNotNull(paddingValues),
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment
         ) {
@@ -130,7 +116,6 @@ internal object ColumnDtoFactory : ComposableViewFactory<ColumnDTO>() {
         when (attribute.name) {
             attrHorizontalAlignment -> builder.horizontalAlignment(attribute.value)
             attrVerticalArrangement -> builder.verticalArrangement(attribute.value)
-            attrScroll -> builder.scrolling(attribute.value)
             else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
         } as ColumnDTO.Builder
     }.build()

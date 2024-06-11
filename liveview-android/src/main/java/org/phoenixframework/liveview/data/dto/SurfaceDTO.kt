@@ -1,16 +1,12 @@
 package org.phoenixframework.liveview.data.dto
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
@@ -36,7 +32,6 @@ import org.phoenixframework.liveview.domain.base.ComposableView
 import org.phoenixframework.liveview.domain.base.ComposableViewFactory
 import org.phoenixframework.liveview.domain.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.optional
 import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
@@ -55,23 +50,23 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * - checkable: the surface has a checked state and a change action that receives the new check
  * state as parameter.
  * ```
- * <Surface shape="12" color="system-blue" contentColor="system-white">
- *   <Text padding="16">Simple Surface</Text>
+ * <Surface shape="12" color="Blue" contentColor="White">
+ *   <Text style="padding(16.dp)">Simple Surface</Text>
  * </Surface>
  *
- * <Surface shape="12" color="system-blue" contentColor="system-white"
+ * <Surface shape="12" color="Blue" contentColor="White"
  *   phx-click="onClick">
- *   <Text padding="32">Clickable Surface</Text>
+ *   <Text style="padding(32.dp)">Clickable Surface</Text>
  * </Surface>
  *
- * <Surface shape="12" color="system-blue" contentColor="system-white"
+ * <Surface shape="12" color="Blue" contentColor="White"
  *   selected={"#{@isSelected}"} phx-click="selectItem">
- *   <Text padding="32">Selectable Surface</Text>
+ *   <Text style="padding(32.dp)">Selectable Surface</Text>
  * </Surface>
  *
- * <Surface shape="12" color="system-blue" contentColor="system-white"
+ * <Surface shape="12" color="Blue" contentColor="White"
  *   checked={"#{@isChecked}"} phx-change="toggleCheck">
- *   <Text padding="32">Checkable Surface</Text>
+ *   <Text style="padding(32.dp)">Checkable Surface</Text>
  * </Surface>
  * ```
  */
@@ -90,8 +85,6 @@ internal class SurfaceDTO private constructor(props: Properties) :
         val tonalElevation = props.tonalElevation
         val shadowElevation = props.shadowElevation
         val border = props.border
-        val hasVerticalScroll = props.commonProps.hasVerticalScrolling
-        val hasHorizontalScroll = props.commonProps.hasHorizontalScrolling
         val onClick = props.onClick
         val enabled = props.enabled
         val selected = props.selected
@@ -101,12 +94,6 @@ internal class SurfaceDTO private constructor(props: Properties) :
         val color = colorValue ?: MaterialTheme.colorScheme.surface
         val newModifier = props.commonProps.modifier
             .paddingIfNotNull(paddingValues)
-            .optional(
-                hasVerticalScroll, Modifier.verticalScroll(rememberScrollState())
-            )
-            .optional(
-                hasHorizontalScroll, Modifier.horizontalScroll(rememberScrollState())
-            )
         when {
             onClick != null && selected == null ->
                 Surface(
@@ -250,7 +237,7 @@ internal class SurfaceDTO private constructor(props: Properties) :
         }
 
         /**
-         * The background color. Use system-transparent to have no color.
+         * The background color. Use "Transparent" to have no color.
          */
         fun color(color: String) = apply {
             this.color = color.toColor()
