@@ -57,6 +57,7 @@ object ComposableTypes {
     const val lazyVerticalGrid = "LazyVerticalGrid"
     const val leadingIconTab = "LeadingIconTab"
     const val linearProgressIndicator = "LinearProgressIndicator"
+    const val link = "Link"
     const val listItem = "ListItem"
     const val mediumTopAppBar = "MediumTopAppBar"
     const val modalBottomSheet = "ModalBottomSheet"

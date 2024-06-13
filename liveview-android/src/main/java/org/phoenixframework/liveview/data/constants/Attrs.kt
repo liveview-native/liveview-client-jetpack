@@ -99,6 +99,7 @@ object Attrs {
     const val attrMinLines = "minLines"
     const val attrMinSize = "minSize"
     const val attrMinValue = "minValue"
+    const val attrNavigate = "navigate"
     const val attrOverflow = "overflow"
     const val attrOnDismissRequest = "onDismissRequest"
     const val attrPageCount = "pageCount"
