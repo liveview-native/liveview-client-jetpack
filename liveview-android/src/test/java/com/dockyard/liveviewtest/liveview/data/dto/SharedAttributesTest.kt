@@ -33,8 +33,6 @@ import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.data.constants.AlignmentValues
-import org.phoenixframework.liveview.data.constants.AlignmentValues.bottomStart
-import org.phoenixframework.liveview.data.constants.AlignmentValues.topEnd
 import org.phoenixframework.liveview.data.constants.Attrs.attrBottom
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrLeft
@@ -84,23 +82,21 @@ import org.phoenixframework.liveview.data.constants.SecureFlagPolicyValues
 import org.phoenixframework.liveview.data.constants.SystemColorValues
 import org.phoenixframework.liveview.data.constants.TileModeValues
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
-import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.centerVertically
-import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.top
 import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
-import org.phoenixframework.liveview.data.dto.alignmentFromString
-import org.phoenixframework.liveview.data.dto.borderFromString
-import org.phoenixframework.liveview.data.dto.colorsFromString
-import org.phoenixframework.liveview.data.dto.contentScaleFromString
-import org.phoenixframework.liveview.data.dto.elevationsFromString
-import org.phoenixframework.liveview.data.dto.enterTransitionFromString
-import org.phoenixframework.liveview.data.dto.exitTransitionFromString
-import org.phoenixframework.liveview.data.dto.horizontalAlignmentFromString
-import org.phoenixframework.liveview.data.dto.horizontalArrangementFromString
-import org.phoenixframework.liveview.data.dto.secureFlagPolicyFromString
-import org.phoenixframework.liveview.data.dto.tileModeFromString
-import org.phoenixframework.liveview.data.dto.verticalAlignmentFromString
-import org.phoenixframework.liveview.data.dto.verticalArrangementFromString
-import org.phoenixframework.liveview.data.dto.windowInsetsFromString
+import org.phoenixframework.liveview.ui.composables.alignmentFromString
+import org.phoenixframework.liveview.ui.composables.borderFromString
+import org.phoenixframework.liveview.ui.composables.colorsFromString
+import org.phoenixframework.liveview.ui.composables.contentScaleFromString
+import org.phoenixframework.liveview.ui.composables.elevationsFromString
+import org.phoenixframework.liveview.ui.composables.enterTransitionFromString
+import org.phoenixframework.liveview.ui.composables.exitTransitionFromString
+import org.phoenixframework.liveview.ui.composables.horizontalAlignmentFromString
+import org.phoenixframework.liveview.ui.composables.horizontalArrangementFromString
+import org.phoenixframework.liveview.ui.composables.secureFlagPolicyFromString
+import org.phoenixframework.liveview.ui.composables.tileModeFromString
+import org.phoenixframework.liveview.ui.composables.verticalAlignmentFromString
+import org.phoenixframework.liveview.ui.composables.verticalArrangementFromString
+import org.phoenixframework.liveview.ui.composables.windowInsetsFromString
 
 @RunWith(AndroidJUnit4::class)
 class SharedAttributesTest {
@@ -253,7 +249,7 @@ class SharedAttributesTest {
 
         json = """
             {"$expandIn": {
-              "$argExpandFrom": "$topEnd"
+              "$argExpandFrom": "${AlignmentValues.topEnd}"
             }}
             """.trimIndent()
         expected = expandIn(expandFrom = Alignment.TopEnd)
@@ -262,7 +258,7 @@ class SharedAttributesTest {
 
         json = """
             {"$expandIn": {
-              "$argExpandFrom": "$bottomStart",
+              "$argExpandFrom": "${AlignmentValues.bottomStart}",
               "$argClip": false
             }}
             """.trimIndent()
@@ -281,7 +277,7 @@ class SharedAttributesTest {
 
         json = """
             {"$expandVertically": {
-              "$argExpandFrom": "$top"
+              "$argExpandFrom": "${VerticalAlignmentValues.top}"
             }}
             """.trimIndent()
         expected = expandVertically(expandFrom = Alignment.Top)
@@ -290,7 +286,7 @@ class SharedAttributesTest {
 
         json = """
             {"$expandVertically": {
-              "$argExpandFrom": "$centerVertically",
+              "$argExpandFrom": "${VerticalAlignmentValues.centerVertically}",
               "$argClip": false
             }}
             """.trimIndent()
@@ -440,7 +436,7 @@ class SharedAttributesTest {
 
         json = """
             {"$shrinkOut": {
-              "$argShrinkTowards": "$topEnd"
+              "$argShrinkTowards": "${AlignmentValues.topEnd}"
             }}
             """.trimIndent()
         expected = shrinkOut(shrinkTowards = Alignment.TopEnd)
@@ -449,7 +445,7 @@ class SharedAttributesTest {
 
         json = """
             {"$shrinkOut": {
-              "$argShrinkTowards": "$bottomStart",
+              "$argShrinkTowards": "${AlignmentValues.bottomStart}",
               "$argClip": false
             }}
             """.trimIndent()
@@ -468,7 +464,7 @@ class SharedAttributesTest {
 
         json = """
             {"$shrinkVertically": {
-              "$argShrinkTowards": "$top"
+              "$argShrinkTowards": "${VerticalAlignmentValues.top}"
             }}
             """.trimIndent()
         expected = shrinkVertically(shrinkTowards = Alignment.Top)
@@ -477,7 +473,7 @@ class SharedAttributesTest {
 
         json = """
             {"$shrinkVertically": {
-              "$argShrinkTowards": "$centerVertically",
+              "$argShrinkTowards": "${VerticalAlignmentValues.centerVertically}",
               "$argClip": false
             }}
             """.trimIndent()

@@ -25,10 +25,10 @@ import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.Templates.templateBadge
-import org.phoenixframework.liveview.domain.base.ComposableTypes.badgedBox
-import org.phoenixframework.liveview.domain.base.ComposableTypes.box
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.badgedBox
+import org.phoenixframework.liveview.data.constants.ComposableTypes.box
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class BadgeBoxShotTest : LiveViewComposableTest() {
 

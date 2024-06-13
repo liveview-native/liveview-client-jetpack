@@ -9,12 +9,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
-import org.phoenixframework.liveview.data.constants.Attrs.attrText
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
-import org.phoenixframework.liveview.domain.base.ComposableTypes.textField
-import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.textField
+import org.phoenixframework.liveview.ui.base.PushEvent
 
 @RunWith(AndroidJUnit4::class)
 class FocusTest : BaseComposableModifierTest() {

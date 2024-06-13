@@ -56,12 +56,12 @@ import org.phoenixframework.liveview.data.constants.Templates.templateDragHandle
 import org.phoenixframework.liveview.data.constants.Templates.templateSheetContent
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.constants.Templates.templateTopBar
-import org.phoenixframework.liveview.domain.base.ComposableTypes.bottomSheetScaffold
-import org.phoenixframework.liveview.domain.base.ComposableTypes.box
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.snackbar
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
-import org.phoenixframework.liveview.domain.base.ComposableTypes.topAppBar
+import org.phoenixframework.liveview.data.constants.ComposableTypes.bottomSheetScaffold
+import org.phoenixframework.liveview.data.constants.ComposableTypes.box
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.snackbar
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.topAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 class BottomSheetScaffoldShotTest : LiveViewComposableTest() {

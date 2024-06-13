@@ -73,16 +73,16 @@ import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
 import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.assistChip
-import org.phoenixframework.liveview.domain.base.ComposableTypes.elevatedAssistChip
-import org.phoenixframework.liveview.domain.base.ComposableTypes.elevatedFilterChip
-import org.phoenixframework.liveview.domain.base.ComposableTypes.elevatedSuggestionChip
-import org.phoenixframework.liveview.domain.base.ComposableTypes.filterChip
-import org.phoenixframework.liveview.domain.base.ComposableTypes.flowRow
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.inputChip
-import org.phoenixframework.liveview.domain.base.ComposableTypes.suggestionChip
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.assistChip
+import org.phoenixframework.liveview.data.constants.ComposableTypes.elevatedAssistChip
+import org.phoenixframework.liveview.data.constants.ComposableTypes.elevatedFilterChip
+import org.phoenixframework.liveview.data.constants.ComposableTypes.elevatedSuggestionChip
+import org.phoenixframework.liveview.data.constants.ComposableTypes.filterChip
+import org.phoenixframework.liveview.data.constants.ComposableTypes.flowRow
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.inputChip
+import org.phoenixframework.liveview.data.constants.ComposableTypes.suggestionChip
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 @OptIn(ExperimentalLayoutApi::class)
 class ChipShotTest : LiveViewComposableTest() {

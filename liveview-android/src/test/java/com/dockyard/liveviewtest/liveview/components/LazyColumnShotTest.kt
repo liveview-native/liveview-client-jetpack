@@ -25,9 +25,9 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPaddin
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
-import org.phoenixframework.liveview.domain.base.ComposableTypes.lazyColumn
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.lazyColumn
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 import org.phoenixframework.liveview.domain.extensions.optional
 
 class LazyColumnShotTest : LiveViewComposableTest() {

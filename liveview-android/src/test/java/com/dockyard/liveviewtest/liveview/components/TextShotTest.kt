@@ -33,9 +33,9 @@ import org.phoenixframework.liveview.data.constants.TextAlignValues
 import org.phoenixframework.liveview.data.constants.TextDecorationValues.lineThrough
 import org.phoenixframework.liveview.data.constants.TextDecorationValues.underline
 import org.phoenixframework.liveview.data.constants.TextOverflowValues
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 import org.phoenixframework.liveview.ui.theme.fontFamilyFromString
 
 class TextShotTest : LiveViewComposableTest() {

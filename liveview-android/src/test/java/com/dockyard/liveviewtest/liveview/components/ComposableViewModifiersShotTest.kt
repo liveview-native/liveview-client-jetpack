@@ -59,11 +59,11 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeAlignment
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.centerVertically
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
-import org.phoenixframework.liveview.domain.base.ComposableTypes.box
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
+import org.phoenixframework.liveview.data.constants.ComposableTypes.box
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 import kotlin.math.max
 
 class ComposableViewModifiersShotTest : LiveViewComposableTest() {

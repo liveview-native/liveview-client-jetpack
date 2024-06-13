@@ -16,10 +16,10 @@ import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.BuildConfig.IS_RECORDING_SHOT_TEST
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
+import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
 import org.phoenixframework.liveview.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.domain.ThemeHolder
-import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.test.R
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.LiveViewNativeTheme

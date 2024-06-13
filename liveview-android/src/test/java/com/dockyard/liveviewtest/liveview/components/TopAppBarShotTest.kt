@@ -26,14 +26,14 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTitleCon
 import org.phoenixframework.liveview.data.constants.Templates.templateAction
 import org.phoenixframework.liveview.data.constants.Templates.templateNavigationIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
-import org.phoenixframework.liveview.domain.base.ComposableTypes.centerAlignedTopAppBar
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.iconButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.largeTopAppBar
-import org.phoenixframework.liveview.domain.base.ComposableTypes.mediumTopAppBar
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
-import org.phoenixframework.liveview.domain.base.ComposableTypes.topAppBar
+import org.phoenixframework.liveview.data.constants.ComposableTypes.centerAlignedTopAppBar
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.iconButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.largeTopAppBar
+import org.phoenixframework.liveview.data.constants.ComposableTypes.mediumTopAppBar
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.topAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 class TopAppBarShotTest : LiveViewComposableTest() {

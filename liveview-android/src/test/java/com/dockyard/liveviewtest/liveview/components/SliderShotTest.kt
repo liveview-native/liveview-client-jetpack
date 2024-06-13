@@ -53,10 +53,10 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.Templates.templateStartThumb
 import org.phoenixframework.liveview.data.constants.Templates.templateThumb
 import org.phoenixframework.liveview.data.constants.Templates.templateTrack
-import org.phoenixframework.liveview.domain.base.ComposableTypes.box
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.rangeSlider
-import org.phoenixframework.liveview.domain.base.ComposableTypes.slider
+import org.phoenixframework.liveview.data.constants.ComposableTypes.box
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.rangeSlider
+import org.phoenixframework.liveview.data.constants.ComposableTypes.slider
 
 @OptIn(ExperimentalMaterial3Api::class)
 class SliderShotTest : LiveViewComposableTest() {

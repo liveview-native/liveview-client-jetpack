@@ -1,0 +1,121 @@
+package org.phoenixframework.liveview.ui.composables
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.ui.Alignment
+import kotlinx.collections.immutable.ImmutableList
+import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrPropagateMinConstraints
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.ComposableBuilder
+import org.phoenixframework.liveview.ui.base.ComposableProperties
+import org.phoenixframework.liveview.ui.base.ComposableView
+import org.phoenixframework.liveview.ui.base.ComposableViewFactory
+import org.phoenixframework.liveview.ui.base.PushEvent
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
+
+/**
+ * The Box will organize the components of top of each other in a Z-order.
+ * ```
+ * <Box style="size(100.dp);background(Color.Red)">
+ *   <Icon imageVector="filled:Add" style="align(Alignment.TopStart)"/>
+ *   <Text style="align(Alignment.Center)">Text</Text>
+ *   <Icon imageVector="filled:Share" style="align(Alignment.BottomEnd)"/>
+ * </Box>
+ * ```
+ */
+internal class BoxDTO private constructor(props: Properties) :
+    ComposableView<BoxDTO.Properties>(props) {
+
+    @Composable
+    override fun Compose(
+        composableNode: ComposableTreeNode?,
+        paddingValues: PaddingValues?,
+        pushEvent: PushEvent,
+    ) {
+        val contentAlignment: Alignment = props.contentAlignment
+        val propagateMinConstraints = props.propagateMinConstraints
+
+        Box(
+            contentAlignment = contentAlignment,
+            propagateMinConstraints = propagateMinConstraints,
+            modifier = props.commonProps.modifier
+                .paddingIfNotNull(paddingValues),
+        ) {
+            composableNode?.children?.forEach {
+                PhxLiveView(it, pushEvent, composableNode, null, this)
+            }
+        }
+    }
+
+    @Stable
+    internal data class Properties(
+        val contentAlignment: Alignment,
+        val propagateMinConstraints: Boolean,
+        override val commonProps: CommonComposableProperties,
+    ) : ComposableProperties
+
+    internal class Builder : ComposableBuilder() {
+        private var contentAlignment: Alignment = Alignment.TopStart
+        private var propagateMinConstraints: Boolean = false
+
+        /**
+         * The default alignment inside the Box.
+         *
+         * ```
+         * <Box contentAlignment="Alignment.BbottomEnd">...</Box>
+         * ```
+         * @param contentAlignment children's alignment inside the Box. See the supported at
+         * [org.phoenixframework.liveview.data.constants.AlignmentValues].
+         */
+        fun contentAlignment(contentAlignment: String) = apply {
+            this.contentAlignment = alignmentFromString(contentAlignment, Alignment.TopStart)
+        }
+
+        /**
+         * Whether the incoming min constraints should be passed to content.
+         *
+         * ```
+         * <Box propagateMinConstraints="true">...</Box>
+         * ```
+         * @param value true if the incoming min constraints should be passed to content, false
+         * otherwise.
+         */
+        fun propagateMinConstraints(value: String) = apply {
+            this.propagateMinConstraints = value.toBoolean()
+        }
+
+        fun build(): BoxDTO = BoxDTO(
+            Properties(
+                contentAlignment,
+                propagateMinConstraints,
+                commonProps,
+            )
+        )
+    }
+}
+
+internal object BoxDtoFactory : ComposableViewFactory<BoxDTO>() {
+    /**
+     * Creates a `BoxDTO` object based on the attributes of the input `Attributes` object.
+     * BoxDTO co-relates to the Box composable
+     * @param attributes the `Attributes` object to create the `BoxDTO` object from
+     * @return a `BoxDTO` object based on the attributes of the input `Attributes` object
+     */
+    override fun buildComposableView(
+        attributes: ImmutableList<CoreAttribute>,
+        pushEvent: PushEvent?,
+        scope: Any?,
+    ): BoxDTO = attributes.fold(BoxDTO.Builder()) { builder, attribute ->
+        when (attribute.name) {
+            attrContentAlignment -> builder.contentAlignment(attribute.value)
+            attrPropagateMinConstraints -> builder.propagateMinConstraints(attribute.value)
+            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
+        } as BoxDTO.Builder
+    }.build()
+}

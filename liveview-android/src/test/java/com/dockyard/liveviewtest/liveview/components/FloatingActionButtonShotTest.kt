@@ -24,13 +24,13 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
 import org.phoenixframework.liveview.data.constants.ShapeValues.circle
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateText
-import org.phoenixframework.liveview.domain.base.ComposableTypes.extendedFloatingActionButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.floatingActionButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.largeFloatingActionButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
-import org.phoenixframework.liveview.domain.base.ComposableTypes.smallFloatingActionButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.extendedFloatingActionButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.floatingActionButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.largeFloatingActionButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.smallFloatingActionButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 import org.phoenixframework.liveview.domain.extensions.toColor
 
 class FloatingActionButtonShotTest : LiveViewComposableTest() {

@@ -25,9 +25,9 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTestTag
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.SheetValues.expanded
-import org.phoenixframework.liveview.domain.base.ComposableTypes.box
-import org.phoenixframework.liveview.domain.base.ComposableTypes.modalBottomSheet
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.box
+import org.phoenixframework.liveview.data.constants.ComposableTypes.modalBottomSheet
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 @OptIn(ExperimentalMaterial3Api::class)
 class ModalBottomSheetShotTest : LiveViewComposableTest() {

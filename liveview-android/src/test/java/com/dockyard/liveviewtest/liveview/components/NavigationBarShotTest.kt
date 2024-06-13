@@ -19,10 +19,10 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationBar
-import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationBarItem
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationBar
+import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationBarItem
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class NavigationBarShotTest : LiveViewComposableTest() {
     @Test

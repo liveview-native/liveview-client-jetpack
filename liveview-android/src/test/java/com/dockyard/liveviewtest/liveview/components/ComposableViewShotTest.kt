@@ -50,10 +50,10 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.Transparen
 import org.phoenixframework.liveview.data.constants.SystemColorValues.White
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.data.constants.ThemeColorsValues
-import org.phoenixframework.liveview.domain.base.ComposableTypes.box
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.flowRow
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.box
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.flowRow
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
 
 class ComposableViewShotTest : LiveViewComposableTest() {
 

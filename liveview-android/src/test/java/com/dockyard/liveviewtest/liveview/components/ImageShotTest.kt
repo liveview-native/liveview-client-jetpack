@@ -23,8 +23,8 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMa
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.image
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.image
 import org.phoenixframework.liveview.test.R
 
 class ImageShotTest : LiveViewComposableTest() {

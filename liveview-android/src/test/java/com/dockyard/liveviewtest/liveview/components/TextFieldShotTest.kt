@@ -63,11 +63,11 @@ import org.phoenixframework.liveview.data.constants.Templates.templateSuffix
 import org.phoenixframework.liveview.data.constants.Templates.templateSupportingText
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.constants.VisualTransformationValues
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedTextField
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
-import org.phoenixframework.liveview.domain.base.ComposableTypes.textField
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.outlinedTextField
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.textField
 
 class TextFieldShotTest : LiveViewComposableTest() {
     @Test

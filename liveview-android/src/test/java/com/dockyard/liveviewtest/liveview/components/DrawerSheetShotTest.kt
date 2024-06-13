@@ -18,11 +18,11 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
-import org.phoenixframework.liveview.domain.base.ComposableTypes.dismissibleDrawerSheet
-import org.phoenixframework.liveview.domain.base.ComposableTypes.modalDrawerSheet
-import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationDrawerItem
-import org.phoenixframework.liveview.domain.base.ComposableTypes.permanentDrawerSheet
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.dismissibleDrawerSheet
+import org.phoenixframework.liveview.data.constants.ComposableTypes.modalDrawerSheet
+import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationDrawerItem
+import org.phoenixframework.liveview.data.constants.ComposableTypes.permanentDrawerSheet
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class DrawerSheetShotTest : LiveViewComposableTest() {
 

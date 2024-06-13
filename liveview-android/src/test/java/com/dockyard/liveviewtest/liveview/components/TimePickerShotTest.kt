@@ -40,8 +40,8 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.SystemColorValues.White
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.data.constants.TimePickerLayoutTypeValues
-import org.phoenixframework.liveview.domain.base.ComposableTypes.timeInput
-import org.phoenixframework.liveview.domain.base.ComposableTypes.timePicker
+import org.phoenixframework.liveview.data.constants.ComposableTypes.timeInput
+import org.phoenixframework.liveview.data.constants.ComposableTypes.timePicker
 import org.robolectric.annotation.Config
 
 @OptIn(ExperimentalMaterial3Api::class)

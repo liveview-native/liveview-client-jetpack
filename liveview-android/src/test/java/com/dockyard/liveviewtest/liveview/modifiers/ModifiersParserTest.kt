@@ -11,8 +11,8 @@ import com.dockyard.liveviewtest.liveview.util.ModifierBaseTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyleName
+import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
+import org.phoenixframework.liveview.ui.modifiers.ModifiersParser.fromStyleName
 
 @RunWith(AndroidJUnit4::class)
 class ModifiersParserTest : ModifierBaseTest() {

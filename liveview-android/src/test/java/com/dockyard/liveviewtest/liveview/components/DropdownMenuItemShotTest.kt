@@ -23,9 +23,9 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailing
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
 import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.dropdownMenuItem
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.dropdownMenuItem
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class DropdownMenuItemShotTest : LiveViewComposableTest() {
     @Test

@@ -38,9 +38,9 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnchecke
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.Templates.templateThumb
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
-import org.phoenixframework.liveview.domain.base.ComposableTypes.switch
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.switch
 
 class SwitchShotTest : LiveViewComposableTest() {
     @Test

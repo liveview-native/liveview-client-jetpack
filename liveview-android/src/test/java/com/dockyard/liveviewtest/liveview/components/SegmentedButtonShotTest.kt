@@ -53,11 +53,11 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.White
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.multiChoiceSegmentedButtonRow
-import org.phoenixframework.liveview.domain.base.ComposableTypes.segmentedButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.singleChoiceSegmentedButtonRow
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.multiChoiceSegmentedButtonRow
+import org.phoenixframework.liveview.data.constants.ComposableTypes.segmentedButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.singleChoiceSegmentedButtonRow
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 @OptIn(ExperimentalMaterial3Api::class)
 class SegmentedButtonShotTest : LiveViewComposableTest() {

@@ -17,10 +17,10 @@ import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues.ce
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.centerVertically
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
-import org.phoenixframework.liveview.domain.base.ComposableTypes.spacer
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.spacer
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class SpacerShotTest : LiveViewComposableTest() {
     @Test

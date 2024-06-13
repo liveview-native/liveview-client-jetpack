@@ -69,9 +69,9 @@ import org.phoenixframework.liveview.data.constants.IconPrefixValues.outlined
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.rounded
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.sharp
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.twoTone
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
 
 class IconShotTest : LiveViewComposableTest() {
 

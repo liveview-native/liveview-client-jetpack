@@ -24,9 +24,9 @@ import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.surface
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.surface
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class SurfaceShotTest : LiveViewComposableTest() {
     @Test

@@ -38,10 +38,10 @@ import org.phoenixframework.liveview.data.constants.Templates.templateLeadingCon
 import org.phoenixframework.liveview.data.constants.Templates.templateOverlineContent
 import org.phoenixframework.liveview.data.constants.Templates.templateSupportingContent
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingContent
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.listItem
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.listItem
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class ListItemShotTest : LiveViewComposableTest() {
     @Test

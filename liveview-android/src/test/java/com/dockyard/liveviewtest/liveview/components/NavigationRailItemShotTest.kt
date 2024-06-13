@@ -34,10 +34,10 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.White
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationRail
-import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationRailItem
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationRail
+import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationRailItem
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class NavigationRailItemShotTest : LiveViewComposableTest() {
     @Test

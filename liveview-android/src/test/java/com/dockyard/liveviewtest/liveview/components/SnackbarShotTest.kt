@@ -25,8 +25,8 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrMessage
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrWithDismissAction
 import org.phoenixframework.liveview.data.constants.ShapeValues.circle
-import org.phoenixframework.liveview.domain.base.ComposableTypes.scaffold
-import org.phoenixframework.liveview.domain.base.ComposableTypes.snackbar
+import org.phoenixframework.liveview.data.constants.ComposableTypes.scaffold
+import org.phoenixframework.liveview.data.constants.ComposableTypes.snackbar
 
 class SnackbarShotTest : LiveViewComposableTest() {
     @Test

@@ -51,9 +51,9 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.White
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.data.constants.Templates.templateHeadline
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
-import org.phoenixframework.liveview.domain.base.ComposableTypes.datePicker
-import org.phoenixframework.liveview.domain.base.ComposableTypes.dateRangePicker
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.datePicker
+import org.phoenixframework.liveview.data.constants.ComposableTypes.dateRangePicker
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)

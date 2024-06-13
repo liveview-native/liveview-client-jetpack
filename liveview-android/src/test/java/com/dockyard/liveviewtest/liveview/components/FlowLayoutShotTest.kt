@@ -22,10 +22,10 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMa
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
-import org.phoenixframework.liveview.domain.base.ComposableTypes.flowColumn
-import org.phoenixframework.liveview.domain.base.ComposableTypes.flowRow
-import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.flowColumn
+import org.phoenixframework.liveview.data.constants.ComposableTypes.flowRow
+import org.phoenixframework.liveview.data.constants.ComposableTypes.outlinedButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 @OptIn(ExperimentalLayoutApi::class)
 class FlowLayoutShotTest : LiveViewComposableTest() {

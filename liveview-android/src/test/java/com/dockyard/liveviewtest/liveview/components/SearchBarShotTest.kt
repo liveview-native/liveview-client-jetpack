@@ -42,11 +42,11 @@ import org.phoenixframework.liveview.data.constants.Templates.templateContent
 import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
 import org.phoenixframework.liveview.data.constants.Templates.templatePlaceholder
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.dockedSearchBar
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.searchBar
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.dockedSearchBar
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.searchBar
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 @OptIn(ExperimentalMaterial3Api::class)
 class SearchBarShotTest : LiveViewComposableTest() {

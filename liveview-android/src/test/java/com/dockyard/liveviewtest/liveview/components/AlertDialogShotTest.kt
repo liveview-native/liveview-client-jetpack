@@ -32,14 +32,14 @@ import org.phoenixframework.liveview.data.constants.Templates.templateConfirmBut
 import org.phoenixframework.liveview.data.constants.Templates.templateDismissButton
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
-import org.phoenixframework.liveview.domain.base.ComposableTypes.alertDialog
-import org.phoenixframework.liveview.domain.base.ComposableTypes.basicAlertDialog
-import org.phoenixframework.liveview.domain.base.ComposableTypes.button
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
-import org.phoenixframework.liveview.domain.base.ComposableTypes.textButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.alertDialog
+import org.phoenixframework.liveview.data.constants.ComposableTypes.basicAlertDialog
+import org.phoenixframework.liveview.data.constants.ComposableTypes.button
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.textButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 class AlertDialogShotTest : LiveViewComposableTest() {

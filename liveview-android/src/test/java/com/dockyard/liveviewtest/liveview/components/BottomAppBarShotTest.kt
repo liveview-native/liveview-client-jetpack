@@ -24,10 +24,10 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
 import org.phoenixframework.liveview.data.constants.Templates.templateAction
 import org.phoenixframework.liveview.data.constants.Templates.templateFab
-import org.phoenixframework.liveview.domain.base.ComposableTypes.bottomAppBar
-import org.phoenixframework.liveview.domain.base.ComposableTypes.floatingActionButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.iconButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.bottomAppBar
+import org.phoenixframework.liveview.data.constants.ComposableTypes.floatingActionButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.iconButton
 
 class BottomAppBarShotTest : LiveViewComposableTest() {
     @Test

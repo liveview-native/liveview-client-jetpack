@@ -34,10 +34,10 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
 import org.phoenixframework.liveview.data.constants.SystemColorValues.LightGray
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
-import org.phoenixframework.liveview.domain.base.ComposableTypes.box
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.box
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class RowShotTest : LiveViewComposableTest() {
     @Composable

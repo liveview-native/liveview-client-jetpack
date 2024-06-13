@@ -27,12 +27,12 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentC
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Magenta
-import org.phoenixframework.liveview.domain.base.ComposableTypes.filledIconButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.filledTonalIconButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.iconButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedIconButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.filledIconButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.filledTonalIconButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.iconButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.outlinedIconButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
 
 class IconButtonShotTest : LiveViewComposableTest() {
 

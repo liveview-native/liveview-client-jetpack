@@ -14,10 +14,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
-import org.phoenixframework.liveview.domain.base.ComposableBuilder
-import org.phoenixframework.liveview.domain.base.ComposableTypes
-import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
+import org.phoenixframework.liveview.ui.base.ComposableBuilder
+import org.phoenixframework.liveview.data.constants.ComposableTypes
+import org.phoenixframework.liveview.ui.base.PushEvent
 
 @RunWith(AndroidJUnit4::class)
 class ActionsTest : BaseComposableModifierTest() {

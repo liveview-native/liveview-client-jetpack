@@ -35,10 +35,10 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMa
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
-import org.phoenixframework.liveview.domain.base.ComposableTypes.column
-import org.phoenixframework.liveview.domain.base.ComposableTypes.lazyHorizontalGrid
-import org.phoenixframework.liveview.domain.base.ComposableTypes.lazyVerticalGrid
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.lazyHorizontalGrid
+import org.phoenixframework.liveview.data.constants.ComposableTypes.lazyVerticalGrid
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class LazyGridShotTest : LiveViewComposableTest() {
 

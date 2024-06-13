@@ -50,14 +50,14 @@ import org.phoenixframework.liveview.data.constants.Templates.templateFab
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.constants.Templates.templateTopBar
-import org.phoenixframework.liveview.domain.base.ComposableTypes.box
-import org.phoenixframework.liveview.domain.base.ComposableTypes.floatingActionButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationBar
-import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationBarItem
-import org.phoenixframework.liveview.domain.base.ComposableTypes.scaffold
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
-import org.phoenixframework.liveview.domain.base.ComposableTypes.topAppBar
+import org.phoenixframework.liveview.data.constants.ComposableTypes.box
+import org.phoenixframework.liveview.data.constants.ComposableTypes.floatingActionButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationBar
+import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationBarItem
+import org.phoenixframework.liveview.data.constants.ComposableTypes.scaffold
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.topAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 class ScaffoldShotTest : LiveViewComposableTest() {

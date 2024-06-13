@@ -5,9 +5,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser
-import org.phoenixframework.liveview.data.mappers.modifiers.ModifiersParser.fromStyleName
-import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
+import org.phoenixframework.liveview.ui.modifiers.ModifiersParser.fromStyleName
+import org.phoenixframework.liveview.ui.base.PushEvent
 
 @RunWith(AndroidJUnit4::class)
 abstract class ModifierBaseTest: BaseTest() {

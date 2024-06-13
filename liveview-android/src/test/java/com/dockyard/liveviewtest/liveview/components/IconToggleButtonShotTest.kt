@@ -44,12 +44,12 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.LightGray
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Magenta
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
-import org.phoenixframework.liveview.domain.base.ComposableTypes.filledIconToggleButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.filledTonalIconToggleButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.iconToggleButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedIconToggleButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.filledIconToggleButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.filledTonalIconToggleButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.iconToggleButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.outlinedIconToggleButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
 
 class IconToggleButtonShotTest : LiveViewComposableTest() {
 

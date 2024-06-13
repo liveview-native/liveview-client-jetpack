@@ -27,13 +27,13 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMa
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.Templates.templateDrawerContent
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
-import org.phoenixframework.liveview.domain.base.ComposableTypes.box
-import org.phoenixframework.liveview.domain.base.ComposableTypes.dismissibleNavigationDrawer
-import org.phoenixframework.liveview.domain.base.ComposableTypes.modalDrawerSheet
-import org.phoenixframework.liveview.domain.base.ComposableTypes.modalNavigationDrawer
-import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationDrawerItem
-import org.phoenixframework.liveview.domain.base.ComposableTypes.permanentNavigationDrawer
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.box
+import org.phoenixframework.liveview.data.constants.ComposableTypes.dismissibleNavigationDrawer
+import org.phoenixframework.liveview.data.constants.ComposableTypes.modalDrawerSheet
+import org.phoenixframework.liveview.data.constants.ComposableTypes.modalNavigationDrawer
+import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationDrawerItem
+import org.phoenixframework.liveview.data.constants.ComposableTypes.permanentNavigationDrawer
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class NavigationDrawerShotTest : LiveViewComposableTest() {
     @Test

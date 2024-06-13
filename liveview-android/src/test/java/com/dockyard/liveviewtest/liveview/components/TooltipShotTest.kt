@@ -40,12 +40,12 @@ import org.phoenixframework.liveview.data.constants.Templates.templateContent
 import org.phoenixframework.liveview.data.constants.Templates.templateText
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.constants.Templates.templateTooltip
-import org.phoenixframework.liveview.domain.base.ComposableTypes.box
-import org.phoenixframework.liveview.domain.base.ComposableTypes.button
-import org.phoenixframework.liveview.domain.base.ComposableTypes.plainTooltip
-import org.phoenixframework.liveview.domain.base.ComposableTypes.richTooltip
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
-import org.phoenixframework.liveview.domain.base.ComposableTypes.tooltipBox
+import org.phoenixframework.liveview.data.constants.ComposableTypes.box
+import org.phoenixframework.liveview.data.constants.ComposableTypes.button
+import org.phoenixframework.liveview.data.constants.ComposableTypes.plainTooltip
+import org.phoenixframework.liveview.data.constants.ComposableTypes.richTooltip
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.tooltipBox
 
 @OptIn(ExperimentalMaterial3Api::class)
 class TooltipShotTest : LiveViewComposableTest() {

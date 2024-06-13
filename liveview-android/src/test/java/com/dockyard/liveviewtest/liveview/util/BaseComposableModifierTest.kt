@@ -8,7 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.domain.LiveViewCoordinator
-import org.phoenixframework.liveview.domain.base.PushEvent
+import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode

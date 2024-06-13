@@ -28,10 +28,10 @@ import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
 import org.phoenixframework.liveview.data.constants.Templates.templateBadge
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.modalDrawerSheet
-import org.phoenixframework.liveview.domain.base.ComposableTypes.navigationDrawerItem
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.modalDrawerSheet
+import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationDrawerItem
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class NavigationDrawerItemShotTest : LiveViewComposableTest() {
     @Test

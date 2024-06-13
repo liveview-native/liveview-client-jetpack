@@ -26,11 +26,11 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContaine
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
-import org.phoenixframework.liveview.domain.base.ComposableTypes.card
-import org.phoenixframework.liveview.domain.base.ComposableTypes.elevatedCard
-import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedCard
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.card
+import org.phoenixframework.liveview.data.constants.ComposableTypes.elevatedCard
+import org.phoenixframework.liveview.data.constants.ComposableTypes.outlinedCard
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class CardShotTest : LiveViewComposableTest() {
 

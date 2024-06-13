@@ -13,8 +13,8 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabled
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUnselectedColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedColor
-import org.phoenixframework.liveview.domain.base.ComposableTypes.radioButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.radioButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
 
 class RadioButtonShotTest : LiveViewComposableTest() {
     @Test

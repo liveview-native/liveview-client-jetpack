@@ -26,12 +26,12 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.Gray
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateText
-import org.phoenixframework.liveview.domain.base.ComposableTypes.icon
-import org.phoenixframework.liveview.domain.base.ComposableTypes.leadingIconTab
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
-import org.phoenixframework.liveview.domain.base.ComposableTypes.tab
-import org.phoenixframework.liveview.domain.base.ComposableTypes.tabRow
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.leadingIconTab
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.tab
+import org.phoenixframework.liveview.data.constants.ComposableTypes.tabRow
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 
 class TabShotTest : LiveViewComposableTest() {
     @Test

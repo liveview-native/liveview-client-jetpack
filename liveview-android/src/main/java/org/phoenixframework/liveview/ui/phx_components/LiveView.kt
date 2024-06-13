@@ -19,7 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import org.phoenixframework.liveview.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.domain.ThemeHolder
-import org.phoenixframework.liveview.domain.base.ErrorView
+import org.phoenixframework.liveview.ui.base.ErrorView
 import org.phoenixframework.liveview.ui.theme.LiveViewNativeTheme
 
 private const val PHX_LIVE_VIEW_ROUTE = "phxLiveView"
@@ -148,7 +148,7 @@ val LocalHttpUrl = compositionLocalOf { "" }
 
 /**
  * Providing access to the NavController in order to allow local navigation from other components
- * like [org.phoenixframework.liveview.data.dto.LinkDTO].
+ * like [org.phoenixframework.liveview.ui.composables.LinkDTO].
  */
 val LocalNavController = compositionLocalOf<NavController> {
     error("No LocalNavController provided")

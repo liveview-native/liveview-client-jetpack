@@ -14,8 +14,8 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckmar
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledCheckedColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedColor
-import org.phoenixframework.liveview.domain.base.ComposableTypes.checkbox
-import org.phoenixframework.liveview.domain.base.ComposableTypes.row
+import org.phoenixframework.liveview.data.constants.ComposableTypes.checkbox
+import org.phoenixframework.liveview.data.constants.ComposableTypes.row
 
 class CheckboxShotTest : LiveViewComposableTest() {
     @Test

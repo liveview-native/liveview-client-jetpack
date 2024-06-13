@@ -15,12 +15,12 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.Attrs.attrReadOnly
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMenuAnchor
-import org.phoenixframework.liveview.domain.base.ComposableTypes.box
-import org.phoenixframework.liveview.domain.base.ComposableTypes.dropdownMenuItem
-import org.phoenixframework.liveview.domain.base.ComposableTypes.exposedDropdownMenu
-import org.phoenixframework.liveview.domain.base.ComposableTypes.exposedDropdownMenuBox
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
-import org.phoenixframework.liveview.domain.base.ComposableTypes.textField
+import org.phoenixframework.liveview.data.constants.ComposableTypes.box
+import org.phoenixframework.liveview.data.constants.ComposableTypes.dropdownMenuItem
+import org.phoenixframework.liveview.data.constants.ComposableTypes.exposedDropdownMenu
+import org.phoenixframework.liveview.data.constants.ComposableTypes.exposedDropdownMenuBox
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.textField
 
 class ExposedDropdownMenuBoxShotTest : LiveViewComposableTest() {
     @OptIn(ExperimentalMaterial3Api::class)

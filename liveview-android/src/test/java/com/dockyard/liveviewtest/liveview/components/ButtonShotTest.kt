@@ -24,12 +24,12 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
 import org.phoenixframework.liveview.data.constants.ShapeValues.circle
-import org.phoenixframework.liveview.domain.base.ComposableTypes.button
-import org.phoenixframework.liveview.domain.base.ComposableTypes.elevatedButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.filledTonalButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.outlinedButton
-import org.phoenixframework.liveview.domain.base.ComposableTypes.text
-import org.phoenixframework.liveview.domain.base.ComposableTypes.textButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.button
+import org.phoenixframework.liveview.data.constants.ComposableTypes.elevatedButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.filledTonalButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.outlinedButton
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.ComposableTypes.textButton
 
 class ButtonShotTest : LiveViewComposableTest() {
 
