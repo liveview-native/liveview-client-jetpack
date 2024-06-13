@@ -67,7 +67,10 @@ private fun NavDestination(
 
     val state by liveViewCoordinator.state.collectAsState()
     if (state.composableTreeNode.children.isNotEmpty()) {
-        CompositionLocalProvider(LocalHttpUrl provides liveViewCoordinator.httpBaseUrl) {
+        CompositionLocalProvider(
+            LocalHttpUrl provides liveViewCoordinator.httpBaseUrl,
+            LocalNavController provides navController,
+        ) {
             PhxLiveView(
                 composableNode = state.composableTreeNode.children.first(),
                 pushEvent = liveViewCoordinator::pushEvent
@@ -90,7 +93,7 @@ private fun NavDestination(
 
             val (newRoute, redirect) = navigationRequest
             liveViewCoordinator.resetNavigation()
-            val routePath = "$PHX_LIVE_VIEW_ROUTE?$ARG_ROUTE=$newRoute"
+            val routePath = createRoute(newRoute)
             navController.navigate(routePath) {
                 if (redirect) {
                     popUpTo(backStackEntry.destination.id) {
@@ -102,6 +105,39 @@ private fun NavDestination(
     }
 }
 
+internal fun createRoute(route: String): String = "$PHX_LIVE_VIEW_ROUTE?$ARG_ROUTE=$route"
+
+internal fun getCurrentRoute(navController: NavController): String {
+    return navController.currentBackStackEntry?.arguments?.getString(ARG_ROUTE) ?: "/"
+}
+
+internal fun generateRelativePath(currentUrl: String, newUrl: String): String {
+    val currentParts = currentUrl.split("/").toMutableList()
+    val newParts = newUrl.split("/").toMutableList()
+
+    // Remove empty parts caused by leading or trailing slashes
+    currentParts.removeAll { it.isEmpty() }
+    newParts.removeAll { it.isEmpty() }
+
+    // Handle the case where newUrl is an absolute path
+    if (newUrl.startsWith("/")) {
+        return newUrl
+    }
+
+    // Handle the case where newUrl starts with "../"
+    while (newParts.firstOrNull() == "..") {
+        newParts.removeFirstOrNull()
+        currentParts.removeLastOrNull()
+    }
+
+    val relativeParts = mutableListOf<String>()
+
+    // Add remaining parts of newUrl
+    relativeParts.addAll(newParts)
+
+    return currentParts.joinToString("/", prefix = "/", postfix = "/") + relativeParts.joinToString("/")
+}
+
 /**
  * Some components (like AsyncImage) might require some resources using the relative URL. This
  * composition local, provides base URL of the current LiveView, and the child components can
@@ -109,3 +145,11 @@ private fun NavDestination(
  * current URL. See AsyncImage for more details.
  */
 val LocalHttpUrl = compositionLocalOf { "" }
+
+/**
+ * Providing access to the NavController in order to allow local navigation from other components
+ * like [org.phoenixframework.liveview.data.dto.LinkDTO].
+ */
+val LocalNavController = compositionLocalOf<NavController> {
+    error("No LocalNavController provided")
+}
