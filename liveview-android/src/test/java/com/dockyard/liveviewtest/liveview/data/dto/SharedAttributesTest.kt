@@ -83,20 +83,20 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues
 import org.phoenixframework.liveview.data.constants.TileModeValues
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
 import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
-import org.phoenixframework.liveview.ui.composables.alignmentFromString
-import org.phoenixframework.liveview.ui.composables.borderFromString
-import org.phoenixframework.liveview.ui.composables.colorsFromString
-import org.phoenixframework.liveview.ui.composables.contentScaleFromString
-import org.phoenixframework.liveview.ui.composables.elevationsFromString
-import org.phoenixframework.liveview.ui.composables.enterTransitionFromString
-import org.phoenixframework.liveview.ui.composables.exitTransitionFromString
-import org.phoenixframework.liveview.ui.composables.horizontalAlignmentFromString
-import org.phoenixframework.liveview.ui.composables.horizontalArrangementFromString
-import org.phoenixframework.liveview.ui.composables.secureFlagPolicyFromString
-import org.phoenixframework.liveview.ui.composables.tileModeFromString
-import org.phoenixframework.liveview.ui.composables.verticalAlignmentFromString
-import org.phoenixframework.liveview.ui.composables.verticalArrangementFromString
-import org.phoenixframework.liveview.ui.composables.windowInsetsFromString
+import org.phoenixframework.liveview.ui.view.alignmentFromString
+import org.phoenixframework.liveview.ui.view.borderFromString
+import org.phoenixframework.liveview.ui.view.colorsFromString
+import org.phoenixframework.liveview.ui.view.contentScaleFromString
+import org.phoenixframework.liveview.ui.view.elevationsFromString
+import org.phoenixframework.liveview.ui.view.enterTransitionFromString
+import org.phoenixframework.liveview.ui.view.exitTransitionFromString
+import org.phoenixframework.liveview.ui.view.horizontalAlignmentFromString
+import org.phoenixframework.liveview.ui.view.horizontalArrangementFromString
+import org.phoenixframework.liveview.ui.view.secureFlagPolicyFromString
+import org.phoenixframework.liveview.ui.view.tileModeFromString
+import org.phoenixframework.liveview.ui.view.verticalAlignmentFromString
+import org.phoenixframework.liveview.ui.view.verticalArrangementFromString
+import org.phoenixframework.liveview.ui.view.windowInsetsFromString
 
 @RunWith(AndroidJUnit4::class)
 class SharedAttributesTest {

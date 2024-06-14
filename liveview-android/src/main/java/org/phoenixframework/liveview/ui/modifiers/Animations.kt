@@ -17,7 +17,7 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argAnimationSpe
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argEnter
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argExit
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.ui.composables.onClickFromString
+import org.phoenixframework.liveview.ui.view.onClickFromString
 
 fun Modifier.animateContentSizeFromStyle(
     arguments: List<ModifierDataAdapter.ArgumentData>,

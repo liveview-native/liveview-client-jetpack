@@ -19,7 +19,7 @@ import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.ui.modifiers.ModifiersParser.fromStyleName
 import org.phoenixframework.liveview.ui.base.ComposableBuilder.Companion.KEY_PHX_VALUE
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
-import org.phoenixframework.liveview.ui.composables.onClickFromString
+import org.phoenixframework.liveview.ui.view.onClickFromString
 
 /**
  *  A `ComposableView` is the parent class of all components. Subclasses must implement the

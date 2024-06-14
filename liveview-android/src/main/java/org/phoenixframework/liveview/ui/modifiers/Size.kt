@@ -53,9 +53,9 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argUnbounded
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argWeight
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argWidth
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDpSize
-import org.phoenixframework.liveview.ui.composables.alignmentFromString
-import org.phoenixframework.liveview.ui.composables.horizontalAlignmentFromString
-import org.phoenixframework.liveview.ui.composables.verticalAlignmentFromString
+import org.phoenixframework.liveview.ui.view.alignmentFromString
+import org.phoenixframework.liveview.ui.view.horizontalAlignmentFromString
+import org.phoenixframework.liveview.ui.view.verticalAlignmentFromString
 
 fun Modifier.aspectRatioFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
     val params = argsOrNamedArgs(arguments)

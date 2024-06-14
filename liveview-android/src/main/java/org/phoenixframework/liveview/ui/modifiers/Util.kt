@@ -151,8 +151,8 @@ import org.phoenixframework.liveview.data.constants.ShapeValues
 import org.phoenixframework.liveview.data.constants.TransformOriginValues
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
 import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.ui.composables.easingFromString
-import org.phoenixframework.liveview.ui.composables.tileModeFromString
+import org.phoenixframework.liveview.ui.view.easingFromString
+import org.phoenixframework.liveview.ui.view.tileModeFromString
 import kotlin.math.max
 import kotlin.math.min
 

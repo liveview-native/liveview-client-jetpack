@@ -2,63 +2,63 @@ package org.phoenixframework.liveview.ui.registry
 
 import kotlinx.collections.immutable.persistentListOf
 import org.phoenixframework.liveview.data.core.CoreNodeElement
-import org.phoenixframework.liveview.ui.composables.AlertDialogDtoFactory
-import org.phoenixframework.liveview.ui.composables.AnimatedVisibilityDtoFactory
-import org.phoenixframework.liveview.ui.composables.AsyncImageDtoFactory
-import org.phoenixframework.liveview.ui.composables.BackHandlerDtoFactory
-import org.phoenixframework.liveview.ui.composables.BadgedBoxDtoFactory
-import org.phoenixframework.liveview.ui.composables.BottomAppBarDtoFactory
-import org.phoenixframework.liveview.ui.composables.BottomSheetScaffoldDtoFactory
-import org.phoenixframework.liveview.ui.composables.BoxDtoFactory
-import org.phoenixframework.liveview.ui.composables.ButtonDtoFactory
-import org.phoenixframework.liveview.ui.composables.CardDtoFactory
-import org.phoenixframework.liveview.ui.composables.CheckBoxDtoFactory
-import org.phoenixframework.liveview.ui.composables.ChipDtoFactory
-import org.phoenixframework.liveview.ui.composables.ColumnDtoFactory
-import org.phoenixframework.liveview.ui.composables.DatePickerDialogDtoFactory
-import org.phoenixframework.liveview.ui.composables.DatePickerDtoFactory
-import org.phoenixframework.liveview.ui.composables.DividerDtoFactory
-import org.phoenixframework.liveview.ui.composables.DrawerSheetDtoFactory
-import org.phoenixframework.liveview.ui.composables.DropdownMenuDtoFactory
-import org.phoenixframework.liveview.ui.composables.DropdownMenuItemDtoFactory
-import org.phoenixframework.liveview.ui.composables.ExposedDropdownMenuBoxDtoFactory
-import org.phoenixframework.liveview.ui.composables.FloatingActionButtonDtoFactory
-import org.phoenixframework.liveview.ui.composables.FlowLayoutDtoFactory
-import org.phoenixframework.liveview.ui.composables.IconButtonDtoFactory
-import org.phoenixframework.liveview.ui.composables.IconDtoFactory
-import org.phoenixframework.liveview.ui.composables.IconToggleButtonDtoFactory
-import org.phoenixframework.liveview.ui.composables.ImageDtoFactory
-import org.phoenixframework.liveview.ui.composables.LazyColumnDtoFactory
-import org.phoenixframework.liveview.ui.composables.LazyGridDtoFactory
-import org.phoenixframework.liveview.ui.composables.LazyRowDtoFactory
-import org.phoenixframework.liveview.ui.composables.LinkDtoFactory
-import org.phoenixframework.liveview.ui.composables.ListItemDtoFactory
-import org.phoenixframework.liveview.ui.composables.ModalBottomSheetDtoFactory
-import org.phoenixframework.liveview.ui.composables.NavigationBarDtoFactory
-import org.phoenixframework.liveview.ui.composables.NavigationDrawerDtoFactory
-import org.phoenixframework.liveview.ui.composables.NavigationDrawerItemDtoFactory
-import org.phoenixframework.liveview.ui.composables.NavigationRailDtoFactory
-import org.phoenixframework.liveview.ui.composables.NavigationRailItemDtoFactory
-import org.phoenixframework.liveview.ui.composables.PagerDtoFactory
-import org.phoenixframework.liveview.ui.composables.ProgressIndicatorDtoFactory
-import org.phoenixframework.liveview.ui.composables.RadioButtonDtoFactory
-import org.phoenixframework.liveview.ui.composables.RowDtoFactory
-import org.phoenixframework.liveview.ui.composables.ScaffoldDtoFactory
-import org.phoenixframework.liveview.ui.composables.SearchBarDtoFactory
-import org.phoenixframework.liveview.ui.composables.SegmentedButtonRowDtoFactory
-import org.phoenixframework.liveview.ui.composables.SliderDtoFactory
-import org.phoenixframework.liveview.ui.composables.SpacerDtoFactory
-import org.phoenixframework.liveview.ui.composables.SurfaceDtoFactory
-import org.phoenixframework.liveview.ui.composables.SwipeToDismissBoxDtoFactory
-import org.phoenixframework.liveview.ui.composables.SwitchDtoFactory
-import org.phoenixframework.liveview.ui.composables.TabDtoFactory
-import org.phoenixframework.liveview.ui.composables.TabRowDtoFactory
-import org.phoenixframework.liveview.ui.composables.TextDtoFactory
-import org.phoenixframework.liveview.ui.composables.TextFieldDtoFactory
-import org.phoenixframework.liveview.ui.composables.TimePickerDtoFactory
-import org.phoenixframework.liveview.ui.composables.TooltipBoxDtoFactory
-import org.phoenixframework.liveview.ui.composables.TooltipDtoFactory
-import org.phoenixframework.liveview.ui.composables.TopAppBarDtoFactory
+import org.phoenixframework.liveview.ui.view.AlertDialogViewFactory
+import org.phoenixframework.liveview.ui.view.AnimatedVisibilityViewFactory
+import org.phoenixframework.liveview.ui.view.AsyncImageViewFactory
+import org.phoenixframework.liveview.ui.view.BackHandlerViewFactory
+import org.phoenixframework.liveview.ui.view.BadgedBoxViewFactory
+import org.phoenixframework.liveview.ui.view.BottomAppBarViewFactory
+import org.phoenixframework.liveview.ui.view.BottomSheetScaffoldViewFactory
+import org.phoenixframework.liveview.ui.view.BoxViewFactory
+import org.phoenixframework.liveview.ui.view.ButtonViewFactory
+import org.phoenixframework.liveview.ui.view.CardViewFactory
+import org.phoenixframework.liveview.ui.view.CheckBoxViewFactory
+import org.phoenixframework.liveview.ui.view.ChipViewFactory
+import org.phoenixframework.liveview.ui.view.ColumnViewFactory
+import org.phoenixframework.liveview.ui.view.DatePickerDialogViewFactory
+import org.phoenixframework.liveview.ui.view.DatePickerViewFactory
+import org.phoenixframework.liveview.ui.view.DividerViewFactory
+import org.phoenixframework.liveview.ui.view.DrawerSheetViewFactory
+import org.phoenixframework.liveview.ui.view.DropdownMenuViewFactory
+import org.phoenixframework.liveview.ui.view.DropdownMenuItemViewFactory
+import org.phoenixframework.liveview.ui.view.ExposedDropdownMenuBoxViewFactory
+import org.phoenixframework.liveview.ui.view.FloatingActionButtonViewFactory
+import org.phoenixframework.liveview.ui.view.FlowLayoutViewFactory
+import org.phoenixframework.liveview.ui.view.IconButtonViewFactory
+import org.phoenixframework.liveview.ui.view.IconViewFactory
+import org.phoenixframework.liveview.ui.view.IconToggleButtonViewFactory
+import org.phoenixframework.liveview.ui.view.ImageViewFactory
+import org.phoenixframework.liveview.ui.view.LazyColumnViewFactory
+import org.phoenixframework.liveview.ui.view.LazyGridViewFactory
+import org.phoenixframework.liveview.ui.view.LazyRowViewFactory
+import org.phoenixframework.liveview.ui.view.LinkViewFactory
+import org.phoenixframework.liveview.ui.view.ListItemViewFactory
+import org.phoenixframework.liveview.ui.view.ModalBottomSheetViewFactory
+import org.phoenixframework.liveview.ui.view.NavigationBarViewFactory
+import org.phoenixframework.liveview.ui.view.NavigationDrawerViewFactory
+import org.phoenixframework.liveview.ui.view.NavigationDrawerItemViewFactory
+import org.phoenixframework.liveview.ui.view.NavigationRailViewFactory
+import org.phoenixframework.liveview.ui.view.NavigationRailItemViewFactory
+import org.phoenixframework.liveview.ui.view.PagerViewFactory
+import org.phoenixframework.liveview.ui.view.ProgressIndicatorViewFactory
+import org.phoenixframework.liveview.ui.view.RadioButtonViewFactory
+import org.phoenixframework.liveview.ui.view.RowViewFactory
+import org.phoenixframework.liveview.ui.view.ScaffoldViewFactory
+import org.phoenixframework.liveview.ui.view.SearchBarViewFactory
+import org.phoenixframework.liveview.ui.view.SegmentedButtonRowViewFactory
+import org.phoenixframework.liveview.ui.view.SliderViewFactory
+import org.phoenixframework.liveview.ui.view.SpacerViewFactory
+import org.phoenixframework.liveview.ui.view.SurfaceViewFactory
+import org.phoenixframework.liveview.ui.view.SwipeToDismissBoxViewFactory
+import org.phoenixframework.liveview.ui.view.SwitchViewFactory
+import org.phoenixframework.liveview.ui.view.TabViewFactory
+import org.phoenixframework.liveview.ui.view.TabRowViewFactory
+import org.phoenixframework.liveview.ui.view.TextViewFactory
+import org.phoenixframework.liveview.ui.view.TextFieldViewFactory
+import org.phoenixframework.liveview.ui.view.TimePickerViewFactory
+import org.phoenixframework.liveview.ui.view.TooltipBoxViewFactory
+import org.phoenixframework.liveview.ui.view.TooltipViewFactory
+import org.phoenixframework.liveview.ui.view.TopAppBarViewFactory
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
@@ -74,138 +74,138 @@ object ComposableNodeFactory {
 
     init {
         ComposableRegistry.run {
-            registerComponent(ComposableTypes.alertDialog, AlertDialogDtoFactory)
-            registerComponent(ComposableTypes.animatedVisibility, AnimatedVisibilityDtoFactory)
-            registerComponent(ComposableTypes.assistChip, ChipDtoFactory)
-            registerComponent(ComposableTypes.asyncImage, AsyncImageDtoFactory)
-            registerComponent(ComposableTypes.backHandler, BackHandlerDtoFactory)
-            registerComponent(ComposableTypes.badgedBox, BadgedBoxDtoFactory)
-            registerComponent(ComposableTypes.basicAlertDialog, AlertDialogDtoFactory)
-            registerComponent(ComposableTypes.box, BoxDtoFactory)
-            registerComponent(ComposableTypes.bottomAppBar, BottomAppBarDtoFactory)
-            registerComponent(ComposableTypes.bottomSheetScaffold, BottomSheetScaffoldDtoFactory)
-            registerComponent(ComposableTypes.button, ButtonDtoFactory)
-            registerComponent(ComposableTypes.card, CardDtoFactory)
-            registerComponent(ComposableTypes.centerAlignedTopAppBar, TopAppBarDtoFactory)
-            registerComponent(ComposableTypes.checkbox, CheckBoxDtoFactory)
+            registerComponent(ComposableTypes.alertDialog, AlertDialogViewFactory)
+            registerComponent(ComposableTypes.animatedVisibility, AnimatedVisibilityViewFactory)
+            registerComponent(ComposableTypes.assistChip, ChipViewFactory)
+            registerComponent(ComposableTypes.asyncImage, AsyncImageViewFactory)
+            registerComponent(ComposableTypes.backHandler, BackHandlerViewFactory)
+            registerComponent(ComposableTypes.badgedBox, BadgedBoxViewFactory)
+            registerComponent(ComposableTypes.basicAlertDialog, AlertDialogViewFactory)
+            registerComponent(ComposableTypes.box, BoxViewFactory)
+            registerComponent(ComposableTypes.bottomAppBar, BottomAppBarViewFactory)
+            registerComponent(ComposableTypes.bottomSheetScaffold, BottomSheetScaffoldViewFactory)
+            registerComponent(ComposableTypes.button, ButtonViewFactory)
+            registerComponent(ComposableTypes.card, CardViewFactory)
+            registerComponent(ComposableTypes.centerAlignedTopAppBar, TopAppBarViewFactory)
+            registerComponent(ComposableTypes.checkbox, CheckBoxViewFactory)
             registerComponent(
                 ComposableTypes.circularProgressIndicator,
-                ProgressIndicatorDtoFactory
+                ProgressIndicatorViewFactory
             )
-            registerComponent(ComposableTypes.column, ColumnDtoFactory)
-            registerComponent(ComposableTypes.datePicker, DatePickerDtoFactory)
-            registerComponent(ComposableTypes.datePickerDialog, DatePickerDialogDtoFactory)
-            registerComponent(ComposableTypes.dateRangePicker, DatePickerDtoFactory)
+            registerComponent(ComposableTypes.column, ColumnViewFactory)
+            registerComponent(ComposableTypes.datePicker, DatePickerViewFactory)
+            registerComponent(ComposableTypes.datePickerDialog, DatePickerDialogViewFactory)
+            registerComponent(ComposableTypes.dateRangePicker, DatePickerViewFactory)
             registerComponent(
                 ComposableTypes.dismissibleNavigationDrawer,
-                NavigationDrawerDtoFactory
+                NavigationDrawerViewFactory
             )
-            registerComponent(ComposableTypes.dismissibleDrawerSheet, DrawerSheetDtoFactory)
-            registerComponent(ComposableTypes.dockedSearchBar, SearchBarDtoFactory)
-            registerComponent(ComposableTypes.dropdownMenu, DropdownMenuDtoFactory)
-            registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemDtoFactory)
-            registerComponent(ComposableTypes.elevatedAssistChip, ChipDtoFactory)
-            registerComponent(ComposableTypes.elevatedButton, ButtonDtoFactory)
-            registerComponent(ComposableTypes.elevatedCard, CardDtoFactory)
-            registerComponent(ComposableTypes.elevatedFilterChip, ChipDtoFactory)
-            registerComponent(ComposableTypes.elevatedSuggestionChip, ChipDtoFactory)
+            registerComponent(ComposableTypes.dismissibleDrawerSheet, DrawerSheetViewFactory)
+            registerComponent(ComposableTypes.dockedSearchBar, SearchBarViewFactory)
+            registerComponent(ComposableTypes.dropdownMenu, DropdownMenuViewFactory)
+            registerComponent(ComposableTypes.dropdownMenuItem, DropdownMenuItemViewFactory)
+            registerComponent(ComposableTypes.elevatedAssistChip, ChipViewFactory)
+            registerComponent(ComposableTypes.elevatedButton, ButtonViewFactory)
+            registerComponent(ComposableTypes.elevatedCard, CardViewFactory)
+            registerComponent(ComposableTypes.elevatedFilterChip, ChipViewFactory)
+            registerComponent(ComposableTypes.elevatedSuggestionChip, ChipViewFactory)
             registerComponent(
                 ComposableTypes.extendedFloatingActionButton,
-                FloatingActionButtonDtoFactory
+                FloatingActionButtonViewFactory
             )
             registerComponent(
                 ComposableTypes.exposedDropdownMenuBox,
-                ExposedDropdownMenuBoxDtoFactory
+                ExposedDropdownMenuBoxViewFactory
             )
-            registerComponent(ComposableTypes.filledIconButton, IconButtonDtoFactory)
-            registerComponent(ComposableTypes.filledIconToggleButton, IconToggleButtonDtoFactory)
-            registerComponent(ComposableTypes.filledTonalButton, ButtonDtoFactory)
-            registerComponent(ComposableTypes.filledTonalIconButton, IconButtonDtoFactory)
+            registerComponent(ComposableTypes.filledIconButton, IconButtonViewFactory)
+            registerComponent(ComposableTypes.filledIconToggleButton, IconToggleButtonViewFactory)
+            registerComponent(ComposableTypes.filledTonalButton, ButtonViewFactory)
+            registerComponent(ComposableTypes.filledTonalIconButton, IconButtonViewFactory)
             registerComponent(
                 ComposableTypes.filledTonalIconToggleButton,
-                IconToggleButtonDtoFactory
+                IconToggleButtonViewFactory
             )
-            registerComponent(ComposableTypes.filterChip, ChipDtoFactory)
-            registerComponent(ComposableTypes.floatingActionButton, FloatingActionButtonDtoFactory)
-            registerComponent(ComposableTypes.flowColumn, FlowLayoutDtoFactory)
-            registerComponent(ComposableTypes.flowRow, FlowLayoutDtoFactory)
-            registerComponent(ComposableTypes.horizontalDivider, DividerDtoFactory)
-            registerComponent(ComposableTypes.horizontalPager, PagerDtoFactory)
-            registerComponent(ComposableTypes.icon, IconDtoFactory)
-            registerComponent(ComposableTypes.iconButton, IconButtonDtoFactory)
-            registerComponent(ComposableTypes.iconToggleButton, IconToggleButtonDtoFactory)
-            registerComponent(ComposableTypes.image, ImageDtoFactory)
-            registerComponent(ComposableTypes.inputChip, ChipDtoFactory)
+            registerComponent(ComposableTypes.filterChip, ChipViewFactory)
+            registerComponent(ComposableTypes.floatingActionButton, FloatingActionButtonViewFactory)
+            registerComponent(ComposableTypes.flowColumn, FlowLayoutViewFactory)
+            registerComponent(ComposableTypes.flowRow, FlowLayoutViewFactory)
+            registerComponent(ComposableTypes.horizontalDivider, DividerViewFactory)
+            registerComponent(ComposableTypes.horizontalPager, PagerViewFactory)
+            registerComponent(ComposableTypes.icon, IconViewFactory)
+            registerComponent(ComposableTypes.iconButton, IconButtonViewFactory)
+            registerComponent(ComposableTypes.iconToggleButton, IconToggleButtonViewFactory)
+            registerComponent(ComposableTypes.image, ImageViewFactory)
+            registerComponent(ComposableTypes.inputChip, ChipViewFactory)
             registerComponent(
                 ComposableTypes.largeFloatingActionButton,
-                FloatingActionButtonDtoFactory
+                FloatingActionButtonViewFactory
             )
-            registerComponent(ComposableTypes.largeTopAppBar, TopAppBarDtoFactory)
-            registerComponent(ComposableTypes.lazyColumn, LazyColumnDtoFactory)
-            registerComponent(ComposableTypes.lazyHorizontalGrid, LazyGridDtoFactory)
-            registerComponent(ComposableTypes.lazyRow, LazyRowDtoFactory)
-            registerComponent(ComposableTypes.lazyVerticalGrid, LazyGridDtoFactory)
-            registerComponent(ComposableTypes.leadingIconTab, TabDtoFactory)
+            registerComponent(ComposableTypes.largeTopAppBar, TopAppBarViewFactory)
+            registerComponent(ComposableTypes.lazyColumn, LazyColumnViewFactory)
+            registerComponent(ComposableTypes.lazyHorizontalGrid, LazyGridViewFactory)
+            registerComponent(ComposableTypes.lazyRow, LazyRowViewFactory)
+            registerComponent(ComposableTypes.lazyVerticalGrid, LazyGridViewFactory)
+            registerComponent(ComposableTypes.leadingIconTab, TabViewFactory)
             registerComponent(
                 ComposableTypes.linearProgressIndicator,
-                ProgressIndicatorDtoFactory
+                ProgressIndicatorViewFactory
             )
-            registerComponent(ComposableTypes.link, LinkDtoFactory)
-            registerComponent(ComposableTypes.listItem, ListItemDtoFactory)
-            registerComponent(ComposableTypes.mediumTopAppBar, TopAppBarDtoFactory)
-            registerComponent(ComposableTypes.modalBottomSheet, ModalBottomSheetDtoFactory)
-            registerComponent(ComposableTypes.modalDrawerSheet, DrawerSheetDtoFactory)
+            registerComponent(ComposableTypes.link, LinkViewFactory)
+            registerComponent(ComposableTypes.listItem, ListItemViewFactory)
+            registerComponent(ComposableTypes.mediumTopAppBar, TopAppBarViewFactory)
+            registerComponent(ComposableTypes.modalBottomSheet, ModalBottomSheetViewFactory)
+            registerComponent(ComposableTypes.modalDrawerSheet, DrawerSheetViewFactory)
             registerComponent(
                 ComposableTypes.modalNavigationDrawer,
-                NavigationDrawerDtoFactory
+                NavigationDrawerViewFactory
             )
             registerComponent(
                 ComposableTypes.multiChoiceSegmentedButtonRow,
-                SegmentedButtonRowDtoFactory
+                SegmentedButtonRowViewFactory
             )
-            registerComponent(ComposableTypes.navigationBar, NavigationBarDtoFactory)
-            registerComponent(ComposableTypes.navigationDrawerItem, NavigationDrawerItemDtoFactory)
-            registerComponent(ComposableTypes.navigationRail, NavigationRailDtoFactory)
-            registerComponent(ComposableTypes.navigationRailItem, NavigationRailItemDtoFactory)
-            registerComponent(ComposableTypes.outlinedButton, ButtonDtoFactory)
-            registerComponent(ComposableTypes.outlinedCard, CardDtoFactory)
-            registerComponent(ComposableTypes.outlinedIconButton, IconButtonDtoFactory)
-            registerComponent(ComposableTypes.outlinedIconToggleButton, IconToggleButtonDtoFactory)
-            registerComponent(ComposableTypes.outlinedTextField, TextFieldDtoFactory)
-            registerComponent(ComposableTypes.permanentDrawerSheet, DrawerSheetDtoFactory)
-            registerComponent(ComposableTypes.permanentNavigationDrawer, NavigationDrawerDtoFactory)
-            registerComponent(ComposableTypes.radioButton, RadioButtonDtoFactory)
-            registerComponent(ComposableTypes.rangeSlider, SliderDtoFactory)
-            registerComponent(ComposableTypes.richTooltip, TooltipDtoFactory)
-            registerComponent(ComposableTypes.row, RowDtoFactory)
-            registerComponent(ComposableTypes.scaffold, ScaffoldDtoFactory)
-            registerComponent(ComposableTypes.scrollableTabRow, TabRowDtoFactory)
-            registerComponent(ComposableTypes.searchBar, SearchBarDtoFactory)
+            registerComponent(ComposableTypes.navigationBar, NavigationBarViewFactory)
+            registerComponent(ComposableTypes.navigationDrawerItem, NavigationDrawerItemViewFactory)
+            registerComponent(ComposableTypes.navigationRail, NavigationRailViewFactory)
+            registerComponent(ComposableTypes.navigationRailItem, NavigationRailItemViewFactory)
+            registerComponent(ComposableTypes.outlinedButton, ButtonViewFactory)
+            registerComponent(ComposableTypes.outlinedCard, CardViewFactory)
+            registerComponent(ComposableTypes.outlinedIconButton, IconButtonViewFactory)
+            registerComponent(ComposableTypes.outlinedIconToggleButton, IconToggleButtonViewFactory)
+            registerComponent(ComposableTypes.outlinedTextField, TextFieldViewFactory)
+            registerComponent(ComposableTypes.permanentDrawerSheet, DrawerSheetViewFactory)
+            registerComponent(ComposableTypes.permanentNavigationDrawer, NavigationDrawerViewFactory)
+            registerComponent(ComposableTypes.radioButton, RadioButtonViewFactory)
+            registerComponent(ComposableTypes.rangeSlider, SliderViewFactory)
+            registerComponent(ComposableTypes.richTooltip, TooltipViewFactory)
+            registerComponent(ComposableTypes.row, RowViewFactory)
+            registerComponent(ComposableTypes.scaffold, ScaffoldViewFactory)
+            registerComponent(ComposableTypes.scrollableTabRow, TabRowViewFactory)
+            registerComponent(ComposableTypes.searchBar, SearchBarViewFactory)
             registerComponent(
                 ComposableTypes.singleChoiceSegmentedButtonRow,
-                SegmentedButtonRowDtoFactory
+                SegmentedButtonRowViewFactory
             )
-            registerComponent(ComposableTypes.slider, SliderDtoFactory)
+            registerComponent(ComposableTypes.slider, SliderViewFactory)
             registerComponent(
                 ComposableTypes.smallFloatingActionButton,
-                FloatingActionButtonDtoFactory
+                FloatingActionButtonViewFactory
             )
-            registerComponent(ComposableTypes.spacer, SpacerDtoFactory)
-            registerComponent(ComposableTypes.suggestionChip, ChipDtoFactory)
-            registerComponent(ComposableTypes.surface, SurfaceDtoFactory)
-            registerComponent(ComposableTypes.swipeToDismissBox, SwipeToDismissBoxDtoFactory)
-            registerComponent(ComposableTypes.switch, SwitchDtoFactory)
-            registerComponent(ComposableTypes.tab, TabDtoFactory)
-            registerComponent(ComposableTypes.tabRow, TabRowDtoFactory)
-            registerComponent(ComposableTypes.text, TextDtoFactory)
-            registerComponent(ComposableTypes.textButton, ButtonDtoFactory)
-            registerComponent(ComposableTypes.textField, TextFieldDtoFactory)
-            registerComponent(ComposableTypes.timeInput, TimePickerDtoFactory)
-            registerComponent(ComposableTypes.timePicker, TimePickerDtoFactory)
-            registerComponent(ComposableTypes.tooltipBox, TooltipBoxDtoFactory)
-            registerComponent(ComposableTypes.topAppBar, TopAppBarDtoFactory)
-            registerComponent(ComposableTypes.verticalDivider, DividerDtoFactory)
-            registerComponent(ComposableTypes.verticalPager, PagerDtoFactory)
+            registerComponent(ComposableTypes.spacer, SpacerViewFactory)
+            registerComponent(ComposableTypes.suggestionChip, ChipViewFactory)
+            registerComponent(ComposableTypes.surface, SurfaceViewFactory)
+            registerComponent(ComposableTypes.swipeToDismissBox, SwipeToDismissBoxViewFactory)
+            registerComponent(ComposableTypes.switch, SwitchViewFactory)
+            registerComponent(ComposableTypes.tab, TabViewFactory)
+            registerComponent(ComposableTypes.tabRow, TabRowViewFactory)
+            registerComponent(ComposableTypes.text, TextViewFactory)
+            registerComponent(ComposableTypes.textButton, ButtonViewFactory)
+            registerComponent(ComposableTypes.textField, TextFieldViewFactory)
+            registerComponent(ComposableTypes.timeInput, TimePickerViewFactory)
+            registerComponent(ComposableTypes.timePicker, TimePickerViewFactory)
+            registerComponent(ComposableTypes.tooltipBox, TooltipBoxViewFactory)
+            registerComponent(ComposableTypes.topAppBar, TopAppBarViewFactory)
+            registerComponent(ComposableTypes.verticalDivider, DividerViewFactory)
+            registerComponent(ComposableTypes.verticalPager, PagerViewFactory)
         }
     }
 
@@ -240,7 +240,7 @@ object ComposableNodeFactory {
             ComposableRegistry.getComponentFactory(tag, parentTag)?.buildComposableView(
                 attrs, pushEvent, scope
             ) ?: run {
-                TextDtoFactory.buildComposableView(
+                TextViewFactory.buildComposableView(
                     "$tag not supported yet",
                     attrs,
                     scope,
@@ -248,7 +248,7 @@ object ComposableNodeFactory {
                 )
             }
         } else {
-            TextDtoFactory.buildComposableView(
+            TextViewFactory.buildComposableView(
                 "Invalid element",
                 persistentListOf(),
                 scope,

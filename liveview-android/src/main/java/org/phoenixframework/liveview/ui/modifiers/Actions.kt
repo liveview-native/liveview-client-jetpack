@@ -21,7 +21,7 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argState
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argValue
 import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.ui.composables.onClickFromString
+import org.phoenixframework.liveview.ui.view.onClickFromString
 
 fun Modifier.clickableFromStyle(
     arguments: List<ModifierDataAdapter.ArgumentData>,

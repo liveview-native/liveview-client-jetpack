@@ -122,7 +122,7 @@ import org.phoenixframework.liveview.stylesheet.ElixirParser.ListExprContext
 import org.phoenixframework.liveview.stylesheet.ElixirParser.MapExprContext
 import org.phoenixframework.liveview.stylesheet.ElixirParser.TupleExprContext
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.ui.composables.ExposedDropdownMenuBoxScopeWrapper
+import org.phoenixframework.liveview.ui.view.ExposedDropdownMenuBoxScopeWrapper
 
 internal object ModifiersParser {
     private val modifiersCacheTable = mutableMapOf<String, List<Modifier>>()

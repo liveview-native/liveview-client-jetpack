@@ -148,7 +148,7 @@ val LocalHttpUrl = compositionLocalOf { "" }
 
 /**
  * Providing access to the NavController in order to allow local navigation from other components
- * like [org.phoenixframework.liveview.ui.composables.LinkDTO].
+ * like [org.phoenixframework.liveview.ui.view.LinkView].
  */
 val LocalNavController = compositionLocalOf<NavController> {
     error("No LocalNavController provided")
