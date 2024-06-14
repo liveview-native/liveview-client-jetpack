@@ -3,9 +3,9 @@ package org.phoenixframework.liveview.ui.phx_components
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import org.phoenixframework.liveview.domain.base.PushEvent
-import org.phoenixframework.liveview.domain.factory.ComposableNodeFactory
-import org.phoenixframework.liveview.domain.factory.ComposableTreeNode
+import org.phoenixframework.liveview.ui.base.PushEvent
+import org.phoenixframework.liveview.ui.registry.ComposableNodeFactory
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 
 @Composable
 fun PhxLiveView(
