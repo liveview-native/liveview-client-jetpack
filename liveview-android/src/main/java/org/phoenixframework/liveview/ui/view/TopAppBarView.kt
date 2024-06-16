@@ -24,19 +24,18 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContaine
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrNavigationIconContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrScrolledContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTitleContentColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.Templates.templateAction
 import org.phoenixframework.liveview.data.constants.Templates.templateNavigationIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -274,14 +273,40 @@ internal class TopAppBarView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val colors: ImmutableMap<String, String>?,
-        val windowInsets: WindowInsets?,
-        override val commonProps: CommonComposableProperties,
+        val colors: ImmutableMap<String, String>? = null,
+        val windowInsets: WindowInsets? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    class Builder : ComposableBuilder() {
-        private var colors: ImmutableMap<String, String>? = null
-        private var windowInsets: WindowInsets? = null
+    internal object Factory : ComposableViewFactory<TopAppBarView>() {
+
+        /**
+         * Creates a `TopAppBarView` object based on the attributes and text of the input `Attributes`
+         * object. TopAppBarView co-relates to the TopAppBar composable
+         *
+         * @param attributes the `Attributes` object to create the `TopAppBarView` object from
+         * @return a `TopAppBarView` object based on the attributes and text of the input `Attributes`
+         * object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): TopAppBarView = TopAppBarView(
+            attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrColors -> colors(props, attribute.value)
+                    attrWindowInsets -> windowInsets(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
 
         /**
          * Set TopAppBar colors.
@@ -295,10 +320,10 @@ internal class TopAppBarView private constructor(props: Properties) :
          * supported are: `containerColor`, `scrolledContainerColor`, `navigationIconContentColor,
          * `titleContentColor`, and `actionIconContentColor`.
          */
-        fun colors(colors: String): Builder = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -309,48 +334,13 @@ internal class TopAppBarView private constructor(props: Properties) :
          * @param insets the space, in Dp, at the each border of the window that the inset
          * represents. The supported values are: `left`, `top`, `bottom`, and `right`.
          */
-        fun windowInsets(insets: String) = apply {
-            try {
-                this.windowInsets = windowInsetsFromString(insets)
+        fun windowInsets(props: Properties, insets: String): Properties {
+            return try {
+                props.copy(windowInsets = windowInsetsFromString(insets))
             } catch (e: Exception) {
                 e.printStackTrace()
+                props
             }
         }
-
-        fun build() = TopAppBarView(
-            Properties(
-                colors,
-                windowInsets,
-                commonProps,
-            )
-        )
-    }
-}
-
-internal object TopAppBarViewFactory : ComposableViewFactory<TopAppBarView>() {
-
-    /**
-     * Creates a `TopAppBarView` object based on the attributes and text of the input `Attributes`
-     * object. TopAppBarView co-relates to the TopAppBar composable
-     *
-     * @param attributes the `Attributes` object to create the `TopAppBarView` object from
-     * @return a `TopAppBarView` object based on the attributes and text of the input `Attributes`
-     * object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): TopAppBarView {
-        val builder = TopAppBarView.Builder()
-
-        attributes.forEach { attribute ->
-            when (attribute.name) {
-                attrColors -> builder.colors(attribute.value)
-                attrWindowInsets -> builder.windowInsets(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            }
-        }
-        return builder.build()
     }
 }

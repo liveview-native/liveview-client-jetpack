@@ -28,21 +28,20 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrShadowElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.ColorAttrs
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.Templates.templateAction
 import org.phoenixframework.liveview.data.constants.Templates.templateText
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
@@ -167,24 +166,43 @@ internal class TooltipView private constructor(props: Properties) :
     @Stable
     internal data class Properties(
         val scope: CaretScope?,
-        val caretProperties: CaretProperties?,
-        val colors: ImmutableMap<String, String>?,
-        val shape: Shape?,
-        val contentColor: Color?,
-        val containerColor: Color?,
-        val tonalElevation: Dp?,
-        val shadowElevation: Dp?,
-        override val commonProps: CommonComposableProperties,
+        val caretProperties: CaretProperties? = null,
+        val colors: ImmutableMap<String, String>? = null,
+        val shape: Shape? = null,
+        val contentColor: Color? = null,
+        val containerColor: Color? = null,
+        val tonalElevation: Dp? = null,
+        val shadowElevation: Dp? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder(val scope: CaretScope? = null) : ComposableBuilder() {
-        private var caretProperties: CaretProperties? = null
-        private var colors: ImmutableMap<String, String>? = null
-        private var shape: Shape? = null
-        private var contentColor: Color? = null
-        private var containerColor: Color? = null
-        private var tonalElevation: Dp? = null
-        private var shadowElevation: Dp? = null
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    internal object Factory : ComposableViewFactory<TooltipView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): TooltipView = TooltipView(
+            attributes.fold(Properties(scope as? CaretScope)) { props, attribute ->
+                when (attribute.name) {
+                    attrCaretProperties -> caretProperties(props, attribute.value)
+                    attrColors -> colors(props, attribute.value)
+                    attrContainerColor -> containerColor(props, attribute.value)
+                    attrContentColor -> contentColor(props, attribute.value)
+                    attrShadowElevation -> shadowElevation(props, attribute.value)
+                    attrShape -> shape(props, attribute.value)
+                    attrTonalElevation -> tonalElevation(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
 
         /**
          * RichTooltipColors that will be applied to the tooltip's container and content.
@@ -196,10 +214,10 @@ internal class TooltipView private constructor(props: Properties) :
          * keys supported are: `containerColor`, `contentColor`, `titleContentColor`, and
          * `actionContentColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -210,15 +228,18 @@ internal class TooltipView private constructor(props: Properties) :
          *   caretProperties="{'caretHeight': '100', 'caretWidth': '200'}">...</PlainTooltip>
          * ```
          */
-        fun caretProperties(value: String) = apply {
-            try {
+        private fun caretProperties(props: Properties, value: String): Properties {
+            return try {
                 JsonParser.parse<Map<String, String>>(value)?.let { map ->
-                    this.caretProperties = CaretProperties(
-                        caretHeight = map[attrCaretHeight].toString().toInt().dp,
-                        caretWidth = map[attrCaretWidth].toString().toInt().dp,
+                    props.copy(
+                        caretProperties = CaretProperties(
+                            caretHeight = map[attrCaretHeight].toString().toInt().dp,
+                            caretWidth = map[attrCaretWidth].toString().toInt().dp,
+                        )
                     )
-                }
+                } ?: props
             } catch (_: Exception) {
+                props
             }
         }
 
@@ -230,10 +251,10 @@ internal class TooltipView private constructor(props: Properties) :
          * @param color container color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun containerColor(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.containerColor = color.toColor()
-            }
+        private fun containerColor(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(containerColor = color.toColor())
+            } else props
         }
 
         /**
@@ -244,10 +265,10 @@ internal class TooltipView private constructor(props: Properties) :
          * @param color content color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun contentColor(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.contentColor = color.toColor()
-            }
+        private fun contentColor(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(contentColor = color.toColor())
+            } else props
         }
 
         /**
@@ -257,10 +278,10 @@ internal class TooltipView private constructor(props: Properties) :
          * ```
          * @param shadowElevation int value indicating the shadow elevation.
          */
-        fun shadowElevation(shadowElevation: String) = apply {
-            if (shadowElevation.isNotEmptyAndIsDigitsOnly()) {
-                this.shadowElevation = shadowElevation.toInt().dp
-            }
+        private fun shadowElevation(props: Properties, shadowElevation: String): Properties {
+            return if (shadowElevation.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(shadowElevation = shadowElevation.toInt().dp)
+            } else props
         }
 
         /**
@@ -272,10 +293,10 @@ internal class TooltipView private constructor(props: Properties) :
          * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
          * representing the curve size applied for all four corners.
          */
-        fun shape(shape: String) = apply {
-            if (shape.isNotEmpty()) {
-                this.shape = shapeFromString(shape)
-            }
+        private fun shape(props: Properties, shape: String): Properties {
+            return if (shape.isNotEmpty()) {
+                props.copy(shape = shapeFromString(shape))
+            } else props
         }
 
         /**
@@ -285,45 +306,10 @@ internal class TooltipView private constructor(props: Properties) :
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */
-        fun tonalElevation(tonalElevation: String) = apply {
-            if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
-                this.tonalElevation = tonalElevation.toInt().dp
-            }
+        private fun tonalElevation(props: Properties, tonalElevation: String): Properties {
+            return if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(tonalElevation = tonalElevation.toInt().dp)
+            } else props
         }
-
-        fun build() = TooltipView(
-            Properties(
-                scope,
-                caretProperties,
-                colors,
-                shape,
-                contentColor,
-                containerColor,
-                tonalElevation,
-                shadowElevation,
-                commonProps,
-            )
-        )
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-internal object TooltipViewFactory : ComposableViewFactory<TooltipView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): TooltipView =
-        attributes.fold(TooltipView.Builder(scope as? CaretScope)) { builder, attribute ->
-            when (attribute.name) {
-                attrCaretProperties -> builder.caretProperties(attribute.value)
-                attrColors -> builder.colors(attribute.value)
-                attrContainerColor -> builder.containerColor(attribute.value)
-                attrContentColor -> builder.contentColor(attribute.value)
-                attrShadowElevation -> builder.shadowElevation(attribute.value)
-                attrShape -> builder.shape(attribute.value)
-                attrTonalElevation -> builder.tonalElevation(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as TooltipView.Builder
-        }.build()
 }

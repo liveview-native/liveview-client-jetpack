@@ -19,7 +19,9 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argRole
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argSelected
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argState
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argValue
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
+import org.phoenixframework.liveview.ui.base.ComposableView.Companion.EVENT_TYPE_CHANGE
+import org.phoenixframework.liveview.ui.base.ComposableView.Companion.EVENT_TYPE_DOUBLE_CLICK
+import org.phoenixframework.liveview.ui.base.ComposableView.Companion.EVENT_TYPE_LONG_CLICK
 import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.view.onClickFromString
 
@@ -109,7 +111,7 @@ fun Modifier.combinedClickableFromStyle(
                         val (eventName, eventArgs) = onLongClick
                         if (eventName.isNotEmpty()) {
                             pushEvent?.invoke(
-                                ComposableBuilder.EVENT_TYPE_LONG_CLICK,
+                                EVENT_TYPE_LONG_CLICK,
                                 eventName,
                                 eventArgs,
                                 null
@@ -122,7 +124,7 @@ fun Modifier.combinedClickableFromStyle(
                         val (eventName, eventArgs) = onDoubleClick
                         if (eventName.isNotEmpty()) {
                             pushEvent?.invoke(
-                                ComposableBuilder.EVENT_TYPE_DOUBLE_CLICK,
+                                EVENT_TYPE_DOUBLE_CLICK,
                                 eventName,
                                 eventArgs,
                                 null
@@ -185,7 +187,7 @@ fun Modifier.toggleableFromStyle(
                 val (eventName, _) = event
                 if (eventName.isNotEmpty()) {
                     pushEvent?.invoke(
-                        ComposableBuilder.EVENT_TYPE_CHANGE,
+                        EVENT_TYPE_CHANGE,
                         eventName,
                         newValue,
                         null

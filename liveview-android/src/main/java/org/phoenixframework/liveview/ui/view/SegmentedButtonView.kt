@@ -41,14 +41,13 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInactive
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
@@ -121,7 +120,7 @@ internal class SegmentedButtonView private constructor(props: Properties) :
                     checked = selected,
                     onCheckedChange = { isSelected ->
                         pushEvent(
-                            ComposableBuilder.EVENT_TYPE_CHANGE,
+                            EVENT_TYPE_CHANGE,
                             onClick,
                             mergeValueWithPhxValue(KEY_SELECTED, isSelected),
                             null
@@ -191,24 +190,37 @@ internal class SegmentedButtonView private constructor(props: Properties) :
     @Stable
     internal data class Properties(
         val scope: RowScope?,
-        val border: BorderStroke?,
-        val colors: ImmutableMap<String, String>?,
-        val enabled: Boolean,
-        val onClick: String,
-        val selected: Boolean,
-        val shape: Shape,
-        override val commonProps: CommonComposableProperties,
+        val border: BorderStroke? = null,
+        val colors: ImmutableMap<String, String>? = null,
+        val enabled: Boolean = true,
+        val onClick: String = "",
+        val selected: Boolean = false,
+        val shape: Shape = RectangleShape,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    // scope must be an instance of
-    // SingleChoiceSegmentedButtonRowScope or MultiChoiceSegmentedButtonRowScope
-    internal class Builder(val scope: RowScope? = null) : ComposableBuilder() {
-        private var border: BorderStroke? = null
-        private var colors: ImmutableMap<String, String>? = null
-        private var enabled: Boolean = true
-        private var onClick: String = ""
-        private var selected: Boolean = false
-        private var shape: Shape = RectangleShape
+    internal object Factory : ComposableViewFactory<SegmentedButtonView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): SegmentedButtonView = SegmentedButtonView(
+            attributes.fold(Properties(scope as? RowScope)) { props, attribute ->
+                when (attribute.name) {
+                    attrBorder -> border(props, attribute.value)
+                    attrColors -> colors(props, attribute.value)
+                    attrEnabled -> enabled(props, attribute.value)
+                    attrPhxClick, attrPhxChange -> onClick(props, attribute.value)
+                    attrSelected, attrChecked -> selected(props, attribute.value)
+                    attrShape -> shape(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
 
         /**
          * The border to draw around the container of this `SegmentedButton`.
@@ -220,8 +232,8 @@ internal class SegmentedButtonView private constructor(props: Properties) :
          * in the AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors
          */
-        fun border(border: String) = apply {
-            this.border = borderFromString(border)
+        private fun border(props: Properties, border: String): Properties {
+            return props.copy(border = borderFromString(border))
         }
 
         /**
@@ -239,10 +251,10 @@ internal class SegmentedButtonView private constructor(props: Properties) :
          * `disabledActiveBorderColor`, `disabledInactiveContainerColor`,
          * `disabledInactiveContentColor`, and `disabledInactiveBorderColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -260,8 +272,8 @@ internal class SegmentedButtonView private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
-        fun onClick(event: String) = apply {
-            this.onClick = event
+        private fun onClick(props: Properties, event: String): Properties {
+            return props.copy(onClick = event)
         }
 
         /**
@@ -272,8 +284,8 @@ internal class SegmentedButtonView private constructor(props: Properties) :
          * ```
          * @param enabled true if the button is enabled, false otherwise.
          */
-        fun enabled(enabled: String) = apply {
-            this.enabled = enabled.toBoolean()
+        private fun enabled(props: Properties, enabled: String): Properties {
+            return props.copy(enabled = enabled.toBoolean())
         }
 
         /**
@@ -283,8 +295,8 @@ internal class SegmentedButtonView private constructor(props: Properties) :
          * ```
          * @param selected true if the item is selected, false otherwise.
          */
-        fun selected(selected: String) = apply {
-            this.selected = selected.toBoolean()
+        private fun selected(props: Properties, selected: String): Properties {
+            return props.copy(selected = selected.toBoolean())
         }
 
         /**
@@ -297,39 +309,8 @@ internal class SegmentedButtonView private constructor(props: Properties) :
          * [org.phoenixframework.liveview.data.constants.ShapeValues], or an use integer
          * representing the curve size applied to all four corners.
          */
-        fun shape(shape: String) = apply {
-            this.shape = shapeFromString(shape)
+        private fun shape(props: Properties, shape: String): Properties {
+            return props.copy(shape = shapeFromString(shape))
         }
-
-        fun build() = SegmentedButtonView(
-            Properties(
-                scope,
-                border,
-                colors,
-                enabled,
-                onClick,
-                selected,
-                shape,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object SegmentedButtonViewFactory :
-    ComposableViewFactory<SegmentedButtonView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): SegmentedButtonView =
-        attributes.fold(SegmentedButtonView.Builder(scope as? RowScope)) { builder, attribute ->
-            when (attribute.name) {
-                attrBorder -> builder.border(attribute.value)
-                attrColors -> builder.colors(attribute.value)
-                attrEnabled -> builder.enabled(attribute.value)
-                attrPhxClick, attrPhxChange -> builder.onClick(attribute.value)
-                attrSelected, attrChecked -> builder.selected(attribute.value)
-                attrShape -> builder.shape(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as SegmentedButtonView.Builder
-        }.build()
 }

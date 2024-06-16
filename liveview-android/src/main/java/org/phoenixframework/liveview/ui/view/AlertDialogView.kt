@@ -14,18 +14,16 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrIconContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrTitleContentColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.Templates.templateConfirmButton
 import org.phoenixframework.liveview.data.constants.Templates.templateDismissButton
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder.Companion.EVENT_TYPE_BLUR
-import org.phoenixframework.liveview.data.constants.ComposableTypes
-import org.phoenixframework.liveview.ui.base.ComposableViewFactory
-import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -170,19 +168,45 @@ internal class AlertDialogView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val containerColor: Color?,
-        val iconContentColor: Color?,
-        val titleContentColor: Color?,
-        val textContentColor: Color?,
-        override val dialogProps: DialogComposableProperties,
-        override val commonProps: CommonComposableProperties,
+        val containerColor: Color? = null,
+        val iconContentColor: Color? = null,
+        val titleContentColor: Color? = null,
+        val textContentColor: Color? = null,
+        override val dialogProps: DialogComposableProperties = DialogComposableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : IDialogProperties
 
-    internal class Builder : DialogView.Builder() {
-        private var containerColor: Color? = null
-        private var iconContentColor: Color? = null
-        private var titleContentColor: Color? = null
-        private var textContentColor: Color? = null
+    internal object Factory : DialogView.Factory() {
+        /**
+         * Creates a `AlertDialogView` object based on the attributes of the input `Attributes` object.
+         * AlertDialogView co-relates to the AlertDialog composable
+         * @param attributes the `Attributes` object to create the `AlertDialogView` object from
+         * @return a `AlertDialogView` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): AlertDialogView = AlertDialogView(attributes.fold(Properties()) { props, attribute ->
+            handleDialogAttributes(props.dialogProps, attribute)?.let {
+                props.copy(dialogProps = it)
+            } ?: run {
+                when (attribute.name) {
+                    attrContainerColor -> containerColor(props, attribute.value)
+                    attrIconContentColor -> iconContentColor(props, attribute.value)
+                    attrTextContentColor -> textContentColor(props, attribute.value)
+                    attrTitleContentColor -> titleContentColor(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            }
+        })
 
         /**
          * The color used for the background of this dialog.
@@ -192,8 +216,8 @@ internal class AlertDialogView private constructor(props: Properties) :
          * @param containerColor the background color in AARRGGBB format or one of the system
          * colors.
          */
-        fun containerColor(containerColor: String) = apply {
-            this.containerColor = containerColor.toColor()
+        private fun containerColor(props: Properties, containerColor: String): Properties {
+            return props.copy(containerColor = containerColor.toColor())
         }
 
         /**
@@ -204,8 +228,8 @@ internal class AlertDialogView private constructor(props: Properties) :
          * @param iconContentColor the content color used for the icon in AARRGGBB format or one of
          * the [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun iconContentColor(iconContentColor: String) = apply {
-            this.iconContentColor = iconContentColor.toColor()
+        private fun iconContentColor(props: Properties, iconContentColor: String): Properties {
+            return props.copy(iconContentColor = iconContentColor.toColor())
         }
 
         /**
@@ -216,8 +240,8 @@ internal class AlertDialogView private constructor(props: Properties) :
          * @param titleContentColor the content color used for the title in AARRGGBB format or one
          * of the [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun titleContentColor(titleContentColor: String) = apply {
-            this.titleContentColor = titleContentColor.toColor()
+        private fun titleContentColor(props: Properties, titleContentColor: String): Properties {
+            return props.copy(titleContentColor = titleContentColor.toColor())
         }
 
         /**
@@ -228,48 +252,8 @@ internal class AlertDialogView private constructor(props: Properties) :
          * @param textContentColor the content color used for the text in AARRGGBB format or one of
          * the [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun textContentColor(textContentColor: String) = apply {
-            this.textContentColor = textContentColor.toColor()
-        }
-
-        fun build(): AlertDialogView {
-            return AlertDialogView(
-                Properties(
-                    containerColor,
-                    iconContentColor,
-                    titleContentColor,
-                    textContentColor,
-                    dialogComposableProps,
-                    commonProps,
-                )
-            )
+        private fun textContentColor(props: Properties, textContentColor: String): Properties {
+            return props.copy(textContentColor = textContentColor.toColor())
         }
     }
-}
-
-internal object AlertDialogViewFactory : ComposableViewFactory<AlertDialogView>() {
-
-    /**
-     * Creates a `AlertDialogView` object based on the attributes of the input `Attributes` object.
-     * AlertDialogView co-relates to the AlertDialog composable
-     * @param attributes the `Attributes` object to create the `AlertDialogView` object from
-     * @return a `AlertDialogView` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): AlertDialogView = attributes.fold(AlertDialogView.Builder()) { builder, attribute ->
-        if (builder.handleDialogAttributes(attribute)) {
-            builder
-        } else {
-            when (attribute.name) {
-                attrContainerColor -> builder.containerColor(attribute.value)
-                attrIconContentColor -> builder.iconContentColor(attribute.value)
-                attrTextContentColor -> builder.textContentColor(attribute.value)
-                attrTitleContentColor -> builder.titleContentColor(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as AlertDialogView.Builder
-        }
-    }.build()
 }

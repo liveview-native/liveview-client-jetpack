@@ -15,8 +15,6 @@ import org.phoenixframework.liveview.data.constants.Templates.templateConfirmBut
 import org.phoenixframework.liveview.data.constants.Templates.templateDismissButton
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
-import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -73,7 +71,7 @@ internal class DatePickerDialogView private constructor(props: Properties) :
                 dismissEvent?.let {
                     if (it.isNotEmpty()) {
                         pushEvent.invoke(
-                            ComposableBuilder.EVENT_TYPE_BLUR,
+                            EVENT_TYPE_BLUR,
                             it,
                             props.commonProps.phxValue,
                             null
@@ -106,19 +104,36 @@ internal class DatePickerDialogView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val colors: ImmutableMap<String, String>?,
-        override val dialogProps: DialogComposableProperties,
-        override val commonProps: CommonComposableProperties,
+        val colors: ImmutableMap<String, String>? = null,
+        override val dialogProps: DialogComposableProperties = DialogComposableProperties(
+            usePlatformDefaultWidth = false
+        ),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : IDialogProperties
 
-    internal class Builder : DialogView.Builder() {
-        init {
-            // DatePickerDialog does not use the platform default width
-            usePlatformDefaultWidth("false")
-        }
-
-        var colors: ImmutableMap<String, String>? = null
-            private set
+    internal object Factory : DialogView.Factory() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): DatePickerDialogView = DatePickerDialogView(
+            attributes.fold(Properties()) { props, attribute ->
+                handleDialogAttributes(props.dialogProps, attribute)?.let {
+                    props.copy(dialogProps = it)
+                } ?: run {
+                    when (attribute.name) {
+                        attrColors -> colors(props, attribute.value)
+                        else -> props.copy(
+                            commonProps = handleCommonAttributes(
+                                props.commonProps,
+                                attribute,
+                                pushEvent,
+                                scope
+                            )
+                        )
+                    }
+                }
+            })
 
         /**
          * Set DatePicker colors.
@@ -135,39 +150,10 @@ internal class DatePickerDialogView private constructor(props: Properties) :
          * `disabledSelectedDayContainerColor`, `todayContentColor`, `todayDateBorderColor`,
          * `dayInSelectionRangeContentColor`, and `dayInSelectionRangeContainerColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
-        }
-
-        fun build(): DatePickerDialogView {
-            return DatePickerDialogView(
-                Properties(
-                    colors,
-                    dialogComposableProps,
-                    commonProps,
-                )
-            )
+        fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
     }
-}
-
-internal object DatePickerDialogViewFactory :
-    ComposableViewFactory<DatePickerDialogView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): DatePickerDialogView =
-        attributes.fold(DatePickerDialogView.Builder()) { builder, attribute ->
-            if (builder.handleDialogAttributes(attribute)) {
-                builder
-            } else {
-                when (attribute.name) {
-                    attrColors -> builder.colors(attribute.value)
-                    else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-                } as DatePickerDialogView.Builder
-            }
-        }.build()
 }

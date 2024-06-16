@@ -31,15 +31,14 @@ import org.phoenixframework.liveview.data.constants.Templates.templateOverlineCo
 import org.phoenixframework.liveview.data.constants.Templates.templateSupportingContent
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingContent
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -153,16 +152,33 @@ internal class ListItemView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val colors: ImmutableMap<String, String>?,
-        val tonalElevation: Dp?,
-        val shadowElevation: Dp?,
-        override val commonProps: CommonComposableProperties,
+        val colors: ImmutableMap<String, String>? = null,
+        val tonalElevation: Dp? = null,
+        val shadowElevation: Dp? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var colors: ImmutableMap<String, String>? = null
-        private var tonalElevation: Dp? = null
-        private var shadowElevation: Dp? = null
+
+    internal object Factory : ComposableViewFactory<ListItemView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): ListItemView = ListItemView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrColors -> colors(props, attribute.value)
+                attrTonalElevation -> tonalElevation(props, attribute.value)
+                attrShadowElevation -> shadowElevation(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * Set ListItem colors.
@@ -177,10 +193,10 @@ internal class ListItemView private constructor(props: Properties) :
          * `supportingColor`, `trailingIconColor`, `disabledHeadlineColor`,
          * `disabledLeadingIconColor`, and `disabledTrailingIconColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -190,10 +206,10 @@ internal class ListItemView private constructor(props: Properties) :
          * ```
          * @param shadowElevation shadow elevation of this list item.
          */
-        fun shadowElevation(shadowElevation: String) = apply {
-            if (shadowElevation.isNotEmptyAndIsDigitsOnly()) {
-                this.shadowElevation = shadowElevation.toInt().dp
-            }
+        private fun shadowElevation(props: Properties, shadowElevation: String): Properties {
+            return if (shadowElevation.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(shadowElevation = shadowElevation.toInt().dp)
+            } else props
         }
 
         /**
@@ -203,34 +219,10 @@ internal class ListItemView private constructor(props: Properties) :
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */
-        fun tonalElevation(tonalElevation: String) = apply {
-            if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
-                this.tonalElevation = tonalElevation.toInt().dp
-            }
+        private fun tonalElevation(props: Properties, tonalElevation: String): Properties {
+            return if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(tonalElevation = tonalElevation.toInt().dp)
+            } else props
         }
-
-        fun build() = ListItemView(
-            Properties(
-                colors,
-                tonalElevation,
-                shadowElevation,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object ListItemViewFactory : ComposableViewFactory<ListItemView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): ListItemView = attributes.fold(ListItemView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrColors -> builder.colors(attribute.value)
-            attrTonalElevation -> builder.tonalElevation(attribute.value)
-            attrShadowElevation -> builder.shadowElevation(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as ListItemView.Builder
-    }.build()
 }

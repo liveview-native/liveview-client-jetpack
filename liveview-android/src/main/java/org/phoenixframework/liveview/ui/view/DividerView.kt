@@ -12,17 +12,16 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrThickness
-import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
-import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.data.constants.ComposableTypes
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 
 /**
  * Material Design divider.
@@ -64,14 +63,39 @@ internal class DividerView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val thickness: Dp?,
-        val color: Color?,
-        override val commonProps: CommonComposableProperties,
+        val thickness: Dp? = null,
+        val color: Color? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var thickness: Dp? = null
-        private var color: Color? = null
+
+    internal object Factory : ComposableViewFactory<DividerView>() {
+        /**
+         * Creates a `DividerView` object based on the attributes of the input `Attributes` object.
+         * DividerView co-relates to the HorizontalDivider and VerticalDivider composables.
+         * @param attributes the `Attributes` object to create the `DividerView` object from
+         * @return a `DividerView` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): DividerView = DividerView(
+            attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrColor -> color(props, attribute.value)
+                    attrThickness -> thickness(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            }
+        )
 
         /**
          * Thickness of the divider line.
@@ -80,10 +104,10 @@ internal class DividerView private constructor(props: Properties) :
          * ```
          * @param thickness int value representing the thickness of the divider line.
          */
-        fun thickness(thickness: String) = apply {
-            if (thickness.isNotEmptyAndIsDigitsOnly()) {
-                this.thickness = thickness.toInt().dp
-            }
+        private fun thickness(props: Properties, thickness: String): Properties {
+            return if (thickness.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(thickness = thickness.toInt().dp)
+            } else props
         }
 
         /**
@@ -96,42 +120,10 @@ internal class DividerView private constructor(props: Properties) :
          * specified as a string in the AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun color(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.color = color.toColor()
-            }
+        private fun color(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(color = color.toColor())
+            } else props
         }
-
-        fun build() = DividerView(
-            Properties(
-                thickness,
-                color,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object DividerViewFactory : ComposableViewFactory<DividerView>() {
-    /**
-     * Creates a `DividerView` object based on the attributes of the input `Attributes` object.
-     * DividerView co-relates to the HorizontalDivider and VerticalDivider composables.
-     * @param attributes the `Attributes` object to create the `DividerView` object from
-     * @return a `DividerView` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): DividerView = DividerView.Builder().also {
-        attributes.fold(
-            it
-        ) { builder, attribute ->
-            when (attribute.name) {
-                attrColor -> builder.color(attribute.value)
-                attrThickness -> builder.thickness(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as DividerView.Builder
-        }
-    }.build()
 }

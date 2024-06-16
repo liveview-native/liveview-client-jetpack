@@ -11,17 +11,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrSpace
-import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
-import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.ComposableTypes.segmentedButton
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -106,49 +105,45 @@ internal class SegmentedButtonRowView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val space: Dp?,
-        override val commonProps: CommonComposableProperties,
+        val space: Dp? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var space: Dp? = null
+    internal object Factory : ComposableViewFactory<SegmentedButtonRowView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): SegmentedButtonRowView = SegmentedButtonRowView(
+            attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrSpace -> space(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
+
+        override fun subTags(): Map<String, ComposableViewFactory<*>> {
+            return mapOf(
+                segmentedButton to SegmentedButtonView.Factory
+            )
+        }
 
         /**
          * the dimension of the overlap between buttons. Should be equal to the stroke width used
          * on the items.
          * @param space dimension in Dp of the overlap between buttons.
          */
-        fun space(space: String) = apply {
-            if (space.isNotEmptyAndIsDigitsOnly()) {
-                this.space = space.toInt().dp
-            }
+        fun space(props: Properties, space: String): Properties {
+            return if (space.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(space = space.toInt().dp)
+            } else props
         }
-
-        fun build() = SegmentedButtonRowView(
-            Properties(
-                space,
-                commonProps,
-            )
-        )
-    }
-}
-
-internal object SegmentedButtonRowViewFactory : ComposableViewFactory<SegmentedButtonRowView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): SegmentedButtonRowView =
-        attributes.fold(SegmentedButtonRowView.Builder()) { builder, attribute ->
-            when (attribute.name) {
-                attrSpace -> builder.space(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as SegmentedButtonRowView.Builder
-        }.build()
-
-    override fun subTags(): Map<String, ComposableViewFactory<*>> {
-        return mapOf(
-            segmentedButton to SegmentedButtonViewFactory
-        )
     }
 }

@@ -16,19 +16,18 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrFocusable
 import org.phoenixframework.liveview.data.constants.Attrs.attrInitialIsVisible
 import org.phoenixframework.liveview.data.constants.Attrs.attrIsPersistent
 import org.phoenixframework.liveview.data.constants.Attrs.attrSpacingBetweenTooltipAndAnchor
+import org.phoenixframework.liveview.data.constants.ComposableTypes.plainTooltip
+import org.phoenixframework.liveview.data.constants.ComposableTypes.richTooltip
 import org.phoenixframework.liveview.data.constants.Templates.templateContent
 import org.phoenixframework.liveview.data.constants.Templates.templateTooltip
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes.plainTooltip
-import org.phoenixframework.liveview.data.constants.ComposableTypes.richTooltip
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -96,20 +95,45 @@ internal class TooltipBoxView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val enableUserInput: Boolean,
-        val focusable: Boolean,
-        val isPersistent: Boolean,
-        val initialIsVisible: Boolean,
-        val spacingBetweenTooltipAndAnchor: Dp,
-        override val commonProps: CommonComposableProperties,
+        val enableUserInput: Boolean = true,
+        val focusable: Boolean = true,
+        val isPersistent: Boolean = false,
+        val initialIsVisible: Boolean = false,
+        val spacingBetweenTooltipAndAnchor: Dp = 4.dp,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var enableUserInput: Boolean = true
-        private var focusable: Boolean = true
-        private var isPersistent: Boolean = false
-        private var initialIsVisible: Boolean = false
-        private var spacingBetweenTooltipAndAnchor: Dp = 4.dp
+    internal object Factory : ComposableViewFactory<TooltipBoxView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): TooltipBoxView = TooltipBoxView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrEnableUserInput -> enableUserInput(props, attribute.value)
+                attrFocusable -> focusable(props, attribute.value)
+                attrInitialIsVisible -> initialIsVisible(props, attribute.value)
+                attrIsPersistent -> isPersistent(props, attribute.value)
+                attrSpacingBetweenTooltipAndAnchor -> spacingBetweenTooltipAndAnchor(
+                    props,
+                    attribute.value
+                )
+
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
+
+        override fun subTags(): Map<String, ComposableViewFactory<*>> {
+            return mapOf(
+                plainTooltip to TooltipView.Factory,
+                richTooltip to TooltipView.Factory,
+            )
+        }
 
         /**
          * Boolean which determines if this TooltipBox will handle long press and mouse hover to
@@ -120,8 +144,8 @@ internal class TooltipBoxView private constructor(props: Properties) :
          * @param value true if this TooltipBox will handle long press and mouse hover, false
          * otherwise.
          */
-        fun enableUserInput(value: String) = apply {
-            this.enableUserInput = value.toBoolean()
+        private fun enableUserInput(props: Properties, value: String): Properties {
+            return props.copy(enableUserInput = value.toBoolean())
         }
 
         /**
@@ -136,8 +160,8 @@ internal class TooltipBoxView private constructor(props: Properties) :
          * @param value if true the tooltip will consume touch events while it's shown, false
          * otherwise.
          */
-        fun focusable(value: String) = apply {
-            this.focusable = value.toBoolean()
+        private fun focusable(props: Properties, value: String): Properties {
+            return props.copy(focusable = value.toBoolean())
         }
 
         /**
@@ -152,8 +176,8 @@ internal class TooltipBoxView private constructor(props: Properties) :
          * @param value true if the tooltip associated with this will be persistent, false
          * otherwise.
          */
-        fun isPersistent(value: String) = apply {
-            this.isPersistent = value.toBoolean()
+        private fun isPersistent(props: Properties, value: String): Properties {
+            return props.copy(isPersistent = value.toBoolean())
         }
 
         /**
@@ -163,8 +187,8 @@ internal class TooltipBoxView private constructor(props: Properties) :
          * ```
          * @param value true if initially visible, false otherwise.
          */
-        fun initialIsVisible(value: String) = apply {
-            this.initialIsVisible = value.toBoolean()
+        private fun initialIsVisible(props: Properties, value: String): Properties {
+            return props.copy(initialIsVisible = value.toBoolean())
         }
 
         /**
@@ -174,43 +198,10 @@ internal class TooltipBoxView private constructor(props: Properties) :
          * ```
          * @param value int value indicating the spacing between the tooltip and the anchor content.
          */
-        fun spacingBetweenTooltipAndAnchor(value: String) = apply {
-            if (value.isNotEmptyAndIsDigitsOnly()) {
-                this.spacingBetweenTooltipAndAnchor = value.toInt().dp
-            }
+        private fun spacingBetweenTooltipAndAnchor(props: Properties, value: String): Properties {
+            return if (value.isNotEmptyAndIsDigitsOnly()) {
+                return props.copy(spacingBetweenTooltipAndAnchor = value.toInt().dp)
+            } else props
         }
-
-        fun build() = TooltipBoxView(
-            Properties(
-                enableUserInput,
-                focusable,
-                isPersistent,
-                initialIsVisible,
-                spacingBetweenTooltipAndAnchor,
-                commonProps,
-            )
-        )
-    }
-}
-
-internal object TooltipBoxViewFactory : ComposableViewFactory<TooltipBoxView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): TooltipBoxView = attributes.fold(TooltipBoxView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrEnableUserInput -> builder.enableUserInput(attribute.value)
-            attrFocusable -> builder.focusable(attribute.value)
-            attrInitialIsVisible -> builder.initialIsVisible(attribute.value)
-            attrIsPersistent -> builder.isPersistent(attribute.value)
-            attrSpacingBetweenTooltipAndAnchor -> builder.spacingBetweenTooltipAndAnchor(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as TooltipBoxView.Builder
-    }.build()
-
-    override fun subTags(): Map<String, ComposableViewFactory<*>> {
-        return mapOf(
-            plainTooltip to TooltipViewFactory,
-            richTooltip to TooltipViewFactory,
-        )
     }
 }

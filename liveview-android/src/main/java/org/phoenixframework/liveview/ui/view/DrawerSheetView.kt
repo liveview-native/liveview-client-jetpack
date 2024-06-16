@@ -20,17 +20,16 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
-import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
-import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.data.constants.ComposableTypes
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
@@ -123,21 +122,46 @@ internal class DrawerSheetView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val drawerShape: Shape?,
-        val drawerContainerColor: Color?,
-        val drawerContentColor: Color?,
-        val drawerTonalElevation: Dp?,
-        val windowInsets: WindowInsets?,
-        override val commonProps: CommonComposableProperties,
+        val drawerShape: Shape? = null,
+        val drawerContainerColor: Color? = null,
+        val drawerContentColor: Color? = null,
+        val drawerTonalElevation: Dp? = null,
+        val windowInsets: WindowInsets? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
 
-    internal class Builder : ComposableBuilder() {
-        private var drawerShape: Shape? = null
-        private var drawerContainerColor: Color? = null
-        private var drawerContentColor: Color? = null
-        private var drawerTonalElevation: Dp? = null
-        private var windowInsets: WindowInsets? = null
+    internal object Factory : ComposableViewFactory<DrawerSheetView>() {
+        /**
+         * Creates a `DrawerSheetView` object based on the attributes of the input `Attributes`
+         * object. DrawerSheetView co-relates to the ModalDrawerSheet, DismissibleDrawerSheet, or
+         * PermanentDrawerSheet composable.
+         * @param attributes the `Attributes` object to create the `DrawerSheetView` object from
+         * @return a `DrawerSheetView` object based on the attributes of the input `Attributes`
+         * object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): DrawerSheetView = DrawerSheetView(
+            attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrDrawerContainerColor -> drawerContainerColor(props, attribute.value)
+                    attrDrawerContentColor -> drawerContentColor(props, attribute.value)
+                    attrDrawerShape -> drawerShape(props, attribute.value)
+                    attrTonalElevation -> drawerTonalElevation(props, attribute.value)
+                    attrWindowInsets -> windowInsets(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
 
         /**
          * Defines the shape of this drawer's container.
@@ -148,8 +172,8 @@ internal class DrawerSheetView private constructor(props: Properties) :
          * [org.phoenixframework.liveview.data.constants.ShapeValues], or an integer representing
          * the curve size applied to all four corners.
          */
-        fun drawerShape(shape: String) = apply {
-            this.drawerShape = shapeFromString(shape)
+        private fun drawerShape(props: Properties, shape: String): Properties {
+            return props.copy(drawerShape = shapeFromString(shape))
         }
 
         /**
@@ -160,8 +184,8 @@ internal class DrawerSheetView private constructor(props: Properties) :
          * @param color container color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun drawerContainerColor(color: String) = apply {
-            this.drawerContainerColor = color.toColor()
+        private fun drawerContainerColor(props: Properties, color: String): Properties {
+            return props.copy(drawerContainerColor = color.toColor())
         }
 
         /**
@@ -172,8 +196,8 @@ internal class DrawerSheetView private constructor(props: Properties) :
          * @param color content color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun drawerContentColor(color: String) = apply {
-            this.drawerContentColor = color.toColor()
+        private fun drawerContentColor(props: Properties, color: String): Properties {
+            return props.copy(drawerContentColor = color.toColor())
         }
 
         /**
@@ -184,10 +208,10 @@ internal class DrawerSheetView private constructor(props: Properties) :
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */
-        fun drawerTonalElevation(tonalElevation: String) = apply {
-            if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
-                drawerTonalElevation = tonalElevation.toInt().dp
-            }
+        private fun drawerTonalElevation(props: Properties, tonalElevation: String): Properties {
+            return if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
+                return props.copy(drawerTonalElevation = tonalElevation.toInt().dp)
+            } else props
         }
 
         /**
@@ -198,50 +222,13 @@ internal class DrawerSheetView private constructor(props: Properties) :
          * @param insets the space, in Dp, at the each border of the window that the inset
          * represents. The supported values are: `left`, `top`, `bottom`, and `right`.
          */
-        fun windowInsets(insets: String) = apply {
-            try {
-                this.windowInsets = windowInsetsFromString(insets)
+        private fun windowInsets(props: Properties, insets: String): Properties {
+            return try {
+                props.copy(windowInsets = windowInsetsFromString(insets))
             } catch (e: Exception) {
                 e.printStackTrace()
+                props
             }
         }
-
-        fun build() = DrawerSheetView(
-            Properties(
-                drawerShape,
-                drawerContainerColor,
-                drawerContentColor,
-                drawerTonalElevation,
-                windowInsets,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object DrawerSheetViewFactory :
-    ComposableViewFactory<DrawerSheetView>() {
-    /**
-     * Creates a `DrawerSheetView` object based on the attributes of the input `Attributes`
-     * object. DrawerSheetView co-relates to the ModalDrawerSheet, DismissibleDrawerSheet, or
-     * PermanentDrawerSheet composable.
-     * @param attributes the `Attributes` object to create the `DrawerSheetView` object from
-     * @return a `DrawerSheetView` object based on the attributes of the input `Attributes`
-     * object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): DrawerSheetView =
-        attributes.fold(DrawerSheetView.Builder()) { builder, attribute ->
-            when (attribute.name) {
-                attrDrawerContainerColor -> builder.drawerContainerColor(attribute.value)
-                attrDrawerContentColor -> builder.drawerContentColor(attribute.value)
-                attrDrawerShape -> builder.drawerShape(attribute.value)
-                attrTonalElevation -> builder.drawerTonalElevation(attribute.value)
-                attrWindowInsets -> builder.windowInsets(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as DrawerSheetView.Builder
-        }.build()
 }

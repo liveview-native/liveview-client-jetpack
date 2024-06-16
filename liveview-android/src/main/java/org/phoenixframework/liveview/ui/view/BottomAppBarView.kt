@@ -20,16 +20,15 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
 import org.phoenixframework.liveview.data.constants.Templates.templateAction
 import org.phoenixframework.liveview.data.constants.Templates.templateFab
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -93,20 +92,42 @@ internal class BottomAppBarView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val containerColor: Color?,
-        val contentColor: Color?,
-        val contentPadding: PaddingValues?,
-        val tonalElevation: Dp?,
-        val windowInsets: WindowInsets?,
-        override val commonProps: CommonComposableProperties,
+        val containerColor: Color? = null,
+        val contentColor: Color? = null,
+        val contentPadding: PaddingValues? = null,
+        val tonalElevation: Dp? = null,
+        val windowInsets: WindowInsets? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var containerColor: Color? = null
-        private var contentColor: Color? = null
-        private var contentPadding: PaddingValues? = null
-        private var tonalElevation: Dp? = null
-        private var windowInsets: WindowInsets? = null
+    internal object Factory : ComposableViewFactory<BottomAppBarView>() {
+        /**
+         * Creates a `BottomAppBarView` object based on the attributes of the input `Attributes` object.
+         * BottomAppBarView co-relates to the BottomAppBar composable
+         * @param attributes the `Attributes` object to create the `BottomAppBarView` object from
+         * @return a `BottomAppBarView` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): BottomAppBarView = BottomAppBarView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrContainerColor -> containerColor(props, attribute.value)
+                attrContentColor -> contentColor(props, attribute.value)
+                attrContentPadding -> contentPadding(props, attribute.value)
+                attrTonalElevation -> tonalElevation(props, attribute.value)
+                attrWindowInsets -> windowInsets(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * Color used for the background of this bottom bar.
@@ -114,10 +135,10 @@ internal class BottomAppBarView private constructor(props: Properties) :
          * @param color container color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun containerColor(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.containerColor = color.toColor()
-            }
+        fun containerColor(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(containerColor = color.toColor())
+            } else props
         }
 
         /**
@@ -126,10 +147,10 @@ internal class BottomAppBarView private constructor(props: Properties) :
          * @param color content color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun contentColor(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.contentColor = color.toColor()
-            }
+        fun contentColor(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(contentColor = color.toColor())
+            } else props
         }
 
         /**
@@ -140,10 +161,10 @@ internal class BottomAppBarView private constructor(props: Properties) :
          * @param contentPadding int value representing the padding to be applied to the button's
          * content.
          */
-        fun contentPadding(contentPadding: String) = apply {
-            if (contentPadding.isNotEmpty()) {
-                this.contentPadding = PaddingValues((contentPadding.toIntOrNull() ?: 0).dp)
-            }
+        fun contentPadding(props: Properties, contentPadding: String): Properties {
+            return if (contentPadding.isNotEmpty()) {
+                props.copy(contentPadding = PaddingValues((contentPadding.toIntOrNull() ?: 0).dp))
+            } else props
         }
 
         /**
@@ -155,10 +176,10 @@ internal class BottomAppBarView private constructor(props: Properties) :
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */
-        fun tonalElevation(tonalElevation: String) = apply {
-            if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
-                this.tonalElevation = tonalElevation.toInt().dp
-            }
+        fun tonalElevation(props: Properties, tonalElevation: String): Properties {
+            return if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(tonalElevation = tonalElevation.toInt().dp)
+            } else props
         }
 
         /**
@@ -169,46 +190,13 @@ internal class BottomAppBarView private constructor(props: Properties) :
          * @param insets the space, in Dp, at the each border of the window that the inset
          * represents. The supported values are: `left`, `top`, `bottom`, and `right`.
          */
-        fun windowInsets(insets: String) = apply {
-            try {
-                this.windowInsets = windowInsetsFromString(insets)
+        fun windowInsets(props: Properties, insets: String): Properties {
+            return try {
+                props.copy(windowInsets = windowInsetsFromString(insets))
             } catch (e: Exception) {
                 e.printStackTrace()
+                props
             }
         }
-
-        fun build() = BottomAppBarView(
-            Properties(
-                containerColor,
-                contentColor,
-                contentPadding,
-                tonalElevation,
-                windowInsets,
-                commonProps
-            )
-        )
     }
-}
-
-internal object BottomAppBarViewFactory : ComposableViewFactory<BottomAppBarView>() {
-    /**
-     * Creates a `BottomAppBarView` object based on the attributes of the input `Attributes` object.
-     * BottomAppBarView co-relates to the BottomAppBar composable
-     * @param attributes the `Attributes` object to create the `BottomAppBarView` object from
-     * @return a `BottomAppBarView` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): BottomAppBarView = attributes.fold(BottomAppBarView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrContainerColor -> builder.containerColor(attribute.value)
-            attrContentColor -> builder.contentColor(attribute.value)
-            attrContentPadding -> builder.contentPadding(attribute.value)
-            attrTonalElevation -> builder.tonalElevation(attribute.value)
-            attrWindowInsets -> builder.windowInsets(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as BottomAppBarView.Builder
-    }.build()
 }

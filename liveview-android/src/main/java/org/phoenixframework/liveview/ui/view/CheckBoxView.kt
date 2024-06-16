@@ -30,7 +30,6 @@ import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
 
 /**
@@ -111,20 +110,42 @@ internal class CheckBoxView private constructor(props: Properties) :
     internal data class Properties(
         val colors: ImmutableMap<String, String>? = null,
         val checked: Boolean = false,
-        override val changeableProps: ChangeableProperties,
-        override val commonProps: CommonComposableProperties,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : IChangeableProperties
 
-    companion object {
-        private const val KEY_CHECKED = "checked"
-    }
+    internal object Factory : ChangeableView.Factory() {
+        /**
+         * Creates a `CheckBoxView` object based on the attributes of the input `Attributes` object.
+         * CheckBoxView co-relates to the CheckBox composable
+         * @param attributes the `Attributes` object to create the `CheckBoxView` object from
+         * @return a `CheckBoxView` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): CheckBoxView = CheckBoxView(
+            attributes.fold(Properties()) { props, attribute ->
+                handleChangeableAttribute(props.changeableProps, attribute)?.let {
+                    props.copy(changeableProps = it)
+                } ?: run {
+                    when (attribute.name) {
+                        attrChecked -> checked(props, attribute.value)
+                        attrColors -> colors(props, attribute.value)
+                        else -> props.copy(
+                            commonProps = handleCommonAttributes(
+                                props.commonProps,
+                                attribute,
+                                pushEvent,
+                                scope
+                            )
+                        )
+                    }
+                }
+            }
+        )
 
-    internal class Builder : ChangeableViewBuilder() {
-        private var colors: ImmutableMap<String, String>? = null
-        private var checked: Boolean = false
-
-        fun checked(checked: String) = apply {
-            this.checked = checked.toBoolean()
+        fun checked(props: Properties, checked: String): Properties {
+            return props.copy(checked = checked.toBoolean())
         }
 
         /**
@@ -137,45 +158,15 @@ internal class CheckBoxView private constructor(props: Properties) :
          * supported are: `checkedColor`, `uncheckedColor`, `checkmarkColor, `disabledCheckedColor`,
          * `disabledUncheckedColor`, and `disabledIndeterminateColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
+    }
 
-        fun build() = CheckBoxView(
-            Properties(
-                colors,
-                checked,
-                changeableProps,
-                commonProps,
-            )
-        )
+    companion object {
+        private const val KEY_CHECKED = "checked"
     }
 }
 
-internal object CheckBoxViewFactory : ComposableViewFactory<CheckBoxView>() {
-    /**
-     * Creates a `CheckBoxView` object based on the attributes of the input `Attributes` object.
-     * CheckBoxView co-relates to the CheckBox composable
-     * @param attributes the `Attributes` object to create the `CheckBoxView` object from
-     * @return a `CheckBoxView` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): CheckBoxView = CheckBoxView.Builder().also {
-        attributes.fold(
-            it
-        ) { builder, attribute ->
-            if (builder.handleChangeableAttribute(attribute)) {
-                builder
-            } else {
-                when (attribute.name) {
-                    attrChecked -> builder.checked(attribute.value)
-                    attrColors -> builder.colors(attribute.value)
-                    else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-                } as CheckBoxView.Builder
-            }
-        }
-    }.build()
-}

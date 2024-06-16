@@ -54,6 +54,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelected
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedTrailingIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconContentColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level0
 import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level1
 import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level2
@@ -70,15 +71,13 @@ import org.phoenixframework.liveview.data.constants.Templates.templateLabel
 import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
@@ -708,24 +707,40 @@ internal class ChipView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val border: BorderStroke?,
-        val colors: ImmutableMap<String, String>?,
-        val elevations: ImmutableMap<String, String>?,
-        val enabled: Boolean,
-        val onClick: String,
-        val selected: Boolean,
-        val shape: Shape?,
-        override val commonProps: CommonComposableProperties,
+        val border: BorderStroke? = null,
+        val colors: ImmutableMap<String, String>? = null,
+        val elevations: ImmutableMap<String, String>? = null,
+        val enabled: Boolean = true,
+        val onClick: String = "",
+        val selected: Boolean = false,
+        val shape: Shape? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var border: BorderStroke? = null
-        private var colors: ImmutableMap<String, String>? = null
-        private var elevations: ImmutableMap<String, String>? = null
-        private var enabled: Boolean = true
-        private var onClick: String = ""
-        private var selected: Boolean = false
-        private var shape: Shape? = null
+    internal object Factory : ComposableViewFactory<ChipView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): ChipView = ChipView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrBorder -> border(props, attribute.value)
+                attrColors -> colors(props, attribute.value)
+                attrElevation -> elevation(props, attribute.value)
+                attrEnabled -> enabled(props, attribute.value)
+                attrPhxClick -> onClick(props, attribute.value)
+                attrSelected -> selected(props, attribute.value)
+                attrShape -> shape(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * The border to draw around the container of this chip.
@@ -737,10 +752,10 @@ internal class ChipView private constructor(props: Properties) :
          * string in the AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun border(border: String) = apply {
-            if (border.isNotEmpty()) {
-                this.border = borderFromString(border)
-            }
+        fun border(props: Properties, border: String): Properties {
+            return if (border.isNotEmpty()) {
+                props.copy(border = borderFromString(border))
+            } else props
         }
 
         /**
@@ -758,10 +773,10 @@ internal class ChipView private constructor(props: Properties) :
          * value must be specified as a string in the AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -776,10 +791,10 @@ internal class ChipView private constructor(props: Properties) :
          * elevation supported keys are: `elevation`, `pressedElevation`, `focusedElevation`,
          * `hoveredElevation`, `draggedElevation`, and `disabledElevation`.
          */
-        fun elevation(elevations: String) = apply {
-            if (elevations.isNotEmpty()) {
-                this.elevations = elevationsFromString(elevations)?.toImmutableMap()
-            }
+        fun elevation(props: Properties, elevations: String): Properties {
+            return if (elevations.isNotEmpty()) {
+                props.copy(elevations = elevationsFromString(elevations)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -790,8 +805,8 @@ internal class ChipView private constructor(props: Properties) :
          * ```
          * @param enabled true if the component is enabled, false otherwise.
          */
-        fun enabled(enabled: String) = apply {
-            this.enabled = enabled.toBoolean()
+        fun enabled(props: Properties, enabled: String): Properties {
+            return props.copy(enabled = enabled.toBoolean())
         }
 
         /**
@@ -802,8 +817,8 @@ internal class ChipView private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the chip's click.
          */
-        fun onClick(event: String) = apply {
-            this.onClick = event
+        fun onClick(props: Properties, event: String): Properties {
+            return props.copy(onClick = event)
         }
 
         /**
@@ -813,8 +828,8 @@ internal class ChipView private constructor(props: Properties) :
          * ```
          * @param selected true if the chip is selected, false otherwise.
          */
-        fun selected(selected: String) = apply {
-            this.selected = selected.toBoolean()
+        fun selected(props: Properties, selected: String): Properties {
+            return props.copy(selected = selected.toBoolean())
         }
 
         /**
@@ -826,40 +841,8 @@ internal class ChipView private constructor(props: Properties) :
          * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
          * representing the curve size applied for all four corners.
          */
-        fun shape(shape: String) = apply {
-            this.shape = shapeFromString(shape)
+        fun shape(props: Properties, shape: String): Properties {
+            return props.copy(shape = shapeFromString(shape))
         }
-
-        fun build() = ChipView(
-            Properties(
-                border,
-                colors,
-                elevations,
-                enabled,
-                onClick,
-                selected,
-                shape,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object ChipViewFactory : ComposableViewFactory<ChipView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): ChipView = attributes.fold(ChipView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrBorder -> builder.border(attribute.value)
-            attrColors -> builder.colors(attribute.value)
-            attrElevation -> builder.elevation(attribute.value)
-            attrEnabled -> builder.enabled(attribute.value)
-            attrPhxClick -> builder.onClick(attribute.value)
-            attrSelected -> builder.selected(attribute.value)
-            attrShape -> builder.shape(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as ChipView.Builder
-    }.build()
 }

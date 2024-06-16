@@ -15,8 +15,10 @@ import org.junit.runner.RunWith
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.data.constants.ComposableTypes
+import org.phoenixframework.liveview.ui.base.ComposableView.Companion.EVENT_TYPE_CLICK
+import org.phoenixframework.liveview.ui.base.ComposableView.Companion.EVENT_TYPE_DOUBLE_CLICK
+import org.phoenixframework.liveview.ui.base.ComposableView.Companion.EVENT_TYPE_LONG_CLICK
 import org.phoenixframework.liveview.ui.base.PushEvent
 
 @RunWith(AndroidJUnit4::class)
@@ -136,8 +138,8 @@ class ActionsTest : BaseComposableModifierTest() {
         val combinedClickablePushEvent: PushEvent = { type, _, _, _ ->
             // Changing the counter value to check if the button is clicked
             when (type) {
-                ComposableBuilder.EVENT_TYPE_LONG_CLICK -> counter += 7
-                ComposableBuilder.EVENT_TYPE_CLICK -> counter++
+                EVENT_TYPE_LONG_CLICK -> counter += 7
+                EVENT_TYPE_CLICK -> counter++
             }
         }
         ModifiersParser.fromStyleFile(
@@ -187,8 +189,8 @@ class ActionsTest : BaseComposableModifierTest() {
         val combinedClickablePushEvent: PushEvent = { type, _, _, _ ->
             // Changing the counter value to check if the button is clicked
             when (type) {
-                ComposableBuilder.EVENT_TYPE_DOUBLE_CLICK -> counter += 7
-                ComposableBuilder.EVENT_TYPE_CLICK -> counter++
+                EVENT_TYPE_DOUBLE_CLICK -> counter += 7
+                EVENT_TYPE_CLICK -> counter++
             }
         }
         ModifiersParser.fromStyleFile(

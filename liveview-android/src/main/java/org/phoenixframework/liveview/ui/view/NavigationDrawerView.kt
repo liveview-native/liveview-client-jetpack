@@ -17,18 +17,16 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrGesturesEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrIsOpen
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.Attrs.attrScrimColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.Templates
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
-import org.phoenixframework.liveview.ui.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -146,18 +144,41 @@ internal class NavigationDrawerView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val gesturesEnabled: Boolean,
-        val scrimColor: Color?,
-        val isOpen: Boolean,
-        val onChange: String,
-        override val commonProps: CommonComposableProperties,
+        val gesturesEnabled: Boolean = true,
+        val scrimColor: Color? = null,
+        val isOpen: Boolean = false,
+        val onChange: String = "",
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var gesturesEnabled: Boolean = true
-        private var scrimColor: Color? = null
-        private var isOpen: Boolean = false
-        private var onChange: String = ""
+    internal object Factory : ComposableViewFactory<NavigationDrawerView>() {
+        /**
+         * Creates a `NavigationDrawerView` object based on the attributes of the input `Attributes`
+         * object. NavigationDrawerView co-relates to the ModalNavigationDrawer,
+         * DismissibleNavigationDrawer, and PermanentNavigationDrawer composable.
+         * @param attributes the `Attributes` object to create the `NavigationDrawerView` object from.
+         * @return a `NavigationDrawerView` object based on the attributes of the input `Attributes`
+         * object.
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): NavigationDrawerView = NavigationDrawerView(
+            attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrGesturesEnabled -> gesturesEnabled(props, attribute.value)
+                    attrIsOpen -> isOpen(props, attribute.value)
+                    attrPhxChange -> onChange(props, attribute.value)
+                    attrScrimColor -> scrimColor(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
 
         /**
          * Indicates if the drawer is opened or closed. This property is only used by
@@ -167,8 +188,8 @@ internal class NavigationDrawerView private constructor(props: Properties) :
          * ```
          * @param isOpen true if the drawer is opened, false if it is closed.
          */
-        fun isOpen(isOpen: String) = apply {
-            this.isOpen = isOpen.toBoolean()
+        private fun isOpen(props: Properties, isOpen: String): Properties {
+            return props.copy(isOpen = isOpen.toBoolean())
         }
 
         /**
@@ -180,8 +201,8 @@ internal class NavigationDrawerView private constructor(props: Properties) :
          * @param gesturesEnabled true if the user can interact with the drawer using gestures,
          * false otherwise.
          */
-        fun gesturesEnabled(gesturesEnabled: String) = apply {
-            this.gesturesEnabled = gesturesEnabled.toBoolean()
+        private fun gesturesEnabled(props: Properties, gesturesEnabled: String): Properties {
+            return props.copy(gesturesEnabled = gesturesEnabled.toBoolean())
         }
 
         /**
@@ -193,8 +214,8 @@ internal class NavigationDrawerView private constructor(props: Properties) :
          * @scrimColor the scrim color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun scrimColor(scrimColor: String) = apply {
-            this.scrimColor = scrimColor.toColor()
+        private fun scrimColor(props: Properties, scrimColor: String): Properties {
+            return props.copy(scrimColor = scrimColor.toColor())
         }
 
         /**
@@ -206,40 +227,8 @@ internal class NavigationDrawerView private constructor(props: Properties) :
          * ```
          * @param event name of the function to be called on the server when the drawer is closed.
          */
-        fun onChange(event: String) = apply {
-            this.onChange = event
+        private fun onChange(props: Properties, event: String): Properties {
+            return props.copy(onChange = event)
         }
-
-        fun build() = NavigationDrawerView(
-            Properties(
-                gesturesEnabled,
-                scrimColor,
-                isOpen,
-                onChange,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object NavigationDrawerViewFactory : ComposableViewFactory<NavigationDrawerView>() {
-    /**
-     * Creates a `NavigationDrawerView` object based on the attributes of the input `Attributes`
-     * object. NavigationDrawerView co-relates to the ModalNavigationDrawer,
-     * DismissibleNavigationDrawer, and PermanentNavigationDrawer composable.
-     * @param attributes the `Attributes` object to create the `NavigationDrawerView` object from.
-     * @return a `NavigationDrawerView` object based on the attributes of the input `Attributes`
-     * object.
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): NavigationDrawerView = attributes.fold(NavigationDrawerView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrGesturesEnabled -> builder.gesturesEnabled(attribute.value)
-            attrIsOpen -> builder.isOpen(attribute.value)
-            attrPhxChange -> builder.onChange(attribute.value)
-            attrScrimColor -> builder.scrimColor(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as NavigationDrawerView.Builder
-    }.build()
 }

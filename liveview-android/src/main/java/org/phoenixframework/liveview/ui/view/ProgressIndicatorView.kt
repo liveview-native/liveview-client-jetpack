@@ -15,18 +15,17 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrStrokeCap
 import org.phoenixframework.liveview.data.constants.Attrs.attrStrokeWidth
 import org.phoenixframework.liveview.data.constants.Attrs.attrTrackColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.StrokeCapValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 
 /**
  * Indeterminate Material Design circular and linear progress indicator.
@@ -69,18 +68,43 @@ internal class ProgressIndicatorView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val color: Color?,
-        val trackColor: Color?,
-        val strokeCap: StrokeCap?,
-        val strokeWidth: Dp?,
-        override val commonProps: CommonComposableProperties,
+        val color: Color? = null,
+        val trackColor: Color? = null,
+        val strokeCap: StrokeCap? = null,
+        val strokeWidth: Dp? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var color: Color? = null
-        private var trackColor: Color? = null
-        private var strokeCap: StrokeCap? = null
-        private var strokeWidth: Dp? = null
+    internal object Factory : ComposableViewFactory<ProgressIndicatorView>() {
+        /**
+         * Creates a `ProgressIndicatorView` object based on the attributes of the input `Attributes`
+         * object. `ProgressIndicatorView` co-relates to both `LinearProgressIndicator` and
+         * `CircularProgressIndicator` composables.
+         * @param attributes the `Attributes` object to create the `ProgressIndicatorView` object from
+         * @return a `ProgressIndicatorView` object based on the attributes of the input `Attributes`
+         * object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): ProgressIndicatorView = ProgressIndicatorView(
+            attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrColor -> color(props, attribute.value)
+                    attrStrokeCap -> strokeCap(props, attribute.value)
+                    attrStrokeWidth -> strokeWidth(props, attribute.value)
+                    attrTrackColor -> trackColor(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
 
         /**
          * Color of this progress indicator
@@ -92,10 +116,10 @@ internal class ProgressIndicatorView private constructor(props: Properties) :
          * specified as a string in the AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun color(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.color = color.toColor()
-            }
+        private fun color(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(color = color.toColor())
+            } else props
         }
 
         /**
@@ -109,10 +133,10 @@ internal class ProgressIndicatorView private constructor(props: Properties) :
          * specified as a string in the AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun trackColor(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.trackColor = color.toColor()
-            }
+        private fun trackColor(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(trackColor = color.toColor())
+            } else props
         }
 
         /**
@@ -124,15 +148,17 @@ internal class ProgressIndicatorView private constructor(props: Properties) :
          * @param strokeCap see the supported stroke cap values at
          * [org.phoenixframework.liveview.data.constants.StrokeCapValues].
          */
-        fun strokeCap(strokeCap: String) = apply {
-            if (strokeCap.isNotEmpty()) {
-                this.strokeCap = when (strokeCap) {
-                    StrokeCapValues.round -> StrokeCap.Round
-                    StrokeCapValues.square -> StrokeCap.Square
-                    StrokeCapValues.butt -> StrokeCap.Butt
-                    else -> ProgressIndicatorDefaults.CircularIndeterminateStrokeCap
-                }
-            }
+        private fun strokeCap(props: Properties, strokeCap: String): Properties {
+            return if (strokeCap.isNotEmpty()) {
+                props.copy(
+                    strokeCap = when (strokeCap) {
+                        StrokeCapValues.round -> StrokeCap.Round
+                        StrokeCapValues.square -> StrokeCap.Square
+                        StrokeCapValues.butt -> StrokeCap.Butt
+                        else -> ProgressIndicatorDefaults.CircularIndeterminateStrokeCap
+                    }
+                )
+            } else props
         }
 
         /**
@@ -142,45 +168,10 @@ internal class ProgressIndicatorView private constructor(props: Properties) :
          * ```
          * @param strokeWidth stroke width in dp of the progress indicator
          */
-        fun strokeWidth(strokeWidth: String) = apply {
-            if (strokeWidth.isNotEmptyAndIsDigitsOnly()) {
-                this.strokeWidth = strokeWidth.toInt().dp
-            }
+        private fun strokeWidth(props: Properties, strokeWidth: String): Properties {
+            return if (strokeWidth.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(strokeWidth = strokeWidth.toInt().dp)
+            } else props
         }
-
-        fun build() = ProgressIndicatorView(
-            Properties(
-                color,
-                trackColor,
-                strokeCap,
-                strokeWidth,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object ProgressIndicatorViewFactory : ComposableViewFactory<ProgressIndicatorView>() {
-    /**
-     * Creates a `ProgressIndicatorView` object based on the attributes of the input `Attributes`
-     * object. `ProgressIndicatorView` co-relates to both `LinearProgressIndicator` and
-     * `CircularProgressIndicator` composables.
-     * @param attributes the `Attributes` object to create the `ProgressIndicatorView` object from
-     * @return a `ProgressIndicatorView` object based on the attributes of the input `Attributes`
-     * object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): ProgressIndicatorView =
-        attributes.fold(ProgressIndicatorView.Builder()) { builder, attribute ->
-            when (attribute.name) {
-                attrColor -> builder.color(attribute.value)
-                attrStrokeCap -> builder.strokeCap(attribute.value)
-                attrStrokeWidth -> builder.strokeWidth(attribute.value)
-                attrTrackColor -> builder.trackColor(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as ProgressIndicatorView.Builder
-        }.build()
 }

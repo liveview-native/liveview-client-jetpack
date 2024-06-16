@@ -27,7 +27,6 @@ import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIc
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
@@ -132,18 +131,36 @@ internal class DropdownMenuItemView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val onClick: String,
-        val enabled: Boolean,
-        val colors: ImmutableMap<String, String>?,
-        val contentPadding: PaddingValues?,
-        override val commonProps: CommonComposableProperties,
+        val onClick: String = "",
+        val enabled: Boolean = true,
+        val colors: ImmutableMap<String, String>? = null,
+        val contentPadding: PaddingValues? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var onClick: String = ""
-        private var enabled: Boolean = true
-        private var colors: ImmutableMap<String, String>? = null
-        private var contentPadding: PaddingValues? = null
+
+    internal object Factory : ComposableViewFactory<DropdownMenuItemView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): DropdownMenuItemView = DropdownMenuItemView(
+            attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrColors -> colors(props, attribute.value)
+                    attrContentPadding -> contentPadding(props, attribute.value)
+                    attrEnabled -> enabled(props, attribute.value)
+                    attrPhxClick -> onClick(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
 
         /**
          * Sets the event name to be triggered on the server when the item is clicked.
@@ -153,8 +170,8 @@ internal class DropdownMenuItemView private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
-        fun onClick(event: String) = apply {
-            this.onClick = event
+        fun onClick(props: Properties, event: String): Properties {
+            return props.copy(onClick = event)
         }
 
         /**
@@ -165,8 +182,8 @@ internal class DropdownMenuItemView private constructor(props: Properties) :
          * ```
          * @param enabled true if the component is enabled, false otherwise.
          */
-        fun enabled(enabled: String) = apply {
-            this.enabled = enabled.toBoolean()
+        fun enabled(props: Properties, enabled: String): Properties {
+            return props.copy(enabled = enabled.toBoolean())
         }
 
         /**
@@ -180,10 +197,10 @@ internal class DropdownMenuItemView private constructor(props: Properties) :
          * supported are: `textColor`, `leadingIconColor`, `trailingIconColor, `disabledTextColor`,
          * `disabledLeadingIconColor`, and `disabledTrailingIconColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                return props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -191,37 +208,10 @@ internal class DropdownMenuItemView private constructor(props: Properties) :
          *
          * @param padding int value for padding to be applied to the item.
          */
-        fun contentPadding(padding: String) = apply {
-            if (padding.isNotEmptyAndIsDigitsOnly()) {
-                this.contentPadding = PaddingValues(padding.toInt().dp)
-            }
+        fun contentPadding(props: Properties, padding: String): Properties {
+            return if (padding.isNotEmptyAndIsDigitsOnly()) {
+                return props.copy(contentPadding = PaddingValues(padding.toInt().dp))
+            } else props
         }
-
-        fun build() = DropdownMenuItemView(
-            Properties(
-                onClick,
-                enabled,
-                colors,
-                contentPadding,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object DropdownMenuItemViewFactory :
-    ComposableViewFactory<DropdownMenuItemView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): DropdownMenuItemView = attributes.fold(DropdownMenuItemView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrColors -> builder.colors(attribute.value)
-            attrContentPadding -> builder.contentPadding(attribute.value)
-            attrEnabled -> builder.enabled(attribute.value)
-            attrPhxClick -> builder.onClick(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as DropdownMenuItemView.Builder
-    }.build()
 }

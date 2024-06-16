@@ -35,15 +35,16 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContaine
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
-import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.data.constants.ComposableTypes
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
+import org.phoenixframework.liveview.ui.view.CheckBoxView.Factory.handleChangeableAttribute
 
 /**
  * Material Design icon toggle buttons.
@@ -268,19 +269,45 @@ internal class IconToggleButtonView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val border: BorderStroke?,
-        val checked: Boolean,
-        val colors: ImmutableMap<String, String>?,
-        val shape: Shape?,
-        override val changeableProps: ChangeableProperties,
-        override val commonProps: CommonComposableProperties,
+        val border: BorderStroke? = null,
+        val checked: Boolean = false,
+        val colors: ImmutableMap<String, String>? = null,
+        val shape: Shape? = null,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : IChangeableProperties
 
-    internal class Builder : ChangeableViewBuilder() {
-        private var border: BorderStroke? = null
-        private var checked: Boolean = false
-        private var colors: ImmutableMap<String, String>? = null
-        private var shape: Shape? = null
+    internal object Factory : ComposableViewFactory<IconToggleButtonView>() {
+        /**
+         * Creates a `IconToggleButtonView` object based on the attributes of the input `Attributes`
+         * object. IconToggleButtonView co-relates to the IconToggleButton composables.
+         * @param attributes the `Attributes` object to create the `IconToggleButtonView` object from
+         * @return a `IconToggleButtonView` object based on the attributes of the input `Attributes`
+         * object.
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): IconToggleButtonView = IconToggleButtonView(
+            attributes.fold(Properties()) { props, attribute ->
+                handleChangeableAttribute(props.changeableProps, attribute)?.let {
+                    props.copy(changeableProps = it)
+                } ?: run {
+                    when (attribute.name) {
+                        attrBorder -> border(props, attribute.value)
+                        attrChecked -> checked(props, attribute.value)
+                        attrColors -> colors(props, attribute.value)
+                        attrShape -> shape(props, attribute.value)
+                        else -> props.copy(
+                            commonProps = handleCommonAttributes(
+                                props.commonProps,
+                                attribute,
+                                pushEvent,
+                                scope
+                            )
+                        )
+                    }
+                }
+            })
 
         /**
          * The border to draw around the container of this button. This property is used just for
@@ -293,8 +320,8 @@ internal class IconToggleButtonView private constructor(props: Properties) :
          * in the AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun border(border: String) = apply {
-            this.border = borderFromString(border)
+        private fun border(props: Properties, border: String): Properties {
+            return props.copy(border = borderFromString(border))
         }
 
         /**
@@ -303,8 +330,8 @@ internal class IconToggleButtonView private constructor(props: Properties) :
          * <IconToggleButton checked="true" />
          * ```
          */
-        fun checked(checked: String) = apply {
-            this.checked = checked.toBoolean()
+        private fun checked(props: Properties, checked: String): Properties {
+            return props.copy(checked = checked.toBoolean())
         }
 
         /**
@@ -317,10 +344,10 @@ internal class IconToggleButtonView private constructor(props: Properties) :
          * color keys supported are: `containerColor`, `contentColor`, `disabledContainerColor,
          * `disabledContentColor`, `checkedContainerColor`, and `checkedContentColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -334,48 +361,8 @@ internal class IconToggleButtonView private constructor(props: Properties) :
          * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
          * representing the curve size applied to all four corners.
          */
-        fun shape(shape: String) = apply {
-            this.shape = shapeFromString(shape)
+        private fun shape(props: Properties, shape: String): Properties {
+            return props.copy(shape = shapeFromString(shape))
         }
-
-        fun build() = IconToggleButtonView(
-            Properties(
-                border,
-                checked,
-                colors,
-                shape,
-                changeableProps,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object IconToggleButtonViewFactory : ComposableViewFactory<IconToggleButtonView>() {
-    /**
-     * Creates a `IconToggleButtonView` object based on the attributes of the input `Attributes`
-     * object. IconToggleButtonView co-relates to the IconToggleButton composables.
-     * @param attributes the `Attributes` object to create the `IconToggleButtonView` object from
-     * @return a `IconToggleButtonView` object based on the attributes of the input `Attributes`
-     * object.
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): IconToggleButtonView = IconToggleButtonView.Builder().also {
-        attributes.fold(
-            it
-        ) { builder, attribute ->
-            if (builder.handleChangeableAttribute(attribute)) {
-                builder
-            } else {
-                when (attribute.name) {
-                    attrBorder -> builder.border(attribute.value)
-                    attrChecked -> builder.checked(attribute.value)
-                    attrColors -> builder.colors(attribute.value)
-                    attrShape -> builder.shape(attribute.value)
-                    else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-                } as IconToggleButtonView.Builder
-            }
-        }
-    }.build()
 }

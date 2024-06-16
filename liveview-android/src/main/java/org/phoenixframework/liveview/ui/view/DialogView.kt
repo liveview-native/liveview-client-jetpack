@@ -15,10 +15,10 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrUsePlatformDefaultWidth
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
 /**
@@ -34,22 +34,25 @@ internal abstract class DialogView<DP : DialogView.IDialogProperties>(props: DP)
     @Stable
     internal data class DialogComposableProperties(
         val dismissEvent: String? = null,
-        val dialogProperties: DialogProperties = DialogProperties(),
         val shape: Shape? = null,
         val tonalElevation: Dp? = null,
-    )
+        val dismissOnBackPress: Boolean = true,
+        val dismissOnClickOutside: Boolean = true,
+        val securePolicy: SecureFlagPolicy = SecureFlagPolicy.Inherit,
+        val usePlatformDefaultWidth: Boolean = true,
+        val decorFitsSystemWindows: Boolean = true,
+    ) {
+        val dialogProperties: DialogProperties
+            get() = DialogProperties(
+                dismissOnBackPress,
+                dismissOnClickOutside,
+                securePolicy,
+                usePlatformDefaultWidth,
+                decorFitsSystemWindows
+            )
+    }
 
-    internal abstract class Builder : ComposableBuilder() {
-        var dialogComposableProps = DialogComposableProperties()
-            private set
-
-        // Attributes to initialize the dialogProperties
-        private var decorFitsSystemWindows: Boolean = true
-        private var dismissOnBackPress: Boolean = true
-        private var dismissOnClickOutside: Boolean = true
-        private var securePolicy: SecureFlagPolicy = SecureFlagPolicy.Inherit
-        private var usePlatformDefaultWidth: Boolean = true
-
+    internal abstract class Factory : ComposableViewFactory<DialogView<*>>() {
         /**
          * Whether the dialog can be dismissed by pressing the back button. If true, pressing the
          * back button will call `dismissEvent` event. Default value is true.
@@ -59,11 +62,11 @@ internal abstract class DialogView<DP : DialogView.IDialogProperties>(props: DP)
          * @param dismissOnBackPress true if the dialog can be dismissed by pressing the back
          * button, false otherwise.
          */
-        private fun dismissOnBackPress(dismissOnBackPress: String) = apply {
-            this.dismissOnBackPress = dismissOnBackPress.toBoolean()
-            this.dialogComposableProps = this.dialogComposableProps.copy(
-                dialogProperties = buildDialogProperties()
-            )
+        private fun dismissOnBackPress(
+            props: DialogComposableProperties,
+            dismissOnBackPress: String
+        ): DialogComposableProperties {
+            return props.copy(dismissOnBackPress = dismissOnBackPress.toBoolean())
         }
 
         /**
@@ -75,11 +78,11 @@ internal abstract class DialogView<DP : DialogView.IDialogProperties>(props: DP)
          * @param dismissOnClickOutside true if the dialog can be dismissed by clicking outside the
          * dialog's bounds, false otherwise.
          */
-        private fun dismissOnClickOutside(dismissOnClickOutside: String) = apply {
-            this.dismissOnClickOutside = dismissOnClickOutside.toBoolean()
-            this.dialogComposableProps = this.dialogComposableProps.copy(
-                dialogProperties = buildDialogProperties()
-            )
+        private fun dismissOnClickOutside(
+            props: DialogComposableProperties,
+            dismissOnClickOutside: String
+        ): DialogComposableProperties {
+            return props.copy(dismissOnClickOutside = dismissOnClickOutside.toBoolean())
         }
 
         /**
@@ -91,11 +94,11 @@ internal abstract class DialogView<DP : DialogView.IDialogProperties>(props: DP)
          * ```
          * @param securePolicy possible values are: `secureOn`, `secureOff`, and `inherit` (default).
          */
-        private fun securePolicy(securePolicy: String) = apply {
-            this.securePolicy = secureFlagPolicyFromString(securePolicy)
-            this.dialogComposableProps = this.dialogComposableProps.copy(
-                dialogProperties = buildDialogProperties()
-            )
+        private fun securePolicy(
+            props: DialogComposableProperties,
+            securePolicy: String
+        ): DialogComposableProperties {
+            return props.copy(securePolicy = secureFlagPolicyFromString(securePolicy))
         }
 
         /**
@@ -107,11 +110,11 @@ internal abstract class DialogView<DP : DialogView.IDialogProperties>(props: DP)
          * @param usePlatformDefaultWidth true if the width of the dialog's content should be
          * limited to the platform default, false otherwise. Default value is true.
          */
-        protected fun usePlatformDefaultWidth(usePlatformDefaultWidth: String) = apply {
-            this.usePlatformDefaultWidth = usePlatformDefaultWidth.toBoolean()
-            this.dialogComposableProps = this.dialogComposableProps.copy(
-                dialogProperties = buildDialogProperties()
-            )
+        private fun usePlatformDefaultWidth(
+            props: DialogComposableProperties,
+            usePlatformDefaultWidth: String
+        ): DialogComposableProperties {
+            return props.copy(usePlatformDefaultWidth = usePlatformDefaultWidth.toBoolean())
         }
 
         /**
@@ -125,11 +128,11 @@ internal abstract class DialogView<DP : DialogView.IDialogProperties>(props: DP)
          *  @param decorFitsSystemWindows true to set WindowCompat.setDecorFitsSystemWindows value,
          *  false otherwise. Default value is true.
          */
-        private fun decorFitsSystemWindows(decorFitsSystemWindows: String) = apply {
-            this.decorFitsSystemWindows = decorFitsSystemWindows.toBoolean()
-            this.dialogComposableProps = this.dialogComposableProps.copy(
-                dialogProperties = buildDialogProperties()
-            )
+        private fun decorFitsSystemWindows(
+            props: DialogComposableProperties,
+            decorFitsSystemWindows: String
+        ): DialogComposableProperties {
+            return props.copy(decorFitsSystemWindows = decorFitsSystemWindows.toBoolean())
         }
 
         /**
@@ -140,9 +143,11 @@ internal abstract class DialogView<DP : DialogView.IDialogProperties>(props: DP)
          * @param dismissEventName event name to be called on the server in order to dismiss the
          * alert dialog.
          */
-        fun onDismissRequest(dismissEventName: String) = apply {
-            this.dialogComposableProps =
-                this.dialogComposableProps.copy(dismissEvent = dismissEventName)
+        fun onDismissRequest(
+            props: DialogComposableProperties,
+            dismissEventName: String
+        ): DialogComposableProperties {
+            return props.copy(dismissEvent = dismissEventName)
         }
 
         /**
@@ -154,9 +159,8 @@ internal abstract class DialogView<DP : DialogView.IDialogProperties>(props: DP)
          * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
          * representing the curve size applied for all four corners.
          */
-        fun shape(shape: String) = apply {
-            this.dialogComposableProps =
-                this.dialogComposableProps.copy(shape = shapeFromString(shape))
+        fun shape(props: DialogComposableProperties, shape: String): DialogComposableProperties {
+            return props.copy(shape = shapeFromString(shape))
         }
 
         /**
@@ -168,35 +172,30 @@ internal abstract class DialogView<DP : DialogView.IDialogProperties>(props: DP)
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */
-        private fun tonalElevation(tonalElevation: String) = apply {
-            if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
-                this.dialogComposableProps =
-                    this.dialogComposableProps.copy(tonalElevation = tonalElevation.toInt().dp)
-            }
+        private fun tonalElevation(
+            props: DialogComposableProperties,
+            tonalElevation: String
+        ): DialogComposableProperties {
+            return if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
+                return props.copy(tonalElevation = tonalElevation.toInt().dp)
+            } else props
         }
 
-        fun handleDialogAttributes(attribute: CoreAttribute): Boolean {
-            var result = true
-            when (attribute.name) {
-                attrDecorFitsSystemWindows -> decorFitsSystemWindows(attribute.value)
-                attrDismissOnBackPress -> dismissOnBackPress(attribute.value)
-                attrDismissOnClickOutside -> dismissOnClickOutside(attribute.value)
-                attrOnDismissRequest -> onDismissRequest(attribute.value)
-                attrSecurePolicy -> securePolicy(attribute.value)
-                attrTonalElevation -> tonalElevation(attribute.value)
-                attrUsePlatformDefaultWidth -> usePlatformDefaultWidth(attribute.value)
-                attrShape -> shape(attribute.value)
-                else -> result = false
+        fun handleDialogAttributes(
+            props: DialogComposableProperties,
+            attribute: CoreAttribute
+        ): DialogComposableProperties? {
+            return when (attribute.name) {
+                attrDecorFitsSystemWindows -> decorFitsSystemWindows(props, attribute.value)
+                attrDismissOnBackPress -> dismissOnBackPress(props, attribute.value)
+                attrDismissOnClickOutside -> dismissOnClickOutside(props, attribute.value)
+                attrOnDismissRequest -> onDismissRequest(props, attribute.value)
+                attrSecurePolicy -> securePolicy(props, attribute.value)
+                attrTonalElevation -> tonalElevation(props, attribute.value)
+                attrUsePlatformDefaultWidth -> usePlatformDefaultWidth(props, attribute.value)
+                attrShape -> shape(props, attribute.value)
+                else -> null
             }
-            return result
         }
-
-        private fun buildDialogProperties() = DialogProperties(
-            dismissOnBackPress,
-            dismissOnClickOutside,
-            securePolicy,
-            usePlatformDefaultWidth,
-            decorFitsSystemWindows
-        )
     }
 }

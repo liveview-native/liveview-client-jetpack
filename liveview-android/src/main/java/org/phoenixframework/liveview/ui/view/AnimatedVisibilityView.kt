@@ -22,13 +22,12 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrExit
 import org.phoenixframework.liveview.data.constants.Attrs.attrLabel
 import org.phoenixframework.liveview.data.constants.Attrs.attrVisible
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -109,11 +108,57 @@ internal class AnimatedVisibilityView private constructor(props: Properties) :
 
     }
 
-    internal class Builder(private val scope: Any?) : ComposableBuilder() {
-        private var label: String = "AnimatedVisibility"
-        private var visible: Boolean = true
-        private var enter: EnterTransition? = null
-        private var exit: ExitTransition? = null
+    @Stable
+    data class Properties(
+        val scope: Any?,
+        val enter: EnterTransition,
+        val exit: ExitTransition,
+        val visible: Boolean = true,
+        val label: String = "AnimatedVisibility",
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties
+
+    internal object Factory : ComposableViewFactory<AnimatedVisibilityView>() {
+
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): AnimatedVisibilityView {
+            val (enterTrans, exitTrans) = when (scope) {
+                is ColumnScope -> {
+                    (fadeIn() + expandVertically()) to (fadeOut() + shrinkVertically())
+                }
+
+                is RowScope -> {
+                    (fadeIn() + expandHorizontally()) to (fadeOut() + shrinkHorizontally())
+                }
+
+                else -> {
+                    (fadeIn() + expandIn()) to (shrinkOut() + fadeOut())
+                }
+            }
+            return AnimatedVisibilityView(
+                attributes.fold(
+                    Properties(scope, enterTrans, exitTrans)
+                ) { props, attribute ->
+                    when (attribute.name) {
+                        attrEnter -> enter(props, attribute.value)
+                        attrExit -> exit(props, attribute.value)
+                        attrLabel -> label(props, attribute.value)
+                        attrVisible -> visible(props, attribute.value)
+                        else -> props.copy(
+                            commonProps = handleCommonAttributes(
+                                props.commonProps,
+                                attribute,
+                                pushEvent,
+                                scope
+                            )
+                        )
+                    }
+                }
+            )
+        }
 
         /**
          * Enter transition in JSON format. The supported animations are:
@@ -147,14 +192,13 @@ internal class AnimatedVisibilityView private constructor(props: Properties) :
          * [{"expandVertically": {} }, {"slideInVertically": {} }, {"fadeIn": {} }]
          * ```
          */
-        fun enter(enter: String) = apply {
-            if (enter.isNotEmpty()) {
-                try {
-                    enterTransitionFromString(enter)?.let {
-                        this.enter = it
-                    }
-                } catch (_: Exception) {
-                }
+        private fun enter(props: Properties, enter: String): Properties {
+            return try {
+                enterTransitionFromString(enter)?.let {
+                    props.copy(enter = it)
+                } ?: props
+            } catch (_: Exception) {
+                props
             }
         }
 
@@ -190,86 +234,29 @@ internal class AnimatedVisibilityView private constructor(props: Properties) :
          * [{"shrinkHorizontally": {} }, {"slideOutVertically": {} }, {"fadeOut": {} }]
          * ```
          */
-        fun exit(exit: String) = apply {
-            if (exit.isNotEmpty()) {
-                try {
-                    exitTransitionFromString(exit)?.let {
-                        this.exit = it
-                    }
-                } catch (_: Exception) {
-                }
+        private fun exit(props: Properties, exit: String): Properties {
+            return try {
+                exitTransitionFromString(exit)?.let {
+                    props.copy(exit = it)
+                } ?: props
+            } catch (_: Exception) {
+                props
             }
         }
 
         /**
          * Optional Label used to differentiate different transitions in Android Studio.
          */
-        fun label(label: String) = apply {
-            this.label = label
+        private fun label(props: Properties, label: String): Properties {
+            return props.copy(label = label)
         }
 
         /**
          * Defines whether the content should be visible.
          * @param visible true if the content should be visible, false otherwise.
          */
-        fun visible(visible: String) = apply {
-            this.visible = visible.toBooleanStrictOrNull() ?: true
-        }
-
-        fun build(): AnimatedVisibilityView {
-            val (enterTrans, exitTrans) = when (scope) {
-                is ColumnScope -> {
-                    (fadeIn() + expandVertically()) to (fadeOut() + shrinkVertically())
-                }
-
-                is RowScope -> {
-                    (fadeIn() + expandHorizontally()) to (fadeOut() + shrinkHorizontally())
-                }
-
-                else -> {
-                    (fadeIn() + expandIn()) to (shrinkOut() + fadeOut())
-                }
-            }
-            return AnimatedVisibilityView(
-                Properties(
-                    scope,
-                    visible,
-                    label,
-                    enterTrans,
-                    exitTrans,
-                    commonProps
-                )
-            )
+        fun visible(props: Properties, visible: String): Properties {
+            return props.copy(visible = visible.toBooleanStrictOrNull() ?: true)
         }
     }
-
-    @Stable
-    data class Properties(
-        val scope: Any?,
-        val visible: Boolean,
-        val label: String,
-        val enter: EnterTransition,
-        val exit: ExitTransition,
-        override val commonProps: CommonComposableProperties,
-    ) : ComposableProperties
-}
-
-
-internal object AnimatedVisibilityViewFactory :
-    ComposableViewFactory<AnimatedVisibilityView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ) = attributes.fold(
-        AnimatedVisibilityView.Builder(scope)
-    ) { builder, attribute ->
-        when (attribute.name) {
-            attrEnter -> builder.enter(attribute.value)
-            attrExit -> builder.exit(attribute.value)
-            attrLabel -> builder.label(attribute.value)
-            attrVisible -> builder.visible(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as AnimatedVisibilityView.Builder
-    }.build()
 }

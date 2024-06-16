@@ -12,12 +12,10 @@ import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableView
-import org.phoenixframework.liveview.ui.base.ComposableViewFactory
-import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -29,7 +27,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class LazyColumnView private constructor(props: Properties) :
-    ComposableView<LazyColumnView.Properties>(props) {
+    LazyView<LazyColumnView.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -49,10 +47,10 @@ internal class LazyColumnView private constructor(props: Properties) :
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
             contentPadding = PaddingValues(
-                (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
-                (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
-                (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
-                (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
+                (contentPadding[LazyView.Factory.START] ?: 0).dp,
+                (contentPadding[LazyView.Factory.TOP] ?: 0).dp,
+                (contentPadding[LazyView.Factory.END] ?: 0).dp,
+                (contentPadding[LazyView.Factory.BOTTOM] ?: 0).dp
             ),
             // TODO flingBehavior = ,
             userScrollEnabled = userScrollEnabled,
@@ -69,15 +67,42 @@ internal class LazyColumnView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val verticalArrangement: Arrangement.Vertical,
-        val horizontalAlignment: Alignment.Horizontal,
-        override val commonProps: CommonComposableProperties,
-        override val lazyListProps: LazyListProperties,
+        val verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+        val horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        override val lazyListProps: LazyListProperties = LazyListProperties(),
     ) : ILazyListProperties
 
-    class Builder : LazyComposableBuilder() {
-        private var verticalArrangement: Arrangement.Vertical = Arrangement.Top
-        private var horizontalAlignment: Alignment.Horizontal = Alignment.Start
+    internal object Factory : LazyView.Factory() {
+        /**
+         * Creates a `LazyColumnView` object based on the attributes of the input `Attributes` object.
+         * LazyColumnView co-relates to the LazyColumn composable
+         * @param attributes the `Attributes` object to create the `LazyColumnView` object from
+         * @return a `LazyColumnView` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): LazyColumnView = LazyColumnView(
+            attributes.fold(Properties()) { props, attribute ->
+                handleLazyAttribute(props.lazyListProps, attribute)?.let {
+                    props.copy(lazyListProps = it)
+                } ?: run {
+                    when (attribute.name) {
+                        attrHorizontalAlignment -> horizontalAlignment(props, attribute.value)
+                        attrVerticalArrangement -> verticalArrangement(props, attribute.value)
+                        else -> props.copy(
+                            commonProps = handleCommonAttributes(
+                                props.commonProps,
+                                attribute,
+                                pushEvent,
+                                scope
+                            )
+                        )
+                    }
+                }
+            })
 
         /**
          * The vertical arrangement of the Column's children
@@ -89,8 +114,15 @@ internal class LazyColumnView private constructor(props: Properties) :
          * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
          * An int value is also supported, which will be used to determine the space.
          */
-        fun verticalArrangement(verticalArrangement: String) = apply {
-            this.verticalArrangement = verticalArrangementFromString(verticalArrangement)
+        private fun verticalArrangement(
+            props: Properties,
+            verticalArrangement: String
+        ): Properties {
+            return props.copy(
+                verticalArrangement = verticalArrangementFromString(
+                    verticalArrangement
+                )
+            )
         }
 
         /**
@@ -102,43 +134,15 @@ internal class LazyColumnView private constructor(props: Properties) :
          * @param horizontalAlignment the horizontal alignment of the column's children. See the
          * supported values at [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
          */
-        fun horizontalAlignment(horizontalAlignment: String) = apply {
-            this.horizontalAlignment = horizontalAlignmentFromString(horizontalAlignment)
-        }
-
-        fun build() = LazyColumnView(
-            Properties(
-                verticalArrangement,
-                horizontalAlignment,
-                commonProps,
-                lazyListProps
+        private fun horizontalAlignment(
+            props: Properties,
+            horizontalAlignment: String
+        ): Properties {
+            return props.copy(
+                horizontalAlignment = horizontalAlignmentFromString(
+                    horizontalAlignment
+                )
             )
-        )
-    }
-}
-
-internal object LazyColumnViewFactory : ComposableViewFactory<LazyColumnView>() {
-    /**
-     * Creates a `LazyColumnView` object based on the attributes of the input `Attributes` object.
-     * LazyColumnView co-relates to the LazyColumn composable
-     * @param attributes the `Attributes` object to create the `LazyColumnView` object from
-     * @return a `LazyColumnView` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): LazyColumnView = LazyColumnView.Builder().also {
-        attributes.fold(it) { builder, attribute ->
-            if (builder.handleLazyAttribute(attribute)) {
-                builder
-            } else {
-                when (attribute.name) {
-                    attrHorizontalAlignment -> builder.horizontalAlignment(attribute.value)
-                    attrVerticalArrangement -> builder.verticalArrangement(attribute.value)
-                    else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-                } as LazyColumnView.Builder
-            }
         }
-    }.build()
+    }
 }

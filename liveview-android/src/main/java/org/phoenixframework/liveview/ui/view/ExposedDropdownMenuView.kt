@@ -8,8 +8,6 @@ import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrOnDismissRequest
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
-import org.phoenixframework.liveview.ui.base.ComposableBuilder.Companion.EVENT_TYPE_BLUR
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
@@ -54,49 +52,36 @@ internal class ExposedDropdownMenuView private constructor(props: Properties) :
     @Stable
     internal data class Properties(
         val scopeWrapper: ExposedDropdownMenuBoxScopeWrapper,
-        val onDismissRequest: String?,
-        override val commonProps: CommonComposableProperties,
+        val onDismissRequest: String? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder(val scopeWrapper: ExposedDropdownMenuBoxScopeWrapper) :
-        ComposableBuilder() {
-        private var onDismissRequest: String? = null
-
-        fun onDismissRequest(event: String) = apply {
-            if (event.isNotEmpty()) {
-                onDismissRequest = event
-            }
-        }
-
-        fun build() = ExposedDropdownMenuView(
-            Properties(
-                scopeWrapper,
-                onDismissRequest,
-                commonProps,
-            )
-        )
-    }
-}
-
-internal object ExposedDropdownMenuViewFactory :
-    ComposableViewFactory<ExposedDropdownMenuView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): ExposedDropdownMenuView =
-        attributes.fold(
-            ExposedDropdownMenuView.Builder(scope as ExposedDropdownMenuBoxScopeWrapper)
-        ) { builder, attribute ->
-            when (attribute.name) {
-                attrOnDismissRequest -> builder.onDismissRequest(attribute.value)
-                else -> {
-                    builder.handleCommonAttributes(
-                        attribute,
-                        pushEvent,
-                        scope
-                    ) as ExposedDropdownMenuView.Builder
+    internal object Factory : ComposableViewFactory<ExposedDropdownMenuView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): ExposedDropdownMenuView = ExposedDropdownMenuView(
+            attributes.fold(Properties(scope as ExposedDropdownMenuBoxScopeWrapper)) { props, attribute ->
+                when (attribute.name) {
+                    attrOnDismissRequest -> onDismissRequest(props, attribute.value)
+                    else -> {
+                        props.copy(
+                            commonProps = handleCommonAttributes(
+                                props.commonProps,
+                                attribute,
+                                pushEvent,
+                                scope
+                            )
+                        )
+                    }
                 }
-            }
-        }.build()
+            })
+
+        private fun onDismissRequest(props: Properties, event: String): Properties {
+            return if (event.isNotEmpty()) {
+                props.copy(onDismissRequest = event)
+            } else props
+        }
+    }
 }

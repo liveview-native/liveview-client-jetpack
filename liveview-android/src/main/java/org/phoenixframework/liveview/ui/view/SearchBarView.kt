@@ -35,20 +35,17 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDividerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInputFieldColors
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.Templates.templateContent
 import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
 import org.phoenixframework.liveview.data.constants.Templates.templatePlaceholder
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
-import org.phoenixframework.liveview.ui.base.ComposableBuilder.Companion.EVENT_TYPE_SUBMIT
-import org.phoenixframework.liveview.data.constants.ComposableTypes
-import org.phoenixframework.liveview.ui.base.ComposableViewFactory
-import org.phoenixframework.liveview.ui.base.PushEvent
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
@@ -268,29 +265,48 @@ internal class SearchBarView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val active: Boolean,
-        val colors: ImmutableMap<String, String>?,
-        val onActiveChanged: String,
-        val onSubmit: String,
-        val query: String,
-        val shadowElevation: Dp?,
-        val shape: Shape?,
-        val tonalElevation: Dp?,
-        val windowInsets: WindowInsets?,
-        override val changeableProps: ChangeableProperties,
-        override val commonProps: CommonComposableProperties,
+        val active: Boolean = false,
+        val colors: ImmutableMap<String, String>? = null,
+        val onActiveChanged: String = "",
+        val onSubmit: String = "",
+        val query: String = "",
+        val shadowElevation: Dp? = null,
+        val shape: Shape? = null,
+        val tonalElevation: Dp? = null,
+        val windowInsets: WindowInsets? = null,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : IChangeableProperties
 
-    internal class Builder : ChangeableViewBuilder() {
-        private var active: Boolean = false
-        private var colors: ImmutableMap<String, String>? = null
-        private var onActiveChanged: String = ""
-        private var onSubmit: String = ""
-        private var query: String = ""
-        private var shadowElevation: Dp? = null
-        private var shape: Shape? = null
-        private var tonalElevation: Dp? = null
-        private var windowInsets: WindowInsets? = null
+    internal object Factory : ChangeableView.Factory() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): SearchBarView = SearchBarView(
+            attributes.fold(Properties()) { props, attribute ->
+                handleChangeableAttribute(props.changeableProps, attribute)?.let {
+                    props.copy(changeableProps = it)
+                } ?: run {
+                    when (attribute.name) {
+                        attrActive -> active(props, attribute.value)
+                        attrOnActiveChanged -> onActiveChanged(props, attribute.value)
+                        attrColors -> colors(props, attribute.value)
+                        attrPhxSubmit -> onSubmit(props, attribute.value)
+                        attrQuery -> query(props, attribute.value)
+                        attrShadowElevation -> shadowElevation(props, attribute.value)
+                        attrShape -> shape(props, attribute.value)
+                        attrTonalElevation -> tonalElevation(props, attribute.value)
+                        attrWindowInsets -> windowInsets(props, attribute.value)
+                        else -> props.copy(
+                            commonProps = handleCommonAttributes(
+                                props.commonProps,
+                                attribute,
+                                pushEvent,
+                                scope
+                            )
+                        )
+                    }
+                }
+            })
 
         /**
          * Whether this search bar is active.
@@ -299,8 +315,8 @@ internal class SearchBarView private constructor(props: Properties) :
          * ```
          * @param active true if the search bar is active, false otherwise.
          */
-        fun active(active: String) = apply {
-            this.active = active.toBoolean()
+        private fun active(props: Properties, active: String): Properties {
+            return props.copy(active = active.toBoolean())
         }
 
         /**
@@ -314,10 +330,10 @@ internal class SearchBarView private constructor(props: Properties) :
          * @param colors an JSON formatted string, containing the chip colors. The color keys
          * supported are: `containerColor`, `dividerColor`, and `inputFieldColors`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -328,8 +344,8 @@ internal class SearchBarView private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
-        fun onActiveChanged(event: String) = apply {
-            this.onActiveChanged = event
+        private fun onActiveChanged(props: Properties, event: String): Properties {
+            return props.copy(onActiveChanged = event)
         }
 
         /**
@@ -340,12 +356,12 @@ internal class SearchBarView private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
-        fun onSubmit(event: String) = apply {
-            this.onSubmit = event
+        private fun onSubmit(props: Properties, event: String): Properties {
+            return props.copy(onSubmit = event)
         }
 
-        fun query(query: String) = apply {
-            this.query = query
+        private fun query(props: Properties, query: String): Properties {
+            return props.copy(query = query)
         }
 
         /**
@@ -355,10 +371,10 @@ internal class SearchBarView private constructor(props: Properties) :
          * ```
          * @param shadowElevation int value indicating the shadow elevation.
          */
-        fun shadowElevation(shadowElevation: String) = apply {
-            if (shadowElevation.isNotEmptyAndIsDigitsOnly()) {
-                this.shadowElevation = shadowElevation.toInt().dp
-            }
+        private fun shadowElevation(props: Properties, shadowElevation: String): Properties {
+            return if (shadowElevation.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(shadowElevation = shadowElevation.toInt().dp)
+            } else props
         }
 
         /**
@@ -370,10 +386,10 @@ internal class SearchBarView private constructor(props: Properties) :
          * [org.phoenixframework.liveview.data.constants.ShapeValues], or an integer representing
          * the curve size applied for all four corners.
          */
-        fun shape(shape: String) = apply {
-            if (shape.isNotEmpty()) {
-                this.shape = shapeFromString(shape)
-            }
+        private fun shape(props: Properties, shape: String): Properties {
+            return if (shape.isNotEmpty()) {
+                props.copy(shape = shapeFromString(shape))
+            } else props
         }
 
         /**
@@ -384,10 +400,10 @@ internal class SearchBarView private constructor(props: Properties) :
          * ```
          * @param tonalElevation int value indicating the tonal elevation.
          */
-        fun tonalElevation(tonalElevation: String) = apply {
-            if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
-                this.tonalElevation = tonalElevation.toInt().dp
-            }
+        private fun tonalElevation(props: Properties, tonalElevation: String): Properties {
+            return if (tonalElevation.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(tonalElevation = tonalElevation.toInt().dp)
+            } else props
         }
 
         /**
@@ -398,53 +414,13 @@ internal class SearchBarView private constructor(props: Properties) :
          * @param insets the space, in Dp, at the each border of the window that the inset
          * represents. The supported values are: `left`, `top`, `bottom`, and `right`.
          */
-        fun windowInsets(insets: String) = apply {
-            try {
-                this.windowInsets = windowInsetsFromString(insets)
+        private fun windowInsets(props: Properties, insets: String): Properties {
+            return try {
+                props.copy(windowInsets = windowInsetsFromString(insets))
             } catch (e: Exception) {
                 e.printStackTrace()
+                props
             }
         }
-
-        fun build() = SearchBarView(
-            Properties(
-                active,
-                colors,
-                onActiveChanged,
-                onSubmit,
-                query,
-                shadowElevation,
-                shape,
-                tonalElevation,
-                windowInsets,
-                changeableProps,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object SearchBarViewFactory : ComposableViewFactory<SearchBarView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): SearchBarView = SearchBarView.Builder().also {
-        attributes.fold(it) { builder, attribute ->
-            if (builder.handleChangeableAttribute(attribute)) {
-                builder
-            } else {
-                when (attribute.name) {
-                    attrActive -> builder.active(attribute.value)
-                    attrOnActiveChanged -> builder.onActiveChanged(attribute.value)
-                    attrColors -> builder.colors(attribute.value)
-                    attrPhxSubmit -> builder.onSubmit(attribute.value)
-                    attrQuery -> builder.query(attribute.value)
-                    attrShadowElevation -> builder.shadowElevation(attribute.value)
-                    attrShape -> builder.shape(attribute.value)
-                    attrTonalElevation -> builder.tonalElevation(attribute.value)
-                    attrWindowInsets -> builder.windowInsets(attribute.value)
-                    else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-                } as SearchBarView.Builder
-            }
-        }
-    }.build()
 }

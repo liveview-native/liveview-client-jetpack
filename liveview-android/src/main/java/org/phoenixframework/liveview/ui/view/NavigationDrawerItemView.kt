@@ -28,14 +28,13 @@ import org.phoenixframework.liveview.data.constants.Templates.templateBadge
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
@@ -131,18 +130,43 @@ internal class NavigationDrawerItemView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val onClick: String,
-        val shape: Shape?,
-        val selected: Boolean,
-        val colors: ImmutableMap<String, String>?,
-        override val commonProps: CommonComposableProperties,
+        val onClick: String = "",
+        val shape: Shape? = null,
+        val selected: Boolean = false,
+        val colors: ImmutableMap<String, String>? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var onClick: String = ""
-        private var shape: Shape? = null
-        private var selected: Boolean = false
-        private var colors: ImmutableMap<String, String>? = null
+    internal object Factory :
+        ComposableViewFactory<NavigationDrawerItemView>() {
+        /**
+         * Creates a `NavigationDrawerItemView` object based on the attributes of the input `Attributes`
+         * object. NavigationDrawerItemView co-relates to the NavigationDrawerItem composable.
+         * @param attributes the `Attributes` object to create the `NavigationDrawerItemView` object from
+         * @return a `NavigationDrawerItemView` object based on the attributes of the input `Attributes`
+         * object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): NavigationDrawerItemView = NavigationDrawerItemView(
+            attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrColors -> colors(props, attribute.value)
+                    attrPhxClick -> onClick(props, attribute.value)
+                    attrSelected -> selected(props, attribute.value)
+                    attrShape -> shape(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
 
         /**
          * Sets the event name to be triggered on the server when the item is clicked.
@@ -152,8 +176,8 @@ internal class NavigationDrawerItemView private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
-        fun onClick(event: String) = apply {
-            this.onClick = event
+        private fun onClick(props: Properties, event: String): Properties {
+            return props.copy(onClick = event)
         }
 
         /**
@@ -166,8 +190,8 @@ internal class NavigationDrawerItemView private constructor(props: Properties) :
          * [org.phoenixframework.liveview.data.constants.ShapeValues], or an integer representing
          * the curve size applied to all four corners.
          */
-        fun shape(shape: String) = apply {
-            this.shape = shapeFromString(shape)
+        private fun shape(props: Properties, shape: String): Properties {
+            return props.copy(shape = shapeFromString(shape))
         }
 
         /**
@@ -177,8 +201,8 @@ internal class NavigationDrawerItemView private constructor(props: Properties) :
          * ```
          * @param selected true if the item is selected, false otherwise.
          */
-        fun selected(selected: String) = apply {
-            this.selected = selected.toBoolean()
+        private fun selected(props: Properties, selected: String): Properties {
+            return props.copy(selected = selected.toBoolean())
         }
 
         /**
@@ -192,44 +216,10 @@ internal class NavigationDrawerItemView private constructor(props: Properties) :
          * `unselectedIconColor`, `selectedTextColor`, `unselectedTextColor`, `selectedBadgeColor`,
          * and `unselectedBadgeColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
-
-        fun build() = NavigationDrawerItemView(
-            Properties(
-                onClick,
-                shape,
-                selected,
-                colors,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object NavigationDrawerItemViewFactory : ComposableViewFactory<NavigationDrawerItemView>() {
-    /**
-     * Creates a `NavigationDrawerItemView` object based on the attributes of the input `Attributes`
-     * object. NavigationDrawerItemView co-relates to the NavigationDrawerItem composable.
-     * @param attributes the `Attributes` object to create the `NavigationDrawerItemView` object from
-     * @return a `NavigationDrawerItemView` object based on the attributes of the input `Attributes`
-     * object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): NavigationDrawerItemView =
-        attributes.fold(NavigationDrawerItemView.Builder()) { builder, attribute ->
-            when (attribute.name) {
-                attrColors -> builder.colors(attribute.value)
-                attrPhxClick -> builder.onClick(attribute.value)
-                attrSelected -> builder.selected(attribute.value)
-                attrShape -> builder.shape(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as NavigationDrawerItemView.Builder
-        }.build()
 }

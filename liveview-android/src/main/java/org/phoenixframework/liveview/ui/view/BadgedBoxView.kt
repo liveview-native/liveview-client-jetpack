@@ -14,14 +14,13 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Templates.templateBadge
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -75,15 +74,36 @@ internal class BadgedBoxView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val containerColor: Color?,
-        val contentColor: Color?,
-        override val commonProps: CommonComposableProperties,
+        val containerColor: Color? = null,
+        val contentColor: Color? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-
-    internal class Builder : ComposableBuilder() {
-        private var containerColor: Color? = null
-        private var contentColor: Color? = null
+    internal object Factory : ComposableViewFactory<BadgedBoxView>() {
+        /**
+         * Creates a `BadgedBoxView` object based on the attributes of the input `Attributes` object.
+         * BadgedBoxView co-relates to the BadgedBox composable
+         * @param attributes the `Attributes` object to create the `BadgedBoxView` object from
+         * @return a `BadgedBoxView` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): BadgedBoxView = BadgedBoxView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrContainerColor -> containerColor(props, attribute.value)
+                attrContentColor -> contentColor(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * The color used for the background of the BadgedBox.
@@ -94,8 +114,8 @@ internal class BadgedBoxView private constructor(props: Properties) :
          * @param containerColor the background color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun containerColor(containerColor: String) = apply {
-            this.containerColor = containerColor.toColor()
+        private fun containerColor(props: Properties, containerColor: String): Properties {
+            return props.copy(containerColor = containerColor.toColor())
         }
 
         /**
@@ -107,30 +127,8 @@ internal class BadgedBoxView private constructor(props: Properties) :
          * @param contentColor the content color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun contentColor(contentColor: String) = apply {
-            this.contentColor = contentColor.toColor()
+        private fun contentColor(props: Properties, contentColor: String): Properties {
+            return props.copy(contentColor = contentColor.toColor())
         }
-
-        fun build() = BadgedBoxView(Properties(containerColor, contentColor, commonProps))
     }
-}
-
-internal object BadgedBoxViewFactory : ComposableViewFactory<BadgedBoxView>() {
-    /**
-     * Creates a `BadgedBoxView` object based on the attributes of the input `Attributes` object.
-     * BadgedBoxView co-relates to the BadgedBox composable
-     * @param attributes the `Attributes` object to create the `BadgedBoxView` object from
-     * @return a `BadgedBoxView` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): BadgedBoxView = attributes.fold(BadgedBoxView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrContainerColor -> builder.containerColor(attribute.value)
-            attrContentColor -> builder.contentColor(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as BadgedBoxView.Builder
-    }.build()
 }

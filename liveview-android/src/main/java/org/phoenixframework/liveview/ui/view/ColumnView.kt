@@ -11,7 +11,6 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignmen
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
@@ -54,14 +53,37 @@ internal class ColumnView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val verticalArrangement: Arrangement.Vertical,
-        val horizontalAlignment: Alignment.Horizontal,
-        override val commonProps: CommonComposableProperties,
+        val verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+        val horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var verticalArrangement: Arrangement.Vertical = Arrangement.Top
-        private var horizontalAlignment: Alignment.Horizontal = Alignment.Start
+
+    internal object Factory : ComposableViewFactory<ColumnView>() {
+        /**
+         * Creates a `ColumnView` object based on the attributes of the input `Attributes` object.
+         * ColumnView co-relates to the Column composable
+         * @param attributes the `Attributes` object to create the `ColumnView` object from
+         * @return a `ColumnView` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): ColumnView = ColumnView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrHorizontalAlignment -> horizontalAlignment(props, attribute.value)
+                attrVerticalArrangement -> verticalArrangement(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * The vertical arrangement of the Column's children
@@ -74,8 +96,12 @@ internal class ColumnView private constructor(props: Properties) :
          * An int value is also supported, which will be used to determine the space between the
          * items.
          */
-        fun verticalArrangement(verticalArrangement: String) = apply {
-            this.verticalArrangement = verticalArrangementFromString(verticalArrangement)
+        private fun verticalArrangement(props: Properties, verticalArrangement: String): Properties {
+            return props.copy(
+                verticalArrangement = verticalArrangementFromString(
+                    verticalArrangement
+                )
+            )
         }
 
         /**
@@ -87,36 +113,12 @@ internal class ColumnView private constructor(props: Properties) :
          * @param horizontalAlignment the horizontal alignment of the column's children. See the
          * supported values at [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
          */
-        fun horizontalAlignment(horizontalAlignment: String) = apply {
-            this.horizontalAlignment = horizontalAlignmentFromString(horizontalAlignment)
-        }
-
-        fun build(): ColumnView = ColumnView(
-            Properties(
-                verticalArrangement,
-                horizontalAlignment,
-                commonProps,
+        private fun horizontalAlignment(props: Properties, horizontalAlignment: String): Properties {
+            return props.copy(
+                horizontalAlignment = horizontalAlignmentFromString(
+                    horizontalAlignment
+                )
             )
-        )
+        }
     }
-}
-
-internal object ColumnViewFactory : ComposableViewFactory<ColumnView>() {
-    /**
-     * Creates a `ColumnView` object based on the attributes of the input `Attributes` object.
-     * ColumnView co-relates to the Column composable
-     * @param attributes the `Attributes` object to create the `ColumnView` object from
-     * @return a `ColumnView` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): ColumnView = attributes.fold(ColumnView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrHorizontalAlignment -> builder.horizontalAlignment(attribute.value)
-            attrVerticalArrangement -> builder.verticalArrangement(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as ColumnView.Builder
-    }.build()
 }
