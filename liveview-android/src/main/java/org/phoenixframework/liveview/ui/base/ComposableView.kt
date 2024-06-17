@@ -78,10 +78,17 @@ abstract class ComposableView<CP : ComposableProperties>(protected open val prop
     }
 }
 
+/**
+ * This interface represents the properties received by a composable to create itself. Subclasses
+ * can implement this interface to add properties specific for a particular component.
+ */
 interface ComposableProperties {
     val commonProps: CommonComposableProperties
 }
 
+/**
+ * This class contain common properties that can be used by all components.
+ */
 @Stable
 data class CommonComposableProperties(
     val modifier: Modifier = Modifier,
@@ -123,20 +130,49 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> {
      */
     open fun subTags(): Map<String, ComposableViewFactory<*>> = emptyMap()
 
-    private fun setStyleFromAttr(
+    /**
+     * Handle the properties that are common for most of composables.
+     * @param attribute a `CoreAttribute` to be handled.
+     * @param pushEvent function responsible to dispatch the server call.
+     * @param scope some attributes are composable specific, the scope determine what parent
+     * composable (e.g.: `Column`, `Row`, `Box`).
+     */
+    fun handleCommonAttributes(
         commonProps: CommonComposableProperties,
-        style: String,
+        attribute: CoreAttribute,
+        pushEvent: PushEvent?,
+        scope: Any?,
+    ): CommonComposableProperties {
+        return when (attribute.name) {
+            attrClass -> setClassFromAttr(commonProps, attribute.value, scope, pushEvent)
+            attrPhxClick -> setPhxClickFromAttr(commonProps, attribute.value, pushEvent)
+            attrPhxValue -> setPhxValueFromAttr(commonProps, attrPhxValue, attribute.value)
+            attrStyle -> setStyleFromAttr(commonProps, attribute.value, scope, pushEvent)
+            else ->
+                if (attribute.name.startsWith(attrPhxValueNamed)) {
+                    setPhxValueFromAttr(commonProps, attribute.name, attribute.value)
+                } else
+                    commonProps
+        }
+    }
+
+    /**
+     * Sets a predefined style/modifier (declared in app.jetpack.styles file on the server) to a
+     * component.
+     *
+     * ```
+     * <Composable class="yourPredefinedStyle" />
+     * ```
+     */
+    private fun setClassFromAttr(
+        commonProps: CommonComposableProperties,
+        string: String,
         scope: Any?,
         pushEvent: PushEvent?
     ): CommonComposableProperties {
         val modifier = commonProps.modifier
         return commonProps.copy(
-            modifier = style
-                .split(";")
-                .map { it.trim() }
-                .fold(modifier) { acc, modifierKey ->
-                    acc.then(Modifier.fromStyleName(modifierKey, scope, pushEvent))
-                }
+            modifier = modifier.then(Modifier.fromStyleName(string, scope, pushEvent))
         )
     }
 
@@ -189,41 +225,27 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> {
         } else commonProps
     }
 
-    private fun setClassFromAttr(
+    /**
+     * Sets a style/modifier directly on the component. The styles/modifiers must be separated by
+     * ";".
+     * ```
+     * <Composable style="size(100.dp);background(Color.Red)" />
+     * ```
+     */
+    private fun setStyleFromAttr(
         commonProps: CommonComposableProperties,
-        string: String,
+        style: String,
         scope: Any?,
         pushEvent: PushEvent?
     ): CommonComposableProperties {
         val modifier = commonProps.modifier
         return commonProps.copy(
-            modifier = modifier.then(Modifier.fromStyleName(string, scope, pushEvent))
+            modifier = style
+                .split(";")
+                .map { it.trim() }
+                .fold(modifier) { acc, modifierKey ->
+                    acc.then(Modifier.fromStyleName(modifierKey, scope, pushEvent))
+                }
         )
-    }
-
-    /**
-     * Handle the properties that are common for most of composables.
-     * @param attribute a `CoreAttribute` to be handled.
-     * @param pushEvent function responsible to dispatch the server call.
-     * @param scope some attributes are composable specific, the scope determine what parent
-     * composable (e.g.: `Column`, `Row`, `Box`).
-     */
-    fun handleCommonAttributes(
-        commonProps: CommonComposableProperties,
-        attribute: CoreAttribute,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): CommonComposableProperties {
-        return when (attribute.name) {
-            attrClass -> setClassFromAttr(commonProps, attribute.value, scope, pushEvent)
-            attrPhxClick -> setPhxClickFromAttr(commonProps, attribute.value, pushEvent)
-            attrPhxValue -> setPhxValueFromAttr(commonProps, attrPhxValue, attribute.value)
-            attrStyle -> setStyleFromAttr(commonProps, attribute.value, scope, pushEvent)
-            else ->
-                if (attribute.name.startsWith(attrPhxValueNamed)) {
-                    setPhxValueFromAttr(commonProps, attribute.name, attribute.value)
-                } else
-                    commonProps
-        }
     }
 }
