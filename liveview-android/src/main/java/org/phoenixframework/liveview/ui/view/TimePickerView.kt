@@ -37,19 +37,16 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTimeSele
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTimeSelectorSelectedContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTimeSelectorUnselectedContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTimeSelectorUnselectedContentColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.TimePickerLayoutTypeValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
-import org.phoenixframework.liveview.ui.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
-import org.phoenixframework.liveview.ui.base.ComposableBuilder.Companion.KEY_PHX_VALUE
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 
 /**
  * Material Design time picker and time input.
@@ -178,22 +175,37 @@ internal class TimePickerView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val colors: ImmutableMap<String, String>?,
-        val initialHour: Int,
-        val initialMinute: Int,
-        val is24Hour: Boolean?,
-        val layoutType: TimePickerLayoutType?,
-        val onChanged: String,
-        override val commonProps: CommonComposableProperties,
+        val colors: ImmutableMap<String, String>? = null,
+        val initialHour: Int = 0,
+        val initialMinute: Int = 0,
+        val is24Hour: Boolean? = null,
+        val layoutType: TimePickerLayoutType? = null,
+        val onChanged: String = "",
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var colors: ImmutableMap<String, String>? = null
-        private var initialHour: Int = 0
-        private var initialMinute: Int = 0
-        private var is24Hour: Boolean? = null
-        private var layoutType: TimePickerLayoutType? = null
-        private var onChanged: String = ""
+
+    internal object Factory : ComposableViewFactory<TimePickerView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): TimePickerView = TimePickerView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrColors -> colors(props, attribute.value)
+                attrInitialHour -> initialHour(props, attribute.value)
+                attrInitialMinute -> initialMinute(props, attribute.value)
+                attrIs24Hour -> is24Hour(props, attribute.value)
+                attrLayoutType -> layoutType(props, attribute.value)
+                attrPhxChange -> onChanged(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * Set TimePicker colors.
@@ -210,10 +222,10 @@ internal class TimePickerView private constructor(props: Properties) :
          * `timeSelectorUnselectedContainerColor`, `timeSelectorSelectedContentColor`,
          * and `timeSelectorUnselectedContentColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -224,8 +236,8 @@ internal class TimePickerView private constructor(props: Properties) :
          * ```
          * @param hour int value representing the hour (from 0 to 23).
          */
-        fun initialHour(hour: String) = apply {
-            this.initialHour = hour.toIntOrNull() ?: 0
+        private fun initialHour(props: Properties, hour: String): Properties {
+            return props.copy(initialHour = hour.toIntOrNull() ?: 0)
         }
 
         /**
@@ -236,8 +248,8 @@ internal class TimePickerView private constructor(props: Properties) :
          * ```
          * @param minute int value representing the minute (from 0 to 59)
          */
-        fun initialMinute(minute: String) = apply {
-            this.initialMinute = minute.toIntOrNull() ?: 0
+        private fun initialMinute(props: Properties, minute: String): Properties {
+            return props.copy(initialMinute = minute.toIntOrNull() ?: 0)
         }
 
         /**
@@ -248,8 +260,8 @@ internal class TimePickerView private constructor(props: Properties) :
          * ```
          * @param is24Hour true for using 24 hour format, false to use 12 hour format.
          */
-        fun is24Hour(is24Hour: String) = apply {
-            this.is24Hour = is24Hour.toBooleanStrictOrNull()
+        private fun is24Hour(props: Properties, is24Hour: String): Properties {
+            return props.copy(is24Hour = is24Hour.toBooleanStrictOrNull())
         }
 
         /**
@@ -260,12 +272,14 @@ internal class TimePickerView private constructor(props: Properties) :
          * ```
          * @param layoutType layout type of the time picker.
          */
-        fun layoutType(layoutType: String) = apply {
-            this.layoutType = when (layoutType) {
-                TimePickerLayoutTypeValues.horizontal -> TimePickerLayoutType.Horizontal
-                TimePickerLayoutTypeValues.vertical -> TimePickerLayoutType.Vertical
-                else -> null
-            }
+        private fun layoutType(props: Properties, layoutType: String): Properties {
+            return props.copy(
+                layoutType = when (layoutType) {
+                    TimePickerLayoutTypeValues.horizontal -> TimePickerLayoutType.Horizontal
+                    TimePickerLayoutTypeValues.vertical -> TimePickerLayoutType.Vertical
+                    else -> null
+                }
+            )
         }
 
         /**
@@ -277,36 +291,8 @@ internal class TimePickerView private constructor(props: Properties) :
          * @param onChanged the name of the function to be called in the server when the time is
          * selected.
          */
-        fun onChanged(onChanged: String) = apply {
-            this.onChanged = onChanged
+        private fun onChanged(props: Properties, onChanged: String): Properties {
+            return props.copy(onChanged = onChanged)
         }
-
-        fun build() = TimePickerView(
-            Properties(
-                colors,
-                initialHour,
-                initialMinute,
-                is24Hour,
-                layoutType,
-                onChanged,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object TimePickerViewFactory : ComposableViewFactory<TimePickerView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): TimePickerView = attributes.fold(TimePickerView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrColors -> builder.colors(attribute.value)
-            attrInitialHour -> builder.initialHour(attribute.value)
-            attrInitialMinute -> builder.initialMinute(attribute.value)
-            attrIs24Hour -> builder.is24Hour(attribute.value)
-            attrLayoutType -> builder.layoutType(attribute.value)
-            attrPhxChange -> builder.onChanged(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as TimePickerView.Builder
-    }.build()
 }

@@ -49,19 +49,18 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTodayCon
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTodayDateBorderColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrWeekdayContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrYearContentColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.DatePickerDisplayModeValues
 import org.phoenixframework.liveview.data.constants.Templates.templateHeadline
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -159,7 +158,7 @@ internal class DatePickerView private constructor(props: Properties) :
         LaunchedEffect(state.selectedDateMillis) {
             state.selectedDateMillis?.let { dateInMillis ->
                 pushEvent(
-                    ComposableBuilder.EVENT_TYPE_CHANGE,
+                    EVENT_TYPE_CHANGE,
                     onChanged,
                     mergeValueWithPhxValue(KEY_DATE, dateInMillis),
                     null
@@ -229,7 +228,7 @@ internal class DatePickerView private constructor(props: Properties) :
             val endDate = state.selectedEndDateMillis
             if (startDate != null || endDate != null) {
                 pushEvent.invoke(
-                    ComposableBuilder.EVENT_TYPE_CHANGE,
+                    EVENT_TYPE_CHANGE,
                     onChanged,
                     arrayOf(startDate ?: 0, endDate ?: 0),
                     null
@@ -244,29 +243,56 @@ internal class DatePickerView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val colors: ImmutableMap<String, String>?,
-        val initialDisplayedMonthMillis: Long?,
-        val initialDisplayMode: DisplayMode?,
-        val initialSelectedDateMillis: Long?,
-        val initialSelectedStartDateMillis: Long?,
-        val initialSelectedEndDateMillis: Long?,
-        val onChanged: String,
-        val showModeToggle: Boolean,
-        val yearStart: Int?,
-        val yearEnd: Int?,
-        override val commonProps: CommonComposableProperties,
+        val colors: ImmutableMap<String, String>? = null,
+        val initialDisplayedMonthMillis: Long? = null,
+        val initialDisplayMode: DisplayMode? = null,
+        val initialSelectedDateMillis: Long? = null,
+        val initialSelectedStartDateMillis: Long? = null,
+        val initialSelectedEndDateMillis: Long? = null,
+        val onChanged: String = "",
+        val showModeToggle: Boolean = true,
+        val yearStart: Int? = null,
+        val yearEnd: Int? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var colors: ImmutableMap<String, String>? = null
-        private var initialDisplayedMonthMillis: Long? = null
-        private var initialDisplayMode: DisplayMode? = null
-        private var initialSelectedDateMillis: Long? = null
-        private var initialSelectedStartDateMillis: Long? = null
-        private var initialSelectedEndDateMillis: Long? = null
-        private var onChanged: String = ""
-        private var showModeToggle: Boolean = true
-        private var yearRange: IntRange? = null
+    internal object Factory :
+        ComposableViewFactory<DatePickerView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): DatePickerView = DatePickerView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrColors -> colors(props, attribute.value)
+                attrInitialDisplayedMonthMillis -> initialDisplayedMonthMillis(
+                    props,
+                    attribute.value
+                )
+
+                attrInitialDisplayMode -> initialDisplayMode(props, attribute.value)
+                attrInitialSelectedDateMillis -> initialSelectedDateMillis(props, attribute.value)
+                attrInitialSelectedStartDateMillis -> initialSelectedStartDateMillis(
+                    props,
+                    attribute.value
+                )
+
+                attrInitialSelectedEndDateMillis -> initialSelectedEndDateMillis(
+                    props,
+                    attribute.value
+                )
+
+                attrPhxChange -> onChanged(props, attribute.value)
+                attrShowModeToggle -> showModeToggle(props, attribute.value)
+                attrYearRange -> yearRange(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * Timestamp in UTC milliseconds from the epoch that represents an initial selection of a
@@ -277,8 +303,11 @@ internal class DatePickerView private constructor(props: Properties) :
          * ```
          * @param initialSelectedDate initial selection of a date in UTC milliseconds.
          */
-        fun initialSelectedStartDateMillis(initialSelectedDate: String) = apply {
-            this.initialSelectedStartDateMillis = initialSelectedDate.toLongOrNull()
+        private fun initialSelectedStartDateMillis(
+            props: Properties,
+            initialSelectedDate: String
+        ): Properties {
+            return props.copy(initialSelectedStartDateMillis = initialSelectedDate.toLongOrNull())
         }
 
         /**
@@ -290,8 +319,11 @@ internal class DatePickerView private constructor(props: Properties) :
          * ```
          * @param initialSelectedDate initial selection of a date in UTC milliseconds.
          */
-        fun initialSelectedEndDateMillis(initialSelectedDate: String) = apply {
-            this.initialSelectedEndDateMillis = initialSelectedDate.toLongOrNull()
+        private fun initialSelectedEndDateMillis(
+            props: Properties,
+            initialSelectedDate: String
+        ): Properties {
+            return props.copy(initialSelectedEndDateMillis = initialSelectedDate.toLongOrNull())
         }
 
         /**
@@ -303,8 +335,11 @@ internal class DatePickerView private constructor(props: Properties) :
          * ```
          * @param initialSelectedDate initial selection of a date in UTC milliseconds.
          */
-        fun initialSelectedDateMillis(initialSelectedDate: String) = apply {
-            this.initialSelectedDateMillis = initialSelectedDate.toLongOrNull()
+        private fun initialSelectedDateMillis(
+            props: Properties,
+            initialSelectedDate: String
+        ): Properties {
+            return props.copy(initialSelectedDateMillis = initialSelectedDate.toLongOrNull())
         }
 
         /**
@@ -318,8 +353,11 @@ internal class DatePickerView private constructor(props: Properties) :
          * ```
          * @param initialDisplayedMonth initial selection of a month in UTC milliseconds.
          */
-        fun initialDisplayedMonthMillis(initialDisplayedMonth: String) = apply {
-            this.initialDisplayedMonthMillis = initialDisplayedMonth.toLongOrNull()
+        private fun initialDisplayedMonthMillis(
+            props: Properties,
+            initialDisplayedMonth: String
+        ): Properties {
+            return props.copy(initialDisplayedMonthMillis = initialDisplayedMonth.toLongOrNull())
         }
 
         /**
@@ -332,14 +370,15 @@ internal class DatePickerView private constructor(props: Properties) :
          * @param yearRange a string containing two integers separated by comma representing the
          * min and max year respectively.
          */
-        fun yearRange(yearRange: String) = apply {
-            this.yearRange = try {
+        private fun yearRange(props: Properties, yearRange: String): Properties {
+            val range = try {
                 yearRange.split(',').map { it.toInt() }.let { list ->
                     list[0]..list[1]
                 }
             } catch (e: Exception) {
                 null
             }
+            return props.copy(yearStart = range?.start, yearEnd = range?.endInclusive)
         }
 
         /**
@@ -351,12 +390,14 @@ internal class DatePickerView private constructor(props: Properties) :
          * ```
          * @param displayMode the initial display mode.
          */
-        fun initialDisplayMode(displayMode: String) = apply {
-            this.initialDisplayMode = when (displayMode) {
-                DatePickerDisplayModeValues.input -> DisplayMode.Input
-                DatePickerDisplayModeValues.picker -> DisplayMode.Picker
-                else -> DisplayMode.Picker
-            }
+        private fun initialDisplayMode(props: Properties, displayMode: String): Properties {
+            return props.copy(
+                initialDisplayMode = when (displayMode) {
+                    DatePickerDisplayModeValues.input -> DisplayMode.Input
+                    DatePickerDisplayModeValues.picker -> DisplayMode.Picker
+                    else -> DisplayMode.Picker
+                }
+            )
         }
 
         /**
@@ -367,8 +408,8 @@ internal class DatePickerView private constructor(props: Properties) :
          * @param onChanged the name of the function to be called in the server when the date is
          * selected.
          */
-        fun onChanged(onChanged: String) = apply {
-            this.onChanged = onChanged
+        private fun onChanged(props: Properties, onChanged: String): Properties {
+            return props.copy(onChanged = onChanged)
         }
 
         /**
@@ -380,8 +421,8 @@ internal class DatePickerView private constructor(props: Properties) :
          * ```
          * @param showModeToggle true if the toggle mode must be displayed, false otherwise.
          */
-        fun showModeToggle(showModeToggle: String) = apply {
-            this.showModeToggle = showModeToggle.toBoolean()
+        private fun showModeToggle(props: Properties, showModeToggle: String): Properties {
+            return props.copy(showModeToggle = showModeToggle.toBoolean())
         }
 
         /**
@@ -399,48 +440,12 @@ internal class DatePickerView private constructor(props: Properties) :
          * `disabledSelectedDayContainerColor`, `todayContentColor`, `todayDateBorderColor`,
          * `dayInSelectionRangeContentColor`, and `dayInSelectionRangeContainerColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
-
-        fun build() = DatePickerView(
-            Properties(
-                colors,
-                initialDisplayedMonthMillis,
-                initialDisplayMode,
-                initialSelectedDateMillis,
-                initialSelectedStartDateMillis,
-                initialSelectedEndDateMillis,
-                onChanged,
-                showModeToggle,
-                yearRange?.first,
-                yearRange?.last,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object DatePickerViewFactory :
-    ComposableViewFactory<DatePickerView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): DatePickerView = attributes.fold(DatePickerView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrColors -> builder.colors(attribute.value)
-            attrInitialDisplayedMonthMillis -> builder.initialDisplayedMonthMillis(attribute.value)
-            attrInitialDisplayMode -> builder.initialDisplayMode(attribute.value)
-            attrInitialSelectedDateMillis -> builder.initialSelectedDateMillis(attribute.value)
-            attrInitialSelectedStartDateMillis -> builder.initialSelectedStartDateMillis(attribute.value)
-            attrInitialSelectedEndDateMillis -> builder.initialSelectedEndDateMillis(attribute.value)
-            attrPhxChange -> builder.onChanged(attribute.value)
-            attrShowModeToggle -> builder.showModeToggle(attribute.value)
-            attrYearRange -> builder.yearRange(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as DatePickerView.Builder
-    }.build()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

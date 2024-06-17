@@ -21,14 +21,13 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -120,20 +119,35 @@ internal class NavigationBarItemView private constructor(props: Properties) :
     @Stable
     internal data class Properties(
         val rowScope: RowScope,
-        var alwaysShowLabel: Boolean,
-        var colors: ImmutableMap<String, String>?,
-        var enabled: Boolean,
-        var onClick: String?,
-        var selected: Boolean,
-        override val commonProps: CommonComposableProperties,
+        var alwaysShowLabel: Boolean = true,
+        var colors: ImmutableMap<String, String>? = null,
+        var enabled: Boolean = true,
+        var onClick: String? = null,
+        var selected: Boolean = false,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder(private val rowScope: RowScope) : ComposableBuilder() {
-        private var alwaysShowLabel: Boolean = true
-        private var colors: ImmutableMap<String, String>? = null
-        private var enabled: Boolean = true
-        private var onClick: String? = null
-        private var selected: Boolean = false
+    internal object Factory : ComposableViewFactory<NavigationBarItemView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): NavigationBarItemView = NavigationBarItemView(
+            attributes.fold(Properties(scope as RowScope)) { props, attribute ->
+                when (attribute.name) {
+                    attrAlwaysShowLabel -> alwaysShowLabel(props, attribute.value)
+                    attrColors -> colors(props, attribute.value)
+                    attrEnabled -> enabled(props, attribute.value)
+                    attrPhxClick -> onClick(props, attribute.value)
+                    attrSelected -> selected(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
 
         /**
          * Whether to always show the label for this item. If false, the label will only be shown
@@ -144,8 +158,8 @@ internal class NavigationBarItemView private constructor(props: Properties) :
          * @param alwaysShowLabel true if the label is always visible, false if it's only visible
          * when is selected.
          */
-        fun alwaysShowLabel(alwaysShowLabel: String) = apply {
-            this.alwaysShowLabel = alwaysShowLabel.toBoolean()
+        private fun alwaysShowLabel(props: Properties, alwaysShowLabel: String): Properties {
+            return props.copy(alwaysShowLabel = alwaysShowLabel.toBoolean())
         }
 
         /**
@@ -161,10 +175,10 @@ internal class NavigationBarItemView private constructor(props: Properties) :
          * `unselectedIconColor`, `unselectedTextColor`, `disabledIconColor`, and
          * `disabledTextColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -175,8 +189,8 @@ internal class NavigationBarItemView private constructor(props: Properties) :
          * ```
          * @param enabled true if the component is enabled, false otherwise.
          */
-        fun enabled(enabled: String) = apply {
-            this.enabled = enabled.toBoolean()
+        private fun enabled(props: Properties, enabled: String): Properties {
+            return props.copy(enabled = enabled.toBoolean())
         }
 
         /**
@@ -187,8 +201,8 @@ internal class NavigationBarItemView private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
-        fun onClick(event: String) = apply {
-            this.onClick = event
+        private fun onClick(props: Properties, event: String): Properties {
+            return props.copy(onClick = event)
         }
 
         /**
@@ -198,36 +212,8 @@ internal class NavigationBarItemView private constructor(props: Properties) :
          * ```
          * @param selected true if the item is selected, false otherwise.
          */
-        fun selected(selected: String) = apply {
-            this.selected = selected.toBoolean()
+        private fun selected(props: Properties, selected: String): Properties {
+            return props.copy(selected = selected.toBoolean())
         }
-
-        fun build() = NavigationBarItemView(
-            Properties(
-                rowScope,
-                alwaysShowLabel,
-                colors,
-                enabled,
-                onClick,
-                selected,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object NavigationBarItemViewFactory : ComposableViewFactory<NavigationBarItemView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): NavigationBarItemView =
-        attributes.fold(NavigationBarItemView.Builder(scope as RowScope)) { builder, attribute ->
-            when (attribute.name) {
-                attrAlwaysShowLabel -> builder.alwaysShowLabel(attribute.value)
-                attrColors -> builder.colors(attribute.value)
-                attrEnabled -> builder.enabled(attribute.value)
-                attrPhxClick -> builder.onClick(attribute.value)
-                attrSelected -> builder.selected(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as NavigationBarItemView.Builder
-        }.build()
 }

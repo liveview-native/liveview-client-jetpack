@@ -17,13 +17,12 @@ import org.phoenixframework.liveview.data.constants.SwipeToDismissBoxValues
 import org.phoenixframework.liveview.data.constants.Templates.templateBackgroundContent
 import org.phoenixframework.liveview.data.constants.Templates.templateContent
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -72,7 +71,7 @@ internal class SwipeToDismissBoxView private constructor(props: Properties) :
                     lastState = it
                     if (onValueChange.isNotEmpty()) {
                         pushEvent(
-                            ComposableBuilder.EVENT_TYPE_CHANGE,
+                            EVENT_TYPE_CHANGE,
                             onValueChange,
                             mergeValueWithPhxValue(KEY_SWIPE_TO_DISMISS_VALUE, it),
                             null
@@ -106,18 +105,43 @@ internal class SwipeToDismissBoxView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val initialValue: SwipeToDismissBoxValue?,
-        val enableDismissFromStartToEnd: Boolean?,
-        val enableDismissFromEndToStart: Boolean?,
-        val onChange: String,
-        override val commonProps: CommonComposableProperties,
+        val initialValue: SwipeToDismissBoxValue? = null,
+        val enableDismissFromStartToEnd: Boolean? = null,
+        val enableDismissFromEndToStart: Boolean? = null,
+        val onChange: String = "",
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var initialValue: SwipeToDismissBoxValue? = null
-        private var enableDismissFromStartToEnd: Boolean? = null
-        private var enableDismissFromEndToStart: Boolean? = null
-        private var onChange: String = ""
+    internal object Factory : ComposableViewFactory<SwipeToDismissBoxView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): SwipeToDismissBoxView = SwipeToDismissBoxView(
+            attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrInitialValue -> initialValue(props, attribute.value)
+                    attrEnableDismissFromStartToEnd -> enableDismissFromStartToEnd(
+                        props,
+                        attribute.value
+                    )
+
+                    attrEnableDismissFromEndToStart -> enableDismissFromEndToStart(
+                        props,
+                        attribute.value
+                    )
+
+                    attrPhxChange -> onChange(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
 
         /**
          * The initial value of the state. See the supported values at
@@ -127,13 +151,15 @@ internal class SwipeToDismissBoxView private constructor(props: Properties) :
          * ```
          * @param value initial value of the swipe to dismiss.
          */
-        fun initialValue(value: String) = apply {
-            this.initialValue = when (value) {
-                SwipeToDismissBoxValues.startToEnd -> SwipeToDismissBoxValue.StartToEnd
-                SwipeToDismissBoxValues.endToStart -> SwipeToDismissBoxValue.EndToStart
-                SwipeToDismissBoxValues.settled -> SwipeToDismissBoxValue.Settled
-                else -> null
-            }
+        private fun initialValue(props: Properties, value: String): Properties {
+            return props.copy(
+                initialValue = when (value) {
+                    SwipeToDismissBoxValues.startToEnd -> SwipeToDismissBoxValue.StartToEnd
+                    SwipeToDismissBoxValues.endToStart -> SwipeToDismissBoxValue.EndToStart
+                    SwipeToDismissBoxValues.settled -> SwipeToDismissBoxValue.Settled
+                    else -> null
+                }
+            )
         }
 
         /**
@@ -144,8 +170,8 @@ internal class SwipeToDismissBoxView private constructor(props: Properties) :
          * @param value true if the SwipeToDismissBox can be dismissed from start to end, false
          * otherwise.
          */
-        fun enableDismissFromStartToEnd(value: String) = apply {
-            this.enableDismissFromStartToEnd = value.toBooleanStrictOrNull()
+        private fun enableDismissFromStartToEnd(props: Properties, value: String): Properties {
+            return props.copy(enableDismissFromStartToEnd = value.toBooleanStrictOrNull())
         }
 
         /**
@@ -156,8 +182,8 @@ internal class SwipeToDismissBoxView private constructor(props: Properties) :
          * @param value true if the SwipeToDismissBox can be dismissed from end to start, false
          * otherwise.
          */
-        fun enableDismissFromEndToStart(value: String) = apply {
-            this.enableDismissFromEndToStart = value.toBooleanStrictOrNull()
+        private fun enableDismissFromEndToStart(props: Properties, value: String): Properties {
+            return props.copy(enableDismissFromEndToStart = value.toBooleanStrictOrNull())
         }
 
         /**
@@ -167,35 +193,8 @@ internal class SwipeToDismissBoxView private constructor(props: Properties) :
          * ```
          * @param value callback function name called in the server when the swipe is dismissed.
          */
-        fun onChange(value: String) = apply {
-            this.onChange = value
+        private fun onChange(props: Properties, value: String): Properties {
+            return props.copy(onChange = value)
         }
-
-        fun build() = SwipeToDismissBoxView(
-            Properties(
-                initialValue,
-                enableDismissFromStartToEnd,
-                enableDismissFromEndToStart,
-                onChange,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object SwipeToDismissBoxViewFactory : ComposableViewFactory<SwipeToDismissBoxView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): SwipeToDismissBoxView =
-        attributes.fold(SwipeToDismissBoxView.Builder()) { builder, attribute ->
-            when (attribute.name) {
-                attrInitialValue -> builder.initialValue(attribute.value)
-                attrEnableDismissFromStartToEnd -> builder.enableDismissFromStartToEnd(attribute.value)
-                attrEnableDismissFromEndToStart -> builder.enableDismissFromEndToStart(attribute.value)
-                attrPhxChange -> builder.onChange(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as SwipeToDismissBoxView.Builder
-        }.build()
 }

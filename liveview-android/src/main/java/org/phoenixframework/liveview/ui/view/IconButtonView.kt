@@ -30,7 +30,6 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabled
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
@@ -232,20 +231,44 @@ internal class IconButtonView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val border: BorderStroke?,
-        val onClick: String,
-        val enabled: Boolean,
-        val colors: ImmutableMap<String, String>?,
-        val shape: Shape?,
-        override val commonProps: CommonComposableProperties,
+        val border: BorderStroke? = null,
+        val onClick: String = "",
+        val enabled: Boolean = true,
+        val colors: ImmutableMap<String, String>? = null,
+        val shape: Shape? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var border: BorderStroke? = null
-        private var onClick: String = ""
-        private var enabled: Boolean = true
-        private var colors: ImmutableMap<String, String>? = null
-        private var shape: Shape? = null
+    internal object Factory : ComposableViewFactory<IconButtonView>() {
+        /**
+         * Creates a `IconButtonView` object based on the attributes of the input `Attributes` object.
+         * IconButtonView co-relates to the IconButton composable
+         * @param attributes the `Attributes` object to create the `IconButtonView` object from
+         * @return a `IconButtonView` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): IconButtonView = IconButtonView(attributes.fold(
+            Properties()
+        ) { props, attribute ->
+            when (attribute.name) {
+                attrBorder -> border(props, attribute.value)
+                attrColors -> colors(props, attribute.value)
+                attrEnabled -> enabled(props, attribute.value)
+                attrPhxClick -> onClick(props, attribute.value)
+                attrShape -> shape(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * The border to draw around the container of this button. This property is used just for
@@ -258,8 +281,8 @@ internal class IconButtonView private constructor(props: Properties) :
          * in the AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun border(border: String) = apply {
-            this.border = borderFromString(border)
+        private fun border(props: Properties, border: String): Properties {
+            return props.copy(border = borderFromString(border))
         }
 
         /**
@@ -270,8 +293,8 @@ internal class IconButtonView private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
-        fun onClick(event: String) = apply {
-            this.onClick = event
+        private fun onClick(props: Properties, event: String): Properties {
+            return props.copy(onClick = event)
         }
 
         /**
@@ -282,8 +305,8 @@ internal class IconButtonView private constructor(props: Properties) :
          * ```
          * @param enabled true if the button is enabled, false otherwise.
          */
-        fun enabled(enabled: String): Builder = apply {
-            this.enabled = enabled.toBoolean()
+        private fun enabled(props: Properties, enabled: String): Properties {
+            return props.copy(enabled = enabled.toBoolean())
         }
 
         /**
@@ -298,10 +321,10 @@ internal class IconButtonView private constructor(props: Properties) :
          * supported keys are: `containerColor`, `contentColor`, `disabledContainerColor`, and
          * `disabledContentColor`.
          */
-        fun colors(colors: String): Builder = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -315,44 +338,8 @@ internal class IconButtonView private constructor(props: Properties) :
          * [org.phoenixframework.liveview.data.constants.ShapeValues] or use an integer representing
          * the curve size applied to all four corners.
          */
-        fun shape(shape: String) = apply {
-            this.shape = shapeFromString(shape)
+        private fun shape(props: Properties, shape: String): Properties {
+            return props.copy(shape = shapeFromString(shape))
         }
-
-        fun build() = IconButtonView(
-            Properties(
-                border,
-                onClick,
-                enabled,
-                colors,
-                shape,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object IconButtonViewFactory : ComposableViewFactory<IconButtonView>() {
-    /**
-     * Creates a `IconButtonView` object based on the attributes of the input `Attributes` object.
-     * IconButtonView co-relates to the IconButton composable
-     * @param attributes the `Attributes` object to create the `IconButtonView` object from
-     * @return a `IconButtonView` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): IconButtonView = attributes.fold(
-        IconButtonView.Builder()
-    ) { builder, attribute ->
-        when (attribute.name) {
-            attrBorder -> builder.border(attribute.value)
-            attrColors -> builder.colors(attribute.value)
-            attrEnabled -> builder.enabled(attribute.value)
-            attrPhxClick -> builder.onClick(attribute.value)
-            attrShape -> builder.shape(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as IconButtonView.Builder
-    }.build()
 }

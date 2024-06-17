@@ -34,6 +34,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabled
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInactiveTickColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrInactiveTrackColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrThumbColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.Templates.templateEndThumb
 import org.phoenixframework.liveview.data.constants.Templates.templateStartThumb
 import org.phoenixframework.liveview.data.constants.Templates.templateThumb
@@ -41,14 +42,10 @@ import org.phoenixframework.liveview.data.constants.Templates.templateTrack
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
-import org.phoenixframework.liveview.ui.base.ComposableBuilder.Companion.KEY_PHX_VALUE
-import org.phoenixframework.liveview.data.constants.ComposableTypes
-import org.phoenixframework.liveview.ui.base.ComposableViewFactory
-import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -246,7 +243,7 @@ internal class SliderView private constructor(props: Properties) :
                             .onTypedChangeable()
                             .collect { value ->
                                 pushEvent(
-                                    ComposableBuilder.EVENT_TYPE_CHANGE,
+                                    EVENT_TYPE_CHANGE,
                                     event,
                                     mergeValueWithPhxValue(
                                         KEY_PHX_VALUE,
@@ -306,19 +303,48 @@ internal class SliderView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val minValue: Float,
-        val maxValue: Float,
-        val steps: Int,
-        val colors: ImmutableMap<String, String>?,
-        override val changeableProps: ChangeableProperties,
-        override val commonProps: CommonComposableProperties,
+        val minValue: Float = 0f,
+        val maxValue: Float = 1f,
+        val steps: Int = 0,
+        val colors: ImmutableMap<String, String>? = null,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : IChangeableProperties
 
-    internal class Builder : ChangeableViewBuilder() {
-        private var minValue = 0f
-        private var maxValue = 1f
-        private var steps = 0
-        private var colors: ImmutableMap<String, String>? = null
+    internal object Factory : ChangeableView.Factory() {
+
+        /**
+         * Creates a `SliderDTO` object based on the attributes of the input `Attributes` object.
+         * SliderDTO co-relates to the Slider composable
+         * @param attributes the `Attributes` object to create the `SliderDTO` object from
+         * @return a `SliderDTO` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): SliderView = SliderView(
+            attributes.fold(Properties()) { props, attribute ->
+                handleChangeableAttribute(props.changeableProps, attribute)?.let {
+                    props.copy(changeableProps = it)
+                } ?: run {
+                    when (attribute.name) {
+                        attrColors -> colors(props, attribute.value)
+                        attrMaxValue -> maxValue(props, attribute.value)
+                        attrMinValue -> minValue(props, attribute.value)
+                        attrPhxValue -> handleValue(props, attribute.value)
+                        attrSteps -> steps(props, attribute.value)
+                        else -> props.copy(
+                            commonProps = handleCommonAttributes(
+                                props.commonProps,
+                                attribute,
+                                pushEvent,
+                                scope
+                            )
+                        )
+                    }
+                }
+            })
 
         /**
          * The min value for the range of values that this slider can take. The passed value will
@@ -328,8 +354,8 @@ internal class SliderView private constructor(props: Properties) :
          * ```
          * @param value a float value to set the min value accepted by the slider.
          */
-        fun minValue(value: String) = apply {
-            this.minValue = value.toFloatOrNull() ?: 0f
+        private fun minValue(props: Properties, value: String): Properties {
+            return props.copy(minValue = value.toFloatOrNull() ?: 0f)
         }
 
         /**
@@ -340,8 +366,8 @@ internal class SliderView private constructor(props: Properties) :
          * ```
          * @param value a float value to set the max value accepted by the slider.
          */
-        fun maxValue(value: String) = apply {
-            this.maxValue = value.toFloatOrNull() ?: 1f
+        private fun maxValue(props: Properties, value: String): Properties {
+            return props.copy(maxValue = value.toFloatOrNull() ?: 1f)
         }
 
         /**
@@ -353,8 +379,8 @@ internal class SliderView private constructor(props: Properties) :
          * ```
          * @param value an int value to define the number of steps the slider has.
          */
-        fun steps(value: String) = apply {
-            this.steps = value.toIntOrNull() ?: 0
+        private fun steps(props: Properties, value: String): Properties {
+            return props.copy(steps = value.toIntOrNull() ?: 0)
         }
 
         /**
@@ -368,14 +394,14 @@ internal class SliderView private constructor(props: Properties) :
          * `inactiveTickColor`, `disabledThumbColor`, `disabledActiveTrackColor`,
          * `disabledActiveTickColor`, `disabledInactiveTrackColor`, and `disabledInactiveTickColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
-        fun handleValue(stringValue: String) = apply {
-            if (stringValue.contains(',')) {
+        private fun handleValue(props: Properties, stringValue: String): Properties {
+            return if (stringValue.contains(',')) {
                 val range = try {
                     stringValue
                         .split(',')
@@ -384,58 +410,24 @@ internal class SliderView private constructor(props: Properties) :
                             list[0]..list[1]
                         }
                 } catch (e: Exception) {
-                    minValue..maxValue
+                    props.minValue..props.maxValue
                 }
-                this.setPhxValueFromAttr(
-                    attrPhxValue,
-                    floatArrayOf(range.start, range.endInclusive)
+                props.copy(
+                    commonProps = setPhxValueFromAttr(
+                        props.commonProps,
+                        attrPhxValue,
+                        floatArrayOf(range.start, range.endInclusive)
+                    )
                 )
             } else {
-                this.setPhxValueFromAttr(attrPhxValue, stringValue.toFloatOrNull() ?: 0f)
+                props.copy(
+                    commonProps = setPhxValueFromAttr(
+                        props.commonProps,
+                        attrPhxValue,
+                        stringValue.toFloatOrNull() ?: 0f
+                    )
+                )
             }
         }
-
-        fun build(): SliderView = SliderView(
-            Properties(
-                minValue,
-                maxValue,
-                steps,
-                colors,
-                changeableProps,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object SliderViewFactory : ComposableViewFactory<SliderView>() {
-
-    /**
-     * Creates a `SliderDTO` object based on the attributes of the input `Attributes` object.
-     * SliderDTO co-relates to the Slider composable
-     * @param attributes the `Attributes` object to create the `SliderDTO` object from
-     * @return a `SliderDTO` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): SliderView = SliderView.Builder().also {
-        attributes.fold(
-            it
-        ) { builder, attribute ->
-            if (builder.handleChangeableAttribute(attribute)) {
-                builder
-            } else {
-                when (attribute.name) {
-                    attrColors -> builder.colors(attribute.value)
-                    attrMaxValue -> builder.maxValue(attribute.value)
-                    attrMinValue -> builder.minValue(attribute.value)
-                    attrPhxValue -> builder.handleValue(attribute.value)
-                    attrSteps -> builder.steps(attribute.value)
-                    else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-                } as SliderView.Builder
-            }
-        }
-    }.build()
 }

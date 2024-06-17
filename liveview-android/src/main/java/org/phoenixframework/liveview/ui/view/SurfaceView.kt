@@ -25,16 +25,15 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrShadowElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
@@ -148,7 +147,7 @@ internal class SurfaceView private constructor(props: Properties) :
                     onCheckedChange = {
                         if (onChange != null) {
                             pushEvent.invoke(
-                                ComposableBuilder.EVENT_TYPE_CHANGE,
+                                EVENT_TYPE_CHANGE,
                                 onChange,
                                 mergeValueWithPhxValue(KEY_CHECKED, it),
                                 null
@@ -195,84 +194,100 @@ internal class SurfaceView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val border: BorderStroke?,
-        val checked: Boolean?,
-        val color: Color?,
-        val contentColor: Color?,
-        val enabled: Boolean?,
-        val onChange: String?,
-        val onClick: String?,
-        val selected: Boolean?,
-        val shadowElevation: Dp?,
-        val shape: Shape?,
-        val tonalElevation: Dp?,
-        override val commonProps: CommonComposableProperties,
+        val border: BorderStroke? = null,
+        val checked: Boolean? = null,
+        val color: Color? = null,
+        val contentColor: Color? = null,
+        val enabled: Boolean? = null,
+        val onChange: String? = null,
+        val onClick: String? = null,
+        val selected: Boolean? = null,
+        val shadowElevation: Dp? = null,
+        val shape: Shape? = null,
+        val tonalElevation: Dp? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var border: BorderStroke? = null
-        private var checked: Boolean? = null
-        private var color: Color? = null
-        private var contentColor: Color? = null
-        private var enabled: Boolean? = null
-        private var onChange: String? = null
-        private var onClick: String? = null
-        private var selected: Boolean? = null
-        private var shadowElevation: Dp? = null
-        private var shape: Shape? = null
-        private var tonalElevation: Dp? = null
+    internal object Factory : ComposableViewFactory<SurfaceView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): SurfaceView = SurfaceView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrBorder -> border(props, attribute.value)
+                attrChecked -> checked(props, attribute.value)
+                attrColor -> color(props, attribute.value)
+                attrContentColor -> contentColor(props, attribute.value)
+                attrEnabled -> enabled(props, attribute.value)
+                attrPhxClick -> onClick(props, attribute.value)
+                attrPhxChange -> onChange(props, attribute.value)
+                attrSelected -> enabled(props, attribute.value)
+                attrShadowElevation -> shadowElevation(props, attribute.value)
+                attrShape -> shape(props, attribute.value)
+                attrTonalElevation -> tonalElevation(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * Optional border to draw on top of the surface.
          */
-        fun border(border: String) = apply {
-            this.border = borderFromString(border)
+        private fun border(props: Properties, border: String): Properties {
+            return props.copy(border = borderFromString(border))
         }
 
         /**
          * Callback to be invoked when the toggleable Surface is clicked.
          */
-        fun checked(checked: String) = apply {
-            this.checked = checked.toBoolean()
+        private fun checked(props: Properties, checked: String): Properties {
+            return props.copy(checked = checked.toBoolean())
         }
 
         /**
          * The background color. Use "Transparent" to have no color.
          */
-        fun color(color: String) = apply {
-            this.color = color.toColor()
+        private fun color(props: Properties, color: String): Properties {
+            return props.copy(color = color.toColor())
         }
 
         /**
          * The preferred content color provided by this Surface to its children.
          */
-        fun contentColor(color: String) = apply {
-            this.contentColor = color.toColor()
+        private fun contentColor(props: Properties, color: String): Properties {
+            return props.copy(contentColor = color.toColor())
         }
 
         /**
          * Controls the enabled state of the surface. When false, this surface will not be clickable.
          */
-        fun enabled(enabled: String) = apply {
-            this.enabled = enabled.toBoolean()
+        private fun enabled(props: Properties, enabled: String): Properties {
+            return props.copy(enabled = enabled.toBoolean())
         }
 
-        fun onChange(onChange: String) = apply {
-            this.onChange = onChange
+        private fun onChange(props: Properties, onChange: String): Properties {
+            return props.copy(onChange = onChange)
         }
 
         /**
          * Callback to be called when the surface is clicked.
          */
-        fun onClick(onClick: String) = apply {
-            this.onClick = onClick
+        private fun onClick(props: Properties, onClick: String): Properties {
+            return props.copy(onClick = onClick)
         }
 
         /**
          * Whether or not this Surface is selected.
          */
-        fun selected(selected: String) = apply {
-            this.selected = selected.toBoolean()
+        private fun selected(props: Properties, selected: String): Properties {
+            return props.copy(selected = selected.toBoolean())
         }
 
         /**
@@ -281,10 +296,10 @@ internal class SurfaceView private constructor(props: Properties) :
          * from a patterned background. Note that It will not affect z index of the Surface. If you
          * want to change the drawing order you can use Modifier.zIndex.
          */
-        fun shadowElevation(shadow: String) = apply {
-            if (shadow.isNotEmptyAndIsDigitsOnly()) {
-                this.shadowElevation = shadow.toInt().dp
-            }
+        private fun shadowElevation(props: Properties, shadow: String): Properties {
+            return if (shadow.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(shadowElevation = shadow.toInt().dp)
+            } else props
         }
 
         /**
@@ -295,60 +310,20 @@ internal class SurfaceView private constructor(props: Properties) :
          * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
          * representing the curve size applied for all four corners.
          */
-        fun shape(shape: String) = apply {
-            if (shape.isNotEmpty()) {
-                this.shape = shapeFromString(shape)
-            }
+        private fun shape(props: Properties, shape: String): Properties {
+            return if (shape.isNotEmpty()) {
+                props.copy(shape = shapeFromString(shape))
+            } else props
         }
 
         /**
          * A higher the elevation will result in a darker color in light theme and lighter color
          * in dark theme.
          */
-        fun tonalElevation(elevation: String) = apply {
-            if (elevation.isNotEmptyAndIsDigitsOnly()) {
-                this.tonalElevation = elevation.toInt().dp
-            }
+        private fun tonalElevation(props: Properties, elevation: String): Properties {
+            return if (elevation.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(tonalElevation = elevation.toInt().dp)
+            } else props
         }
-
-        fun build() = SurfaceView(
-            Properties(
-                border,
-                checked,
-                color,
-                contentColor,
-                enabled,
-                onChange,
-                onClick,
-                selected,
-                shadowElevation,
-                shape,
-                tonalElevation,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object SurfaceViewFactory : ComposableViewFactory<SurfaceView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): SurfaceView = attributes.fold(SurfaceView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrBorder -> builder.border(attribute.value)
-            attrChecked -> builder.checked(attribute.value)
-            attrColor -> builder.color(attribute.value)
-            attrContentColor -> builder.contentColor(attribute.value)
-            attrEnabled -> builder.enabled(attribute.value)
-            attrPhxClick -> builder.onClick(attribute.value)
-            attrPhxChange -> builder.onChange(attribute.value)
-            attrSelected -> builder.enabled(attribute.value)
-            attrShadowElevation -> builder.shadowElevation(attribute.value)
-            attrShape -> builder.shape(attribute.value)
-            attrTonalElevation -> builder.tonalElevation(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as SurfaceView.Builder
-    }.build()
 }

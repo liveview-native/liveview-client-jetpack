@@ -9,14 +9,13 @@ import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrPropagateMinConstraints
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -55,14 +54,36 @@ internal class BoxView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val contentAlignment: Alignment,
-        val propagateMinConstraints: Boolean,
-        override val commonProps: CommonComposableProperties,
+        val contentAlignment: Alignment = Alignment.TopStart,
+        val propagateMinConstraints: Boolean = false,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var contentAlignment: Alignment = Alignment.TopStart
-        private var propagateMinConstraints: Boolean = false
+    internal object Factory : ComposableViewFactory<BoxView>() {
+        /**
+         * Creates a `BoxView` object based on the attributes of the input `Attributes` object.
+         * BoxView co-relates to the Box composable
+         * @param attributes the `Attributes` object to create the `BoxView` object from
+         * @return a `BoxView` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): BoxView = BoxView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrContentAlignment -> contentAlignment(props, attribute.value)
+                attrPropagateMinConstraints -> propagateMinConstraints(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * The default alignment inside the Box.
@@ -73,8 +94,13 @@ internal class BoxView private constructor(props: Properties) :
          * @param contentAlignment children's alignment inside the Box. See the supported at
          * [org.phoenixframework.liveview.data.constants.AlignmentValues].
          */
-        fun contentAlignment(contentAlignment: String) = apply {
-            this.contentAlignment = alignmentFromString(contentAlignment, Alignment.TopStart)
+        private fun contentAlignment(props: Properties, contentAlignment: String): Properties {
+            return props.copy(
+                contentAlignment = alignmentFromString(
+                    contentAlignment,
+                    Alignment.TopStart
+                )
+            )
         }
 
         /**
@@ -86,36 +112,8 @@ internal class BoxView private constructor(props: Properties) :
          * @param value true if the incoming min constraints should be passed to content, false
          * otherwise.
          */
-        fun propagateMinConstraints(value: String) = apply {
-            this.propagateMinConstraints = value.toBoolean()
+        private fun propagateMinConstraints(props: Properties, value: String): Properties {
+            return props.copy(propagateMinConstraints = value.toBoolean())
         }
-
-        fun build(): BoxView = BoxView(
-            Properties(
-                contentAlignment,
-                propagateMinConstraints,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object BoxViewFactory : ComposableViewFactory<BoxView>() {
-    /**
-     * Creates a `BoxView` object based on the attributes of the input `Attributes` object.
-     * BoxView co-relates to the Box composable
-     * @param attributes the `Attributes` object to create the `BoxView` object from
-     * @return a `BoxView` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): BoxView = attributes.fold(BoxView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrContentAlignment -> builder.contentAlignment(attribute.value)
-            attrPropagateMinConstraints -> builder.propagateMinConstraints(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as BoxView.Builder
-    }.build()
 }

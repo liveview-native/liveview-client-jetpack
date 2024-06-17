@@ -25,6 +25,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level0
 import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level1
 import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level2
@@ -37,16 +38,14 @@ import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttr
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrHoveredElevation
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrPressedElevation
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
@@ -274,20 +273,42 @@ internal class CardView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val shape: Shape?,
-        val cardColors: ImmutableMap<String, String>?,
-        val elevation: ImmutableMap<String, String>?,
-        val border: BorderStroke?,
-        val onClick: String?,
-        override val commonProps: CommonComposableProperties,
+        val shape: Shape? = null,
+        val cardColors: ImmutableMap<String, String>? = null,
+        val elevation: ImmutableMap<String, String>? = null,
+        val border: BorderStroke? = null,
+        val onClick: String? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var shape: Shape? = null
-        private var cardColors: ImmutableMap<String, String>? = null
-        private var elevation: ImmutableMap<String, String>? = null
-        private var border: BorderStroke? = null
-        private var onClick: String? = null
+    internal object Factory : ComposableViewFactory<CardView>() {
+        /**
+         * Creates a `CardView` object based on the attributes of the input `Attributes` object.
+         * CardView co-relates to the Card composable
+         * @param attributes the `Attributes` object to create the `CardView` object from
+         * @return a `CardView` object based on the attributes of the input `Attributes` object
+         **/
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): CardView = CardView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrBorder -> border(props, attribute.value)
+                attrColors -> cardColors(props, attribute.value)
+                attrElevation -> elevation(props, attribute.value)
+                attrPhxClick -> onClick(props, attribute.value)
+                attrShape -> shape(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * Defines the shape of the card's container, border, and shadow (when using elevation).
@@ -299,8 +320,8 @@ internal class CardView private constructor(props: Properties) :
          * [org.phoenixframework.liveview.data.constants.ShapeValues], or an integer representing
          * the curve size applied to all four corners.
          */
-        fun shape(shape: String) = apply {
-            this.shape = shapeFromString(shape)
+        private fun shape(props: Properties, shape: String): Properties {
+            return props.copy(shape = shapeFromString(shape))
         }
 
         /**
@@ -312,10 +333,10 @@ internal class CardView private constructor(props: Properties) :
          * @param colors an JSON formatted string, containing the card colors. The color keys
          * supported are: `containerColor` and `contentColor`
          */
-        fun cardColors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.cardColors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun cardColors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(cardColors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -328,10 +349,10 @@ internal class CardView private constructor(props: Properties) :
          * elevation supported keys are: `defaultElevation`, `pressedElevation`, `focusedElevation`,
          * `hoveredElevation`, `draggedElevation`, and `disabledElevation`.
          */
-        fun elevation(elevations: String) = apply {
-            if (elevations.isNotEmpty()) {
-                this.elevation = elevationsFromString(elevations)?.toImmutableMap()
-            }
+        private fun elevation(props: Properties, elevations: String): Properties {
+            return if (elevations.isNotEmpty()) {
+                props.copy(elevation = elevationsFromString(elevations)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -345,48 +366,14 @@ internal class CardView private constructor(props: Properties) :
          * in the AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun border(border: String) = apply {
-            this.border = borderFromString(border)
+        private fun border(props: Properties, border: String): Properties {
+            return props.copy(border = borderFromString(border))
         }
 
-        fun onClick(onClick: String) = apply {
-            if (onClick.isNotEmpty()) {
-                this.onClick = onClick
-            }
+        private fun onClick(props: Properties, onClick: String): Properties {
+            return if (onClick.isNotEmpty()) {
+                props.copy(onClick = onClick)
+            } else props
         }
-
-        fun build() = CardView(
-            Properties(
-                shape,
-                cardColors,
-                elevation,
-                border,
-                onClick,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object CardViewFactory : ComposableViewFactory<CardView>() {
-    /**
-     * Creates a `CardView` object based on the attributes of the input `Attributes` object.
-     * CardView co-relates to the Card composable
-     * @param attributes the `Attributes` object to create the `CardView` object from
-     * @return a `CardView` object based on the attributes of the input `Attributes` object
-     **/
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): CardView = attributes.fold(CardView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrBorder -> builder.border(attribute.value)
-            attrColors -> builder.cardColors(attribute.value)
-            attrElevation -> builder.elevation(attribute.value)
-            attrPhxClick -> builder.onClick(attribute.value)
-            attrShape -> builder.shape(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as CardView.Builder
-    }.build()
 }

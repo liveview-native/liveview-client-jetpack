@@ -93,6 +93,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocuse
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedSupportingTextColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedTextColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnfocusedTrailingIconColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.ImeActionValues
 import org.phoenixframework.liveview.data.constants.KeyboardCapitalizationValues
 import org.phoenixframework.liveview.data.constants.KeyboardTypeValues
@@ -107,13 +108,10 @@ import org.phoenixframework.liveview.data.constants.VisualTransformationValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder.Companion.KEY_PHX_VALUE
-import org.phoenixframework.liveview.data.constants.ComposableTypes
-import org.phoenixframework.liveview.ui.base.ComposableViewFactory
-import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 import org.phoenixframework.liveview.ui.theme.textStyleFromString
@@ -548,16 +546,54 @@ internal class TextFieldView private constructor(props: Properties) :
         val colors: ImmutableMap<String, String>? = null,
         val keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
         val keyboardActions: KeyboardActions = KeyboardActions.Default,
-        override val changeableProps: ChangeableProperties,
-        override val commonProps: CommonComposableProperties,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : IChangeableProperties
 
-    internal class Builder : ChangeableViewBuilder() {
-        var properties: Properties = Properties(
-            changeableProps = changeableProps,
-            commonProps = commonProps
-        )
-            private set
+    internal object Factory : ChangeableView.Factory() {
+
+        /**
+         * Creates a `TextFieldDTO` object based on the attributes and text of the input `Attributes`
+         * object. TextFieldDTO co-relates to the TextField composable
+         *
+         * @param attributes the `Attributes` object to create the `TextFieldDTO` object from
+         * @return a `TextFieldDTO` object based on the attributes and text of the input `Attributes`
+         * object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): TextFieldView = TextFieldView(
+            attributes.fold(Properties()) { props, attribute ->
+                handleChangeableAttribute(props.changeableProps, attribute)?.let {
+                    props.copy(changeableProps = it)
+                } ?: run {
+                    when (attribute.name) {
+                        attrAutoCorrect -> autoCorrect(props, attribute.value)
+                        attrCapitalization -> capitalization(props, attribute.value)
+                        attrColors -> colors(props, attribute.value)
+                        attrImeAction -> imeAction(props, attribute.value)
+                        attrIsError -> isError(props, attribute.value)
+                        attrKeyboardType -> keyboardType(props, attribute.value)
+                        attrMaxLines -> maxLines(props, attribute.value)
+                        attrMinLines -> minLines(props, attribute.value)
+                        attrPhxClick -> onKeyboardAction(props, attribute.value, pushEvent)
+                        attrReadOnly -> readOnly(props, attribute.value)
+                        attrShape -> shape(props, attribute.value)
+                        attrSingleLine -> singleLine(props, attribute.value)
+                        // FIXME style attribute is used for modifiers, so I renamed to textStyle
+                        attrTextStyle -> textStyle(props, attribute.value)
+                        attrVisualTransformation -> visualTransformation(props, attribute.value)
+                        else -> props.copy(
+                            commonProps = handleCommonAttributes(
+                                props.commonProps,
+                                attribute,
+                                pushEvent,
+                                scope
+                            )
+                        )
+                    }
+                }
+            })
 
         /**
          * This function allows to set a click event to the virtual keyboard action button (e.g.:
@@ -567,9 +603,13 @@ internal class TextFieldView private constructor(props: Properties) :
          * @param event event name defined on the server to handle the IME action.
          * @param pushEvent function responsible to dispatch the server call.
          */
-        fun onKeyboardAction(event: String, pushEvent: PushEvent?) = apply {
-            val action = onClickFromString(pushEvent, event, properties.commonProps.phxValue)
-            this.properties = this.properties.copy(
+        private fun onKeyboardAction(
+            props: Properties,
+            event: String,
+            pushEvent: PushEvent?
+        ): Properties {
+            val action = onClickFromString(pushEvent, event, props.commonProps.phxValue)
+            return props.copy(
                 keyboardActions = KeyboardActions(
                     onDone = { action.invoke() },
                     onGo = { action.invoke() },
@@ -588,8 +628,8 @@ internal class TextFieldView private constructor(props: Properties) :
          *
          * @param readOnly true if the text field is read only, false otherwise.
          */
-        fun readOnly(readOnly: String) = apply {
-            this.properties = this.properties.copy(readOnly = readOnly.toBoolean())
+        private fun readOnly(props: Properties, readOnly: String): Properties {
+            return props.copy(readOnly = readOnly.toBoolean())
         }
 
         /**
@@ -600,8 +640,8 @@ internal class TextFieldView private constructor(props: Properties) :
          * ```
          * @param textStyle style to be applied to the text field.
          */
-        fun textStyle(textStyle: String) = apply {
-            this.properties = this.properties.copy(textStyle = textStyle)
+        private fun textStyle(props: Properties, textStyle: String): Properties {
+            return props.copy(textStyle = textStyle)
         }
 
         /**
@@ -612,8 +652,8 @@ internal class TextFieldView private constructor(props: Properties) :
          * ```
          * @param isError true if the text field is in error state, false otherwise.
          */
-        fun isError(isError: String) = apply {
-            this.properties = this.properties.copy(isError = isError.toBoolean())
+        private fun isError(props: Properties, isError: String): Properties {
+            return props.copy(isError = isError.toBoolean())
         }
 
         /**
@@ -626,10 +666,10 @@ internal class TextFieldView private constructor(props: Properties) :
          * ```
          * @param singleLine true if the text field is in error state, false otherwise.
          */
-        fun singleLine(singleLine: String) = apply {
-            this.properties = this.properties.copy(
+        private fun singleLine(props: Properties, singleLine: String): Properties {
+            return props.copy(
                 singleLine = singleLine.toBoolean(),
-                maxLines = if (this.properties.singleLine) 1 else Int.MAX_VALUE
+                maxLines = if (props.singleLine) 1 else Int.MAX_VALUE
             )
         }
 
@@ -641,9 +681,8 @@ internal class TextFieldView private constructor(props: Properties) :
          * ```
          * @param maxLines maximum number of visible lines.
          */
-        fun maxLines(maxLines: String) = apply {
-            this.properties =
-                this.properties.copy(maxLines = maxLines.toIntOrNull() ?: Int.MAX_VALUE)
+        private fun maxLines(props: Properties, maxLines: String): Properties {
+            return props.copy(maxLines = maxLines.toIntOrNull() ?: Int.MAX_VALUE)
         }
 
         /**
@@ -654,8 +693,8 @@ internal class TextFieldView private constructor(props: Properties) :
          * ```
          * @param minLines minimum number of visible lines.
          */
-        fun minLines(minLines: String) = apply {
-            this.properties = this.properties.copy(minLines = minLines.toIntOrNull() ?: 1)
+        private fun minLines(props: Properties, minLines: String): Properties {
+            return props.copy(minLines = minLines.toIntOrNull() ?: 1)
         }
 
         /**
@@ -667,8 +706,8 @@ internal class TextFieldView private constructor(props: Properties) :
          * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
          * representing the curve size applied to all four corners.
          */
-        fun shape(shape: String) = apply {
-            this.properties = this.properties.copy(shape = shapeFromString(shape))
+        private fun shape(props: Properties, shape: String): Properties {
+            return props.copy(shape = shapeFromString(shape))
         }
 
         /**
@@ -681,8 +720,8 @@ internal class TextFieldView private constructor(props: Properties) :
          * @param transformation `password` for password text fields, or `none` for a regular one
          * (default).
          */
-        fun visualTransformation(transformation: String) = apply {
-            this.properties = this.properties.copy(
+        private fun visualTransformation(props: Properties, transformation: String): Properties {
+            return props.copy(
                 visualTransformation = when (transformation) {
                     VisualTransformationValues.password ->
                         PasswordVisualTransformation()
@@ -719,11 +758,10 @@ internal class TextFieldView private constructor(props: Properties) :
          * - `OutlinedTextField` specific are: `focusedBorderColor`, `unfocusedBorderColor,
          * `disabledBorderColor`, and `errorBorderColor`
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.properties =
-                    this.properties.copy(colors = colorsFromString(colors)?.toImmutableMap())
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                return props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -736,9 +774,9 @@ internal class TextFieldView private constructor(props: Properties) :
          * @param capitalization capitalization type. See the supported values at
          * [org.phoenixframework.liveview.data.constants.KeyboardCapitalizationValues].
          */
-        fun capitalization(capitalization: String) = apply {
-            val keyboardOptions = this.properties.keyboardOptions
-            this.properties = this.properties.copy(
+        private fun capitalization(props: Properties, capitalization: String): Properties {
+            val keyboardOptions = props.keyboardOptions
+            return props.copy(
                 keyboardOptions = when (capitalization) {
                     KeyboardCapitalizationValues.characters ->
                         keyboardOptions.copy(capitalization = KeyboardCapitalization.Characters)
@@ -765,9 +803,9 @@ internal class TextFieldView private constructor(props: Properties) :
          * ```
          * @param autoCorrect true to enable auto correct, false otherwise.
          */
-        fun autoCorrect(autoCorrect: String) = apply {
-            val keyboardOptions = this.properties.keyboardOptions
-            this.properties = this.properties.copy(
+        private fun autoCorrect(props: Properties, autoCorrect: String): Properties {
+            val keyboardOptions = props.keyboardOptions
+            return props.copy(
                 keyboardOptions = keyboardOptions.copy(
                     autoCorrect = autoCorrect.toBoolean()
                 )
@@ -784,9 +822,9 @@ internal class TextFieldView private constructor(props: Properties) :
          * @param keyboardType the keyboard type. See the supported values at
          * [org.phoenixframework.liveview.data.constants.KeyboardTypeValues]
          */
-        fun keyboardType(keyboardType: String) = apply {
-            val keyboardOptions = this.properties.keyboardOptions
-            this.properties = this.properties.copy(
+        private fun keyboardType(props: Properties, keyboardType: String): Properties {
+            val keyboardOptions = props.keyboardOptions
+            return props.copy(
                 keyboardOptions = when (keyboardType) {
                     KeyboardTypeValues.ascii -> keyboardOptions.copy(keyboardType = KeyboardType.Ascii)
                     KeyboardTypeValues.number -> keyboardOptions.copy(keyboardType = KeyboardType.Number)
@@ -812,9 +850,9 @@ internal class TextFieldView private constructor(props: Properties) :
          * @param imeAction IME action. See supported values at
          * [org.phoenixframework.liveview.data.constants.ImeActionValues].
          */
-        fun imeAction(imeAction: String) = apply {
-            val keyboardOptions = this.properties.keyboardOptions
-            this.properties = this.properties.copy(
+        private fun imeAction(props: Properties, imeAction: String): Properties {
+            val keyboardOptions = props.keyboardOptions
+            return props.copy(
                 keyboardOptions = when (imeAction) {
                     ImeActionValues.none -> keyboardOptions.copy(imeAction = ImeAction.None)
                     ImeActionValues.go -> keyboardOptions.copy(imeAction = ImeAction.Go)
@@ -827,52 +865,5 @@ internal class TextFieldView private constructor(props: Properties) :
                 }
             )
         }
-
-        fun build() = TextFieldView(
-            properties.copy(
-                changeableProps = changeableProps,
-                commonProps = commonProps
-            )
-        )
     }
-}
-
-internal object TextFieldViewFactory : ComposableViewFactory<TextFieldView>() {
-
-    /**
-     * Creates a `TextFieldDTO` object based on the attributes and text of the input `Attributes`
-     * object. TextFieldDTO co-relates to the TextField composable
-     *
-     * @param attributes the `Attributes` object to create the `TextFieldDTO` object from
-     * @return a `TextFieldDTO` object based on the attributes and text of the input `Attributes`
-     * object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): TextFieldView = TextFieldView.Builder().also {
-        attributes.fold(it) { builder, attribute ->
-            if (builder.handleChangeableAttribute(attribute)) {
-                builder
-            } else {
-                when (attribute.name) {
-                    attrAutoCorrect -> builder.autoCorrect(attribute.value)
-                    attrCapitalization -> builder.capitalization(attribute.value)
-                    attrColors -> builder.colors(attribute.value)
-                    attrImeAction -> builder.imeAction(attribute.value)
-                    attrIsError -> builder.isError(attribute.value)
-                    attrKeyboardType -> builder.keyboardType(attribute.value)
-                    attrMaxLines -> builder.maxLines(attribute.value)
-                    attrMinLines -> builder.minLines(attribute.value)
-                    attrPhxClick -> builder.onKeyboardAction(attribute.value, pushEvent)
-                    attrReadOnly -> builder.readOnly(attribute.value)
-                    attrShape -> builder.shape(attribute.value)
-                    attrSingleLine -> builder.singleLine(attribute.value)
-                    // FIXME style attribute is used for modifiers, so I renamed to textStyle
-                    attrTextStyle -> builder.textStyle(attribute.value)
-                    attrVisualTransformation -> builder.visualTransformation(attribute.value)
-                    else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-                } as TextFieldView.Builder
-            }
-        }
-    }.build()
 }

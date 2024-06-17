@@ -41,11 +41,10 @@ import org.phoenixframework.liveview.data.constants.Templates.templateThumb
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableViewFactory
-import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -154,18 +153,43 @@ internal class SwitchView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val checked: Boolean,
-        val colors: ImmutableMap<String, String>?,
-        override val changeableProps: ChangeableProperties,
-        override val commonProps: CommonComposableProperties,
+        val checked: Boolean = false,
+        val colors: ImmutableMap<String, String>? = null,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : IChangeableProperties
 
-    internal class Builder : ChangeableViewBuilder() {
-        private var checked: Boolean = false
-        private var colors: ImmutableMap<String, String>? = null
+    internal object Factory : ChangeableView.Factory() {
+        /**
+         * Creates a `SwitchDTO` object based on the attributes of the input `Attributes` object.
+         * SwitchDTO co-relates to the Switch composable
+         * @param attributes the `Attributes` object to create the `SwitchDTO` object from
+         * @return a `SwitchDTO` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): SwitchView = SwitchView(
+            attributes.fold(Properties()) { props, attribute ->
+                handleChangeableAttribute(props.changeableProps, attribute)?.let {
+                    props.copy(changeableProps = it)
+                } ?: run {
+                    when (attribute.name) {
+                        attrChecked -> checked(props, attribute.value)
+                        attrColors -> colors(props, attribute.value)
+                        else -> props.copy(
+                            commonProps = handleCommonAttributes(
+                                props.commonProps,
+                                attribute,
+                                pushEvent,
+                                scope
+                            )
+                        )
+                    }
+                }
+            })
 
-        fun checked(checked: String) = apply {
-            this.checked = checked.toBoolean()
+        private fun checked(props: Properties, checked: String): Properties {
+            return props.copy(checked = checked.toBoolean())
         }
 
         /**
@@ -182,45 +206,10 @@ internal class SwitchView private constructor(props: Properties) :
          * `disabledUncheckedTrackColor`, `disabledUncheckedBorderColor`, and
          * `disabledUncheckedIconColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
-
-        fun build() = SwitchView(
-            Properties(
-                checked,
-                colors,
-                changeableProps,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object SwitchViewFactory : ComposableViewFactory<SwitchView>() {
-    /**
-     * Creates a `SwitchDTO` object based on the attributes of the input `Attributes` object.
-     * SwitchDTO co-relates to the Switch composable
-     * @param attributes the `Attributes` object to create the `SwitchDTO` object from
-     * @return a `SwitchDTO` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): SwitchView = SwitchView.Builder().also {
-        attributes.fold(
-            it
-        ) { builder, attribute ->
-            if (builder.handleChangeableAttribute(attribute)) {
-                builder
-            } else {
-                when (attribute.name) {
-                    attrChecked -> builder.checked(attribute.value)
-                    attrColors -> builder.colors(attribute.value)
-                    else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-                } as SwitchView.Builder
-            }
-        }
-    }.build()
 }

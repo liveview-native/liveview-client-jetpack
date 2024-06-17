@@ -20,14 +20,13 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs
 import org.phoenixframework.liveview.data.constants.Templates
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -130,20 +129,38 @@ internal class NavigationRailItemView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val alwaysShowLabel: Boolean,
-        val colors: ImmutableMap<String, String>?,
-        val enabled: Boolean,
-        val onClick: String,
-        val selected: Boolean,
-        override val commonProps: CommonComposableProperties,
+        val alwaysShowLabel: Boolean = true,
+        val colors: ImmutableMap<String, String>? = null,
+        val enabled: Boolean = true,
+        val onClick: String = "",
+        val selected: Boolean = false,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var alwaysShowLabel: Boolean = true
-        private var colors: ImmutableMap<String, String>? = null
-        private var enabled: Boolean = true
-        private var onClick: String = ""
-        private var selected: Boolean = false
+    internal object Factory :
+        ComposableViewFactory<NavigationRailItemView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): NavigationRailItemView = NavigationRailItemView(
+            attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrAlwaysShowLabel -> alwaysShowLabel(props, attribute.value)
+                    attrColors -> colors(props, attribute.value)
+                    attrEnabled -> enabled(props, attribute.value)
+                    attrPhxClick -> onClick(props, attribute.value)
+                    attrSelected -> selected(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
 
         /**
          * Controls the enabled state of this item. When false, this component will not respond to
@@ -153,8 +170,8 @@ internal class NavigationRailItemView private constructor(props: Properties) :
          * ```
          * @param enabled true if the item is enabled, false otherwise.
          */
-        fun enabled(enabled: String) = apply {
-            this.enabled = enabled.toBoolean()
+        private fun enabled(props: Properties, enabled: String): Properties {
+            return props.copy(enabled = enabled.toBoolean())
         }
 
         /**
@@ -166,8 +183,8 @@ internal class NavigationRailItemView private constructor(props: Properties) :
          * @param alwaysShowLabel true if the label is always visible, false if it's only visible
          * when is selected.
          */
-        fun alwaysShowLabel(alwaysShowLabel: String) = apply {
-            this.alwaysShowLabel = alwaysShowLabel.toBoolean()
+        private fun alwaysShowLabel(props: Properties, alwaysShowLabel: String): Properties {
+            return props.copy(alwaysShowLabel = alwaysShowLabel.toBoolean())
         }
 
         /**
@@ -183,10 +200,10 @@ internal class NavigationRailItemView private constructor(props: Properties) :
          * `unselectedIconColor`, `unselectedTextColor`, `disabledIconColor`, and
          * `disabledTextColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -196,8 +213,8 @@ internal class NavigationRailItemView private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
-        fun onClick(event: String) = apply {
-            this.onClick = event
+        private fun onClick(props: Properties, event: String): Properties {
+            return props.copy(onClick = event)
         }
 
         /**
@@ -207,37 +224,8 @@ internal class NavigationRailItemView private constructor(props: Properties) :
          * ```
          * @param selected true if the item is selected, false otherwise.
          */
-        fun selected(selected: String) = apply {
-            this.selected = selected.toBoolean()
+        private fun selected(props: Properties, selected: String): Properties {
+            return props.copy(selected = selected.toBoolean())
         }
-
-        fun build() = NavigationRailItemView(
-            Properties(
-                alwaysShowLabel,
-                colors,
-                enabled,
-                onClick,
-                selected,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object NavigationRailItemViewFactory : ComposableViewFactory<NavigationRailItemView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): NavigationRailItemView =
-        attributes.fold(NavigationRailItemView.Builder()) { builder, attribute ->
-            when (attribute.name) {
-                attrAlwaysShowLabel -> builder.alwaysShowLabel(attribute.value)
-                attrColors -> builder.colors(attribute.value)
-                attrEnabled -> builder.enabled(attribute.value)
-                attrPhxClick -> builder.onClick(attribute.value)
-                attrSelected -> builder.selected(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as NavigationRailItemView.Builder
-        }.build()
 }

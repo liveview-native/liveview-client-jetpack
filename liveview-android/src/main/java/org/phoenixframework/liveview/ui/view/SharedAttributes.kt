@@ -126,10 +126,10 @@ import org.phoenixframework.liveview.data.constants.TransformOriginValues
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
 import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
 import org.phoenixframework.liveview.data.mappers.JsonParser
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
-import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.ui.base.ComposableView.Companion.EVENT_TYPE_CLICK
+import org.phoenixframework.liveview.ui.base.PushEvent
 
 /**
  * Returns a `WindowInsets` object from a String.
@@ -278,7 +278,7 @@ internal fun onClickFromString(
     target: Int? = null
 ): () -> Unit = {
     if (event.isNotEmpty()) {
-        pushEvent?.invoke(ComposableBuilder.EVENT_TYPE_CLICK, event, value, target)
+        pushEvent?.invoke(EVENT_TYPE_CLICK, event, value, target)
     }
 }
 

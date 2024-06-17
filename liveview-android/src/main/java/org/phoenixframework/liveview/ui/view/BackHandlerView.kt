@@ -8,14 +8,12 @@ import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxKeyUp
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
-import org.phoenixframework.liveview.ui.base.ComposableBuilder.Companion.EVENT_TYPE_KEY_UP
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 
 /**
  * An effect for handling presses of the system back button. If this is called by nested components,
@@ -51,14 +49,32 @@ internal class BackHandlerView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val enabled: Boolean,
-        val onBack: String,
-        override val commonProps: CommonComposableProperties,
+        val enabled: Boolean = false,
+        val onBack: String = "",
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var enabled: Boolean = false
-        private var onBack: String = ""
+    internal object Factory : ComposableViewFactory<BackHandlerView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): BackHandlerView = BackHandlerView(
+            attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrEnabled -> enabled(props, attribute.value)
+                    attrPhxKeyUp -> onBack(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            }
+        )
 
         /**
          * Sets the event name to be triggered on the server when the back button is pressed.
@@ -68,8 +84,8 @@ internal class BackHandlerView private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the back press.
          */
-        fun onBack(event: String) = apply {
-            this.onBack = event
+        private fun onBack(props: Properties, event: String): Properties {
+            return props.copy(onBack = event)
         }
 
         /**
@@ -80,30 +96,8 @@ internal class BackHandlerView private constructor(props: Properties) :
          * ```
          * @param enabled true if the button is enabled, false otherwise.
          */
-        fun enabled(enabled: String) = apply {
-            this.enabled = enabled.toBoolean()
+        private fun enabled(props: Properties, enabled: String): Properties {
+            return props.copy(enabled = enabled.toBoolean())
         }
-
-        fun build() = BackHandlerView(
-            Properties(enabled, onBack, commonProps)
-        )
     }
-}
-
-internal object BackHandlerViewFactory : ComposableViewFactory<BackHandlerView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): BackHandlerView = BackHandlerView.Builder().also {
-        attributes.fold(
-            it
-        ) { builder, attribute ->
-            when (attribute.name) {
-                attrEnabled -> builder.enabled(attribute.value)
-                attrPhxKeyUp -> builder.onBack(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as BackHandlerView.Builder
-        }
-    }.build()
 }

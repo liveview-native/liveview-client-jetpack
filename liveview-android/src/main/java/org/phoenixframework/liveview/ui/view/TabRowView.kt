@@ -16,17 +16,16 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrEdgePadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelectedTabIndex
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.Templates.templateDivider
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -114,18 +113,40 @@ internal class TabRowView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val selectedTabIndex: Int,
-        val containerColor: Color?,
-        val contentColor: Color?,
-        val edgePadding: Dp?,
-        override val commonProps: CommonComposableProperties,
+        val selectedTabIndex: Int = 0,
+        val containerColor: Color? = null,
+        val contentColor: Color? = null,
+        val edgePadding: Dp? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var selectedTabIndex: Int = 0
-        private var containerColor: Color? = null
-        private var contentColor: Color? = null
-        private var edgePadding: Dp? = null
+    internal object Factory : ComposableViewFactory<TabRowView>() {
+        /**
+         * Creates a `TabRowView` object based on the attributes of the input `Attributes` object.
+         * TabRowView co-relates to the TabRow composable
+         * @param attributes the `Attributes` object to create the `TabRowView` object from
+         * @return a `TabRowView` object based on the attributes of the input `Attributes` object
+         **/
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): TabRowView = TabRowView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrContainerColor -> containerColor(props, attribute.value)
+                attrContentColor -> contentColor(props, attribute.value)
+                attrEdgePadding -> edgePadding(props, attribute.value)
+                attrSelectedTabIndex -> selectedTabIndex(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * The index of the currently selected tab.
@@ -134,8 +155,8 @@ internal class TabRowView private constructor(props: Properties) :
          * ```
          * @param index current selected tab index.
          */
-        fun selectedTabIndex(index: String) = apply {
-            this.selectedTabIndex = index.toIntOrNull() ?: 0
+        private fun selectedTabIndex(props: Properties, index: String): Properties {
+            return props.copy(selectedTabIndex = index.toIntOrNull() ?: 0)
         }
 
         /**
@@ -146,8 +167,8 @@ internal class TabRowView private constructor(props: Properties) :
          * @param containerColor the background color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun containerColor(containerColor: String) = apply {
-            this.containerColor = containerColor.toColor()
+        private fun containerColor(props: Properties, containerColor: String): Properties {
+            return props.copy(containerColor = containerColor.toColor())
         }
 
         /**
@@ -158,8 +179,8 @@ internal class TabRowView private constructor(props: Properties) :
          * @param contentColor the content color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun contentColor(contentColor: String) = apply {
-            this.contentColor = contentColor.toColor()
+        private fun contentColor(props: Properties, contentColor: String): Properties {
+            return props.copy(contentColor = contentColor.toColor())
         }
 
         /**
@@ -170,40 +191,8 @@ internal class TabRowView private constructor(props: Properties) :
          * ```
          * @param padding current selected tab index.
          */
-        fun edgePadding(padding: String) = apply {
-            this.edgePadding = padding.toIntOrNull()?.dp
+        private fun edgePadding(props: Properties, padding: String): Properties {
+            return props.copy(edgePadding = padding.toIntOrNull()?.dp)
         }
-
-        fun build() = TabRowView(
-            Properties(
-                selectedTabIndex,
-                containerColor,
-                contentColor,
-                edgePadding,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object TabRowViewFactory : ComposableViewFactory<TabRowView>() {
-    /**
-     * Creates a `TabRowView` object based on the attributes of the input `Attributes` object.
-     * TabRowView co-relates to the TabRow composable
-     * @param attributes the `Attributes` object to create the `TabRowView` object from
-     * @return a `TabRowView` object based on the attributes of the input `Attributes` object
-     **/
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): TabRowView = attributes.fold(TabRowView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrContainerColor -> builder.containerColor(attribute.value)
-            attrContentColor -> builder.contentColor(attribute.value)
-            attrEdgePadding -> builder.edgePadding(attribute.value)
-            attrSelectedTabIndex -> builder.selectedTabIndex(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as TabRowView.Builder
-    }.build()
 }

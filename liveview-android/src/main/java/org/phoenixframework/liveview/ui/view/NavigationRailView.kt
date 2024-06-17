@@ -15,14 +15,13 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
 import org.phoenixframework.liveview.data.constants.Templates.templateHeader
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -85,16 +84,33 @@ internal class NavigationRailView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val containerColor: Color?,
-        val contentColor: Color?,
-        val windowInsets: WindowInsets?,
-        override val commonProps: CommonComposableProperties,
+        val containerColor: Color? = null,
+        val contentColor: Color? = null,
+        val windowInsets: WindowInsets? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var containerColor: Color? = null
-        private var contentColor: Color? = null
-        private var windowInsets: WindowInsets? = null
+    internal object Factory : ComposableViewFactory<NavigationRailView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): NavigationRailView = NavigationRailView(
+            attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrContainerColor -> containerColor(props, attribute.value)
+                    attrContentColor -> contentColor(props, attribute.value)
+                    attrWindowInsets -> windowInsets(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
 
         /**
          * The color used for the background of this navigation rail.
@@ -104,10 +120,10 @@ internal class NavigationRailView private constructor(props: Properties) :
          * @param color container color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun containerColor(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.containerColor = color.toColor()
-            }
+        private fun containerColor(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(containerColor = color.toColor())
+            } else props
         }
 
         /**
@@ -118,10 +134,10 @@ internal class NavigationRailView private constructor(props: Properties) :
          * @param color content color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun contentColor(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.contentColor = color.toColor()
-            }
+        private fun contentColor(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(contentColor = color.toColor())
+            } else props
         }
 
         /**
@@ -132,37 +148,13 @@ internal class NavigationRailView private constructor(props: Properties) :
          * @param insets the space, in Dp, at the each border of the window that the inset
          * represents. The supported values are: `left`, `top`, `bottom`, and `right`.
          */
-        fun windowInsets(insets: String) = apply {
-            try {
-                this.windowInsets = windowInsetsFromString(insets)
+        private fun windowInsets(props: Properties, insets: String): Properties {
+            return try {
+                props.copy(windowInsets = windowInsetsFromString(insets))
             } catch (e: Exception) {
                 e.printStackTrace()
+                props
             }
         }
-
-        fun build() = NavigationRailView(
-            Properties(
-                containerColor,
-                contentColor,
-                windowInsets,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object NavigationRailViewFactory : ComposableViewFactory<NavigationRailView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): NavigationRailView =
-        attributes.fold(NavigationRailView.Builder()) { builder, attribute ->
-            when (attribute.name) {
-                attrContainerColor -> builder.containerColor(attribute.value)
-                attrContentColor -> builder.contentColor(attribute.value)
-                attrWindowInsets -> builder.windowInsets(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as NavigationRailView.Builder
-        }.build()
 }

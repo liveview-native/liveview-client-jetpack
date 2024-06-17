@@ -14,7 +14,6 @@ import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrExpanded
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.data.constants.ComposableTypes.exposedDropdownMenu
 import org.phoenixframework.liveview.ui.base.ComposableView
@@ -97,20 +96,47 @@ internal class ExposedDropdownMenuBoxView private constructor(props: Properties)
 
     @Stable
     internal data class Properties(
-        val expanded: Boolean,
-        override val commonProps: CommonComposableProperties,
+        val expanded: Boolean = false,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var expanded: Boolean = false
+    internal object Factory : ComposableViewFactory<ExposedDropdownMenuBoxView>() {
 
-        fun expanded(expanded: String) = apply {
-            this.expanded = expanded.toBoolean()
+        /**
+         * Creates a `ExposedDropdownMenuBoxView` object based on the attributes of the input
+         * `Attributes` object. ExposedDropdownMenuBoxView co-relates to the ExposedDropdownMenuBox
+         * composable.
+         * @param attributes the `Attributes` object to create the `ExposedDropdownMenuBoxView` object
+         * from
+         * @return a `ExposedDropdownMenuBoxView` object based on the attributes of the input
+         * `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): ExposedDropdownMenuBoxView = ExposedDropdownMenuBoxView(
+            attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrExpanded -> expanded(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
+
+        override fun subTags(): Map<String, ComposableViewFactory<*>> {
+            return mapOf(exposedDropdownMenu to ExposedDropdownMenuView.Factory)
         }
 
-        fun build() = ExposedDropdownMenuBoxView(
-            Properties(expanded, commonProps)
-        )
+        private fun expanded(props: Properties, expanded: String): Properties {
+            return props.copy(expanded = expanded.toBoolean())
+        }
     }
 }
 
@@ -122,36 +148,3 @@ internal data class ExposedDropdownMenuBoxScopeWrapper(
     val isExpanded: Boolean,
     val onDismissRequest: () -> Unit
 )
-
-internal object ExposedDropdownMenuBoxViewFactory :
-    ComposableViewFactory<ExposedDropdownMenuBoxView>() {
-
-    /**
-     * Creates a `ExposedDropdownMenuBoxView` object based on the attributes of the input
-     * `Attributes` object. ExposedDropdownMenuBoxView co-relates to the ExposedDropdownMenuBox
-     * composable.
-     * @param attributes the `Attributes` object to create the `ExposedDropdownMenuBoxView` object
-     * from
-     * @return a `ExposedDropdownMenuBoxView` object based on the attributes of the input
-     * `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): ExposedDropdownMenuBoxView =
-        attributes.fold(ExposedDropdownMenuBoxView.Builder()) { builder, attribute ->
-            when (attribute.name) {
-                attrExpanded -> builder.expanded(attribute.value)
-                else -> builder.handleCommonAttributes(
-                    attribute,
-                    pushEvent,
-                    scope
-                ) as ExposedDropdownMenuBoxView.Builder
-            }
-        }.build()
-
-    override fun subTags(): Map<String, ComposableViewFactory<*>> {
-        return mapOf(exposedDropdownMenu to ExposedDropdownMenuViewFactory)
-    }
-}

@@ -15,15 +15,14 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
 import org.phoenixframework.liveview.data.constants.Attrs.attrTint
 import org.phoenixframework.liveview.data.constants.IconPrefixValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 
 /**
  * A Material Design icon component that draws a local imageVector using tint. Icon is an
@@ -60,16 +59,41 @@ internal class IconView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val contentDescription: String,
-        val tint: Color?,
-        val imageVector: ImageVector?,
-        override val commonProps: CommonComposableProperties,
+        val contentDescription: String = "",
+        val tint: Color? = null,
+        val imageVector: ImageVector? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var contentDescription: String = ""
-        private var tint: Color? = null
-        private var imageVector: ImageVector? = null
+    internal object Factory : ComposableViewFactory<IconView>() {
+
+        private val iconCache = mutableMapOf<String, ImageVector>()
+
+        /**
+         * Creates a `IconView` object based on the attributes of the input `Attributes` object.
+         * IconView co-relates to the Icon composable
+         * @param attributes the `Attributes` object to create the `IconView` object from
+         * @return a `IconView` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): IconView = IconView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrImageVector -> imageVector(props, attribute.value)
+                attrTint -> tint(props, attribute.value)
+                attrContentDescription -> contentDescription(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * Sets the icon content description fro accessibility purpose.
@@ -79,8 +103,8 @@ internal class IconView private constructor(props: Properties) :
          * ```
          * @param contentDescription string representing the icon's content description
          */
-        fun contentDescription(contentDescription: String) = apply {
-            this.contentDescription = contentDescription
+        private fun contentDescription(props: Properties, contentDescription: String): Properties {
+            return props.copy(contentDescription = contentDescription)
         }
 
         /**
@@ -91,8 +115,8 @@ internal class IconView private constructor(props: Properties) :
          * @param tintColor the icon tint color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun tint(tintColor: String) = apply {
-            this.tint = tintColor.toColor()
+        private fun tint(props: Properties, tintColor: String): Properties {
+            return props.copy(tint = tintColor.toColor())
         }
 
         /**
@@ -105,53 +129,17 @@ internal class IconView private constructor(props: Properties) :
          * ```
          * @param icon material icon following the pattern: *theme:icon* (e.g.: `"filled:Send"`).
          */
-        fun imageVector(icon: String) = apply {
-            imageVector = getIcon(icon)
+        private fun imageVector(props: Properties, icon: String): Properties {
+            return props.copy(imageVector = getIcon(icon))
         }
 
-        fun build() = IconView(
-            Properties(
-                contentDescription,
-                tint,
-                imageVector,
-                commonProps,
-            )
-        )
-
-        companion object {
-            private val iconCache = mutableMapOf<String, ImageVector>()
-
-            fun getIcon(icon: String): ImageVector? {
-                if (!iconCache.containsKey(icon)) {
-                    icon.toMaterialIcon()?.let { iconCache[icon] = it }
-                }
-                return iconCache[icon]
+        private fun getIcon(icon: String): ImageVector? {
+            if (!iconCache.containsKey(icon)) {
+                icon.toMaterialIcon()?.let { iconCache[icon] = it }
             }
+            return iconCache[icon]
         }
     }
-}
-
-internal object IconViewFactory : ComposableViewFactory<IconView>() {
-    /**
-     * Creates a `IconView` object based on the attributes of the input `Attributes` object.
-     * IconView co-relates to the Icon composable
-     * @param attributes the `Attributes` object to create the `IconView` object from
-     * @return a `IconView` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): IconView = attributes.fold(
-        IconView.Builder()
-    ) { builder, attribute ->
-        when (attribute.name) {
-            attrImageVector -> builder.imageVector(attribute.value)
-            attrTint -> builder.tint(attribute.value)
-            attrContentDescription -> builder.contentDescription(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as IconView.Builder
-    }.build()
 }
 
 private fun String.toMaterialIcon(): ImageVector? = try {

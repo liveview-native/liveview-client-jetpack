@@ -21,13 +21,12 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrCrossFade
 import org.phoenixframework.liveview.data.constants.Attrs.attrUrl
 import org.phoenixframework.liveview.data.constants.Templates
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.LocalHttpUrl
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import java.net.URI
@@ -102,22 +101,50 @@ internal class AsyncImageView private constructor(props: Properties) :
 
     @Stable
     data class Properties(
-        val imageUrl: String,
-        val contentDescription: String?,
-        val crossFade: Boolean,
-        val alignment: Alignment,
-        val contentScale: ContentScale,
-        val alpha: Float,
-        override val commonProps: CommonComposableProperties,
+        val imageUrl: String = "",
+        val contentDescription: String? = null,
+        val crossFade: Boolean = false,
+        val alignment: Alignment = Alignment.Center,
+        val contentScale: ContentScale = ContentScale.Fit,
+        val alpha: Float = 1.0f,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var imageUrl: String = ""
-        private var contentDescription: String? = null
-        private var crossFade: Boolean = false
-        private var alignment: Alignment = Alignment.Center
-        private var contentScale: ContentScale = ContentScale.Fit
-        private var alpha: Float = 1.0f
+    internal object Factory : ComposableViewFactory<AsyncImageView>() {
+        /**
+         * Creates an `AsyncImageView` object based on the attributes and text of the input `Attributes`
+         * object. AsyncImageView co-relates to the AsyncImage composable from Coil library used to load
+         * images from network.
+         * @param attributes the `Attributes` object to create the `AsyncImageView` object from
+         * @return an `AsyncImageView` object based on the attributes and text of the input `Attributes`
+         * object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ) = AsyncImageView(
+            attributes.fold(
+                Properties()
+            ) { props, attribute ->
+                when (attribute.name) {
+                    attrAlignment -> alignment(props, attribute.value)
+                    attrAlpha -> alpha(props, attribute.value)
+                    attrContentDescription -> contentDescription(props, attribute.value)
+                    attrContentScale -> contentScale(props, attribute.value)
+                    attrCrossFade -> crossFade(props, attribute.value)
+                    attrUrl -> imageUrl(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
+
 
         /**
          * Sets the image URL.
@@ -127,8 +154,8 @@ internal class AsyncImageView private constructor(props: Properties) :
          * ```
          * @param imageUrl image url
          */
-        fun imageUrl(imageUrl: String) = apply {
-            this.imageUrl = imageUrl
+        private fun imageUrl(props: Properties, imageUrl: String): Properties {
+            return props.copy(imageUrl = imageUrl)
         }
 
         /**
@@ -139,8 +166,8 @@ internal class AsyncImageView private constructor(props: Properties) :
          * ```
          * @param contentDescription string representing the image's content description
          */
-        fun contentDescription(contentDescription: String) = apply {
-            this.contentDescription = contentDescription
+        private fun contentDescription(props: Properties, contentDescription: String): Properties {
+            return props.copy(contentDescription = contentDescription)
         }
 
         /**
@@ -151,10 +178,10 @@ internal class AsyncImageView private constructor(props: Properties) :
          * ```
          * @param crossFade true to enable a cross-fade animation, false otherwise.
          */
-        fun crossFade(crossFade: String) = apply {
-            if (crossFade.isNotEmpty()) {
-                this.crossFade = crossFade.toBoolean()
-            }
+        private fun crossFade(props: Properties, crossFade: String): Properties {
+            return if (crossFade.isNotEmpty()) {
+                props.copy(crossFade = crossFade.toBoolean())
+            } else props
         }
 
         /**
@@ -166,10 +193,10 @@ internal class AsyncImageView private constructor(props: Properties) :
          * @param contentScale content scale.
          * See the supported values at [org.phoenixframework.liveview.data.constants.ContentScaleValues].
          */
-        fun contentScale(contentScale: String) = apply {
-            if (contentScale.isNotEmpty()) {
-                this.contentScale = contentScaleFromString(contentScale)
-            }
+        private fun contentScale(props: Properties, contentScale: String): Properties {
+            return if (contentScale.isNotEmpty()) {
+                props.copy(contentScale = contentScaleFromString(contentScale))
+            } else props
         }
 
         /**
@@ -181,11 +208,15 @@ internal class AsyncImageView private constructor(props: Properties) :
          * @param alignment image alignment when the image is smaller than the available area.
          * See the supported values at [org.phoenixframework.liveview.data.constants.AlignmentValues].
          */
-        fun alignment(alignment: String) = apply {
-            if (alignment.isNotEmpty()) {
-                this.alignment =
-                    alignmentFromString(alignment = alignment, defaultValue = Alignment.Center)
-            }
+        private fun alignment(props: Properties, alignment: String): Properties {
+            return if (alignment.isNotEmpty()) {
+                props.copy(
+                    alignment = alignmentFromString(
+                        alignment = alignment,
+                        defaultValue = Alignment.Center
+                    )
+                )
+            } else props
         }
 
         /**
@@ -195,48 +226,8 @@ internal class AsyncImageView private constructor(props: Properties) :
          * ```
          * @param alpha float value between 0 (transparent) to 1 (opaque).
          */
-        fun alpha(alpha: String) = apply {
-            this.alpha = alpha.toFloatOrNull() ?: 1f
+        private fun alpha(props: Properties, alpha: String): Properties {
+            return props.copy(alpha = alpha.toFloatOrNull() ?: 1f)
         }
-
-        fun build(): AsyncImageView = AsyncImageView(
-            Properties(
-                imageUrl,
-                contentDescription,
-                crossFade,
-                alignment,
-                contentScale,
-                alpha,
-                commonProps
-            )
-        )
     }
-}
-
-internal object AsyncImageViewFactory : ComposableViewFactory<AsyncImageView>() {
-    /**
-     * Creates an `AsyncImageView` object based on the attributes and text of the input `Attributes`
-     * object. AsyncImageView co-relates to the AsyncImage composable from Coil library used to load
-     * images from network.
-     * @param attributes the `Attributes` object to create the `AsyncImageView` object from
-     * @return an `AsyncImageView` object based on the attributes and text of the input `Attributes`
-     * object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): AsyncImageView = attributes.fold(
-        AsyncImageView.Builder()
-    ) { builder, attribute ->
-        when (attribute.name) {
-            attrAlignment -> builder.alignment(attribute.value)
-            attrAlpha -> builder.alpha(attribute.value)
-            attrContentDescription -> builder.contentDescription(attribute.value)
-            attrContentScale -> builder.contentScale(attribute.value)
-            attrCrossFade -> builder.crossFade(attribute.value)
-            attrUrl -> builder.imageUrl(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as AsyncImageView.Builder
-    }.build()
 }

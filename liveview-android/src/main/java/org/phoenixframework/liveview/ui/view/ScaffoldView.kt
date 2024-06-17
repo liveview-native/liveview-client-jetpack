@@ -27,6 +27,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentWindowInsets
 import org.phoenixframework.liveview.data.constants.Attrs.attrFabPosition
 import org.phoenixframework.liveview.data.constants.Attrs.attrTopBarScrollBehavior
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.FabPositionValues
 import org.phoenixframework.liveview.data.constants.ScrollBehaviorValues
 import org.phoenixframework.liveview.data.constants.Templates.templateBody
@@ -34,15 +35,13 @@ import org.phoenixframework.liveview.data.constants.Templates.templateBottomBar
 import org.phoenixframework.liveview.data.constants.Templates.templateFab
 import org.phoenixframework.liveview.data.constants.Templates.templateTopBar
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -167,20 +166,48 @@ internal class ScaffoldView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val containerColor: Color?,
-        val contentColor: Color?,
-        val fabPosition: FabPosition,
-        val topAppScrollBehavior: String?,
-        val contentWindowInsets: WindowInsets?,
-        override val commonProps: CommonComposableProperties,
+        val containerColor: Color? = null,
+        val contentColor: Color? = null,
+        val fabPosition: FabPosition = FabPosition.End,
+        val topAppScrollBehavior: String? = null,
+        val contentWindowInsets: WindowInsets? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var containerColor: Color? = null
-        private var contentColor: Color? = null
-        private var fabPosition: FabPosition = FabPosition.End
-        private var topAppScrollBehavior: String? = null
-        private var contentWindowInsets: WindowInsets? = null
+    internal object Factory : ComposableViewFactory<ScaffoldView>() {
+        /**
+         * Creates a `ScaffoldView` object based on the attributes of the input `Attributes` object.
+         * ScaffoldView co-relates to the Scaffold composable
+         * @param attributes the `Attributes` object to create the `ScaffoldView` object from
+         * @return a `ScaffoldView` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): ScaffoldView = ScaffoldView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrContainerColor -> containerColor(props, attribute.value)
+                attrContentColor -> contentColor(props, attribute.value)
+                attrContentWindowInsets -> contentWindowInsets(props, attribute.value)
+                attrFabPosition -> fabPosition(props, attribute.value)
+                attrTopBarScrollBehavior -> topBarScrollBehavior(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
+
+        override fun subTags(): Map<String, ComposableViewFactory<*>> {
+            return mapOf(
+                ComposableTypes.snackbar to SnackbarView.Factory
+            )
+        }
 
         /**
          * Color used for the background of this scaffold.
@@ -188,10 +215,10 @@ internal class ScaffoldView private constructor(props: Properties) :
          * @param color container color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun containerColor(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.containerColor = color.toColor()
-            }
+        private fun containerColor(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(containerColor = color.toColor())
+            } else props
         }
 
         /**
@@ -200,10 +227,10 @@ internal class ScaffoldView private constructor(props: Properties) :
          * @param color content color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun contentColor(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.contentColor = color.toColor()
-            }
+        private fun contentColor(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(contentColor = color.toColor())
+            } else props
         }
 
         /**
@@ -216,11 +243,12 @@ internal class ScaffoldView private constructor(props: Properties) :
          * @param insets the space, in Dp, at the each border of the scaffold's content that the
          * inset represents. The supported values are: `left`, `top`, `bottom`, and `right`.
          */
-        fun contentWindowInsets(insets: String) = apply {
-            try {
-                this.contentWindowInsets = windowInsetsFromString(insets)
+        private fun contentWindowInsets(props: Properties, insets: String): Properties {
+            return try {
+                props.copy(contentWindowInsets = windowInsetsFromString(insets))
             } catch (e: Exception) {
                 e.printStackTrace()
+                props
             }
         }
 
@@ -230,16 +258,18 @@ internal class ScaffoldView private constructor(props: Properties) :
          * @param position FAB position on the screen. See the supported values at
          * [org.phoenixframework.liveview.data.constants.FabPositionValues].
          */
-        fun fabPosition(position: String) = apply {
-            if (position.isNotEmpty()) {
-                this.fabPosition = when (position) {
-                    FabPositionValues.center -> FabPosition.Center
-                    FabPositionValues.start -> FabPosition.Start
-                    FabPositionValues.end -> FabPosition.End
-                    FabPositionValues.endOverlay -> FabPosition.EndOverlay
-                    else -> FabPosition.End
-                }
-            }
+        private fun fabPosition(props: Properties, position: String): Properties {
+            return if (position.isNotEmpty()) {
+                props.copy(
+                    fabPosition = when (position) {
+                        FabPositionValues.center -> FabPosition.Center
+                        FabPositionValues.start -> FabPosition.Start
+                        FabPositionValues.end -> FabPosition.End
+                        FabPositionValues.endOverlay -> FabPosition.EndOverlay
+                        else -> FabPosition.End
+                    }
+                )
+            } else props
         }
 
         /**
@@ -255,22 +285,11 @@ internal class ScaffoldView private constructor(props: Properties) :
          * <Scaffold topBarScrollBehavior="exitUntilCollapsed">
          * ```
          */
-        fun topBarScrollBehavior(scrollBehavior: String) = apply {
-            if (scrollBehavior.isNotEmpty()) {
-                this.topAppScrollBehavior = scrollBehavior
-            }
+        private fun topBarScrollBehavior(props: Properties, scrollBehavior: String): Properties {
+            return if (scrollBehavior.isNotEmpty()) {
+                props.copy(topAppScrollBehavior = scrollBehavior)
+            } else props
         }
-
-        fun build() = ScaffoldView(
-            Properties(
-                containerColor,
-                contentColor,
-                fabPosition,
-                topAppScrollBehavior,
-                contentWindowInsets,
-                commonProps,
-            )
-        )
     }
 }
 
@@ -281,32 +300,3 @@ internal class ScaffoldView private constructor(props: Properties) :
  */
 @OptIn(ExperimentalMaterial3Api::class)
 val LocalAppScrollBehavior = compositionLocalOf<TopAppBarScrollBehavior?> { null }
-
-internal object ScaffoldViewFactory : ComposableViewFactory<ScaffoldView>() {
-    /**
-     * Creates a `ScaffoldView` object based on the attributes of the input `Attributes` object.
-     * ScaffoldView co-relates to the Scaffold composable
-     * @param attributes the `Attributes` object to create the `ScaffoldView` object from
-     * @return a `ScaffoldView` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): ScaffoldView = attributes.fold(ScaffoldView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrContainerColor -> builder.containerColor(attribute.value)
-            attrContentColor -> builder.contentColor(attribute.value)
-            attrContentWindowInsets -> builder.contentWindowInsets(attribute.value)
-            attrFabPosition -> builder.fabPosition(attribute.value)
-            attrTopBarScrollBehavior -> builder.topBarScrollBehavior(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as ScaffoldView.Builder
-    }.build()
-
-    override fun subTags(): Map<String, ComposableViewFactory<*>> {
-        return mapOf(
-            ComposableTypes.snackbar to SnackbarViewFactory
-        )
-    }
-}

@@ -31,16 +31,14 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
 import org.phoenixframework.liveview.data.constants.Attrs.attrUserScrollEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
-import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
-import org.phoenixframework.liveview.ui.base.ComposableBuilder.Companion.EVENT_TYPE_CHANGE
-import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.data.constants.ComposableTypes
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -177,34 +175,53 @@ internal class PagerView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val beyondBoundsPageCount: Int?,
-        val contentPadding: PaddingValues?,
-        val currentPage: Int,
-        val horizontalAlignment: Alignment.Horizontal?,
-        val initialPageOffsetFraction: Float?,
-        val onChanged: String?,
-        val pageCount: Int,
-        val pageSize: PageSize?,
-        val pageSpacing: Dp,
-        val reverseLayout: Boolean,
-        val userScrollEnabled: Boolean,
-        val verticalAlignment: Alignment.Vertical?,
-        override val commonProps: CommonComposableProperties,
+        val beyondBoundsPageCount: Int? = null,
+        val contentPadding: PaddingValues? = null,
+        val currentPage: Int = 0,
+        val horizontalAlignment: Alignment.Horizontal? = null,
+        val initialPageOffsetFraction: Float? = null,
+        val onChanged: String? = null,
+        val pageCount: Int = 0,
+        val pageSize: PageSize? = null,
+        val pageSpacing: Dp = 0.dp,
+        val reverseLayout: Boolean = false,
+        val userScrollEnabled: Boolean = true,
+        val verticalAlignment: Alignment.Vertical? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var beyondBoundsPageCount: Int? = null
-        private var contentPadding: PaddingValues? = null
-        private var currentPage: Int = 0
-        private var horizontalAlignment: Alignment.Horizontal? = null
-        private var initialPageOffsetFraction: Float? = null
-        private var onChanged: String? = null
-        private var pageCount: Int = 0
-        private var pageSize: PageSize? = null
-        private var pageSpacing: Dp = 0.dp
-        private var reverseLayout: Boolean = false
-        private var userScrollEnabled: Boolean = true
-        private var verticalAlignment: Alignment.Vertical? = null
+    internal object Factory : ComposableViewFactory<PagerView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): PagerView =
+            PagerView(attributes.fold(Properties()) { props, attribute ->
+                when (attribute.name) {
+                    attrBeyondBoundsPageCount -> beyondBoundsPageCount(props, attribute.value)
+                    attrContentPadding -> contentPadding(props, attribute.value)
+                    attrCurrentPage -> currentPage(props, attribute.value)
+                    attrHorizontalAlignment -> horizontalAlignment(props, attribute.value)
+                    attrInitialPageOffsetFraction -> initialPageOffsetFraction(
+                        props,
+                        attribute.value
+                    )
+
+                    attrPageCount -> pageCount(props, attribute.value)
+                    attrPageSize -> pageSize(props, attribute.value)
+                    attrPageSpacing -> pageSpacing(props, attribute.value)
+                    attrPhxChange -> onChanged(props, attribute.value)
+                    attrReverseLayout -> reverseLayout(props, attribute.value)
+                    attrUserScrollEnabled -> userScrollEnabled(props, attribute.value)
+                    attrVerticalAlignment -> verticalAlignment(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
+            })
 
         /**
          * Pages to compose and layout before and after the list of visible pages.
@@ -219,8 +236,8 @@ internal class PagerView private constructor(props: Properties) :
          * @param count int value representing the number of pages to compose and layout before and
          * after the list of visible pages.
          */
-        fun beyondBoundsPageCount(count: String) = apply {
-            this.beyondBoundsPageCount = count.toIntOrNull()
+        private fun beyondBoundsPageCount(props: Properties, count: String): Properties {
+            return props.copy(beyondBoundsPageCount = count.toIntOrNull())
         }
 
         /**
@@ -233,10 +250,10 @@ internal class PagerView private constructor(props: Properties) :
          * ```
          * @param padding int value representing a padding around the whole content.
          */
-        fun contentPadding(padding: String) = apply {
-            padding.toIntOrNull()?.let {
-                this.contentPadding = PaddingValues(it.dp)
-            }
+        private fun contentPadding(props: Properties, padding: String): Properties {
+            return padding.toIntOrNull()?.let {
+                props.copy(contentPadding = PaddingValues(it.dp))
+            } ?: props
         }
 
         /**
@@ -247,8 +264,8 @@ internal class PagerView private constructor(props: Properties) :
          * ```
          * @param currentPage int value representing the current selected page index.
          */
-        fun currentPage(currentPage: String) = apply {
-            this.currentPage = currentPage.toIntOrNull() ?: 0
+        private fun currentPage(props: Properties, currentPage: String): Properties {
+            return props.copy(currentPage = currentPage.toIntOrNull() ?: 0)
         }
 
         /**
@@ -259,8 +276,8 @@ internal class PagerView private constructor(props: Properties) :
          * @param alignment see supported values at
          * [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
          */
-        fun horizontalAlignment(alignment: String) = apply {
-            this.horizontalAlignment = horizontalAlignmentFromString(alignment)
+        private fun horizontalAlignment(props: Properties, alignment: String): Properties {
+            return props.copy(horizontalAlignment = horizontalAlignmentFromString(alignment))
         }
 
         /**
@@ -269,8 +286,8 @@ internal class PagerView private constructor(props: Properties) :
          * @param offset float value indicating the offset of the initial page as a fraction of the
          * page size.
          */
-        fun initialPageOffsetFraction(offset: String) = apply {
-            this.initialPageOffsetFraction = offset.toFloatOrNull()
+        private fun initialPageOffsetFraction(props: Properties, offset: String): Properties {
+            return props.copy(initialPageOffsetFraction = offset.toFloatOrNull())
         }
 
         /**
@@ -281,8 +298,8 @@ internal class PagerView private constructor(props: Properties) :
          * ```
          * @param onChanged event to be triggered on the server when the selected tab changes.
          */
-        fun onChanged(onChanged: String) = apply {
-            this.onChanged = onChanged
+        private fun onChanged(props: Properties, onChanged: String): Properties {
+            return props.copy(onChanged = onChanged)
         }
 
         /**
@@ -292,8 +309,8 @@ internal class PagerView private constructor(props: Properties) :
          * ```
          * @param count int value representing the amount of pages this Pager will have.
          */
-        fun pageCount(count: String) = apply {
-            this.pageCount = count.toIntOrNull() ?: 0
+        private fun pageCount(props: Properties, count: String): Properties {
+            return props.copy(pageCount = count.toIntOrNull() ?: 0)
         }
 
         /**
@@ -304,11 +321,11 @@ internal class PagerView private constructor(props: Properties) :
          * @param size the supported values are 'fill' (default) or an int value to set the page
          * size.
          */
-        fun pageSize(size: String) = apply {
-            this.pageSize = when (size) {
+        private fun pageSize(props: Properties, size: String): Properties {
+            return props.copy(pageSize = when (size) {
                 "fill" -> PageSize.Fill
                 else -> size.toIntOrNull()?.let { PageSize.Fixed(it.dp) }
-            }
+            })
         }
 
         /**
@@ -318,8 +335,10 @@ internal class PagerView private constructor(props: Properties) :
          * ```
          * @param spacing int value representing the space to separate the pages
          */
-        fun pageSpacing(spacing: String) = apply {
-            spacing.toIntOrNull()?.let { this.pageSpacing = it.dp }
+        private fun pageSpacing(props: Properties, spacing: String): Properties {
+            return spacing.toIntOrNull()?.let {
+                props.copy(pageSpacing = it.dp)
+            } ?: props
         }
 
         /**
@@ -330,8 +349,8 @@ internal class PagerView private constructor(props: Properties) :
          * @param reverse true if the scrolling direction and layout must be reversed, false
          * otherwise
          */
-        fun reverseLayout(reverse: String) = apply {
-            this.reverseLayout = reverse.toBoolean()
+        private fun reverseLayout(props: Properties, reverse: String): Properties {
+            return props.copy(reverseLayout = reverse.toBoolean())
         }
 
         /**
@@ -341,8 +360,8 @@ internal class PagerView private constructor(props: Properties) :
          * ```
          * @param enabled true if the user gestures are enabled, false otherwise.
          */
-        fun userScrollEnabled(enabled: String) = apply {
-            this.userScrollEnabled = enabled.toBoolean()
+        private fun userScrollEnabled(props: Properties, enabled: String): Properties {
+            return props.copy(userScrollEnabled = enabled.toBoolean())
         }
 
         /**
@@ -353,52 +372,8 @@ internal class PagerView private constructor(props: Properties) :
          * @param alignment see the supported values at
          * [org.phoenixframework.liveview.data.constants.VerticalAlignmentValues].
          */
-        fun verticalAlignment(alignment: String) = apply {
-            this.verticalAlignment = verticalAlignmentFromString(alignment)
+        private fun verticalAlignment(props: Properties, alignment: String): Properties {
+            return props.copy(verticalAlignment = verticalAlignmentFromString(alignment))
         }
-
-        fun build() = PagerView(
-            Properties(
-                beyondBoundsPageCount,
-                contentPadding,
-                currentPage,
-                horizontalAlignment,
-                initialPageOffsetFraction,
-                onChanged,
-                pageCount,
-                pageSize,
-                pageSpacing,
-                reverseLayout,
-                userScrollEnabled,
-                verticalAlignment,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object PagerViewFactory : ComposableViewFactory<PagerView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): PagerView = PagerView.Builder().also {
-        attributes.fold(
-            it
-        ) { builder, attribute ->
-            when (attribute.name) {
-                attrBeyondBoundsPageCount -> builder.beyondBoundsPageCount(attribute.value)
-                attrContentPadding -> builder.contentPadding(attribute.value)
-                attrCurrentPage -> builder.currentPage(attribute.value)
-                attrHorizontalAlignment -> builder.horizontalAlignment(attribute.value)
-                attrInitialPageOffsetFraction -> builder.initialPageOffsetFraction(attribute.value)
-                attrPageCount -> builder.pageCount(attribute.value)
-                attrPageSize -> builder.pageSize(attribute.value)
-                attrPageSpacing -> builder.pageSpacing(attribute.value)
-                attrPhxChange -> builder.onChanged(attribute.value)
-                attrReverseLayout -> builder.reverseLayout(attribute.value)
-                attrUserScrollEnabled -> builder.userScrollEnabled(attribute.value)
-                attrVerticalAlignment -> builder.verticalAlignment(attribute.value)
-                else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-            } as PagerView.Builder
-        }
-    }.build()
 }

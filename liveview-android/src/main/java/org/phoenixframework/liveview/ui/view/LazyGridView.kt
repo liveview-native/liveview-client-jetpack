@@ -18,16 +18,14 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrRows
 import org.phoenixframework.liveview.data.constants.Attrs.attrSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrType
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.LazyGridColumnTypeValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.mappers.JsonParser
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
-import org.phoenixframework.liveview.ui.base.ComposableView
-import org.phoenixframework.liveview.ui.base.ComposableViewFactory
-import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -44,7 +42,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * ```
  */
 internal class LazyGridView private constructor(props: Properties) :
-    ComposableView<LazyGridView.Properties>(props) {
+    LazyView<LazyGridView.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -63,10 +61,10 @@ internal class LazyGridView private constructor(props: Properties) :
                     rows = gridCells,
                     modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
                     contentPadding = PaddingValues(
-                        (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
-                        (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
-                        (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
-                        (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
+                        (contentPadding[LazyView.Factory.START] ?: 0).dp,
+                        (contentPadding[LazyView.Factory.TOP] ?: 0).dp,
+                        (contentPadding[LazyView.Factory.END] ?: 0).dp,
+                        (contentPadding[LazyView.Factory.BOTTOM] ?: 0).dp
                     ),
                     reverseLayout = reverseLayout,
                     verticalArrangement = verticalArrangement,
@@ -88,10 +86,10 @@ internal class LazyGridView private constructor(props: Properties) :
                     columns = gridCells,
                     modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
                     contentPadding = PaddingValues(
-                        (contentPadding[LazyComposableBuilder.START] ?: 0).dp,
-                        (contentPadding[LazyComposableBuilder.TOP] ?: 0).dp,
-                        (contentPadding[LazyComposableBuilder.END] ?: 0).dp,
-                        (contentPadding[LazyComposableBuilder.BOTTOM] ?: 0).dp
+                        (contentPadding[LazyView.Factory.START] ?: 0).dp,
+                        (contentPadding[LazyView.Factory.TOP] ?: 0).dp,
+                        (contentPadding[LazyView.Factory.END] ?: 0).dp,
+                        (contentPadding[LazyView.Factory.BOTTOM] ?: 0).dp
                     ),
                     reverseLayout = reverseLayout,
                     verticalArrangement = verticalArrangement,
@@ -112,17 +110,43 @@ internal class LazyGridView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val verticalArrangement: Arrangement.Vertical,
-        val horizontalArrangement: Arrangement.Horizontal,
-        val gridCells: GridCells,
-        override val commonProps: CommonComposableProperties,
-        override val lazyListProps: LazyListProperties
+        val verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+        val horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
+        val gridCells: GridCells = GridCells.Fixed(1),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+        override val lazyListProps: LazyListProperties = LazyListProperties()
     ) : ILazyListProperties
 
-    internal class Builder : LazyComposableBuilder() {
-        private var verticalArrangement: Arrangement.Vertical = Arrangement.Top
-        private var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
-        private var gridCells: GridCells = GridCells.Fixed(1)
+    internal object Factory : LazyView.Factory() {
+        /**
+         * Creates a `LazyGridView` object based on the attributes of the input `Attributes` object.
+         * LazyGridView co-relates to the LazyHorizontalGrid or LazyVerticalGrid composable depending of
+         * the tag used.
+         * @param attributes the `Attributes` object to create the `LazyVerticalGridView` object from
+         * @return a `LazyGridView` object based on the attributes of the input `Attributes` object.
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): LazyGridView = LazyGridView(
+            attributes.fold(Properties()) { props, attribute ->
+                handleLazyAttribute(props.lazyListProps, attribute)?.let {
+                    props.copy(lazyListProps = it)
+                } ?: run {
+                    when (attribute.name) {
+                        attrColumns, attrRows -> columns(props, attribute.value)
+                        attrHorizontalArrangement -> horizontalArrangement(props, attribute.value)
+                        attrVerticalArrangement -> verticalArrangement(props, attribute.value)
+                        else -> props.copy(
+                            commonProps = handleCommonAttributes(
+                                props.commonProps,
+                                attribute,
+                                pushEvent,
+                                scope
+                            )
+                        )
+                    }
+                }
+            })
 
         /**
          * Describes the count and the size of the grid's columns. The supported values are:
@@ -135,21 +159,25 @@ internal class LazyGridView private constructor(props: Properties) :
          * <LazyVerticalGrid columns="{'type': 'fixedSize', 'size': '150'}">
          * ```
          */
-        fun columns(columns: String) = apply {
-            try {
+        private fun columns(props: Properties, columns: String): Properties {
+            return try {
                 val map = JsonParser.parse<Map<String, String>>(columns)
-                when (map?.get(attrType)) {
-                    LazyGridColumnTypeValues.fixed -> this.gridCells =
+                val gridCells = when (map?.get(attrType)) {
+                    LazyGridColumnTypeValues.fixed ->
                         GridCells.Fixed(map[attrCount]!!.toInt())
 
-                    LazyGridColumnTypeValues.adaptive -> this.gridCells =
+                    LazyGridColumnTypeValues.adaptive ->
                         GridCells.Adaptive(map[attrMinSize]!!.toInt().dp)
 
-                    LazyGridColumnTypeValues.fixedSize -> this.gridCells =
+                    LazyGridColumnTypeValues.fixedSize ->
                         GridCells.FixedSize(map[attrSize]!!.toInt().dp)
+
+                    else -> return props
                 }
+                props.copy(gridCells = gridCells)
             } catch (e: Exception) {
                 e.printStackTrace()
+                props
             }
         }
 
@@ -163,8 +191,15 @@ internal class LazyGridView private constructor(props: Properties) :
          * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
          * An int value is also supported, which will be used to determine the space.
          */
-        fun verticalArrangement(verticalArrangement: String) = apply {
-            this.verticalArrangement = verticalArrangementFromString(verticalArrangement)
+        private fun verticalArrangement(
+            props: Properties,
+            verticalArrangement: String
+        ): Properties {
+            return props.copy(
+                verticalArrangement = verticalArrangementFromString(
+                    verticalArrangement
+                )
+            )
         }
 
         /**
@@ -177,46 +212,17 @@ internal class LazyGridView private constructor(props: Properties) :
          * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
          * An int value is also supported, which will be used to determine the space.
          */
-        fun horizontalArrangement(horizontalArrangement: String) = apply {
-            if (horizontalArrangement.isNotEmpty()) {
-                this.horizontalArrangement = horizontalArrangementFromString(horizontalArrangement)
-            }
+        private fun horizontalArrangement(
+            props: Properties,
+            horizontalArrangement: String
+        ): Properties {
+            return if (horizontalArrangement.isNotEmpty()) {
+                props.copy(
+                    horizontalArrangement = horizontalArrangementFromString(
+                        horizontalArrangement
+                    )
+                )
+            } else props
         }
-
-        fun build() = LazyGridView(
-            Properties(
-                verticalArrangement,
-                horizontalArrangement,
-                gridCells,
-                commonProps,
-                lazyListProps,
-            )
-        )
     }
-}
-
-internal object LazyGridViewFactory : ComposableViewFactory<LazyGridView>() {
-    /**
-     * Creates a `LazyGridView` object based on the attributes of the input `Attributes` object.
-     * LazyGridView co-relates to the LazyHorizontalGrid or LazyVerticalGrid composable depending of
-     * the tag used.
-     * @param attributes the `Attributes` object to create the `LazyVerticalGridView` object from
-     * @return a `LazyGridView` object based on the attributes of the input `Attributes` object.
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): LazyGridView = LazyGridView.Builder().also {
-        attributes.fold(it) { builder, attribute ->
-            if (builder.handleLazyAttribute(attribute)) {
-                builder
-            } else {
-                when (attribute.name) {
-                    attrColumns, attrRows -> builder.columns(attribute.value)
-                    attrHorizontalArrangement -> builder.horizontalArrangement(attribute.value)
-                    attrVerticalArrangement -> builder.verticalArrangement(attribute.value)
-                    else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-                } as LazyGridView.Builder
-            }
-        }
-    }.build()
 }

@@ -6,14 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 
 /**
  * Component that represents an empty space layout, whose size can be defined using width, height
@@ -35,27 +34,31 @@ internal class SpacerView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        override val commonProps: CommonComposableProperties,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        fun build() = SpacerView(Properties(commonProps))
+
+    internal object Factory : ComposableViewFactory<SpacerView>() {
+
+        /**
+         * Creates a `SpacerView` object based on the attributes of the input `Attributes` object.
+         * SpacerView co-relates to the Spacer composable
+         * @param attributes the `Attributes` object to create the `SliderView` object from
+         * @return a `SpacerView` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): SpacerView = SpacerView(attributes.fold(Properties()) { props, attribute ->
+            props.copy(
+                commonProps = handleCommonAttributes(
+                    props.commonProps,
+                    attribute,
+                    pushEvent,
+                    scope
+                )
+            )
+        })
     }
-}
-
-internal object SpacerViewFactory : ComposableViewFactory<SpacerView>() {
-
-    /**
-     * Creates a `SpacerView` object based on the attributes of the input `Attributes` object.
-     * SpacerView co-relates to the Spacer composable
-     * @param attributes the `Attributes` object to create the `SliderView` object from
-     * @return a `SpacerView` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): SpacerView = attributes.fold(SpacerView.Builder()) { builder, attribute ->
-        builder.handleCommonAttributes(attribute, pushEvent, scope) as SpacerView.Builder
-    }.build()
 }

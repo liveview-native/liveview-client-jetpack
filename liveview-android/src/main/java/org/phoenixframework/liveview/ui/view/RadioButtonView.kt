@@ -18,11 +18,10 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelected
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedColor
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableViewFactory
-import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.PushEvent
 
 /**
  * Material Design radio button.
@@ -91,18 +90,42 @@ internal class RadioButtonView private constructor(builder: Properties) :
 
     @Stable
     internal data class Properties(
-        val colors: ImmutableMap<String, String>?,
-        val selected: Boolean,
-        override val changeableProps: ChangeableProperties,
-        override val commonProps: CommonComposableProperties,
+        val colors: ImmutableMap<String, String>? = null,
+        val selected: Boolean = false,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : IChangeableProperties
 
-    internal class Builder : ChangeableViewBuilder() {
-        var colors: ImmutableMap<String, String>? = null
-            private set
-
-        var selected: Boolean = false
-            private set
+    internal object Factory : ChangeableView.Factory() {
+        /**
+         * Creates a `RadioButtonView` object based on the attributes of the input `Attributes` object.
+         * RadioButtonView co-relates to the RadioButton composable
+         * @param attributes the `Attributes` object to create the `RadioButtonView` object from
+         * @return a `RadioButtonView` object based on the attributes of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): RadioButtonView = RadioButtonView(
+            attributes.fold(Properties()) { props, attribute ->
+                handleChangeableAttribute(props.changeableProps, attribute)?.let {
+                    props.copy(changeableProps = it)
+                } ?: run {
+                    when (attribute.name) {
+                        attrColors -> colors(props, attribute.value)
+                        attrSelected -> selected(props, attribute.value)
+                        else -> props.copy(
+                            commonProps = handleCommonAttributes(
+                                props.commonProps,
+                                attribute,
+                                pushEvent,
+                                scope
+                            )
+                        )
+                    }
+                }
+            })
 
         /**
          * Whether this radio button is selected or not.
@@ -112,8 +135,8 @@ internal class RadioButtonView private constructor(builder: Properties) :
          * ```
          * @param selected true if the RadioButton must be selected, false otherwise.
          */
-        fun selected(selected: String) = apply {
-            this.selected = selected.toBoolean()
+        private fun selected(props: Properties, selected: String): Properties {
+            return props.copy(selected = selected.toBoolean())
         }
 
         /**
@@ -126,47 +149,10 @@ internal class RadioButtonView private constructor(builder: Properties) :
          * supported are: `selectedColor`, `unselectedColor`, `disabledSelectedColor, and
          * `disabledUnselectedColor`.
          */
-        fun colors(colors: String) = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
-
-        fun build() = RadioButtonView(
-            Properties(
-                colors,
-                selected,
-                changeableProps,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object RadioButtonViewFactory : ComposableViewFactory<RadioButtonView>() {
-    /**
-     * Creates a `RadioButtonView` object based on the attributes of the input `Attributes` object.
-     * RadioButtonView co-relates to the RadioButton composable
-     * @param attributes the `Attributes` object to create the `RadioButtonView` object from
-     * @return a `RadioButtonView` object based on the attributes of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): RadioButtonView = RadioButtonView.Builder().also {
-        attributes.fold(
-            it
-        ) { builder, attribute ->
-            if (builder.handleChangeableAttribute(attribute)) {
-                builder
-            } else {
-                when (attribute.name) {
-                    attrColors -> builder.colors(attribute.value)
-                    attrSelected -> builder.selected(attribute.value)
-                    else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-                } as RadioButtonView.Builder
-            }
-        }
-    }.build()
 }

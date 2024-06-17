@@ -10,7 +10,8 @@ import org.phoenixframework.liveview.data.constants.ModifierArgs.argEnabled
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnFocusChanged
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnFocusEvent
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnPositioned
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
+import org.phoenixframework.liveview.ui.base.ComposableView.Companion.EVENT_TYPE_FOCUS_CHANGED
+import org.phoenixframework.liveview.ui.base.ComposableView.Companion.EVENT_TYPE_FOCUS_EVENT
 import org.phoenixframework.liveview.ui.base.PushEvent
 
 fun Modifier.focusableFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
@@ -33,7 +34,7 @@ fun Modifier.onFocusedBoundsChangedFromStyle(
             Modifier.onFocusedBoundsChanged { layoutCoordinates ->
                 val (eventName, _) = event
                 pushEvent?.invoke(
-                    ComposableBuilder.EVENT_TYPE_FOCUS_CHANGED,
+                    EVENT_TYPE_FOCUS_CHANGED,
                     eventName,
                     layoutCoordinates?.let { lc ->
                         val parent = lc.parentCoordinates?.let { parentLc ->
@@ -69,7 +70,7 @@ fun Modifier.onFocusChangedFromStyle(
             Modifier.onFocusChanged {
                 val (eventName, _) = event
                 pushEvent?.invoke(
-                    ComposableBuilder.EVENT_TYPE_FOCUS_CHANGED,
+                    EVENT_TYPE_FOCUS_CHANGED,
                     eventName,
                     mapOf(
                         "hasFocus" to it.hasFocus,
@@ -93,7 +94,7 @@ fun Modifier.onFocusEventFromStyle(
             Modifier.onFocusEvent {
                 val (eventName, _) = event
                 pushEvent?.invoke(
-                    ComposableBuilder.EVENT_TYPE_FOCUS_EVENT,
+                    EVENT_TYPE_FOCUS_EVENT,
                     eventName,
                     mapOf(
                         "hasFocus" to it.hasFocus,

@@ -13,18 +13,17 @@ import androidx.compose.ui.platform.LocalContext
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrNavigate
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.LocalNavController
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
+import org.phoenixframework.liveview.ui.phx_components.createRoute
 import org.phoenixframework.liveview.ui.phx_components.generateRelativePath
 import org.phoenixframework.liveview.ui.phx_components.getCurrentRoute
-import org.phoenixframework.liveview.ui.phx_components.createRoute
 
 /**
  * Component that allows a local navigation to a different path declared in the application route.
@@ -66,33 +65,34 @@ internal class LinkView private constructor(props: Properties) :
         }
     }
 
-    internal class Builder : ComposableBuilder() {
-
-        private var navigatePath: String = ""
-
-        fun navigate(path: String) = apply {
-            this.navigatePath = path
-        }
-
-        fun build() = LinkView(Properties(navigatePath, commonProps))
-    }
-
     @Stable
     data class Properties(
-        val navigationPath: String,
-        override val commonProps: CommonComposableProperties,
+        val navigationPath: String = "",
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
-}
 
-internal object LinkViewFactory : ComposableViewFactory<LinkView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): LinkView = attributes.fold(LinkView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrNavigate -> builder.navigate(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as LinkView.Builder
-    }.build()
+
+    internal object Factory : ComposableViewFactory<LinkView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): LinkView = LinkView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrNavigate -> navigate(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
+
+        private fun navigate(props: Properties, path: String): Properties {
+            return props.copy(navigationPath = path)
+        }
+    }
 }

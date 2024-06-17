@@ -31,6 +31,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContaine
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level0
 import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level1
 import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level2
@@ -42,15 +43,13 @@ import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttr
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContainerAlpha
 import org.phoenixframework.liveview.domain.ThemeHolder.disabledContentAlpha
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
@@ -361,25 +360,46 @@ internal class ButtonView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val onClick: String,
-        val enabled: Boolean,
-        val shape: Shape?,
-        val colors: ImmutableMap<String, String>?,
-        val elevations: ImmutableMap<String, String>?,
-        val contentPadding: PaddingValues?,
-        val border: BorderStroke?,
-        override val commonProps: CommonComposableProperties,
+        val onClick: String = "",
+        val enabled: Boolean = true,
+        val shape: Shape? = null,
+        val colors: ImmutableMap<String, String>? = null,
+        val elevations: ImmutableMap<String, String>? = null,
+        val contentPadding: PaddingValues? = null,
+        val border: BorderStroke? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-
-    internal class Builder : ComposableBuilder() {
-        private var onClick: String = ""
-        private var enabled: Boolean = true
-        private var shape: Shape? = null
-        private var colors: ImmutableMap<String, String>? = null
-        private var elevations: ImmutableMap<String, String>? = null
-        private var contentPadding: PaddingValues? = null
-        private var border: BorderStroke? = null
+    internal object Factory : ComposableViewFactory<ButtonView>() {
+        /**
+         * Creates a `ButtonView` object based on the attributes of the input `Attributes` object.
+         * ButtonView co-relates to the Button composable
+         * @param attributes the `Attributes` object to create the `CardView` object from
+         * @return a `ButtonView` object based on the attributes of the input `Attributes` object
+         **/
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): ButtonView = ButtonView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrBorder -> border(props, attribute.value)
+                attrColors -> colors(props, attribute.value)
+                attrContentPadding -> contentPadding(props, attribute.value)
+                attrElevation -> elevation(props, attribute.value)
+                attrEnabled -> enabled(props, attribute.value)
+                attrPhxClick -> onClick(props, attribute.value)
+                attrShape -> shape(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * Sets the event name to be triggered on the server when the button is clicked.
@@ -389,8 +409,8 @@ internal class ButtonView private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
-        fun onClick(event: String): Builder = apply {
-            this.onClick = event
+        private fun onClick(props: Properties, event: String): Properties {
+            return props.copy(onClick = event)
         }
 
         /**
@@ -401,10 +421,10 @@ internal class ButtonView private constructor(props: Properties) :
          * ```
          * @param enabled true if the button is enabled, false otherwise.
          */
-        fun enabled(enabled: String): Builder = apply {
-            if (enabled.isNotEmpty()) {
-                this.enabled = enabled.toBoolean()
-            }
+        private fun enabled(props: Properties, enabled: String): Properties {
+            return if (enabled.isNotEmpty()) {
+                props.copy(enabled = enabled.toBoolean())
+            } else props
         }
 
         /**
@@ -417,10 +437,10 @@ internal class ButtonView private constructor(props: Properties) :
          * [org.phoenixframework.liveview.data.constants.ShapeValues],
          * or use an integer representing the curve size applied for all four corners.
          */
-        fun shape(shape: String): Builder = apply {
-            if (shape.isNotEmpty()) {
-                this.shape = shapeFromString(shape)
-            }
+        private fun shape(props: Properties, shape: String): Properties {
+            return if (shape.isNotEmpty()) {
+                props.copy(shape = shapeFromString(shape))
+            } else props
         }
 
         /**
@@ -435,10 +455,10 @@ internal class ButtonView private constructor(props: Properties) :
          * supported are: `containerColor`, `contentColor`, `disabledContainerColor, and
          * `disabledContentColor`
          */
-        fun colors(colors: String): Builder = apply {
-            if (colors.isNotEmpty()) {
-                this.colors = colorsFromString(colors)?.toImmutableMap()
-            }
+        private fun colors(props: Properties, colors: String): Properties {
+            return if (colors.isNotEmpty()) {
+                props.copy(colors = colorsFromString(colors)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -453,10 +473,10 @@ internal class ButtonView private constructor(props: Properties) :
          * elevation supported keys are: `defaultElevation`, `pressedElevation`, `focusedElevation`,
          * `hoveredElevation`, and `disabledElevation`.
          */
-        fun elevation(elevations: String): Builder = apply {
-            if (elevations.isNotEmpty()) {
-                this.elevations = elevationsFromString(elevations)?.toImmutableMap()
-            }
+        private fun elevation(props: Properties, elevations: String): Properties {
+            return if (elevations.isNotEmpty()) {
+                props.copy(elevations = elevationsFromString(elevations)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -467,10 +487,10 @@ internal class ButtonView private constructor(props: Properties) :
          * @param contentPadding int value representing the padding to be applied to the button's
          * content.
          */
-        fun contentPadding(contentPadding: String): Builder = apply {
-            if (contentPadding.isNotEmpty()) {
-                this.contentPadding = PaddingValues((contentPadding.toIntOrNull() ?: 0).dp)
-            }
+        private fun contentPadding(props: Properties, contentPadding: String): Properties {
+            return if (contentPadding.isNotEmpty()) {
+                props.copy(contentPadding = PaddingValues((contentPadding.toIntOrNull() ?: 0).dp))
+            } else props
         }
 
         /**
@@ -484,46 +504,8 @@ internal class ButtonView private constructor(props: Properties) :
          * in the AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun border(border: String): Builder = apply {
-            this.border = borderFromString(border)
+        private fun border(props: Properties, border: String): Properties {
+            return props.copy(border = borderFromString(border))
         }
-
-        fun build() = ButtonView(
-            Properties(
-                onClick,
-                enabled,
-                shape,
-                colors,
-                elevations,
-                contentPadding,
-                border,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object ButtonViewFactory : ComposableViewFactory<ButtonView>() {
-    /**
-     * Creates a `ButtonView` object based on the attributes of the input `Attributes` object.
-     * ButtonView co-relates to the Button composable
-     * @param attributes the `Attributes` object to create the `CardView` object from
-     * @return a `ButtonView` object based on the attributes of the input `Attributes` object
-     **/
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): ButtonView = attributes.fold(ButtonView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrBorder -> builder.border(attribute.value)
-            attrColors -> builder.colors(attribute.value)
-            attrContentPadding -> builder.contentPadding(attribute.value)
-            attrElevation -> builder.elevation(attribute.value)
-            attrEnabled -> builder.enabled(attribute.value)
-            attrPhxClick -> builder.onClick(attribute.value)
-            attrShape -> builder.shape(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as ButtonView.Builder
-    }.build()
 }

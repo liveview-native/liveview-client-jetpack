@@ -21,13 +21,12 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrOnDismissRequest
 import org.phoenixframework.liveview.data.constants.Attrs.attrSecurePolicy
 import org.phoenixframework.liveview.data.constants.Attrs.attrUsePlatformDefaultWidth
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -80,7 +79,7 @@ internal class DropdownMenuView private constructor(props: Properties) :
             onDismissRequest = {
                 dismissEvent?.let {
                     pushEvent(
-                        ComposableBuilder.EVENT_TYPE_BLUR,
+                        EVENT_TYPE_BLUR,
                         it,
                         props.commonProps.phxValue,
                         null
@@ -101,26 +100,60 @@ internal class DropdownMenuView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val dismissEvent: String?,
-        val expanded: Boolean,
-        val offset: DpOffset?,
-        val popupProperties: PopupProperties,
-        override val commonProps: CommonComposableProperties,
-    ) : ComposableProperties
+        val dismissEvent: String? = null,
+        val expanded: Boolean = true,
+        val offset: DpOffset? = null,
+        val focusable: Boolean = true,
+        val dismissOnBackPress: Boolean = true,
+        val dismissOnClickOutside: Boolean = true,
+        val securePolicy: SecureFlagPolicy = SecureFlagPolicy.Inherit,
+        val excludeFromSystemGesture: Boolean = true,
+        val clippingEnabled: Boolean = true,
+        val usePlatformDefaultWidth: Boolean = false,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
+    ) : ComposableProperties {
+        val popupProperties: PopupProperties
+            get() = PopupProperties(
+                focusable,
+                dismissOnBackPress,
+                dismissOnClickOutside,
+                securePolicy,
+                excludeFromSystemGesture,
+                clippingEnabled
+            )
+    }
 
-    internal class Builder : ComposableBuilder() {
-        private var dismissEvent: String? = null
-        private var expanded: Boolean = true
-        private var offset: DpOffset? = null
+    internal object Factory :
+        ComposableViewFactory<DropdownMenuView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): DropdownMenuView = DropdownMenuView(attributes.fold(
+            Properties()
+        ) { props, attribute ->
+            when (attribute.name) {
+                attrClippingEnabled -> clippingEnabled(props, attribute.value)
+                attrDismissOnBackPress -> dismissOnBackPress(props, attribute.value)
+                attrDismissOnClickOutside -> dismissOnClickOutside(props, attribute.value)
+                attrExcludeFromSystemGesture -> excludeFromSystemGesture(props, attribute.value)
+                attrExpanded -> expanded(props, attribute.value)
+                attrFocusable -> focusable(props, attribute.value)
+                attrOffset -> offset(props, attribute.value)
+                attrOnDismissRequest -> onDismissRequest(props, attribute.value)
+                attrSecurePolicy -> securePolicy(props, attribute.value)
+                attrUsePlatformDefaultWidth -> usePlatformDefaultWidth(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
-        // Attributes to initialize the popup Properties
-        private var focusable: Boolean = true
-        private var dismissOnBackPress: Boolean = true
-        private var dismissOnClickOutside: Boolean = true
-        private var securePolicy: SecureFlagPolicy = SecureFlagPolicy.Inherit
-        private var excludeFromSystemGesture: Boolean = true
-        private var clippingEnabled: Boolean = true
-        private var usePlatformDefaultWidth: Boolean = false
 
         /**
          * Whether to allow the popup window to extend beyond the bounds of the screen. By default
@@ -131,8 +164,8 @@ internal class DropdownMenuView private constructor(props: Properties) :
          * ```
          * @param clipping true if the systemGestureExclusionRects is set, false otherwise.
          */
-        fun clippingEnabled(clipping: String) = apply {
-            this.clippingEnabled = clipping.toBoolean()
+        private fun clippingEnabled(props: Properties, clipping: String): Properties {
+            return props.copy(clippingEnabled = clipping.toBoolean())
         }
 
         /**
@@ -142,8 +175,8 @@ internal class DropdownMenuView private constructor(props: Properties) :
          * ```
          * @param exclude true if the systemGestureExclusionRects is set, false otherwise.
          */
-        fun excludeFromSystemGesture(exclude: String) = apply {
-            this.excludeFromSystemGesture = exclude.toBoolean()
+        private fun excludeFromSystemGesture(props: Properties, exclude: String): Properties {
+            return props.copy(excludeFromSystemGesture = exclude.toBoolean())
         }
 
         /**
@@ -153,8 +186,8 @@ internal class DropdownMenuView private constructor(props: Properties) :
          * ```
          * @param expanded true if the dropdown menu is expanded, false otherwise.
          */
-        fun expanded(expanded: String) = apply {
-            this.expanded = expanded.toBoolean()
+        private fun expanded(props: Properties, expanded: String): Properties {
+            return props.copy(expanded = expanded.toBoolean())
         }
 
         /**
@@ -165,8 +198,8 @@ internal class DropdownMenuView private constructor(props: Properties) :
          * ```
          * @param focusable true if the dropdown menu is focusable, false otherwise.
          */
-        fun focusable(focusable: String) = apply {
-            this.focusable = focusable.toBoolean()
+        private fun focusable(props: Properties, focusable: String): Properties {
+            return props.copy(focusable = focusable.toBoolean())
         }
 
         /**
@@ -178,8 +211,8 @@ internal class DropdownMenuView private constructor(props: Properties) :
          * @param dismissOnBackPress true if the dropdown menu can be dismissed by pressing the
          * back button, false otherwise.
          */
-        fun dismissOnBackPress(dismissOnBackPress: String) = apply {
-            this.dismissOnBackPress = dismissOnBackPress.toBoolean()
+        private fun dismissOnBackPress(props: Properties, dismissOnBackPress: String): Properties {
+            return props.copy(dismissOnBackPress = dismissOnBackPress.toBoolean())
         }
 
         /**
@@ -192,8 +225,11 @@ internal class DropdownMenuView private constructor(props: Properties) :
          * @param dismissOnClickOutside true if the dropdown menu can be dismissed by clicking
          * outside the dropdown menu's bounds, false otherwise.
          */
-        fun dismissOnClickOutside(dismissOnClickOutside: String) = apply {
-            this.dismissOnClickOutside = dismissOnClickOutside.toBoolean()
+        private fun dismissOnClickOutside(
+            props: Properties,
+            dismissOnClickOutside: String
+        ): Properties {
+            return props.copy(dismissOnClickOutside = dismissOnClickOutside.toBoolean())
         }
 
         /**
@@ -204,8 +240,8 @@ internal class DropdownMenuView private constructor(props: Properties) :
          * @param dismissEventName event name to be called on the server in order to dismiss the
          * dropdown menu.
          */
-        fun onDismissRequest(dismissEventName: String) = apply {
-            this.dismissEvent = dismissEventName
+        private fun onDismissRequest(props: Properties, dismissEventName: String): Properties {
+            return props.copy(dismissEvent = dismissEventName)
         }
 
         /**
@@ -217,9 +253,9 @@ internal class DropdownMenuView private constructor(props: Properties) :
          * ```
          * @param offsetStr array containing the start and end offset.
          */
-        fun offset(offsetStr: String) = apply {
-            if (offsetStr.contains(',')) {
-                this.offset = try {
+        private fun offset(props: Properties, offsetStr: String): Properties {
+            return if (offsetStr.contains(',')) {
+                val offset = try {
                     offsetStr
                         .split(',')
                         .map { it.toInt() }
@@ -229,7 +265,8 @@ internal class DropdownMenuView private constructor(props: Properties) :
                 } catch (e: Exception) {
                     DpOffset.Unspecified
                 }
-            }
+                props.copy(offset = offset)
+            } else props
         }
 
         /**
@@ -241,8 +278,8 @@ internal class DropdownMenuView private constructor(props: Properties) :
          * ```
          * @param securePolicy possible values are: `secureOn`, `secureOff`, and `inherit` (default).
          */
-        fun securePolicy(securePolicy: String) = apply {
-            this.securePolicy = secureFlagPolicyFromString(securePolicy)
+        private fun securePolicy(props: Properties, securePolicy: String): Properties {
+            return props.copy(securePolicy = secureFlagPolicyFromString(securePolicy))
         }
 
         /**
@@ -254,50 +291,11 @@ internal class DropdownMenuView private constructor(props: Properties) :
          * @param usePlatformDefaultWidth true if the width of the dropdown menu's content should
          * be limited to the platform default, false otherwise. Default value is true.
          */
-        fun usePlatformDefaultWidth(usePlatformDefaultWidth: String) = apply {
-            this.usePlatformDefaultWidth = usePlatformDefaultWidth.toBoolean()
+        private fun usePlatformDefaultWidth(
+            props: Properties,
+            usePlatformDefaultWidth: String
+        ): Properties {
+            return props.copy(usePlatformDefaultWidth = usePlatformDefaultWidth.toBoolean())
         }
-
-        fun build() = DropdownMenuView(
-            Properties(
-                dismissEvent,
-                expanded,
-                offset,
-                PopupProperties(
-                    focusable,
-                    dismissOnBackPress,
-                    dismissOnClickOutside,
-                    securePolicy,
-                    excludeFromSystemGesture,
-                    clippingEnabled
-                ),
-                commonProps,
-            )
-        )
     }
-}
-
-internal object DropdownMenuViewFactory :
-    ComposableViewFactory<DropdownMenuView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): DropdownMenuView = attributes.fold(
-        DropdownMenuView.Builder()
-    ) { builder, attribute ->
-        when (attribute.name) {
-            attrClippingEnabled -> builder.clippingEnabled(attribute.value)
-            attrDismissOnBackPress -> builder.dismissOnBackPress(attribute.value)
-            attrDismissOnClickOutside -> builder.dismissOnClickOutside(attribute.value)
-            attrExcludeFromSystemGesture -> builder.excludeFromSystemGesture(attribute.value)
-            attrExpanded -> builder.expanded(attribute.value)
-            attrFocusable -> builder.focusable(attribute.value)
-            attrOffset -> builder.offset(attribute.value)
-            attrOnDismissRequest -> builder.onDismissRequest(attribute.value)
-            attrSecurePolicy -> builder.securePolicy(attribute.value)
-            attrUsePlatformDefaultWidth -> builder.usePlatformDefaultWidth(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as DropdownMenuView.Builder
-    }.build()
 }

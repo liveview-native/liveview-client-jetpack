@@ -32,15 +32,14 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrTextStyle
 import org.phoenixframework.liveview.data.constants.TextOverflowValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.theme.fontFamilyFromString
 import org.phoenixframework.liveview.ui.theme.fontSizeFromString
 import org.phoenixframework.liveview.ui.theme.fontStyleFromString
@@ -125,40 +124,78 @@ internal class TextView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val text: String,
-        val color: Color,
-        val fontSize: TextUnit,
-        val fontStyle: FontStyle?,
-        val fontWeight: FontWeight?,
-        val fontFamily: FontFamily?,
-        val letterSpacing: TextUnit,
-        val textDecoration: TextDecoration?,
-        val textAlign: TextAlign?,
-        val lineHeight: TextUnit,
-        val overflow: TextOverflow,
-        val softWrap: Boolean,
-        val minLines: Int,
-        val maxLines: Int,
-        val style: String?,
-        override val commonProps: CommonComposableProperties,
+        val text: String = "",
+        val color: Color = Color.Unspecified,
+        val fontSize: TextUnit = TextUnit.Unspecified,
+        val fontStyle: FontStyle? = null,
+        val fontWeight: FontWeight? = null,
+        val fontFamily: FontFamily? = null,
+        val letterSpacing: TextUnit = TextUnit.Unspecified,
+        val textDecoration: TextDecoration? = null,
+        val textAlign: TextAlign? = null,
+        val lineHeight: TextUnit = TextUnit.Unspecified,
+        val overflow: TextOverflow = TextOverflow.Clip,
+        val softWrap: Boolean = true,
+        val minLines: Int = 1,
+        val maxLines: Int = Int.MAX_VALUE,
+        val style: String? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var text: String = ""
-        private var color: Color = Color.Unspecified
-        private var fontSize: TextUnit = TextUnit.Unspecified
-        private var fontStyle: FontStyle? = null
-        private var fontWeight: FontWeight? = null
-        private var fontFamily: FontFamily? = null
-        private var letterSpacing: TextUnit = TextUnit.Unspecified
-        private var textDecoration: TextDecoration? = null
-        private var textAlign: TextAlign? = null
-        private var lineHeight: TextUnit = TextUnit.Unspecified
-        private var overflow: TextOverflow = TextOverflow.Clip
-        private var softWrap: Boolean = true
-        private var minLines: Int = 1
-        private var maxLines: Int = Int.MAX_VALUE
-        private var style: String? = null
+    internal object Factory : ComposableViewFactory<TextView>() {
+        fun buildComposableView(
+            text: String,
+            attributes: ImmutableList<CoreAttribute>,
+            scope: Any?,
+            pushEvent: PushEvent?,
+        ): TextView = TextView(textBuilder(Properties(text = text), attributes, scope, pushEvent))
+
+        /**
+         * Creates a `TextView` object based on the attributes and text of the input `Attributes` object.
+         * TextView co-relates to the Text composable
+         *
+         * @param attributes the `Attributes` object to create the `TextView` object from
+         * @return a `TextView` object based on the attributes and text of the input `Attributes` object
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): TextView = TextView(textBuilder(Properties(), attributes, scope, pushEvent))
+
+        private fun textBuilder(
+            properties: Properties,
+            attributes: ImmutableList<CoreAttribute>,
+            scope: Any?,
+            pushEvent: PushEvent?
+        ): Properties = attributes.fold(properties) { props, attribute ->
+            when (attribute.name) {
+                attrColor -> color(props, attribute.value)
+                attrFontFamily -> fontFamily(props, attribute.value)
+                attrFontSize -> fontSize(props, attribute.value)
+                attrFontStyle -> fontStyle(props, attribute.value)
+                attrFontWeight -> fontWeight(props, attribute.value)
+                attrLetterSpacing -> letterSpacing(props, attribute.value)
+                attrLineHeight -> lineHeight(props, attribute.value)
+                attrMaxLines -> maxLines(props, attribute.value)
+                attrMinLines -> minLines(props, attribute.value)
+                attrOverflow -> overflow(props, attribute.value)
+                attrSoftWrap -> softWrap(props, attribute.value)
+                attrText -> text(props, attribute.value)
+                attrTextAlign -> textAlign(props, attribute.value)
+                attrTextDecoration -> textDecoration(props, attribute.value)
+                // FIXME style attribute is used for modifiers, so I renamed to textStyle
+                attrTextStyle -> style(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        }
 
         /**
          * Sets the text to be displayed. There are two ways to set the text:
@@ -169,7 +206,9 @@ internal class TextView private constructor(props: Properties) :
          * ```
          * @param text text to be displayed.
          */
-        fun text(text: String) = apply { this.text = text }
+        private fun text(props: Properties, text: String): Properties {
+            return props.copy(text = text)
+        }
 
         /**
          * Sets the text color for a given text.
@@ -179,10 +218,10 @@ internal class TextView private constructor(props: Properties) :
          *   [org.phoenixframework.liveview.data.constants.SystemColorValues]. If an empty string or
          *   any other value is provided, the color will not be changed.
          */
-        fun color(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.color = color.toColor()
-            }
+        private fun color(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(color = color.toColor())
+            } else props
         }
 
         /**
@@ -193,10 +232,10 @@ internal class TextView private constructor(props: Properties) :
          * ```
          * @param fontFamily The font family to be applied. The font family is the font name.
          */
-        fun fontFamily(fontFamily: String) = apply {
-            if (fontFamily.isNotEmpty()) {
-                this.fontFamily = fontFamilyFromString(fontFamily)
-            }
+        private fun fontFamily(props: Properties, fontFamily: String): Properties {
+            return if (fontFamily.isNotEmpty()) {
+                props.copy(fontFamily = fontFamilyFromString(fontFamily))
+            } else props
         }
 
         /**
@@ -205,10 +244,10 @@ internal class TextView private constructor(props: Properties) :
          * @param fontSize The font size to be applied, in sp. The font size must be a positive
          *   integer. If an empty string is provided, the font size will not be changed.
          */
-        fun fontSize(fontSize: String) = apply {
-            if (fontSize.isNotEmptyAndIsDigitsOnly()) {
-                this.fontSize = fontSizeFromString(fontSize)
-            }
+        private fun fontSize(props: Properties, fontSize: String): Properties {
+            return if (fontSize.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(fontSize = fontSizeFromString(fontSize))
+            } else props
         }
 
         /**
@@ -218,10 +257,10 @@ internal class TextView private constructor(props: Properties) :
          *   NormalText and "italic" for ItalicText. If an empty string or any other value is
          *   provided, the font style will be set to Italic.
          */
-        fun fontStyle(fontStyle: String) = apply {
-            if (fontStyle.isNotEmpty()) {
-                this.fontStyle = fontStyleFromString(fontStyle)
-            }
+        private fun fontStyle(props: Properties, fontStyle: String): Properties {
+            return if (fontStyle.isNotEmpty()) {
+                props.copy(fontStyle = fontStyleFromString(fontStyle))
+            } else props
         }
 
         /**
@@ -233,10 +272,10 @@ internal class TextView private constructor(props: Properties) :
          *   "W900" (or "black"). If an empty string or any other value is provided, the font weight
          *   will be set to Normal.
          */
-        fun fontWeight(fontWeight: String) = apply {
-            if (fontWeight.isNotEmpty()) {
-                this.fontWeight = fontWeightFromString(fontWeight)
-            }
+        private fun fontWeight(props: Properties, fontWeight: String): Properties {
+            return if (fontWeight.isNotEmpty()) {
+                props.copy(fontWeight = fontWeightFromString(fontWeight))
+            } else props
         }
 
         /**
@@ -246,10 +285,10 @@ internal class TextView private constructor(props: Properties) :
          *   a positive integer. If an empty string or any other value is provided, the letter
          *   spacing will not be changed.
          */
-        fun letterSpacing(letterSpacing: String) = apply {
-            if (letterSpacing.isNotEmptyAndIsDigitsOnly()) {
-                this.letterSpacing = letterSpacingFromString(letterSpacing)
-            }
+        private fun letterSpacing(props: Properties, letterSpacing: String): Properties {
+            return if (letterSpacing.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(letterSpacing = letterSpacingFromString(letterSpacing))
+            } else props
         }
 
         /**
@@ -258,10 +297,10 @@ internal class TextView private constructor(props: Properties) :
          * @param textDecoration the text decoration to set. Valid values are "underline" and
          *   "lineThrough". If an invalid value is provided, the default value is "none".
          */
-        fun textDecoration(textDecoration: String) = apply {
-            if (textDecoration.isNotEmpty()) {
-                this.textDecoration = textDecorationFromString(textDecoration)
-            }
+        private fun textDecoration(props: Properties, textDecoration: String): Properties {
+            return if (textDecoration.isNotEmpty()) {
+                props.copy(textDecoration = textDecorationFromString(textDecoration))
+            } else props
         }
 
         /**
@@ -271,10 +310,10 @@ internal class TextView private constructor(props: Properties) :
          *   "justify", "start", and "end". If an invalid value is provided, the default alignment
          *   is "start".
          */
-        fun textAlign(textAlign: String) = apply {
-            if (textAlign.isNotEmpty()) {
-                this.textAlign = textAlignFromString(textAlign)
-            }
+        private fun textAlign(props: Properties, textAlign: String): Properties {
+            return if (textAlign.isNotEmpty()) {
+                props.copy(textAlign = textAlignFromString(textAlign))
+            } else props
         }
 
         /**
@@ -284,10 +323,10 @@ internal class TextView private constructor(props: Properties) :
          *   positive integer. If an empty string or any other value is provided, the line height
          *   will not be changed.
          */
-        fun lineHeight(lineHeight: String) = apply {
-            if (lineHeight.isNotEmptyAndIsDigitsOnly()) {
-                this.lineHeight = lineHeightFromString(lineHeight)
-            }
+        private fun lineHeight(props: Properties, lineHeight: String): Properties {
+            return if (lineHeight.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(lineHeight = lineHeightFromString(lineHeight))
+            } else props
         }
 
         /**
@@ -296,14 +335,16 @@ internal class TextView private constructor(props: Properties) :
          * @param overflow the overflow behavior to set. Valid values are "clip" and "ellipsis". If
          *   an invalid value is provided, the default behavior is "visible".
          */
-        fun overflow(overflow: String) = apply {
-            if (overflow.isNotEmpty()) {
-                this.overflow = when (overflow) {
-                    TextOverflowValues.clip -> TextOverflow.Clip
-                    TextOverflowValues.ellipsis -> TextOverflow.Ellipsis
-                    else -> TextOverflow.Visible
-                }
-            }
+        private fun overflow(props: Properties, overflow: String): Properties {
+            return if (overflow.isNotEmpty()) {
+                props.copy(
+                    overflow = when (overflow) {
+                        TextOverflowValues.clip -> TextOverflow.Clip
+                        TextOverflowValues.ellipsis -> TextOverflow.Ellipsis
+                        else -> TextOverflow.Visible
+                    }
+                )
+            } else props
         }
 
         /**
@@ -312,10 +353,10 @@ internal class TextView private constructor(props: Properties) :
          * @param softWrap the soft wrap behavior to set. Valid values are "true" and "false". If an
          *   invalid value is provided, the default behavior is used.
          */
-        fun softWrap(softWrap: String) = apply {
-            if (softWrap.isNotEmpty()) {
-                this.softWrap = softWrap.toBoolean()
-            }
+        private fun softWrap(props: Properties, softWrap: String): Properties {
+            return if (softWrap.isNotEmpty()) {
+                props.copy(softWrap = softWrap.toBoolean())
+            } else props
         }
 
         /**
@@ -324,10 +365,10 @@ internal class TextView private constructor(props: Properties) :
          * @param maxLines the maximum number of lines to set. If the provided value is not a valid
          *   integer, the default value is used.
          */
-        fun maxLines(maxLines: String) = apply {
-            if (maxLines.isNotEmptyAndIsDigitsOnly()) {
-                this.maxLines = maxLines.toInt()
-            }
+        private fun maxLines(props: Properties, maxLines: String): Properties {
+            return if (maxLines.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(maxLines = maxLines.toInt())
+            } else props
         }
 
         /**
@@ -336,10 +377,10 @@ internal class TextView private constructor(props: Properties) :
          * @param minLines the minimum number of lines to set. If the provided value is not a valid
          *   integer, the default value is used.
          */
-        fun minLines(minLines: String) = apply {
-            if (minLines.isNotEmptyAndIsDigitsOnly()) {
-                this.minLines = minLines.toInt()
-            }
+        private fun minLines(props: Properties, minLines: String): Properties {
+            return if (minLines.isNotEmptyAndIsDigitsOnly()) {
+                props.copy(minLines = minLines.toInt())
+            } else props
         }
 
         /**
@@ -348,75 +389,8 @@ internal class TextView private constructor(props: Properties) :
          * @param style text style based on Material Design naming convention. See the supported
          * values at [org.phoenixframework.liveview.data.constants.ThemeTextStyleValues].
          */
-        fun style(style: String) = apply {
-            this.style = style
+        private fun style(props: Properties, style: String): Properties {
+            return props.copy(style = style)
         }
-
-        fun build() = TextView(
-            Properties(
-                text,
-                color,
-                fontSize,
-                fontStyle,
-                fontWeight,
-                fontFamily,
-                letterSpacing,
-                textDecoration,
-                textAlign,
-                lineHeight,
-                overflow,
-                softWrap,
-                minLines,
-                maxLines,
-                style,
-                commonProps,
-            )
-        )
-    }
-}
-
-internal object TextViewFactory : ComposableViewFactory<TextView>() {
-    fun buildComposableView(
-        text: String,
-        attributes: ImmutableList<CoreAttribute>,
-        scope: Any?,
-        pushEvent: PushEvent?,
-    ): TextView = textBuilder(attributes, scope, pushEvent).text(text).build()
-
-    /**
-     * Creates a `TextView` object based on the attributes and text of the input `Attributes` object.
-     * TextView co-relates to the Text composable
-     *
-     * @param attributes the `Attributes` object to create the `TextView` object from
-     * @return a `TextView` object based on the attributes and text of the input `Attributes` object
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): TextView = textBuilder(attributes, scope, pushEvent).build()
-
-    private fun textBuilder(
-        attributes: ImmutableList<CoreAttribute>, scope: Any?, pushEvent: PushEvent?
-    ): TextView.Builder = attributes.fold(TextView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrColor -> builder.color(attribute.value)
-            attrFontFamily -> builder.fontFamily(attribute.value)
-            attrFontSize -> builder.fontSize(attribute.value)
-            attrFontStyle -> builder.fontStyle(attribute.value)
-            attrFontWeight -> builder.fontWeight(attribute.value)
-            attrLetterSpacing -> builder.letterSpacing(attribute.value)
-            attrLineHeight -> builder.lineHeight(attribute.value)
-            attrMaxLines -> builder.maxLines(attribute.value)
-            attrMinLines -> builder.minLines(attribute.value)
-            attrOverflow -> builder.overflow(attribute.value)
-            attrSoftWrap -> builder.softWrap(attribute.value)
-            attrText -> builder.text(attribute.value)
-            attrTextAlign -> builder.textAlign(attribute.value)
-            attrTextDecoration -> builder.textDecoration(attribute.value)
-            // FIXME style attribute is used for modifiers, so I renamed to textStyle
-            attrTextStyle -> builder.style(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as TextView.Builder
     }
 }

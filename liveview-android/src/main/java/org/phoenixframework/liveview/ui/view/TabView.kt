@@ -14,18 +14,17 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelectedContentColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrUnselectedContentColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateText
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -146,20 +145,40 @@ internal class TabView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val onClick: String,
-        val selected: Boolean,
-        val enabled: Boolean,
-        val selectedContentColor: Color?,
-        val unselectedContentColor: Color?,
-        override val commonProps: CommonComposableProperties,
+        val onClick: String = "",
+        val selected: Boolean = false,
+        val enabled: Boolean = true,
+        val selectedContentColor: Color? = null,
+        val unselectedContentColor: Color? = null,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var onClick: String = ""
-        private var selected: Boolean = false
-        private var enabled: Boolean = true
-        private var selectedContentColor: Color? = null
-        private var unselectedContentColor: Color? = null
+    internal object Factory : ComposableViewFactory<TabView>() {
+        /**
+         * Creates a `TabView` object based on the attributes of the input `Attributes` object.
+         * TabView co-relates to the Tab composable.
+         * @param attributes the `Attributes` object to create the `TabView` object from
+         * @return a `TabView` object based on the attributes of the input `Attributes` object
+         **/
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+        ): TabView = TabView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrEnabled -> enabled(props, attribute.value)
+                attrPhxClick -> onClick(props, attribute.value)
+                attrSelected -> selected(props, attribute.value)
+                attrSelectedContentColor -> selectedContentColor(props, attribute.value)
+                attrUnselectedContentColor -> unselectedContentColor(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * Sets the event name to be triggered on the server when the tab is clicked.
@@ -169,8 +188,8 @@ internal class TabView private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
-        fun onClick(event: String) = apply {
-            this.onClick = event
+        private fun onClick(props: Properties, event: String): Properties {
+            return props.copy(onClick = event)
         }
 
         /**
@@ -181,8 +200,8 @@ internal class TabView private constructor(props: Properties) :
          * ```
          * @param selected true if the component is selected, false otherwise.
          */
-        fun selected(selected: String) = apply {
-            this.selected = selected.toBoolean()
+        private fun selected(props: Properties, selected: String): Properties {
+            return props.copy(selected = selected.toBoolean())
         }
 
         /**
@@ -193,8 +212,8 @@ internal class TabView private constructor(props: Properties) :
          * ```
          * @param enabled true if the component is enabled, false otherwise.
          */
-        fun enabled(enabled: String) = apply {
-            this.enabled = enabled.toBoolean()
+        private fun enabled(props: Properties, enabled: String): Properties {
+            return props.copy(enabled = enabled.toBoolean())
         }
 
         /**
@@ -205,8 +224,11 @@ internal class TabView private constructor(props: Properties) :
          * @param selectedContentColor the background color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun selectedContentColor(selectedContentColor: String) = apply {
-            this.selectedContentColor = selectedContentColor.toColor()
+        private fun selectedContentColor(
+            props: Properties,
+            selectedContentColor: String
+        ): Properties {
+            return props.copy(selectedContentColor = selectedContentColor.toColor())
         }
 
         /**
@@ -217,40 +239,11 @@ internal class TabView private constructor(props: Properties) :
          * @param unselectedContentColor the content color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun unselectedContentColor(unselectedContentColor: String) = apply {
-            this.unselectedContentColor = unselectedContentColor.toColor()
+        private fun unselectedContentColor(
+            props: Properties,
+            unselectedContentColor: String
+        ): Properties {
+            return props.copy(unselectedContentColor = unselectedContentColor.toColor())
         }
-
-        fun build() = TabView(
-            Properties(
-                onClick,
-                selected,
-                enabled,
-                selectedContentColor,
-                unselectedContentColor,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object TabViewFactory : ComposableViewFactory<TabView>() {
-    /**
-     * Creates a `TabView` object based on the attributes of the input `Attributes` object.
-     * TabView co-relates to the Tab composable.
-     * @param attributes the `Attributes` object to create the `TabView` object from
-     * @return a `TabView` object based on the attributes of the input `Attributes` object
-     **/
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
-    ): TabView = attributes.fold(TabView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrEnabled -> builder.enabled(attribute.value)
-            attrPhxClick -> builder.onClick(attribute.value)
-            attrSelected -> builder.selected(attribute.value)
-            attrSelectedContentColor -> builder.selectedContentColor(attribute.value)
-            attrUnselectedContentColor -> builder.unselectedContentColor(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as TabView.Builder
-    }.build()
 }

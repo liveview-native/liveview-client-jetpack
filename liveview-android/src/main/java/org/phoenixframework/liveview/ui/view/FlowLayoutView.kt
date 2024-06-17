@@ -12,16 +12,15 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangem
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxItemsInEachColumn
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxItemsInEachRow
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
-import org.phoenixframework.liveview.data.core.CoreAttribute
-import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
-import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.data.constants.ComposableTypes
+import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
+import org.phoenixframework.liveview.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.ui.base.ComposableProperties
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -80,16 +79,32 @@ internal class FlowLayoutView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val horizontalArrangement: Arrangement.Horizontal,
-        val maxItems: Int,
-        val verticalArrangement: Arrangement.Vertical,
-        override val commonProps: CommonComposableProperties,
+        val horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
+        val maxItems: Int = Int.MAX_VALUE,
+        val verticalArrangement: Arrangement.Vertical = Arrangement.Top,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var horizontalArrangement: Arrangement.Horizontal = Arrangement.Start
-        private var maxItems: Int = Int.MAX_VALUE
-        private var verticalArrangement: Arrangement.Vertical = Arrangement.Top
+    internal object Factory : ComposableViewFactory<FlowLayoutView>() {
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?
+        ): FlowLayoutView = FlowLayoutView(attributes.fold(Properties()) { props, attribute ->
+            when (attribute.name) {
+                attrMaxItemsInEachColumn, attrMaxItemsInEachRow -> maxItems(props, attribute.value)
+                attrHorizontalArrangement -> horizontalArrangement(props, attribute.value)
+                attrVerticalArrangement -> verticalArrangement(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
 
         /**
          * The horizontal arrangement of the children
@@ -102,8 +117,15 @@ internal class FlowLayoutView private constructor(props: Properties) :
          * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
          * An int value is also supported, which will be used to determine the space.
          */
-        fun horizontalArrangement(horizontalArrangement: String) = apply {
-            this.horizontalArrangement = horizontalArrangementFromString(horizontalArrangement)
+        private fun horizontalArrangement(
+            props: Properties,
+            horizontalArrangement: String
+        ): Properties {
+            return props.copy(
+                horizontalArrangement = horizontalArrangementFromString(
+                    horizontalArrangement
+                )
+            )
         }
 
         /**
@@ -115,8 +137,8 @@ internal class FlowLayoutView private constructor(props: Properties) :
          * ```
          * @param max the maximum number of items of each column/row.
          */
-        fun maxItems(max: String) = apply {
-            this.maxItems = max.toIntOrNull() ?: Int.MAX_VALUE
+        private fun maxItems(props: Properties, max: String): Properties {
+            return props.copy(maxItems = max.toIntOrNull() ?: Int.MAX_VALUE)
         }
 
         /**
@@ -130,32 +152,15 @@ internal class FlowLayoutView private constructor(props: Properties) :
          * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
          * An int value is also supported, which will be used to determine the space.
          */
-        fun verticalArrangement(verticalArrangement: String) = apply {
-            this.verticalArrangement = verticalArrangementFromString(verticalArrangement)
-        }
-
-        fun build() = FlowLayoutView(
-            Properties(
-                horizontalArrangement,
-                maxItems,
-                verticalArrangement,
-                commonProps,
+        private fun verticalArrangement(
+            props: Properties,
+            verticalArrangement: String
+        ): Properties {
+            return props.copy(
+                verticalArrangement = verticalArrangementFromString(
+                    verticalArrangement
+                )
             )
-        )
+        }
     }
-}
-
-internal object FlowLayoutViewFactory : ComposableViewFactory<FlowLayoutView>() {
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?
-    ): FlowLayoutView = attributes.fold(FlowLayoutView.Builder()) { builder, attribute ->
-        when (attribute.name) {
-            attrMaxItemsInEachColumn, attrMaxItemsInEachRow -> builder.maxItems(attribute.value)
-            attrHorizontalArrangement -> builder.horizontalArrangement(attribute.value)
-            attrVerticalArrangement -> builder.verticalArrangement(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as FlowLayoutView.Builder
-    }.build()
 }

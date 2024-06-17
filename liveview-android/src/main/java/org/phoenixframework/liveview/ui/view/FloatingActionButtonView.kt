@@ -25,6 +25,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrExpanded
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level3
 import org.phoenixframework.liveview.data.constants.DefaultElevationValues.Level4
 import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttrDefaultElevation
@@ -34,15 +35,13 @@ import org.phoenixframework.liveview.data.constants.ElevationAttrs.elevationAttr
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateText
 import org.phoenixframework.liveview.data.core.CoreAttribute
+import org.phoenixframework.liveview.domain.data.ComposableTreeNode
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.ui.base.ComposableBuilder
 import org.phoenixframework.liveview.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
@@ -181,22 +180,49 @@ internal class FloatingActionButtonView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val onClick: String,
-        val containerColor: Color?,
-        val contentColor: Color?,
-        val shape: Shape?,
-        val elevation: ImmutableMap<String, String>?,
-        val expanded: Boolean,
-        override val commonProps: CommonComposableProperties,
+        val onClick: String = "",
+        val containerColor: Color? = null,
+        val contentColor: Color? = null,
+        val shape: Shape? = null,
+        val elevation: ImmutableMap<String, String>? = null,
+        val expanded: Boolean = true,
+        override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal class Builder : ComposableBuilder() {
-        private var onClick: String = ""
-        private var containerColor: Color? = null
-        private var contentColor: Color? = null
-        private var shape: Shape? = null
-        private var elevation: ImmutableMap<String, String>? = null
-        private var expanded: Boolean = true
+    internal object Factory : ComposableViewFactory<FloatingActionButtonView>() {
+        /**
+         * Creates an `FloatingActionButtonView` object based on the attributes and text of the input
+         * `Attributes` object. FloatingActionButtonView co-relates to the FloatingActionButton
+         * composable from Compose library.
+         * @param attributes the `Attributes` object to create the `FloatingActionButtonView` object
+         * from @return an `FloatingActionButtonView` object based on the attributes and text of the
+         * input `Attributes` object.
+         */
+        override fun buildComposableView(
+            attributes: ImmutableList<CoreAttribute>,
+            pushEvent: PushEvent?,
+            scope: Any?,
+        ): FloatingActionButtonView = FloatingActionButtonView(attributes.fold(
+            Properties()
+        ) { props, attribute ->
+            when (attribute.name) {
+                attrContainerColor -> containerColor(props, attribute.value)
+                attrContentColor -> contentColor(props, attribute.value)
+                attrElevation -> elevation(props, attribute.value)
+                attrExpanded -> expanded(props, attribute.value)
+                attrPhxClick -> onClick(props, attribute.value)
+                attrShape -> shape(props, attribute.value)
+                else -> props.copy(
+                    commonProps = handleCommonAttributes(
+                        props.commonProps,
+                        attribute,
+                        pushEvent,
+                        scope
+                    )
+                )
+            }
+        })
+
 
         /**
          * The color used for the background of this FAB.
@@ -207,10 +233,10 @@ internal class FloatingActionButtonView private constructor(props: Properties) :
          * @param color the background color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun containerColor(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.containerColor = color.toColor()
-            }
+        private fun containerColor(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(containerColor = color.toColor())
+            } else props
         }
 
         /**
@@ -222,10 +248,10 @@ internal class FloatingActionButtonView private constructor(props: Properties) :
          * @param color the content color in AARRGGBB format or one of the
          * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
          */
-        fun contentColor(color: String) = apply {
-            if (color.isNotEmpty()) {
-                this.contentColor = color.toColor()
-            }
+        private fun contentColor(props: Properties, color: String): Properties {
+            return if (color.isNotEmpty()) {
+                props.copy(contentColor = color.toColor())
+            } else props
         }
 
         /**
@@ -236,8 +262,8 @@ internal class FloatingActionButtonView private constructor(props: Properties) :
          * ```
          * @param event event name defined on the server to handle the button's click.
          */
-        fun onClick(event: String) = apply {
-            this.onClick = event
+        private fun onClick(props: Properties, event: String): Properties {
+            return props.copy(onClick = event)
         }
 
         /**
@@ -250,10 +276,10 @@ internal class FloatingActionButtonView private constructor(props: Properties) :
          * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
          * representing the curve size applied for all four corners.
          */
-        fun shape(shape: String): Builder = apply {
-            if (shape.isNotEmpty()) {
-                this.shape = shapeFromString(shape, CircleShape)
-            }
+        private fun shape(props: Properties, shape: String): Properties {
+            return if (shape.isNotEmpty()) {
+                props.copy(shape = shapeFromString(shape, CircleShape))
+            } else props
         }
 
         /**
@@ -268,10 +294,10 @@ internal class FloatingActionButtonView private constructor(props: Properties) :
          * elevation supported keys are: `defaultElevation`, `pressedElevation`, `focusedElevation`,
          * and `hoveredElevation`.
          */
-        fun elevation(elevations: String) = apply {
-            if (elevations.isNotEmpty()) {
-                this.elevation = elevationsFromString(elevations)?.toImmutableMap()
-            }
+        private fun elevation(props: Properties, elevations: String): Properties {
+            return if (elevations.isNotEmpty()) {
+                props.copy(elevation = elevationsFromString(elevations)?.toImmutableMap())
+            } else props
         }
 
         /**
@@ -284,50 +310,10 @@ internal class FloatingActionButtonView private constructor(props: Properties) :
          * ```
          * @param expanded true if the FAB is expanded, false otherwise.
          */
-        fun expanded(expanded: String) = apply {
-            if (expanded.isNotEmpty()) {
-                this.expanded = expanded.toBoolean()
-            }
+        private fun expanded(props: Properties, expanded: String): Properties {
+            return if (expanded.isNotEmpty()) {
+                props.copy(expanded = expanded.toBoolean())
+            } else props
         }
-
-        fun build() = FloatingActionButtonView(
-            Properties(
-                onClick,
-                containerColor,
-                contentColor,
-                shape,
-                elevation,
-                expanded,
-                commonProps,
-            )
-        )
     }
-}
-
-internal object FloatingActionButtonViewFactory : ComposableViewFactory<FloatingActionButtonView>() {
-    /**
-     * Creates an `FloatingActionButtonView` object based on the attributes and text of the input
-     * `Attributes` object. FloatingActionButtonView co-relates to the FloatingActionButton
-     * composable from Compose library.
-     * @param attributes the `Attributes` object to create the `FloatingActionButtonView` object
-     * from @return an `FloatingActionButtonView` object based on the attributes and text of the
-     * input `Attributes` object.
-     */
-    override fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
-        pushEvent: PushEvent?,
-        scope: Any?,
-    ): FloatingActionButtonView = attributes.fold(
-        FloatingActionButtonView.Builder()
-    ) { builder, attribute ->
-        when (attribute.name) {
-            attrContainerColor -> builder.containerColor(attribute.value)
-            attrContentColor -> builder.contentColor(attribute.value)
-            attrElevation -> builder.elevation(attribute.value)
-            attrExpanded -> builder.expanded(attribute.value)
-            attrPhxClick -> builder.onClick(attribute.value)
-            attrShape -> builder.shape(attribute.value)
-            else -> builder.handleCommonAttributes(attribute, pushEvent, scope)
-        } as FloatingActionButtonView.Builder
-    }.build()
 }
