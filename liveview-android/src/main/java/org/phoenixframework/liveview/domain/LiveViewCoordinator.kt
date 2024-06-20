@@ -15,22 +15,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.phoenixframework.Message
 import org.phoenixframework.liveview.data.core.CoreNodeElement
-import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
 import org.phoenixframework.liveview.data.repository.Repository
 import org.phoenixframework.liveview.data.service.ChannelService
 import org.phoenixframework.liveview.data.service.SocketService
-import org.phoenixframework.liveview.ui.registry.ComposableNodeFactory
-import org.phoenixframework.liveview.lib.Document
-import org.phoenixframework.liveview.lib.Node
-import org.phoenixframework.liveview.lib.NodeRef
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
-import org.phoenixframework.liveviewnative.core.Document
-import org.phoenixframework.liveviewnative.core.Node
-import org.phoenixframework.liveviewnative.core.NodeRef
-import org.phoenixframework.liveviewnative.core.DocumentChangeHandler
+import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
+import org.phoenixframework.liveview.ui.registry.ComposableNodeFactory
 import org.phoenixframework.liveviewnative.core.ChangeType
+import org.phoenixframework.liveviewnative.core.Document
+import org.phoenixframework.liveviewnative.core.DocumentChangeHandler
 import org.phoenixframework.liveviewnative.core.NodeData
-import java.net.ConnectException
+import org.phoenixframework.liveviewnative.core.NodeRef
 
 internal class LiveViewCoordinator(
     internal val httpBaseUrl: String,
@@ -38,6 +33,7 @@ internal class LiveViewCoordinator(
     private val route: String?,
 ) : ViewModel(), DocumentChangeHandler {
     private val repository: Repository = Repository(httpBaseUrl, wsBaseUrl)
+
     // This is to implement the DocumentChangeHandler interface.
     override fun `handle`(
         `changeType`: ChangeType,
@@ -65,7 +61,7 @@ internal class LiveViewCoordinator(
             ChangeType.REPLACE -> {
                 Log.i(TAG, "Replace: ${this.document.get(nodeRef)}")
             }
-         }
+        }
     }
 
     private var document: Document = Document.empty()

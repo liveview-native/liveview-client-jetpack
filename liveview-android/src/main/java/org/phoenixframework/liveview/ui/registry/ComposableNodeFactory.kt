@@ -4,7 +4,6 @@ import kotlinx.collections.immutable.persistentListOf
 import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.core.CoreNodeElement
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
-import org.phoenixframework.liveview.lib.NodeRef
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.view.AlertDialogView
@@ -64,6 +63,7 @@ import org.phoenixframework.liveview.ui.view.TimePickerView
 import org.phoenixframework.liveview.ui.view.TooltipBoxView
 import org.phoenixframework.liveview.ui.view.TooltipView
 import org.phoenixframework.liveview.ui.view.TopAppBarView
+import org.phoenixframework.liveviewnative.core.NodeRef
 
 /**
  * A factory class that is used to create `ComposableTreeNode` objects that co-relate to composable
@@ -234,9 +234,9 @@ object ComposableNodeFactory {
     ): ComposableTreeNode {
         return ComposableTreeNode(
             screenId = screenId,
-            refId = nodeRef.ref,
+            refId = nodeRef.ref(),
             node = element,
-            id = "${screenId}_${nodeRef.ref}",
+            id = "${screenId}_${nodeRef.ref()}",
         )
     }
 
