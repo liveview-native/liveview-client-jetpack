@@ -225,6 +225,20 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       assert parse(input) == output
     end
 
+    test "parses numerical types with units" do
+      input = "foo(1.dp, 1.1.dp)"
+      output = {:foo, [], [{:., [], [1, :dp]}, {:., [], [1.1, :dp]}]}
+
+      assert parse(input) == output
+    end
+
+    test "parses function calls with numbers" do
+      input = "foo(Dp(1), Dp(1.1))"
+      output = {:foo, [], [{:Dp, [], [1]}, {:Dp, [], [1.1]}]}
+
+      assert parse(input) == output
+    end
+
     test "parses underscore numbers" do
       input = "foo(1_000, 1_000_000_000_000, 1_000.4)"
       output = {:foo, [], [1_000, 1_000_000_000_000, 1_000.4]}
