@@ -529,6 +529,29 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       assert String.trim(error.description) == error_prefix
     end
 
+    test "invalid modifier argument in nested modifier" do
+      input = "font(bold(Color.largeTitle.))"
+
+      error =
+        assert_raise SyntaxError, fn ->
+          parse(input)
+        end
+
+      error_prefix =
+        """
+        Unsupported input:
+          |
+        1 | font(bold(Color.largeTitle.))
+          |                           ^
+          |
+
+        expected ‘)’
+        """
+        |> String.trim()
+
+      assert String.trim(error.description) == error_prefix
+    end
+
     test "invalid keyword pair: missing equals" do
       input = "abc(def = 11, b = [lineWidth a, l = 2a])"
 

@@ -262,7 +262,7 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
         not inside_key_value_pair?
       },
       {
-        frozen(parsec(:nested_modifier)),
+        parsec(:nested_modifier),
         "a modifier eg ‘bold()’"
       },
       {
