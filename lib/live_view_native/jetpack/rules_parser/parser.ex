@@ -73,10 +73,11 @@ defmodule LiveViewNative.Jetpack.RulesParser.Parser do
     |> post_traverse({Context, :unfreeze_context, []})
   end
 
+  # Prevent combinator_2 from adding errors to the context
   def frozen(combinator \\ empty(), combinator_2) do
     combinator
+    |> post_traverse({Context, :freeze_context, []})
     |> concat(combinator_2)
-    |> pre_traverse({Context, :freeze_context, []})
     |> post_traverse({Context, :unfreeze_context, []})
   end
 
@@ -90,7 +91,7 @@ defmodule LiveViewNative.Jetpack.RulesParser.Parser do
 
   def __reject_if_in__(rest, [arg], context, position, byte_offset, exceptions, error_message_fn) do
     if arg in exceptions do
-      Error.put_error(rest, [arg], context, position, byte_offset, error_message_fn.(arg))
+      Error.put_error(rest, [arg], context, position, byte_offset, error_message_fn.(arg), force_error?: true)
     else
       {rest, [arg], context}
     end

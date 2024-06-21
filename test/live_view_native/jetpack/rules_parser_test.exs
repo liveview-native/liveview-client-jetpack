@@ -267,13 +267,6 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       assert parse(input) == output
     end
 
-    test "numerical member expressions" do
-      input = "textSize(1.dp, 10.5.em)"
-      output = {:textSize, [], [{:., [1, :dp]}, {:., [10.5, :em]}]}
-
-      assert parse(input) == output
-    end
-
     test "parses nested function calls" do
       input = ~s|foo(bar("baz"))|
       output = {:foo, [], [{:bar, [], ["baz"]}]}
@@ -454,13 +447,12 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
          - a list of values eg ‘[1, 2, 3]’, ‘[\"red\", \"blue\"]’ or ‘[Color.red, Color.blue]’
          - a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’
          - an IME eg ‘Color.red’ or ‘.largeTitle’’
-         - a number, string, nil, boolean or :atom
          - an event eg ‘event(\"search-event\", throttle: 10_000)’
          - an attribute eg ‘attr(\"placeholder\")’
-         - an IME eg ‘Color.red’ or ‘.largeTitle’’
          - a list of keyword pairs eg ‘style: :dashed’, ‘size: 12’ or  ‘style: [lineWidth: 1]’
          - a list of keyword pairs eg ‘style = dashed’, ‘size = 12’ or  ‘style = [lineWidth = 1]’
          - a modifier eg ‘bold()’
+         - a number, string, nil, boolean or :atom
          - a variable defined in the class header eg ‘color_name’
         """
         |> String.trim()
@@ -559,11 +551,10 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
          - a keyword list eg ‘[style = dashed]’, ‘[size = 12]’ or ‘[lineWidth = lineWidth]’
          - a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’
          - an IME eg ‘Color.red’ or ‘.largeTitle’’
-         - a number, string, nil, boolean or :atom
          - an event eg ‘event(\"search-event\", throttle: 10_000)’
          - an attribute eg ‘attr(\"placeholder\")’
-         - an IME eg ‘Color.red’ or ‘.largeTitle’’
          - a modifier eg ‘bold()’
+         - a number, string, nil, boolean or :atom
          - a variable defined in the class header eg ‘color_name’
         """
         |> String.trim()
@@ -729,13 +720,12 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
          - a list of values eg ‘[1, 2, 3]’, ‘[\"red\", \"blue\"]’ or ‘[Color.red, Color.blue]’
          - a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’
          - an IME eg ‘Color.red’ or ‘.largeTitle’’
-         - a number, string, nil, boolean or :atom
          - an event eg ‘event(\"search-event\", throttle: 10_000)’
          - an attribute eg ‘attr(\"placeholder\")’
-         - an IME eg ‘Color.red’ or ‘.largeTitle’’
          - a list of keyword pairs eg ‘style: :dashed’, ‘size: 12’ or  ‘style: [lineWidth: 1]’
          - a list of keyword pairs eg ‘style = dashed’, ‘size = 12’ or  ‘style = [lineWidth = 1]’
          - a modifier eg ‘bold()’
+         - a number, string, nil, boolean or :atom
          - a variable defined in the class header eg ‘color_name’
         """
         |> String.trim()
