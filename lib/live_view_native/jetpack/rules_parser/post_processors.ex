@@ -161,7 +161,7 @@ defmodule LiveViewNative.Jetpack.RulesParser.PostProcessors do
   end
 
   def number_ime(rest, [member_expression, number], context, {_line, _}, _byte_offset) do
-    {rest, [{:., [number, member_expression]}], context}
+    {rest, [{:., [], [number, member_expression]}], context}
   end
 
   def to_keyword_tuple_ast(rest, [arg1, arg2], context, {_line, _}, _byte_offset) do
