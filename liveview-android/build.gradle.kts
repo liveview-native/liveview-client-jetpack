@@ -81,8 +81,13 @@ dependencies {
     api(libs.androidx.lifecycle.runtime.ktx)
     api(libs.androidx.navigation.compose)
     api(libs.com.github.dsrees.javaphoenixclient)
-    api(libs.com.github.liveview.native.core.jetpack)
-    api(libs.net.java.dev.jna)
+    implementation(libs.com.github.liveview.native.core.jetpack)
+    runtimeOnly(libs.net.java.dev.jna) {
+        artifact {
+            type = "aar"
+        }
+    }
+    testImplementation(libs.net.java.dev.jna.desktop)
 
     api(libs.org.jetbrains.kotlinx.collections.immutable)
     api(libs.org.jsoup)
