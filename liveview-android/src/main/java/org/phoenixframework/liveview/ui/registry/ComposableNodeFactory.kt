@@ -20,6 +20,7 @@ import org.phoenixframework.liveview.ui.view.CardView
 import org.phoenixframework.liveview.ui.view.CheckBoxView
 import org.phoenixframework.liveview.ui.view.ChipView
 import org.phoenixframework.liveview.ui.view.ColumnView
+import org.phoenixframework.liveview.ui.view.CrossfadeView
 import org.phoenixframework.liveview.ui.view.DatePickerDialogView
 import org.phoenixframework.liveview.ui.view.DatePickerView
 import org.phoenixframework.liveview.ui.view.DividerView
@@ -93,6 +94,7 @@ object ComposableNodeFactory {
                 ProgressIndicatorView.Factory
             )
             registerComponent(ComposableTypes.column, ColumnView.Factory)
+            registerComponent(ComposableTypes.crossfade, CrossfadeView.Factory)
             registerComponent(ComposableTypes.datePicker, DatePickerView.Factory)
             registerComponent(ComposableTypes.datePickerDialog, DatePickerDialogView.Factory)
             registerComponent(ComposableTypes.dateRangePicker, DatePickerView.Factory)

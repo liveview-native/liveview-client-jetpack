@@ -17,6 +17,7 @@ object ComposableTypes {
     const val checkbox = "CheckBox"
     const val circularProgressIndicator = "CircularProgressIndicator"
     const val column = "Column"
+    const val crossfade = "Crossfade"
     const val datePicker = "DatePicker"
     const val datePickerDialog = "DatePickerDialog"
     const val dateRangePicker = "DateRangePicker"

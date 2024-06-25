@@ -59,6 +59,7 @@ object EnterExitTransitionFunctions {
     const val slideInHorizontally = "slideInHorizontally"
 
     // Argument names used for the functions above
+    const val argAnimationSpec = "animationSpec"
     const val argClip = "clip"
     const val argExpandFrom = "expandFrom"
     const val argHeight = "height"
@@ -298,6 +299,11 @@ object SnackbarDurationValues {
     const val indefinite = "indefinite"
     const val long = "long"
     const val short = "short"
+}
+
+object StartOffsetTypeValues {
+    const val delay = "Delay"
+    const val fastForward = "FastForward"
 }
 
 object StrokeCapValues {
