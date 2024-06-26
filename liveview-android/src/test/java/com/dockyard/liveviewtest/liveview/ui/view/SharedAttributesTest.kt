@@ -1,5 +1,18 @@
 package com.dockyard.liveviewtest.liveview.ui.view
 
+import androidx.compose.animation.core.EaseInBounce
+import androidx.compose.animation.core.ExperimentalAnimationSpecApi
+import androidx.compose.animation.core.KeyframesSpec
+import androidx.compose.animation.core.KeyframesWithSplineSpec
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.StartOffset
+import androidx.compose.animation.core.StartOffsetType
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.keyframesWithSpline
+import androidx.compose.animation.core.repeatable
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.expandVertically
@@ -36,12 +49,15 @@ import org.phoenixframework.liveview.data.constants.AlignmentValues
 import org.phoenixframework.liveview.data.constants.Attrs.attrBottom
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrLeft
+import org.phoenixframework.liveview.data.constants.Attrs.attrOffsetMillis
+import org.phoenixframework.liveview.data.constants.Attrs.attrOffsetType
 import org.phoenixframework.liveview.data.constants.Attrs.attrPivotFractionX
 import org.phoenixframework.liveview.data.constants.Attrs.attrPivotFractionY
 import org.phoenixframework.liveview.data.constants.Attrs.attrRight
 import org.phoenixframework.liveview.data.constants.Attrs.attrTop
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.ContentScaleValues
+import org.phoenixframework.liveview.data.constants.EasingValues
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argClip
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argExpandFrom
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argInitialAlpha
@@ -74,11 +90,14 @@ import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.slideOut
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.slideOutHorizontally
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.slideOutVertically
+import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues.centerHorizontally
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues.start
 import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
+import org.phoenixframework.liveview.data.constants.RepeatModeValues
 import org.phoenixframework.liveview.data.constants.SecureFlagPolicyValues
+import org.phoenixframework.liveview.data.constants.StartOffsetTypeValues
 import org.phoenixframework.liveview.data.constants.SystemColorValues
 import org.phoenixframework.liveview.data.constants.TileModeValues
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
@@ -90,9 +109,13 @@ import org.phoenixframework.liveview.ui.view.contentScaleFromString
 import org.phoenixframework.liveview.ui.view.elevationsFromString
 import org.phoenixframework.liveview.ui.view.enterTransitionFromString
 import org.phoenixframework.liveview.ui.view.exitTransitionFromString
+import org.phoenixframework.liveview.ui.view.finiteAnimationSpecFromString
 import org.phoenixframework.liveview.ui.view.horizontalAlignmentFromString
 import org.phoenixframework.liveview.ui.view.horizontalArrangementFromString
+import org.phoenixframework.liveview.ui.view.repeatModeFromString
 import org.phoenixframework.liveview.ui.view.secureFlagPolicyFromString
+import org.phoenixframework.liveview.ui.view.startOffsetFromMap
+import org.phoenixframework.liveview.ui.view.startOffsetTypeFromString
 import org.phoenixframework.liveview.ui.view.tileModeFromString
 import org.phoenixframework.liveview.ui.view.verticalAlignmentFromString
 import org.phoenixframework.liveview.ui.view.verticalArrangementFromString
@@ -574,6 +597,288 @@ class SharedAttributesTest {
     }
 
     @Test
+    fun finiteAnimationSpecFromStringTweenTest() {
+        assertEquals(
+            tween<Int>(),
+            finiteAnimationSpecFromString<Int>(
+                """
+            {'${FiniteAnimationSpecFunctions.tween}': {}}    
+            """.trimIndent()
+            )
+        )
+        assertEquals(
+            tween<Int>(1500),
+            finiteAnimationSpecFromString<Int>(
+                """
+            {'${FiniteAnimationSpecFunctions.tween}': {'${FiniteAnimationSpecFunctions.argDurationMillis}': 1500 }}    
+            """.trimIndent()
+            )
+        )
+        assertEquals(
+            tween<Int>(1500, 2000),
+            finiteAnimationSpecFromString<Int>(
+                """
+            {'${FiniteAnimationSpecFunctions.tween}': 
+              {
+                '${FiniteAnimationSpecFunctions.argDurationMillis}': 1500, 
+                '${FiniteAnimationSpecFunctions.argDelayMillis}': 2000
+              }
+            }""".trimIndent()
+            )
+        )
+        assertEquals(
+            tween<Int>(1500, 2000, EaseInBounce),
+            finiteAnimationSpecFromString<Int>(
+                """
+                {'${FiniteAnimationSpecFunctions.tween}': 
+                  {
+                    '${FiniteAnimationSpecFunctions.argDurationMillis}': 1500, 
+                    '${FiniteAnimationSpecFunctions.argDelayMillis}': 2000, 
+                    '${FiniteAnimationSpecFunctions.argEasing}': '${EasingValues.easeInBounce}'
+                  }
+                }
+                """.trimIndent()
+            )
+        )
+    }
+
+    @Test
+    fun finiteAnimationSpecFromStringSpringTest() {
+        assertEquals(
+            spring<Int>(),
+            finiteAnimationSpecFromString<Int>(
+                """
+                {'${FiniteAnimationSpecFunctions.spring}': {} }
+                """.trimIndent()
+            )
+        )
+        assertEquals(
+            spring<Int>(200f),
+            finiteAnimationSpecFromString<Int>(
+                """
+                {'${FiniteAnimationSpecFunctions.spring}': 
+                  {
+                    '${FiniteAnimationSpecFunctions.argDampingRatio}': 200
+                  } 
+                }
+                """.trimIndent()
+            )
+        )
+        assertEquals(
+            spring<Int>(200f, 100f),
+            finiteAnimationSpecFromString<Int>(
+                """
+                {'${FiniteAnimationSpecFunctions.spring}': 
+                  {
+                    '${FiniteAnimationSpecFunctions.argDampingRatio}': 200,
+                    '${FiniteAnimationSpecFunctions.argStiffness}': 100
+                  } 
+                }
+                """.trimIndent()
+            )
+        )
+    }
+
+    @Test
+    fun finiteAnimationSpecFromStringKeyframesTest() {
+        var expect = keyframes<Int> { }
+        var actual = finiteAnimationSpecFromString<Int>(
+            """
+            {'${FiniteAnimationSpecFunctions.keyframes}': {} }
+            """.trimIndent()
+        )
+        assert(actual is KeyframesSpec)
+        assertEquals(
+            expect.config.durationMillis,
+            (actual as KeyframesSpec).config.durationMillis
+        )
+        assertEquals(
+            expect.config.delayMillis,
+            actual.config.delayMillis
+        )
+
+        expect = keyframes {
+            this.durationMillis = 1500
+        }
+        actual = finiteAnimationSpecFromString<Int>(
+            """
+            {'${FiniteAnimationSpecFunctions.keyframes}': 
+              {
+                '${FiniteAnimationSpecFunctions.argDurationMillis}': 1500 
+              } 
+            }
+            """.trimIndent()
+        )
+        assert(actual is KeyframesSpec)
+        assertEquals(
+            expect.config.durationMillis,
+            (actual as KeyframesSpec).config.durationMillis
+        )
+        assertEquals(
+            expect.config.delayMillis,
+            actual.config.delayMillis
+        )
+
+        expect = keyframes {
+            this.durationMillis = 1500
+            this.delayMillis = 2000
+        }
+        actual = finiteAnimationSpecFromString<Int>(
+            """
+            {'${FiniteAnimationSpecFunctions.keyframes}': 
+              {
+                '${FiniteAnimationSpecFunctions.argDurationMillis}': 1500, 
+                '${FiniteAnimationSpecFunctions.argDelayMillis}': 2000
+              } 
+            }
+            """.trimIndent()
+        )
+        assert(actual is KeyframesSpec)
+        assertEquals(
+            expect.config.durationMillis,
+            (actual as KeyframesSpec).config.durationMillis
+        )
+        assertEquals(
+            expect.config.delayMillis,
+            actual.config.delayMillis
+        )
+    }
+
+    @OptIn(ExperimentalAnimationSpecApi::class)
+    @Test
+    fun finiteAnimationSpecFromStringKeyframesWithSplineTest() {
+        var expect = keyframesWithSpline<Int> { }
+        var actual = finiteAnimationSpecFromString<Int>(
+            """
+            {'${FiniteAnimationSpecFunctions.keyframesWithSpline}': {} }
+            """.trimIndent()
+        )
+        assert(actual is KeyframesWithSplineSpec)
+        assertEquals(
+            expect.config.durationMillis,
+            (actual as KeyframesWithSplineSpec).config.durationMillis
+        )
+        assertEquals(
+            expect.config.delayMillis,
+            actual.config.delayMillis
+        )
+
+        expect = keyframesWithSpline {
+            this.durationMillis = 1500
+        }
+        actual = finiteAnimationSpecFromString<Int>(
+            """
+            {'${FiniteAnimationSpecFunctions.keyframesWithSpline}': 
+              {
+                '${FiniteAnimationSpecFunctions.argDurationMillis}': 1500 
+              } 
+            }
+            """.trimIndent()
+        )
+        assert(actual is KeyframesWithSplineSpec)
+        assertEquals(
+            expect.config.durationMillis,
+            (actual as KeyframesWithSplineSpec).config.durationMillis
+        )
+        assertEquals(
+            expect.config.delayMillis,
+            actual.config.delayMillis
+        )
+
+        expect = keyframesWithSpline {
+            this.durationMillis = 1500
+            this.delayMillis = 2000
+        }
+        actual = finiteAnimationSpecFromString<Int>(
+            """
+            {'${FiniteAnimationSpecFunctions.keyframesWithSpline}': 
+              {
+                '${FiniteAnimationSpecFunctions.argDurationMillis}': 1500, 
+                '${FiniteAnimationSpecFunctions.argDelayMillis}': 2000
+              } 
+            }
+            """.trimIndent()
+        )
+        assert(actual is KeyframesWithSplineSpec)
+        assertEquals(
+            expect.config.durationMillis,
+            (actual as KeyframesWithSplineSpec).config.durationMillis
+        )
+        assertEquals(
+            expect.config.delayMillis,
+            actual.config.delayMillis
+        )
+    }
+
+    @Test
+    fun finiteAnimationSpecFromStringRepeatableTest() {
+        var expect = repeatable<Int>(10, tween())
+        var actual = finiteAnimationSpecFromString<Int>(
+            """
+            {'${FiniteAnimationSpecFunctions.repeatable}': {
+                '${FiniteAnimationSpecFunctions.argIterations}': 10,
+                '${FiniteAnimationSpecFunctions.argAnimation}': {
+                  '${FiniteAnimationSpecFunctions.tween}': {}
+                }
+            }}
+            """.trimIndent()
+        )
+        assertEquals(expect, actual)
+
+        expect = repeatable(10, tween(), RepeatMode.Reverse)
+        actual = finiteAnimationSpecFromString(
+            """
+            {'${FiniteAnimationSpecFunctions.repeatable}': {
+                '${FiniteAnimationSpecFunctions.argIterations}': 10,
+                '${FiniteAnimationSpecFunctions.argAnimation}': {
+                  '${FiniteAnimationSpecFunctions.tween}': {}
+                },
+                '${FiniteAnimationSpecFunctions.argRepeatMode}': '${RepeatModeValues.reverse}'
+            }}
+            """.trimIndent()
+        )
+        assertEquals(expect, actual)
+
+        expect = repeatable(10, tween(), RepeatMode.Reverse, StartOffset(200))
+        actual = finiteAnimationSpecFromString(
+            """
+            {'${FiniteAnimationSpecFunctions.repeatable}': {
+                '${FiniteAnimationSpecFunctions.argIterations}': 10,
+                '${FiniteAnimationSpecFunctions.argAnimation}': {
+                  '${FiniteAnimationSpecFunctions.tween}': {}
+                },
+                '${FiniteAnimationSpecFunctions.argRepeatMode}': '${RepeatModeValues.reverse}',
+                '${FiniteAnimationSpecFunctions.argInitialStartOffset}': {
+                  '${attrOffsetMillis}': 200
+                }
+            }}
+            """.trimIndent()
+        )
+        assertEquals(expect, actual)
+    }
+
+    @Test
+    fun finiteAnimationSpecFromStringSnapTest() {
+        var expect = snap<Int>()
+        var actual = finiteAnimationSpecFromString<Int>(
+            """
+            {'${FiniteAnimationSpecFunctions.snap}': {} }
+            """.trimIndent()
+        )
+        assertEquals(expect, actual)
+
+        expect = snap(250)
+        actual = finiteAnimationSpecFromString(
+            """
+            {'${FiniteAnimationSpecFunctions.snap}': {
+              '${FiniteAnimationSpecFunctions.argDelayMillis}': 250
+            } }
+            """.trimIndent()
+        )
+        assertEquals(expect, actual)
+    }
+
+    @Test
     fun horizontalAlignmentFromStringTest() {
         assertEquals(
             Alignment.Start,
@@ -624,6 +929,18 @@ class SharedAttributesTest {
     }
 
     @Test
+    fun repeatModeFromStringTest() {
+        assertEquals(
+            RepeatMode.Reverse,
+            repeatModeFromString(RepeatModeValues.reverse)
+        )
+        assertEquals(
+            RepeatMode.Restart,
+            repeatModeFromString(RepeatModeValues.restart)
+        )
+    }
+
+    @Test
     fun secureFlagPolicyFromStringTest() {
         assertEquals(
             SecureFlagPolicy.SecureOn,
@@ -636,6 +953,44 @@ class SharedAttributesTest {
         assertEquals(
             SecureFlagPolicy.Inherit,
             secureFlagPolicyFromString(SecureFlagPolicyValues.inherit)
+        )
+    }
+
+    @Test
+    fun startOffsetFromMapTest() {
+        assertEquals(
+            StartOffset(1),
+            startOffsetFromMap(mapOf(attrOffsetMillis to 1))
+        )
+        assertEquals(
+            StartOffset(2, StartOffsetType.FastForward),
+            startOffsetFromMap(
+                mapOf(
+                    attrOffsetMillis to 2,
+                    attrOffsetType to StartOffsetTypeValues.fastForward
+                )
+            )
+        )
+        assertEquals(
+            StartOffset(3, StartOffsetType.Delay),
+            startOffsetFromMap(
+                mapOf(
+                    attrOffsetMillis to 3,
+                    attrOffsetType to StartOffsetTypeValues.delay
+                )
+            )
+        )
+    }
+
+    @Test
+    fun startOffsetTypeFromStringTest() {
+        assertEquals(
+            StartOffsetType.Delay,
+            startOffsetTypeFromString(StartOffsetTypeValues.delay)
+        )
+        assertEquals(
+            StartOffsetType.FastForward,
+            startOffsetTypeFromString(StartOffsetTypeValues.fastForward)
         )
     }
 

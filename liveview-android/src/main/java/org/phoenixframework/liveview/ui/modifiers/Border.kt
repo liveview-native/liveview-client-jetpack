@@ -8,7 +8,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argBorder
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argBrush
 import org.phoenixframework.liveview.data.constants.ModifierArgs.argColor
@@ -32,7 +31,7 @@ fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
         if (arg != null) borderColor = colorFromArgument(arg)
 
         arg = borderArguments.find { it.name == argWidth }
-        if (arg != null) borderWidth = (arg.intValue ?: 0).dp
+        if (arg != null) borderWidth = dpFromArgument(arg)
 
         arg = borderArguments.find { it.name == argBorder }
         if (arg != null) borderStroke = borderStrokeFromArgument(arg)
@@ -56,10 +55,10 @@ fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
                 borderArgument.type == typeShape ->
                     borderShape = shapeFromArgument(borderArgument)
 
-                borderArgument.isInt ->
-                    borderWidth = (borderArgument.intValue ?: 0).dp
+                borderArgument.isDot || borderArgument.isAtom -> {
+                    if (borderWidth == null)
+                        borderWidth = dpFromArgument(borderArgument)
 
-                borderArgument.isDot -> {
                     val b = brushFromArgument(borderArgument)
                     if (b != null) borderBrush = b
 

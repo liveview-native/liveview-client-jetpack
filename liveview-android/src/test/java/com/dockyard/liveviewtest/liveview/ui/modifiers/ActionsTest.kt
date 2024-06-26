@@ -13,13 +13,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.data.constants.Attrs.attrClass
+import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
-import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
 import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.ui.base.ComposableView.Companion.EVENT_TYPE_CLICK
 import org.phoenixframework.liveview.ui.base.ComposableView.Companion.EVENT_TYPE_DOUBLE_CLICK
 import org.phoenixframework.liveview.ui.base.ComposableView.Companion.EVENT_TYPE_LONG_CLICK
 import org.phoenixframework.liveview.ui.base.PushEvent
+import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
 
 @RunWith(AndroidJUnit4::class)
 class ActionsTest : BaseComposableModifierTest() {
@@ -48,6 +49,42 @@ class ActionsTest : BaseComposableModifierTest() {
                         <${ComposableTypes.box}>
                             <${ComposableTypes.text} 
                                 ${attrClass}="clickableTest" 
+                                ${attrText}="Clickable" />
+                        </${ComposableTypes.box}>
+                        """,
+                    pushEvent = pushEvent
+                )
+            }
+
+            onNodeWithText("Clickable").performClick()
+        }
+        assertEquals(10, counter)
+    }
+
+    @Test
+    fun clickableWithBackslashTest() {
+        var counter = 0
+        val pushEvent: PushEvent = { _, _, _, _ ->
+            // Changing the counter value to check if the button is clicked
+            counter = 10
+        }
+        ModifiersParser.fromStyleFile(
+            """
+           %{"clickable(__event__(\"Test\"))" => [
+              {:clickable, [], [
+                {:__event__, [], ["Test", []]}
+              ]}
+            ]}  
+            """, pushEvent
+        )
+
+        composeRule.run {
+            setContent {
+                ViewFromTemplate(
+                    template = """
+                        <${ComposableTypes.box}>
+                            <${ComposableTypes.text} 
+                                ${attrStyle}="clickable(__event__(&quot;Test&quot;))" 
                                 ${attrText}="Clickable" />
                         </${ComposableTypes.box}>
                         """,

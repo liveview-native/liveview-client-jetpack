@@ -707,9 +707,9 @@ internal fun eventFromArgument(argument: ModifierDataAdapter.ArgumentData): Pair
     return if (argument.type == typeEvent) {
         val (event, args) = Pair(
             argument.listValue.getOrNull(0)?.stringValue,
-            argument.listValue.getOrNull(1)?.listValue?.map { it.value }
+            argument.listValue.getOrNull(1)?.listValue?.map { it.value } ?: emptyList()
         )
-        if (event != null && args != null) {
+        if (event != null) {
             val pushArgs = if (args.isEmpty()) null else if (args.size == 1) args.first() else null
             event to pushArgs
         } else null

@@ -210,7 +210,10 @@ internal object ModifiersParser {
         val mapContext = mapExprContext.map()
         val mapEntryContext = mapContext?.map_entries()?.map_entry()?.map { mapEntryContext ->
             // The map key is the style name and the map value contain the list of modifiers
-            val styleName = mapEntryContext.expression(0).text.replace("\"", "")
+            val styleName = mapEntryContext.expression(0).text
+                .removePrefix("\"")
+                .removeSuffix("\"")
+                .replace("\\\"", "\"") // replacing backslash quotes by quotes
             val mapValueContext = mapEntryContext.expression(1)
 
             // Map value must be a list of tuples

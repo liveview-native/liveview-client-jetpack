@@ -71,10 +71,12 @@ private fun NavDestination(
             LocalHttpUrl provides liveViewCoordinator.httpBaseUrl,
             LocalNavController provides navController,
         ) {
-            PhxLiveView(
-                composableNode = state.composableTreeNode.children.first(),
-                pushEvent = liveViewCoordinator::pushEvent
-            )
+            state.composableTreeNode.children.forEach {
+                PhxLiveView(
+                    composableNode = it,
+                    pushEvent = liveViewCoordinator::pushEvent
+                )
+            }
         }
     } else {
         val error = state.throwable
@@ -135,7 +137,9 @@ internal fun generateRelativePath(currentUrl: String, newUrl: String): String {
     // Add remaining parts of newUrl
     relativeParts.addAll(newParts)
 
-    return currentParts.joinToString("/", prefix = "/", postfix = "/") + relativeParts.joinToString("/")
+    return currentParts.joinToString("/", prefix = "/", postfix = "/") + relativeParts.joinToString(
+        "/"
+    )
 }
 
 /**
