@@ -87,7 +87,7 @@ dependencies {
             type = "aar"
         }
     }
-    testImplementation(libs.net.java.dev.jna.desktop)
+    testImplementation(libs.net.java.dev.jna)
 
     api(libs.org.jetbrains.kotlinx.collections.immutable)
     api(libs.org.jsoup)

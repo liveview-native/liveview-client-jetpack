@@ -46,7 +46,6 @@ com-github-dsrees-javaphoenixclient = { group = "com.github.dsrees", name = "Jav
 
 com-github-liveview-native-core-jetpack = { group = "com.github.liveview-native", name = "liveview-native-core", version.ref = "liveview-native-core-jetpack" }
 net-java-dev-jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna"}
-net-java-dev-jna-desktop = { group = "net.java.dev.jna", name = "jna", version.ref = "jna"}
 
 com-google-android-material = { group = "com.google.android.material", name = "material", version.ref = "com-google-android-material" }
 com-google-code-gson = { group = "com.google.code.gson", name = "gson", version.ref = "com-google-code-gson" }
