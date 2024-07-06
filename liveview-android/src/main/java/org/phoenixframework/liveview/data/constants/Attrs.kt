@@ -173,6 +173,7 @@ object Attrs {
     const val attrUserScrollEnabled = "userScrollEnabled"
     const val attrVerticalAlignment = "verticalAlignment"
     const val attrVerticalArrangement = "verticalArrangement"
+    const val attrViewId = "viewId"
     const val attrVisible = "visible"
     const val attrVisualTransformation = "visualTransformation"
     const val attrUnselectedContentColor = "unselectedContentColor"

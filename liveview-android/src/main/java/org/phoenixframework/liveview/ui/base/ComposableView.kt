@@ -75,6 +75,20 @@ abstract class ComposableView<CP : ComposableProperties>(protected open val prop
         internal const val EVENT_TYPE_SUBMIT = "submit"
 
         internal const val KEY_PHX_VALUE = "value"
+
+        private val viewValues = mutableMapOf<String, Any>()
+
+        fun saveViewValue(viewId: String, value: Any) {
+            viewValues[viewId] = value
+        }
+
+        fun removeViewValue(viewId: String) {
+            viewValues.remove(viewId)
+        }
+
+        fun getViewValue(viewId: String): Any? {
+            return viewValues[viewId]
+        }
     }
 }
 

@@ -707,11 +707,12 @@ internal fun eventFromArgument(argument: ModifierDataAdapter.ArgumentData): Pair
     return if (argument.type == typeEvent) {
         val (event, args) = Pair(
             argument.listValue.getOrNull(0)?.stringValue,
-            argument.listValue.getOrNull(1)?.listValue?.map { it.value } ?: emptyList()
+            argument.listValue.getOrNull(1)?.listValue?.associate {
+                it.name to it.value.toString()
+            } ?: emptyMap()
         )
         if (event != null) {
-            val pushArgs = if (args.isEmpty()) null else if (args.size == 1) args.first() else null
-            event to pushArgs
+            event to args
         } else null
     } else null
 }

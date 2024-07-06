@@ -1,12 +1,17 @@
 package org.phoenixframework.liveview.ui.registry
 
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import org.phoenixframework.liveview.data.constants.ComposableTypes
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
+import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.lib.NodeRef
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.PushEvent
+import org.phoenixframework.liveview.ui.modifiers.ModifierDataAdapter.Companion.TypeLambdaValue
 import org.phoenixframework.liveview.ui.view.AlertDialogView
 import org.phoenixframework.liveview.ui.view.AnimatedVisibilityView
 import org.phoenixframework.liveview.ui.view.AsyncImageView
@@ -250,7 +255,7 @@ object ComposableNodeFactory {
     ): ComposableView<*> {
         return if (element != null) {
             val tag = element.tag
-            val attrs = element.attributes
+            val attrs = parseAttributeList(element.attributes)
             ComposableRegistry.getComponentFactory(tag, parentTag)?.buildComposableView(
                 attrs, pushEvent, scope
             ) ?: run {
@@ -269,5 +274,26 @@ object ComposableNodeFactory {
                 pushEvent
             )
         }
+    }
+
+    private fun parseAttributeList(
+        attributes: ImmutableList<CoreAttribute>
+    ): ImmutableList<CoreAttribute> {
+        val lambdaValuePrefix = "{\"${TypeLambdaValue}\":"
+        // Special case to parse the lambda value from parent composable view
+        return if (attributes.none { it.value.startsWith(lambdaValuePrefix) })
+            attributes
+        else
+            attributes.map {
+                if (it.value.startsWith(lambdaValuePrefix)) {
+                    val map = JsonParser.parse<Map<String, Any>>(it.value)
+                    CoreAttribute(
+                        it.name,
+                        it.namespace,
+                        ComposableView.getViewValue(map?.get(TypeLambdaValue).toString())
+                            ?.toString() ?: it.value
+                    )
+                } else it
+            }.toImmutableList()
     }
 }

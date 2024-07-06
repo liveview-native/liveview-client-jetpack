@@ -5,11 +5,13 @@ import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrAnimationSpec
 import org.phoenixframework.liveview.data.constants.Attrs.attrLabel
 import org.phoenixframework.liveview.data.constants.Attrs.attrTargetState
+import org.phoenixframework.liveview.data.constants.Attrs.attrViewId
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.ui.base.CommonComposableProperties
@@ -19,6 +21,37 @@ import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
+/**
+ * Crossfade allows to switch between two layouts with a crossfade animation.
+ * The current layout must be set in the `targetState` and the new layout value can be get in
+ * different ways depending of the usage. In the example below, the value is obtained using
+ * `labelValue(<Type>, <ViewId>)` where the `ViewId` must be same specified in the `viewId`
+ * attribute, and the `Type` must be: `String`, `Int`, `Float`, `Boolean`, or the class name of a
+ * class supported by modifiers or attributes.
+ * ```
+ * <Crossfade
+ *   type="Color" viewId="foo" targetState={"#{@crossfadeColor}"}
+ *   animationSpec={%{tween: %{durationMillis: 2000}}} >
+ *   <AsyncImage
+ *     url="/images/logo.svg"
+ *     contentScale="fillWidth"
+ *     style={"size(100.dp);background(lambdaValue(Color, \"foo\"))"} />
+ * </Crossfade>
+ * ```
+ * In case of the child of `CrossfadeView` needs the parent value in a property, you can do the
+ * following:
+ * ```
+ * <Crossfade
+ *  type="String" viewId="bar" targetState={"#{@imagePath}"}
+ *  animationSpec={%{tween: %{durationMillis: 2000}}} >
+ *   <AsyncImage
+ *     url={%{lambdaValue: "bar"}}}
+ *     contentScale="fillWidth"
+ *     style={"size(100.dp)"}/>
+ *   </AsyncImage>
+ * </Crossfade>
+ * ```
+ */
 internal class CrossfadeView private constructor(props: Properties) :
     ComposableView<CrossfadeView.Properties>(props) {
     @Composable
@@ -36,8 +69,14 @@ internal class CrossfadeView private constructor(props: Properties) :
             animationSpec = animationSpec ?: tween(),
             label = label ?: "Crossfade",
         ) { targetValue ->
-            // TODO Should we pass the target value to the server somehow?
-            targetValue
+            props.viewId?.let {
+                saveViewValue(it, targetValue)
+                DisposableEffect(it) {
+                    onDispose {
+                        removeViewValue(it)
+                    }
+                }
+            }
             composableNode?.children?.forEach {
                 PhxLiveView(it, pushEvent, composableNode, null, this)
             }
@@ -49,6 +88,7 @@ internal class CrossfadeView private constructor(props: Properties) :
         val targetState: Any = Unit,
         val animationSpec: FiniteAnimationSpec<Float>? = null,
         val label: String? = null,
+        val viewId: String? = null,
         override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
@@ -63,6 +103,7 @@ internal class CrossfadeView private constructor(props: Properties) :
                 attrAnimationSpec -> animationSpec(props, attribute.value)
                 attrLabel -> label(props, attribute.value)
                 attrTargetState -> targetState(props, attribute.value)
+                attrViewId -> viewId(props, attribute.value)
                 else -> props.copy(
                     commonProps = handleCommonAttributes(
                         props.commonProps,
@@ -84,6 +125,10 @@ internal class CrossfadeView private constructor(props: Properties) :
 
         private fun targetState(props: Properties, value: String): Properties {
             return props.copy(targetState = value)
+        }
+
+        private fun viewId(props: Properties, value: String): Properties {
+            return props.copy(viewId = value)
         }
     }
 }
