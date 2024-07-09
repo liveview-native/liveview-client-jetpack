@@ -1,12 +1,17 @@
 package org.phoenixframework.liveview.ui.registry
 
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import org.phoenixframework.liveview.data.constants.ComposableTypes
+import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
+import org.phoenixframework.liveview.data.mappers.JsonParser
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.lib.NodeRef
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.PushEvent
+import org.phoenixframework.liveview.ui.modifiers.ModifierDataAdapter.Companion.TypeLambdaValue
 import org.phoenixframework.liveview.ui.view.AlertDialogView
 import org.phoenixframework.liveview.ui.view.AnimatedVisibilityView
 import org.phoenixframework.liveview.ui.view.AsyncImageView
@@ -15,11 +20,13 @@ import org.phoenixframework.liveview.ui.view.BadgedBoxView
 import org.phoenixframework.liveview.ui.view.BottomAppBarView
 import org.phoenixframework.liveview.ui.view.BottomSheetScaffoldView
 import org.phoenixframework.liveview.ui.view.BoxView
+import org.phoenixframework.liveview.ui.view.BoxWithConstraintsView
 import org.phoenixframework.liveview.ui.view.ButtonView
 import org.phoenixframework.liveview.ui.view.CardView
 import org.phoenixframework.liveview.ui.view.CheckBoxView
 import org.phoenixframework.liveview.ui.view.ChipView
 import org.phoenixframework.liveview.ui.view.ColumnView
+import org.phoenixframework.liveview.ui.view.CrossfadeView
 import org.phoenixframework.liveview.ui.view.DatePickerDialogView
 import org.phoenixframework.liveview.ui.view.DatePickerView
 import org.phoenixframework.liveview.ui.view.DividerView
@@ -82,6 +89,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.badgedBox, BadgedBoxView.Factory)
             registerComponent(ComposableTypes.basicAlertDialog, AlertDialogView.Factory)
             registerComponent(ComposableTypes.box, BoxView.Factory)
+            registerComponent(ComposableTypes.boxWithConstraints, BoxWithConstraintsView.Factory)
             registerComponent(ComposableTypes.bottomAppBar, BottomAppBarView.Factory)
             registerComponent(ComposableTypes.bottomSheetScaffold, BottomSheetScaffoldView.Factory)
             registerComponent(ComposableTypes.button, ButtonView.Factory)
@@ -93,6 +101,7 @@ object ComposableNodeFactory {
                 ProgressIndicatorView.Factory
             )
             registerComponent(ComposableTypes.column, ColumnView.Factory)
+            registerComponent(ComposableTypes.crossfade, CrossfadeView.Factory)
             registerComponent(ComposableTypes.datePicker, DatePickerView.Factory)
             registerComponent(ComposableTypes.datePickerDialog, DatePickerDialogView.Factory)
             registerComponent(ComposableTypes.dateRangePicker, DatePickerView.Factory)
@@ -248,7 +257,7 @@ object ComposableNodeFactory {
     ): ComposableView<*> {
         return if (element != null) {
             val tag = element.tag
-            val attrs = element.attributes
+            val attrs = parseAttributeList(element.attributes)
             ComposableRegistry.getComponentFactory(tag, parentTag)?.buildComposableView(
                 attrs, pushEvent, scope
             ) ?: run {
@@ -267,5 +276,26 @@ object ComposableNodeFactory {
                 pushEvent
             )
         }
+    }
+
+    private fun parseAttributeList(
+        attributes: ImmutableList<CoreAttribute>
+    ): ImmutableList<CoreAttribute> {
+        val lambdaValuePrefix = "{\"${TypeLambdaValue}\":"
+        // Special case to parse the lambda value from parent composable view
+        return if (attributes.none { it.value.startsWith(lambdaValuePrefix) })
+            attributes
+        else
+            attributes.map {
+                if (it.value.startsWith(lambdaValuePrefix)) {
+                    val map = JsonParser.parse<Map<String, Any>>(it.value)
+                    CoreAttribute(
+                        it.name,
+                        it.namespace,
+                        ComposableView.getViewValue(map?.get(TypeLambdaValue).toString())
+                            ?.toString() ?: it.value
+                    )
+                } else it
+            }.toImmutableList()
     }
 }

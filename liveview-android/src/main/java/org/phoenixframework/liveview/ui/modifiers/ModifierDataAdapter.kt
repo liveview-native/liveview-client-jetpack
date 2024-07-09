@@ -389,15 +389,27 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
     )
 
     companion object {
-        private const val TypeAtom = "Atom"
-        private const val TypeBoolean = "Boolean"
-        private const val TypeDot = "."
-        private const val TypeFloat = "Float"
-        private const val TypeInt = "Int"
-        private const val TypeList = "List"
-        private const val TypeString = "String"
-        private const val TypeUnary = "Unary"
-        private const val TypeUndefined = "<undefined>"
+        internal const val TypeAtom = "Atom"
+        internal const val TypeBoolean = "Boolean"
+        internal const val TypeDot = "."
+        internal const val TypeFloat = "Float"
+        internal const val TypeInt = "Int"
+        internal const val TypeLambdaValue = "lambdaValue"
+        internal const val TypeList = "List"
+        internal const val TypeString = "String"
+        internal const val TypeUnary = "Unary"
+        internal const val TypeUndefined = "<undefined>"
+
+        // TODO We're just supporting primitive types from now
+        fun typeFromClass(value: Any?): String {
+            return when (value) {
+                is Boolean -> TypeBoolean
+                is Float, is Double -> TypeFloat
+                is Int -> TypeInt
+                is String -> TypeString
+                else -> TypeString
+            }
+        }
     }
 }
 

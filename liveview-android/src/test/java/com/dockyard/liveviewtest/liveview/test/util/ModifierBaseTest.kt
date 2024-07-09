@@ -23,7 +23,7 @@ abstract class ModifierBaseTest: BaseTest() {
         scope: Any? = null,
         pushEvent: PushEvent? = null
     ) {
-        ModifiersParser.fromStyleFile(styleContentString, pushEvent)
+        ModifiersParser.fromStyleFile(styleContentString, scope, pushEvent)
         val styleName = getStyleName(styleContentString)
         val result = Modifier.fromStyleName(styleName, scope, pushEvent)
         assertEquals(result, targetModifier)

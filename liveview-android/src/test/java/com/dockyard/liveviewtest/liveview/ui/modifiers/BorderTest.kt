@@ -3,11 +3,13 @@ package com.dockyard.liveviewtest.liveview.ui.modifiers
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dockyard.liveviewtest.liveview.test.util.ModifierBaseTest
@@ -22,10 +24,10 @@ class BorderTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"borderWithColorTest" => [
-                {:border, [], [2, {:., [], [:Color, :Red]}]},
+                {:border, [], [{:., [], [1.5, :dp]}, {:., [], [:Color, :Red]}]},
             ]}
             """,
-            Modifier.border(2.dp, Color.Red)
+            Modifier.border(1.5.dp, Color.Red)
         )
     }
 
@@ -34,7 +36,7 @@ class BorderTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"borderWithColorNamedParamsTest" => [
-                {:border, [], [[width: 2, color: {:., [], [:Color, :Red]}]]},
+                {:border, [], [[width: {:., [], [2, :dp]}, color: {:., [], [:Color, :Red]}]]},
             ]}
             """,
             Modifier.border(2.dp, Color.Red)
@@ -46,7 +48,7 @@ class BorderTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"borderWithColorAndShapeTest" => [
-                {:border, [], [1, {:., [], [:Color, :Green]}, {:., [], [:CircleShape]}]},
+                {:border, [], [{:., [], [1, :dp]}, {:., [], [:Color, :Green]}, :CircleShape]},
             ]}
             """,
             Modifier.border(1.dp, Color.Green, CircleShape)
@@ -58,7 +60,7 @@ class BorderTest : ModifierBaseTest() {
         assertModifierFromStyle(
             """
             %{"borderWithColorAndShapeNamedParamsTest" => [
-                {:border, [], [[width: 1, color: {:., [], [:Color, :Green]}, shape: {:., [], [:CircleShape]}]]},
+                {:border, [], [[width: {:., [], [1, :dp]}, color: {:., [], [:Color, :Green]}, shape: :CircleShape]]},
             ]}
             """,
             Modifier.border(1.dp, Color.Green, CircleShape)
@@ -134,7 +136,7 @@ class BorderTest : ModifierBaseTest() {
             """
             %{"borderWithBrushHorizontalGradient" => [{
                 :border, [], [[
-                    width: 2,
+                    width: {:., [], [2, :dp]},
                     brush: {:., [], [
                         :Brush,
                         {:horizontalGradient, [], [
@@ -148,7 +150,7 @@ class BorderTest : ModifierBaseTest() {
                             {:., [], [:TileMode, :Clamp]}
                         ]}
                     ]},
-                    shape: {:., [], [:CircleShape]}
+                    shape: :CircleShape
                 ]]
             }]}
             """.trimStyle(),
@@ -171,7 +173,7 @@ class BorderTest : ModifierBaseTest() {
             """
             %{"borderWithBrushHorizontalGradient" => [{
                 :border, [], [[
-                    width: 2,
+                    width: {:., [], [2, :dp]},
                     brush: {:., [], [
                         :Brush,
                         {:horizontalGradient, [], [[
@@ -185,7 +187,7 @@ class BorderTest : ModifierBaseTest() {
                             endX: 500.0
                         ]]}
                     ]},
-                    shape: {:., [], [:CircleShape]}
+                    shape: :CircleShape
                 ]]
             }]}
             """.trimStyle(),
@@ -208,7 +210,7 @@ class BorderTest : ModifierBaseTest() {
             """
             %{"borderWithBrushVerticalGradient" => [{
                 :border, [], [[
-                    width: 2,
+                    width: {:., [], [2, :dp]},
                     brush: {:., [], [
                         :Brush,
                         {:verticalGradient, [], [
@@ -222,7 +224,7 @@ class BorderTest : ModifierBaseTest() {
                             {:., [], [:TileMode, :Decal]}
                         ]}
                     ]},
-                    shape: {:., [], [:CircleShape]}
+                    shape: :CircleShape
                 ]]
             }]}
             """.trimStyle(),
@@ -246,7 +248,7 @@ class BorderTest : ModifierBaseTest() {
             """
             %{"borderWithBrushVerticalGradient" => [{
                 :border, [], [[
-                    width: 2,
+                    width: {:., [], [2, :dp]},
                     brush: {:., [], [
                         :Brush,
                         {:verticalGradient, [], [[
@@ -260,7 +262,7 @@ class BorderTest : ModifierBaseTest() {
                             ]
                         ]]}
                     ]},
-                    shape: {:., [], [:CircleShape]}
+                    shape: :CircleShape
                 ]]
             }]}
             """.trimStyle(),
@@ -284,7 +286,7 @@ class BorderTest : ModifierBaseTest() {
             """
             %{"borderWithBrushLinearGradient" => [{
                 :border, [], [[
-                    width: 2,
+                    width: {:., [], [2, :dp]},
                     brush: {:., [], [
                         :Brush,
                         {:linearGradient, [], [
@@ -298,7 +300,7 @@ class BorderTest : ModifierBaseTest() {
                             {:., [], [:TileMode, :Mirror]}
                         ]}
                     ]},
-                    shape: {:., [], [:CircleShape]}
+                    shape: :CircleShape
                 ]]
             }]}
             """.trimStyle(),
@@ -322,7 +324,7 @@ class BorderTest : ModifierBaseTest() {
             """
             %{"borderWithBrushLinearGradient" => [{
                 :border, [], [[
-                    width: 2,
+                    width: {:., [], [2, :dp]},
                     brush: {:., [], [
                         :Brush,
                         {:linearGradient, [], [[
@@ -336,7 +338,7 @@ class BorderTest : ModifierBaseTest() {
                             tileMode: {:., [], [:TileMode, :Mirror]}
                         ]]}
                     ]},
-                    shape: {:., [], [:CircleShape]}
+                    shape: :CircleShape
                 ]]
             }]}
             """.trimStyle(),
@@ -360,7 +362,7 @@ class BorderTest : ModifierBaseTest() {
             """
             %{"borderWithBrushLinearGradient" => [{
                 :border, [], [[
-                    width: 2,
+                    width: {:., [], [2, :dp]},
                     brush: {:., [], [
                         :Brush,
                         {:radialGradient, [], [
@@ -374,7 +376,7 @@ class BorderTest : ModifierBaseTest() {
                             {:., [], [:TileMode, :Repeated]}
                         ]}
                     ]},
-                    shape: {:., [], [:CircleShape]}
+                    shape:  {:RoundedCornerShape, [], [{:Dp, [], [12]}]}
                 ]]
             }]}
             """.trimStyle(),
@@ -387,7 +389,7 @@ class BorderTest : ModifierBaseTest() {
                     radius = 50f,
                     tileMode = TileMode.Repeated,
                 ),
-                CircleShape
+                RoundedCornerShape(Dp(12f))
             )
         )
     }
@@ -398,7 +400,7 @@ class BorderTest : ModifierBaseTest() {
             """
             %{"borderWithBrushLinearGradient" => [{
                 :border, [], [[
-                    width: 2,
+                    width: {:., [], [2, :dp]},
                     brush: {:., [], [
                         :Brush,
                         {:radialGradient, [], [[
@@ -412,7 +414,7 @@ class BorderTest : ModifierBaseTest() {
                             tileMode: {:., [], [:TileMode, :Repeated]}
                         ]]}
                     ]},
-                    shape: {:., [], [:CircleShape]}
+                    shape: :CircleShape
                 ]]
             }]}
             """.trimStyle(),
@@ -436,7 +438,7 @@ class BorderTest : ModifierBaseTest() {
             """
             %{"borderWithBrushSweepGradient" => [{
                 :border, [], [[
-                    width: 2,
+                    width: {:., [], [2, :dp]},
                     brush: {:., [], [
                         :Brush,
                         {:sweepGradient, [], [
@@ -448,7 +450,7 @@ class BorderTest : ModifierBaseTest() {
                             {:Offset, [], [10, 20]}
                         ]}
                     ]},
-                    shape: {:., [], [:CircleShape]}
+                    shape: :CircleShape
                 ]]
             }]}
             """.trimStyle(),
@@ -470,7 +472,7 @@ class BorderTest : ModifierBaseTest() {
             """
             %{"borderWithBrushSweepGradient" => [{
                 :border, [], [[
-                    width: 2,
+                    width: {:., [], [2, :dp]},
                     brush: {:., [], [
                         :Brush,
                         {:sweepGradient, [], [[
@@ -482,7 +484,7 @@ class BorderTest : ModifierBaseTest() {
                             center: {:Offset, [], [10, 20]}
                         ]]}
                     ]},
-                    shape: {:., [], [:CircleShape]}
+                    shape: :CircleShape
                 ]]
             }]}
             """.trimStyle(),
