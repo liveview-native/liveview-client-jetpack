@@ -20,6 +20,7 @@ import org.phoenixframework.liveview.ui.view.BadgedBoxView
 import org.phoenixframework.liveview.ui.view.BottomAppBarView
 import org.phoenixframework.liveview.ui.view.BottomSheetScaffoldView
 import org.phoenixframework.liveview.ui.view.BoxView
+import org.phoenixframework.liveview.ui.view.BoxWithConstraintsView
 import org.phoenixframework.liveview.ui.view.ButtonView
 import org.phoenixframework.liveview.ui.view.CardView
 import org.phoenixframework.liveview.ui.view.CheckBoxView
@@ -88,6 +89,7 @@ object ComposableNodeFactory {
             registerComponent(ComposableTypes.badgedBox, BadgedBoxView.Factory)
             registerComponent(ComposableTypes.basicAlertDialog, AlertDialogView.Factory)
             registerComponent(ComposableTypes.box, BoxView.Factory)
+            registerComponent(ComposableTypes.boxWithConstraints, BoxWithConstraintsView.Factory)
             registerComponent(ComposableTypes.bottomAppBar, BottomAppBarView.Factory)
             registerComponent(ComposableTypes.bottomSheetScaffold, BottomSheetScaffoldView.Factory)
             registerComponent(ComposableTypes.button, ButtonView.Factory)

@@ -9,6 +9,7 @@ object ComposableTypes {
     const val badgedBox = "BadgedBox"
     const val basicAlertDialog = "BasicAlertDialog"
     const val box = "Box"
+    const val boxWithConstraints = "BoxWithConstraints"
     const val bottomAppBar = "BottomAppBar"
     const val bottomSheetScaffold = "BottomSheetScaffold"
     const val button = "Button"

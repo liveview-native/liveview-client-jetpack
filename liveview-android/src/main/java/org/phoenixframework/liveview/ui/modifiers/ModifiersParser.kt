@@ -123,10 +123,7 @@ import org.phoenixframework.liveview.stylesheet.ElixirParser.MapExprContext
 import org.phoenixframework.liveview.stylesheet.ElixirParser.TupleExprContext
 import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.PushEvent
-import org.phoenixframework.liveview.ui.modifiers.ModifierDataAdapter.Companion.TypeAtom
-import org.phoenixframework.liveview.ui.modifiers.ModifierDataAdapter.Companion.TypeDot
 import org.phoenixframework.liveview.ui.modifiers.ModifierDataAdapter.Companion.TypeLambdaValue
-import org.phoenixframework.liveview.ui.modifiers.ModifierDataAdapter.Companion.TypeString
 import org.phoenixframework.liveview.ui.view.ExposedDropdownMenuBoxScopeWrapper
 
 internal object ModifiersParser {
@@ -506,25 +503,30 @@ internal object ModifiersParser {
         arguments: List<ModifierDataAdapter.ArgumentData>,
     ): List<ModifierDataAdapter.ArgumentData> {
         return arguments.map {
+            // Lambda value must have two arguments: Data type and ViewId
             if (it.type == TypeLambdaValue && it.listValue.size == 2) {
-                ModifierDataAdapter.ArgumentData(
-                    it.name,
-                    TypeDot,
-                    listOf(
-                        ModifierDataAdapter.ArgumentData(
-                            null,
-                            TypeAtom,
-                            it.listValue[0].value.toString()
-                        ),
-                        ModifierDataAdapter.ArgumentData(
-                            null,
-                            TypeString,
-                            ComposableView.getViewValue(it.listValue[1].value.toString())
-                        ),
-                    )
-                )
+                parseLambdaValueArgument(it)
             } else it
         }
+    }
+
+    private fun parseLambdaValueArgument(
+        argument: ModifierDataAdapter.ArgumentData,
+    ): ModifierDataAdapter.ArgumentData {
+        val viewValue = ComposableView.getViewValue(argument.listValue[1].value.toString())
+        val viewValueType = ModifierDataAdapter.typeFromClass(viewValue)
+
+        return ModifierDataAdapter.ArgumentData(
+            argument.name,
+            argument.listValue[0].stringValueWithoutColon.toString(),
+            listOf(
+                ModifierDataAdapter.ArgumentData(
+                    null,
+                    viewValueType,
+                    viewValue
+                ),
+            )
+        )
     }
 
     private const val TAG = "ModifiersParser"

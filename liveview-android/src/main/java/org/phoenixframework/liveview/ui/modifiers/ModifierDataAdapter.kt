@@ -399,6 +399,17 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
         internal const val TypeString = "String"
         internal const val TypeUnary = "Unary"
         internal const val TypeUndefined = "<undefined>"
+
+        // TODO We're just supporting primitive types from now
+        fun typeFromClass(value: Any?): String {
+            return when (value) {
+                is Boolean -> TypeBoolean
+                is Float, is Double -> TypeFloat
+                is Int -> TypeInt
+                is String -> TypeString
+                else -> TypeString
+            }
+        }
     }
 }
 

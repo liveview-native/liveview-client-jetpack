@@ -335,9 +335,14 @@ fun colorFromArgument(argument: ModifierDataAdapter.ArgumentData): Color? {
     } else if (argument.type == typeColor) {
         val colorArgbParts =
             if (argsToCreateArg.first().isList) argsToCreateArg.first().listValue else argsToCreateArg
-        return if (colorArgbParts.size == 1) {
+        return if (colorArgbParts.size == 1 && colorArgbParts.first().isInt) {
+            // Creating color from a single Int
             Color(colorArgbParts.first().intValue ?: 0)
+        } else if (colorArgbParts.size == 1 && colorArgbParts.first().isString) {
+            // Creating color from a String as hex color
+            colorArgbParts.first().stringValue?.toColor()
         } else {
+            // Creating color passing RGBA parts
             Color(
                 argOrNamedArg(colorArgbParts, argRed, 0)?.intValue ?: 0,
                 argOrNamedArg(colorArgbParts, argGreen, 1)?.intValue ?: 0,

@@ -115,18 +115,65 @@ internal class CrossfadeView private constructor(props: Properties) :
             }
         })
 
+        /**
+         * The AnimationSpec to configure the animation.
+         * ```
+         * <Crossfade animationSpec={%{tween: %{durationMillis: 2000}}} >
+         * ```
+         */
         private fun animationSpec(props: Properties, value: String): Properties {
             return props.copy(animationSpec = finiteAnimationSpecFromString(value))
         }
 
+        /**
+         * An optional label to differentiate from other animations in Android Studio.
+         * ```
+         * <Crossfade label="Title crossfade" >
+         * ```
+         */
         private fun label(props: Properties, value: String): Properties {
             return props.copy(label = value)
         }
 
+        /**
+         * TargetState is a key representing your target layout state. Every time you change a key
+         * the animation will be triggered. The content called with the old key will be faded out
+         * while the content called with the new key will be faded in. To use the new target value
+         * in the children nodes, use the `lambdaValue` expressions like below.
+         * ```
+         * <Crossfade
+         *   type="Color" viewId="foo" targetState={"#{@crossfadeColor}"}
+         *   animationSpec={%{tween: %{durationMillis: 2000}}} >
+         *   <AsyncImage
+         *     url="/images/logo.svg"
+         *     contentScale="fillWidth"
+         *     style={"size(100.dp);background(lambdaValue(Color, \"foo\"))"} />
+         * </Crossfade>
+         * ```
+         * In case of the child of `CrossfadeView` needs the parent value in a property, you can do the
+         * following:
+         * ```
+         * <Crossfade
+         *  type="String" viewId="bar" targetState={"#{@imagePath}"}
+         *  animationSpec={%{tween: %{durationMillis: 2000}}} >
+         *   <AsyncImage
+         *     url={%{lambdaValue: "bar"}}}
+         *     contentScale="fillWidth"
+         *     style={"size(100.dp)"}/>
+         *   </AsyncImage>
+         * </Crossfade>
+         * ```
+         */
         private fun targetState(props: Properties, value: String): Properties {
             return props.copy(targetState = value)
         }
 
+        /**
+         * Assigns an id to the view in order to get the lamdba value from its children.
+         * ```
+         * <BoxWithConstraintsView viewId="foo" />
+         * ```
+         */
         private fun viewId(props: Properties, value: String): Properties {
             return props.copy(viewId = value)
         }
