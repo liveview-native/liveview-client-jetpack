@@ -26,9 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.graphics.toolingGraphicsLayer
-import org.antlr.v4.runtime.CharStream
+import org.antlr.v4.runtime.BailErrorStrategy
 import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
+import org.antlr.v4.runtime.atn.PredictionMode
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAbsoluteOffset
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAbsolutePadding
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierAlign
@@ -126,6 +127,7 @@ import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.modifiers.ModifierDataAdapter.Companion.TypeLambdaValue
 import org.phoenixframework.liveview.ui.view.ExposedDropdownMenuBoxScopeWrapper
 
+
 internal object ModifiersParser {
     private val modifiersCacheTable = mutableMapOf<String, List<Modifier>>()
 
@@ -138,7 +140,14 @@ internal object ModifiersParser {
 
     fun fromStyleFile(fileContent: String, scope: Any? = null, pushEvent: PushEvent? = null) {
         clearCacheTable()
-        parseStyleFileContent(fileContent)?.forEach { pair ->
+        val pairs = try {
+            parseStyleFileContent(fileContent)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e(TAG, "Error paring style file.", e)
+            emptyList()
+        }
+        pairs?.forEach { pair ->
             val (styleName, tupleExpressionList) = pair
             val modifiersList = mutableListOf<Modifier>()
             tupleExpressionList.forEach { tupleExpr ->
@@ -166,7 +175,13 @@ internal object ModifiersParser {
         return ModifierDataAdapter(tupleExpr).let { modifierDataAdapter ->
             modifierDataAdapter.modifierName?.let { modifierName ->
                 try {
-                    handleModifier(modifierName, modifierDataAdapter.arguments, scope, pushEvent)
+                    handleModifier(
+                        modifierName,
+                        modifierDataAdapter.arguments,
+                        scope,
+                        pushEvent
+                    )
+
                 } catch (e: Exception) {
                     Log.e(
                         TAG,
@@ -241,10 +256,14 @@ internal object ModifiersParser {
 
     internal fun parseElixirContent(fileContent: String): ElixirParser.ExpressionContext? {
         // Parsing String using Elixir parser
-        val charStream: CharStream = CharStreams.fromString(fileContent)
-        val elixirLexer = ElixirLexer(charStream)
+        val elixirLexer = ElixirLexer(CharStreams.fromString(fileContent))
         val commonTokenStream = CommonTokenStream(elixirLexer)
-        val elixirParser = ElixirParser(commonTokenStream)
+        val elixirParser = ElixirParser(commonTokenStream).apply {
+            // https://tomassetti.me/improving-the-performance-of-an-antlr-parser/
+            interpreter.predictionMode = PredictionMode.SLL
+            removeErrorListeners()
+            errorHandler = BailErrorStrategy()
+        }
 
         // The stylesheet is a map, therefore the root expression must be a map expression
         return elixirParser.parse()?.block()?.expression()?.firstOrNull()

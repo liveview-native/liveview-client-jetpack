@@ -15,31 +15,9 @@ ATOM: ':' ( [\p{L}_] [\p{L}_0-9@]* [!?]? | OPERATOR | SINGLE_LINE_STRING | SINGL
 TRUE  : 'true';
 FALSE : 'false';
 NIL   : 'nil';
-WHEN  : 'when';
-AND   : 'and';
-OR    : 'or';
-NOT   : 'not';
-IN    : 'in';
-FN    : 'fn';
-DO    : 'do';
 END   : 'end';
-CATCH : 'catch';
-RECUE : 'rescue';
 AFTER : 'after';
-ELSE  : 'else';
 
-// Non-keywords, which also need to be included in the `variable` parser rule
-CASE      : 'case';
-COND      : 'cond';
-IF        : 'if';
-UNLESS    : 'unless';
-DEFMODULE : 'defmodule';
-DEFMACRO  : 'defmacro';
-DEF       : 'def';
-DEFP      : 'defp';
-FOR       : 'for';
-WITH      : 'with';
-TRY       : 'try';
 
 CODEPOINT: '?' ( '\\' . | ~[\\]);
 
@@ -74,51 +52,13 @@ ALIAS: [A-Z] [a-zA-Z_0-9]*;
 
 VARIABLE: [\p{Ll}_] [\p{L}_0-9]* [!?]?;
 
-AT          : '@';
 DOT         : '.';
-EXCL        : '!';
-CARET       : '^';
-TILDE3      : '~~~';
-MUL         : '*';
-DIV         : '/';
 ADD         : '+';
 SUB         : '-';
-ADD2        : '++';
-SUB2        : '--';
-ADD3        : '+++';
-SUB3        : '---';
 DOT2        : '..';
-LTGT        : '<>';
-PIPE_GT     : '|>';
-LT3         : '<<<';
-GT3         : '>>>';
-GT2_TILDE   : '<<~';
-TILDE_GT2   : '~>>';
-LT_TILDE    : '<~';
-TILDE_GT    : '~>';
-LT_TILDE_GT : '<~>';
-LT_PIPE_GT  : '<|>';
-LT          : '<';
-GT          : '>';
-LT_EQ       : '<=';
-GT_EQ       : '>=';
-EQ2         : '==';
-EXCL_EQ     : '!=';
-EQ_TILDE    : '=~';
-EQ3         : '===';
-EXCL_EQ2    : '!==';
-AMP2        : '&&';
-AMP3        : '&&&';
-PIPE2       : '||';
-PIPE3       : '|||';
 EQ          : '=';
-AMP         : '&';
 ARROW       : '=>';
 PIPE        : '|';
-COL2        : '::';
-LARROW      : '<-';
-RARROW      : '->';
-BSLASH2     : '\\\\';
 
 OPAR   : '(';
 CPAR   : ')';
@@ -134,49 +74,12 @@ COL    : ':';
 SCOL   : ';';
 
 fragment OPERATOR:
-    AT
-    | DOT
-    | EXCL
-    | CARET
-    | SUB3
-    | MUL
-    | DIV
+    DOT
     | ADD
     | SUB
-    | ADD2
-    | SUB2
-    | ADD3
     | DOT2
-    | LTGT
-    | PIPE_GT
-    | LT3
-    | GT3
-    | GT2_TILDE
-    | TILDE_GT2
-    | LT_TILDE
-    | TILDE_GT
-    | LT_TILDE_GT
-    | LT_PIPE_GT
-    | LT
-    | GT
-    | LT_EQ
-    | GT_EQ
-    | EQ2
-    | EXCL_EQ
-    | EQ_TILDE
-    | EQ3
-    | EXCL_EQ2
-    | AMP2
-    | AMP3
-    | PIPE2
-    | PIPE3
     | EQ
-    | AMP
     | PIPE
-    | COL2
-    | LARROW
-    | RARROW
-    | BSLASH2
 ;
 
 fragment D        : [0-9];

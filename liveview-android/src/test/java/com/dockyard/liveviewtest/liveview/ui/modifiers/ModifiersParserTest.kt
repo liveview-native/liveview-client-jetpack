@@ -25,7 +25,7 @@ class ModifiersParserTest : ModifierBaseTest() {
 
     @Test
     fun parseFileWithEmptyMapTest() {
-        ModifiersParser.fromStyleFile("")
+        ModifiersParser.fromStyleFile("%{}")
         assert(ModifiersParser.isEmpty)
     }
 
