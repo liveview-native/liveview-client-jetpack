@@ -225,6 +225,20 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       assert parse(input) == output
     end
 
+    test "parses numerical types with units" do
+      input = "foo(1.dp, 1.1.dp)"
+      output = {:foo, [], [{:., [], [1, :dp]}, {:., [], [1.1, :dp]}]}
+
+      assert parse(input) == output
+    end
+
+    test "parses function calls with numbers" do
+      input = "foo(Dp(1), Dp(1.1))"
+      output = {:foo, [], [{:Dp, [], [1]}, {:Dp, [], [1.1]}]}
+
+      assert parse(input) == output
+    end
+
     test "parses underscore numbers" do
       input = "foo(1_000, 1_000_000_000_000, 1_000.4)"
       output = {:foo, [], [1_000, 1_000_000_000_000, 1_000.4]}
@@ -249,13 +263,6 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     test "parses member expressions" do
       input = "color(.red)"
       output = {:color, [], [{:., [], [nil, :red]}]}
-
-      assert parse(input) == output
-    end
-
-    test "numerical member expressions" do
-      input = "textSize(1.dp, 10.5.em)"
-      output = {:textSize, [], [{:., [1, :dp]}, {:., [10.5, :em]}]}
 
       assert parse(input) == output
     end
@@ -440,13 +447,12 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
          - a list of values eg ‘[1, 2, 3]’, ‘[\"red\", \"blue\"]’ or ‘[Color.red, Color.blue]’
          - a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’
          - an IME eg ‘Color.red’ or ‘.largeTitle’’
-         - a number, string, nil, boolean or :atom
          - an event eg ‘event(\"search-event\", throttle: 10_000)’
          - an attribute eg ‘attr(\"placeholder\")’
-         - an IME eg ‘Color.red’ or ‘.largeTitle’’
          - a list of keyword pairs eg ‘style: :dashed’, ‘size: 12’ or  ‘style: [lineWidth: 1]’
          - a list of keyword pairs eg ‘style = dashed’, ‘size = 12’ or  ‘style = [lineWidth = 1]’
          - a modifier eg ‘bold()’
+         - a number, string, nil, boolean or :atom
          - a variable defined in the class header eg ‘color_name’
         """
         |> String.trim()
@@ -523,6 +529,29 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       assert String.trim(error.description) == error_prefix
     end
 
+    test "invalid modifier argument in nested modifier" do
+      input = "font(bold(Color.largeTitle.))"
+
+      error =
+        assert_raise SyntaxError, fn ->
+          parse(input)
+        end
+
+      error_prefix =
+        """
+        Unsupported input:
+          |
+        1 | font(bold(Color.largeTitle.))
+          |                           ^
+          |
+
+        expected ‘)’
+        """
+        |> String.trim()
+
+      assert String.trim(error.description) == error_prefix
+    end
+
     test "invalid keyword pair: missing equals" do
       input = "abc(def = 11, b = [lineWidth a, l = 2a])"
 
@@ -545,11 +574,10 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
          - a keyword list eg ‘[style = dashed]’, ‘[size = 12]’ or ‘[lineWidth = lineWidth]’
          - a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’
          - an IME eg ‘Color.red’ or ‘.largeTitle’’
-         - a number, string, nil, boolean or :atom
          - an event eg ‘event(\"search-event\", throttle: 10_000)’
          - an attribute eg ‘attr(\"placeholder\")’
-         - an IME eg ‘Color.red’ or ‘.largeTitle’’
          - a modifier eg ‘bold()’
+         - a number, string, nil, boolean or :atom
          - a variable defined in the class header eg ‘color_name’
         """
         |> String.trim()
@@ -715,13 +743,12 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
          - a list of values eg ‘[1, 2, 3]’, ‘[\"red\", \"blue\"]’ or ‘[Color.red, Color.blue]’
          - a Kotlin range eg ‘1..<10’ or ‘foo(Foo.bar...Baz.qux)’
          - an IME eg ‘Color.red’ or ‘.largeTitle’’
-         - a number, string, nil, boolean or :atom
          - an event eg ‘event(\"search-event\", throttle: 10_000)’
          - an attribute eg ‘attr(\"placeholder\")’
-         - an IME eg ‘Color.red’ or ‘.largeTitle’’
          - a list of keyword pairs eg ‘style: :dashed’, ‘size: 12’ or  ‘style: [lineWidth: 1]’
          - a list of keyword pairs eg ‘style = dashed’, ‘size = 12’ or  ‘style = [lineWidth = 1]’
          - a modifier eg ‘bold()’
+         - a number, string, nil, boolean or :atom
          - a variable defined in the class header eg ‘color_name’
         """
         |> String.trim()

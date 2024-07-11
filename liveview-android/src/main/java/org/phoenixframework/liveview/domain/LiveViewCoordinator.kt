@@ -117,7 +117,7 @@ internal class LiveViewCoordinator(
                                     repository.loadStyleData()?.let { styleFileContentAsString ->
                                         ModifiersParser.fromStyleFile(
                                             styleFileContentAsString,
-                                            ::pushEvent
+                                            null,
                                         )
                                     }
                                 }

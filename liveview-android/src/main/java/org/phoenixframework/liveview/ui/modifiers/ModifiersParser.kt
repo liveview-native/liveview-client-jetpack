@@ -121,7 +121,9 @@ import org.phoenixframework.liveview.stylesheet.ElixirParser.ListContext
 import org.phoenixframework.liveview.stylesheet.ElixirParser.ListExprContext
 import org.phoenixframework.liveview.stylesheet.ElixirParser.MapExprContext
 import org.phoenixframework.liveview.stylesheet.ElixirParser.TupleExprContext
+import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.PushEvent
+import org.phoenixframework.liveview.ui.modifiers.ModifierDataAdapter.Companion.TypeLambdaValue
 import org.phoenixframework.liveview.ui.view.ExposedDropdownMenuBoxScopeWrapper
 
 internal object ModifiersParser {
@@ -134,14 +136,14 @@ internal object ModifiersParser {
         modifiersCacheTable.clear()
     }
 
-    fun fromStyleFile(fileContent: String, pushEvent: PushEvent? = null) {
+    fun fromStyleFile(fileContent: String, scope: Any? = null, pushEvent: PushEvent? = null) {
         clearCacheTable()
         parseStyleFileContent(fileContent)?.forEach { pair ->
             val (styleName, tupleExpressionList) = pair
             val modifiersList = mutableListOf<Modifier>()
             tupleExpressionList.forEach { tupleExpr ->
                 try {
-                    fromTupleExpression(tupleExpr, pushEvent)?.let {
+                    fromTupleExpression(tupleExpr, scope, pushEvent)?.let {
                         modifiersList.add(it)
                     }
                 } catch (e: Exception) {
@@ -154,13 +156,17 @@ internal object ModifiersParser {
         }
     }
 
-    private fun fromTupleExpression(tupleExpr: TupleExprContext, pushEvent: PushEvent?): Modifier? {
+    private fun fromTupleExpression(
+        tupleExpr: TupleExprContext,
+        scope: Any?,
+        pushEvent: PushEvent?
+    ): Modifier? {
         // Each tuple has 3 expressions:
         // modifier name, meta data, and arguments to create the modifier
         return ModifierDataAdapter(tupleExpr).let { modifierDataAdapter ->
             modifierDataAdapter.modifierName?.let { modifierName ->
                 try {
-                    handleModifier(modifierName, modifierDataAdapter.arguments, null, pushEvent)
+                    handleModifier(modifierName, modifierDataAdapter.arguments, scope, pushEvent)
                 } catch (e: Exception) {
                     Log.e(
                         TAG,
@@ -210,7 +216,10 @@ internal object ModifiersParser {
         val mapContext = mapExprContext.map()
         val mapEntryContext = mapContext?.map_entries()?.map_entry()?.map { mapEntryContext ->
             // The map key is the style name and the map value contain the list of modifiers
-            val styleName = mapEntryContext.expression(0).text.replace("\"", "")
+            val styleName = mapEntryContext.expression(0).text
+                .removePrefix("\"")
+                .removeSuffix("\"")
+                .replace("\\\"", "\"") // replacing backslash quotes by quotes
             val mapValueContext = mapEntryContext.expression(1)
 
             // Map value must be a list of tuples
@@ -242,15 +251,152 @@ internal object ModifiersParser {
     }
 
     @SuppressLint("ModifierFactoryExtensionFunction")
-    @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
     private fun handleModifier(
         modifierId: String,
-        argListContext: List<ModifierDataAdapter.ArgumentData>,
+        arguments: List<ModifierDataAdapter.ArgumentData>,
         scope: Any?,
         pushEvent: PushEvent?
     ): Modifier? {
+        if (arguments.any { it.type == TypeLambdaValue } && scope == null)
+            return Modifier.placeholderModifier(modifierId, arguments)
+
+        val argListContext = parseArguments(arguments)
+
+        parseScopedModifiers(modifierId, argListContext, scope)?.let {
+            return it
+        }
+        parseActionModifiers(modifierId, argListContext, pushEvent)?.let {
+            return it
+        }
+        parseNonParamsModifiers(modifierId)?.let {
+            return it
+        }
+        parseStaticModifiers(modifierId, argListContext)?.let {
+            return it
+        }
+        return null
+    }
+
+    @SuppressLint("ModifierFactoryExtensionFunction")
+    private fun parseStaticModifiers(
+        modifierId: String,
+        argListContext: List<ModifierDataAdapter.ArgumentData>,
+    ): Modifier? {
         return when (modifierId) {
-            // Scoped Modifiers (will be handled at runtime)
+            modifierAbsoluteOffset -> Modifier.absoluteOffsetFromStyle(argListContext)
+            modifierAbsolutePadding -> Modifier.absolutePaddingFromStyle(argListContext)
+            modifierAlpha -> Modifier.alphaFromStyle(argListContext)
+            modifierAspectRatio -> Modifier.aspectRatioFromStyle(argListContext)
+            modifierBackground -> Modifier.backgroundFromStyle(argListContext)
+            modifierBorder -> Modifier.borderFromStyle(argListContext)
+            modifierClip -> Modifier.clipFromStyle(argListContext)
+            modifierDefaultMinSize -> Modifier.defaultMinSizeFromStyle(argListContext)
+            modifierFillMaxHeight -> Modifier.fillMaxHeightFromStyle(argListContext)
+            modifierFillMaxSize -> Modifier.fillMaxSizeFromStyle(argListContext)
+            modifierFillMaxWidth -> Modifier.fillMaxWidthFromStyle(argListContext)
+            modifierFocusable -> Modifier.focusableFromStyle(argListContext)
+            modifierHeight -> Modifier.heightFromStyle(argListContext)
+            modifierHeightIn -> Modifier.heightInFromStyle(argListContext)
+            modifierHorizontalScroll -> Modifier.horizontalScrollFromStyle(argListContext)
+            modifierLayoutId -> Modifier.layoutIdFromStyle(argListContext)
+            modifierOffset -> Modifier.offsetFromStyle(argListContext)
+            modifierPadding -> Modifier.paddingFromStyle(argListContext)
+            modifierPaddingFrom -> Modifier.paddingFromFromStyle(argListContext)
+            modifierPaddingFromBaseline -> Modifier.paddingFromBaselineFromStyle(argListContext)
+            modifierProgressSemantics -> Modifier.progressSemanticsFromStyle(argListContext)
+            modifierRequiredHeight -> Modifier.requiredHeightFromStyle(argListContext)
+            modifierRequiredHeightIn -> Modifier.requiredHeightInFromStyle(argListContext)
+            modifierRequiredSize -> Modifier.requiredSizeFromStyle(argListContext)
+            modifierRequiredSizeIn -> Modifier.requiredSizeInFromStyle(argListContext)
+            modifierRequiredWidth -> Modifier.requiredWidthFromStyle(argListContext)
+            modifierRequiredWidthIn -> Modifier.requiredWidthInFromStyle(argListContext)
+            modifierRotate -> Modifier.rotateFromStyle(argListContext)
+            modifierScale -> Modifier.scaleFromStyle(argListContext)
+            modifierShadow -> Modifier.shadowFromStyle(argListContext)
+            modifierSize -> Modifier.sizeFromStyle(argListContext)
+            modifierSizeIn -> Modifier.sizeInFromStyle(argListContext)
+            modifierTestTag -> Modifier.testTagFromStyle(argListContext)
+            modifierVerticalScroll -> Modifier.verticalScrollFromStyle(argListContext)
+            modifierWindowInsetsBottomHeight -> Modifier.windowInsetsBottomHeightFromStyle(
+                argListContext
+            )
+
+            modifierWindowInsetsEndWidth -> Modifier.windowInsetsEndWidthFromStyle(argListContext)
+            modifierWindowInsetsStartWidth -> Modifier.windowInsetsStartWidthFromStyle(
+                argListContext
+            )
+
+            modifierWindowInsetsTopHeight -> Modifier.windowInsetsTopHeightFromStyle(argListContext)
+            modifierWidth -> Modifier.widthFromStyle(argListContext)
+            modifierWidthIn -> Modifier.widthInFromStyle(argListContext)
+            modifierWindowInsetsPadding -> Modifier.windowInsetsPaddingFromStyle(argListContext)
+            modifierWrapContentHeight -> Modifier.wrapContentHeightFromStyle(argListContext)
+            modifierWrapContentSize -> Modifier.wrapContentSizeFromStyle(argListContext)
+            modifierWrapContentWidth -> Modifier.wrapContentWidthFromStyle(argListContext)
+            modifierZIndex -> Modifier.zIndexFromStyle(argListContext)
+            else -> null
+        }
+    }
+
+    @SuppressLint("ModifierFactoryExtensionFunction")
+    private fun parseActionModifiers(
+        modifierId: String,
+        argListContext: List<ModifierDataAdapter.ArgumentData>,
+        pushEvent: PushEvent?
+    ): Modifier? {
+        fun modifierOrPlaceholder(modifier: Modifier) = if (pushEvent != null)
+            modifier
+        else
+            Modifier.placeholderModifier(modifierId, argListContext)
+
+        return when (modifierId) {
+            modifierAnimateContentSize ->
+                Modifier.animateContentSizeFromStyle(argListContext, pushEvent)
+
+            modifierClickable -> modifierOrPlaceholder(
+                Modifier.clickableFromStyle(argListContext, pushEvent)
+            )
+
+            modifierCombinedClickable -> modifierOrPlaceholder(
+                Modifier.combinedClickableFromStyle(argListContext, pushEvent)
+            )
+
+            modifierOnFocusedBoundsChanged -> modifierOrPlaceholder(
+                Modifier.onFocusedBoundsChangedFromStyle(argListContext, pushEvent)
+            )
+
+            modifierOnFocusChanged -> modifierOrPlaceholder(
+                Modifier.onFocusChangedFromStyle(argListContext, pushEvent)
+            )
+
+            modifierOnFocusEvent -> modifierOrPlaceholder(
+                Modifier.onFocusEventFromStyle(argListContext, pushEvent)
+            )
+
+            modifierSelectable -> modifierOrPlaceholder(
+                Modifier.selectableFromStyle(argListContext, pushEvent)
+            )
+
+            modifierToggleable -> modifierOrPlaceholder(
+                Modifier.toggleableFromStyle(argListContext, pushEvent)
+            )
+
+            modifierTriStateToggleable -> modifierOrPlaceholder(
+                Modifier.triStateToggleableFromStyle(argListContext, pushEvent)
+            )
+
+            else -> null
+        }
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @SuppressLint("ModifierFactoryExtensionFunction")
+    private fun parseScopedModifiers(
+        modifierId: String,
+        argListContext: List<ModifierDataAdapter.ArgumentData>,
+        scope: Any?,
+    ): Modifier? {
+        return when (modifierId) {
             modifierMenuAnchor -> {
                 if (scope is ExposedDropdownMenuBoxScopeWrapper) {
                     scope.scope.run {
@@ -319,7 +465,15 @@ internal object ModifiersParser {
                 else
                     Modifier.placeholderModifier(modifierId, argListContext)
             }
-            // No param modifiers
+
+            else -> null
+        }
+    }
+
+    @SuppressLint("ModifierFactoryExtensionFunction")
+    @OptIn(ExperimentalLayoutApi::class)
+    private fun parseNonParamsModifiers(modifierId: String): Modifier? {
+        return when (modifierId) {
             modifierCaptionBarPadding -> Modifier.captionBarPadding()
             modifierClipToBounds -> Modifier.clipToBounds()
             modifierDisplayCutoutPadding -> Modifier.displayCutoutPadding()
@@ -341,86 +495,38 @@ internal object ModifiersParser {
             modifierSystemGestureExclusion -> Modifier.systemGestureExclusion()
             modifierToolingGraphicsLayer -> Modifier.toolingGraphicsLayer()
             modifierWaterfallPadding -> Modifier.waterfallPadding()
-            // Parameterized modifiers
-            modifierAbsoluteOffset -> Modifier.absoluteOffsetFromStyle(argListContext)
-            modifierAbsolutePadding -> Modifier.absolutePaddingFromStyle(argListContext)
-            modifierAlpha -> Modifier.alphaFromStyle(argListContext)
-            modifierAnimateContentSize -> Modifier.animateContentSizeFromStyle(
-                argListContext,
-                pushEvent
-            )
-
-            modifierAspectRatio -> Modifier.aspectRatioFromStyle(argListContext)
-            modifierBackground -> Modifier.backgroundFromStyle(argListContext)
-            modifierBorder -> Modifier.borderFromStyle(argListContext)
-            modifierClickable -> Modifier.clickableFromStyle(argListContext, pushEvent)
-            modifierClip -> Modifier.clipFromStyle(argListContext)
-            modifierCombinedClickable -> Modifier.combinedClickableFromStyle(
-                argListContext,
-                pushEvent
-            )
-
-            modifierDefaultMinSize -> Modifier.defaultMinSizeFromStyle(argListContext)
-            modifierFillMaxHeight -> Modifier.fillMaxHeightFromStyle(argListContext)
-            modifierFillMaxSize -> Modifier.fillMaxSizeFromStyle(argListContext)
-            modifierFillMaxWidth -> Modifier.fillMaxWidthFromStyle(argListContext)
-            modifierFocusable -> Modifier.focusableFromStyle(argListContext)
-            modifierHeight -> Modifier.heightFromStyle(argListContext)
-            modifierHeightIn -> Modifier.heightInFromStyle(argListContext)
-            modifierHorizontalScroll -> Modifier.horizontalScrollFromStyle(argListContext)
-            modifierLayoutId -> Modifier.layoutIdFromStyle(argListContext)
-            modifierOffset -> Modifier.offsetFromStyle(argListContext)
-            modifierOnFocusedBoundsChanged -> Modifier.onFocusedBoundsChangedFromStyle(
-                argListContext,
-                pushEvent
-            )
-
-            modifierOnFocusChanged -> Modifier.onFocusChangedFromStyle(argListContext, pushEvent)
-            modifierOnFocusEvent -> Modifier.onFocusEventFromStyle(argListContext, pushEvent)
-            modifierPadding -> Modifier.paddingFromStyle(argListContext)
-            modifierPaddingFrom -> Modifier.paddingFromFromStyle(argListContext)
-            modifierPaddingFromBaseline -> Modifier.paddingFromBaselineFromStyle(argListContext)
-            modifierProgressSemantics -> Modifier.progressSemanticsFromStyle(argListContext)
-            modifierRequiredHeight -> Modifier.requiredHeightFromStyle(argListContext)
-            modifierRequiredHeightIn -> Modifier.requiredHeightInFromStyle(argListContext)
-            modifierRequiredSize -> Modifier.requiredSizeFromStyle(argListContext)
-            modifierRequiredSizeIn -> Modifier.requiredSizeInFromStyle(argListContext)
-            modifierRequiredWidth -> Modifier.requiredWidthFromStyle(argListContext)
-            modifierRequiredWidthIn -> Modifier.requiredWidthInFromStyle(argListContext)
-            modifierRotate -> Modifier.rotateFromStyle(argListContext)
-            modifierScale -> Modifier.scaleFromStyle(argListContext)
-            modifierSelectable -> Modifier.selectableFromStyle(argListContext, pushEvent)
-            modifierShadow -> Modifier.shadowFromStyle(argListContext)
-            modifierSize -> Modifier.sizeFromStyle(argListContext)
-            modifierSizeIn -> Modifier.sizeInFromStyle(argListContext)
-            modifierTestTag -> Modifier.testTagFromStyle(argListContext)
-            modifierToggleable -> Modifier.toggleableFromStyle(argListContext, pushEvent)
-            modifierTriStateToggleable -> Modifier.triStateToggleableFromStyle(
-                argListContext,
-                pushEvent
-            )
-
-            modifierVerticalScroll -> Modifier.verticalScrollFromStyle(argListContext)
-
-            modifierWindowInsetsBottomHeight -> Modifier.windowInsetsBottomHeightFromStyle(
-                argListContext
-            )
-
-            modifierWindowInsetsEndWidth -> Modifier.windowInsetsEndWidthFromStyle(argListContext)
-            modifierWindowInsetsStartWidth -> Modifier.windowInsetsStartWidthFromStyle(
-                argListContext
-            )
-
-            modifierWindowInsetsTopHeight -> Modifier.windowInsetsTopHeightFromStyle(argListContext)
-            modifierWidth -> Modifier.widthFromStyle(argListContext)
-            modifierWidthIn -> Modifier.widthInFromStyle(argListContext)
-            modifierWindowInsetsPadding -> Modifier.windowInsetsPaddingFromStyle(argListContext)
-            modifierWrapContentHeight -> Modifier.wrapContentHeightFromStyle(argListContext)
-            modifierWrapContentSize -> Modifier.wrapContentSizeFromStyle(argListContext)
-            modifierWrapContentWidth -> Modifier.wrapContentWidthFromStyle(argListContext)
-            modifierZIndex -> Modifier.zIndexFromStyle(argListContext)
             else -> null
         }
+    }
+
+    private fun parseArguments(
+        arguments: List<ModifierDataAdapter.ArgumentData>,
+    ): List<ModifierDataAdapter.ArgumentData> {
+        return arguments.map {
+            // Lambda value must have two arguments: Data type and ViewId
+            if (it.type == TypeLambdaValue && it.listValue.size == 2) {
+                parseLambdaValueArgument(it)
+            } else it
+        }
+    }
+
+    private fun parseLambdaValueArgument(
+        argument: ModifierDataAdapter.ArgumentData,
+    ): ModifierDataAdapter.ArgumentData {
+        val viewValue = ComposableView.getViewValue(argument.listValue[1].value.toString())
+        val viewValueType = ModifierDataAdapter.typeFromClass(viewValue)
+
+        return ModifierDataAdapter.ArgumentData(
+            argument.name,
+            argument.listValue[0].stringValueWithoutColon.toString(),
+            listOf(
+                ModifierDataAdapter.ArgumentData(
+                    null,
+                    viewValueType,
+                    viewValue
+                ),
+            )
+        )
     }
 
     private const val TAG = "ModifiersParser"

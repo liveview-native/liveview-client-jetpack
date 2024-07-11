@@ -58,9 +58,14 @@ internal class AsyncImageView private constructor(props: Properties) :
 
         val baseUrl = LocalHttpUrl.current
         val resolvedImageUrl = remember(imageUrl) {
-            val baseUri = URI.create(baseUrl)
-            val relativeUri = baseUri.resolve(imageUrl)
-            relativeUri.toString()
+            try {
+                val baseUri = URI.create(baseUrl)
+                val relativeUri = baseUri.resolve(imageUrl)
+                relativeUri.toString()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                ""
+            }
         }
         val loadingComposable = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == Templates.templateLoading }

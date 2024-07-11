@@ -244,21 +244,12 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
         ~s'an IME eg ‘Color.red’ or ‘.largeTitle’’'
       },
       {
-        # Must come after :ime parser
-        literal(error_parser: empty(), generate_error?: false),
-        ~s'a number, string, nil, boolean or :atom'
-      },
-      {
         parsec(:event),
         ~s'an event eg ‘event("search-event", throttle: 10_000)’'
       },
       {
         parsec(:attr),
         ~s'an attribute eg ‘attr("placeholder")’'
-      },
-      {
-        parsec(:ime),
-        ~s'an IME eg ‘Color.red’ or ‘.largeTitle’’'
       },
       {
         key_value_pairs(":", generate_error?: false, allow_empty?: false),
@@ -271,8 +262,13 @@ defmodule LiveViewNative.Jetpack.RulesParser.Modifiers do
         not inside_key_value_pair?
       },
       {
-        frozen(parsec(:nested_modifier)),
+        parsec(:nested_modifier),
         "a modifier eg ‘bold()’"
+      },
+      {
+        # Must come after :ime and :nested_modifier parsers
+        literal(error_parser: empty(), generate_error?: false),
+        ~s'a number, string, nil, boolean or :atom'
       },
       {
         variable(generate_error?: false),

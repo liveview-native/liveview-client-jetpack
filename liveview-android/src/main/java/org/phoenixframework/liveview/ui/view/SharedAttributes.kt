@@ -2,6 +2,7 @@ package org.phoenixframework.liveview.ui.view
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.DurationBasedAnimationSpec
 import androidx.compose.animation.core.Ease
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseInBack
@@ -37,6 +38,20 @@ import androidx.compose.animation.core.EaseOutQuart
 import androidx.compose.animation.core.EaseOutQuint
 import androidx.compose.animation.core.EaseOutSine
 import androidx.compose.animation.core.Easing
+import androidx.compose.animation.core.ExperimentalAnimationSpecApi
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.StartOffset
+import androidx.compose.animation.core.StartOffsetType
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.keyframesWithSpline
+import androidx.compose.animation.core.repeatable
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.expandVertically
@@ -71,6 +86,8 @@ import org.phoenixframework.liveview.data.constants.AlignmentValues
 import org.phoenixframework.liveview.data.constants.Attrs.attrBottom
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrLeft
+import org.phoenixframework.liveview.data.constants.Attrs.attrOffsetMillis
+import org.phoenixframework.liveview.data.constants.Attrs.attrOffsetType
 import org.phoenixframework.liveview.data.constants.Attrs.attrPivotFractionX
 import org.phoenixframework.liveview.data.constants.Attrs.attrPivotFractionY
 import org.phoenixframework.liveview.data.constants.Attrs.attrRight
@@ -78,6 +95,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrTop
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.ContentScaleValues
 import org.phoenixframework.liveview.data.constants.EasingValues
+import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argAnimationSpec
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argClip
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argExpandFrom
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argHeight
@@ -118,9 +136,12 @@ import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.slideOut
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.slideOutHorizontally
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.slideOutVertically
+import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
 import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
+import org.phoenixframework.liveview.data.constants.RepeatModeValues
 import org.phoenixframework.liveview.data.constants.SecureFlagPolicyValues
+import org.phoenixframework.liveview.data.constants.StartOffsetTypeValues
 import org.phoenixframework.liveview.data.constants.TileModeValues
 import org.phoenixframework.liveview.data.constants.TransformOriginValues
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
@@ -355,6 +376,7 @@ internal fun enterTransitionFromString(animationJson: String): EnterTransition? 
         // e.g: {"expandHorizontally": {"expandFrom": "Center", "clip": true, "initialWidth": 100}}
         val animationType = currentJsonElement?.entrySet()?.firstOrNull()?.key
         val animationParams = currentJsonElement?.entrySet()?.firstOrNull()?.value?.asJsonObject
+        val animationSpec = animationParams?.get(argAnimationSpec)?.asJsonObject?.asString
         val transition = when (animationType) {
             expandHorizontally -> {
                 val expandFrom = animationParams?.get(argExpandFrom)?.let {
@@ -363,7 +385,12 @@ internal fun enterTransitionFromString(animationJson: String): EnterTransition? 
                 val clip = animationParams?.get(argClip)?.asBoolean ?: true
                 val initialWidth = animationParams?.get(argInitialWidth)?.asInt ?: 0
                 expandHorizontally(
-                    // TODO animationSpec: FiniteAnimationSpec
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntSize.VisibilityThreshold
+                    ),
                     expandFrom = expandFrom,
                     clip = clip,
                     initialWidth = { initialWidth }
@@ -381,7 +408,12 @@ internal fun enterTransitionFromString(animationJson: String): EnterTransition? 
                     IntSize(width, height)
                 } ?: IntSize.Zero
                 expandIn(
-                    // TODO animationSpec: FiniteAnimationSpec
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntSize.VisibilityThreshold
+                    ),
                     expandFrom = expandFrom,
                     clip = clip,
                     initialSize = { initialSize }
@@ -395,7 +427,12 @@ internal fun enterTransitionFromString(animationJson: String): EnterTransition? 
                 val clip = animationParams?.get(argClip)?.asBoolean ?: true
                 val initialHeight = animationParams?.get(argInitialHeight)?.asInt ?: 0
                 expandVertically(
-                    // TODO animationSpec: FiniteAnimationSpec
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntSize.VisibilityThreshold
+                    ),
                     expandFrom = expandFrom,
                     clip = clip,
                     initialHeight = { initialHeight }
@@ -405,7 +442,9 @@ internal fun enterTransitionFromString(animationJson: String): EnterTransition? 
             fadeIn -> {
                 val initialAlpha = animationParams?.get(argInitialAlpha)?.asFloat ?: 0f
                 fadeIn(
-                    // TODO animationSpec: FiniteAnimationSpec,
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(stiffness = Spring.StiffnessMediumLow),
                     initialAlpha = initialAlpha
                 )
             }
@@ -416,7 +455,9 @@ internal fun enterTransitionFromString(animationJson: String): EnterTransition? 
                     transformOriginFromString(it.toString())
                 } ?: TransformOrigin.Center
                 scaleIn(
-                    // TODO animationSpec: FiniteAnimationSpec,
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(stiffness = Spring.StiffnessMediumLow),
                     initialScale = initialScale,
                     transformOrigin = transformOrigin
                 )
@@ -429,7 +470,12 @@ internal fun enterTransitionFromString(animationJson: String): EnterTransition? 
                     IntOffset(x, y)
                 } ?: IntOffset.Zero
                 slideIn(
-                    // TODO animationSpec: FiniteAnimationSpec,
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntOffset.VisibilityThreshold
+                    ),
                     initialOffset = { initialOffset }
                 )
             }
@@ -437,7 +483,12 @@ internal fun enterTransitionFromString(animationJson: String): EnterTransition? 
             slideInHorizontally -> {
                 val initialOffsetX = animationParams?.get(argInitialOffsetX)?.asInt
                 slideInHorizontally(
-                    // TODO animationSpec: FiniteAnimationSpec,
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntOffset.VisibilityThreshold
+                    ),
                     initialOffsetX = { initialOffsetX ?: (-it / 2) }
                 )
             }
@@ -445,7 +496,12 @@ internal fun enterTransitionFromString(animationJson: String): EnterTransition? 
             slideInVertically -> {
                 val initialOffsetY = animationParams?.get(argInitialOffsetY)?.asInt
                 slideInVertically(
-                    // TODO animationSpec: FiniteAnimationSpec,
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntOffset.VisibilityThreshold
+                    ),
                     initialOffsetY = { initialOffsetY ?: (-it / 2) }
                 )
             }
@@ -483,11 +539,15 @@ internal fun exitTransitionFromString(animationJson: String): ExitTransition? {
         // e.g: {"expandHorizontally": {"expandFrom": "Center", "clip": true, "initialWidth": 100}}
         val animationType = currentJsonElement?.entrySet()?.firstOrNull()?.key
         val animationParams = currentJsonElement?.entrySet()?.firstOrNull()?.value?.asJsonObject
+        val animationSpec = animationParams?.get(argAnimationSpec)?.asJsonObject?.asString
+
         val transition = when (animationType) {
             fadeOut -> {
                 val targetAlpha = animationParams?.get(argTargetAlpha)?.asFloat ?: 0f
                 fadeOut(
-                    // TODO animationSpec: FiniteAnimationSpec,
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(stiffness = Spring.StiffnessMediumLow),
                     targetAlpha = targetAlpha
                 )
             }
@@ -498,7 +558,9 @@ internal fun exitTransitionFromString(animationJson: String): ExitTransition? {
                     transformOriginFromString(it.toString())
                 } ?: TransformOrigin.Center
                 scaleOut(
-                    // TODO animationSpec: FiniteAnimationSpec,
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(stiffness = Spring.StiffnessMediumLow),
                     targetScale = targetScale,
                     transformOrigin = transformOrigin
                 )
@@ -511,7 +573,12 @@ internal fun exitTransitionFromString(animationJson: String): ExitTransition? {
                     IntOffset(x, y)
                 } ?: IntOffset.Zero
                 slideOut(
-                    // TODO animationSpec: FiniteAnimationSpec,
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntOffset.VisibilityThreshold
+                    ),
                     targetOffset = { targetOffset }
                 )
             }
@@ -519,7 +586,12 @@ internal fun exitTransitionFromString(animationJson: String): ExitTransition? {
             slideOutHorizontally -> {
                 val initialOffsetX = animationParams?.get(argTargetOffsetX)?.asInt
                 slideOutHorizontally(
-                    // TODO animationSpec: FiniteAnimationSpec,
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntOffset.VisibilityThreshold
+                    ),
                     targetOffsetX = { initialOffsetX ?: (-it / 2) }
                 )
             }
@@ -527,7 +599,12 @@ internal fun exitTransitionFromString(animationJson: String): ExitTransition? {
             slideOutVertically -> {
                 val targetOffsetY = animationParams?.get(argTargetOffsetY)?.asInt
                 slideOutVertically(
-                    // TODO animationSpec: FiniteAnimationSpec,
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntOffset.VisibilityThreshold
+                    ),
                     targetOffsetY = { targetOffsetY ?: (-it / 2) }
                 )
             }
@@ -539,7 +616,12 @@ internal fun exitTransitionFromString(animationJson: String): ExitTransition? {
                 val clip = animationParams?.get(argClip)?.asBoolean ?: true
                 val targetWidth = animationParams?.get(argTargetWidth)?.asInt ?: 0
                 shrinkHorizontally(
-                    // TODO animationSpec: FiniteAnimationSpec
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntSize.VisibilityThreshold
+                    ),
                     shrinkTowards = shrinkTowards,
                     clip = clip,
                     targetWidth = { targetWidth }
@@ -558,7 +640,12 @@ internal fun exitTransitionFromString(animationJson: String): ExitTransition? {
                     IntSize(width, height)
                 } ?: IntSize.Zero
                 shrinkOut(
-                    // TODO animationSpec: FiniteAnimationSpec
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntSize.VisibilityThreshold
+                    ),
                     shrinkTowards = shrinkTowards,
                     clip = clip,
                     targetSize = { targetSize }
@@ -572,13 +659,17 @@ internal fun exitTransitionFromString(animationJson: String): ExitTransition? {
                 val clip = animationParams?.get(argClip)?.asBoolean ?: true
                 val targetHeight = animationParams?.get(argTargetHeight)?.asInt ?: 0
                 shrinkVertically(
-                    // TODO animationSpec: FiniteAnimationSpec
+                    animationSpec = animationSpec?.let {
+                        finiteAnimationSpecFromString(it)
+                    } ?: spring(
+                        stiffness = Spring.StiffnessMediumLow,
+                        visibilityThreshold = IntSize.VisibilityThreshold
+                    ),
                     shrinkTowards = expandFrom,
                     clip = clip,
                     targetHeight = { targetHeight }
                 )
             }
-
 
             else -> null
         }
@@ -642,6 +733,131 @@ internal fun easingFromString(string: String): Easing? {
         EasingValues.easeOutBounce -> EaseOutBounce
         EasingValues.easeInBounce -> EaseInBounce
         EasingValues.easeInOutBounce -> EaseInOutBounce
+        else -> null
+    }
+}
+
+/*
+FiniteAnimationSpec is the interface that all non-infinite AnimationSpecs implement, including:
+TweenSpec, SpringSpec, KeyframesSpec, RepeatableSpec, SnapSpec, etc.
+ */
+internal fun <T> finiteAnimationSpecFromString(string: String): FiniteAnimationSpec<T>? {
+    return JsonParser.parse<Map<String, Any>>(string)?.let {
+        finiteAnimationSpecFromMap(it)
+    }
+}
+
+@OptIn(ExperimentalAnimationSpecApi::class)
+private fun <T> finiteAnimationSpecFromMap(jsonMap: Map<String, Any>): FiniteAnimationSpec<T>? {
+    val function = jsonMap.keys.firstOrNull() ?: return null
+    val map = jsonMap[function] as? Map<String, Any> ?: return null
+    val defaultDurationMillis = 300
+    return when (function) {
+        FiniteAnimationSpecFunctions.tween -> {
+            val duration = (map[FiniteAnimationSpecFunctions.argDurationMillis] as? Number)
+                ?: defaultDurationMillis
+            val delay = (map[FiniteAnimationSpecFunctions.argDelayMillis] as? Number) ?: 0
+            val ease =
+                (map[FiniteAnimationSpecFunctions.argEasing] as? String)?.let { easingFromString(it) }
+                    ?: FastOutSlowInEasing
+            tween(
+                durationMillis = duration.toInt(), delayMillis = delay.toInt(), easing = ease
+            )
+        }
+
+        FiniteAnimationSpecFunctions.spring -> {
+            val dampingRatio = (map[FiniteAnimationSpecFunctions.argDampingRatio] as? Number)
+                ?: Spring.DampingRatioNoBouncy
+            val stiffness =
+                (map[FiniteAnimationSpecFunctions.argStiffness] as? Number)
+                    ?: Spring.StiffnessMedium
+            spring(
+                dampingRatio = dampingRatio.toFloat(),
+                stiffness = stiffness.toFloat(),
+                // TODO  visibilityThreshold =
+            )
+        }
+
+        FiniteAnimationSpecFunctions.keyframes -> {
+            val duration = (map[FiniteAnimationSpecFunctions.argDurationMillis] as? Number)
+                ?: defaultDurationMillis
+            val delay = (map[FiniteAnimationSpecFunctions.argDelayMillis] as? Number) ?: 0
+            keyframes {
+                // TODO KeyframesSpecConfig
+                this.durationMillis = duration.toInt()
+                this.delayMillis = delay.toInt()
+            }
+        }
+
+        FiniteAnimationSpecFunctions.keyframesWithSpline -> {
+            val duration = (map[FiniteAnimationSpecFunctions.argDurationMillis] as? Number)
+                ?: defaultDurationMillis
+            val delay = (map[FiniteAnimationSpecFunctions.argDelayMillis] as? Number) ?: 0
+            keyframesWithSpline {
+                // TODO KeyframesWithSplineSpecConfig
+                this.durationMillis = duration.toInt()
+                this.delayMillis = delay.toInt()
+            }
+        }
+
+        FiniteAnimationSpecFunctions.repeatable -> {
+            val iterations =
+                (map[FiniteAnimationSpecFunctions.argIterations] as? Number)
+                    ?: defaultDurationMillis
+            val animation = map[FiniteAnimationSpecFunctions.argAnimation]?.let {
+                it as? Map<String, Any>
+            }?.let {
+                finiteAnimationSpecFromMap<T>(it)
+            }
+            val repeatMode = (map[FiniteAnimationSpecFunctions.argRepeatMode] as? String)?.let {
+                repeatModeFromString(it)
+            } ?: RepeatMode.Restart
+            val startOffset =
+                (map[FiniteAnimationSpecFunctions.argInitialStartOffset] as? Map<String, Any>)?.let {
+                    startOffsetFromMap(it)
+                } ?: StartOffset(0)
+            if (animation is DurationBasedAnimationSpec) {
+                repeatable(
+                    iterations = iterations.toInt(),
+                    animation = animation,
+                    repeatMode = repeatMode,
+                    initialStartOffset = startOffset,
+                )
+            } else null
+        }
+
+        FiniteAnimationSpecFunctions.snap -> {
+            val delay = (map[FiniteAnimationSpecFunctions.argDelayMillis] as? Number) ?: 0
+            snap(delayMillis = delay.toInt())
+        }
+
+        else -> null
+    }
+}
+
+internal fun repeatModeFromString(string: String): RepeatMode? {
+    return when (string) {
+        RepeatModeValues.restart -> RepeatMode.Restart
+        RepeatModeValues.reverse -> RepeatMode.Reverse
+        else -> null
+    }
+}
+
+internal fun startOffsetFromMap(map: Map<String, Any>): StartOffset? {
+    return map[attrOffsetMillis]?.let {
+        it as? Number
+    }?.let { value ->
+        val type = map[attrOffsetType]?.let {
+            startOffsetTypeFromString(it.toString())
+        } ?: StartOffsetType.Delay
+        StartOffset(value.toInt(), type)
+    }
+}
+
+internal fun startOffsetTypeFromString(string: String): StartOffsetType? {
+    return when (string) {
+        StartOffsetTypeValues.delay -> StartOffsetType.Delay
+        StartOffsetTypeValues.fastForward -> StartOffsetType.FastForward
         else -> null
     }
 }

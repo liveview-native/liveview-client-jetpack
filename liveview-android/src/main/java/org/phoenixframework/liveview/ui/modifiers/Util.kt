@@ -335,9 +335,14 @@ fun colorFromArgument(argument: ModifierDataAdapter.ArgumentData): Color? {
     } else if (argument.type == typeColor) {
         val colorArgbParts =
             if (argsToCreateArg.first().isList) argsToCreateArg.first().listValue else argsToCreateArg
-        return if (colorArgbParts.size == 1) {
+        return if (colorArgbParts.size == 1 && colorArgbParts.first().isInt) {
+            // Creating color from a single Int
             Color(colorArgbParts.first().intValue ?: 0)
+        } else if (colorArgbParts.size == 1 && colorArgbParts.first().isString) {
+            // Creating color from a String as hex color
+            colorArgbParts.first().stringValue?.toColor()
         } else {
+            // Creating color passing RGBA parts
             Color(
                 argOrNamedArg(colorArgbParts, argRed, 0)?.intValue ?: 0,
                 argOrNamedArg(colorArgbParts, argGreen, 1)?.intValue ?: 0,
@@ -707,11 +712,12 @@ internal fun eventFromArgument(argument: ModifierDataAdapter.ArgumentData): Pair
     return if (argument.type == typeEvent) {
         val (event, args) = Pair(
             argument.listValue.getOrNull(0)?.stringValue,
-            argument.listValue.getOrNull(1)?.listValue?.map { it.value }
+            argument.listValue.getOrNull(1)?.listValue?.associate {
+                it.name to it.value.toString()
+            } ?: emptyMap()
         )
-        if (event != null && args != null) {
-            val pushArgs = if (args.isEmpty()) null else if (args.size == 1) args.first() else null
-            event to pushArgs
+        if (event != null) {
+            event to args
         } else null
     } else null
 }
