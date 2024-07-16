@@ -15,9 +15,6 @@ ATOM: ':' ( [\p{L}_] [\p{L}_0-9@]* [!?]? | OPERATOR | SINGLE_LINE_STRING | SINGL
 TRUE  : 'true';
 FALSE : 'false';
 NIL   : 'nil';
-END   : 'end';
-AFTER : 'after';
-
 
 CODEPOINT: '?' ( '\\' . | ~[\\]);
 
@@ -53,7 +50,6 @@ ALIAS: [A-Z] [a-zA-Z_0-9]*;
 VARIABLE: [\p{Ll}_] [\p{L}_0-9]* [!?]?;
 
 DOT         : '.';
-ADD         : '+';
 SUB         : '-';
 DOT2        : '..';
 EQ          : '=';
@@ -66,8 +62,6 @@ OBRACK : '[';
 CBRACK : ']';
 OBRACE : '{';
 CBRACE : '}';
-LT1    : '<<';
-GT2    : '>>';
 OMAP   : '%' ( [a-zA-Z_.] [a-zA-Z_.0-9]*)? '{';
 COMMA  : ',';
 COL    : ':';
@@ -75,7 +69,6 @@ SCOL   : ';';
 
 fragment OPERATOR:
     DOT
-    | ADD
     | SUB
     | DOT2
     | EQ
