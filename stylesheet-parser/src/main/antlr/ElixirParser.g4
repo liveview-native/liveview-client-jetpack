@@ -34,13 +34,11 @@ expression
     | OCTAL                                                        # octalExpr
     | BINARY                                                       # binaryExpr
     | FLOAT                                                        # floatExpr
-    | SIGIL                                                        # sigilExpr
     | SINGLE_LINE_STRING                                           # singleLineStringExpr
     | MULTI_LINE_STRING                                            # multiLineStringExpr
     | SINGLE_LINE_CHARLIST                                         # singleLineCharlistExpr
     | MULTI_LINE_CHARLIST                                          # multiLineCharlistExpr
     | ALIAS                                                        # aliasExpr
-    | CODEPOINT                                                    # codepointExpr
     | NIL                                                          # nilExpr
     ;
 

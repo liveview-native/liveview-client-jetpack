@@ -16,24 +16,6 @@ TRUE  : 'true';
 FALSE : 'false';
 NIL   : 'nil';
 
-CODEPOINT: '?' ( '\\' . | ~[\\]);
-
-SIGIL:
-    '~' [a-zA-Z] (
-        '/' ( ESCAPE | '\\/' | ~[/\\])* '/'
-        | '|' ( ESCAPE | '\\|' | ~[|\\])* '|'
-        | SINGLE_LINE_STRING
-        | MULTI_LINE_STRING
-        | SINGLE_LINE_CHARLIST
-        | MULTI_LINE_CHARLIST
-        | '\'' ( ESCAPE | '\\\'' | ~['\\])* '\''
-        | '(' ( ESCAPE | '\\)' | ~[)\\])* ')'
-        | '[' ( ESCAPE | '\\]' | ~[\]\\])* ']'
-        | '{' ( ESCAPE | '\\}' | ~[}\\])* '}'
-        | '<' ( ESCAPE | '\\>' | ~[>\\])* '>'
-    ) [a-zA-Z]*
-;
-
 HEXADECIMAL : '0x' HEX+ ( '_' HEX+)*;
 OCTAL       : '0o' [0-7]+ ( '_' [0-7]+)*;
 BINARY      : '0b' [01]+ ( '_' [01]+)*;
