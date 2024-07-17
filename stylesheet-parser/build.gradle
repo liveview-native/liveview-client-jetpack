@@ -18,7 +18,7 @@ dependencies {
 
 generateGrammarSource {
     maxHeapSize = "128m"
-    arguments += ['-package', 'org.phoenixframework.liveview.stylesheet', '-visitor']
+    arguments += ['-package', 'org.phoenixframework.liveview.stylesheet', '-no-visitor', '-no-listener']
     outputDirectory = new File(buildDir.toString() +'/'+ outputDir)
 }
 compileJava.dependsOn generateGrammarSource
