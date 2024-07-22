@@ -17,6 +17,12 @@ object AlignmentValues {
     const val bottomEnd = "BottomEnd"
 }
 
+object BaselineShiftValues {
+    const val subscript = "Subscript"
+    const val superscript = "Superscript"
+    const val none = "None"
+}
+
 object BrushFunctions {
     const val horizontalGradient = "horizontalGradient"
     const val verticalGradient = "verticalGradient"
@@ -26,18 +32,22 @@ object BrushFunctions {
 }
 
 object ContentScaleValues {
-    const val crop = "crop"
-    const val fillBounds = "fillBounds"
-    const val fillHeight = "fillHeight"
-    const val fillWidth = "fillWidth"
-    const val fit = "fit"
-    const val inside = "inside"
-    const val none = "none"
+    const val crop = "Crop"
+    const val fillBounds = "FillBounds"
+    const val fillHeight = "FillHeight"
+    const val fillWidth = "FillWidth"
+    const val fit = "Fit"
+    const val inside = "Inside"
+    const val none = "None"
 }
 
 object DatePickerDisplayModeValues {
-    const val input = "input"
-    const val picker = "picker"
+    const val input = "Input"
+    const val picker = "Picker"
+}
+
+object DrawStyleValues {
+    const val fill = "Fill"
 }
 
 object EnterExitTransitionFunctions {
@@ -124,10 +134,10 @@ object EasingValues {
 }
 
 object FabPositionValues {
-    const val start = "start"
-    const val end = "end"
-    const val center = "center"
-    const val endOverlay = "endOverlay"
+    const val start = "Start"
+    const val end = "End"
+    const val center = "Center"
+    const val endOverlay = "EndOverlay"
 }
 
 object FiniteAnimationSpecFunctions {
@@ -151,8 +161,15 @@ object FiniteAnimationSpecFunctions {
 }
 
 object FontStyleValues {
-    const val italic = "italic"
-    const val normal = "normal"
+    const val italic = "Italic"
+    const val normal = "Normal"
+}
+
+object FontSynthesisValues {
+    const val all = "All"
+    const val none = "None"
+    const val style = "Style"
+    const val weight = "Weight"
 }
 
 object FontWeightValues {
@@ -183,26 +200,27 @@ object HorizontalAlignmentValues {
 }
 
 object HorizontalArrangementValues {
-    const val spaceEvenly = "spaceEvenly"
-    const val spaceAround = "spaceAround"
-    const val spaceBetween = "spaceBetween"
-    const val start = "start"
-    const val end = "end"
-    const val center = "center"
+    const val spaceEvenly = "SpaceEvenly"
+    const val spaceAround = "SpaceAround"
+    const val spaceBetween = "SpaceBetween"
+    const val start = "Start"
+    const val end = "End"
+    const val center = "Center"
 }
 
 object HyphensValues {
-    const val none = "none"
-    const val auto = "auto"
+    const val none = "None"
+    const val auto = "Auto"
+    const val unspecified = "Unspecified"
 }
 
 object IconPrefixValues {
-    private const val autoMirrored = "autoMirrored"
-    const val filled = "filled"
-    const val rounded = "rounded"
-    const val outlined = "outlined"
-    const val sharp = "sharp"
-    const val twoTone = "twoTone"
+    private const val autoMirrored = "AutoMirrored"
+    const val filled = "Filled"
+    const val rounded = "Rounded"
+    const val outlined = "Outlined"
+    const val sharp = "Sharp"
+    const val twoTone = "TwoTone"
     const val autoMirroredFilled = "$autoMirrored.$filled"
     const val autoMirroredRounded = "$autoMirrored.$rounded"
     const val autoMirroredOutlined = "$autoMirrored.$outlined"
@@ -211,43 +229,57 @@ object IconPrefixValues {
 }
 
 object ImeActionValues {
-    const val none = "none"
-    const val go = "go"
-    const val search = "search"
-    const val send = "send"
-    const val previous = "previous"
-    const val next = "next"
-    const val done = "done"
+    const val none = "None"
+    const val go = "Go"
+    const val search = "Search"
+    const val send = "Send"
+    const val previous = "Previous"
+    const val next = "Next"
+    const val done = "Done"
 }
 
 object KeyboardCapitalizationValues {
-    const val characters = "characters"
-    const val words = "words"
-    const val sentences = "sentences"
+    const val characters = "Characters"
+    const val words = "Words"
+    const val sentences = "Sentences"
 }
 
 object KeyboardTypeValues {
-    const val ascii = "ascii"
-    const val number = "number"
-    const val phone = "phone"
-    const val uri = "uri"
-    const val email = "email"
-    const val password = "password"
-    const val numberPassword = "numberPassword"
-    const val decimal = "decimal"
-    const val text = "text"
+    const val ascii = "Ascii"
+    const val number = "Number"
+    const val phone = "Phone"
+    const val uri = "Uri"
+    const val email = "Email"
+    const val password = "Password"
+    const val numberPassword = "NumberPassword"
+    const val decimal = "Decimal"
+    const val text = "Text"
 }
 
 object LazyGridColumnTypeValues {
-    const val fixed = "fixed"
-    const val adaptive = "adaptive"
-    const val fixedSize = "fixedSize"
+    const val fixed = "Fixed"
+    const val adaptive = "Adaptive"
+    const val fixedSize = "FixedSize"
+}
+
+object LineHeightStyleAlignmentValues {
+    const val center = "Center"
+    const val top = "Top"
+    const val bottom = "Bottom"
+    const val proportional = "Proportional"
+}
+
+object LineHeightStyleTrimValues {
+    const val both = "Both"
+    const val lastLineBottom = "LastLineBottom"
+    const val firstLineTop = "FirstLineTop"
+    const val none = "None"
 }
 
 object LineBreakValues {
-    const val simple = "simple"
-    const val paragraph = "paragraph"
-    const val heading = "heading"
+    const val simple = "Simple"
+    const val paragraph = "Paragraph"
+    const val heading = "Heading"
 }
 
 object OffsetValues {
@@ -278,9 +310,9 @@ object ScrollBehaviorValues {
 }
 
 object SecureFlagPolicyValues {
-    const val secureOn = "secureOn"
-    const val secureOff = "secureOff"
-    const val inherit = "inherit"
+    const val secureOn = "SecureOn"
+    const val secureOff = "SecureOff"
+    const val inherit = "Inherit"
 }
 
 object ShapeValues {
@@ -290,15 +322,15 @@ object ShapeValues {
 }
 
 object SheetValues {
-    const val expanded = "expanded"
-    const val partiallyExpanded = "partiallyExpanded"
-    const val hidden = "hidden"
+    const val expanded = "Expanded"
+    const val partiallyExpanded = "PartiallyExpanded"
+    const val hidden = "Hidden"
 }
 
 object SnackbarDurationValues {
-    const val indefinite = "indefinite"
-    const val long = "long"
-    const val short = "short"
+    const val indefinite = "Indefinite"
+    const val long = "Long"
+    const val short = "Short"
 }
 
 object StartOffsetTypeValues {
@@ -307,9 +339,15 @@ object StartOffsetTypeValues {
 }
 
 object StrokeCapValues {
-    const val round = "round"
-    const val square = "square"
-    const val butt = "butt"
+    const val round = "Round"
+    const val square = "Square"
+    const val butt = "Butt"
+}
+
+object StrokeJoinValues {
+    const val miter = "Miter"
+    const val round = "Round"
+    const val bevel = "Bevel"
 }
 
 object SwipeToDismissBoxValues {
@@ -334,32 +372,37 @@ object SystemColorValues {
 }
 
 object TextAlignValues {
-    const val left = "left"
-    const val right = "right"
-    const val center = "center"
-    const val justify = "justify"
-    const val start = "start"
-    const val end = "end"
+    const val left = "Left"
+    const val right = "Right"
+    const val center = "Center"
+    const val justify = "Justify"
+    const val start = "Start"
+    const val end = "End"
 }
 
 object TextDecorationValues {
-    const val underline = "underline"
-    const val lineThrough = "lineThrough"
-    const val none = "none"
+    const val underline = "Underline"
+    const val lineThrough = "LineThrough"
+    const val none = "None"
 }
 
 object TextDirectionValues {
-    const val ltr = "ltr"
-    const val rtl = "rtl"
-    const val content = "content"
-    const val contentOrRtl = "contentOrRtl"
-    const val contentOrLtr = "contentOrLtr"
+    const val ltr = "Ltr"
+    const val rtl = "Rtl"
+    const val content = "Content"
+    const val contentOrRtl = "ContentOrRtl"
+    const val contentOrLtr = "ContentOrLtr"
+}
+
+object TextMotionValues {
+    const val static = "Static"
+    const val animated = "Animated"
 }
 
 object TextOverflowValues {
-    const val clip = "clip"
-    const val ellipsis = "ellipsis"
-    const val visible = "visible"
+    const val clip = "Clip"
+    const val ellipsis = "Ellipsis"
+    const val visible = "Visible"
 }
 
 object ThemeTextStyleValues {
@@ -435,8 +478,8 @@ object TileModeValues {
 }
 
 object TimePickerLayoutTypeValues {
-    const val horizontal = "horizontal"
-    const val vertical = "vertical"
+    const val horizontal = "Horizontal"
+    const val vertical = "Vertical"
 }
 
 object TransformOriginValues {
@@ -450,12 +493,12 @@ object VerticalAlignmentValues {
 }
 
 object VerticalArrangementValues {
-    const val top = "top"
-    const val spaceEvenly = "spaceEvenly"
-    const val spaceAround = "spaceAround"
-    const val spaceBetween = "spaceBetween"
-    const val bottom = "bottom"
-    const val center = "center"
+    const val top = "Top"
+    const val spaceEvenly = "SpaceEvenly"
+    const val spaceAround = "SpaceAround"
+    const val spaceBetween = "SpaceBetween"
+    const val bottom = "Bottom"
+    const val center = "Center"
 }
 
 object VisualTransformationValues {

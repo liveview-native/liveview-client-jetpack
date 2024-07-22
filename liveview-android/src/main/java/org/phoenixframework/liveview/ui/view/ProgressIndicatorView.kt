@@ -16,7 +16,6 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrStrokeCap
 import org.phoenixframework.liveview.data.constants.Attrs.attrStrokeWidth
 import org.phoenixframework.liveview.data.constants.Attrs.attrTrackColor
 import org.phoenixframework.liveview.data.constants.ComposableTypes
-import org.phoenixframework.liveview.data.constants.StrokeCapValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.domain.data.ComposableTreeNode
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
@@ -151,12 +150,7 @@ internal class ProgressIndicatorView private constructor(props: Properties) :
         private fun strokeCap(props: Properties, strokeCap: String): Properties {
             return if (strokeCap.isNotEmpty()) {
                 props.copy(
-                    strokeCap = when (strokeCap) {
-                        StrokeCapValues.round -> StrokeCap.Round
-                        StrokeCapValues.square -> StrokeCap.Square
-                        StrokeCapValues.butt -> StrokeCap.Butt
-                        else -> ProgressIndicatorDefaults.CircularIndeterminateStrokeCap
-                    }
+                    strokeCap = strokeCapFromString(strokeCap)
                 )
             } else props
         }

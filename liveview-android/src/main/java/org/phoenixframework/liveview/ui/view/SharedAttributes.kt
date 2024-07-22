@@ -72,28 +72,76 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.style.Hyphens
+import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.text.style.TextGeometricTransform
+import androidx.compose.ui.text.style.TextIndent
+import androidx.compose.ui.text.style.TextMotion
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.SecureFlagPolicy
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import org.phoenixframework.liveview.data.constants.AlignmentValues
+import org.phoenixframework.liveview.data.constants.Attrs.attrAlignment
+import org.phoenixframework.liveview.data.constants.Attrs.attrBackground
+import org.phoenixframework.liveview.data.constants.Attrs.attrBaselineShift
 import org.phoenixframework.liveview.data.constants.Attrs.attrBottom
+import org.phoenixframework.liveview.data.constants.Attrs.attrCap
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
+import org.phoenixframework.liveview.data.constants.Attrs.attrDrawStyle
+import org.phoenixframework.liveview.data.constants.Attrs.attrFirstLine
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontFamily
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontFeatureSettings
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontSize
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontStyle
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontSynthesis
+import org.phoenixframework.liveview.data.constants.Attrs.attrFontWeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrHyphens
+import org.phoenixframework.liveview.data.constants.Attrs.attrJoin
 import org.phoenixframework.liveview.data.constants.Attrs.attrLeft
+import org.phoenixframework.liveview.data.constants.Attrs.attrLetterSpacing
+import org.phoenixframework.liveview.data.constants.Attrs.attrLineBreak
+import org.phoenixframework.liveview.data.constants.Attrs.attrLineHeight
+import org.phoenixframework.liveview.data.constants.Attrs.attrLineHeightStyle
+import org.phoenixframework.liveview.data.constants.Attrs.attrMiter
 import org.phoenixframework.liveview.data.constants.Attrs.attrOffsetMillis
 import org.phoenixframework.liveview.data.constants.Attrs.attrOffsetType
 import org.phoenixframework.liveview.data.constants.Attrs.attrPivotFractionX
 import org.phoenixframework.liveview.data.constants.Attrs.attrPivotFractionY
+import org.phoenixframework.liveview.data.constants.Attrs.attrRestLine
 import org.phoenixframework.liveview.data.constants.Attrs.attrRight
+import org.phoenixframework.liveview.data.constants.Attrs.attrScaleX
+import org.phoenixframework.liveview.data.constants.Attrs.attrSkewX
+import org.phoenixframework.liveview.data.constants.Attrs.attrTextAlign
+import org.phoenixframework.liveview.data.constants.Attrs.attrTextDecoration
+import org.phoenixframework.liveview.data.constants.Attrs.attrTextDirection
+import org.phoenixframework.liveview.data.constants.Attrs.attrTextGeometricTransform
+import org.phoenixframework.liveview.data.constants.Attrs.attrTextIndent
+import org.phoenixframework.liveview.data.constants.Attrs.attrTextMotion
 import org.phoenixframework.liveview.data.constants.Attrs.attrTop
+import org.phoenixframework.liveview.data.constants.Attrs.attrTrim
 import org.phoenixframework.liveview.data.constants.Attrs.attrWidth
 import org.phoenixframework.liveview.data.constants.ContentScaleValues
+import org.phoenixframework.liveview.data.constants.DrawStyleValues
 import org.phoenixframework.liveview.data.constants.EasingValues
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argAnimationSpec
 import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions.argClip
@@ -139,9 +187,14 @@ import org.phoenixframework.liveview.data.constants.EnterExitTransitionFunctions
 import org.phoenixframework.liveview.data.constants.FiniteAnimationSpecFunctions
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
 import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
+import org.phoenixframework.liveview.data.constants.LineHeightStyleAlignmentValues
+import org.phoenixframework.liveview.data.constants.LineHeightStyleTrimValues
 import org.phoenixframework.liveview.data.constants.RepeatModeValues
 import org.phoenixframework.liveview.data.constants.SecureFlagPolicyValues
 import org.phoenixframework.liveview.data.constants.StartOffsetTypeValues
+import org.phoenixframework.liveview.data.constants.StrokeCapValues
+import org.phoenixframework.liveview.data.constants.StrokeJoinValues
+import org.phoenixframework.liveview.data.constants.TextMotionValues
 import org.phoenixframework.liveview.data.constants.TileModeValues
 import org.phoenixframework.liveview.data.constants.TransformOriginValues
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
@@ -151,24 +204,17 @@ import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.ui.base.ComposableView.Companion.EVENT_TYPE_CLICK
 import org.phoenixframework.liveview.ui.base.PushEvent
-
-/**
- * Returns a `WindowInsets` object from a String.
- * ```
- * <ModalBottomSheet windowInsets="{'bottom': '100'}" >
- * ```
- * @param insets the space, in Dp, at the each border of the window that the inset
- * represents. The supported values are: `left`, `top`, `bottom`, and `right`.
- */
-fun windowInsetsFromString(insets: String): WindowInsets {
-    val map = JsonParser.parse<Map<String, Number>>(insets)
-    return WindowInsets(
-        left = (map?.get(attrLeft)?.toInt() ?: 0).dp,
-        top = (map?.get(attrTop)?.toInt() ?: 0).dp,
-        right = (map?.get(attrRight)?.toInt() ?: 0).dp,
-        bottom = (map?.get(attrBottom)?.toInt() ?: 0).dp,
-    )
-}
+import org.phoenixframework.liveview.ui.theme.baselineShiftFromString
+import org.phoenixframework.liveview.ui.theme.fontFamilyFromString
+import org.phoenixframework.liveview.ui.theme.fontStyleFromString
+import org.phoenixframework.liveview.ui.theme.fontSynthesisFromString
+import org.phoenixframework.liveview.ui.theme.fontWeightFromString
+import org.phoenixframework.liveview.ui.theme.hyphensFromString
+import org.phoenixframework.liveview.ui.theme.lineBreakFromString
+import org.phoenixframework.liveview.ui.theme.textAlignFromString
+import org.phoenixframework.liveview.ui.theme.textDecorationFromString
+import org.phoenixframework.liveview.ui.theme.textDirectionFromString
+import org.phoenixframework.liveview.ui.theme.textUnitFromString
 
 /**
  * Returns an `Alignment` object from a String.
@@ -190,116 +236,23 @@ internal fun alignmentFromString(alignment: String, defaultValue: Alignment): Al
         else -> defaultValue
     }
 
-/**
- * Returns an `TileMode` object from a String.
- * @param tileMode string to be converted to an `TileMode`.
- * @param defaultValue default value to be used in case of [tileMode] does not match with
- * any supported value.
- */
-internal fun tileModeFromString(tileMode: String, defaultValue: TileMode): TileMode =
-    when (tileMode) {
-        TileModeValues.clamp -> TileMode.Clamp
-        TileModeValues.decal -> TileMode.Decal
-        TileModeValues.mirror -> TileMode.Mirror
-        TileModeValues.repeated -> TileMode.Repeated
-        else -> defaultValue
-    }
-
-/**
- * Returns an `ContentScale` object from a String.
- * @param contentScale string to be converted to an `ContentScale`.
- * @param defaultValue default value to be used in case of [contentScale] does not match with
- * any supported value.
- */
-internal fun contentScaleFromString(
-    contentScale: String, defaultValue: ContentScale = ContentScale.None
-): ContentScale = when (contentScale) {
-    ContentScaleValues.crop -> ContentScale.Crop
-    ContentScaleValues.fillBounds -> ContentScale.FillBounds
-    ContentScaleValues.fillHeight -> ContentScale.FillHeight
-    ContentScaleValues.fillWidth -> ContentScale.FillWidth
-    ContentScaleValues.fit -> ContentScale.Fit
-    ContentScaleValues.inside -> ContentScale.Inside
-    ContentScaleValues.none -> ContentScale.None
-    else -> defaultValue
-}
-
-/**
- * The vertical arrangement of the Column's children
- *
- * @param verticalArrangement the vertical arrangement of the column's children. See the
- * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
- * An int value is also supported, which will be used to determine the space.
- */
-internal fun verticalArrangementFromString(verticalArrangement: String) =
-    when (verticalArrangement) {
-        VerticalArrangementValues.top -> Arrangement.Top
-        VerticalArrangementValues.spaceEvenly -> Arrangement.SpaceEvenly
-        VerticalArrangementValues.spaceAround -> Arrangement.SpaceAround
-        VerticalArrangementValues.spaceBetween -> Arrangement.SpaceBetween
-        VerticalArrangementValues.bottom -> Arrangement.Bottom
-        else -> if (verticalArrangement.isNotEmptyAndIsDigitsOnly()) {
-            Arrangement.spacedBy(verticalArrangement.toInt().dp)
-        } else {
-            Arrangement.Center
+val borderCache = mutableMapOf<Int, BorderStroke>()
+internal fun borderFromString(border: String): BorderStroke? {
+    return try {
+        val key = border.hashCode()
+        if (!borderCache.containsKey(key)) {
+            val map = JsonParser.parse<Map<String, Any>>(border)
+            if (map != null) {
+                borderCache[key] = BorderStroke(
+                    (map[attrWidth].toString().toFloatOrNull() ?: 1f).dp,
+                    map[attrColor].toString().toColor()
+                )
+            }
         }
-    }
-
-/**
- * The horizontal alignment of the Column's children
- *
- * @param horizontalAlignment the horizontal alignment of the column's children. See the
- * supported values at [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
- */
-internal fun horizontalAlignmentFromString(horizontalAlignment: String) =
-    when (horizontalAlignment) {
-        HorizontalAlignmentValues.start -> Alignment.Start
-        HorizontalAlignmentValues.centerHorizontally -> Alignment.CenterHorizontally
-        HorizontalAlignmentValues.end -> Alignment.End
-        else -> Alignment.Start
-    }
-
-/**
- * The horizontal arrangement of the Row's children
- *
- * @param horizontalArrangement the horizontal arrangement of the column's children. See the
- * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
- * An int value is also supported, which will be used to determine the space.
- */
-internal fun horizontalArrangementFromString(horizontalArrangement: String) =
-    when (horizontalArrangement) {
-        HorizontalArrangementValues.spaceEvenly -> Arrangement.SpaceEvenly
-        HorizontalArrangementValues.spaceAround -> Arrangement.SpaceAround
-        HorizontalArrangementValues.spaceBetween -> Arrangement.SpaceBetween
-        HorizontalArrangementValues.start -> Arrangement.Start
-        HorizontalArrangementValues.end -> Arrangement.End
-        else -> if (horizontalArrangement.isNotEmptyAndIsDigitsOnly()) {
-            Arrangement.spacedBy(horizontalArrangement.toInt().dp)
-        } else {
-            Arrangement.Center
-        }
-    }
-
-/**
- * The vertical alignment of the Row's children
- *
- * @param verticalAlignment the vertical alignment of the row's children. See the supported values
- * at [org.phoenixframework.liveview.data.constants.VerticalAlignmentValues].
- */
-internal fun verticalAlignmentFromString(verticalAlignment: String) = when (verticalAlignment) {
-    VerticalAlignmentValues.top -> Alignment.Top
-    VerticalAlignmentValues.centerVertically -> Alignment.CenterVertically
-    else -> Alignment.Bottom
-}
-
-internal fun onClickFromString(
-    pushEvent: PushEvent?,
-    event: String,
-    value: Any?,
-    target: Int? = null
-): () -> Unit = {
-    if (event.isNotEmpty()) {
-        pushEvent?.invoke(EVENT_TYPE_CLICK, event, value, target)
+        borderCache[key]
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
     }
 }
 
@@ -321,40 +274,92 @@ internal fun colorsFromString(colors: String): Map<String, String>? {
     }
 }
 
+/**
+ * Returns an `ContentScale` object from a String.
+ * @param contentScale string to be converted to an `ContentScale`.
+ * @param defaultValue default value to be used in case of [contentScale] does not match with
+ * any supported value.
+ */
+internal fun contentScaleFromString(
+    contentScale: String, defaultValue: ContentScale = ContentScale.None
+): ContentScale = when (contentScale) {
+    ContentScaleValues.crop -> ContentScale.Crop
+    ContentScaleValues.fillBounds -> ContentScale.FillBounds
+    ContentScaleValues.fillHeight -> ContentScale.FillHeight
+    ContentScaleValues.fillWidth -> ContentScale.FillWidth
+    ContentScaleValues.fit -> ContentScale.Fit
+    ContentScaleValues.inside -> ContentScale.Inside
+    ContentScaleValues.none -> ContentScale.None
+    else -> defaultValue
+}
+
+internal fun drawStyleFromString(string: String): DrawStyle {
+    return if (string == DrawStyleValues.fill) {
+        Fill
+    } else {
+        try {
+            val value = JsonParser.parse<Map<String, Any>>(string)
+            Stroke(
+                width = value?.get(attrWidth)?.toString()?.toFloat() ?: 0.0f,
+                miter = value?.get(attrMiter)?.toString()?.toFloat() ?: Stroke.DefaultMiter,
+                cap = value?.get(attrCap)?.toString()?.let { strokeCapFromString(it) }
+                    ?: Stroke.DefaultCap,
+                join = value?.get(attrJoin)?.toString()?.let { strokeJoinFromString(it) }
+                    ?: Stroke.DefaultJoin,
+                // TODO pathEffect = value?.get("pathEffect")?.toString()?.let { pathEffectFromString(it) }
+            )
+        } catch (e: Exception) {
+            Fill
+        }
+    }
+}
+
+internal fun easingFromString(string: String): Easing? {
+    return when (string) {
+        EasingValues.ease -> Ease
+        EasingValues.easeOut -> EaseOut
+        EasingValues.easeIn -> EaseIn
+        EasingValues.easeInOut -> EaseInOut
+        EasingValues.easeInSine -> EaseInSine
+        EasingValues.easeOutSine -> EaseOutSine
+        EasingValues.easeInOutSine -> EaseInOutSine
+        EasingValues.easeInCubic -> EaseInCubic
+        EasingValues.easeOutCubic -> EaseOutCubic
+        EasingValues.easeInOutCubic -> EaseInOutCubic
+        EasingValues.easeInQuint -> EaseInQuint
+        EasingValues.easeOutQuint -> EaseOutQuint
+        EasingValues.easeInOutQuint -> EaseInOutQuint
+        EasingValues.easeInCirc -> EaseInCirc
+        EasingValues.easeOutCirc -> EaseOutCirc
+        EasingValues.easeInOutCirc -> EaseInOutCirc
+        EasingValues.easeInQuad -> EaseInQuad
+        EasingValues.easeOutQuad -> EaseOutQuad
+        EasingValues.easeInOutQuad -> EaseInOutQuad
+        EasingValues.easeInQuart -> EaseInQuart
+        EasingValues.easeOutQuart -> EaseOutQuart
+        EasingValues.easeInOutQuart -> EaseInOutQuart
+        EasingValues.easeInExpo -> EaseInExpo
+        EasingValues.easeOutExpo -> EaseOutExpo
+        EasingValues.easeInOutExpo -> EaseInOutExpo
+        EasingValues.easeInBack -> EaseInBack
+        EasingValues.easeOutBack -> EaseOutBack
+        EasingValues.easeInOutBack -> EaseInOutBack
+        EasingValues.easeInElastic -> EaseInElastic
+        EasingValues.easeOutElastic -> EaseOutElastic
+        EasingValues.easeInOutElastic -> EaseInOutElastic
+        EasingValues.easeOutBounce -> EaseOutBounce
+        EasingValues.easeInBounce -> EaseInBounce
+        EasingValues.easeInOutBounce -> EaseInOutBounce
+        else -> null
+    }
+}
+
 internal fun elevationsFromString(elevations: String): Map<String, String>? {
     return try {
         JsonParser.parse(elevations)
     } catch (e: Exception) {
         e.printStackTrace()
         null
-    }
-}
-
-val borderCache = mutableMapOf<Int, BorderStroke>()
-internal fun borderFromString(border: String): BorderStroke? {
-    return try {
-        val key = border.hashCode()
-        if (!borderCache.containsKey(key)) {
-            val map = JsonParser.parse<Map<String, Any>>(border)
-            if (map != null) {
-                borderCache[key] = BorderStroke(
-                    (map[attrWidth].toString().toFloatOrNull() ?: 1f).dp,
-                    map[attrColor].toString().toColor()
-                )
-            }
-        }
-        borderCache[key]
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}
-
-internal fun secureFlagPolicyFromString(securePolicy: String): SecureFlagPolicy {
-    return when (securePolicy) {
-        SecureFlagPolicyValues.secureOn -> SecureFlagPolicy.SecureOn
-        SecureFlagPolicyValues.secureOff -> SecureFlagPolicy.SecureOff
-        else -> SecureFlagPolicy.Inherit
     }
 }
 
@@ -685,68 +690,6 @@ internal fun exitTransitionFromString(animationJson: String): ExitTransition? {
     return result
 }
 
-internal fun transformOriginFromString(string: String): TransformOrigin {
-    return if (string == TransformOriginValues.center) {
-        TransformOrigin.Center
-    } else {
-        val map = JsonParser.parse<Map<String, Double>>(string)
-        TransformOrigin(
-            pivotFractionX = map?.get(attrPivotFractionX)?.toFloat() ?: 0f,
-            pivotFractionY = map?.get(attrPivotFractionY)?.toFloat() ?: 0f
-        )
-    }
-}
-
-internal fun easingFromString(string: String): Easing? {
-    return when (string) {
-        EasingValues.ease -> Ease
-        EasingValues.easeOut -> EaseOut
-        EasingValues.easeIn -> EaseIn
-        EasingValues.easeInOut -> EaseInOut
-        EasingValues.easeInSine -> EaseInSine
-        EasingValues.easeOutSine -> EaseOutSine
-        EasingValues.easeInOutSine -> EaseInOutSine
-        EasingValues.easeInCubic -> EaseInCubic
-        EasingValues.easeOutCubic -> EaseOutCubic
-        EasingValues.easeInOutCubic -> EaseInOutCubic
-        EasingValues.easeInQuint -> EaseInQuint
-        EasingValues.easeOutQuint -> EaseOutQuint
-        EasingValues.easeInOutQuint -> EaseInOutQuint
-        EasingValues.easeInCirc -> EaseInCirc
-        EasingValues.easeOutCirc -> EaseOutCirc
-        EasingValues.easeInOutCirc -> EaseInOutCirc
-        EasingValues.easeInQuad -> EaseInQuad
-        EasingValues.easeOutQuad -> EaseOutQuad
-        EasingValues.easeInOutQuad -> EaseInOutQuad
-        EasingValues.easeInQuart -> EaseInQuart
-        EasingValues.easeOutQuart -> EaseOutQuart
-        EasingValues.easeInOutQuart -> EaseInOutQuart
-        EasingValues.easeInExpo -> EaseInExpo
-        EasingValues.easeOutExpo -> EaseOutExpo
-        EasingValues.easeInOutExpo -> EaseInOutExpo
-        EasingValues.easeInBack -> EaseInBack
-        EasingValues.easeOutBack -> EaseOutBack
-        EasingValues.easeInOutBack -> EaseInOutBack
-        EasingValues.easeInElastic -> EaseInElastic
-        EasingValues.easeOutElastic -> EaseOutElastic
-        EasingValues.easeInOutElastic -> EaseInOutElastic
-        EasingValues.easeOutBounce -> EaseOutBounce
-        EasingValues.easeInBounce -> EaseInBounce
-        EasingValues.easeInOutBounce -> EaseInOutBounce
-        else -> null
-    }
-}
-
-/*
-FiniteAnimationSpec is the interface that all non-infinite AnimationSpecs implement, including:
-TweenSpec, SpringSpec, KeyframesSpec, RepeatableSpec, SnapSpec, etc.
- */
-internal fun <T> finiteAnimationSpecFromString(string: String): FiniteAnimationSpec<T>? {
-    return JsonParser.parse<Map<String, Any>>(string)?.let {
-        finiteAnimationSpecFromMap(it)
-    }
-}
-
 @OptIn(ExperimentalAnimationSpecApi::class)
 private fun <T> finiteAnimationSpecFromMap(jsonMap: Map<String, Any>): FiniteAnimationSpec<T>? {
     val function = jsonMap.keys.firstOrNull() ?: return null
@@ -835,12 +778,219 @@ private fun <T> finiteAnimationSpecFromMap(jsonMap: Map<String, Any>): FiniteAni
     }
 }
 
+/*
+FiniteAnimationSpec is the interface that all non-infinite AnimationSpecs implement, including:
+TweenSpec, SpringSpec, KeyframesSpec, RepeatableSpec, SnapSpec, etc.
+ */
+internal fun <T> finiteAnimationSpecFromString(string: String): FiniteAnimationSpec<T>? {
+    return JsonParser.parse<Map<String, Any>>(string)?.let {
+        finiteAnimationSpecFromMap(it)
+    }
+}
+
+/**
+ * The horizontal alignment of the Column's children
+ *
+ * @param horizontalAlignment the horizontal alignment of the column's children. See the
+ * supported values at [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
+ */
+internal fun horizontalAlignmentFromString(horizontalAlignment: String) =
+    when (horizontalAlignment) {
+        HorizontalAlignmentValues.start -> Alignment.Start
+        HorizontalAlignmentValues.centerHorizontally -> Alignment.CenterHorizontally
+        HorizontalAlignmentValues.end -> Alignment.End
+        else -> Alignment.Start
+    }
+
+/**
+ * The horizontal arrangement of the Row's children
+ *
+ * @param horizontalArrangement the horizontal arrangement of the column's children. See the
+ * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
+ * An int value is also supported, which will be used to determine the space.
+ */
+internal fun horizontalArrangementFromString(horizontalArrangement: String) =
+    when (horizontalArrangement) {
+        HorizontalArrangementValues.spaceEvenly -> Arrangement.SpaceEvenly
+        HorizontalArrangementValues.spaceAround -> Arrangement.SpaceAround
+        HorizontalArrangementValues.spaceBetween -> Arrangement.SpaceBetween
+        HorizontalArrangementValues.start -> Arrangement.Start
+        HorizontalArrangementValues.end -> Arrangement.End
+        else -> if (horizontalArrangement.isNotEmptyAndIsDigitsOnly()) {
+            Arrangement.spacedBy(horizontalArrangement.toInt().dp)
+        } else {
+            Arrangement.Center
+        }
+    }
+
+internal fun lineHeightStyleAlignmentFromString(string: String): LineHeightStyle.Alignment {
+    return when (string) {
+        LineHeightStyleAlignmentValues.top -> LineHeightStyle.Alignment.Top
+        LineHeightStyleAlignmentValues.bottom -> LineHeightStyle.Alignment.Bottom
+        LineHeightStyleAlignmentValues.proportional -> LineHeightStyle.Alignment.Proportional
+        LineHeightStyleAlignmentValues.center -> LineHeightStyle.Alignment.Center
+        else -> LineHeightStyle.Alignment.Center
+    }
+}
+
+internal fun lineHeightStyleTrimFromString(string: String): LineHeightStyle.Trim {
+    return when (string) {
+        LineHeightStyleTrimValues.both -> LineHeightStyle.Trim.Both
+        LineHeightStyleTrimValues.lastLineBottom -> LineHeightStyle.Trim.LastLineBottom
+        LineHeightStyleTrimValues.firstLineTop -> LineHeightStyle.Trim.FirstLineTop
+        else -> LineHeightStyle.Trim.None
+    }
+}
+
+internal fun lineHeightStyleFromMap(map: Map<String, Any>): LineHeightStyle {
+    val alignment = map[attrAlignment]?.let {
+        lineHeightStyleAlignmentFromString(it.toString())
+    } ?: LineHeightStyle.Alignment.Center
+    val trim = map[attrTrim]?.let {
+        lineHeightStyleTrimFromString(it.toString())
+    } ?: LineHeightStyle.Trim.None
+    return LineHeightStyle(
+        alignment = alignment,
+        trim = trim,
+    )
+}
+
+internal fun onClickFromString(
+    pushEvent: PushEvent?,
+    event: String,
+    value: Any?,
+    target: Int? = null
+): () -> Unit = {
+    if (event.isNotEmpty()) {
+        pushEvent?.invoke(EVENT_TYPE_CLICK, event, value, target)
+    }
+}
+
+internal fun paragraphStyleFromString(string: String): ParagraphStyle {
+    val map = try {
+        JsonParser.parse<Map<String, Any>>(string)
+    } catch (e: Exception) {
+        emptyMap()
+    }
+    val textAlign = map?.get(attrTextAlign)?.let {
+        textAlignFromString(it.toString())
+    } ?: TextAlign.Unspecified
+    val textDirection = map?.get(attrTextDirection)?.let {
+        textDirectionFromString(it.toString())
+    } ?: TextDirection.Unspecified
+    val lineHeight = map?.get(attrLineHeight)?.let {
+        textUnitFromString(it.toString())
+    } ?: TextUnit.Unspecified
+    val textIndent = map?.get(attrTextIndent)?.let { tiMap ->
+        (tiMap as? Map<String, Any>)?.let {
+            textIndentFromMap(it)
+        }
+    }
+    val lineHeightStyle = map?.get(attrLineHeightStyle)?.let { lhsMap ->
+        (lhsMap as? Map<String, Any>)?.let {
+            lineHeightStyleFromMap(it)
+        }
+    }
+    val lineBreak = map?.get(attrLineBreak)?.let {
+        lineBreakFromString(it.toString())
+    } ?: LineBreak.Unspecified
+    val hyphens = map?.get(attrHyphens)?.let {
+        hyphensFromString(it.toString())
+    } ?: Hyphens.Unspecified
+    val textMotion = map?.get(attrTextMotion)?.let {
+        textMotionFromString(it.toString())
+    }
+    return ParagraphStyle(
+        textAlign = textAlign,
+        textDirection = textDirection,
+        lineHeight = lineHeight,
+        textIndent = textIndent,
+        //TODO platformStyle: PlatformSpanStyle? = null,
+        lineHeightStyle = lineHeightStyle,
+        lineBreak = lineBreak,
+        hyphens = hyphens,
+        textMotion = textMotion
+    )
+}
+
 internal fun repeatModeFromString(string: String): RepeatMode? {
     return when (string) {
         RepeatModeValues.restart -> RepeatMode.Restart
         RepeatModeValues.reverse -> RepeatMode.Reverse
         else -> null
     }
+}
+
+internal fun secureFlagPolicyFromString(securePolicy: String): SecureFlagPolicy {
+    return when (securePolicy) {
+        SecureFlagPolicyValues.secureOn -> SecureFlagPolicy.SecureOn
+        SecureFlagPolicyValues.secureOff -> SecureFlagPolicy.SecureOff
+        else -> SecureFlagPolicy.Inherit
+    }
+}
+
+internal fun spanStyleFromString(string: String): SpanStyle {
+    val map = try {
+        JsonParser.parse<Map<String, Any>>(string)
+    } catch (e: Exception) {
+        emptyMap()
+    }
+    val color = map?.get(attrColor)?.toString()?.toColor() ?: Color.Unspecified
+    val fontSize = map?.get(attrFontSize)?.let {
+        textUnitFromString(it.toString())
+    } ?: TextUnit.Unspecified
+    val fontWeight = map?.get(attrFontWeight)?.let {
+        fontWeightFromString(it.toString())
+    }
+    val fontStyle = map?.get(attrFontStyle)?.let {
+        fontStyleFromString(it.toString())
+    }
+    val fontSynthesis = map?.get(attrFontSynthesis)?.let {
+        fontSynthesisFromString(it.toString())
+    }
+    val fontFamily = map?.get(attrFontFamily)?.let {
+        fontFamilyFromString(it.toString())
+    }
+    val fontFeatureSettings = map?.get(attrFontFeatureSettings)?.toString()
+    val letterSpacing = map?.get(attrLetterSpacing)?.let {
+        textUnitFromString(it.toString())
+    } ?: TextUnit.Unspecified
+    val baselineShift = map?.get(attrBaselineShift)?.let {
+        baselineShiftFromString(it.toString())
+    }
+    val textGeometricTransform = map?.get(attrTextGeometricTransform)?.let { tgtMap ->
+        (tgtMap as? Map<String, Any>)?.let {
+            textGeometricTransformFromMap(it)
+        }
+    }
+    //val localeList = map?.get("localeList")
+    val background = map?.get(attrBackground)?.toString()?.toColor() ?: Color.Unspecified
+    val textDecoration = map?.get(attrTextDecoration)?.let {
+        textDecorationFromString(it.toString())
+    }
+    //val shadow = map?.get("shadow")
+    //val platformStyle = map?.get("platformStyle")
+    val drawStyle = map?.get(attrDrawStyle)?.let { dsValue ->
+        drawStyleFromString(dsValue.toString())
+    }
+    return SpanStyle(
+        color = color,
+        fontSize = fontSize,
+        fontWeight = fontWeight,
+        fontStyle = fontStyle,
+        fontSynthesis = fontSynthesis,
+        fontFamily = fontFamily,
+        fontFeatureSettings = fontFeatureSettings,
+        letterSpacing = letterSpacing,
+        baselineShift = baselineShift,
+        textGeometricTransform = textGeometricTransform,
+        //TODO localeList: LocaleList? = null,
+        background = background,
+        textDecoration = textDecoration,
+        //TODO shadow: Shadow? = null,
+        //TODO platformStyle: PlatformSpanStyle? = null,
+        drawStyle = drawStyle
+    )
 }
 
 internal fun startOffsetFromMap(map: Map<String, Any>): StartOffset? {
@@ -860,4 +1010,122 @@ internal fun startOffsetTypeFromString(string: String): StartOffsetType? {
         StartOffsetTypeValues.fastForward -> StartOffsetType.FastForward
         else -> null
     }
+}
+
+internal fun strokeCapFromString(string: String): StrokeCap? {
+    return when (string) {
+        StrokeCapValues.round -> StrokeCap.Round
+        StrokeCapValues.square -> StrokeCap.Square
+        StrokeCapValues.butt -> StrokeCap.Butt
+        else -> null
+    }
+}
+
+internal fun strokeJoinFromString(string: String): StrokeJoin? {
+    return when (string) {
+        StrokeJoinValues.miter -> StrokeJoin.Miter
+        StrokeJoinValues.round -> StrokeJoin.Round
+        StrokeJoinValues.bevel -> StrokeJoin.Bevel
+        else -> null
+    }
+}
+
+internal fun textGeometricTransformFromMap(map: Map<String, Any>): TextGeometricTransform {
+    return TextGeometricTransform(
+        scaleX = map[attrScaleX]?.toString()?.toFloat() ?: 1f,
+        skewX = map[attrSkewX]?.toString()?.toFloat() ?: 0f,
+    )
+}
+
+internal fun textIndentFromMap(map: Map<String, Any>): TextIndent {
+    return TextIndent(
+        firstLine = map[attrFirstLine]?.let { textUnitFromString(it.toString()) } ?: 0.sp,
+        restLine = map[attrRestLine]?.let { textUnitFromString(it.toString()) } ?: 0.sp,
+    )
+}
+
+internal fun textMotionFromString(string: String): TextMotion {
+    return when (string) {
+        TextMotionValues.animated -> TextMotion.Animated
+        TextMotionValues.static -> TextMotion.Static
+        else -> TextMotion.Static
+    }
+}
+
+/**
+ * Returns an `TileMode` object from a String.
+ * @param tileMode string to be converted to an `TileMode`.
+ * @param defaultValue default value to be used in case of [tileMode] does not match with
+ * any supported value.
+ */
+internal fun tileModeFromString(tileMode: String, defaultValue: TileMode): TileMode =
+    when (tileMode) {
+        TileModeValues.clamp -> TileMode.Clamp
+        TileModeValues.decal -> TileMode.Decal
+        TileModeValues.mirror -> TileMode.Mirror
+        TileModeValues.repeated -> TileMode.Repeated
+        else -> defaultValue
+    }
+
+internal fun transformOriginFromString(string: String): TransformOrigin {
+    return if (string == TransformOriginValues.center) {
+        TransformOrigin.Center
+    } else {
+        val map = JsonParser.parse<Map<String, Double>>(string)
+        TransformOrigin(
+            pivotFractionX = map?.get(attrPivotFractionX)?.toFloat() ?: 0f,
+            pivotFractionY = map?.get(attrPivotFractionY)?.toFloat() ?: 0f
+        )
+    }
+}
+
+/**
+ * The vertical alignment of the Row's children
+ *
+ * @param verticalAlignment the vertical alignment of the row's children. See the supported values
+ * at [org.phoenixframework.liveview.data.constants.VerticalAlignmentValues].
+ */
+internal fun verticalAlignmentFromString(verticalAlignment: String) = when (verticalAlignment) {
+    VerticalAlignmentValues.top -> Alignment.Top
+    VerticalAlignmentValues.centerVertically -> Alignment.CenterVertically
+    else -> Alignment.Bottom
+}
+
+/**
+ * The vertical arrangement of the Column's children
+ *
+ * @param verticalArrangement the vertical arrangement of the column's children. See the
+ * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
+ * An int value is also supported, which will be used to determine the space.
+ */
+internal fun verticalArrangementFromString(verticalArrangement: String) =
+    when (verticalArrangement) {
+        VerticalArrangementValues.top -> Arrangement.Top
+        VerticalArrangementValues.spaceEvenly -> Arrangement.SpaceEvenly
+        VerticalArrangementValues.spaceAround -> Arrangement.SpaceAround
+        VerticalArrangementValues.spaceBetween -> Arrangement.SpaceBetween
+        VerticalArrangementValues.bottom -> Arrangement.Bottom
+        else -> if (verticalArrangement.isNotEmptyAndIsDigitsOnly()) {
+            Arrangement.spacedBy(verticalArrangement.toInt().dp)
+        } else {
+            Arrangement.Center
+        }
+    }
+
+/**
+ * Returns a `WindowInsets` object from a String.
+ * ```
+ * <ModalBottomSheet windowInsets="{'bottom': '100'}" >
+ * ```
+ * @param insets the space, in Dp, at the each border of the window that the inset
+ * represents. The supported values are: `left`, `top`, `bottom`, and `right`.
+ */
+fun windowInsetsFromString(insets: String): WindowInsets {
+    val map = JsonParser.parse<Map<String, Number>>(insets)
+    return WindowInsets(
+        left = (map?.get(attrLeft)?.toInt() ?: 0).dp,
+        top = (map?.get(attrTop)?.toInt() ?: 0).dp,
+        right = (map?.get(attrRight)?.toInt() ?: 0).dp,
+        bottom = (map?.get(attrBottom)?.toInt() ?: 0).dp,
+    )
 }

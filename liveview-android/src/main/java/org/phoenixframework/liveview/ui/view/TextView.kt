@@ -41,14 +41,12 @@ import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.theme.fontFamilyFromString
-import org.phoenixframework.liveview.ui.theme.fontSizeFromString
 import org.phoenixframework.liveview.ui.theme.fontStyleFromString
 import org.phoenixframework.liveview.ui.theme.fontWeightFromString
-import org.phoenixframework.liveview.ui.theme.letterSpacingFromString
-import org.phoenixframework.liveview.ui.theme.lineHeightFromString
 import org.phoenixframework.liveview.ui.theme.textAlignFromString
 import org.phoenixframework.liveview.ui.theme.textDecorationFromString
 import org.phoenixframework.liveview.ui.theme.textStyleFromString
+import org.phoenixframework.liveview.ui.theme.textUnitFromString
 
 /**
  * High level element that displays text.
@@ -246,7 +244,7 @@ internal class TextView private constructor(props: Properties) :
          */
         private fun fontSize(props: Properties, fontSize: String): Properties {
             return if (fontSize.isNotEmptyAndIsDigitsOnly()) {
-                props.copy(fontSize = fontSizeFromString(fontSize))
+                props.copy(fontSize = textUnitFromString(fontSize))
             } else props
         }
 
@@ -287,7 +285,7 @@ internal class TextView private constructor(props: Properties) :
          */
         private fun letterSpacing(props: Properties, letterSpacing: String): Properties {
             return if (letterSpacing.isNotEmptyAndIsDigitsOnly()) {
-                props.copy(letterSpacing = letterSpacingFromString(letterSpacing))
+                props.copy(letterSpacing = textUnitFromString(letterSpacing))
             } else props
         }
 
@@ -325,7 +323,7 @@ internal class TextView private constructor(props: Properties) :
          */
         private fun lineHeight(props: Properties, lineHeight: String): Properties {
             return if (lineHeight.isNotEmptyAndIsDigitsOnly()) {
-                props.copy(lineHeight = lineHeightFromString(lineHeight))
+                props.copy(lineHeight = textUnitFromString(lineHeight))
             } else props
         }
 
