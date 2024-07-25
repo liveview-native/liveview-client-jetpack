@@ -1,15 +1,19 @@
 package com.dockyard.liveviewtest.liveview.ui.view
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import com.dockyard.liveviewtest.liveview.test.util.LiveViewComposableTest
 import org.junit.Test
@@ -23,19 +27,24 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrLineHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxLines
 import org.phoenixframework.liveview.data.constants.Attrs.attrMinLines
 import org.phoenixframework.liveview.data.constants.Attrs.attrOverflow
+import org.phoenixframework.liveview.data.constants.Attrs.attrSpanStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextDecoration
+import org.phoenixframework.liveview.data.constants.ComposableTypes.annotatedText
+import org.phoenixframework.liveview.data.constants.ComposableTypes.box
+import org.phoenixframework.liveview.data.constants.ComposableTypes.column
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 import org.phoenixframework.liveview.data.constants.FontStyleValues.italic
 import org.phoenixframework.liveview.data.constants.FontWeightValues
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.TextAlignValues
 import org.phoenixframework.liveview.data.constants.TextDecorationValues.lineThrough
 import org.phoenixframework.liveview.data.constants.TextDecorationValues.underline
 import org.phoenixframework.liveview.data.constants.TextOverflowValues
 import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
-import org.phoenixframework.liveview.data.constants.ComposableTypes.column
-import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 import org.phoenixframework.liveview.ui.theme.fontFamilyFromString
 
 class TextShotTest : LiveViewComposableTest() {
@@ -268,6 +277,32 @@ class TextShotTest : LiveViewComposableTest() {
                     <$text $attrMaxLines="3" $attrLineHeight="16">$lorenIpsum</$text>
                     <$text $attrMaxLines="3" $attrLineHeight="20">$lorenIpsum</$text>
                 </$column>
+                """
+        )
+    }
+
+    @Test
+    fun textWithAnnotatedStringTest() {
+        compareNativeComposableWithTemplate(
+            nativeComposable = {
+                Box {
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(color = Color.Red, fontSize = 18.sp)) {
+                            append("H")
+                        }
+                        withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline)) {
+                            append("ello")
+                        }
+                    })
+                }
+            },
+            template = """
+                <$box>
+                    <$annotatedText>
+                        <$text $attrSpanStyle="{'$attrColor': '$Red', '$attrFontSize': 18}" $attrText="H"/>
+                        <$text $attrSpanStyle="{'$attrTextDecoration': '$underline'}" $attrText="ello" />
+                    </$annotatedText>
+                </$box>
                 """
         )
     }
