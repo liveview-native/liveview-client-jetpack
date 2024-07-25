@@ -88,7 +88,7 @@ internal class TextView private constructor(props: Properties) :
                 val style = props.style
 
                 val text = remember(composableNode) {
-                    getText(composableNode, textValue)
+                    getText(composableNode) ?: textValue
                 }
                 Text(
                     text = text,
@@ -119,7 +119,7 @@ internal class TextView private constructor(props: Properties) :
                 val annotatedText = remember(textNodes) {
                     buildAnnotatedString {
                         textNodes.forEach { treeNode ->
-                            val text = getText(treeNode, props.text)
+                            val text = getTextForAnnotation(treeNode) ?: ""
                             treeNode.node?.attributes?.find {
                                 it.name == attrSpanStyle || it.name == attrParagraphStyle
                             }?.let {
@@ -145,21 +145,26 @@ internal class TextView private constructor(props: Properties) :
         }
     }
 
-    private fun getText(composableNode: ComposableTreeNode?, textValue: String): String {
+    private fun getTextForAnnotation(treeNode: ComposableTreeNode): String? {
+        return getText(treeNode) // trying to get the text from the child
+        // otherwise, get from the text property
+            ?: treeNode.node?.attributes?.find { it.name == CoreNodeElement.TEXT_ATTRIBUTE }?.value
+    }
+
+    private fun getText(composableNode: ComposableTreeNode?): String? {
         // The first (and only) children node of a Text element must be the text itself.
         // It is contained in a attribute called "text"
         val childrenNodes = composableNode?.children
-        var text = textValue
         if (childrenNodes?.isNotEmpty() == true) {
             val firstNode = childrenNodes.first().node
             if (firstNode?.attributes?.isNotEmpty() == true) {
                 val firstAttr = firstNode.attributes.first()
                 if (firstAttr.name == CoreNodeElement.TEXT_ATTRIBUTE) {
-                    text = firstAttr.value
+                    return firstAttr.value
                 }
             }
         }
-        return text
+        return null
     }
 
     @Stable

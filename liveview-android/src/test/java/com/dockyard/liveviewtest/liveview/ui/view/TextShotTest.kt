@@ -1,6 +1,5 @@
 package com.dockyard.liveviewtest.liveview.ui.view
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
@@ -33,12 +32,12 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextDecoration
 import org.phoenixframework.liveview.data.constants.ComposableTypes.annotatedText
-import org.phoenixframework.liveview.data.constants.ComposableTypes.box
 import org.phoenixframework.liveview.data.constants.ComposableTypes.column
 import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 import org.phoenixframework.liveview.data.constants.FontStyleValues.italic
 import org.phoenixframework.liveview.data.constants.FontWeightValues
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.TextAlignValues
 import org.phoenixframework.liveview.data.constants.TextDecorationValues.lineThrough
@@ -285,7 +284,7 @@ class TextShotTest : LiveViewComposableTest() {
     fun textWithAnnotatedStringTest() {
         compareNativeComposableWithTemplate(
             nativeComposable = {
-                Box {
+                Column {
                     Text(text = buildAnnotatedString {
                         withStyle(style = SpanStyle(color = Color.Red, fontSize = 18.sp)) {
                             append("H")
@@ -294,16 +293,29 @@ class TextShotTest : LiveViewComposableTest() {
                             append("ello")
                         }
                     })
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(color = Color.Blue, fontSize = 24.sp)) {
+                            append("W")
+                        }
+                        withStyle(style = SpanStyle(textDecoration = TextDecoration.LineThrough)) {
+                            append("orld")
+                        }
+                    })
                 }
             },
             template = """
-                <$box>
+                <$column>
                     <$annotatedText>
                         <$text $attrSpanStyle="{'$attrColor': '$Red', '$attrFontSize': 18}" $attrText="H"/>
                         <$text $attrSpanStyle="{'$attrTextDecoration': '$underline'}" $attrText="ello" />
                     </$annotatedText>
-                </$box>
-                """
+                    <$annotatedText>
+                        <$text $attrSpanStyle="{'$attrColor': '$Blue', '$attrFontSize': 24}">W</$text>
+                        <$text $attrSpanStyle="{'$attrTextDecoration': '$lineThrough'}">orld</$text>
+                    </$annotatedText>                    
+                </$column>
+                """,
+            captureScreenImage = true
         )
     }
 
