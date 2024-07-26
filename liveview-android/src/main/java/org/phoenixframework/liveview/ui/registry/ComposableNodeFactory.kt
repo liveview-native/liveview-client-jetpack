@@ -83,6 +83,7 @@ object ComposableNodeFactory {
         ComposableRegistry.run {
             registerComponent(ComposableTypes.alertDialog, AlertDialogView.Factory)
             registerComponent(ComposableTypes.animatedVisibility, AnimatedVisibilityView.Factory)
+            registerComponent(ComposableTypes.annotatedText, TextView.Factory)
             registerComponent(ComposableTypes.assistChip, ChipView.Factory)
             registerComponent(ComposableTypes.asyncImage, AsyncImageView.Factory)
             registerComponent(ComposableTypes.backHandler, BackHandlerView.Factory)

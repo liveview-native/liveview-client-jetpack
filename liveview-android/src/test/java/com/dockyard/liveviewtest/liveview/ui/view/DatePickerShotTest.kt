@@ -54,6 +54,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.constants.ComposableTypes.datePicker
 import org.phoenixframework.liveview.data.constants.ComposableTypes.dateRangePicker
 import org.phoenixframework.liveview.data.constants.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.DatePickerDisplayModeValues.input
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -99,7 +100,7 @@ class DatePickerShotTest : LiveViewComposableTest() {
             template = """  
                 <$datePicker 
                   $attrInitialSelectedDateMillis="$jun9th2023" 
-                  $attrInitialDisplayMode="input"/>
+                  $attrInitialDisplayMode="$input"/>
                 """
         )
     }

@@ -6,12 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.TextUnit
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
@@ -24,11 +26,14 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrLineHeight
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxLines
 import org.phoenixframework.liveview.data.constants.Attrs.attrMinLines
 import org.phoenixframework.liveview.data.constants.Attrs.attrOverflow
+import org.phoenixframework.liveview.data.constants.Attrs.attrParagraphStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrSoftWrap
+import org.phoenixframework.liveview.data.constants.Attrs.attrSpanStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrText
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextAlign
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextDecoration
 import org.phoenixframework.liveview.data.constants.Attrs.attrTextStyle
+import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.TextOverflowValues
 import org.phoenixframework.liveview.data.core.CoreAttribute
 import org.phoenixframework.liveview.data.core.CoreNodeElement
@@ -41,14 +46,12 @@ import org.phoenixframework.liveview.ui.base.ComposableView
 import org.phoenixframework.liveview.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.theme.fontFamilyFromString
-import org.phoenixframework.liveview.ui.theme.fontSizeFromString
 import org.phoenixframework.liveview.ui.theme.fontStyleFromString
 import org.phoenixframework.liveview.ui.theme.fontWeightFromString
-import org.phoenixframework.liveview.ui.theme.letterSpacingFromString
-import org.phoenixframework.liveview.ui.theme.lineHeightFromString
 import org.phoenixframework.liveview.ui.theme.textAlignFromString
 import org.phoenixframework.liveview.ui.theme.textDecorationFromString
 import org.phoenixframework.liveview.ui.theme.textStyleFromString
+import org.phoenixframework.liveview.ui.theme.textUnitFromString
 
 /**
  * High level element that displays text.
@@ -66,60 +69,102 @@ internal class TextView private constructor(props: Properties) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val textValue = props.text
-        val color = props.color
-        val fontSize = props.fontSize
-        val fontStyle = props.fontStyle
-        val fontWeight = props.fontWeight
-        val fontFamily = props.fontFamily
-        val letterSpacing = props.letterSpacing
-        val textDecoration = props.textDecoration
-        val textAlign = props.textAlign
-        val lineHeight = props.lineHeight
-        val overflow = props.overflow
-        val softWrap = props.softWrap
-        val maxLines = props.maxLines
-        val minLines = props.minLines
-        val style = props.style
+        when (composableNode?.node?.tag) {
+            ComposableTypes.text -> {
+                val textValue = props.text
+                val color = props.color
+                val fontSize = props.fontSize
+                val fontStyle = props.fontStyle
+                val fontWeight = props.fontWeight
+                val fontFamily = props.fontFamily
+                val letterSpacing = props.letterSpacing
+                val textDecoration = props.textDecoration
+                val textAlign = props.textAlign
+                val lineHeight = props.lineHeight
+                val overflow = props.overflow
+                val softWrap = props.softWrap
+                val maxLines = props.maxLines
+                val minLines = props.minLines
+                val style = props.style
 
-        val text = remember(composableNode) {
-            getText(composableNode, textValue)
+                val text = remember(composableNode) {
+                    getText(composableNode) ?: textValue
+                }
+                Text(
+                    text = text,
+                    color = color,
+                    modifier = props.commonProps.modifier,
+                    fontSize = fontSize,
+                    fontStyle = fontStyle,
+                    fontWeight = fontWeight,
+                    fontFamily = fontFamily,
+                    letterSpacing = letterSpacing,
+                    textAlign = textAlign,
+                    lineHeight = lineHeight,
+                    overflow = overflow,
+                    softWrap = softWrap,
+                    maxLines = maxLines,
+                    minLines = minLines,
+                    textDecoration = textDecoration,
+                    style = textStyleFromString(style),
+                )
+            }
+            // FIXME This AnnotatedText component must be extracted as add-on in a different module
+            ComposableTypes.annotatedText -> {
+                val textNodes = remember(composableNode) {
+                    composableNode.children.filter {
+                        it.node?.tag == ComposableTypes.text
+                    }
+                }
+                val annotatedText = remember(textNodes) {
+                    buildAnnotatedString {
+                        textNodes.forEach { treeNode ->
+                            val text = getTextForAnnotation(treeNode) ?: ""
+                            treeNode.node?.attributes?.find {
+                                it.name == attrSpanStyle || it.name == attrParagraphStyle
+                            }?.let {
+                                when (it.name) {
+                                    attrSpanStyle -> {
+                                        val spanStyle = spanStyleFromString(it.value)
+                                        withStyle(style = spanStyle) { append(text) }
+                                    }
+
+                                    attrParagraphStyle -> {
+                                        val paragraphStyle = paragraphStyleFromString(it.value)
+                                        withStyle(style = paragraphStyle) { append(text) }
+                                    }
+                                }
+                            } ?: run {
+                                append(text)
+                            }
+                        }
+                    }
+                }
+                Text(text = annotatedText)
+            }
         }
-        Text(
-            text = text,
-            color = color,
-            modifier = props.commonProps.modifier,
-            fontSize = fontSize,
-            fontStyle = fontStyle,
-            fontWeight = fontWeight,
-            fontFamily = fontFamily,
-            letterSpacing = letterSpacing,
-            textAlign = textAlign,
-            lineHeight = lineHeight,
-            overflow = overflow,
-            softWrap = softWrap,
-            maxLines = maxLines,
-            minLines = minLines,
-            textDecoration = textDecoration,
-            style = textStyleFromString(style),
-        )
     }
 
-    private fun getText(composableNode: ComposableTreeNode?, textValue: String): String {
+    private fun getTextForAnnotation(treeNode: ComposableTreeNode): String? {
+        return getText(treeNode) // trying to get the text from the child
+        // otherwise, get from the text property
+            ?: treeNode.node?.attributes?.find { it.name == CoreNodeElement.TEXT_ATTRIBUTE }?.value
+    }
+
+    private fun getText(composableNode: ComposableTreeNode?): String? {
         // The first (and only) children node of a Text element must be the text itself.
         // It is contained in a attribute called "text"
         val childrenNodes = composableNode?.children
-        var text = textValue
         if (childrenNodes?.isNotEmpty() == true) {
             val firstNode = childrenNodes.first().node
             if (firstNode?.attributes?.isNotEmpty() == true) {
                 val firstAttr = firstNode.attributes.first()
                 if (firstAttr.name == CoreNodeElement.TEXT_ATTRIBUTE) {
-                    text = firstAttr.value
+                    return firstAttr.value
                 }
             }
         }
-        return text
+        return null
     }
 
     @Stable
@@ -246,7 +291,7 @@ internal class TextView private constructor(props: Properties) :
          */
         private fun fontSize(props: Properties, fontSize: String): Properties {
             return if (fontSize.isNotEmptyAndIsDigitsOnly()) {
-                props.copy(fontSize = fontSizeFromString(fontSize))
+                props.copy(fontSize = textUnitFromString(fontSize))
             } else props
         }
 
@@ -287,7 +332,7 @@ internal class TextView private constructor(props: Properties) :
          */
         private fun letterSpacing(props: Properties, letterSpacing: String): Properties {
             return if (letterSpacing.isNotEmptyAndIsDigitsOnly()) {
-                props.copy(letterSpacing = letterSpacingFromString(letterSpacing))
+                props.copy(letterSpacing = textUnitFromString(letterSpacing))
             } else props
         }
 
@@ -325,7 +370,7 @@ internal class TextView private constructor(props: Properties) :
          */
         private fun lineHeight(props: Properties, lineHeight: String): Properties {
             return if (lineHeight.isNotEmptyAndIsDigitsOnly()) {
-                props.copy(lineHeight = lineHeightFromString(lineHeight))
+                props.copy(lineHeight = textUnitFromString(lineHeight))
             } else props
         }
 

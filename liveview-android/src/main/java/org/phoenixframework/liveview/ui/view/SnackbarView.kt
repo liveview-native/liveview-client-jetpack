@@ -335,6 +335,7 @@ internal class SnackbarView private constructor(props: Properties) :
                     snackbarDuration = when (duration) {
                         SnackbarDurationValues.indefinite -> SnackbarDuration.Indefinite
                         SnackbarDurationValues.long -> SnackbarDuration.Long
+                        SnackbarDurationValues.short -> SnackbarDuration.Short
                         else -> SnackbarDuration.Short
                     }
                 )
