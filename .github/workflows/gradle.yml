@@ -28,9 +28,9 @@ jobs:
     - name: test
       run: |
         # Create screenshots
-        ./gradlew liveview-android:recordRoborazziDebug -PisRecordingShotTest=true --stacktrace
+        ./gradlew client:recordRoborazziDebug -PisRecordingShotTest=true --stacktrace
     - name: verify test
       id: verify-test
       run: |
         # If there is a difference between the screenshots, the test will fail.
-        ./gradlew liveview-android:verifyRoborazziDebug -PisRecordingShotTest=false --stacktrace
+        ./gradlew client:verifyRoborazziDebug -PisRecordingShotTest=false --stacktrace
