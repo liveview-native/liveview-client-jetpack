@@ -14,7 +14,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrFontFamily
@@ -43,6 +42,7 @@ import org.phoenixframework.liveview.data.constants.TextAlignValues
 import org.phoenixframework.liveview.data.constants.TextDecorationValues.lineThrough
 import org.phoenixframework.liveview.data.constants.TextDecorationValues.underline
 import org.phoenixframework.liveview.data.constants.TextOverflowValues
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.phoenixframework.liveview.ui.theme.fontFamilyFromString
 
 class TextShotTest : LiveViewComposableTest() {

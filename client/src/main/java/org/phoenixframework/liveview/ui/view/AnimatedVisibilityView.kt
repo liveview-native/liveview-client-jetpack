@@ -62,8 +62,7 @@ internal class AnimatedVisibilityView private constructor(props: Properties) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent
     ) {
-        val scope = props.scope
-        when (scope) {
+        when (val scope = props.scope) {
             is RowScope -> {
                 scope.AnimatedVisibility(
                     visible = props.visible,

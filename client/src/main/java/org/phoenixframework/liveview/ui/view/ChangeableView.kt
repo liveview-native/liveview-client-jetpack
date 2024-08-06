@@ -10,12 +10,12 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxDebounce
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxThrottle
+import org.phoenixframework.liveview.domain.extensions.throttleLatest
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
-import org.phoenixframework.liveview.foundation.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.throttleLatest
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
+import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 
 /**
  * Common class for ComposableViews which the user can change the component value to be displayed.

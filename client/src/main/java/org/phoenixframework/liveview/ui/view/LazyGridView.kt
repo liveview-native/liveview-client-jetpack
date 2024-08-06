@@ -20,10 +20,10 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrType
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
 import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.data.constants.LazyGridColumnTypeValues
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.data.mappers.JsonParser
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
-import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView

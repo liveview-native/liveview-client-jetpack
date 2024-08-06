@@ -55,7 +55,6 @@ import androidx.compose.material.icons.twotone.Image
 import androidx.compose.material.icons.twotone.Share
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Color
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
 import org.phoenixframework.liveview.data.constants.Attrs.attrTint
@@ -72,6 +71,7 @@ import org.phoenixframework.liveview.data.constants.IconPrefixValues.outlined
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.rounded
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.sharp
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.twoTone
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class IconShotTest : LiveViewComposableTest() {
 

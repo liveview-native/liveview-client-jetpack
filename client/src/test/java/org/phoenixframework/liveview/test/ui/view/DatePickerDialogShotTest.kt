@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrInitialSelectedDateMillis
@@ -52,6 +51,7 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.White
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.data.constants.Templates.templateConfirmButton
 import org.phoenixframework.liveview.data.constants.Templates.templateDismissButton
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)

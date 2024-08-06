@@ -8,7 +8,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.phoenixframework.liveview.test.base.BaseComposableModifierTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,6 +19,7 @@ import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.EVENT_TYPE_DOUBLE_CLICK
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.EVENT_TYPE_LONG_CLICK
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
+import org.phoenixframework.liveview.test.base.BaseComposableModifierTest
 
 @RunWith(AndroidJUnit4::class)
 class ActionsTest : BaseComposableModifierTest() {

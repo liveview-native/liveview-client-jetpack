@@ -25,12 +25,12 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabled
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledIndeterminateColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedColor
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
-import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
-import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.disabledContentAlpha
+import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.DISABLED_CONTENT_ALPHA
 
 /**
  * Material Design checkbox.
@@ -93,15 +93,16 @@ internal class CheckBoxView private constructor(props: Properties) :
                 checkmarkColor = colors[colorAttrCheckmarkColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onPrimary,
                 disabledCheckedColor = colors[colorAttrDisabledCheckedColor]?.toColor()
-                    ?: colors[colorAttrCheckedColor]?.toColor()?.copy(alpha = disabledContentAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    ?: colors[colorAttrCheckedColor]?.toColor()
+                        ?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                 disabledUncheckedColor = colors[colorAttrDisabledUncheckedColor]?.toColor()
                     ?: colors[colorAttrUncheckedColor]?.toColor()
-                        ?.copy(alpha = disabledContentAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                        ?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                 disabledIndeterminateColor = colors[colorAttrDisabledIndeterminateColor]?.toColor()
                     ?: colors[colorAttrDisabledCheckedColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
             )
         }
     }

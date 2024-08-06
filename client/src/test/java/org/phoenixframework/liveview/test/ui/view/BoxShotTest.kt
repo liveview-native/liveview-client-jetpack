@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues.bottomEnd
 import org.phoenixframework.liveview.data.constants.AlignmentValues.bottomStart
@@ -42,6 +41,7 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.data.constants.TextAlignValues
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class BoxShotTest : LiveViewComposableTest() {
     @Test

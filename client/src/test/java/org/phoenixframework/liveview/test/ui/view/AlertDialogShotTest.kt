@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrIconContentColor
@@ -40,6 +39,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateConfirmBut
 import org.phoenixframework.liveview.data.constants.Templates.templateDismissButton
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 @OptIn(ExperimentalMaterial3Api::class)
 class AlertDialogShotTest : LiveViewComposableTest() {

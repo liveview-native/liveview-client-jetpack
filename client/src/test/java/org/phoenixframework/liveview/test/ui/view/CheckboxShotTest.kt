@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.ui.graphics.Color
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -16,6 +15,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabled
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedColor
 import org.phoenixframework.liveview.data.constants.ComposableTypes.checkbox
 import org.phoenixframework.liveview.data.constants.ComposableTypes.row
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class CheckboxShotTest : LiveViewComposableTest() {
     @Test

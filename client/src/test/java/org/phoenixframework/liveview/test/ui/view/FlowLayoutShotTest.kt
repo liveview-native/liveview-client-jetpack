@@ -10,7 +10,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
 import org.phoenixframework.liveview.data.constants.Attrs.attrMaxItemsInEachColumn
@@ -26,6 +25,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMa
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 @OptIn(ExperimentalLayoutApi::class)
 class FlowLayoutShotTest : LiveViewComposableTest() {

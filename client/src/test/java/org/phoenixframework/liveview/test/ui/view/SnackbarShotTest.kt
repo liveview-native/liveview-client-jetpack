@@ -11,7 +11,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrActionColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrActionContentColor
@@ -27,6 +26,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrWithDismissAction
 import org.phoenixframework.liveview.data.constants.ComposableTypes.scaffold
 import org.phoenixframework.liveview.data.constants.ComposableTypes.snackbar
 import org.phoenixframework.liveview.data.constants.ShapeValues.circle
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class SnackbarShotTest : LiveViewComposableTest() {
     @Test

@@ -15,12 +15,10 @@ import com.github.takahirom.roborazzi.captureScreenRoboImage
 import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
-import org.koin.test.KoinTest
 import org.phoenixframework.liveview.BuildConfig.IS_RECORDING_SHOT_TEST
 import org.phoenixframework.liveview.LiveViewJetpack
 import org.phoenixframework.liveview.foundation.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
-import org.phoenixframework.liveview.foundation.ui.modifiers.BaseModifiersParser
 import org.phoenixframework.liveview.test.R
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.LiveViewNativeTheme
@@ -33,10 +31,9 @@ import org.robolectric.annotation.GraphicsMode
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(qualifiers = RobolectricDeviceQualifiers.Pixel5)
 @OptIn(ExperimentalRoborazziApi::class)
-abstract class LiveViewComposableTest : BaseTest(), KoinTest {
+abstract class LiveViewComposableTest : BaseTest() {
 
     private val isRecording = IS_RECORDING_SHOT_TEST
-    protected val modifiersParser: BaseModifiersParser = LiveViewJetpack.getModifiersParser()
 
     @Before
     fun setup() {
@@ -48,7 +45,7 @@ abstract class LiveViewComposableTest : BaseTest(), KoinTest {
     @After
     fun tearDown() {
         if (!isRecording) {
-            LiveViewJetpack.getModifiersParser().clearCacheTable()
+            modifiersParser.clearCacheTable()
         }
     }
 

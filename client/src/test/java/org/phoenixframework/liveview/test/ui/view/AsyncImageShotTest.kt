@@ -11,17 +11,17 @@ import coil.ImageLoader
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
 import coil.test.FakeImageLoaderEngine
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Before
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlpha
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.Attrs.attrUrl
-import org.phoenixframework.liveview.data.constants.ContentScaleValues.fillHeight
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
 import org.phoenixframework.liveview.data.constants.ComposableTypes.asyncImage
 import org.phoenixframework.liveview.data.constants.ComposableTypes.box
+import org.phoenixframework.liveview.data.constants.ContentScaleValues.fillHeight
+import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class AsyncImageShotTest : LiveViewComposableTest() {
     private val url = "https://assets.dockyard.com/images/narwin-home-flare.jpg"

@@ -13,7 +13,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
@@ -68,6 +67,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateSuffix
 import org.phoenixframework.liveview.data.constants.Templates.templateSupportingText
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
 import org.phoenixframework.liveview.data.constants.VisualTransformationValues
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class TextFieldShotTest : LiveViewComposableTest() {
     @Test

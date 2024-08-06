@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.phoenixframework.liveview.test.base.ModifierBaseTest
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.phoenixframework.liveview.test.base.ModifierBaseTest
 
 @RunWith(AndroidJUnit4::class)
 class PositionTest : ModifierBaseTest() {

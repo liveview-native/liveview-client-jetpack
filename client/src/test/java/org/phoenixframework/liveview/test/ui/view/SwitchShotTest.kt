@@ -11,7 +11,6 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -41,6 +40,7 @@ import org.phoenixframework.liveview.data.constants.ComposableTypes.switch
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.Templates.templateThumb
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class SwitchShotTest : LiveViewComposableTest() {
     @Test

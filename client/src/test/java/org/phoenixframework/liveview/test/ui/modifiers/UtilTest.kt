@@ -60,6 +60,8 @@ import org.phoenixframework.liveview.data.constants.AlignmentValues
 import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter
+import org.phoenixframework.liveview.stylesheet.ElixirParser.TupleExprContext
+import org.phoenixframework.liveview.test.base.ModifierBaseTest
 import org.phoenixframework.liveview.ui.modifiers.alignmentFromArgument
 import org.phoenixframework.liveview.ui.modifiers.borderStrokeFromArgument
 import org.phoenixframework.liveview.ui.modifiers.brushFromArgument
@@ -86,8 +88,6 @@ import org.phoenixframework.liveview.ui.modifiers.toggleableStateFromArgument
 import org.phoenixframework.liveview.ui.modifiers.transformOriginFromArgument
 import org.phoenixframework.liveview.ui.modifiers.verticalAlignmentFromArgument
 import org.phoenixframework.liveview.ui.modifiers.windowInsetsFromArgument
-import org.phoenixframework.liveview.stylesheet.ElixirParser.TupleExprContext
-import org.phoenixframework.liveview.test.base.ModifierBaseTest
 
 @RunWith(AndroidJUnit4::class)
 class UtilTest : ModifierBaseTest() {

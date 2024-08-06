@@ -7,7 +7,6 @@ import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TimePickerLayoutType
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.ui.graphics.Color
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrInitialHour
@@ -42,6 +41,7 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.SystemColorValues.White
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.data.constants.TimePickerLayoutTypeValues
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.robolectric.annotation.Config
 
 @OptIn(ExperimentalMaterial3Api::class)

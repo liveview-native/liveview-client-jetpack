@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.data.constants.ComposableTypes.box
@@ -54,6 +53,7 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.Transparen
 import org.phoenixframework.liveview.data.constants.SystemColorValues.White
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.data.constants.ThemeColorsValues
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class ComposableViewShotTest : LiveViewComposableTest() {
 

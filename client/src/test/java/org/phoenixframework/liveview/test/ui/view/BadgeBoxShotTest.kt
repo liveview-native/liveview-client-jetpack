@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
@@ -29,6 +28,7 @@ import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.Templates.templateBadge
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class BadgeBoxShotTest : LiveViewComposableTest() {
 

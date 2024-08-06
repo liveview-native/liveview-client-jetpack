@@ -11,7 +11,6 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
@@ -25,6 +24,7 @@ import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeIntrinsicSize
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class DividerShotTest : LiveViewComposableTest() {
 

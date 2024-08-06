@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
@@ -30,6 +29,7 @@ import org.phoenixframework.liveview.data.constants.ComposableTypes.outlinedButt
 import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 import org.phoenixframework.liveview.data.constants.ComposableTypes.textButton
 import org.phoenixframework.liveview.data.constants.ShapeValues.circle
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class ButtonShotTest : LiveViewComposableTest() {
 

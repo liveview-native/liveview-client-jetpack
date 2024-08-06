@@ -7,7 +7,6 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.ui.Modifier
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrExpanded
 import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
@@ -21,6 +20,7 @@ import org.phoenixframework.liveview.data.constants.ComposableTypes.exposedDropd
 import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 import org.phoenixframework.liveview.data.constants.ComposableTypes.textField
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMenuAnchor
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class ExposedDropdownMenuBoxShotTest : LiveViewComposableTest() {
     @OptIn(ExperimentalMaterial3Api::class)

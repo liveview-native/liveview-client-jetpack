@@ -74,15 +74,15 @@ dependencies {
     implementation(libs.io.coil.kt.coil.compose)
     implementation(libs.io.coil.kt.coil.svg)
 
-    // These dependencies are exported to consumers, that is to say found on their compile classpath.
-    api(libs.androidx.core.ktx)
-    api(libs.androidx.lifecycle.runtime.ktx)
-    api(libs.androidx.navigation.compose)
-
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
+
+    // These dependencies are exported to consumers, that is to say found on their compile classpath.
+    api(libs.androidx.core.ktx)
+    api(libs.androidx.lifecycle.runtime.ktx)
+    api(libs.androidx.navigation.compose)
 
     // Test dependencies
     testImplementation(libs.junit)
@@ -130,7 +130,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 //  `testImplementation "com.github.liveview-native:liveview-native-core-jetpack-host:<version>"`
 // Configuring Java Lib Path in order to find the native library before running the Unit Tests
 tasks.withType<Test>().configureEach {
-        doFirst {
+    doFirst {
         val jniLibsForDesktopDir = File("${projectDir}/src/test/jniLibs")
         val archTypesSubdirs = jniLibsForDesktopDir.listFiles() ?: emptyArray()
         for (dir in archTypesSubdirs) {

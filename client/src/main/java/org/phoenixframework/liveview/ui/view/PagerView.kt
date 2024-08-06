@@ -1,6 +1,5 @@
 package org.phoenixframework.liveview.ui.view
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -72,7 +71,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  * </Column>
  * ```
  */
-@OptIn(ExperimentalFoundationApi::class, FlowPreview::class)
+@OptIn(FlowPreview::class)
 internal class PagerView private constructor(props: Properties) :
     ComposableView<PagerView.Properties>(props) {
 
@@ -196,7 +195,7 @@ internal class PagerView private constructor(props: Properties) :
         ): PagerView =
             PagerView(attributes.fold(Properties()) { props, attribute ->
                 when (attribute.name) {
-                    attrBeyondViewportPageCount -> beyondBoundsPageCount(props, attribute.value)
+                    attrBeyondViewportPageCount -> beyondViewportPageCount(props, attribute.value)
                     attrContentPadding -> contentPadding(props, attribute.value)
                     attrCurrentPage -> currentPage(props, attribute.value)
                     attrHorizontalAlignment -> horizontalAlignment(props, attribute.value)
@@ -236,7 +235,7 @@ internal class PagerView private constructor(props: Properties) :
          * @param count int value representing the number of pages to compose and layout before and
          * after the list of visible pages.
          */
-        private fun beyondBoundsPageCount(props: Properties, count: String): Properties {
+        private fun beyondViewportPageCount(props: Properties, count: String): Properties {
             return props.copy(beyondViewportPageCount = count.toIntOrNull())
         }
 

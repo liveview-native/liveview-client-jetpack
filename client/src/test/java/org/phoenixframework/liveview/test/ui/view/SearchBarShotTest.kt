@@ -14,7 +14,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrActive
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -47,6 +46,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateContent
 import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
 import org.phoenixframework.liveview.data.constants.Templates.templatePlaceholder
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 @OptIn(ExperimentalMaterial3Api::class)
 class SearchBarShotTest : LiveViewComposableTest() {

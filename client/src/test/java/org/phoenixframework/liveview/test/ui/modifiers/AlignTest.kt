@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.phoenixframework.liveview.test.base.BaseComposableModifierTest
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.phoenixframework.liveview.test.base.BaseComposableModifierTest
 
 @RunWith(AndroidJUnit4::class)
 class AlignTest : BaseComposableModifierTest() {

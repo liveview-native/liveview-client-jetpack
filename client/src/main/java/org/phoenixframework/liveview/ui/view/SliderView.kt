@@ -39,14 +39,14 @@ import org.phoenixframework.liveview.data.constants.Templates.templateEndThumb
 import org.phoenixframework.liveview.data.constants.Templates.templateStartThumb
 import org.phoenixframework.liveview.data.constants.Templates.templateThumb
 import org.phoenixframework.liveview.data.constants.Templates.templateTrack
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
-import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
-import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.disabledContainerAlpha
-import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.disabledContentAlpha
+import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.DISABLED_CONTAINER_ALPHA
+import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.DISABLED_CONTENT_ALPHA
 
 /**
  * Material Design slider.
@@ -277,26 +277,26 @@ internal class SliderView private constructor(props: Properties) :
                     ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
                 disabledThumbColor = sliderColors[colorAttrDisabledThumbColor]?.toColor()
                     ?: sliderColors[colorAttrThumbColor]?.toColor()
-                        ?.copy(alpha = disabledContentAlpha)
+                        ?.copy(alpha = DISABLED_CONTENT_ALPHA)
                         ?.compositeOver(MaterialTheme.colorScheme.surface)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA)
                         .compositeOver(MaterialTheme.colorScheme.surface),
                 disabledActiveTrackColor = sliderColors[colorAttrDisabledActiveTrackColor]?.toColor()
                     ?: sliderColors[colorAttrActiveTrackColor]?.toColor()
-                        ?.copy(alpha = disabledContentAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                        ?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                 disabledActiveTickColor = sliderColors[colorAttrDisabledActiveTickColor]?.toColor()
                     ?: sliderColors[colorAttrActiveTickColor]?.toColor()
-                        ?.copy(alpha = disabledContentAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                        ?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                 disabledInactiveTrackColor = sliderColors[colorAttrDisabledInactiveTrackColor]?.toColor()
                     ?: sliderColors[colorAttrInactiveTrackColor]?.toColor()
-                        ?.copy(alpha = disabledContainerAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContainerAlpha),
+                        ?.copy(alpha = DISABLED_CONTAINER_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTAINER_ALPHA),
                 disabledInactiveTickColor = sliderColors[colorAttrDisabledInactiveTickColor]?.toColor()
                     ?: sliderColors[colorAttrInactiveTickColor]?.toColor()
-                        ?.copy(alpha = disabledContentAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                        ?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
             )
         }
     }

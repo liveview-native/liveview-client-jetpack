@@ -9,7 +9,6 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
@@ -23,15 +22,16 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselect
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedIconColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedTextColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.data.constants.ComposableTypes.modalDrawerSheet
+import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationDrawerItem
+import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredFilled
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
 import org.phoenixframework.liveview.data.constants.Templates.templateBadge
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
-import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
-import org.phoenixframework.liveview.data.constants.ComposableTypes.modalDrawerSheet
-import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationDrawerItem
-import org.phoenixframework.liveview.data.constants.ComposableTypes.text
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class NavigationDrawerItemShotTest : LiveViewComposableTest() {
     @Test

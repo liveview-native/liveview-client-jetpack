@@ -8,7 +8,6 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
@@ -21,6 +20,7 @@ import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues.ce
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
 import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.centerVertically
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class SpacerShotTest : LiveViewComposableTest() {
     @Test

@@ -5,15 +5,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.runner.RunWith
-import org.koin.test.KoinTest
-import org.phoenixframework.liveview.LiveViewJetpack
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
-import org.phoenixframework.liveview.foundation.ui.modifiers.BaseModifiersParser
 
 @RunWith(AndroidJUnit4::class)
-abstract class ModifierBaseTest : BaseTest(), KoinTest {
-
-    protected val modifiersParser: BaseModifiersParser = LiveViewJetpack.getModifiersParser()
+abstract class ModifierBaseTest : BaseTest() {
 
     @Before
     fun clearStyleCacheTable() {

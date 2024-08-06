@@ -9,7 +9,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
@@ -23,6 +22,7 @@ import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationBa
 import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class NavigationBarShotTest : LiveViewComposableTest() {
     @Test

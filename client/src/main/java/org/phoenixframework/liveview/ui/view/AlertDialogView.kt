@@ -19,9 +19,9 @@ import org.phoenixframework.liveview.data.constants.Templates.templateConfirmBut
 import org.phoenixframework.liveview.data.constants.Templates.templateDismissButton
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
-import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView

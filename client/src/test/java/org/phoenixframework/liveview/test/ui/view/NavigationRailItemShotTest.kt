@@ -11,7 +11,6 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlwaysShowLabel
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -38,6 +37,7 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.White
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class NavigationRailItemShotTest : LiveViewComposableTest() {
     @Test

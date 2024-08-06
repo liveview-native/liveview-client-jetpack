@@ -28,10 +28,10 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrMessage
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrWithDismissAction
 import org.phoenixframework.liveview.data.constants.SnackbarDurationValues
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.data.core.CoreNodeElement
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
-import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
@@ -168,7 +168,7 @@ internal class SnackbarView private constructor(props: Properties) :
 
     companion object {
         fun visualsFromNode(node: CoreNodeElement?): Visuals {
-            return SnackbarView.Factory.handleAttrs(
+            return Factory.handleAttrs(
                 node?.attributes ?: persistentListOf(),
                 null,
                 null

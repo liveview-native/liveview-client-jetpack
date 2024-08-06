@@ -10,10 +10,10 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.phoenixframework.liveview.test.base.ModifierBaseTest
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.phoenixframework.liveview.test.base.ModifierBaseTest
 
 @RunWith(AndroidJUnit4::class)
 class DrawingTest : ModifierBaseTest() {

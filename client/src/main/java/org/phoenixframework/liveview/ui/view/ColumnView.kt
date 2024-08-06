@@ -9,14 +9,14 @@ import androidx.compose.ui.Alignment
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
+import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
+import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
-import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
 /**
@@ -96,7 +96,10 @@ internal class ColumnView private constructor(props: Properties) :
          * An int value is also supported, which will be used to determine the space between the
          * items.
          */
-        private fun verticalArrangement(props: Properties, verticalArrangement: String): Properties {
+        private fun verticalArrangement(
+            props: Properties,
+            verticalArrangement: String
+        ): Properties {
             return props.copy(
                 verticalArrangement = verticalArrangementFromString(
                     verticalArrangement
@@ -113,7 +116,10 @@ internal class ColumnView private constructor(props: Properties) :
          * @param horizontalAlignment the horizontal alignment of the column's children. See the
          * supported values at [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
          */
-        private fun horizontalAlignment(props: Properties, horizontalAlignment: String): Properties {
+        private fun horizontalAlignment(
+            props: Properties,
+            horizontalAlignment: String
+        ): Properties {
             return props.copy(
                 horizontalAlignment = horizontalAlignmentFromString(
                     horizontalAlignment

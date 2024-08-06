@@ -24,18 +24,18 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTextColo
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrTrailingIconColor
 import org.phoenixframework.liveview.data.constants.Templates.templateLeadingIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingIcon
+import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
+import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.view.onClickFromString
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
-import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.disabledContentAlpha
+import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.DISABLED_CONTENT_ALPHA
 
 /**
  * Material Design dropdown menu item.
@@ -116,16 +116,16 @@ internal class DropdownMenuItemView private constructor(props: Properties) :
                 trailingIconColor = colors[colorAttrTrailingIconColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 disabledTextColor = colors[colorAttrDisabledTextColor]?.toColor()
-                    ?: colors[colorAttrTextColor]?.toColor()?.copy(alpha = disabledContentAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    ?: colors[colorAttrTextColor]?.toColor()?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                 disabledLeadingIconColor = colors[colorAttrDisabledLeadingIconColor]?.toColor()
                     ?: colors[colorAttrLeadingIconColor]?.toColor()
-                        ?.copy(alpha = disabledContentAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                        ?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                 disabledTrailingIconColor = colors[colorAttrDisabledTrailingIconColor]?.toColor()
                     ?: colors[colorAttrTrailingIconColor]?.toColor()
-                        ?.copy(alpha = disabledContentAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                        ?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
             )
         }
     }

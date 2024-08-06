@@ -112,8 +112,8 @@ import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperti
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.foundation.ui.view.onClickFromString
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
-import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.disabledContainerAlpha
-import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.disabledContentAlpha
+import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.DISABLED_CONTAINER_ALPHA
+import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.DISABLED_CONTENT_ALPHA
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 import org.phoenixframework.liveview.ui.theme.textStyleFromString
 
@@ -342,7 +342,7 @@ internal class TextFieldView private constructor(props: Properties) :
                 unfocusedTextColor = textFieldColors[colorAttrUnfocusedTextColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurface,
                 disabledTextColor = textFieldColors[colorAttrDisabledTextColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                 errorTextColor = textFieldColors[colorAttrErrorTextColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurface,
                 focusedContainerColor = textFieldColors[colorAttrFocusedContainerColor]?.toColor()
@@ -368,7 +368,7 @@ internal class TextFieldView private constructor(props: Properties) :
                 unfocusedBorderColor = textFieldColors[colorAttrUnfocusedBorderColor]?.toColor()
                     ?: MaterialTheme.colorScheme.outline,
                 disabledBorderColor = textFieldColors[colorAttrDisabledBorderColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContainerAlpha),
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTAINER_ALPHA),
                 errorBorderColor = textFieldColors[colorAttrErrorBorderColor]?.toColor()
                     ?: MaterialTheme.colorScheme.error,
                 focusedLeadingIconColor = textFieldColors[colorAttrFocusedLeadingIconColor]?.toColor()
@@ -376,7 +376,7 @@ internal class TextFieldView private constructor(props: Properties) :
                 unfocusedLeadingIconColor = textFieldColors[colorAttrUnfocusedLeadingIconColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 disabledLeadingIconColor = textFieldColors[colorAttrDisabledLeadingIconColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                 errorLeadingIconColor = textFieldColors[colorAttrErrorLeadingIconColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 focusedTrailingIconColor = textFieldColors[colorAttrFocusedTrailingIconColor]?.toColor()
@@ -384,7 +384,7 @@ internal class TextFieldView private constructor(props: Properties) :
                 unfocusedTrailingIconColor = textFieldColors[colorAttrUnfocusedTrailingIconColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 disabledTrailingIconColor = textFieldColors[colorAttrDisabledTrailingIconColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                 errorTrailingIconColor = textFieldColors[colorAttrErrorTrailingIconColor]?.toColor()
                     ?: MaterialTheme.colorScheme.error,
                 focusedLabelColor = textFieldColors[colorAttrFocusedLabelColor]?.toColor()
@@ -392,7 +392,7 @@ internal class TextFieldView private constructor(props: Properties) :
                 unfocusedLabelColor = textFieldColors[colorAttrUnfocusedLabelColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 disabledLabelColor = textFieldColors[colorAttrDisabledLabelColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                 errorLabelColor = textFieldColors[colorAttrErrorLabelColor]?.toColor()
                     ?: MaterialTheme.colorScheme.error,
                 focusedPlaceholderColor = textFieldColors[colorAttrFocusedPlaceholderColor]?.toColor()
@@ -400,7 +400,7 @@ internal class TextFieldView private constructor(props: Properties) :
                 unfocusedPlaceholderColor = textFieldColors[colorAttrUnfocusedPlaceholderColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 disabledPlaceholderColor = textFieldColors[colorAttrDisabledPlaceholderColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                 errorPlaceholderColor = textFieldColors[colorAttrErrorPlaceholderColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 focusedSupportingTextColor = textFieldColors[colorAttrFocusedSupportingTextColor]?.toColor()
@@ -408,7 +408,7 @@ internal class TextFieldView private constructor(props: Properties) :
                 unfocusedSupportingTextColor = textFieldColors[colorAttrUnfocusedSupportingTextColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 disabledSupportingTextColor = textFieldColors[colorAttrDisabledSupportingTextColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                 errorSupportingTextColor = textFieldColors[colorAttrErrorSupportingTextColor]?.toColor()
                     ?: MaterialTheme.colorScheme.error,
                 focusedPrefixColor = textFieldColors[colorAttrFocusedPrefixColor]?.toColor()
@@ -416,7 +416,7 @@ internal class TextFieldView private constructor(props: Properties) :
                 unfocusedPrefixColor = textFieldColors[colorAttrUnfocusedPrefixColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 disabledPrefixColor = textFieldColors[colorAttrDisabledPrefixColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = disabledContentAlpha),
+                    ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = DISABLED_CONTENT_ALPHA),
                 errorPrefixColor = textFieldColors[colorAttrErrorPrefixColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 focusedSuffixColor = textFieldColors[colorAttrFocusedSuffixColor]?.toColor()
@@ -424,7 +424,7 @@ internal class TextFieldView private constructor(props: Properties) :
                 unfocusedSuffixColor = textFieldColors[colorAttrUnfocusedSuffixColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 disabledSuffixColor = textFieldColors[colorAttrDisabledSuffixColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = disabledContentAlpha),
+                    ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = DISABLED_CONTENT_ALPHA),
                 errorSuffixColor = textFieldColors[colorAttrErrorSuffixColor]?.toColor()
                     ?: MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -444,7 +444,7 @@ internal class TextFieldView private constructor(props: Properties) :
                     unfocusedTextColor = textFieldColors[colorAttrUnfocusedTextColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurface,
                     disabledTextColor = textFieldColors[colorAttrDisabledTextColor]?.toColor()
-                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                     errorTextColor = textFieldColors[colorAttrErrorTextColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurface,
                     focusedContainerColor = textFieldColors[colorAttrFocusedContainerColor]?.toColor()
@@ -470,7 +470,7 @@ internal class TextFieldView private constructor(props: Properties) :
                     unfocusedIndicatorColor = textFieldColors[colorAttrUnfocusedIndicatorColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledIndicatorColor = textFieldColors[colorAttrDisabledIndicatorColor]?.toColor()
-                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                     errorIndicatorColor = textFieldColors[colorAttrErrorIndicatorColor]?.toColor()
                         ?: MaterialTheme.colorScheme.error,
                     focusedLeadingIconColor = textFieldColors[colorAttrFocusedLeadingIconColor]?.toColor()
@@ -478,7 +478,7 @@ internal class TextFieldView private constructor(props: Properties) :
                     unfocusedLeadingIconColor = textFieldColors[colorAttrUnfocusedLeadingIconColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledLeadingIconColor = textFieldColors[colorAttrDisabledLeadingIconColor]?.toColor()
-                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                     errorLeadingIconColor = textFieldColors[colorAttrErrorLeadingIconColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurfaceVariant,
                     focusedTrailingIconColor = textFieldColors[colorAttrFocusedTrailingIconColor]?.toColor()
@@ -486,7 +486,7 @@ internal class TextFieldView private constructor(props: Properties) :
                     unfocusedTrailingIconColor = textFieldColors[colorAttrUnfocusedTrailingIconColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledTrailingIconColor = textFieldColors[colorAttrDisabledTrailingIconColor]?.toColor()
-                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                     errorTrailingIconColor = textFieldColors[colorAttrErrorTrailingIconColor]?.toColor()
                         ?: MaterialTheme.colorScheme.error,
                     focusedLabelColor = textFieldColors[colorAttrFocusedLabelColor]?.toColor()
@@ -494,7 +494,7 @@ internal class TextFieldView private constructor(props: Properties) :
                     unfocusedLabelColor = textFieldColors[colorAttrUnfocusedLabelColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledLabelColor = textFieldColors[colorAttrDisabledLabelColor]?.toColor()
-                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                     errorLabelColor = textFieldColors[colorAttrErrorLabelColor]?.toColor()
                         ?: MaterialTheme.colorScheme.error,
                     focusedPlaceholderColor = textFieldColors[colorAttrFocusedPlaceholderColor]?.toColor()
@@ -502,7 +502,7 @@ internal class TextFieldView private constructor(props: Properties) :
                     unfocusedPlaceholderColor = textFieldColors[colorAttrUnfocusedPlaceholderColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledPlaceholderColor = textFieldColors[colorAttrDisabledPlaceholderColor]?.toColor()
-                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                     errorPlaceholderColor = textFieldColors[colorAttrErrorPlaceholderColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurfaceVariant,
                     focusedSupportingTextColor = textFieldColors[colorAttrFocusedSupportingTextColor]?.toColor()
@@ -510,7 +510,7 @@ internal class TextFieldView private constructor(props: Properties) :
                     unfocusedSupportingTextColor = textFieldColors[colorAttrUnfocusedSupportingTextColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledSupportingTextColor = textFieldColors[colorAttrDisabledSupportingTextColor]?.toColor()
-                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                        ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
                     errorSupportingTextColor = textFieldColors[colorAttrErrorSupportingTextColor]?.toColor()
                         ?: MaterialTheme.colorScheme.error,
                     focusedPrefixColor = textFieldColors[colorAttrFocusedPrefixColor]?.toColor()
@@ -518,7 +518,7 @@ internal class TextFieldView private constructor(props: Properties) :
                     unfocusedPrefixColor = textFieldColors[colorAttrUnfocusedPrefixColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledPrefixColor = textFieldColors[colorAttrDisabledPrefixColor]?.toColor()
-                        ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = disabledContentAlpha),
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = DISABLED_CONTENT_ALPHA),
                     errorPrefixColor = textFieldColors[colorAttrErrorPrefixColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurfaceVariant,
                     focusedSuffixColor = textFieldColors[colorAttrFocusedSuffixColor]?.toColor()
@@ -526,7 +526,7 @@ internal class TextFieldView private constructor(props: Properties) :
                     unfocusedSuffixColor = textFieldColors[colorAttrUnfocusedSuffixColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurfaceVariant,
                     disabledSuffixColor = textFieldColors[colorAttrDisabledSuffixColor]?.toColor()
-                        ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = disabledContentAlpha),
+                        ?: MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = DISABLED_CONTENT_ALPHA),
                     errorSuffixColor = textFieldColors[colorAttrErrorSuffixColor]?.toColor()
                         ?: MaterialTheme.colorScheme.onSurfaceVariant,
                 )

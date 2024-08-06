@@ -14,7 +14,6 @@ import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -43,7 +42,6 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrYearCont
 import org.phoenixframework.liveview.data.constants.ComposableTypes.datePicker
 import org.phoenixframework.liveview.data.constants.ComposableTypes.dateRangePicker
 import org.phoenixframework.liveview.data.constants.ComposableTypes.text
-import org.phoenixframework.liveview.data.constants.DatePickerDisplayModeValues
 import org.phoenixframework.liveview.data.constants.DatePickerDisplayModeValues.input
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Black
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
@@ -55,6 +53,7 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.White
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.data.constants.Templates.templateHeadline
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,7 +119,7 @@ class DatePickerShotTest : LiveViewComposableTest() {
             template = """  
                 <$datePicker 
                   $attrInitialSelectedDateMillis="$jun9th2023" 
-                  $attrInitialDisplayMode="${DatePickerDisplayModeValues.input}" 
+                  $attrInitialDisplayMode="$input" 
                   $attrShowModeToggle="false" />
                 """
         )
@@ -326,7 +325,7 @@ class DatePickerShotTest : LiveViewComposableTest() {
                 <$dateRangePicker 
                   $attrInitialSelectedStartDateMillis="$jun9th2023" 
                   $attrInitialSelectedEndDateMillis="$jun22nd2023" 
-                  $attrInitialDisplayMode="${DatePickerDisplayModeValues.input}"/>
+                  $attrInitialDisplayMode="$input"/>
                 """
         )
     }
@@ -346,7 +345,7 @@ class DatePickerShotTest : LiveViewComposableTest() {
             template = """  
                 <$dateRangePicker 
                   $attrInitialSelectedStartDateMillis="$jun9th2023" 
-                  $attrInitialDisplayMode="${DatePickerDisplayModeValues.input}" 
+                  $attrInitialDisplayMode="$input" 
                   $attrShowModeToggle="false" />
                 """
         )

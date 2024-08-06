@@ -20,10 +20,10 @@ import androidx.compose.ui.test.swipeRight
 import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Ignore
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
+import org.phoenixframework.liveview.data.constants.Attrs.attrBeyondViewportPageCount
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentPadding
 import org.phoenixframework.liveview.data.constants.Attrs.attrCurrentPage
@@ -44,6 +44,7 @@ import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Green
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class PagerShotTest : LiveViewComposableTest() {
     @Test
@@ -198,7 +199,11 @@ class PagerShotTest : LiveViewComposableTest() {
                     initialPage = 0,
                     pageCount = { 3 },
                 )
-                HorizontalPager(state = state, pageSpacing = 0.dp) { page ->
+                HorizontalPager(
+                    state = state,
+                    pageSpacing = 0.dp,
+                    beyondViewportPageCount = 1,
+                ) { page ->
                     when (page) {
                         0 -> pagerTab(color = Color.Red, text = "Red")
                         1 -> pagerTab(color = Color.Green, text = "Green")
@@ -207,7 +212,11 @@ class PagerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$horizontalPager $attrCurrentPage="0" $attrPageCount="3" $attrPageSpacing="24">
+                <$horizontalPager 
+                    $attrCurrentPage="0" 
+                    $attrPageCount="3" 
+                    $attrPageSpacing="24" 
+                    $attrBeyondViewportPageCount="1">
                   ${pagerTemplateTab(Red, "Red")}
                   ${pagerTemplateTab(Green, "Green")}
                   ${pagerTemplateTab(Blue, "Blue")}
@@ -229,7 +238,11 @@ class PagerShotTest : LiveViewComposableTest() {
                     initialPage = 0,
                     pageCount = { 3 },
                 )
-                HorizontalPager(state = state, reverseLayout = true) { page ->
+                HorizontalPager(
+                    state = state,
+                    reverseLayout = true,
+                    beyondViewportPageCount = 1,
+                ) { page ->
                     when (page) {
                         0 -> pagerTab(Color.Red, "Red")
                         1 -> pagerTab(color = Color.Blue, text = "Blue")
@@ -241,7 +254,8 @@ class PagerShotTest : LiveViewComposableTest() {
                 <$horizontalPager
                   $attrCurrentPage="0"
                   $attrPageCount="3"
-                  $attrReverseLayout="true">
+                  $attrReverseLayout="true"
+                  $attrBeyondViewportPageCount="1">
                   ${pagerTemplateTab(Red, "Red")}
                   ${pagerTemplateTab(Blue, "Blue")}
                   ${pagerTemplateTab(Green, "Green")}
@@ -263,7 +277,7 @@ class PagerShotTest : LiveViewComposableTest() {
                     initialPage = 0,
                     pageCount = { 3 },
                 )
-                VerticalPager(state = state) { page ->
+                VerticalPager(state = state, beyondViewportPageCount = 1) { page ->
                     when (page) {
                         0 -> pagerTab(Color.Red, "Red")
                         1 -> pagerTab(color = Color.Green, text = "Green")
@@ -272,7 +286,10 @@ class PagerShotTest : LiveViewComposableTest() {
                 }
             },
             template = """
-                <$verticalPager $attrCurrentPage="0" $attrPageCount="3">
+                <$verticalPager 
+                    $attrCurrentPage="0" 
+                    $attrPageCount="3" 
+                    $attrBeyondViewportPageCount="1">
                   ${pagerTemplateTab(Red, "Red")}
                   ${pagerTemplateTab(Green, "Green")}
                   ${pagerTemplateTab(Blue, "Blue")}

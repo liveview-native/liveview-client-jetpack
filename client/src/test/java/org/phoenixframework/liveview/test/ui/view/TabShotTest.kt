@@ -11,7 +11,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
@@ -32,6 +31,7 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.Gray
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateText
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class TabShotTest : LiveViewComposableTest() {
     @Test

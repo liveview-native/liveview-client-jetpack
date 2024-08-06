@@ -15,7 +15,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
@@ -28,6 +27,7 @@ import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
 import org.phoenixframework.liveview.data.constants.ComposableTypes.iconButton
 import org.phoenixframework.liveview.data.constants.Templates.templateAction
 import org.phoenixframework.liveview.data.constants.Templates.templateFab
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class BottomAppBarShotTest : LiveViewComposableTest() {
     @Test

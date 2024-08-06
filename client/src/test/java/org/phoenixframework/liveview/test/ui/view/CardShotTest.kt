@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
@@ -31,6 +30,7 @@ import org.phoenixframework.liveview.data.constants.ComposableTypes.row
 import org.phoenixframework.liveview.data.constants.ComposableTypes.text
 import org.phoenixframework.liveview.data.constants.ModifierNames.modifierPadding
 import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class CardShotTest : LiveViewComposableTest() {
 

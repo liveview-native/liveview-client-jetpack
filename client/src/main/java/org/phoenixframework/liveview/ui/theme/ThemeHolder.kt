@@ -227,8 +227,8 @@ class ThemeHolder : BaseThemeHolder() {
     }
 
     companion object {
-        val disabledContainerAlpha = .12f
-        val disabledContentAlpha = .38f
+        const val DISABLED_CONTAINER_ALPHA = .12f
+        const val DISABLED_CONTENT_ALPHA = .38f
 
         val defaultColorsDark =
             darkColorScheme(

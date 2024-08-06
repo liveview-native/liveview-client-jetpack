@@ -27,18 +27,18 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContaine
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrContentColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContainerColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledContentColor
+import org.phoenixframework.liveview.data.constants.ComposableTypes
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
+import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
-import org.phoenixframework.liveview.data.constants.ComposableTypes
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
-import org.phoenixframework.liveview.domain.extensions.toColor
-import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.view.onClickFromString
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
-import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.disabledContentAlpha
+import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.DISABLED_CONTENT_ALPHA
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
 /**
@@ -166,7 +166,7 @@ internal class IconButtonView private constructor(props: Properties) :
                     ?: Color.Transparent,
                 disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
                     ?: (colors[colorAttrContentColor]?.toColor() ?: LocalContentColor.current).copy(
-                        alpha = disabledContentAlpha
+                        alpha = DISABLED_CONTENT_ALPHA
                     ),
             )
         }

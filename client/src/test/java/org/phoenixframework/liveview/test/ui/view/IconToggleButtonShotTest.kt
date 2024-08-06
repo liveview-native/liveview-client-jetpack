@@ -21,7 +21,6 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.OutlinedIconToggleButton
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
@@ -50,6 +49,7 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.LightGray
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Magenta
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class IconToggleButtonShotTest : LiveViewComposableTest() {
 

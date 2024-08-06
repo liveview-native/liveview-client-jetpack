@@ -10,7 +10,6 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
@@ -18,14 +17,15 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrFontSize
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
 import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
 import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
-import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
-import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
-import org.phoenixframework.liveview.data.constants.Templates.templateHeader
-import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
 import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationRail
 import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationRailItem
 import org.phoenixframework.liveview.data.constants.ComposableTypes.text
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Blue
+import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.data.constants.Templates.templateHeader
+import org.phoenixframework.liveview.data.constants.Templates.templateIcon
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.robolectric.annotation.Config
 
 @Config(qualifiers = "xlarge-land")

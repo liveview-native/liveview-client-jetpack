@@ -24,11 +24,11 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
 import org.phoenixframework.liveview.data.constants.Attrs.attrShadowElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrShape
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
-import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
-import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
+import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
@@ -223,7 +223,7 @@ internal class SurfaceView private constructor(props: Properties) :
                 attrEnabled -> enabled(props, attribute.value)
                 attrPhxClick -> onClick(props, attribute.value)
                 attrPhxChange -> onChange(props, attribute.value)
-                attrSelected -> enabled(props, attribute.value)
+                attrSelected -> selected(props, attribute.value)
                 attrShadowElevation -> shadowElevation(props, attribute.value)
                 attrShape -> shape(props, attribute.value)
                 attrTonalElevation -> tonalElevation(props, attribute.value)

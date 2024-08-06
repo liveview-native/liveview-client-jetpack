@@ -3,9 +3,9 @@ package org.phoenixframework.liveview.test.ui.modifiers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layoutId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.phoenixframework.liveview.test.base.ModifierBaseTest
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.phoenixframework.liveview.test.base.ModifierBaseTest
 
 @RunWith(AndroidJUnit4::class)
 class LayoutTest : ModifierBaseTest() {

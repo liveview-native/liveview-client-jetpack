@@ -1,7 +1,6 @@
 package org.phoenixframework.liveview.ui.modifiers
 
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
@@ -55,7 +54,6 @@ fun Modifier.animateContentSizeFromStyle(
     )
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 fun Modifier.animateEnterExitFromStyle(
     arguments: List<ModifierDataAdapter.ArgumentData>,
     scope: Any?,

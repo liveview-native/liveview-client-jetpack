@@ -3,7 +3,6 @@ package org.phoenixframework.liveview.test.ui.modifiers
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.requestFocus
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.phoenixframework.liveview.test.base.BaseComposableModifierTest
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -12,6 +11,7 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.data.constants.ComposableTypes.column
 import org.phoenixframework.liveview.data.constants.ComposableTypes.textField
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
+import org.phoenixframework.liveview.test.base.BaseComposableModifierTest
 
 @RunWith(AndroidJUnit4::class)
 class FocusTest : BaseComposableModifierTest() {

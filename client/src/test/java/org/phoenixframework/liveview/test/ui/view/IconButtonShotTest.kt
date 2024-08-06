@@ -13,7 +13,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrBorder
 import org.phoenixframework.liveview.data.constants.Attrs.attrColor
@@ -33,6 +32,7 @@ import org.phoenixframework.liveview.data.constants.ComposableTypes.iconButton
 import org.phoenixframework.liveview.data.constants.ComposableTypes.outlinedIconButton
 import org.phoenixframework.liveview.data.constants.ComposableTypes.row
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Magenta
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class IconButtonShotTest : LiveViewComposableTest() {
 

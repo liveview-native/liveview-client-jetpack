@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
@@ -40,6 +39,7 @@ import org.phoenixframework.liveview.data.constants.SystemColorValues.Cyan
 import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.data.constants.Templates.templateDivider
 import org.phoenixframework.liveview.data.constants.Templates.templateText
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class TabRowShotTest : LiveViewComposableTest() {
     @Test

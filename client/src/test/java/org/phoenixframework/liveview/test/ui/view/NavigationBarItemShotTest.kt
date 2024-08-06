@@ -14,7 +14,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrAlwaysShowLabel
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
@@ -38,6 +37,7 @@ import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirrore
 import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class NavigationBarItemShotTest : LiveViewComposableTest() {
     @Test

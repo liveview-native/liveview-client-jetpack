@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
@@ -42,6 +41,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateLeadingCon
 import org.phoenixframework.liveview.data.constants.Templates.templateOverlineContent
 import org.phoenixframework.liveview.data.constants.Templates.templateSupportingContent
 import org.phoenixframework.liveview.data.constants.Templates.templateTrailingContent
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class ListItemShotTest : LiveViewComposableTest() {
     @Test

@@ -13,7 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
@@ -32,6 +31,7 @@ import org.phoenixframework.liveview.data.constants.ShapeValues.circle
 import org.phoenixframework.liveview.data.constants.Templates.templateIcon
 import org.phoenixframework.liveview.data.constants.Templates.templateText
 import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class FloatingActionButtonShotTest : LiveViewComposableTest() {
 

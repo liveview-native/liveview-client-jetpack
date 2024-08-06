@@ -38,14 +38,14 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnchecke
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedThumbColor
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedTrackColor
 import org.phoenixframework.liveview.data.constants.Templates.templateThumb
+import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
-import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
-import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.disabledContainerAlpha
-import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.disabledContentAlpha
+import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.DISABLED_CONTAINER_ALPHA
+import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.DISABLED_CONTENT_ALPHA
 
 /**
  * Material Design Switch.
@@ -124,24 +124,24 @@ internal class SwitchView private constructor(props: Properties) :
                     ?: MaterialTheme.colorScheme.surface.copy(alpha = 1.0f)
                         .compositeOver(MaterialTheme.colorScheme.surface),
                 disabledCheckedTrackColor = colors[colorAttrDisabledCheckedTrackColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContainerAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTAINER_ALPHA)
                         .compositeOver(MaterialTheme.colorScheme.surface),
                 disabledCheckedBorderColor = colors[colorAttrDisabledCheckedBorderColor]?.toColor()
                     ?: Color.Transparent,
                 disabledCheckedIconColor = colors[colorAttrDisabledCheckedIconColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA)
                         .compositeOver(MaterialTheme.colorScheme.surface),
                 disabledUncheckedThumbColor = colors[colorAttrDisabledUncheckedThumbColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA)
                         .compositeOver(MaterialTheme.colorScheme.surface),
                 disabledUncheckedTrackColor = colors[colorAttrDisabledUncheckedTrackColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.surfaceVariant.copy(alpha = disabledContainerAlpha)
+                    ?: MaterialTheme.colorScheme.surfaceVariant.copy(alpha = DISABLED_CONTAINER_ALPHA)
                         .compositeOver(MaterialTheme.colorScheme.surface),
                 disabledUncheckedBorderColor = colors[colorAttrDisabledUncheckedBorderColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContainerAlpha)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTAINER_ALPHA)
                         .compositeOver(MaterialTheme.colorScheme.surface),
                 disabledUncheckedIconColor = colors[colorAttrDisabledUncheckedIconColor]?.toColor()
-                    ?: MaterialTheme.colorScheme.surfaceVariant.copy(alpha = disabledContentAlpha)
+                    ?: MaterialTheme.colorScheme.surfaceVariant.copy(alpha = DISABLED_CONTENT_ALPHA)
                         .compositeOver(MaterialTheme.colorScheme.surface),
             )
         }

@@ -26,12 +26,12 @@ import org.phoenixframework.liveview.data.constants.Attrs.attrSkipPartiallyExpan
 import org.phoenixframework.liveview.data.constants.Attrs.attrTonalElevation
 import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
 import org.phoenixframework.liveview.data.constants.Templates.templateDragHandle
-import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
-import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.domain.extensions.SHEET_VALUE_KEY
 import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.domain.extensions.toColor
 import org.phoenixframework.liveview.domain.extensions.toValue
+import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
+import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
@@ -180,7 +180,10 @@ internal class ModalBottomSheetView private constructor(props: Properties) :
          * @param skipPartiallyExpanded true if the partially expanded state should be skipped,
          * false otherwise.
          */
-        private fun skipPartiallyExpanded(props: Properties, skipPartiallyExpanded: String): Properties {
+        private fun skipPartiallyExpanded(
+            props: Properties,
+            skipPartiallyExpanded: String
+        ): Properties {
             return props.copy(skipPartiallyExpanded = skipPartiallyExpanded.toBoolean())
         }
 

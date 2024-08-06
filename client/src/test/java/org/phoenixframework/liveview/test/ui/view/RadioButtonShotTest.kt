@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.ui.graphics.Color
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.Attrs.attrColors
 import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
@@ -15,6 +14,7 @@ import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelected
 import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedColor
 import org.phoenixframework.liveview.data.constants.ComposableTypes.radioButton
 import org.phoenixframework.liveview.data.constants.ComposableTypes.row
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class RadioButtonShotTest : LiveViewComposableTest() {
     @Test

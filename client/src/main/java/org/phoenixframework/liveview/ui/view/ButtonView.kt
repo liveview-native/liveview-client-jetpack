@@ -50,8 +50,8 @@ import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.foundation.ui.view.onClickFromString
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
-import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.disabledContainerAlpha
-import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.disabledContentAlpha
+import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.DISABLED_CONTAINER_ALPHA
+import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.DISABLED_CONTENT_ALPHA
 import org.phoenixframework.liveview.ui.theme.shapeFromString
 
 /**
@@ -260,11 +260,11 @@ internal class ButtonView private constructor(props: Properties) :
                     ?: MaterialTheme.colorScheme.onPrimary,
                 disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
                     ?: colors[colorAttrContainerColor]?.toColor()
-                        ?.copy(alpha = disabledContainerAlpha)
-                    ?: MaterialTheme.colorScheme.primary.copy(alpha = disabledContainerAlpha),
+                        ?.copy(alpha = DISABLED_CONTAINER_ALPHA)
+                    ?: MaterialTheme.colorScheme.primary.copy(alpha = DISABLED_CONTAINER_ALPHA),
                 disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
-                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = disabledContentAlpha)
-                    ?: MaterialTheme.colorScheme.onPrimary.copy(alpha = disabledContentAlpha),
+                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: MaterialTheme.colorScheme.onPrimary.copy(alpha = DISABLED_CONTENT_ALPHA),
             )
         }
     }
@@ -283,11 +283,11 @@ internal class ButtonView private constructor(props: Properties) :
                     ?: MaterialTheme.colorScheme.primary,
                 disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
                     ?: colors[colorAttrContainerColor]?.toColor()
-                        ?.copy(alpha = disabledContainerAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContainerAlpha),
+                        ?.copy(alpha = DISABLED_CONTAINER_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTAINER_ALPHA),
                 disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
-                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = disabledContentAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
             )
         }
     }
@@ -306,11 +306,11 @@ internal class ButtonView private constructor(props: Properties) :
                     ?: MaterialTheme.colorScheme.onSecondaryContainer,
                 disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
                     ?: colors[colorAttrContainerColor]?.toColor()
-                        ?.copy(alpha = disabledContainerAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContainerAlpha),
+                        ?.copy(alpha = DISABLED_CONTAINER_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTAINER_ALPHA),
                 disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
-                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = disabledContentAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
             )
         }
     }
@@ -328,11 +328,11 @@ internal class ButtonView private constructor(props: Properties) :
                     ?: MaterialTheme.colorScheme.primary,
                 disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
                     ?: colors[colorAttrContainerColor]?.toColor()
-                        ?.copy(alpha = disabledContainerAlpha)
+                        ?.copy(alpha = DISABLED_CONTAINER_ALPHA)
                     ?: Color.Transparent,
                 disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
-                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = disabledContentAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
             )
         }
     }
@@ -350,11 +350,11 @@ internal class ButtonView private constructor(props: Properties) :
                     ?: MaterialTheme.colorScheme.primary,
                 disabledContainerColor = colors[colorAttrDisabledContainerColor]?.toColor()
                     ?: colors[colorAttrContainerColor]?.toColor()
-                        ?.copy(alpha = disabledContainerAlpha)
+                        ?.copy(alpha = DISABLED_CONTAINER_ALPHA)
                     ?: Color.Transparent,
                 disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
-                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = disabledContentAlpha)
-                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = disabledContentAlpha),
+                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
             )
         }
     }

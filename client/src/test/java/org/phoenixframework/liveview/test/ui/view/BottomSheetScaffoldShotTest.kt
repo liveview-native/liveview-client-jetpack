@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 import org.junit.Ignore
 import org.junit.Test
 import org.phoenixframework.liveview.data.constants.AlignmentValues.center
@@ -62,6 +61,7 @@ import org.phoenixframework.liveview.data.constants.Templates.templateDragHandle
 import org.phoenixframework.liveview.data.constants.Templates.templateSheetContent
 import org.phoenixframework.liveview.data.constants.Templates.templateTitle
 import org.phoenixframework.liveview.data.constants.Templates.templateTopBar
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 @OptIn(ExperimentalMaterial3Api::class)
 class BottomSheetScaffoldShotTest : LiveViewComposableTest() {
