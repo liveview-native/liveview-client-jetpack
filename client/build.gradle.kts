@@ -4,14 +4,17 @@ plugins {
     alias(libs.plugins.roborazzi)
 }
 
+val moduleId = "org.phoenixframework.liveview"
 android {
+    namespace = moduleId
+
     compileSdk = Constants.compileSdkVersion
 
     defaultConfig {
         minSdk = Constants.minSdkVersion
 
+        testApplicationId = "$moduleId.test"
         testInstrumentationRunner = Constants.instrumentationRunnerClass
-        testApplicationId = Constants.testApplicationId
 
         vectorDrawables {
             useSupportLibrary = true
@@ -55,8 +58,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    testNamespace = "$moduleId.test"
     testOptions.unitTests.isIncludeAndroidResources = true
-    namespace = "org.phoenixframework.liveview"
 }
 
 dependencies {
@@ -69,10 +73,6 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.text.google.fonts)
     implementation(libs.com.google.code.gson)
-
-    implementation(libs.io.coil.kt)
-    implementation(libs.io.coil.kt.coil.compose)
-    implementation(libs.io.coil.kt.coil.svg)
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
@@ -92,7 +92,6 @@ dependencies {
     testImplementation(libs.io.github.takahirom.roborazzi)
     testImplementation(libs.io.github.takahirom.roborazzi.compose)
     testImplementation(libs.io.github.takahirom.roborazzi.junit.rule)
-    testImplementation(libs.io.coil.kt.coil.test)
     testImplementation(libs.org.robolectric)
     testImplementation(libs.koin.test)
 }

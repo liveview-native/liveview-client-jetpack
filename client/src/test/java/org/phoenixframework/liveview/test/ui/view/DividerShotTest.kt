@@ -12,18 +12,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
-import org.phoenixframework.liveview.data.constants.Attrs.attrThickness
-import org.phoenixframework.liveview.data.constants.ComposableTypes.column
-import org.phoenixframework.liveview.data.constants.ComposableTypes.horizontalDivider
-import org.phoenixframework.liveview.data.constants.ComposableTypes.row
-import org.phoenixframework.liveview.data.constants.ComposableTypes.text
-import org.phoenixframework.liveview.data.constants.ComposableTypes.verticalDivider
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWidth
-import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
-import org.phoenixframework.liveview.data.constants.ModifierTypes.typeIntrinsicSize
+import org.phoenixframework.liveview.constants.Attrs.attrColor
+import org.phoenixframework.liveview.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.constants.Attrs.attrThickness
+import org.phoenixframework.liveview.constants.ComposableTypes.column
+import org.phoenixframework.liveview.constants.ComposableTypes.horizontalDivider
+import org.phoenixframework.liveview.constants.ComposableTypes.row
+import org.phoenixframework.liveview.constants.ComposableTypes.text
+import org.phoenixframework.liveview.constants.ComposableTypes.verticalDivider
+import org.phoenixframework.liveview.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.constants.ModifierNames.modifierWidth
+import org.phoenixframework.liveview.constants.ModifierTypes.typeDp
+import org.phoenixframework.liveview.constants.ModifierTypes.typeIntrinsicSize
 import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class DividerShotTest : LiveViewComposableTest() {

@@ -11,10 +11,10 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkOut
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntSize
-import org.phoenixframework.liveview.data.constants.ModifierArgs
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argAnimationSpec
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argEnter
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argExit
+import org.phoenixframework.liveview.constants.ModifierArgs
+import org.phoenixframework.liveview.constants.ModifierArgs.argAnimationSpec
+import org.phoenixframework.liveview.constants.ModifierArgs.argEnter
+import org.phoenixframework.liveview.constants.ModifierArgs.argExit
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter
 import org.phoenixframework.liveview.foundation.ui.view.onClickFromString

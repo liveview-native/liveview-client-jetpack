@@ -1,6 +1,5 @@
 [versions]
 android-gradle-plugin = "8.4.0"
-androidx-activity-compose = "1.9.1"
 androidx-appcompat = "1.7.0"
 androidx-compose-bom = "2024.06.00"
 androidx-compose-google-fonts = "1.6.8"
@@ -27,7 +26,6 @@ robolectric = "4.11.1"
 org-jetbrains-kotlin-jvm = "1.9.10"
 
 [libraries]
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidx-compose-bom" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-compose-material3" }

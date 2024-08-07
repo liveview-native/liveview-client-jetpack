@@ -17,10 +17,10 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import kotlinx.collections.immutable.ImmutableList
-import org.phoenixframework.liveview.data.constants.Attrs.attrEnter
-import org.phoenixframework.liveview.data.constants.Attrs.attrExit
-import org.phoenixframework.liveview.data.constants.Attrs.attrLabel
-import org.phoenixframework.liveview.data.constants.Attrs.attrVisible
+import org.phoenixframework.liveview.constants.Attrs.attrEnter
+import org.phoenixframework.liveview.constants.Attrs.attrExit
+import org.phoenixframework.liveview.constants.Attrs.attrLabel
+import org.phoenixframework.liveview.constants.Attrs.attrVisible
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties

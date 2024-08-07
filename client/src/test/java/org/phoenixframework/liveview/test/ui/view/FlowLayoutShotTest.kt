@@ -11,20 +11,20 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
-import org.phoenixframework.liveview.data.constants.Attrs.attrMaxItemsInEachColumn
-import org.phoenixframework.liveview.data.constants.Attrs.attrMaxItemsInEachRow
-import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
-import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalArrangement
-import org.phoenixframework.liveview.data.constants.ComposableTypes.flowColumn
-import org.phoenixframework.liveview.data.constants.ComposableTypes.flowRow
-import org.phoenixframework.liveview.data.constants.ComposableTypes.outlinedButton
-import org.phoenixframework.liveview.data.constants.ComposableTypes.text
-import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
-import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
-import org.phoenixframework.liveview.data.constants.VerticalArrangementValues
+import org.phoenixframework.liveview.constants.Attrs.attrHorizontalArrangement
+import org.phoenixframework.liveview.constants.Attrs.attrMaxItemsInEachColumn
+import org.phoenixframework.liveview.constants.Attrs.attrMaxItemsInEachRow
+import org.phoenixframework.liveview.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.constants.Attrs.attrVerticalArrangement
+import org.phoenixframework.liveview.constants.ComposableTypes.flowColumn
+import org.phoenixframework.liveview.constants.ComposableTypes.flowRow
+import org.phoenixframework.liveview.constants.ComposableTypes.outlinedButton
+import org.phoenixframework.liveview.constants.ComposableTypes.text
+import org.phoenixframework.liveview.constants.HorizontalArrangementValues
+import org.phoenixframework.liveview.constants.ModifierNames.modifierFillMaxSize
+import org.phoenixframework.liveview.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.constants.ModifierTypes.typeDp
+import org.phoenixframework.liveview.constants.VerticalArrangementValues
 import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 @OptIn(ExperimentalLayoutApi::class)

@@ -1,4 +1,4 @@
-package org.phoenixframework.liveview.domain.extensions
+package org.phoenixframework.liveview.extensions
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow

@@ -10,18 +10,18 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
-import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
-import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
-import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
-import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationBar
-import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationBarItem
-import org.phoenixframework.liveview.data.constants.ComposableTypes.text
-import org.phoenixframework.liveview.data.constants.Templates.templateIcon
-import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.constants.ComposableTypes.navigationBar
+import org.phoenixframework.liveview.constants.ComposableTypes.navigationBarItem
+import org.phoenixframework.liveview.constants.ComposableTypes.text
+import org.phoenixframework.liveview.constants.Templates.templateIcon
+import org.phoenixframework.liveview.constants.Templates.templateLabel
 import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class NavigationBarShotTest : LiveViewComposableTest() {

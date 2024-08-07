@@ -1,8 +1,8 @@
-package org.phoenixframework.liveview.domain.extensions
+package org.phoenixframework.liveview.extensions
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
-import org.phoenixframework.liveview.data.constants.SheetValues
+import org.phoenixframework.liveview.constants.SheetValues
 
 internal const val SHEET_VALUE_KEY = "sheetValue"
 

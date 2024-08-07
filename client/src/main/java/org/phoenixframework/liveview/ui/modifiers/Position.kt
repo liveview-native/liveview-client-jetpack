@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argX
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argY
+import org.phoenixframework.liveview.constants.ModifierArgs.argX
+import org.phoenixframework.liveview.constants.ModifierArgs.argY
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter
 
 fun Modifier.offsetFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {

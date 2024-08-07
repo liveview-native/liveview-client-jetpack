@@ -41,4 +41,5 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.com.google.android.material)
     implementation(project(":client"))
+    implementation(project(":client-addons"))
 }

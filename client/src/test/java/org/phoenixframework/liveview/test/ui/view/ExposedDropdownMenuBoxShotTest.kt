@@ -8,18 +8,18 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.ui.Modifier
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrExpanded
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxClick
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
-import org.phoenixframework.liveview.data.constants.Attrs.attrReadOnly
-import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
-import org.phoenixframework.liveview.data.constants.ComposableTypes.box
-import org.phoenixframework.liveview.data.constants.ComposableTypes.dropdownMenuItem
-import org.phoenixframework.liveview.data.constants.ComposableTypes.exposedDropdownMenu
-import org.phoenixframework.liveview.data.constants.ComposableTypes.exposedDropdownMenuBox
-import org.phoenixframework.liveview.data.constants.ComposableTypes.text
-import org.phoenixframework.liveview.data.constants.ComposableTypes.textField
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierMenuAnchor
+import org.phoenixframework.liveview.constants.Attrs.attrExpanded
+import org.phoenixframework.liveview.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.constants.Attrs.attrReadOnly
+import org.phoenixframework.liveview.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.constants.ComposableTypes.box
+import org.phoenixframework.liveview.constants.ComposableTypes.dropdownMenuItem
+import org.phoenixframework.liveview.constants.ComposableTypes.exposedDropdownMenu
+import org.phoenixframework.liveview.constants.ComposableTypes.exposedDropdownMenuBox
+import org.phoenixframework.liveview.constants.ComposableTypes.text
+import org.phoenixframework.liveview.constants.ComposableTypes.textField
+import org.phoenixframework.liveview.constants.ModifierNames.modifierMenuAnchor
 import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class ExposedDropdownMenuBoxShotTest : LiveViewComposableTest() {

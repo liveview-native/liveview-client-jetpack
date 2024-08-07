@@ -5,7 +5,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import kotlinx.collections.immutable.ImmutableList
-import org.phoenixframework.liveview.data.constants.Attrs.attrOnDismissRequest
+import org.phoenixframework.liveview.constants.Attrs.attrOnDismissRequest
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties

@@ -11,8 +11,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlinx.collections.immutable.ImmutableList
-import org.phoenixframework.liveview.data.constants.Attrs.attrExpanded
-import org.phoenixframework.liveview.data.constants.ComposableTypes.exposedDropdownMenu
+import org.phoenixframework.liveview.constants.Attrs.attrExpanded
+import org.phoenixframework.liveview.constants.ComposableTypes.exposedDropdownMenu
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties

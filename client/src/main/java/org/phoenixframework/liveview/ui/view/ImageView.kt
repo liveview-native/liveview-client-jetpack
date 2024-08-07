@@ -10,11 +10,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import kotlinx.collections.immutable.ImmutableList
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlignment
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlpha
-import org.phoenixframework.liveview.data.constants.Attrs.attrContentDescription
-import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
-import org.phoenixframework.liveview.data.constants.Attrs.attrResource
+import org.phoenixframework.liveview.constants.Attrs.attrAlignment
+import org.phoenixframework.liveview.constants.Attrs.attrAlpha
+import org.phoenixframework.liveview.constants.Attrs.attrContentDescription
+import org.phoenixframework.liveview.constants.Attrs.attrContentScale
+import org.phoenixframework.liveview.constants.Attrs.attrResource
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties

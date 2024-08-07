@@ -9,17 +9,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalAlignment
-import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
-import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
-import org.phoenixframework.liveview.data.constants.ComposableTypes.column
-import org.phoenixframework.liveview.data.constants.ComposableTypes.row
-import org.phoenixframework.liveview.data.constants.ComposableTypes.spacer
-import org.phoenixframework.liveview.data.constants.ComposableTypes.text
-import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues.centerHorizontally
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierSize
-import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
-import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues.centerVertically
+import org.phoenixframework.liveview.constants.Attrs.attrHorizontalAlignment
+import org.phoenixframework.liveview.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.constants.Attrs.attrVerticalAlignment
+import org.phoenixframework.liveview.constants.ComposableTypes.column
+import org.phoenixframework.liveview.constants.ComposableTypes.row
+import org.phoenixframework.liveview.constants.ComposableTypes.spacer
+import org.phoenixframework.liveview.constants.ComposableTypes.text
+import org.phoenixframework.liveview.constants.HorizontalAlignmentValues.centerHorizontally
+import org.phoenixframework.liveview.constants.ModifierNames.modifierSize
+import org.phoenixframework.liveview.constants.ModifierTypes.typeDp
+import org.phoenixframework.liveview.constants.VerticalAlignmentValues.centerVertically
 import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class SpacerShotTest : LiveViewComposableTest() {

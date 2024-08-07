@@ -1,9 +1,9 @@
-package org.phoenixframework.liveview.domain.extensions
+package org.phoenixframework.liveview.extensions
 
 import androidx.compose.ui.graphics.Color
 import androidx.core.text.isDigitsOnly
 import org.phoenixframework.liveview.LiveViewJetpack
-import org.phoenixframework.liveview.data.constants.SystemColorValues
+import org.phoenixframework.liveview.constants.SystemColorValues
 
 fun String.isNotEmptyAndIsDigitsOnly(): Boolean = this.isNotEmpty() && this.isDigitsOnly()
 

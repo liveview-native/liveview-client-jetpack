@@ -5,7 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import org.phoenixframework.liveview.data.constants.ModifierArgs
+import org.phoenixframework.liveview.constants.ModifierArgs
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter
 
 fun Modifier.horizontalScrollFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {

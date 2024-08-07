@@ -5,8 +5,8 @@ import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 import org.phoenixframework.liveview.LiveViewJetpack
-import org.phoenixframework.liveview.data.constants.ShapeValues
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.constants.ShapeValues
+import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
 
 internal fun shapeFromString(
     shape: String,

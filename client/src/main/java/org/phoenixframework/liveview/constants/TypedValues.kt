@@ -1,4 +1,4 @@
-package org.phoenixframework.liveview.data.constants
+package org.phoenixframework.liveview.constants
 
 import androidx.compose.ui.unit.dp
 

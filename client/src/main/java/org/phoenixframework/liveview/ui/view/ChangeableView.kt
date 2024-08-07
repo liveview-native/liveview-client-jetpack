@@ -6,11 +6,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
-import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxChange
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxDebounce
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxThrottle
-import org.phoenixframework.liveview.domain.extensions.throttleLatest
+import org.phoenixframework.liveview.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.constants.Attrs.attrPhxChange
+import org.phoenixframework.liveview.constants.Attrs.attrPhxDebounce
+import org.phoenixframework.liveview.constants.Attrs.attrPhxThrottle
+import org.phoenixframework.liveview.extensions.throttleLatest
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView

@@ -5,10 +5,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlpha
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argBrush
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argColor
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argShape
+import org.phoenixframework.liveview.constants.ModifierArgs.argAlpha
+import org.phoenixframework.liveview.constants.ModifierArgs.argBrush
+import org.phoenixframework.liveview.constants.ModifierArgs.argColor
+import org.phoenixframework.liveview.constants.ModifierArgs.argShape
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter
 
 fun Modifier.backgroundFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {

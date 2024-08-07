@@ -16,17 +16,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
-import org.phoenixframework.liveview.data.constants.Attrs.attrShape
-import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
-import org.phoenixframework.liveview.data.constants.ComposableTypes.bottomAppBar
-import org.phoenixframework.liveview.data.constants.ComposableTypes.floatingActionButton
-import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
-import org.phoenixframework.liveview.data.constants.ComposableTypes.iconButton
-import org.phoenixframework.liveview.data.constants.Templates.templateAction
-import org.phoenixframework.liveview.data.constants.Templates.templateFab
+import org.phoenixframework.liveview.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.constants.Attrs.attrShape
+import org.phoenixframework.liveview.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.constants.ComposableTypes.bottomAppBar
+import org.phoenixframework.liveview.constants.ComposableTypes.floatingActionButton
+import org.phoenixframework.liveview.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.constants.ComposableTypes.iconButton
+import org.phoenixframework.liveview.constants.Templates.templateAction
+import org.phoenixframework.liveview.constants.Templates.templateFab
 import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class BottomAppBarShotTest : LiveViewComposableTest() {

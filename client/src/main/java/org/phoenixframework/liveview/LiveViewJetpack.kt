@@ -7,6 +7,7 @@ import org.phoenixframework.liveview.di.clientModule
 import org.phoenixframework.liveview.foundation.di.foundationModule
 import org.phoenixframework.liveview.foundation.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.foundation.ui.base.BaseThemeHolder
+import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.modifiers.BaseModifiersParser
 import org.phoenixframework.liveview.foundation.ui.registry.BaseComposableNodeFactory
 
@@ -15,7 +16,7 @@ object LiveViewJetpack {
         modules(foundationModule, clientModule)
     }
 
-    fun themeHolder(): BaseThemeHolder {
+    internal fun themeHolder(): BaseThemeHolder {
         return koinApplication.koin.get()
     }
 
@@ -29,11 +30,15 @@ object LiveViewJetpack {
         return koinApplication.koin.get()
     }
 
-    fun getComposableNodeFactory(): BaseComposableNodeFactory {
+    internal fun getComposableNodeFactory(): BaseComposableNodeFactory {
         return koinApplication.koin.get()
     }
 
     fun getThemeHolder(): BaseThemeHolder {
         return koinApplication.koin.get()
+    }
+
+    fun registerComponent(tag: String, factory: ComposableViewFactory<*>) {
+        koinApplication.koin.get<BaseComposableNodeFactory>().registerComponent(tag, factory)
     }
 }

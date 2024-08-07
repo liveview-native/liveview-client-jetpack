@@ -1,4 +1,4 @@
-package org.phoenixframework.liveview.domain.extensions
+package org.phoenixframework.liveview.extensions
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding

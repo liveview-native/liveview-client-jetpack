@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.FlowRowScope
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlignment
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlignmentLine
+import org.phoenixframework.liveview.constants.ModifierArgs.argAlignment
+import org.phoenixframework.liveview.constants.ModifierArgs.argAlignmentLine
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter
 
 fun Modifier.alignFromStyle(

@@ -9,19 +9,19 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerContainerColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerContentColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrDrawerShape
-import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
-import org.phoenixframework.liveview.data.constants.Attrs.attrTemplate
-import org.phoenixframework.liveview.data.constants.ComposableTypes.dismissibleDrawerSheet
-import org.phoenixframework.liveview.data.constants.ComposableTypes.modalDrawerSheet
-import org.phoenixframework.liveview.data.constants.ComposableTypes.navigationDrawerItem
-import org.phoenixframework.liveview.data.constants.ComposableTypes.permanentDrawerSheet
-import org.phoenixframework.liveview.data.constants.ComposableTypes.text
-import org.phoenixframework.liveview.data.constants.SystemColorValues.Red
-import org.phoenixframework.liveview.data.constants.SystemColorValues.Yellow
-import org.phoenixframework.liveview.data.constants.Templates.templateLabel
+import org.phoenixframework.liveview.constants.Attrs.attrDrawerContainerColor
+import org.phoenixframework.liveview.constants.Attrs.attrDrawerContentColor
+import org.phoenixframework.liveview.constants.Attrs.attrDrawerShape
+import org.phoenixframework.liveview.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.constants.Attrs.attrTemplate
+import org.phoenixframework.liveview.constants.ComposableTypes.dismissibleDrawerSheet
+import org.phoenixframework.liveview.constants.ComposableTypes.modalDrawerSheet
+import org.phoenixframework.liveview.constants.ComposableTypes.navigationDrawerItem
+import org.phoenixframework.liveview.constants.ComposableTypes.permanentDrawerSheet
+import org.phoenixframework.liveview.constants.ComposableTypes.text
+import org.phoenixframework.liveview.constants.SystemColorValues.Red
+import org.phoenixframework.liveview.constants.SystemColorValues.Yellow
+import org.phoenixframework.liveview.constants.Templates.templateLabel
 import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class DrawerSheetShotTest : LiveViewComposableTest() {

@@ -14,19 +14,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.AlignmentValues
-import org.phoenixframework.liveview.data.constants.Attrs.attrContentAlignment
-import org.phoenixframework.liveview.data.constants.Attrs.attrSheetValue
-import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
-import org.phoenixframework.liveview.data.constants.ComposableTypes.box
-import org.phoenixframework.liveview.data.constants.ComposableTypes.modalBottomSheet
-import org.phoenixframework.liveview.data.constants.ComposableTypes.text
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxSize
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierTestTag
-import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
-import org.phoenixframework.liveview.data.constants.SheetValues.expanded
+import org.phoenixframework.liveview.constants.AlignmentValues
+import org.phoenixframework.liveview.constants.Attrs.attrContentAlignment
+import org.phoenixframework.liveview.constants.Attrs.attrSheetValue
+import org.phoenixframework.liveview.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.constants.ComposableTypes.box
+import org.phoenixframework.liveview.constants.ComposableTypes.modalBottomSheet
+import org.phoenixframework.liveview.constants.ComposableTypes.text
+import org.phoenixframework.liveview.constants.ModifierNames.modifierFillMaxSize
+import org.phoenixframework.liveview.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.constants.ModifierNames.modifierTestTag
+import org.phoenixframework.liveview.constants.ModifierTypes.typeDp
+import org.phoenixframework.liveview.constants.SheetValues.expanded
 import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 @OptIn(ExperimentalMaterial3Api::class)

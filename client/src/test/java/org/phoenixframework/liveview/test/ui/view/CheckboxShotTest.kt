@@ -5,16 +5,16 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.ui.graphics.Color
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrChecked
-import org.phoenixframework.liveview.data.constants.Attrs.attrColors
-import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckedColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrCheckmarkColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledCheckedColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUncheckedColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUncheckedColor
-import org.phoenixframework.liveview.data.constants.ComposableTypes.checkbox
-import org.phoenixframework.liveview.data.constants.ComposableTypes.row
+import org.phoenixframework.liveview.constants.Attrs.attrChecked
+import org.phoenixframework.liveview.constants.Attrs.attrColors
+import org.phoenixframework.liveview.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrCheckedColor
+import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrCheckmarkColor
+import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrDisabledCheckedColor
+import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrDisabledUncheckedColor
+import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrUncheckedColor
+import org.phoenixframework.liveview.constants.ComposableTypes.checkbox
+import org.phoenixframework.liveview.constants.ComposableTypes.row
 import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class CheckboxShotTest : LiveViewComposableTest() {

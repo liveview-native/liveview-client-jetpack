@@ -10,11 +10,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
-import org.phoenixframework.liveview.data.constants.Attrs.attrColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrThickness
-import org.phoenixframework.liveview.data.constants.ComposableTypes
-import org.phoenixframework.liveview.domain.extensions.isNotEmptyAndIsDigitsOnly
-import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.constants.Attrs.attrColor
+import org.phoenixframework.liveview.constants.Attrs.attrThickness
+import org.phoenixframework.liveview.constants.ComposableTypes
+import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
+import org.phoenixframework.liveview.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties

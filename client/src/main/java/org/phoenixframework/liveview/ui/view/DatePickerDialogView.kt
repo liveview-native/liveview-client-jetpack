@@ -10,9 +10,9 @@ import androidx.compose.runtime.remember
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.data.constants.Attrs.attrColors
-import org.phoenixframework.liveview.data.constants.Templates.templateConfirmButton
-import org.phoenixframework.liveview.data.constants.Templates.templateDismissButton
+import org.phoenixframework.liveview.constants.Attrs.attrColors
+import org.phoenixframework.liveview.constants.Templates.templateConfirmButton
+import org.phoenixframework.liveview.constants.Templates.templateDismissButton
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties

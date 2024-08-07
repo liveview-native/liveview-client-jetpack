@@ -11,10 +11,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.constants.Attrs.attrClass
-import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
-import org.phoenixframework.liveview.data.constants.Attrs.attrText
-import org.phoenixframework.liveview.data.constants.ComposableTypes
+import org.phoenixframework.liveview.constants.Attrs.attrClass
+import org.phoenixframework.liveview.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.constants.Attrs.attrText
+import org.phoenixframework.liveview.constants.ComposableTypes
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.EVENT_TYPE_CLICK
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.EVENT_TYPE_DOUBLE_CLICK
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.EVENT_TYPE_LONG_CLICK

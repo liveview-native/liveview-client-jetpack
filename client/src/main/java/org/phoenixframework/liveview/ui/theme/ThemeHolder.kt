@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.phoenixframework.liveview.data.constants.ThemeColorsValues
-import org.phoenixframework.liveview.data.constants.ThemeShapesValues
-import org.phoenixframework.liveview.data.constants.ThemeTextStyleValues
+import org.phoenixframework.liveview.constants.ThemeColorsValues
+import org.phoenixframework.liveview.constants.ThemeShapesValues
+import org.phoenixframework.liveview.constants.ThemeTextStyleValues
 import org.phoenixframework.liveview.foundation.ui.base.BaseThemeHolder
 
 class ThemeHolder : BaseThemeHolder() {

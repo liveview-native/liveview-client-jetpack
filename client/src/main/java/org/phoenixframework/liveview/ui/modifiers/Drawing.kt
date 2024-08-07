@@ -8,13 +8,13 @@ import androidx.compose.ui.graphics.DefaultShadowColor
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argAlpha
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argAmbientColor
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argClip
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argElevation
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argShape
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argSpotColor
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argZIndex
+import org.phoenixframework.liveview.constants.ModifierArgs.argAlpha
+import org.phoenixframework.liveview.constants.ModifierArgs.argAmbientColor
+import org.phoenixframework.liveview.constants.ModifierArgs.argClip
+import org.phoenixframework.liveview.constants.ModifierArgs.argElevation
+import org.phoenixframework.liveview.constants.ModifierArgs.argShape
+import org.phoenixframework.liveview.constants.ModifierArgs.argSpotColor
+import org.phoenixframework.liveview.constants.ModifierArgs.argZIndex
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter
 
 fun Modifier.alphaFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {

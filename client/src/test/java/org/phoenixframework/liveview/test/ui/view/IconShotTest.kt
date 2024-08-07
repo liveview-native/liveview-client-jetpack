@@ -56,21 +56,21 @@ import androidx.compose.material.icons.twotone.Share
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Color
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrImageVector
-import org.phoenixframework.liveview.data.constants.Attrs.attrTint
-import org.phoenixframework.liveview.data.constants.ComposableTypes.column
-import org.phoenixframework.liveview.data.constants.ComposableTypes.icon
-import org.phoenixframework.liveview.data.constants.ComposableTypes.row
-import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredFilled
-import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredOutlined
-import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredRounded
-import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredSharp
-import org.phoenixframework.liveview.data.constants.IconPrefixValues.autoMirroredTwoTone
-import org.phoenixframework.liveview.data.constants.IconPrefixValues.filled
-import org.phoenixframework.liveview.data.constants.IconPrefixValues.outlined
-import org.phoenixframework.liveview.data.constants.IconPrefixValues.rounded
-import org.phoenixframework.liveview.data.constants.IconPrefixValues.sharp
-import org.phoenixframework.liveview.data.constants.IconPrefixValues.twoTone
+import org.phoenixframework.liveview.constants.Attrs.attrImageVector
+import org.phoenixframework.liveview.constants.Attrs.attrTint
+import org.phoenixframework.liveview.constants.ComposableTypes.column
+import org.phoenixframework.liveview.constants.ComposableTypes.icon
+import org.phoenixframework.liveview.constants.ComposableTypes.row
+import org.phoenixframework.liveview.constants.IconPrefixValues.autoMirroredFilled
+import org.phoenixframework.liveview.constants.IconPrefixValues.autoMirroredOutlined
+import org.phoenixframework.liveview.constants.IconPrefixValues.autoMirroredRounded
+import org.phoenixframework.liveview.constants.IconPrefixValues.autoMirroredSharp
+import org.phoenixframework.liveview.constants.IconPrefixValues.autoMirroredTwoTone
+import org.phoenixframework.liveview.constants.IconPrefixValues.filled
+import org.phoenixframework.liveview.constants.IconPrefixValues.outlined
+import org.phoenixframework.liveview.constants.IconPrefixValues.rounded
+import org.phoenixframework.liveview.constants.IconPrefixValues.sharp
+import org.phoenixframework.liveview.constants.IconPrefixValues.twoTone
 import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class IconShotTest : LiveViewComposableTest() {

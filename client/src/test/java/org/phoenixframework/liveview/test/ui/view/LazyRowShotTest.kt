@@ -13,21 +13,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrHorizontalArrangement
-import org.phoenixframework.liveview.data.constants.Attrs.attrReverseLayout
-import org.phoenixframework.liveview.data.constants.Attrs.attrStyle
-import org.phoenixframework.liveview.data.constants.Attrs.attrVerticalAlignment
-import org.phoenixframework.liveview.data.constants.ComposableTypes.column
-import org.phoenixframework.liveview.data.constants.ComposableTypes.lazyRow
-import org.phoenixframework.liveview.data.constants.ComposableTypes.text
-import org.phoenixframework.liveview.data.constants.HorizontalArrangementValues
-import org.phoenixframework.liveview.data.constants.ModifierNames
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierFillMaxWidth
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierHeight
-import org.phoenixframework.liveview.data.constants.ModifierNames.modifierWeight
-import org.phoenixframework.liveview.data.constants.ModifierTypes.typeDp
-import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
-import org.phoenixframework.liveview.domain.extensions.optional
+import org.phoenixframework.liveview.constants.Attrs.attrHorizontalArrangement
+import org.phoenixframework.liveview.constants.Attrs.attrReverseLayout
+import org.phoenixframework.liveview.constants.Attrs.attrStyle
+import org.phoenixframework.liveview.constants.Attrs.attrVerticalAlignment
+import org.phoenixframework.liveview.constants.ComposableTypes.column
+import org.phoenixframework.liveview.constants.ComposableTypes.lazyRow
+import org.phoenixframework.liveview.constants.ComposableTypes.text
+import org.phoenixframework.liveview.constants.HorizontalArrangementValues
+import org.phoenixframework.liveview.constants.ModifierNames
+import org.phoenixframework.liveview.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.constants.ModifierNames.modifierHeight
+import org.phoenixframework.liveview.constants.ModifierNames.modifierWeight
+import org.phoenixframework.liveview.constants.ModifierTypes.typeDp
+import org.phoenixframework.liveview.constants.VerticalAlignmentValues
+import org.phoenixframework.liveview.extensions.optional
 import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class LazyRowShotTest : LiveViewComposableTest() {

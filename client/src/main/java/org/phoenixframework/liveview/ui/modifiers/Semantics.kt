@@ -2,9 +2,9 @@ package org.phoenixframework.liveview.ui.modifiers
 
 import androidx.compose.foundation.progressSemantics
 import androidx.compose.ui.Modifier
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argSteps
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argValue
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argValueRange
+import org.phoenixframework.liveview.constants.ModifierArgs.argSteps
+import org.phoenixframework.liveview.constants.ModifierArgs.argValue
+import org.phoenixframework.liveview.constants.ModifierArgs.argValueRange
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter
 
 fun Modifier.progressSemanticsFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {

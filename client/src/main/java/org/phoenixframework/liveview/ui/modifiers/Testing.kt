@@ -2,7 +2,7 @@ package org.phoenixframework.liveview.ui.modifiers
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argTag
+import org.phoenixframework.liveview.constants.ModifierArgs.argTag
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter
 
 fun Modifier.testTagFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {

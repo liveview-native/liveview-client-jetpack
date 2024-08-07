@@ -12,20 +12,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrActionColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrActionContentColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrActionLabel
-import org.phoenixframework.liveview.data.constants.Attrs.attrActionOnNewLine
-import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrDismissActionContentColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrDismissEvent
-import org.phoenixframework.liveview.data.constants.Attrs.attrMessage
-import org.phoenixframework.liveview.data.constants.Attrs.attrShape
-import org.phoenixframework.liveview.data.constants.Attrs.attrWithDismissAction
-import org.phoenixframework.liveview.data.constants.ComposableTypes.scaffold
-import org.phoenixframework.liveview.data.constants.ComposableTypes.snackbar
-import org.phoenixframework.liveview.data.constants.ShapeValues.circle
+import org.phoenixframework.liveview.constants.Attrs.attrActionColor
+import org.phoenixframework.liveview.constants.Attrs.attrActionContentColor
+import org.phoenixframework.liveview.constants.Attrs.attrActionLabel
+import org.phoenixframework.liveview.constants.Attrs.attrActionOnNewLine
+import org.phoenixframework.liveview.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.constants.Attrs.attrDismissActionContentColor
+import org.phoenixframework.liveview.constants.Attrs.attrDismissEvent
+import org.phoenixframework.liveview.constants.Attrs.attrMessage
+import org.phoenixframework.liveview.constants.Attrs.attrShape
+import org.phoenixframework.liveview.constants.Attrs.attrWithDismissAction
+import org.phoenixframework.liveview.constants.ComposableTypes.scaffold
+import org.phoenixframework.liveview.constants.ComposableTypes.snackbar
+import org.phoenixframework.liveview.constants.ShapeValues.circle
 import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class SnackbarShotTest : LiveViewComposableTest() {

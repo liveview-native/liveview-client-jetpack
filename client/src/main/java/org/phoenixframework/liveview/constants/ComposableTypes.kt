@@ -1,11 +1,10 @@
-package org.phoenixframework.liveview.data.constants
+package org.phoenixframework.liveview.constants
 
 object ComposableTypes {
     const val alertDialog = "AlertDialog"
     const val animatedVisibility = "AnimatedVisibility"
     const val annotatedText = "AnnotatedText"
     const val assistChip = "AssistChip"
-    const val asyncImage = "AsyncImage"
     const val backHandler = "BackHandler"
     const val badgedBox = "BadgedBox"
     const val basicAlertDialog = "BasicAlertDialog"

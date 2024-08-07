@@ -56,9 +56,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.constants.AlignmentValues
-import org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues
-import org.phoenixframework.liveview.data.constants.VerticalAlignmentValues
+import org.phoenixframework.liveview.constants.AlignmentValues
+import org.phoenixframework.liveview.constants.HorizontalAlignmentValues
+import org.phoenixframework.liveview.constants.VerticalAlignmentValues
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter
 import org.phoenixframework.liveview.stylesheet.ElixirParser.TupleExprContext
 import org.phoenixframework.liveview.test.base.ModifierBaseTest

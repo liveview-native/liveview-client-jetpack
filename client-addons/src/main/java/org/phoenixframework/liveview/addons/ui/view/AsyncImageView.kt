@@ -1,4 +1,4 @@
-package org.phoenixframework.liveview.ui.view
+package org.phoenixframework.liveview.addons.ui.view
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -13,13 +13,13 @@ import coil.compose.SubcomposeAsyncImageContent
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import kotlinx.collections.immutable.ImmutableList
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlignment
-import org.phoenixframework.liveview.data.constants.Attrs.attrAlpha
-import org.phoenixframework.liveview.data.constants.Attrs.attrContentDescription
-import org.phoenixframework.liveview.data.constants.Attrs.attrContentScale
-import org.phoenixframework.liveview.data.constants.Attrs.attrCrossFade
-import org.phoenixframework.liveview.data.constants.Attrs.attrUrl
-import org.phoenixframework.liveview.data.constants.Templates
+import org.phoenixframework.liveview.constants.Attrs.attrAlignment
+import org.phoenixframework.liveview.constants.Attrs.attrAlpha
+import org.phoenixframework.liveview.constants.Attrs.attrContentDescription
+import org.phoenixframework.liveview.constants.Attrs.attrContentScale
+import org.phoenixframework.liveview.constants.Attrs.attrCrossFade
+import org.phoenixframework.liveview.constants.Attrs.attrUrl
+import org.phoenixframework.liveview.constants.Templates
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
@@ -29,6 +29,8 @@ import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.LocalHttpUrl
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
+import org.phoenixframework.liveview.ui.view.alignmentFromString
+import org.phoenixframework.liveview.ui.view.contentScaleFromString
 import java.net.URI
 
 /**
@@ -176,7 +178,7 @@ internal class AsyncImageView private constructor(props: Properties) :
         }
 
         /**
-         * Define if the image will have the crossfade animation after loaded.
+         * Define if the image will have the cross-fade animation after loaded.
          *
          * ```
          * <AsyncImage crossFade="true" />
@@ -196,7 +198,7 @@ internal class AsyncImageView private constructor(props: Properties) :
          * <AsyncImage contentScale="crop" />
          * ```
          * @param contentScale content scale.
-         * See the supported values at [org.phoenixframework.liveview.data.constants.ContentScaleValues].
+         * See the supported values at [org.phoenixframework.liveview.constants.ContentScaleValues].
          */
         private fun contentScale(props: Properties, contentScale: String): Properties {
             return if (contentScale.isNotEmpty()) {
@@ -211,7 +213,7 @@ internal class AsyncImageView private constructor(props: Properties) :
          * <AsyncImage alignment="centerStart" />
          * ```
          * @param alignment image alignment when the image is smaller than the available area.
-         * See the supported values at [org.phoenixframework.liveview.data.constants.AlignmentValues].
+         * See the supported values at [org.phoenixframework.liveview.constants.AlignmentValues].
          */
         private fun alignment(props: Properties, alignment: String): Properties {
             return if (alignment.isNotEmpty()) {

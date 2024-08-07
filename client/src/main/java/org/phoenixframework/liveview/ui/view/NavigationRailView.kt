@@ -10,11 +10,11 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableList
-import org.phoenixframework.liveview.data.constants.Attrs.attrContainerColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrContentColor
-import org.phoenixframework.liveview.data.constants.Attrs.attrWindowInsets
-import org.phoenixframework.liveview.data.constants.Templates.templateHeader
-import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.constants.Attrs.attrContainerColor
+import org.phoenixframework.liveview.constants.Attrs.attrContentColor
+import org.phoenixframework.liveview.constants.Attrs.attrWindowInsets
+import org.phoenixframework.liveview.constants.Templates.templateHeader
+import org.phoenixframework.liveview.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties

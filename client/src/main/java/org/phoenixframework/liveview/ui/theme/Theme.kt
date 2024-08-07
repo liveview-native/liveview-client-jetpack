@@ -10,7 +10,7 @@ import org.phoenixframework.liveview.LiveViewJetpack
 import org.phoenixframework.liveview.foundation.ui.base.BaseThemeHolder
 
 @Composable
-internal fun LiveViewNativeTheme(
+fun LiveViewNativeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
     themeData: BaseThemeHolder.ThemeData?,

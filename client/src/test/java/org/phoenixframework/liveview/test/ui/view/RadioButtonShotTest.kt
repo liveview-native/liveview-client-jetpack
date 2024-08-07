@@ -5,15 +5,15 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.ui.graphics.Color
 import org.junit.Test
-import org.phoenixframework.liveview.data.constants.Attrs.attrColors
-import org.phoenixframework.liveview.data.constants.Attrs.attrEnabled
-import org.phoenixframework.liveview.data.constants.Attrs.attrSelected
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledSelectedColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrDisabledUnselectedColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrSelectedColor
-import org.phoenixframework.liveview.data.constants.ColorAttrs.colorAttrUnselectedColor
-import org.phoenixframework.liveview.data.constants.ComposableTypes.radioButton
-import org.phoenixframework.liveview.data.constants.ComposableTypes.row
+import org.phoenixframework.liveview.constants.Attrs.attrColors
+import org.phoenixframework.liveview.constants.Attrs.attrEnabled
+import org.phoenixframework.liveview.constants.Attrs.attrSelected
+import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrDisabledSelectedColor
+import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrDisabledUnselectedColor
+import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrSelectedColor
+import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrUnselectedColor
+import org.phoenixframework.liveview.constants.ComposableTypes.radioButton
+import org.phoenixframework.liveview.constants.ComposableTypes.row
 import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class RadioButtonShotTest : LiveViewComposableTest() {

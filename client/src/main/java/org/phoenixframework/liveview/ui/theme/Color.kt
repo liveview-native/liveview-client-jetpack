@@ -1,7 +1,7 @@
 package org.phoenixframework.liveview.ui.theme
 
 import androidx.compose.material3.ColorScheme
-import org.phoenixframework.liveview.domain.extensions.toColor
+import org.phoenixframework.liveview.extensions.toColor
 
 internal fun colorSchemeFromThemeData(
     themeData: Map<String, Any>, defaultColors: ColorScheme

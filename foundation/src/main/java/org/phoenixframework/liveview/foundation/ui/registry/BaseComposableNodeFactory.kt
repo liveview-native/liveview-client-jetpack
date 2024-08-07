@@ -8,12 +8,18 @@ import org.phoenixframework.liveview.foundation.data.mappers.JsonParser
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.lib.NodeRef
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
+import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter.Companion.TYPE_LAMBDA_VALUE
 
 abstract class BaseComposableNodeFactory(
     private val composableRegistry: ComposableRegistry
 ) {
+    fun registerComponent(tag: String, factory: ComposableViewFactory<*>) {
+        return composableRegistry.registerComponent(
+            tag = tag, factory = factory
+        )
+    }
 
     /**
      * Creates a `ComposableTreeNode` object based on the input `Element` object.

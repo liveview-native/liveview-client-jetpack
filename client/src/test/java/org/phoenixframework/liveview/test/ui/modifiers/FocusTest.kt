@@ -6,10 +6,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.phoenixframework.liveview.data.constants.Attrs.attrClass
-import org.phoenixframework.liveview.data.constants.Attrs.attrPhxValue
-import org.phoenixframework.liveview.data.constants.ComposableTypes.column
-import org.phoenixframework.liveview.data.constants.ComposableTypes.textField
+import org.phoenixframework.liveview.constants.Attrs.attrClass
+import org.phoenixframework.liveview.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.constants.ComposableTypes.column
+import org.phoenixframework.liveview.constants.ComposableTypes.textField
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.test.base.BaseComposableModifierTest
 

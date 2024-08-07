@@ -6,10 +6,10 @@ import androidx.compose.foundation.onFocusedBoundsChanged
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.focus.onFocusEvent
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argEnabled
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnFocusChanged
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnFocusEvent
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argOnPositioned
+import org.phoenixframework.liveview.constants.ModifierArgs.argEnabled
+import org.phoenixframework.liveview.constants.ModifierArgs.argOnFocusChanged
+import org.phoenixframework.liveview.constants.ModifierArgs.argOnFocusEvent
+import org.phoenixframework.liveview.constants.ModifierArgs.argOnPositioned
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.EVENT_TYPE_FOCUS_CHANGED
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.EVENT_TYPE_FOCUS_EVENT
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent

@@ -8,14 +8,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argBorder
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argBrush
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argColor
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argShape
-import org.phoenixframework.liveview.data.constants.ModifierArgs.argWidth
-import org.phoenixframework.liveview.data.constants.ModifierTypes.typeBorderStroke
-import org.phoenixframework.liveview.data.constants.ModifierTypes.typeColor
-import org.phoenixframework.liveview.data.constants.ModifierTypes.typeShape
+import org.phoenixframework.liveview.constants.ModifierArgs.argBorder
+import org.phoenixframework.liveview.constants.ModifierArgs.argBrush
+import org.phoenixframework.liveview.constants.ModifierArgs.argColor
+import org.phoenixframework.liveview.constants.ModifierArgs.argShape
+import org.phoenixframework.liveview.constants.ModifierArgs.argWidth
+import org.phoenixframework.liveview.constants.ModifierTypes.typeBorderStroke
+import org.phoenixframework.liveview.constants.ModifierTypes.typeColor
+import org.phoenixframework.liveview.constants.ModifierTypes.typeShape
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter
 
 fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
