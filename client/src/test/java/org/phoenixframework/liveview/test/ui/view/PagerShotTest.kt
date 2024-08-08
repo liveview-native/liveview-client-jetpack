@@ -187,7 +187,6 @@ class PagerShotTest : LiveViewComposableTest() {
     }
 
     @Test
-    @Ignore("After swipe gesture, the image is not captured")
     fun horizontalPagerSwipeTest() {
         compareNativeComposableWithTemplate(
             onBeforeScreenShot = { composeTestRule ->
@@ -215,7 +214,7 @@ class PagerShotTest : LiveViewComposableTest() {
                 <$horizontalPager 
                     $attrCurrentPage="0" 
                     $attrPageCount="3" 
-                    $attrPageSpacing="24" 
+                    $attrPageSpacing="0" 
                     $attrBeyondViewportPageCount="1">
                   ${pagerTemplateTab(Red, "Red")}
                   ${pagerTemplateTab(Green, "Green")}
@@ -226,7 +225,6 @@ class PagerShotTest : LiveViewComposableTest() {
     }
 
     @Test
-    @Ignore("After swipe gesture, the image is not captured")
     fun horizontalPagerReverseLayoutTest() {
         compareNativeComposableWithTemplate(
             onBeforeScreenShot = { composeTestRule ->
@@ -265,7 +263,6 @@ class PagerShotTest : LiveViewComposableTest() {
     }
 
     @Test
-    @Ignore("After swipe gesture, the image is not captured")
     fun verticalPagerSwipeTest() {
         compareNativeComposableWithTemplate(
             onBeforeScreenShot = { composeTestRule ->
