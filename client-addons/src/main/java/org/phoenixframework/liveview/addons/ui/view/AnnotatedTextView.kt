@@ -1,4 +1,4 @@
-package org.phoenixframework.liveview.ui.view
+package org.phoenixframework.liveview.addons.ui.view
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Text
@@ -6,12 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.TextUnit
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.constants.Attrs.attrColor
@@ -24,11 +26,13 @@ import org.phoenixframework.liveview.constants.Attrs.attrLineHeight
 import org.phoenixframework.liveview.constants.Attrs.attrMaxLines
 import org.phoenixframework.liveview.constants.Attrs.attrMinLines
 import org.phoenixframework.liveview.constants.Attrs.attrOverflow
+import org.phoenixframework.liveview.constants.Attrs.attrParagraphStyle
 import org.phoenixframework.liveview.constants.Attrs.attrSoftWrap
-import org.phoenixframework.liveview.constants.Attrs.attrText
+import org.phoenixframework.liveview.constants.Attrs.attrSpanStyle
 import org.phoenixframework.liveview.constants.Attrs.attrTextAlign
 import org.phoenixframework.liveview.constants.Attrs.attrTextDecoration
 import org.phoenixframework.liveview.constants.Attrs.attrTextStyle
+import org.phoenixframework.liveview.constants.ComposableTypes
 import org.phoenixframework.liveview.constants.TextOverflowValues
 import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.extensions.toColor
@@ -47,16 +51,20 @@ import org.phoenixframework.liveview.ui.theme.textAlignFromString
 import org.phoenixframework.liveview.ui.theme.textDecorationFromString
 import org.phoenixframework.liveview.ui.theme.textStyleFromString
 import org.phoenixframework.liveview.ui.theme.textUnitFromString
+import org.phoenixframework.liveview.ui.view.paragraphStyleFromString
+import org.phoenixframework.liveview.ui.view.spanStyleFromString
 
 /**
  * High level element that displays text.
  * ```
- * <Text>My Text 1</Text>
- * <Text text="My Text 2" />
+ * <AnnotatedText>
+ *   <Text spanStyle="{'color': 'Red', 'fontSize': 18}" text="H"/>
+ *   <Text spanStyle="{'textDecoration': 'Underline'}" text="ello!!!" />
+ * </AnnotatedText>
  * ```
  */
-internal class TextView private constructor(props: Properties) :
-    ComposableView<TextView.Properties>(props) {
+internal class AnnotatedTextView private constructor(props: Properties) :
+    ComposableView<AnnotatedTextView.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -64,7 +72,6 @@ internal class TextView private constructor(props: Properties) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val textValue = props.text
         val color = props.color
         val fontSize = props.fontSize
         val fontStyle = props.fontStyle
@@ -80,11 +87,39 @@ internal class TextView private constructor(props: Properties) :
         val minLines = props.minLines
         val style = props.style
 
-        val text = remember(composableNode) {
-            getText(composableNode) ?: textValue
+        val textNodes = remember(composableNode) {
+            composableNode?.children?.filter {
+                it.node?.tag == ComposableTypes.text
+            }
         }
+
+        val annotatedText = remember(textNodes) {
+            buildAnnotatedString {
+                textNodes?.forEach { treeNode ->
+                    val text = getTextForAnnotation(treeNode) ?: ""
+                    treeNode.node?.attributes?.find {
+                        it.name == attrSpanStyle || it.name == attrParagraphStyle
+                    }?.let {
+                        when (it.name) {
+                            attrSpanStyle -> {
+                                val spanStyle = spanStyleFromString(it.value)
+                                withStyle(style = spanStyle) { append(text) }
+                            }
+
+                            attrParagraphStyle -> {
+                                val paragraphStyle = paragraphStyleFromString(it.value)
+                                withStyle(style = paragraphStyle) { append(text) }
+                            }
+                        }
+                    } ?: run {
+                        append(text)
+                    }
+                }
+            }
+        }
+
         Text(
-            text = text,
+            text = annotatedText,
             color = color,
             modifier = props.commonProps.modifier,
             fontSize = fontSize,
@@ -101,6 +136,12 @@ internal class TextView private constructor(props: Properties) :
             textDecoration = textDecoration,
             style = textStyleFromString(style),
         )
+    }
+
+    private fun getTextForAnnotation(treeNode: ComposableTreeNode): String? {
+        return getText(treeNode) // trying to get the text from the child
+        // otherwise, get from the text property
+            ?: treeNode.node?.attributes?.find { it.name == CoreNodeElement.TEXT_ATTRIBUTE }?.value
     }
 
     private fun getText(composableNode: ComposableTreeNode?): String? {
@@ -121,7 +162,6 @@ internal class TextView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val text: String = "",
         val color: Color = Color.Unspecified,
         val fontSize: TextUnit = TextUnit.Unspecified,
         val fontStyle: FontStyle? = null,
@@ -139,14 +179,7 @@ internal class TextView private constructor(props: Properties) :
         override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal object Factory : ComposableViewFactory<TextView>() {
-        fun buildComposableView(
-            text: String,
-            attributes: ImmutableList<CoreAttribute>,
-            scope: Any?,
-            pushEvent: PushEvent?,
-        ): TextView = TextView(textBuilder(Properties(text = text), attributes, scope, pushEvent))
-
+    internal object Factory : ComposableViewFactory<AnnotatedTextView>() {
         /**
          * Creates a `TextView` object based on the attributes and text of the input `Attributes` object.
          * TextView co-relates to the Text composable
@@ -158,7 +191,8 @@ internal class TextView private constructor(props: Properties) :
             attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
-        ): TextView = TextView(textBuilder(Properties(), attributes, scope, pushEvent))
+        ): AnnotatedTextView =
+            AnnotatedTextView(textBuilder(Properties(), attributes, scope, pushEvent))
 
         private fun textBuilder(
             properties: Properties,
@@ -178,7 +212,6 @@ internal class TextView private constructor(props: Properties) :
                 attrMinLines -> minLines(props, attribute.value)
                 attrOverflow -> overflow(props, attribute.value)
                 attrSoftWrap -> softWrap(props, attribute.value)
-                attrText -> text(props, attribute.value)
                 attrTextAlign -> textAlign(props, attribute.value)
                 attrTextDecoration -> textDecoration(props, attribute.value)
                 // FIXME style attribute is used for modifiers, so I renamed to textStyle
@@ -192,19 +225,6 @@ internal class TextView private constructor(props: Properties) :
                     )
                 )
             }
-        }
-
-        /**
-         * Sets the text to be displayed. There are two ways to set the text:
-         * ```
-         * <Text text="Your text" />
-         * // or
-         * <Text>Your text</Text>
-         * ```
-         * @param text text to be displayed.
-         */
-        private fun text(props: Properties, text: String): Properties {
-            return props.copy(text = text)
         }
 
         /**
@@ -225,7 +245,7 @@ internal class TextView private constructor(props: Properties) :
          * Sets the font family for a given text. This font must be a downloadable font from
          * fonts.google.com
          * ```
-         * <Text fontFamily="" />
+         * <AnnotatedText fontFamily="" />
          * ```
          * @param fontFamily The font family to be applied. The font family is the font name.
          */

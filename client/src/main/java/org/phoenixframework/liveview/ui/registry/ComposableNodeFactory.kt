@@ -78,7 +78,6 @@ class ComposableNodeFactory(
     init {
         registerComponent(ComposableTypes.alertDialog, AlertDialogView.Factory)
         registerComponent(ComposableTypes.animatedVisibility, AnimatedVisibilityView.Factory)
-        registerComponent(ComposableTypes.annotatedText, TextView.Factory)
         registerComponent(ComposableTypes.assistChip, ChipView.Factory)
         registerComponent(ComposableTypes.backHandler, BackHandlerView.Factory)
         registerComponent(ComposableTypes.badgedBox, BadgedBoxView.Factory)

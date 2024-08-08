@@ -3,7 +3,6 @@ package org.phoenixframework.liveview.constants
 object ComposableTypes {
     const val alertDialog = "AlertDialog"
     const val animatedVisibility = "AnimatedVisibility"
-    const val annotatedText = "AnnotatedText"
     const val assistChip = "AssistChip"
     const val backHandler = "BackHandler"
     const val badgedBox = "BadgedBox"

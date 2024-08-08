@@ -7,7 +7,7 @@ import org.phoenixframework.liveview.constants.SystemColorValues
 
 fun String.isNotEmptyAndIsDigitsOnly(): Boolean = this.isNotEmpty() && this.isDigitsOnly()
 
-private fun systemColorFromString(string: String): Color? {
+fun systemColorFromString(string: String): Color? {
     return when (string) {
         SystemColorValues.Red -> Color.Red
         SystemColorValues.Green -> Color.Green
@@ -25,7 +25,7 @@ private fun systemColorFromString(string: String): Color? {
     }
 }
 
-private fun colorFromHex(string: String): Color? {
+fun colorFromHex(string: String): Color? {
     var hexColorString = string
         .removePrefix("0x")
         .removePrefix("#")
@@ -39,7 +39,7 @@ private fun colorFromHex(string: String): Color? {
     }
 }
 
-internal fun String.toColor(): Color {
+fun String.toColor(): Color {
     return systemColorFromString(this)
         ?: LiveViewJetpack.getThemeHolder().themeColorFromString(this)
         ?: colorFromHex(this)

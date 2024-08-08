@@ -11,9 +11,7 @@ import java.io.File
 //  above like:
 //  `testImplementation "com.github.liveview-native:liveview-native-core-jetpack-host:<version>"`
 fun copyDesktopJniLibs(rootDir: File, test: Test) {
-    println("Root Dir: $rootDir")
     val jniLibsForDesktopDir = File("$rootDir/core-jetpack-desktop-libs/jniLibs")
-    println("jniLibsForDesktopDir: $jniLibsForDesktopDir")
     val archTypesSubdirs = jniLibsForDesktopDir.listFiles() ?: emptyArray()
     for (dir in archTypesSubdirs) {
         // Selecting the proper JNI lib file for run the unit tests

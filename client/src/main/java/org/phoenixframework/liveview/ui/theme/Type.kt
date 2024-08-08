@@ -63,7 +63,7 @@ internal val provider: GoogleFont.Provider by lazy {
     )
 }
 
-internal fun baselineShiftFromString(baselineShift: String?): BaselineShift {
+fun baselineShiftFromString(baselineShift: String?): BaselineShift {
     return when (baselineShift) {
         BaselineShiftValues.subscript -> BaselineShift.Subscript
         BaselineShiftValues.superscript -> BaselineShift.Superscript
@@ -71,13 +71,13 @@ internal fun baselineShiftFromString(baselineShift: String?): BaselineShift {
     }
 }
 
-internal fun fontFamilyFromString(fontFamily: String): FontFamily {
+fun fontFamilyFromString(fontFamily: String): FontFamily {
     return FontFamily(
         Font(googleFont = GoogleFont(fontFamily), fontProvider = provider)
     )
 }
 
-internal fun fontStyleFromString(fontStyle: String?): FontStyle {
+fun fontStyleFromString(fontStyle: String?): FontStyle {
     return when (fontStyle) {
         FontStyleValues.normal -> FontStyle.Normal
         FontStyleValues.italic -> FontStyle.Italic
@@ -85,7 +85,7 @@ internal fun fontStyleFromString(fontStyle: String?): FontStyle {
     }
 }
 
-internal fun fontSynthesisFromString(fontSynthesis: String?): FontSynthesis {
+fun fontSynthesisFromString(fontSynthesis: String?): FontSynthesis {
     return when (fontSynthesis) {
         FontSynthesisValues.all -> FontSynthesis.All
         FontSynthesisValues.style -> FontSynthesis.Style
@@ -95,7 +95,7 @@ internal fun fontSynthesisFromString(fontSynthesis: String?): FontSynthesis {
     }
 }
 
-internal fun fontWeightFromString(fontWeight: String?): FontWeight? {
+fun fontWeightFromString(fontWeight: String?): FontWeight? {
     return when (fontWeight) {
         FontWeightValues.thin,
         FontWeightValues.W100 -> FontWeight(100)
@@ -128,7 +128,7 @@ internal fun fontWeightFromString(fontWeight: String?): FontWeight? {
     }
 }
 
-internal fun hyphensFromString(hyphens: String): Hyphens {
+fun hyphensFromString(hyphens: String): Hyphens {
     return when (hyphens) {
         HyphensValues.none -> Hyphens.None
         HyphensValues.auto -> Hyphens.Auto
@@ -136,7 +136,7 @@ internal fun hyphensFromString(hyphens: String): Hyphens {
     }
 }
 
-internal fun lineBreakFromString(lineBreak: String): LineBreak {
+fun lineBreakFromString(lineBreak: String): LineBreak {
     return when (lineBreak) {
         LineBreakValues.simple -> LineBreak.Simple
         LineBreakValues.paragraph -> LineBreak.Paragraph
@@ -145,7 +145,7 @@ internal fun lineBreakFromString(lineBreak: String): LineBreak {
     }
 }
 
-internal fun textAlignFromString(textAlign: String?): TextAlign {
+fun textAlignFromString(textAlign: String?): TextAlign {
     return when (textAlign) {
         TextAlignValues.left -> TextAlign.Left
         TextAlignValues.right -> TextAlign.Right
@@ -157,7 +157,7 @@ internal fun textAlignFromString(textAlign: String?): TextAlign {
     }
 }
 
-internal fun textDecorationFromString(textDecoration: String?): TextDecoration {
+fun textDecorationFromString(textDecoration: String?): TextDecoration {
     return when (textDecoration) {
         // Draws a horizontal line below the text.
         TextDecorationValues.underline -> TextDecoration.Underline
@@ -168,7 +168,7 @@ internal fun textDecorationFromString(textDecoration: String?): TextDecoration {
     }
 }
 
-internal fun textDirectionFromString(textDirection: String): TextDirection {
+fun textDirectionFromString(textDirection: String): TextDirection {
     return when (textDirection) {
         TextDirectionValues.ltr -> TextDirection.Ltr
         TextDirectionValues.rtl -> TextDirection.Rtl
@@ -179,7 +179,7 @@ internal fun textDirectionFromString(textDirection: String): TextDirection {
     }
 }
 
-internal fun textStyleFromData(textStyleData: Map<String, Any>): TextStyle {
+fun textStyleFromData(textStyleData: Map<String, Any>): TextStyle {
     return TextStyle(
         color = textStyleData[attrColor]?.toString()?.toColor() ?: Color.Unspecified,
         fontSize = textStyleData[attrFontSize]?.let { textUnitFromString(it.toString()) }
@@ -233,11 +233,12 @@ internal fun textStyleFromData(textStyleData: Map<String, Any>): TextStyle {
 }
 
 @Composable
-internal fun textStyleFromString(textStyle: String?): TextStyle {
+fun textStyleFromString(textStyle: String?): TextStyle {
     if (textStyle == null) return LocalTextStyle.current
-    return LiveViewJetpack.getThemeHolder().themeTextStyleFromString(textStyle) ?: LocalTextStyle.current
+    return LiveViewJetpack.getThemeHolder().themeTextStyleFromString(textStyle)
+        ?: LocalTextStyle.current
 }
 
-internal fun textUnitFromString(string: String): TextUnit {
+fun textUnitFromString(string: String): TextUnit {
     return (string.toFloat()).sp
 }

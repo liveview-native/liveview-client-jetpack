@@ -11,7 +11,10 @@ import org.phoenixframework.liveview.ui.phx_components.LiveView
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LiveViewJetpackAddons.registerComponentByTag(AddonsTypes.asyncImage)
+        LiveViewJetpackAddons.run {
+            registerComponentByTag(AddonsTypes.asyncImage)
+            registerComponentByTag(AddonsTypes.annotatedText)
+        }
         setContent {
             LiveView(url = "http://10.0.2.2:4000/users/register")
         }
