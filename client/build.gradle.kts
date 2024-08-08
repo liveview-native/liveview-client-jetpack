@@ -85,15 +85,15 @@ dependencies {
     api(libs.androidx.navigation.compose)
 
     // Test dependencies
-    testImplementation(libs.junit)
+    testImplementation(project(":client-test-base"))
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.androidx.compose.ui.test.junit4.android)
-
     testImplementation(libs.io.github.takahirom.roborazzi)
     testImplementation(libs.io.github.takahirom.roborazzi.compose)
     testImplementation(libs.io.github.takahirom.roborazzi.junit.rule)
-    testImplementation(libs.org.robolectric)
+    testImplementation(libs.junit)
     testImplementation(libs.koin.test)
+    testImplementation(libs.org.robolectric)
 }
 
 // ./gradlew assembleRelease -PcomposeCompilerReports=true

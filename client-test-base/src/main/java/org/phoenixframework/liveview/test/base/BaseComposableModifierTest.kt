@@ -1,4 +1,4 @@
-package org.phoenixframework.liveview.addons.test.base
+package org.phoenixframework.liveview.test.base
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -8,14 +8,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import org.junit.Before
 import org.junit.runner.RunWith
-import org.koin.core.parameter.parametersOf
-import org.koin.test.get
 import org.phoenixframework.liveview.LiveViewJetpack
 import org.phoenixframework.liveview.foundation.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
+
 
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -28,9 +27,9 @@ abstract class BaseComposableModifierTest : BaseTest() {
     }
 
     @Composable
-    internal fun ViewFromTemplate(
+    fun ViewFromTemplate(
         template: String,
-        coordinator: LiveViewCoordinator = get<LiveViewCoordinator>() { parametersOf("", "") },
+        coordinator: LiveViewCoordinator = LiveViewJetpack.newLiveViewCoordinator("", ""),
         pushEvent: PushEvent = coordinator::pushEvent
     ) {
         val state by coordinator.state.collectAsState()

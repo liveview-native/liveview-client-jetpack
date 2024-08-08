@@ -15,7 +15,6 @@ import org.junit.Before
 import org.junit.Test
 import org.phoenixframework.liveview.addons.LiveViewJetpackAddons
 import org.phoenixframework.liveview.addons.constants.AddonsTypes.asyncImage
-import org.phoenixframework.liveview.addons.test.base.LiveViewComposableTest
 import org.phoenixframework.liveview.constants.Attrs.attrAlpha
 import org.phoenixframework.liveview.constants.Attrs.attrContentScale
 import org.phoenixframework.liveview.constants.Attrs.attrStyle
@@ -23,6 +22,7 @@ import org.phoenixframework.liveview.constants.Attrs.attrUrl
 import org.phoenixframework.liveview.constants.ComposableTypes.box
 import org.phoenixframework.liveview.constants.ContentScaleValues.fillHeight
 import org.phoenixframework.liveview.constants.ModifierNames.modifierFillMaxWidth
+import org.phoenixframework.liveview.test.base.LiveViewComposableTest
 
 class AsyncImageShotTest : LiveViewComposableTest() {
     private val url = "https://assets.dockyard.com/images/narwin-home-flare.jpg"

@@ -10,7 +10,7 @@ import org.phoenixframework.liveview.foundation.ui.registry.BaseComposableNodeFa
 
 class DocumentParser(
     private val screenId: String,
-    private val nodeFactory: BaseComposableNodeFactory
+    private val composableNodeFactory: BaseComposableNodeFactory
 ) {
     private var document: Document = Document()
 
@@ -84,7 +84,7 @@ class DocumentParser(
         node: Node,
         nodeRef: NodeRef,
     ): ComposableTreeNode {
-        return nodeFactory.buildComposableTreeNode(
+        return composableNodeFactory.buildComposableTreeNode(
             screenId = screenId,
             nodeRef = nodeRef,
             element = CoreNodeElement.fromNodeElement(node),

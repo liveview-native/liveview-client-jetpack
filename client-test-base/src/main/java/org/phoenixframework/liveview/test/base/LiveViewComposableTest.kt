@@ -1,4 +1,4 @@
-package org.phoenixframework.liveview.addons.test.base
+package org.phoenixframework.liveview.test.base
 
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -17,10 +17,8 @@ import org.junit.Before
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.BuildConfig.IS_RECORDING_SHOT_TEST
 import org.phoenixframework.liveview.LiveViewJetpack
-import org.phoenixframework.liveview.addons.LiveViewJetpackAddons
 import org.phoenixframework.liveview.foundation.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
-import org.phoenixframework.liveview.addons.test.R
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.LiveViewNativeTheme
 import org.robolectric.annotation.Config
@@ -50,7 +48,7 @@ abstract class LiveViewComposableTest : BaseTest() {
         }
     }
 
-    internal fun compareNativeComposableWithTemplate(
+    fun compareNativeComposableWithTemplate(
         nativeComposable: @Composable () -> Unit,
         template: String,
         testTag: String? = null,

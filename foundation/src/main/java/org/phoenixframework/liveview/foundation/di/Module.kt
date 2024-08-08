@@ -11,7 +11,7 @@ val foundationModule = module {
     factory<DocumentParser> { paramScreenId ->
         DocumentParser(
             screenId = paramScreenId.get(),
-            nodeFactory = get()
+            composableNodeFactory = get()
         )
     }
     single<SocketService> {

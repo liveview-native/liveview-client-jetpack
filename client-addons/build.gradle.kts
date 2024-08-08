@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.io.coil.kt.coil.svg)
 
     // Test dependencies
+    testImplementation(project(":client-test-base"))
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.androidx.compose.ui.test.junit4.android)
