@@ -14,6 +14,9 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "LiveView Native Client Jetpack"
-include ':liveview-android'
-include ':liveviewsample'
+include ':client'
+include ':client-addons'
+include ':client-test-base'
+include ':foundation'
+include ':sample'
 include ':stylesheet-parser'
