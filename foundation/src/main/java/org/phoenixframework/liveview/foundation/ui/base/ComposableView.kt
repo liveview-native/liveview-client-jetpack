@@ -11,11 +11,11 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableMap
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.ATTR_CLASS
-import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.ATTR_PHX_CLICK
-import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.ATTR_PHX_VALUE
-import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.ATTR_PHX_VALUE_NAMED
-import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.ATTR_STYLE
+import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrClass
+import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxClick
+import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxValue
+import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxValueNamed
+import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrStyle
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.KEY_PHX_VALUE
@@ -161,12 +161,12 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> : KoinComponent {
         scope: Any?,
     ): CommonComposableProperties {
         return when (attribute.name) {
-            ATTR_CLASS -> setClassFromAttr(commonProps, attribute.value, scope, pushEvent)
-            ATTR_PHX_CLICK -> setPhxClickFromAttr(commonProps, attribute.value, pushEvent)
-            ATTR_PHX_VALUE -> setPhxValueFromAttr(commonProps, ATTR_PHX_VALUE, attribute.value)
-            ATTR_STYLE -> setStyleFromAttr(commonProps, attribute.value, scope, pushEvent)
+            attrClass -> setClassFromAttr(commonProps, attribute.value, scope, pushEvent)
+            attrPhxClick -> setPhxClickFromAttr(commonProps, attribute.value, pushEvent)
+            attrPhxValue -> setPhxValueFromAttr(commonProps, attrPhxValue, attribute.value)
+            attrStyle -> setStyleFromAttr(commonProps, attribute.value, scope, pushEvent)
             else ->
-                if (attribute.name.startsWith(ATTR_PHX_VALUE_NAMED)) {
+                if (attribute.name.startsWith(attrPhxValueNamed)) {
                     setPhxValueFromAttr(commonProps, attribute.name, attribute.value)
                 } else
                     commonProps
@@ -230,12 +230,12 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> : KoinComponent {
         attributeName: String,
         value: Any
     ): CommonComposableProperties {
-        return if (attributeName == ATTR_PHX_VALUE) {
+        return if (attributeName == attrPhxValue) {
             val newMap = commonProps.value.toMutableMap()
             newMap[KEY_PHX_VALUE] = value
             commonProps.copy(value = newMap.toImmutableMap())
-        } else if (attributeName.startsWith(ATTR_PHX_VALUE_NAMED)) {
-            val phxValueKey = attributeName.substring(ATTR_PHX_VALUE_NAMED.length)
+        } else if (attributeName.startsWith(attrPhxValueNamed)) {
+            val phxValueKey = attributeName.substring(attrPhxValueNamed.length)
             val newMap = commonProps.value.toMutableMap()
             newMap[phxValueKey] = value
             commonProps.copy(value = newMap.toImmutableMap())

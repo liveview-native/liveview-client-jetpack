@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.ATTR_TEMPLATE
+import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrTemplate
 import org.phoenixframework.liveview.lib.Node
 
 /**
@@ -18,7 +18,7 @@ data class CoreNodeElement internal constructor(
     val attributes: ImmutableList<CoreAttribute>
 ) {
     val template: String?
-        get() = attributes.find { it.name == ATTR_TEMPLATE }?.value
+        get() = attributes.find { it.name == attrTemplate }?.value
 
     // The hashCode and equals functions has an important role in terms of performance.
     // They guarantee that a composable function will be called again (recomposed) or not.

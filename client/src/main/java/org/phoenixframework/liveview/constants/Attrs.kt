@@ -25,7 +25,7 @@ object Attrs {
     const val attrCaretProperties = "caretProperties"
     const val attrCaretWidth = "caretWidth"
     const val attrChecked = "checked"
-    const val attrClass = CoreAttrs.ATTR_CLASS
+    const val attrClass = CoreAttrs.attrClass
     const val attrClippingEnabled = "clippingEnabled"
     const val attrColumns = "columns"
     const val attrColor = "color"
@@ -124,13 +124,12 @@ object Attrs {
     const val attrPageSpacing = "pageSpacing"
     const val attrParagraphStyle = "paragraphStyle"
     const val attrPhxChange = "phx-change"
-    const val attrPhxClick = CoreAttrs.ATTR_PHX_CLICK
+    const val attrPhxClick = CoreAttrs.attrPhxClick
     const val attrPhxDebounce = "phx-debounce"
     const val attrPhxKeyUp = "phx-keyup"
     const val attrPhxSubmit = "phx-submit"
     const val attrPhxThrottle = "phx-throttle"
-    const val attrPhxValue = CoreAttrs.ATTR_PHX_VALUE
-    const val attrPhxValueNamed = CoreAttrs.ATTR_PHX_VALUE_NAMED
+    const val attrPhxValue = CoreAttrs.attrPhxValue
     const val attrPivotFractionX = "pivotFractionX"
     const val attrPivotFractionY = "pivotFractionY"
     const val attrPropagateMinConstraints = "propagateMinConstraints"
@@ -172,9 +171,9 @@ object Attrs {
     const val attrSteps = "steps"
     const val attrStrokeCap = "strokeCap"
     const val attrStrokeWidth = "strokeWidth"
-    const val attrStyle = CoreAttrs.ATTR_STYLE
+    const val attrStyle = CoreAttrs.attrStyle
     const val attrTargetState = "targetState"
-    const val attrTemplate = CoreAttrs.ATTR_TEMPLATE
+    const val attrTemplate = CoreAttrs.attrTemplate
     const val attrText = "text"
     const val attrTextAlign = "textAlign"
     const val attrTextContentColor = "textContentColor"
