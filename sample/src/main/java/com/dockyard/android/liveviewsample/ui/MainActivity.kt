@@ -12,8 +12,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LiveViewJetpackAddons.run {
-            registerComponentByTag(AddonsTypes.asyncImage)
-            registerComponentByTag(AddonsTypes.annotatedText)
+            registerComponentByTag(
+                AddonsTypes.asyncImage,
+                AddonsTypes.annotatedText
+            )
         }
         setContent {
             LiveView(url = "http://10.0.2.2:4000/users/register")
