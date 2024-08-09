@@ -19,6 +19,7 @@ fun copyDesktopJniLibs(rootDir: File, test: Test) {
         val arch = System.getProperty("os.arch").replace("_", "-")
         if (dir.isDirectory && dir.name.contains(arch)) {
             test.systemProperty("java.library.path", dir.absolutePath)
+            test.systemProperty("jna.library.path", dir.absolutePath)
             break
         }
     }
