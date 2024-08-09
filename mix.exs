@@ -1,7 +1,7 @@
 defmodule LiveViewNative.Jetpack.MixProject do
   use Mix.Project
 
-  @version "0.3.0-alpha.3"
+  @version "0.3.0-rc.3"
   @source_url "https://github.com/liveview-native/liveview-client-jetpack"
 
   def project do
