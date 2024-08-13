@@ -41,6 +41,7 @@ android {
 
 dependencies {
     implementation(project(":client"))
+    implementation(libs.net.java.dev.jna)
     implementation(libs.androidx.test.ext.junit)
     implementation(libs.androidx.compose.ui.test.junit4.android)
     implementation(libs.io.github.takahirom.roborazzi)
