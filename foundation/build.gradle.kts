@@ -44,13 +44,20 @@ dependencies {
     api(libs.org.jetbrains.kotlinx.collections.immutable)
     api(libs.org.jsoup)
 
+    api(libs.com.github.liveview.native.core.jetpack)
+    runtimeOnly(libs.net.java.dev.jna) {
+        artifact {
+            type = "aar"
+        }
+    }
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     implementation(libs.com.google.code.gson)
-    implementation(libs.com.github.liveview.native.core.jetpack)
+
     implementation(libs.com.github.dsrees.javaphoenixclient)
 
     implementation(platform(libs.okhttp.bom))

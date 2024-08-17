@@ -6,11 +6,11 @@ import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.data.core.CoreNodeElement
 import org.phoenixframework.liveview.foundation.data.mappers.JsonParser
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
-import org.phoenixframework.liveview.lib.NodeRef
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter.Companion.TYPE_LAMBDA_VALUE
+import org.phoenixframework.liveviewnative.core.NodeRef
 
 abstract class BaseComposableNodeFactory(
     private val composableRegistry: ComposableRegistry
@@ -34,9 +34,9 @@ abstract class BaseComposableNodeFactory(
     ): ComposableTreeNode {
         return ComposableTreeNode(
             screenId = screenId,
-            refId = nodeRef.ref,
+            refId = nodeRef.ref(),
             node = element,
-            id = "${screenId}_${nodeRef.ref}",
+            id = "${screenId}_${nodeRef.ref()}",
         )
     }
 

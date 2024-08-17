@@ -3,75 +3,84 @@ package org.phoenixframework.liveview.foundation.data.mappers
 import android.util.Log
 import org.phoenixframework.liveview.foundation.data.core.CoreNodeElement
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
-import org.phoenixframework.liveview.lib.Document
-import org.phoenixframework.liveview.lib.Node
-import org.phoenixframework.liveview.lib.NodeRef
 import org.phoenixframework.liveview.foundation.ui.registry.BaseComposableNodeFactory
+import org.phoenixframework.liveviewnative.core.ChangeType
+import org.phoenixframework.liveviewnative.core.Document
+import org.phoenixframework.liveviewnative.core.DocumentChangeHandler
+import org.phoenixframework.liveviewnative.core.NodeData
+import org.phoenixframework.liveviewnative.core.NodeRef
 
 class DocumentParser(
     private val screenId: String,
     private val composableNodeFactory: BaseComposableNodeFactory
-) {
-    private var document: Document = Document()
+): DocumentChangeHandler {
+    private lateinit var document: Document
+
+    init {
+        newDocument()
+    }
 
     fun newDocument() {
-        document = Document()
+        document = Document.empty().apply {
+            setEventHandler(this@DocumentParser)
+        }
+    }
+
+    override fun handle(
+        changeType: ChangeType,
+        nodeRef: NodeRef,
+        nodeData: NodeData,
+        parent: NodeRef?,
+    ) {
+        Log.d(TAG, "onHandle: $changeType")
+        Log.d(TAG, "\tnodeRef = ${nodeRef.ref()}")
+        Log.d(TAG, "\tparent = ${parent?.ref()}")
+
+        when (changeType) {
+            ChangeType.CHANGE -> {
+                Log.i(TAG, "Changed: ${this.document.get(nodeRef)}")
+            }
+
+            ChangeType.ADD -> {
+                Log.i(TAG, "Added: ${this.document.get(nodeRef)}")
+            }
+
+            ChangeType.REMOVE -> {
+                Log.i(TAG, "Remove: ${this.document.get(nodeRef)}")
+            }
+
+            ChangeType.REPLACE -> {
+                Log.i(TAG, "Replace: ${this.document.get(nodeRef)}")
+            }
+        }
     }
 
     fun parseDocumentJson(json: String): ComposableTreeNode {
-        document.mergeFragmentJson(json, object : Document.Companion.Handler() {
-            override fun onHandle(
-                context: Document,
-                changeType: Document.Companion.ChangeType,
-                nodeRef: NodeRef,
-                parent: NodeRef?
-            ) {
-                Log.d(TAG, "onHandle: $changeType")
-                Log.d(TAG, "\tnodeRef = ${nodeRef.ref}")
-                Log.d(TAG, "\tparent = ${parent?.ref}")
-                when (changeType) {
-                    Document.Companion.ChangeType.Change -> {
-                        Log.i(TAG, "Changed: ${context.getNodeString(nodeRef)}")
-                    }
-
-                    Document.Companion.ChangeType.Add -> {
-                        Log.i(TAG, "Added: ${context.getNodeString(nodeRef)}")
-                    }
-
-                    Document.Companion.ChangeType.Remove -> {
-                        Log.i(TAG, "Remove: ${context.getNodeString(nodeRef)}")
-                    }
-
-                    Document.Companion.ChangeType.Replace -> {
-                        Log.i(TAG, "Replace: ${context.getNodeString(nodeRef)}")
-                    }
-                }
-            }
-        })
+        document.mergeFragmentJson(json)
 
         return ComposableTreeNode(this.screenId, -1, null, id = "rootNode").apply {
             // Walk through the DOM and create a ComposableTreeNode tree
             Log.i(TAG, "walkThroughDOM start")
-            walkThroughDOM(document, document.rootNodeRef, this)
+            walkThroughDOM(document, document.root(), this)
             Log.i(TAG, "walkThroughDOM complete")
         }
     }
 
     private fun walkThroughDOM(document: Document, nodeRef: NodeRef, parent: ComposableTreeNode?) {
-        when (val node = document.getNode(nodeRef)) {
-            is Node.Leaf,
-            is Node.Element -> {
+        when (val node = document.get(nodeRef)) {
+            is NodeData.Leaf,
+            is NodeData.NodeElement -> {
                 val composableTreeNode = composableTreeNodeFromNode(screenId, node, nodeRef)
                 parent?.addNode(composableTreeNode)
 
-                val childNodeRefs = document.getChildren(nodeRef)
+                val childNodeRefs = document.children(nodeRef)
                 for (childNodeRef in childNodeRefs) {
                     walkThroughDOM(document, childNodeRef, composableTreeNode)
                 }
             }
 
-            Node.Root -> {
-                val childNodeRefs = document.getChildren(nodeRef)
+            NodeData.Root -> {
+                val childNodeRefs = document.children(nodeRef)
                 for (childNodeRef in childNodeRefs) {
                     walkThroughDOM(document, childNodeRef, parent)
                 }
@@ -81,7 +90,7 @@ class DocumentParser(
 
     private fun composableTreeNodeFromNode(
         screenId: String,
-        node: Node,
+        node: NodeData,
         nodeRef: NodeRef,
     ): ComposableTreeNode {
         return composableNodeFactory.buildComposableTreeNode(
