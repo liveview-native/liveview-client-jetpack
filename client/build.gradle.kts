@@ -65,6 +65,12 @@ android {
     }
     testNamespace = "$moduleId.test"
     testOptions.unitTests.isIncludeAndroidResources = true
+
+    sourceSets.getByName("main") {
+        kotlin {
+            srcDir(layout.buildDirectory.dir("generatedAntlr"))
+        }
+    }
 }
 
 dependencies {
@@ -175,16 +181,6 @@ val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotli
 
 tasks.withType<KotlinCompile<*>> {
     dependsOn(generateKotlinGrammarSource)
-}
-
-kotlin {
-    sourceSets {
-        main {
-            kotlin {
-                srcDir(layout.buildDirectory.dir("generatedAntlr"))
-            }
-        }
-    }
 }
 
 publishing {
