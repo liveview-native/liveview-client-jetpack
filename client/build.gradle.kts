@@ -186,6 +186,7 @@ tasks.withType<KotlinCompile<*>> {
 
 tasks.withType<SourceJarTask> {
     dependsOn(generateKotlinGrammarSource)
+    mustRunAfter(generateKotlinGrammarSource)
 }
 
 publishing {
