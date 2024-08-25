@@ -15,7 +15,7 @@ object Constants {
     const val moduleFoundation = ":foundation"
     const val moduleStylesheetParser = ":stylesheet-parser"
 
-    const val publishGroupId = "org.phoenixframework.liveview-native"
+    const val publishGroupId = "com.github.liveview-native"
     const val publishVersion = "0.0.0-dev001"
     const val publishArtifactId = "liveview-client-jetpack"
 }
