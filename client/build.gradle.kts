@@ -67,6 +67,12 @@ android {
     testNamespace = "$moduleId.test"
     testOptions.unitTests.isIncludeAndroidResources = true
 
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
     sourceSets.getByName("main") {
         kotlin {
             srcDir(layout.buildDirectory.dir("generatedAntlr"))
@@ -186,7 +192,6 @@ tasks.withType<KotlinCompile<*>> {
 
 tasks.withType<SourceJarTask> {
     dependsOn(generateKotlinGrammarSource)
-    mustRunAfter(generateKotlinGrammarSource)
 }
 
 publishing {
