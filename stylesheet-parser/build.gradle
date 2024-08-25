@@ -13,7 +13,7 @@ java {
 
 dependencies {
     antlr libs.antlr4
-    implementation libs.antlr4.runtime
+    api libs.antlr4.runtime
 }
 
 generateGrammarSource {

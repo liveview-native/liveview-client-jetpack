@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":client"))
+    api(project(Constants.moduleClient))
     implementation(libs.net.java.dev.jna)
     implementation(libs.androidx.test.ext.junit)
     implementation(libs.androidx.compose.ui.test.junit4.android)

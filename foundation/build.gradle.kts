@@ -40,12 +40,12 @@ android {
 }
 
 dependencies {
-    api(project(":stylesheet-parser"))
+    api(project(Constants.moduleStylesheetParser))
     api(libs.org.jetbrains.kotlinx.collections.immutable)
     api(libs.org.jsoup)
 
     api(libs.com.github.liveview.native.core.jetpack)
-    runtimeOnly(libs.net.java.dev.jna) {
+    api(libs.net.java.dev.jna) {
         artifact {
             type = "aar"
         }

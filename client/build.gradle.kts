@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.roborazzi)
+    id("maven-publish")
 }
 
 val moduleId = "org.phoenixframework.liveview"
@@ -64,7 +65,7 @@ android {
 }
 
 dependencies {
-    api(project(":foundation"))
+    api(project(Constants.moduleFoundation))
     // These dependencies are used internally, and not exposed to consumers on their own compile classpath.
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -85,7 +86,7 @@ dependencies {
     api(libs.androidx.navigation.compose)
 
     // Test dependencies
-    testImplementation(project(":client-test-base"))
+    testApi(project(Constants.moduleClientTestBase))
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.androidx.compose.ui.test.junit4.android)
     testImplementation(libs.io.github.takahirom.roborazzi)
@@ -122,5 +123,19 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 tasks.withType<Test>().configureEach {
     doFirst {
         copyDesktopJniLibs(rootDir, this@configureEach)
+    }
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = Constants.publishGroupId
+            artifactId = Constants.publishArtifactId
+            version = Constants.publishVersion
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
     }
 }
