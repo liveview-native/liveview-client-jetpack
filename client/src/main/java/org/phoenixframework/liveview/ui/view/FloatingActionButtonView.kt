@@ -200,7 +200,7 @@ internal class FloatingActionButtonView private constructor(props: Properties) :
          * input `Attributes` object.
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): FloatingActionButtonView = FloatingActionButtonView(attributes.fold(

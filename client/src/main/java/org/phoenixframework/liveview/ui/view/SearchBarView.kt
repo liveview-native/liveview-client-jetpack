@@ -280,7 +280,7 @@ internal class SearchBarView private constructor(props: Properties) :
 
     internal object Factory : ChangeableView.Factory() {
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): SearchBarView = SearchBarView(
             attributes.fold(Properties()) { props, attribute ->
                 handleChangeableAttribute(props.changeableProps, attribute)?.let {

@@ -126,7 +126,7 @@ internal class LazyGridView private constructor(props: Properties) :
          * @return a `LazyGridView` object based on the attributes of the input `Attributes` object.
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): LazyGridView = LazyGridView(
             attributes.fold(Properties()) { props, attribute ->
                 handleLazyAttribute(props.lazyListProps, attribute)?.let {

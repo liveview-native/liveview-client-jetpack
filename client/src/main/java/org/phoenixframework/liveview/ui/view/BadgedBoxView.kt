@@ -87,7 +87,7 @@ internal class BadgedBoxView private constructor(props: Properties) :
          * @return a `BadgedBoxView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): BadgedBoxView = BadgedBoxView(attributes.fold(Properties()) { props, attribute ->

@@ -379,7 +379,7 @@ internal class ButtonView private constructor(props: Properties) :
          * @return a `ButtonView` object based on the attributes of the input `Attributes` object
          **/
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): ButtonView = ButtonView(attributes.fold(Properties()) { props, attribute ->

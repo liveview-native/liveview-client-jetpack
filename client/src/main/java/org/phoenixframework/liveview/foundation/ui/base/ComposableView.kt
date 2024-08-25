@@ -136,7 +136,7 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> : KoinComponent {
      * composable (e.g.: `Column`, `Row`, `Box`).
      */
     abstract fun buildComposableView(
-        attributes: ImmutableList<CoreAttribute>,
+        attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
         pushEvent: PushEvent?,
         scope: Any?
     ): CV
@@ -156,7 +156,7 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> : KoinComponent {
      */
     fun handleCommonAttributes(
         commonProps: CommonComposableProperties,
-        attribute: CoreAttribute,
+        attribute: org.phoenixframework.liveview.foundation.data.core.CoreAttribute,
         pushEvent: PushEvent?,
         scope: Any?,
     ): CommonComposableProperties {

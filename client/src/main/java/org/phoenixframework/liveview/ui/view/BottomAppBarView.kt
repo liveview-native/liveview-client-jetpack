@@ -108,7 +108,7 @@ internal class BottomAppBarView private constructor(props: Properties) :
          * @return a `BottomAppBarView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): BottomAppBarView = BottomAppBarView(attributes.fold(Properties()) { props, attribute ->

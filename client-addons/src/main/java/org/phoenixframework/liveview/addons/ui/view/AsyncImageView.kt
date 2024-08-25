@@ -127,7 +127,7 @@ internal class AsyncImageView private constructor(props: Properties) :
          * object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ) = AsyncImageView(

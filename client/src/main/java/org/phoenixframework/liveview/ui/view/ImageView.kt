@@ -91,7 +91,7 @@ internal class ImageView private constructor(props: Properties) :
          * @return an `ImageView` object based on the attributes and text of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): ImageView = ImageView(attributes.fold(Properties()) { props, attribute ->

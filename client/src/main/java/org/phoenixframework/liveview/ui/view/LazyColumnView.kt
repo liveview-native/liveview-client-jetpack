@@ -81,7 +81,7 @@ internal class LazyColumnView private constructor(props: Properties) :
          * @return a `LazyColumnView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): LazyColumnView = LazyColumnView(

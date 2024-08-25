@@ -67,7 +67,7 @@ internal class ColumnView private constructor(props: Properties) :
          * @return a `ColumnView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): ColumnView = ColumnView(attributes.fold(Properties()) { props, attribute ->

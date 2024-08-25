@@ -241,7 +241,7 @@ internal class BottomSheetScaffoldView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<BottomSheetScaffoldView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): BottomSheetScaffoldView = BottomSheetScaffoldView(
             attributes.fold(Properties()) { props, attribute ->
                 when (attribute.name) {

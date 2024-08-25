@@ -80,7 +80,7 @@ internal class LazyRowView private constructor(props: Properties) :
          * @return a `LazyRowView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): LazyRowView = LazyRowView(

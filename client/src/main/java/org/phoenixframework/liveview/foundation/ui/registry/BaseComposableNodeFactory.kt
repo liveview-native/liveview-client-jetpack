@@ -60,8 +60,8 @@ abstract class BaseComposableNodeFactory(
     }
 
     protected fun parseAttributeList(
-        attributes: ImmutableList<CoreAttribute>
-    ): ImmutableList<CoreAttribute> {
+        attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>
+    ): ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute> {
         val lambdaValuePrefix = "{\"${TYPE_LAMBDA_VALUE}\":"
         // Special case to parse the lambda value from parent composable view
         return if (attributes.none { it.value.startsWith(lambdaValuePrefix) })
@@ -70,7 +70,7 @@ abstract class BaseComposableNodeFactory(
             attributes.map {
                 if (it.value.startsWith(lambdaValuePrefix)) {
                     val map = JsonParser.parse<Map<String, Any>>(it.value)
-                    CoreAttribute(
+                    org.phoenixframework.liveview.foundation.data.core.CoreAttribute(
                         it.name,
                         it.namespace,
                         ComposableView.getViewValue(map?.get(TYPE_LAMBDA_VALUE).toString())

@@ -191,7 +191,7 @@ internal class PagerView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<PagerView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): PagerView =
             PagerView(attributes.fold(Properties()) { props, attribute ->
                 when (attribute.name) {

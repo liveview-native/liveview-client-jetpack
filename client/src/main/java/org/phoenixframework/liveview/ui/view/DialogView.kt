@@ -183,7 +183,7 @@ internal abstract class DialogView<DP : DialogView.IDialogProperties>(props: DP)
 
         fun handleDialogAttributes(
             props: DialogComposableProperties,
-            attribute: CoreAttribute
+            attribute: org.phoenixframework.liveview.foundation.data.core.CoreAttribute
         ): DialogComposableProperties? {
             return when (attribute.name) {
                 attrDecorFitsSystemWindows -> decorFitsSystemWindows(props, attribute.value)

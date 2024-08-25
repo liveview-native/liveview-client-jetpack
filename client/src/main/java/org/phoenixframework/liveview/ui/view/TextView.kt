@@ -142,7 +142,7 @@ internal class TextView private constructor(props: Properties) :
     internal object Factory : ComposableViewFactory<TextView>() {
         fun buildComposableView(
             text: String,
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             scope: Any?,
             pushEvent: PushEvent?,
         ): TextView = TextView(textBuilder(Properties(text = text), attributes, scope, pushEvent))
@@ -155,14 +155,14 @@ internal class TextView private constructor(props: Properties) :
          * @return a `TextView` object based on the attributes and text of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): TextView = TextView(textBuilder(Properties(), attributes, scope, pushEvent))
 
         private fun textBuilder(
             properties: Properties,
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             scope: Any?,
             pushEvent: PushEvent?
         ): Properties = attributes.fold(properties) { props, attribute ->

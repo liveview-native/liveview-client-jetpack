@@ -184,7 +184,7 @@ internal class AlertDialogView private constructor(props: Properties) :
          * @return a `AlertDialogView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): AlertDialogView = AlertDialogView(attributes.fold(Properties()) { props, attribute ->

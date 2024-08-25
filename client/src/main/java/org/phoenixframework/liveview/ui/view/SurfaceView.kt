@@ -211,7 +211,7 @@ internal class SurfaceView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<SurfaceView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): SurfaceView = SurfaceView(attributes.fold(Properties()) { props, attribute ->

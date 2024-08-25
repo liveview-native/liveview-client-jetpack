@@ -105,7 +105,7 @@ internal class RadioButtonView private constructor(builder: Properties) :
          * @return a `RadioButtonView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): RadioButtonView = RadioButtonView(

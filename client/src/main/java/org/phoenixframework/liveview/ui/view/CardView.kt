@@ -290,7 +290,7 @@ internal class CardView private constructor(props: Properties) :
          * @return a `CardView` object based on the attributes of the input `Attributes` object
          **/
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): CardView = CardView(attributes.fold(Properties()) { props, attribute ->

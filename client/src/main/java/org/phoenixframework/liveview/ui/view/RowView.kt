@@ -64,7 +64,7 @@ internal class RowView private constructor(props: Properties) :
          * @return a `RowView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): RowView = RowView(attributes.fold(Properties()) { props, attribute ->

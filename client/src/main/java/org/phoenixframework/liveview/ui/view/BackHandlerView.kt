@@ -56,7 +56,7 @@ internal class BackHandlerView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<BackHandlerView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): BackHandlerView = BackHandlerView(

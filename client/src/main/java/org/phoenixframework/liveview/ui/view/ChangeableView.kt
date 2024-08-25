@@ -99,7 +99,7 @@ internal abstract class ChangeableView<T : Any, CP : IChangeableProperties>(prop
          */
         fun handleChangeableAttribute(
             props: ChangeableProperties,
-            attribute: CoreAttribute
+            attribute: org.phoenixframework.liveview.foundation.data.core.CoreAttribute
         ): ChangeableProperties? {
             return when (attribute.name) {
                 attrEnabled -> enabled(props, attribute.value)

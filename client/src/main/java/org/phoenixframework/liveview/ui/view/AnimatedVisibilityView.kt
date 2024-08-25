@@ -121,7 +121,7 @@ internal class AnimatedVisibilityView private constructor(props: Properties) :
     internal object Factory : ComposableViewFactory<AnimatedVisibilityView>() {
 
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): AnimatedVisibilityView {

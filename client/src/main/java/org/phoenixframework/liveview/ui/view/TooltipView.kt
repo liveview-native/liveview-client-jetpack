@@ -180,7 +180,7 @@ internal class TooltipView private constructor(props: Properties) :
     @OptIn(ExperimentalMaterial3Api::class)
     internal object Factory : ComposableViewFactory<TooltipView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): TooltipView = TooltipView(

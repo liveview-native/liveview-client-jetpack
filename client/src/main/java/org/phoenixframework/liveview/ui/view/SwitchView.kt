@@ -167,7 +167,7 @@ internal class SwitchView private constructor(props: Properties) :
          * @return a `SwitchDTO` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): SwitchView = SwitchView(
             attributes.fold(Properties()) { props, attribute ->
                 handleChangeableAttribute(props.changeableProps, attribute)?.let {

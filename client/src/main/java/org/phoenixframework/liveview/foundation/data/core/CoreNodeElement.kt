@@ -15,7 +15,7 @@ import org.phoenixframework.liveviewnative.core.NodeData
 data class CoreNodeElement internal constructor(
     val tag: String,
     val namespace: String?,
-    val attributes: ImmutableList<CoreAttribute>
+    val attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>
 ) {
     val template: String?
         get() = attributes.find { it.name == attrTemplate }?.value
@@ -53,7 +53,7 @@ data class CoreNodeElement internal constructor(
                     CoreNodeElement(
                         node.element.name.name,
                         node.element.name.namespace,
-                        node.element.attributes.map { CoreAttribute.fromAttribute(it) }
+                        node.element.attributes.map { org.phoenixframework.liveview.foundation.data.core.CoreAttribute.fromAttribute(it) }
                             .toImmutableList()
                     )
                 }
@@ -67,7 +67,11 @@ data class CoreNodeElement internal constructor(
                         "",
                         "",
                         persistentListOf(
-                            CoreAttribute(TEXT_ATTRIBUTE, "", node.value)
+                            org.phoenixframework.liveview.foundation.data.core.CoreAttribute(
+                                TEXT_ATTRIBUTE,
+                                "",
+                                node.value
+                            )
                         )
                     )
             }

@@ -161,7 +161,7 @@ internal class NavigationDrawerView private constructor(props: Properties) :
          * object.
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): NavigationDrawerView = NavigationDrawerView(
             attributes.fold(Properties()) { props, attribute ->
                 when (attribute.name) {

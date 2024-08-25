@@ -215,7 +215,7 @@ internal abstract class LazyView<LLP : LazyView.ILazyListProperties>(props: LLP)
          */
         fun handleLazyAttribute(
             lazyListProps: LazyListProperties,
-            attribute: CoreAttribute
+            attribute: org.phoenixframework.liveview.foundation.data.core.CoreAttribute
         ): LazyListProperties? {
             return when (attribute.name) {
                 attrContentPadding -> contentPadding(lazyListProps, attribute.value)

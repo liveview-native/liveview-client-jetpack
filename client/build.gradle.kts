@@ -1,7 +1,11 @@
+import com.strumenta.antlrkotlin.gradle.AntlrKotlinTask
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.roborazzi)
+    alias(libs.plugins.com.strumenta.antlr.kotlin)
     id("maven-publish")
 }
 
@@ -59,13 +63,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
     testNamespace = "$moduleId.test"
     testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-    api(project(Constants.moduleFoundation))
     // These dependencies are used internally, and not exposed to consumers on their own compile classpath.
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -80,10 +82,32 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
 
+    // Foundation
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.com.google.code.gson)
+    implementation(libs.com.github.dsrees.javaphoenixclient)
+
     // These dependencies are exported to consumers, that is to say found on their compile classpath.
     api(libs.androidx.core.ktx)
     api(libs.androidx.lifecycle.runtime.ktx)
     api(libs.androidx.navigation.compose)
+
+    // Foundation
+    api(libs.com.github.liveview.native.core.jetpack)
+    api(libs.net.java.dev.jna) {
+        artifact {
+            type = "aar"
+        }
+    }
+    //api(project(Constants.moduleStylesheetParser))
+    api(libs.org.jetbrains.kotlinx.collections.immutable)
+    api(libs.org.jsoup)
+
+    // Stylesheet Parser
+    implementation(libs.com.strumenta.antlr.kotlin.runtime)
+    implementation(libs.antlr4.runtime)
 
     // Test dependencies
     testApi(project(Constants.moduleClientTestBase))
@@ -123,6 +147,43 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 tasks.withType<Test>().configureEach {
     doFirst {
         copyDesktopJniLibs(rootDir, this@configureEach)
+    }
+}
+
+val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
+    dependsOn("cleanGenerateKotlinGrammarSource")
+
+    // ANTLR .g4 files are under {example-project}/antlr
+    // Only include *.g4 files. This allows tools (e.g., IDE plugins)
+    // to generate temporary files inside the base path
+    source = fileTree(layout.projectDirectory.dir("antlr")) {
+        include("**/*.g4")
+    }
+
+    // We want the generated source files to have this package name
+    val pkgName = "org.phoenixframework.liveview.stylesheet"
+    packageName = pkgName
+
+    // We want visitors alongside listeners.
+    // The Kotlin target language is implicit, as is the file encoding (UTF-8)
+    arguments = listOf("-no-visitor", "-no-listener")
+
+    // Generated files are outputted inside build/generatedAntlr/{package-name}
+    val outDir = "generatedAntlr/${pkgName.replace(".", "/")}"
+    outputDirectory = layout.buildDirectory.dir(outDir).get().asFile
+}
+
+tasks.withType<KotlinCompile<*>> {
+    dependsOn(generateKotlinGrammarSource)
+}
+
+kotlin {
+    sourceSets {
+        main {
+            kotlin {
+                srcDir(layout.buildDirectory.dir("generatedAntlr"))
+            }
+        }
     }
 }
 

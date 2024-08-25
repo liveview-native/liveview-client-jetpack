@@ -259,7 +259,7 @@ internal class DatePickerView private constructor(props: Properties) :
     internal object Factory :
         ComposableViewFactory<DatePickerView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): DatePickerView = DatePickerView(attributes.fold(Properties()) { props, attribute ->
             when (attribute.name) {
                 attrColors -> colors(props, attribute.value)

@@ -130,7 +130,7 @@ internal class NavigationBarItemView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<NavigationBarItemView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): NavigationBarItemView = NavigationBarItemView(
             attributes.fold(Properties(scope as RowScope)) { props, attribute ->
                 when (attribute.name) {

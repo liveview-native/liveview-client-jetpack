@@ -286,7 +286,7 @@ internal class IconToggleButtonView private constructor(props: Properties) :
          * object.
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): IconToggleButtonView = IconToggleButtonView(
             attributes.fold(Properties()) { props, attribute ->
                 handleChangeableAttribute(props.changeableProps, attribute)?.let {

@@ -162,7 +162,7 @@ internal class TabView private constructor(props: Properties) :
          * @return a `TabView` object based on the attributes of the input `Attributes` object
          **/
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): TabView = TabView(attributes.fold(Properties()) { props, attribute ->
             when (attribute.name) {
                 attrEnabled -> enabled(props, attribute.value)

@@ -161,7 +161,7 @@ internal class ListItemView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<ListItemView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): ListItemView = ListItemView(attributes.fold(Properties()) { props, attribute ->

@@ -182,7 +182,7 @@ internal class ScaffoldView private constructor(props: Properties) :
          * @return a `ScaffoldView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): ScaffoldView = ScaffoldView(attributes.fold(Properties()) { props, attribute ->

@@ -320,7 +320,7 @@ internal class SliderView private constructor(props: Properties) :
          * @return a `SliderDTO` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>,
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): SliderView = SliderView(

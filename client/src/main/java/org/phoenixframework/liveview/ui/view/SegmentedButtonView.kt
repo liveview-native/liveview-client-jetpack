@@ -202,7 +202,7 @@ internal class SegmentedButtonView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<SegmentedButtonView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): SegmentedButtonView = SegmentedButtonView(
             attributes.fold(Properties(scope as? RowScope)) { props, attribute ->
                 when (attribute.name) {
