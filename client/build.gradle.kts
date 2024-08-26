@@ -81,7 +81,6 @@ android {
 }
 
 dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     // These dependencies are used internally, and not exposed to consumers on their own compile classpath.
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -110,12 +109,7 @@ dependencies {
 
     // Foundation
     api(libs.com.github.liveview.native.core.jetpack)
-    api(libs.net.java.dev.jna) {
-        artifact {
-            type = "aar"
-        }
-    }
-    //api(project(Constants.moduleStylesheetParser))
+    api("net.java.dev.jna:jna:5.14.0@aar")
     api(libs.org.jetbrains.kotlinx.collections.immutable)
     api(libs.org.jsoup)
 
