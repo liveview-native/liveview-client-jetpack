@@ -109,13 +109,14 @@ dependencies {
 
     // Foundation
     api(libs.com.github.liveview.native.core.jetpack)
-    api("net.java.dev.jna:jna:5.14.0@aar")
+    //api("net.java.dev.jna:jna:5.14.0@aar")
     api(libs.org.jetbrains.kotlinx.collections.immutable)
     api(libs.org.jsoup)
 
     // Stylesheet Parser
     implementation(libs.com.strumenta.antlr.kotlin.runtime)
     implementation(libs.antlr4.runtime)
+    api(files("libs/jna-5.14.0.aar"))
 
     // Test dependencies
     testApi(project(Constants.moduleClientTestBase))
