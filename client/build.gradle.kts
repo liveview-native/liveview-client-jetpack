@@ -109,7 +109,7 @@ dependencies {
 
     // Foundation
     api(libs.com.github.liveview.native.core.jetpack)
-    api(libs.net.java.dev.jna) {
+    runtimeOnly(libs.net.java.dev.jna) {
         artifact {
             type = "aar"
         }
