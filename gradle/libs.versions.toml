@@ -3,9 +3,7 @@ activity-compose = "1.9.1"
 android-gradle-plugin = "8.4.0"
 androidx-appcompat = "1.7.0"
 androidx-compose-bom = "2024.06.00"
-androidx-compose-google-fonts = "1.6.8"
 androidx-compose-material3 = "1.2.1"
-androidx-compose-ui-test-junit4-android = "1.6.8"
 androidx-core-ktx = "1.13.1"
 androidx-ext-junit = "1.2.1"
 androidx-lifecyle = "2.8.4"
@@ -36,7 +34,7 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 androidx-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-compose-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "androidx-compose-google-fonts" }
+androidx-compose-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 androidx-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecyle" }
@@ -63,7 +61,7 @@ koin-compose = { module = "io.insert-koin:koin-androidx-compose" }
 koin-core = { module = "io.insert-koin:koin-core" }
 koin-test = { module = "io.insert-koin:koin-test" }
 # Tests
-androidx-compose-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "androidx-compose-ui-test-junit4-android" }
+androidx-compose-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-ext-junit" }
 io-coil-kt-coil-test = { group = "io.coil-kt", name = "coil-test", version.ref = "io-coil-kt" }
 io-github-takahirom-roborazzi = { group = "io.github.takahirom.roborazzi", name = "roborazzi", version.ref = "roborazzi" }
