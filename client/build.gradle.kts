@@ -117,7 +117,7 @@ dependencies {
     api(libs.org.jsoup)
 
     // Test dependencies
-    testApi(project(Constants.moduleClientTestBase))
+    testImplementation(project(Constants.moduleClientTestBase))
     testImplementation(libs.androidx.test.ext.junit)
     testImplementation(libs.androidx.compose.ui.test.junit4.android)
     testImplementation(libs.io.github.takahirom.roborazzi)
