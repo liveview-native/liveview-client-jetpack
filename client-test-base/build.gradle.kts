@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-    api(project(Constants.moduleClient))
+    implementation(project(Constants.moduleClient))
     implementation(libs.androidx.test.ext.junit)
     implementation(libs.androidx.compose.ui.test.junit4.android)
     implementation(libs.io.github.takahirom.roborazzi)
