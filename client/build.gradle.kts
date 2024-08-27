@@ -25,6 +25,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        ndk {
+            abiFilters.addAll(listOf("x86_64", "armeabi-v7a", "arm64-v8a", "x86"))
+        }
     }
 
     buildTypes {
@@ -109,14 +112,13 @@ dependencies {
 
     // Foundation
     api(libs.com.github.liveview.native.core.jetpack)
-    //api("net.java.dev.jna:jna:5.14.0@aar")
     api(libs.org.jetbrains.kotlinx.collections.immutable)
     api(libs.org.jsoup)
 
     // Stylesheet Parser
     implementation(libs.com.strumenta.antlr.kotlin.runtime)
     implementation(libs.antlr4.runtime)
-    api(files("libs/jna-5.14.0.aar"))
+    api(libs.net.java.dev.jna)
 
     // Test dependencies
     testApi(project(Constants.moduleClientTestBase))
