@@ -11,6 +11,8 @@ plugins {
 }
 
 val moduleId = "org.phoenixframework.liveview"
+val antlrGeneratedDir = "generatedAntlr"
+
 android {
     namespace = moduleId
 
@@ -24,9 +26,6 @@ android {
 
         vectorDrawables {
             useSupportLibrary = true
-        }
-        ndk {
-            abiFilters.addAll(listOf("x86_64", "armeabi-v7a", "arm64-v8a", "x86"))
         }
     }
 
@@ -76,9 +75,10 @@ android {
             withJavadocJar()
         }
     }
+    // Adding ANTLR source dir to the source file dir
     sourceSets.getByName("main") {
         kotlin {
-            srcDir(layout.buildDirectory.dir("generatedAntlr"))
+            srcDir(layout.buildDirectory.dir(antlrGeneratedDir))
         }
     }
 }
@@ -91,34 +91,30 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.text.google.fonts)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.antlr4.runtime)
     implementation(libs.com.google.code.gson)
+    implementation(libs.com.google.code.gson)
+    implementation(libs.com.github.dsrees.javaphoenixclient)
+    implementation(libs.com.strumenta.antlr.kotlin.runtime)
+    // TODO Is there a better way to include JNA *.so files to the AAR file? (instead of put them in jniLibs dir)
+    implementation(libs.net.java.dev.jna)
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
 
-    // Foundation
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.com.google.code.gson)
-    implementation(libs.com.github.dsrees.javaphoenixclient)
 
     // These dependencies are exported to consumers, that is to say found on their compile classpath.
     api(libs.androidx.core.ktx)
     api(libs.androidx.lifecycle.runtime.ktx)
     api(libs.androidx.navigation.compose)
-
-    // Foundation
     api(libs.com.github.liveview.native.core.jetpack)
     api(libs.org.jetbrains.kotlinx.collections.immutable)
     api(libs.org.jsoup)
-
-    // Stylesheet Parser
-    implementation(libs.com.strumenta.antlr.kotlin.runtime)
-    implementation(libs.antlr4.runtime)
-    api(libs.net.java.dev.jna)
 
     // Test dependencies
     testApi(project(Constants.moduleClientTestBase))
@@ -138,7 +134,7 @@ dependencies {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
         val prefix = "plugin:androidx.compose.compiler.plugins.kotlin"
-        val output = "${project.buildDir.absolutePath}/compose_compiler"
+        val output = layout.buildDirectory.dir("compose_compiler")
         if (project.findProperty("composeCompilerReports") == "true") {
             freeCompilerArgs += listOf(
                 "-P",
@@ -172,7 +168,7 @@ val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotli
     }
 
     // We want the generated source files to have this package name
-    val pkgName = "org.phoenixframework.liveview.stylesheet"
+    val pkgName = "$moduleId.stylesheet"
     packageName = pkgName
 
     // We want visitors alongside listeners.
@@ -180,7 +176,7 @@ val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotli
     arguments = listOf("-no-visitor", "-no-listener")
 
     // Generated files are outputted inside build/generatedAntlr/{package-name}
-    val outDir = "generatedAntlr/${pkgName.replace(".", "/")}"
+    val outDir = "$antlrGeneratedDir/${pkgName.replace(".", "/")}"
     outputDirectory = layout.buildDirectory.dir(outDir).get().asFile
 }
 
@@ -196,7 +192,7 @@ publishing {
     publications {
         register<MavenPublication>("release") {
             groupId = Constants.publishGroupId
-            artifactId = Constants.publishArtifactId
+            artifactId = Constants.publishArtifactClientId
             version = Constants.publishVersion
 
             afterEvaluate {
