@@ -115,7 +115,6 @@ dependencies {
 
     // These dependencies are exported to consumers, that is to say found on their compile classpath.
     api(libs.org.jetbrains.kotlinx.collections.immutable)
-    api(libs.androidx.foundation)
 
     // Test dependencies
     testImplementation(project(Constants.moduleClientTestBase))
