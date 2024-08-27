@@ -16,7 +16,6 @@ import org.phoenixframework.liveview.constants.Attrs.attrTint
 import org.phoenixframework.liveview.constants.IconPrefixValues
 import org.phoenixframework.liveview.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.extensions.toColor
-import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
@@ -113,7 +112,7 @@ internal class IconView private constructor(props: Properties) :
          * <Icon tint="#FFFF0000"/>
          * ```
          * @param tintColor the icon tint color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun tint(props: Properties, tintColor: String): Properties {
             return props.copy(tint = tintColor.toColor())

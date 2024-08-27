@@ -91,14 +91,19 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.ui.text.google.fonts)
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.antlr4.runtime)
     implementation(libs.com.google.code.gson)
     implementation(libs.com.google.code.gson)
     implementation(libs.com.github.dsrees.javaphoenixclient)
+    implementation(libs.com.github.liveview.native.core.jetpack)
     implementation(libs.com.strumenta.antlr.kotlin.runtime)
     // TODO Is there a better way to include JNA *.so files to the AAR file? (instead of put them in jniLibs dir)
     implementation(libs.net.java.dev.jna)
+    implementation(libs.org.jsoup)
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
@@ -109,12 +114,8 @@ dependencies {
     implementation(libs.okhttp)
 
     // These dependencies are exported to consumers, that is to say found on their compile classpath.
-    api(libs.androidx.core.ktx)
-    api(libs.androidx.lifecycle.runtime.ktx)
-    api(libs.androidx.navigation.compose)
-    api(libs.com.github.liveview.native.core.jetpack)
     api(libs.org.jetbrains.kotlinx.collections.immutable)
-    api(libs.org.jsoup)
+    api(libs.androidx.foundation)
 
     // Test dependencies
     testImplementation(project(Constants.moduleClientTestBase))
