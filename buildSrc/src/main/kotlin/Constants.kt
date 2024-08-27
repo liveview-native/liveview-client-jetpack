@@ -11,9 +11,8 @@ object Constants {
     val targetCompatibilityVersion = JavaVersion.VERSION_17
 
     const val moduleClient = ":client"
+    const val moduleClientAddons = ":client-addons"
     const val moduleClientTestBase = ":client-test-base"
-    const val moduleFoundation = ":foundation"
-    const val moduleStylesheetParser = ":stylesheet-parser"
 
     const val publishGroupId = "com.github.liveview-native"
     const val publishVersion = "0.0.0-dev001"

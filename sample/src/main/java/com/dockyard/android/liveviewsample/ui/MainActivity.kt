@@ -3,7 +3,6 @@ package com.dockyard.android.liveviewsample.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import org.phoenixframework.liveview.LiveViewJetpack
 import org.phoenixframework.liveview.addons.LiveViewJetpackAddons
 import org.phoenixframework.liveview.addons.constants.AddonsTypes
 import org.phoenixframework.liveview.ui.phx_components.LiveView

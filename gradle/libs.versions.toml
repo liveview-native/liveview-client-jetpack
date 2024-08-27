@@ -1,4 +1,5 @@
 [versions]
+activity-compose = "1.9.1"
 android-gradle-plugin = "8.4.0"
 androidx-appcompat = "1.7.0"
 androidx-compose-bom = "2024.06.00"
@@ -28,6 +29,7 @@ robolectric = "4.11.1"
 org-jetbrains-kotlin-jvm = "1.9.10"
 
 [libraries]
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidx-compose-bom" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidx-compose-material3" }
