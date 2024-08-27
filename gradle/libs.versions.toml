@@ -2,7 +2,7 @@
 activity-compose = "1.9.1"
 android-gradle-plugin = "8.4.0"
 androidx-appcompat = "1.7.0"
-androidx-compose-bom = "2024.06.00"
+androidx-compose-bom = "2024.08.00"
 androidx-compose-material3 = "1.2.1"
 androidx-core-ktx = "1.13.1"
 androidx-ext-junit = "1.2.1"
@@ -60,7 +60,7 @@ koin-compose = { module = "io.insert-koin:koin-androidx-compose" }
 koin-core = { module = "io.insert-koin:koin-core" }
 koin-test = { module = "io.insert-koin:koin-test" }
 # Tests
-androidx-compose-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-ext-junit" }
 io-coil-kt-coil-test = { group = "io.coil-kt", name = "coil-test", version.ref = "io-coil-kt" }
 io-github-takahirom-roborazzi = { group = "io.github.takahirom.roborazzi", name = "roborazzi", version.ref = "roborazzi" }

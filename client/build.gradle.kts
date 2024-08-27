@@ -119,7 +119,7 @@ dependencies {
     // Test dependencies
     testImplementation(project(Constants.moduleClientTestBase))
     testImplementation(libs.androidx.test.ext.junit)
-    testImplementation(libs.androidx.compose.ui.test.junit4.android)
+    testImplementation(libs.androidx.compose.ui.test.junit4)
     testImplementation(libs.io.github.takahirom.roborazzi)
     testImplementation(libs.io.github.takahirom.roborazzi.compose)
     testImplementation(libs.io.github.takahirom.roborazzi.junit.rule)

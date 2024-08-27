@@ -63,7 +63,7 @@ dependencies {
     testImplementation(project(Constants.moduleClientTestBase))
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.ext.junit)
-    testImplementation(libs.androidx.compose.ui.test.junit4.android)
+    testImplementation(libs.androidx.compose.ui.test.junit4)
 
     testImplementation(libs.io.coil.kt.coil.test)
     testImplementation(libs.io.github.takahirom.roborazzi)
