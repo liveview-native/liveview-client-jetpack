@@ -113,7 +113,7 @@ internal class DatePickerDialogView private constructor(props: Properties) :
 
     internal object Factory : DialogView.Factory() {
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): DatePickerDialogView = DatePickerDialogView(

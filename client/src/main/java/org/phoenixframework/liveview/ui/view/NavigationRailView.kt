@@ -92,7 +92,7 @@ internal class NavigationRailView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<NavigationRailView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): NavigationRailView = NavigationRailView(
@@ -118,7 +118,7 @@ internal class NavigationRailView private constructor(props: Properties) :
          * <NavigationRail containerColor="Blue">...</NavigationRail>
          * ```
          * @param color container color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun containerColor(props: Properties, color: String): Properties {
             return if (color.isNotEmpty()) {
@@ -132,7 +132,7 @@ internal class NavigationRailView private constructor(props: Properties) :
          * <NavigationRail contentColor="Yellow">...</NavigationRail>
          * ```
          * @param color content color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun contentColor(props: Properties, color: String): Properties {
             return if (color.isNotEmpty()) {

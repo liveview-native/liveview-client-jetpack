@@ -161,13 +161,13 @@ internal class SwitchView private constructor(props: Properties) :
 
     internal object Factory : ChangeableView.Factory() {
         /**
-         * Creates a `SwitchDTO` object based on the attributes of the input `Attributes` object.
-         * SwitchDTO co-relates to the Switch composable
-         * @param attributes the `Attributes` object to create the `SwitchDTO` object from
-         * @return a `SwitchDTO` object based on the attributes of the input `Attributes` object
+         * Creates a `SwitchView` object based on the attributes of the input `Attributes` object.
+         * SwitchView co-relates to the Switch composable
+         * @param attributes the `Attributes` object to create the `SwitchView` object from
+         * @return a `SwitchView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): SwitchView = SwitchView(
             attributes.fold(Properties()) { props, attribute ->
                 handleChangeableAttribute(props.changeableProps, attribute)?.let {

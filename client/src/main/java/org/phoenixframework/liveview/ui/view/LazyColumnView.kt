@@ -81,7 +81,7 @@ internal class LazyColumnView private constructor(props: Properties) :
          * @return a `LazyColumnView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): LazyColumnView = LazyColumnView(
@@ -111,7 +111,7 @@ internal class LazyColumnView private constructor(props: Properties) :
          * <LazyColumn verticalArrangement="spaceAround" >...</LazyColumn>
          * ```
          * @param verticalArrangement the vertical arrangement of the column's children. See the
-         * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
+         * supported values at [org.phoenixframework.liveview.constants.VerticalArrangementValues].
          * An int value is also supported, which will be used to determine the space.
          */
         private fun verticalArrangement(
@@ -132,7 +132,7 @@ internal class LazyColumnView private constructor(props: Properties) :
          * <LazyColumn horizontalAlignment="center" >...</LazyColumn>
          * ```
          * @param horizontalAlignment the horizontal alignment of the column's children. See the
-         * supported values at [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
+         * supported values at [org.phoenixframework.liveview.constants.HorizontalAlignmentValues].
          */
         private fun horizontalAlignment(
             props: Properties,

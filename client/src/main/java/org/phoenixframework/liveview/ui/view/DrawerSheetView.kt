@@ -141,7 +141,7 @@ internal class DrawerSheetView private constructor(props: Properties) :
          * object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): DrawerSheetView = DrawerSheetView(
@@ -169,7 +169,7 @@ internal class DrawerSheetView private constructor(props: Properties) :
          * <ModalDrawerSheet drawerShape="8">...</ModalDrawerSheet>
          * ```
          * @param shape drawer's container's shape. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.ShapeValues], or an integer representing
+         * [org.phoenixframework.liveview.constants.ShapeValues], or an integer representing
          * the curve size applied to all four corners.
          */
         private fun drawerShape(props: Properties, shape: String): Properties {
@@ -182,7 +182,7 @@ internal class DrawerSheetView private constructor(props: Properties) :
          * <ModalDrawerSheet drawerContainerColor="#FFFFFF00">...</ModalDrawerSheet>
          * ```
          * @param color container color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun drawerContainerColor(props: Properties, color: String): Properties {
             return props.copy(drawerContainerColor = color.toColor())
@@ -194,7 +194,7 @@ internal class DrawerSheetView private constructor(props: Properties) :
          * <ModalDrawerSheet drawerContentColor="#FFCCCCCC">...</ModalDrawerSheet>
          * ```
          * @param color content color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun drawerContentColor(props: Properties, color: String): Properties {
             return props.copy(drawerContentColor = color.toColor())

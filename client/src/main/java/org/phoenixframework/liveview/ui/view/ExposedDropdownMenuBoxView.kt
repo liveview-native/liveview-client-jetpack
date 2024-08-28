@@ -112,7 +112,7 @@ internal class ExposedDropdownMenuBoxView private constructor(props: Properties)
          * `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): ExposedDropdownMenuBoxView = ExposedDropdownMenuBoxView(

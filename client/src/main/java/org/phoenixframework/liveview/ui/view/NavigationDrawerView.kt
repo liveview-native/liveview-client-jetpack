@@ -161,7 +161,7 @@ internal class NavigationDrawerView private constructor(props: Properties) :
          * object.
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): NavigationDrawerView = NavigationDrawerView(
             attributes.fold(Properties()) { props, attribute ->
                 when (attribute.name) {
@@ -212,7 +212,7 @@ internal class NavigationDrawerView private constructor(props: Properties) :
          * <ModalNavigationDrawer scrimColor="#FF000000">
          * ```
          * @scrimColor the scrim color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun scrimColor(props: Properties, scrimColor: String): Properties {
             return props.copy(scrimColor = scrimColor.toColor())

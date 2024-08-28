@@ -114,7 +114,7 @@ internal class SwipeToDismissBoxView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<SwipeToDismissBoxView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): SwipeToDismissBoxView = SwipeToDismissBoxView(
@@ -145,7 +145,7 @@ internal class SwipeToDismissBoxView private constructor(props: Properties) :
 
         /**
          * The initial value of the state. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.SwipeToDismissBoxValues].
+         * [org.phoenixframework.liveview.constants.SwipeToDismissBoxValues].
          * ```
          * <SwipeToDismissBox initialValue="Settle">...</SwipeToDismissBox>
          * ```

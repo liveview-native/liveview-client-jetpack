@@ -47,7 +47,7 @@ internal class SpacerView private constructor(props: Properties) :
          * @return a `SpacerView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): SpacerView = SpacerView(attributes.fold(Properties()) { props, attribute ->

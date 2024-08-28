@@ -720,7 +720,7 @@ internal class ChipView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<ChipView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): ChipView = ChipView(attributes.fold(Properties()) { props, attribute ->
@@ -751,7 +751,7 @@ internal class ChipView private constructor(props: Properties) :
          * @param border a JSON representing the border object. The `width` key is an int value
          * representing chip border's width content. The color value must be specified as a
          * string in the AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         fun border(props: Properties, border: String): Properties {
             return if (border.isNotEmpty()) {
@@ -772,7 +772,7 @@ internal class ChipView private constructor(props: Properties) :
          * `trailingIconContentColor`, `disabledContainerColor`, `disabledLabelColor`,
          * `disabledLeadingIconContentColor`, and `disabledTrailingIconContentColor`. The color
          * value must be specified as a string in the AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         fun colors(props: Properties, colors: String): Properties {
             return if (colors.isNotEmpty()) {
@@ -839,7 +839,7 @@ internal class ChipView private constructor(props: Properties) :
          * <AssistChip shape="16" >...</AssistChip>
          * ```
          * @param shape chip's shape. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * [org.phoenixframework.liveview.constants.ShapeValues], or use an integer
          * representing the curve size applied for all four corners.
          */
         fun shape(props: Properties, shape: String): Properties {

@@ -87,7 +87,7 @@ internal class BadgedBoxView private constructor(props: Properties) :
          * @return a `BadgedBoxView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): BadgedBoxView = BadgedBoxView(attributes.fold(Properties()) { props, attribute ->
@@ -112,7 +112,7 @@ internal class BadgedBoxView private constructor(props: Properties) :
          * <BadgedBox containerColor="#FF0000FF">
          * ```
          * @param containerColor the background color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun containerColor(props: Properties, containerColor: String): Properties {
             return props.copy(containerColor = containerColor.toColor())
@@ -125,7 +125,7 @@ internal class BadgedBoxView private constructor(props: Properties) :
          * <BadgedBox contentColor="#FF0000FF" />
          * ```
          * @param contentColor the content color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun contentColor(props: Properties, contentColor: String): Properties {
             return props.copy(contentColor = contentColor.toColor())

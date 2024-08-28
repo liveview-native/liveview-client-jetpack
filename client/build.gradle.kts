@@ -160,7 +160,7 @@ tasks.withType<Test>().configureEach {
 val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotlinGrammarSource") {
     dependsOn("cleanGenerateKotlinGrammarSource")
 
-    // ANTLR .g4 files are under {example-project}/antlr
+    // ANTLR .g4 files are under antlr directory
     // Only include *.g4 files. This allows tools (e.g., IDE plugins)
     // to generate temporary files inside the base path
     source = fileTree(layout.projectDirectory.dir("antlr")) {
@@ -171,8 +171,7 @@ val generateKotlinGrammarSource = tasks.register<AntlrKotlinTask>("generateKotli
     val pkgName = "$moduleId.stylesheet"
     packageName = pkgName
 
-    // We want visitors alongside listeners.
-    // The Kotlin target language is implicit, as is the file encoding (UTF-8)
+    // We don't want visitors and listeners.
     arguments = listOf("-no-visitor", "-no-listener")
 
     // Generated files are outputted inside build/generatedAntlr/{package-name}

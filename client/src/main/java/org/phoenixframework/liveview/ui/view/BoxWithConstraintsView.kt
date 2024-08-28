@@ -87,7 +87,7 @@ internal class BoxWithConstraintsView private constructor(props: Properties) :
          * object.
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): BoxWithConstraintsView =
@@ -116,7 +116,7 @@ internal class BoxWithConstraintsView private constructor(props: Properties) :
          * </BoxWithConstraintsView>
          * ```
          * @param contentAlignment children's alignment inside the Box. See the supported at
-         * [org.phoenixframework.liveview.data.constants.AlignmentValues].
+         * [org.phoenixframework.liveview.constants.AlignmentValues].
          */
         private fun contentAlignment(props: Properties, contentAlignment: String): Properties {
             return props.copy(

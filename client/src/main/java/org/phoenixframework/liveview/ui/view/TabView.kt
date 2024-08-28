@@ -162,7 +162,7 @@ internal class TabView private constructor(props: Properties) :
          * @return a `TabView` object based on the attributes of the input `Attributes` object
          **/
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): TabView = TabView(attributes.fold(Properties()) { props, attribute ->
             when (attribute.name) {
                 attrEnabled -> enabled(props, attribute.value)
@@ -223,7 +223,7 @@ internal class TabView private constructor(props: Properties) :
          * <Tab selectedContentColor="#FFFFFFFF" />
          * ```
          * @param selectedContentColor the background color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun selectedContentColor(
             props: Properties,
@@ -238,7 +238,7 @@ internal class TabView private constructor(props: Properties) :
          * <Tab unselectedContentColor="#FF000000" />
          * ```
          * @param unselectedContentColor the content color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun unselectedContentColor(
             props: Properties,

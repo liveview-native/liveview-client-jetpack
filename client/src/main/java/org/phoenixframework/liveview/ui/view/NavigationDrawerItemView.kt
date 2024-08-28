@@ -148,7 +148,7 @@ internal class NavigationDrawerItemView private constructor(props: Properties) :
          * object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): NavigationDrawerItemView = NavigationDrawerItemView(
@@ -188,7 +188,7 @@ internal class NavigationDrawerItemView private constructor(props: Properties) :
          * <NavigationDrawerItem shape="rectangle" >...</NavigationDrawerItem>
          * ```
          * @param shape button's shape. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.ShapeValues], or an integer representing
+         * [org.phoenixframework.liveview.constants.ShapeValues], or an integer representing
          * the curve size applied to all four corners.
          */
         private fun shape(props: Properties, shape: String): Properties {

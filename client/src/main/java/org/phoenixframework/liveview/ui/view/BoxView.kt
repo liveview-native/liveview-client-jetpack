@@ -67,7 +67,7 @@ internal class BoxView private constructor(props: Properties) :
          * @return a `BoxView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): BoxView = BoxView(attributes.fold(Properties()) { props, attribute ->
@@ -92,7 +92,7 @@ internal class BoxView private constructor(props: Properties) :
          * <Box contentAlignment="Alignment.BbottomEnd">...</Box>
          * ```
          * @param contentAlignment children's alignment inside the Box. See the supported at
-         * [org.phoenixframework.liveview.data.constants.AlignmentValues].
+         * [org.phoenixframework.liveview.constants.AlignmentValues].
          */
         private fun contentAlignment(props: Properties, contentAlignment: String): Properties {
             return props.copy(

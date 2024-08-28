@@ -144,7 +144,7 @@ internal class ModalBottomSheetView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<ModalBottomSheetView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): ModalBottomSheetView = ModalBottomSheetView(
@@ -217,7 +217,7 @@ internal class ModalBottomSheetView private constructor(props: Properties) :
          * <ModalBottomSheet shape="8">...</ModalBottomSheet>
          * ```
          * @param shape drawer's container's shape. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * [org.phoenixframework.liveview.constants.ShapeValues], or use an integer
          * representing the curve size applied to all four corners.
          */
         private fun shape(props: Properties, shape: String): Properties {
@@ -230,7 +230,7 @@ internal class ModalBottomSheetView private constructor(props: Properties) :
          * <ModalBottomSheet containerColor="#FFFFFF00">...</ModalBottomSheet>
          * ```
          * @param color container color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun containerColor(props: Properties, color: String): Properties {
             return props.copy(containerColor = color.toColor())
@@ -242,7 +242,7 @@ internal class ModalBottomSheetView private constructor(props: Properties) :
          * <ModalBottomSheet contentColor="#FFCCCCCC">...</ModalBottomSheet>
          * ```
          * @param color content color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun contentColor(props: Properties, color: String): Properties {
             return props.copy(contentColor = color.toColor())
@@ -268,7 +268,7 @@ internal class ModalBottomSheetView private constructor(props: Properties) :
          * <ModalDrawerSheet scrimColor="#FF000000">...</ModalDrawerSheet>
          * ```
          * @scrimColor the scrim color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun scrimColor(props: Properties, scrimColor: String): Properties {
             return props.copy(scrimColor = scrimColor.toColor())

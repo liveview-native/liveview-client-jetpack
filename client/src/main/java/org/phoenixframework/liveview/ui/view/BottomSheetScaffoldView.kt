@@ -241,7 +241,7 @@ internal class BottomSheetScaffoldView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<BottomSheetScaffoldView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): BottomSheetScaffoldView = BottomSheetScaffoldView(
             attributes.fold(Properties()) { props, attribute ->
                 when (attribute.name) {
@@ -280,7 +280,7 @@ internal class BottomSheetScaffoldView private constructor(props: Properties) :
          * <BottomSheetScaffold containerColor="#FFFFFFFF" >
          * ```
          * @param containerColor the background color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun containerColor(props: Properties, containerColor: String): Properties {
             return props.copy(containerColor = containerColor.toColor())
@@ -292,7 +292,7 @@ internal class BottomSheetScaffoldView private constructor(props: Properties) :
          * <BottomSheetScaffold contentColor="#FF000000" >
          * ```
          * @param contentColor the content color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun contentColor(props: Properties, contentColor: String): Properties {
             return props.copy(contentColor = contentColor.toColor())
@@ -316,7 +316,7 @@ internal class BottomSheetScaffoldView private constructor(props: Properties) :
          * <BottomSheetScaffold sheetContainerColor="#FFFFFFFF" >
          * ```
          * @param containerColor the background color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun sheetContainerColor(props: Properties, containerColor: String): Properties {
             return props.copy(sheetContainerColor = containerColor.toColor())
@@ -328,7 +328,7 @@ internal class BottomSheetScaffoldView private constructor(props: Properties) :
          * <BottomSheetScaffold sheetContentColor="#FF000000" >
          * ```
          * @param contentColor the content color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun sheetContentColor(props: Properties, contentColor: String): Properties {
             return props.copy(sheetContentColor = contentColor.toColor())
@@ -366,7 +366,7 @@ internal class BottomSheetScaffoldView private constructor(props: Properties) :
          * <BottomSheetScaffold sheetShape="16" >
          * ```
          * @param shape BottomSheetScaffold's sheet shape. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * [org.phoenixframework.liveview.constants.ShapeValues], or use an integer
          * representing the curve size applied for all four corners.
          */
         private fun sheetShape(props: Properties, shape: String): Properties {
@@ -422,7 +422,7 @@ internal class BottomSheetScaffoldView private constructor(props: Properties) :
          * <BottomSheetScaffold sheetValue="expanded" >
          * ```
          * @param sheetValue the value representing the state of the bottom sheet. See the possible
-         * values at [org.phoenixframework.liveview.data.constants.SheetValues].
+         * values at [org.phoenixframework.liveview.constants.SheetValues].
          */
         private fun sheetValue(props: Properties, sheetValue: String): Properties {
             return props.copy(

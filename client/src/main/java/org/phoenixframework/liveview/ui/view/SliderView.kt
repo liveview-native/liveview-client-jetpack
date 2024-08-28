@@ -314,13 +314,13 @@ internal class SliderView private constructor(props: Properties) :
     internal object Factory : ChangeableView.Factory() {
 
         /**
-         * Creates a `SliderDTO` object based on the attributes of the input `Attributes` object.
-         * SliderDTO co-relates to the Slider composable
-         * @param attributes the `Attributes` object to create the `SliderDTO` object from
-         * @return a `SliderDTO` object based on the attributes of the input `Attributes` object
+         * Creates a `SliderView` object based on the attributes of the input `Attributes` object.
+         * SliderView co-relates to the Slider composable
+         * @param attributes the `Attributes` object to create the `SliderView` object from
+         * @return a `SliderView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): SliderView = SliderView(

@@ -87,7 +87,7 @@ internal class FlowLayoutView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<FlowLayoutView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): FlowLayoutView = FlowLayoutView(attributes.fold(Properties()) { props, attribute ->
@@ -114,7 +114,7 @@ internal class FlowLayoutView private constructor(props: Properties) :
          * <FlowRow horizontalArrangement="spaceAround" >...</FlowRow>
          * ```
          * @param horizontalArrangement the horizontal arrangement of the column's children. See the
-         * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
+         * supported values at [org.phoenixframework.liveview.constants.HorizontalArrangementValues].
          * An int value is also supported, which will be used to determine the space.
          */
         private fun horizontalArrangement(
@@ -149,7 +149,7 @@ internal class FlowLayoutView private constructor(props: Properties) :
          * <FlowRow verticalArrangement="spaceAround" >...</FlowRow>
          * ```
          * @param verticalArrangement the vertical arrangement of the column's children. See the
-         * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
+         * supported values at [org.phoenixframework.liveview.constants.VerticalArrangementValues].
          * An int value is also supported, which will be used to determine the space.
          */
         private fun verticalArrangement(

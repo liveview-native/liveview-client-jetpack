@@ -187,7 +187,7 @@ internal class TimePickerView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<TimePickerView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): TimePickerView = TimePickerView(attributes.fold(Properties()) { props, attribute ->
             when (attribute.name) {
                 attrColors -> colors(props, attribute.value)

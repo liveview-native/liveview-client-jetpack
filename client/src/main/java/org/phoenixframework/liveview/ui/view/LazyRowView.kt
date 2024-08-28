@@ -80,7 +80,7 @@ internal class LazyRowView private constructor(props: Properties) :
          * @return a `LazyRowView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): LazyRowView = LazyRowView(
@@ -110,7 +110,7 @@ internal class LazyRowView private constructor(props: Properties) :
          * <LazyRow horizontalArrangement="spaceAround" >...</LazyRow>
          * ```
          * @param horizontalArrangement the horizontal arrangement of the column's children. See the
-         * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
+         * supported values at [org.phoenixframework.liveview.constants.HorizontalArrangementValues].
          * An int value is also supported, which will be used to determine the space.
          */
         private fun horizontalArrangement(
@@ -133,7 +133,7 @@ internal class LazyRowView private constructor(props: Properties) :
          * <LazyRow verticalAlignment="center" >...</LazyRow>
          * ```
          * @param verticalAlignment the vertical alignment of the row's children. See the supported
-         * values at [org.phoenixframework.liveview.data.constants.VerticalAlignmentValues].
+         * values at [org.phoenixframework.liveview.constants.VerticalAlignmentValues].
          */
         private fun verticalAlignment(props: Properties, verticalAlignment: String): Properties {
             return if (verticalAlignment.isNotEmpty()) {

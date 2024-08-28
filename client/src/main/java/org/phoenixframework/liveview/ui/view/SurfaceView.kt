@@ -211,7 +211,7 @@ internal class SurfaceView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<SurfaceView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): SurfaceView = SurfaceView(attributes.fold(Properties()) { props, attribute ->
@@ -308,7 +308,7 @@ internal class SurfaceView private constructor(props: Properties) :
          * tonalElevation is greater than zero.
          *
          * @param shape surface's shape. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * [org.phoenixframework.liveview.constants.ShapeValues], or use an integer
          * representing the curve size applied for all four corners.
          */
         private fun shape(props: Properties, shape: String): Properties {

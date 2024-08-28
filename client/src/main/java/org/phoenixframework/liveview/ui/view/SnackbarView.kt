@@ -185,13 +185,13 @@ internal class SnackbarView private constructor(props: Properties) :
          * @return a `SnackbarView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): SnackbarView = SnackbarView(handleAttrs(attributes, pushEvent, scope))
 
         internal fun handleAttrs(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): Properties = attributes.fold(Properties()) { props, attribute ->

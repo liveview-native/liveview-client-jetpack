@@ -554,15 +554,15 @@ internal class TextFieldView private constructor(props: Properties) :
     internal object Factory : ChangeableView.Factory() {
 
         /**
-         * Creates a `TextFieldDTO` object based on the attributes and text of the input `Attributes`
-         * object. TextFieldDTO co-relates to the TextField composable
+         * Creates a `TextFieldView` object based on the attributes and text of the input `Attributes`
+         * object. TextFieldView co-relates to the TextField composable
          *
-         * @param attributes the `Attributes` object to create the `TextFieldDTO` object from
-         * @return a `TextFieldDTO` object based on the attributes and text of the input `Attributes`
+         * @param attributes the `Attributes` object to create the `TextFieldView` object from
+         * @return a `TextFieldView` object based on the attributes and text of the input `Attributes`
          * object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): TextFieldView = TextFieldView(
             attributes.fold(Properties()) { props, attribute ->
                 handleChangeableAttribute(props.changeableProps, attribute)?.let {
@@ -635,7 +635,7 @@ internal class TextFieldView private constructor(props: Properties) :
 
         /**
          * The style to be applied to the input text. Use the material design text styles.
-         * See the available values at [org.phoenixframework.liveview.data.constants.ThemeTextStyleValues].
+         * See the available values at [org.phoenixframework.liveview.constants.ThemeTextStyleValues].
          * ```
          * <TextField style="labelSmall" />
          * ```
@@ -704,7 +704,7 @@ internal class TextFieldView private constructor(props: Properties) :
          * <TextField shape="rectangle" />
          * ```
          * @param shape text field container's shape. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * [org.phoenixframework.liveview.constants.ShapeValues], or use an integer
          * representing the curve size applied to all four corners.
          */
         private fun shape(props: Properties, shape: String): Properties {
@@ -773,7 +773,7 @@ internal class TextFieldView private constructor(props: Properties) :
          * <TextField capitalization="words" />
          * ```
          * @param capitalization capitalization type. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.KeyboardCapitalizationValues].
+         * [org.phoenixframework.liveview.constants.KeyboardCapitalizationValues].
          */
         private fun capitalization(props: Properties, capitalization: String): Properties {
             val keyboardOptions = props.keyboardOptions
@@ -821,7 +821,7 @@ internal class TextFieldView private constructor(props: Properties) :
          * <TextField keyboardType="email" />
          * ```
          * @param keyboardType the keyboard type. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.KeyboardTypeValues]
+         * [org.phoenixframework.liveview.constants.KeyboardTypeValues]
          */
         private fun keyboardType(props: Properties, keyboardType: String): Properties {
             val keyboardOptions = props.keyboardOptions
@@ -849,7 +849,7 @@ internal class TextFieldView private constructor(props: Properties) :
          * <TextField imeAction="search" />
          * ```
          * @param imeAction IME action. See supported values at
-         * [org.phoenixframework.liveview.data.constants.ImeActionValues].
+         * [org.phoenixframework.liveview.constants.ImeActionValues].
          */
         private fun imeAction(props: Properties, imeAction: String): Properties {
             val keyboardOptions = props.keyboardOptions

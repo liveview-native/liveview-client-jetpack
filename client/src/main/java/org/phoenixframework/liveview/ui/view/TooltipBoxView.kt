@@ -105,7 +105,7 @@ internal class TooltipBoxView private constructor(props: Properties) :
 
     internal object Factory : ComposableViewFactory<TooltipBoxView>() {
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>, pushEvent: PushEvent?, scope: Any?
+            attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): TooltipBoxView = TooltipBoxView(attributes.fold(Properties()) { props, attribute ->
             when (attribute.name) {
                 attrEnableUserInput -> enableUserInput(props, attribute.value)

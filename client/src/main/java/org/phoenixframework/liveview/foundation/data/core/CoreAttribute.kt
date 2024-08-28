@@ -17,8 +17,8 @@ data class CoreAttribute(
         /**
          * Create a new instance of `CoreAttribute` from an `Attribute` object.
          */
-        internal fun fromAttribute(attribute: Attribute): org.phoenixframework.liveview.foundation.data.core.CoreAttribute {
-            return org.phoenixframework.liveview.foundation.data.core.CoreAttribute(
+        internal fun fromAttribute(attribute: Attribute): CoreAttribute {
+            return CoreAttribute(
                 attribute.name.name,
                 attribute.name.namespace.toString(),
                 attribute.value.toString()

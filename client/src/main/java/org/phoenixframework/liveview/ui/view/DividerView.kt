@@ -77,7 +77,7 @@ internal class DividerView private constructor(props: Properties) :
          * @return a `DividerView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
         ): DividerView = DividerView(
@@ -118,7 +118,7 @@ internal class DividerView private constructor(props: Properties) :
          * ```
          * @param color The color to be applied to the track behind the indicator. The color must be
          * specified as a string in the AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun color(props: Properties, color: String): Properties {
             return if (color.isNotEmpty()) {

@@ -4,8 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.roborazzi) apply false
     alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
-
-    id("com.strumenta.antlr-kotlin") version "1.0.0-RC4"
+    alias(libs.plugins.com.strumenta.antlr.kotlin) apply false
 }
 
 tasks.register<Delete>("clean") {

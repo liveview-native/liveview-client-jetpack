@@ -188,7 +188,7 @@ internal class AnnotatedTextView private constructor(props: Properties) :
          * @return a `TextView` object based on the attributes and text of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): AnnotatedTextView =
@@ -196,7 +196,7 @@ internal class AnnotatedTextView private constructor(props: Properties) :
 
         private fun textBuilder(
             properties: Properties,
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             scope: Any?,
             pushEvent: PushEvent?
         ): Properties = attributes.fold(properties) { props, attribute ->

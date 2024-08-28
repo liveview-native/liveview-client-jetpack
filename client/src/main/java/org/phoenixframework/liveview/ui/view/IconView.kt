@@ -16,6 +16,7 @@ import org.phoenixframework.liveview.constants.Attrs.attrTint
 import org.phoenixframework.liveview.constants.IconPrefixValues
 import org.phoenixframework.liveview.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.extensions.toColor
+import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
@@ -75,7 +76,7 @@ internal class IconView private constructor(props: Properties) :
          * @return a `IconView` object based on the attributes of the input `Attributes` object
          */
         override fun buildComposableView(
-            attributes: ImmutableList<org.phoenixframework.liveview.foundation.data.core.CoreAttribute>,
+            attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?,
         ): IconView = IconView(attributes.fold(Properties()) { props, attribute ->
