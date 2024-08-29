@@ -143,7 +143,7 @@ internal class ImageView private constructor(props: Properties) :
          * <AsyncImage contentScale="crop" />
          * ```
          * @param contentScale content scale. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.ContentScaleValues] colors.
+         * [org.phoenixframework.liveview.constants.ContentScaleValues] colors.
          */
         private fun contentScale(props: Properties, contentScale: String): Properties {
             return if (contentScale.isNotEmpty()) {
@@ -158,7 +158,7 @@ internal class ImageView private constructor(props: Properties) :
          * <Image alignment="centerStart" />
          * ```
          * @param alignment image alignment when the image is smaller than the available area.
-         * See the supported values at [org.phoenixframework.liveview.data.constants.AlignmentValues].
+         * See the supported values at [org.phoenixframework.liveview.constants.AlignmentValues].
          */
         private fun alignment(props: Properties, alignment: String): Properties {
             return if (alignment.isNotEmpty()) {

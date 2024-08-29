@@ -188,7 +188,7 @@ internal class LazyGridView private constructor(props: Properties) :
          * <LazyVerticalGrid verticalArrangement="spaceAround" >...</LazyVerticalGrid>
          * ```
          * @param verticalArrangement the vertical arrangement of the grid's children. See the
-         * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
+         * supported values at [org.phoenixframework.liveview.constants.VerticalArrangementValues].
          * An int value is also supported, which will be used to determine the space.
          */
         private fun verticalArrangement(
@@ -209,7 +209,7 @@ internal class LazyGridView private constructor(props: Properties) :
          * <LazyVerticalGrid horizontalArrangement="2" >...</LazyVerticalGrid>
          * ```
          * @param horizontalArrangement the horizontal arrangement of the grid's children. See the
-         * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
+         * supported values at [org.phoenixframework.liveview.constants.HorizontalArrangementValues].
          * An int value is also supported, which will be used to determine the space.
          */
         private fun horizontalArrangement(

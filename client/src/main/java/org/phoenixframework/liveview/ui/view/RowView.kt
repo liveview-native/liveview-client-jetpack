@@ -89,7 +89,7 @@ internal class RowView private constructor(props: Properties) :
          * <Row horizontalArrangement="spaceAround" >...</Row>
          * ```
          * @param horizontalArrangement the horizontal arrangement of the row's children. See the
-         * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
+         * supported values at [org.phoenixframework.liveview.constants.HorizontalArrangementValues].
          * An int value is also supported, which will be used to determine the space.
          */
         private fun horizontalArrangement(
@@ -112,7 +112,7 @@ internal class RowView private constructor(props: Properties) :
          * <Row verticalAlignment="center" >...</Row>
          * ```
          * @param verticalAlignment the vertical alignment of the row's children. See the
-         * supported values at [org.phoenixframework.liveview.data.constants.VerticalAlignmentValues].
+         * supported values at [org.phoenixframework.liveview.constants.VerticalAlignmentValues].
          */
         private fun verticalAlignment(props: Properties, verticalAlignment: String): Properties {
             return if (verticalAlignment.isNotEmpty()) {

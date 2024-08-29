@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.roborazzi)
+    id("maven-publish")
 }
 
 val moduleId = "org.phoenixframework.liveview.addons"
@@ -45,7 +46,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":client"))
+    implementation(project(Constants.moduleClient))
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)
@@ -60,10 +61,10 @@ dependencies {
     implementation(libs.io.coil.kt.coil.svg)
 
     // Test dependencies
-    testImplementation(project(":client-test-base"))
+    testImplementation(project(Constants.moduleClientTestBase))
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.ext.junit)
-    testImplementation(libs.androidx.compose.ui.test.junit4.android)
+    testImplementation(libs.androidx.compose.ui.test.junit4)
 
     testImplementation(libs.io.coil.kt.coil.test)
     testImplementation(libs.io.github.takahirom.roborazzi)
@@ -77,5 +78,19 @@ dependencies {
 tasks.withType<Test>().configureEach {
     doFirst {
         copyDesktopJniLibs(rootDir, this@configureEach)
+    }
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = Constants.publishGroupId
+            artifactId = Constants.publishArtifactClientAddonsId
+            version = Constants.publishVersion
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
     }
 }

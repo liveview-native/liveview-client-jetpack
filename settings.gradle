@@ -17,6 +17,4 @@ rootProject.name = "LiveView Native Client Jetpack"
 include ':client'
 include ':client-addons'
 include ':client-test-base'
-include ':foundation'
 include ':sample'
-include ':stylesheet-parser'

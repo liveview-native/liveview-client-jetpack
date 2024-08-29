@@ -113,7 +113,7 @@ internal class ProgressIndicatorView private constructor(props: Properties) :
          * ```
          * @param color The color to be applied to the progress indicator. The color must be
          * specified as a string in the AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun color(props: Properties, color: String): Properties {
             return if (color.isNotEmpty()) {
@@ -130,7 +130,7 @@ internal class ProgressIndicatorView private constructor(props: Properties) :
          * ```
          * @param color The color to be applied to the track behind the indicator. The color must be
          * specified as a string in the AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun trackColor(props: Properties, color: String): Properties {
             return if (color.isNotEmpty()) {
@@ -145,7 +145,7 @@ internal class ProgressIndicatorView private constructor(props: Properties) :
          * <CircularProgressIndicator strokeCap='square' />
          * ```
          * @param strokeCap see the supported stroke cap values at
-         * [org.phoenixframework.liveview.data.constants.StrokeCapValues].
+         * [org.phoenixframework.liveview.constants.StrokeCapValues].
          */
         private fun strokeCap(props: Properties, strokeCap: String): Properties {
             return if (strokeCap.isNotEmpty()) {

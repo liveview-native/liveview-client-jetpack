@@ -38,8 +38,10 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.appcompat)
     implementation(libs.com.google.android.material)
-    implementation(project(":client"))
-    implementation(project(":client-addons"))
+    implementation(project(Constants.moduleClient))
+    implementation(project(Constants.moduleClientAddons))
 }

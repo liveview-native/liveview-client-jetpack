@@ -213,7 +213,7 @@ internal class ScaffoldView private constructor(props: Properties) :
          * Color used for the background of this scaffold.
          *
          * @param color container color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun containerColor(props: Properties, color: String): Properties {
             return if (color.isNotEmpty()) {
@@ -225,7 +225,7 @@ internal class ScaffoldView private constructor(props: Properties) :
          * Preferred color for content inside this scaffold.
          *
          * @param color content color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun contentColor(props: Properties, color: String): Properties {
             return if (color.isNotEmpty()) {
@@ -256,7 +256,7 @@ internal class ScaffoldView private constructor(props: Properties) :
          * Position of the Floating Action Button on the screen
          *
          * @param position FAB position on the screen. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.FabPositionValues].
+         * [org.phoenixframework.liveview.constants.FabPositionValues].
          */
         private fun fabPosition(props: Properties, position: String): Properties {
             return if (position.isNotEmpty()) {
@@ -280,7 +280,7 @@ internal class ScaffoldView private constructor(props: Properties) :
          * Once this scroll behavior is set, a NestedScrollConnection will be attached to a
          * Modifier.nestedScroll in order to keep track of the scroll events.
          * @param scrollBehavior see the supported values at
-         * [org.phoenixframework.liveview.data.constants.ScrollBehaviorValues].
+         * [org.phoenixframework.liveview.constants.ScrollBehaviorValues].
          * ```
          * <Scaffold topBarScrollBehavior="exitUntilCollapsed">
          * ```

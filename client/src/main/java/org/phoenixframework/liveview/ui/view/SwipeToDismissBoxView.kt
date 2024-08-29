@@ -145,7 +145,7 @@ internal class SwipeToDismissBoxView private constructor(props: Properties) :
 
         /**
          * The initial value of the state. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.SwipeToDismissBoxValues].
+         * [org.phoenixframework.liveview.constants.SwipeToDismissBoxValues].
          * ```
          * <SwipeToDismissBox initialValue="Settle">...</SwipeToDismissBox>
          * ```

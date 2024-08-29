@@ -383,7 +383,7 @@ internal class SearchBarView private constructor(props: Properties) :
          * <SearchBar shape="circle" >...</SearchBar>
          * ```
          * @param shape search bar's shape. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.ShapeValues], or an integer representing
+         * [org.phoenixframework.liveview.constants.ShapeValues], or an integer representing
          * the curve size applied for all four corners.
          */
         private fun shape(props: Properties, shape: String): Properties {

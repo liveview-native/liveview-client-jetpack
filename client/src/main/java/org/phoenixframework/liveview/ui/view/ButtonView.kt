@@ -435,7 +435,7 @@ internal class ButtonView private constructor(props: Properties) :
          * <Button shape="circle" >...</Button>
          * ```
          * @param shape button's shape. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.ShapeValues],
+         * [org.phoenixframework.liveview.constants.ShapeValues],
          * or use an integer representing the curve size applied for all four corners.
          */
         private fun shape(props: Properties, shape: String): Properties {
@@ -503,7 +503,7 @@ internal class ButtonView private constructor(props: Properties) :
          * @param border a JSON representing the border object. The `width` key is an int value
          * representing button border's width content. The `color` key must be specified as a string
          * in the AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun border(props: Properties, border: String): Properties {
             return props.copy(border = borderFromString(border))

@@ -92,7 +92,7 @@ internal class ColumnView private constructor(props: Properties) :
          * <Column verticalArrangement="spaceAround" >...</Column>
          * ```
          * @param verticalArrangement the vertical arrangement of the column's children. See the
-         * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
+         * supported values at [org.phoenixframework.liveview.constants.VerticalArrangementValues].
          * An int value is also supported, which will be used to determine the space between the
          * items.
          */
@@ -114,7 +114,7 @@ internal class ColumnView private constructor(props: Properties) :
          * <Column horizontalAlignment="center" >...</Column>
          * ```
          * @param horizontalAlignment the horizontal alignment of the column's children. See the
-         * supported values at [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
+         * supported values at [org.phoenixframework.liveview.constants.HorizontalAlignmentValues].
          */
         private fun horizontalAlignment(
             props: Properties,

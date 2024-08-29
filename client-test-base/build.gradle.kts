@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("maven-publish")
 }
 
 android {
@@ -40,14 +41,28 @@ android {
 }
 
 dependencies {
-    implementation(project(":client"))
-    implementation(libs.net.java.dev.jna)
+    implementation(project(Constants.moduleClient))
     implementation(libs.androidx.test.ext.junit)
-    implementation(libs.androidx.compose.ui.test.junit4.android)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.ui.test.junit4)
     implementation(libs.io.github.takahirom.roborazzi)
     implementation(libs.io.github.takahirom.roborazzi.compose)
     implementation(libs.io.github.takahirom.roborazzi.junit.rule)
     implementation(libs.junit)
     implementation(libs.koin.test)
     implementation(libs.org.robolectric)
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = Constants.publishGroupId
+            artifactId = Constants.publishArtifactClientTestId
+            version = Constants.publishVersion
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
 }

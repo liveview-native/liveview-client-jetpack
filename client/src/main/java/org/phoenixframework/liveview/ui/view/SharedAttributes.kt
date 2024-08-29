@@ -790,7 +790,7 @@ fun <T> finiteAnimationSpecFromString(string: String): FiniteAnimationSpec<T>? {
  * The horizontal alignment of the Column's children
  *
  * @param horizontalAlignment the horizontal alignment of the column's children. See the
- * supported values at [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
+ * supported values at [org.phoenixframework.liveview.constants.HorizontalAlignmentValues].
  */
 fun horizontalAlignmentFromString(horizontalAlignment: String) =
     when (horizontalAlignment) {
@@ -804,7 +804,7 @@ fun horizontalAlignmentFromString(horizontalAlignment: String) =
  * The horizontal arrangement of the Row's children
  *
  * @param horizontalArrangement the horizontal arrangement of the column's children. See the
- * supported values at [org.phoenixframework.liveview.data.constants.HorizontalArrangementValues].
+ * supported values at [org.phoenixframework.liveview.constants.HorizontalArrangementValues].
  * An int value is also supported, which will be used to determine the space.
  */
 fun horizontalArrangementFromString(horizontalArrangement: String) =
@@ -1070,7 +1070,7 @@ fun transformOriginFromString(string: String): TransformOrigin {
  * The vertical alignment of the Row's children
  *
  * @param verticalAlignment the vertical alignment of the row's children. See the supported values
- * at [org.phoenixframework.liveview.data.constants.VerticalAlignmentValues].
+ * at [org.phoenixframework.liveview.constants.VerticalAlignmentValues].
  */
 fun verticalAlignmentFromString(verticalAlignment: String) = when (verticalAlignment) {
     VerticalAlignmentValues.top -> Alignment.Top
@@ -1082,7 +1082,7 @@ fun verticalAlignmentFromString(verticalAlignment: String) = when (verticalAlign
  * The vertical arrangement of the Column's children
  *
  * @param verticalArrangement the vertical arrangement of the column's children. See the
- * supported values at [org.phoenixframework.liveview.data.constants.VerticalArrangementValues].
+ * supported values at [org.phoenixframework.liveview.constants.VerticalArrangementValues].
  * An int value is also supported, which will be used to determine the space.
  */
 fun verticalArrangementFromString(verticalArrangement: String) =

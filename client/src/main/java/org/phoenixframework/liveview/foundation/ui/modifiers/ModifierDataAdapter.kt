@@ -4,9 +4,9 @@ import org.phoenixframework.liveview.stylesheet.ElixirParser
 
 class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
 
-    private val modifierIdExpression = tupleExpression.tuple().expressions_().expression(0)
-    private val metaDataExpression = tupleExpression.tuple().expressions_().expression(1)
-    private val argsExpression = tupleExpression.tuple().expressions_().expression(2)
+    private val modifierIdExpression = tupleExpression.tuple().expressions_()?.expression(0)
+    private val metaDataExpression = tupleExpression.tuple().expressions_()?.expression(1)
+    private val argsExpression = tupleExpression.tuple().expressions_()?.expression(2)
 
     val modifierName: String?
         get() =
@@ -18,7 +18,7 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
         get() =
             if (metaDataExpression is ElixirParser.ListExprContext) {
                 val metadataExpressionListCtx = metaDataExpression.list()
-                val metadataMapEntries = metadataExpressionListCtx?.short_map_entries()
+                val metadataMapEntries = metadataExpressionListCtx.short_map_entries()
                 var file: String? = null
                 var line: Int? = null
                 var module: String? = null
@@ -26,10 +26,10 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
 
                 for (shortMapEntryContext in metadataMapEntries?.short_map_entry() ?: emptyList()) {
                     when (shortMapEntryContext.variable().text) {
-                        "file" -> file = shortMapEntryContext.expression()?.text
-                        "line" -> line = shortMapEntryContext.expression()?.text?.toInt()
-                        "module" -> module = shortMapEntryContext.expression()?.text
-                        "source" -> source = shortMapEntryContext.expression()?.text
+                        "file" -> file = shortMapEntryContext.expression().text
+                        "line" -> line = shortMapEntryContext.expression().text.toInt()
+                        "module" -> module = shortMapEntryContext.expression().text
+                        "source" -> source = shortMapEntryContext.expression().text
                     }
                 }
                 if (file != null || line != null || module != null || source != null) {
@@ -42,14 +42,14 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
         get() {
             if (argsExpression is ElixirParser.ListExprContext) {
                 val argsExpressionListCtx = argsExpression.list()
-
-                if (argsExpressionListCtx.expressions_() == null || argsExpressionListCtx.expressions_()
-                        .expression().isEmpty()
+                val argsExpressionListCtxExpressions = argsExpressionListCtx.expressions_()
+                if (argsExpressionListCtxExpressions == null || argsExpressionListCtxExpressions.expression().isEmpty()
                 ) {
                     return emptyList()
                 }
+
                 val result = mutableListOf<ArgumentData>()
-                argsExpressionListCtx.expressions_().expression().forEach { argumentExpression ->
+                argsExpressionListCtxExpressions.expression().forEach { argumentExpression ->
                     when (argumentExpression) {
                         is ElixirParser.TupleExprContext -> {
                             result.add(argValueFromContext(null, argumentExpression))
@@ -296,13 +296,13 @@ class ModifierDataAdapter(tupleExpression: ElixirParser.TupleExprContext) {
 
         val tupleExpressions = tupleCtx.expressions_()
 
-        val clazz = when (val argTypeExpression = tupleExpressions.expression(0)) {
+        val clazz = when (val argTypeExpression = tupleExpressions?.expression(0)) {
             is ElixirParser.AtomExprContext -> argTypeExpression.ATOM().text.replace(":", "")
             is ElixirParser.AliasExprContext -> argTypeExpression.ALIAS().text.replace(":", "")
             else -> TYPE_UNDEFINED
         }
 
-        val argMetaDataExpression = tupleExpressions.expression(1) as ElixirParser.ListExprContext
+        val argMetaDataExpression = tupleExpressions?.expression(1) as ElixirParser.ListExprContext
 
         val argsValues = when (val argParamsExpression = tupleExpressions.expression(2)) {
             is ElixirParser.ListExprContext -> {

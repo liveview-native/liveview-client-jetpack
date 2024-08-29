@@ -156,7 +156,7 @@ internal abstract class DialogView<DP : DialogView.IDialogProperties>(props: DP)
          * <AlertDialog shape="16" >...</AlertDialog>
          * ```
          * @param shape button's shape. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * [org.phoenixframework.liveview.constants.ShapeValues], or use an integer
          * representing the curve size applied for all four corners.
          */
         fun shape(props: DialogComposableProperties, shape: String): DialogComposableProperties {

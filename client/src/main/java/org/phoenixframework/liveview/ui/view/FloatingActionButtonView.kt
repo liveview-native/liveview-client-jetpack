@@ -232,7 +232,7 @@ internal class FloatingActionButtonView private constructor(props: Properties) :
          * <FloatingActionButton containerColor="#FF0000FF" />
          * ```
          * @param color the background color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun containerColor(props: Properties, color: String): Properties {
             return if (color.isNotEmpty()) {
@@ -247,7 +247,7 @@ internal class FloatingActionButtonView private constructor(props: Properties) :
          * <FloatingActionButton contentColor="#FF0000FF" />
          * ```
          * @param color the content color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun contentColor(props: Properties, color: String): Properties {
             return if (color.isNotEmpty()) {
@@ -274,7 +274,7 @@ internal class FloatingActionButtonView private constructor(props: Properties) :
          * <FloatingActionButton shape="circle" >...</FloatingActionButton>
          * ```
          * @param shape button's shape. See the supported values at
-         * [org.phoenixframework.liveview.data.constants.ShapeValues], or use an integer
+         * [org.phoenixframework.liveview.constants.ShapeValues], or use an integer
          * representing the curve size applied for all four corners.
          */
         private fun shape(props: Properties, shape: String): Properties {

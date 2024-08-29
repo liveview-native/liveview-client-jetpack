@@ -67,7 +67,11 @@ data class CoreNodeElement internal constructor(
                         "",
                         "",
                         persistentListOf(
-                            CoreAttribute(TEXT_ATTRIBUTE, "", node.value)
+                            CoreAttribute(
+                                TEXT_ATTRIBUTE,
+                                "",
+                                node.value
+                            )
                         )
                     )
             }

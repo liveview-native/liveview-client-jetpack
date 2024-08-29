@@ -113,7 +113,7 @@ internal class IconView private constructor(props: Properties) :
          * <Icon tint="#FFFF0000"/>
          * ```
          * @param tintColor the icon tint color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun tint(props: Properties, tintColor: String): Properties {
             return props.copy(tint = tintColor.toColor())

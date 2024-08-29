@@ -133,7 +133,7 @@ internal class BottomAppBarView private constructor(props: Properties) :
          * Color used for the background of this bottom bar.
          *
          * @param color container color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         fun containerColor(props: Properties, color: String): Properties {
             return if (color.isNotEmpty()) {
@@ -145,7 +145,7 @@ internal class BottomAppBarView private constructor(props: Properties) :
          * Preferred color for content inside this bottom bar.
          *
          * @param color content color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         fun contentColor(props: Properties, color: String): Properties {
             return if (color.isNotEmpty()) {

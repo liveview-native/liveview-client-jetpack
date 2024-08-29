@@ -273,7 +273,7 @@ internal class PagerView private constructor(props: Properties) :
          * <VerticalPager horizontalAlignment="center" >...</VerticalPager>
          * ```
          * @param alignment see supported values at
-         * [org.phoenixframework.liveview.data.constants.HorizontalAlignmentValues].
+         * [org.phoenixframework.liveview.constants.HorizontalAlignmentValues].
          */
         private fun horizontalAlignment(props: Properties, alignment: String): Properties {
             return props.copy(horizontalAlignment = horizontalAlignmentFromString(alignment))
@@ -369,7 +369,7 @@ internal class PagerView private constructor(props: Properties) :
          * <HorizontalPager verticalAlignment="center" >...</HorizontalPager>
          * ```
          * @param alignment see the supported values at
-         * [org.phoenixframework.liveview.data.constants.VerticalAlignmentValues].
+         * [org.phoenixframework.liveview.constants.VerticalAlignmentValues].
          */
         private fun verticalAlignment(props: Properties, alignment: String): Properties {
             return props.copy(verticalAlignment = verticalAlignmentFromString(alignment))

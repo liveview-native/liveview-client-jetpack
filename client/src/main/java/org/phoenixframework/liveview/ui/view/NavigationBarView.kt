@@ -121,7 +121,7 @@ internal class NavigationBarView private constructor(props: Properties) :
          * <NavigationBar containerColor="#FFFFFF00">...</NavigationBar>
          * ```
          * @param color container color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun containerColor(props: Properties, color: String): Properties {
             return props.copy(containerColor = color.toColor())
@@ -133,7 +133,7 @@ internal class NavigationBarView private constructor(props: Properties) :
          * <NavigationBar contentColor="#FFCCCCCC">...</NavigationBar>
          * ```
          * @param color content color in AARRGGBB format or one of the
-         * [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun contentColor(props: Properties, color: String): Properties {
             return props.copy(contentColor = color.toColor())

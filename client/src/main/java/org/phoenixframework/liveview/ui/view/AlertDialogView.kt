@@ -226,7 +226,7 @@ internal class AlertDialogView private constructor(props: Properties) :
          * <AlertDialog iconContentColor="#FF00FF00" >...</AlertDialog>
          * ```
          * @param iconContentColor the content color used for the icon in AARRGGBB format or one of
-         * the [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * the [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun iconContentColor(props: Properties, iconContentColor: String): Properties {
             return props.copy(iconContentColor = iconContentColor.toColor())
@@ -238,7 +238,7 @@ internal class AlertDialogView private constructor(props: Properties) :
          * <AlertDialog titleContentColor="#FFCCCCCC" >...</AlertDialog>
          * ```
          * @param titleContentColor the content color used for the title in AARRGGBB format or one
-         * of the [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * of the [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun titleContentColor(props: Properties, titleContentColor: String): Properties {
             return props.copy(titleContentColor = titleContentColor.toColor())
@@ -250,7 +250,7 @@ internal class AlertDialogView private constructor(props: Properties) :
          * <AlertDialog textContentColor="#FFCCCCCC" >...</AlertDialog>
          * ```
          * @param textContentColor the content color used for the text in AARRGGBB format or one of
-         * the [org.phoenixframework.liveview.data.constants.SystemColorValues] colors.
+         * the [org.phoenixframework.liveview.constants.SystemColorValues] colors.
          */
         private fun textContentColor(props: Properties, textContentColor: String): Properties {
             return props.copy(textContentColor = textContentColor.toColor())
