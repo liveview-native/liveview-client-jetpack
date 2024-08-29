@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.roborazzi)
+    id("maven-publish")
 }
 
 val moduleId = "org.phoenixframework.liveview.addons"
@@ -77,5 +78,19 @@ dependencies {
 tasks.withType<Test>().configureEach {
     doFirst {
         copyDesktopJniLibs(rootDir, this@configureEach)
+    }
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = Constants.publishGroupId
+            artifactId = Constants.publishArtifactClientAddonsId
+            version = Constants.publishVersion
+
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
     }
 }

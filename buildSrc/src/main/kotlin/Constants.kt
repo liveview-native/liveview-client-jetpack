@@ -17,5 +17,6 @@ object Constants {
     const val publishGroupId = "com.github.liveview-native"
     const val publishVersion = "0.0.0-dev001"
     const val publishArtifactClientId = "liveview-client-jetpack"
+    const val publishArtifactClientAddonsId = "liveview-client-jetpack-addons"
     const val publishArtifactClientTestId = "liveview-client-jetpack-test"
 }
