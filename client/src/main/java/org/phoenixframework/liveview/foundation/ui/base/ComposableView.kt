@@ -9,8 +9,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableMap
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.phoenixframework.liveview.LiveViewJetpack
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrClass
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxClick
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxValue
@@ -19,7 +18,6 @@ import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrSty
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.KEY_PHX_VALUE
-import org.phoenixframework.liveview.foundation.ui.modifiers.BaseModifiersParser
 import org.phoenixframework.liveview.foundation.ui.view.onClickFromString
 
 /**
@@ -122,9 +120,11 @@ data class CommonComposableProperties(
 /**
  * A `ComposableViewFactory` is responsible to create a `ComposableView` using a list of attributes.
  */
-abstract class ComposableViewFactory<CV : ComposableView<*>> : KoinComponent {
+abstract class ComposableViewFactory<CV : ComposableView<*>> {
 
-    private val modifierParser by inject<BaseModifiersParser>()
+    private val modifierParser by lazy {
+        LiveViewJetpack.getModifiersParser()
+    }
 
     /**
      * Create a new instance of a `ComposableView`. Subclasses of this class must override this
@@ -189,7 +189,13 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> : KoinComponent {
     ): CommonComposableProperties {
         val modifier = commonProps.modifier
         return commonProps.copy(
-            modifier = modifier.then(modifierParser.run { modifier.fromStyleName(string, scope, pushEvent) })
+            modifier = modifier.then(modifierParser.run {
+                modifier.fromStyleName(
+                    string,
+                    scope,
+                    pushEvent
+                )
+            })
         )
     }
 
