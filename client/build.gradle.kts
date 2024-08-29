@@ -102,6 +102,8 @@ dependencies {
     implementation(libs.com.github.liveview.native.core.jetpack)
     implementation(libs.com.strumenta.antlr.kotlin.runtime)
     // TODO Is there a better way to include JNA *.so files to the AAR file? (instead of put them in jniLibs dir)
+    //   Download the JAR from https://github.com/java-native-access/jna/tree/master/lib/native
+    //   Extract the libjnidispatch.so file for each architecture using `jar xf android-aarch64.jar`
     implementation(libs.net.java.dev.jna)
     implementation(libs.org.jsoup)
 
