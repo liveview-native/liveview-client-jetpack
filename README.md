@@ -58,9 +58,9 @@ This plugin provides the Jetpack rendering behavior of a Phoenix LiveView. Start
 defmodule MyAppWeb.HomeLive do
   use MyAppWeb :live_view
   use LiveViewNative.LiveView,
-    formats: [:swiftui],
+    formats: [:jetpack],
     layouts: [
-      swiftui: {MyAppWeb.Layouts.SwiftUI, :app}
+      jetpack: {MyAppWeb.Layouts.Jetpack, :app}
     ]
 
 end
@@ -69,13 +69,13 @@ end
 then just like all format LiveView Native rendering components you will create a new module namespaced under the calling module with the `module_suffix` appended:
 
 ```elixir
-defmodule MyAppWeb.HomeLive.SwiftUI do
+defmodule MyAppWeb.HomeLive.Jetpack do
   use LiveViewNative.Component,
-    format: :swiftui
+    format: :jetpack
 
   def render(assigns, _interface) do
     ~LVN"""
-    <Text>Hello, SwiftUI!</Text>
+    <Text>Hello, Jetpack!</Text>
     """
   end
 end
@@ -85,9 +85,9 @@ Further details on additional options and an explanation of template rendering v
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/live_view_native_swiftui>.
+be found at <https://hexdocs.pm/live_view_native_jetpack>.
 
 ## Resources
 
-- Browse the [documentation](https://liveview-native.github.io/liveview-client-swiftui/documentation/liveviewnative/) to read about the API.
+- Browse the [documentation](https://liveview-native.github.io/liveview-client-jetpack/documentation/liveviewnative/) to read about the API.
 - Check out the [ElixirConf '22 chat app](https://github.com/liveview-native/elixirconf_chat) for an example of a complete app.
