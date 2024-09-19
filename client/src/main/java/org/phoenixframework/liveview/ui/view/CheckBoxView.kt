@@ -16,7 +16,6 @@ import androidx.compose.runtime.snapshotFlow
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import kotlinx.coroutines.flow.map
 import org.phoenixframework.liveview.constants.Attrs.attrChecked
 import org.phoenixframework.liveview.constants.Attrs.attrColors
 import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrCheckedColor
@@ -52,7 +51,7 @@ internal class CheckBoxView private constructor(props: Properties) :
         val colors = props.colors
         val checked = props.checked
 
-        var stateValue by remember(composableNode) {
+        var stateValue by remember {
             mutableStateOf(checked)
         }
         Checkbox(
@@ -65,18 +64,20 @@ internal class CheckBoxView private constructor(props: Properties) :
             colors = getCheckBoxColors(colors),
         )
 
-        LaunchedEffect(composableNode) {
-            changeValueEventName?.let { event ->
-                snapshotFlow { stateValue }
-                    .onChangeable()
-                    .map { isChecked ->
-                        mergeValueWithPhxValue(KEY_CHECKED, isChecked)
-                    }
-                    .collect { pushValue ->
-                        pushOnChangeEvent(pushEvent, event, pushValue)
-                    }
-            }
+        LaunchedEffect(Unit) {
+            notifyChange(mergeValue(checked))
+            snapshotFlow { stateValue }
+                .onChangeable()
+                .collect {
+                    val newValue = mergeValue(it)
+                    pushOnChangeEvent(pushEvent, changeValueEventName, newValue)
+                    notifyChange(newValue)
+                }
         }
+    }
+
+    private fun mergeValue(checked: Boolean): Any {
+        return mergeValueWithPhxValue(KEY_PHX_VALUE, checked)
     }
 
     @Composable
@@ -164,10 +165,6 @@ internal class CheckBoxView private constructor(props: Properties) :
                 props.copy(colors = colorsFromString(colors)?.toImmutableMap())
             } else props
         }
-    }
-
-    companion object {
-        private const val KEY_CHECKED = "checked"
     }
 }
 

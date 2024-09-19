@@ -1,24 +1,26 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
 
 android {
+    namespace = "org.phoenixframework.liveview.liveform"
     compileSdk = Constants.compileSdkVersion
+
     defaultConfig {
         minSdk = Constants.minSdkVersion
-        targetSdk = Constants.targetSdkVersion
-
-        applicationId = "com.dockyard.android.liveviewsample"
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = Constants.instrumentationRunnerClass
+        consumerProguardFiles("consumer-rules.pro")
     }
+
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -34,15 +36,14 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = Constants.kotlinCompilerExtVersion
     }
-    namespace = "com.dockyard.android.liveviewsample"
 }
 
 dependencies {
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.com.google.android.material)
     implementation(project(Constants.moduleClient))
-    implementation(project(Constants.moduleClientAddons))
-    implementation(project(":live-form"))
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    testImplementation(libs.junit)
 }

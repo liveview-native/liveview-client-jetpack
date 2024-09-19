@@ -11,6 +11,7 @@ import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.LiveViewJetpack
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrClass
+import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrNodeId
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxClick
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxValue
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxValueNamed
@@ -19,6 +20,7 @@ import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.KEY_PHX_VALUE
 import org.phoenixframework.liveview.foundation.ui.view.onClickFromString
+import org.phoenixframework.liveview.ui.view.PhxChangeNotifier
 
 /**
  *  A `ComposableView` is the parent class of all components. Subclasses must implement the
@@ -28,6 +30,10 @@ import org.phoenixframework.liveview.foundation.ui.view.onClickFromString
  *  object informing the respective tag for the composable.
  */
 abstract class ComposableView<CP : ComposableProperties>(protected open val props: CP) {
+
+    private val phxChangeNotifier: PhxChangeNotifier by lazy {
+        LiveViewJetpack.getPhxChangeNotifier()
+    }
 
     @Composable
     abstract fun Compose(
@@ -60,6 +66,16 @@ abstract class ComposableView<CP : ComposableProperties>(protected open val prop
             val newMap = props.commonProps.value.toMutableMap()
             newMap[key] = value
             newMap
+        }
+    }
+
+    protected fun notifyChange(value: Any?) {
+        phxChangeNotifier.notify(props.commonProps.nodeId, value)
+    }
+
+    protected fun pushOnChangeEvent(pushEvent: PushEvent, event: String?, value: Any?) {
+        event?.let {
+            pushEvent.invoke(EVENT_TYPE_CHANGE, it, value, null)
         }
     }
 
@@ -105,6 +121,7 @@ interface ComposableProperties {
 @Stable
 data class CommonComposableProperties(
     val modifier: Modifier = Modifier,
+    val nodeId: String = "",
     val value: ImmutableMap<String, Any> = persistentMapOf()
 ) {
     val phxValue: Any?
@@ -162,6 +179,7 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> {
     ): CommonComposableProperties {
         return when (attribute.name) {
             attrClass -> setClassFromAttr(commonProps, attribute.value, scope, pushEvent)
+            attrNodeId -> setNodeId(commonProps, attribute.value)
             attrPhxClick -> setPhxClickFromAttr(commonProps, attribute.value, pushEvent)
             attrPhxValue -> setPhxValueFromAttr(commonProps, attrPhxValue, attribute.value)
             attrStyle -> setStyleFromAttr(commonProps, attribute.value, scope, pushEvent)
@@ -171,6 +189,13 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> {
                 } else
                     commonProps
         }
+    }
+
+    private fun setNodeId(
+        commonProps: CommonComposableProperties,
+        nodeId: String,
+    ): CommonComposableProperties {
+        return commonProps.copy(nodeId = nodeId)
     }
 
     /**

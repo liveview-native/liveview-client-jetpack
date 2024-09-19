@@ -18,6 +18,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.google.gson.JsonArray
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
@@ -27,7 +28,6 @@ import org.phoenixframework.liveview.constants.Attrs.attrInitialDisplayedMonthMi
 import org.phoenixframework.liveview.constants.Attrs.attrInitialSelectedDateMillis
 import org.phoenixframework.liveview.constants.Attrs.attrInitialSelectedEndDateMillis
 import org.phoenixframework.liveview.constants.Attrs.attrInitialSelectedStartDateMillis
-import org.phoenixframework.liveview.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.constants.Attrs.attrShowModeToggle
 import org.phoenixframework.liveview.constants.Attrs.attrYearRange
 import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrContainerColor
@@ -57,11 +57,10 @@ import org.phoenixframework.liveview.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
-import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
-import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
+import org.phoenixframework.liveview.ui.view.CheckBoxView.Factory.handleChangeableAttribute
 
 /**
  * Material Design date picker.
@@ -80,7 +79,7 @@ import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
  */
 @OptIn(ExperimentalMaterial3Api::class)
 internal class DatePickerView private constructor(props: Properties) :
-    ComposableView<DatePickerView.Properties>(props) {
+    ChangeableView<ClosedRange<Long>, DatePickerView.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -112,7 +111,7 @@ internal class DatePickerView private constructor(props: Properties) :
         val initialDisplayedMonthMillis = props.initialDisplayedMonthMillis
         val initialDisplayMode = props.initialDisplayMode
         val initialSelectedDateMillis = props.initialSelectedDateMillis
-        val onChanged = props.onChanged
+        val changeValueEventName = props.changeableProps.onChange
         val showModeToggle = props.showModeToggle
         val yearRange = remember(props.yearStart, props.yearEnd) {
             IntRange(
@@ -123,7 +122,7 @@ internal class DatePickerView private constructor(props: Properties) :
 
         val state = rememberDatePickerState(
             initialSelectedDateMillis = initialSelectedDateMillis,
-            initialDisplayedMonthMillis = initialDisplayedMonthMillis ?: initialSelectedDateMillis,
+            initialDisplayedMonthMillis = initialDisplayedMonthMillis,
             yearRange = yearRange,
             initialDisplayMode = initialDisplayMode ?: DisplayMode.Picker,
         )
@@ -156,14 +155,9 @@ internal class DatePickerView private constructor(props: Properties) :
             colors = getDatePickerColors(colors),
         )
         LaunchedEffect(state.selectedDateMillis) {
-            state.selectedDateMillis?.let { dateInMillis ->
-                pushEvent(
-                    EVENT_TYPE_CHANGE,
-                    onChanged,
-                    mergeValueWithPhxValue(KEY_DATE, dateInMillis),
-                    null
-                )
-            }
+            val newValue = mergeValue(state.selectedDateMillis ?: 0)
+            pushOnChangeEvent(pushEvent, changeValueEventName, newValue)
+            notifyChange(newValue)
         }
     }
 
@@ -179,7 +173,7 @@ internal class DatePickerView private constructor(props: Properties) :
         val initialDisplayMode = props.initialDisplayMode
         val initialSelectedStartDateMillis = props.initialSelectedStartDateMillis
         val initialSelectedEndDateMillis = props.initialSelectedEndDateMillis
-        val onChanged = props.onChanged
+        val changeValueEventName = props.changeableProps.onChange
         val showModeToggle = props.showModeToggle
         val yearRange = IntRange(
             props.yearStart ?: DatePickerDefaults.YearRange.first,
@@ -189,8 +183,7 @@ internal class DatePickerView private constructor(props: Properties) :
         val state = rememberDateRangePickerState(
             initialSelectedStartDateMillis = initialSelectedStartDateMillis,
             initialSelectedEndDateMillis = initialSelectedEndDateMillis,
-            initialDisplayedMonthMillis = initialDisplayedMonthMillis
-                ?: initialSelectedStartDateMillis,
+            initialDisplayedMonthMillis = initialDisplayedMonthMillis,
             yearRange = yearRange,
             initialDisplayMode = initialDisplayMode ?: DisplayMode.Picker,
         )
@@ -224,21 +217,41 @@ internal class DatePickerView private constructor(props: Properties) :
             colors = getDatePickerColors(colors),
         )
         LaunchedEffect(state.selectedStartDateMillis, state.selectedEndDateMillis) {
-            val startDate = state.selectedStartDateMillis
-            val endDate = state.selectedEndDateMillis
-            if (startDate != null || endDate != null) {
-                pushEvent.invoke(
-                    EVENT_TYPE_CHANGE,
-                    onChanged,
-                    arrayOf(startDate ?: 0, endDate ?: 0),
-                    null
-                )
-            }
+            val interval = mergeValue(
+                state.selectedStartDateMillis, state.selectedEndDateMillis
+            )
+            notifyChange(interval)
+            pushOnChangeEvent(pushEvent, changeValueEventName, interval)
         }
     }
 
-    companion object {
-        private const val KEY_DATE = "date"
+    private fun mergeValue(dateInMillis: Long): Any {
+        return mergeValueWithPhxValue(KEY_PHX_VALUE, dateInMillis)
+    }
+
+    private fun mergeValue(startDate: Long?, endDate: Long?): Any {
+//        var startDateString: String? = null
+//        var endDateString: String? = null
+//        if (startDate != null) {
+//            startDateString = longToStringDate(startDate)
+//        }
+//        if (endDate != null) {
+//            endDateString = longToStringDate(endDate)
+//        }
+//        return mergeValueWithPhxValue(
+//            KEY_PHX_VALUE,
+//            JsonArray().apply {
+//                add(startDateString)
+//                add(endDateString)
+//            }.toString()
+//        )
+        return mergeValueWithPhxValue(
+            KEY_PHX_VALUE,
+            JsonArray().apply {
+                add(startDate)
+                add(endDate)
+            }.toString()
+        )
     }
 
     @Stable
@@ -249,48 +262,55 @@ internal class DatePickerView private constructor(props: Properties) :
         val initialSelectedDateMillis: Long? = null,
         val initialSelectedStartDateMillis: Long? = null,
         val initialSelectedEndDateMillis: Long? = null,
-        val onChanged: String = "",
         val showModeToggle: Boolean = true,
         val yearStart: Int? = null,
         val yearEnd: Int? = null,
+        override val changeableProps: ChangeableProperties = ChangeableProperties(),
         override val commonProps: CommonComposableProperties = CommonComposableProperties(),
-    ) : ComposableProperties
+    ) : IChangeableProperties
 
     internal object Factory :
         ComposableViewFactory<DatePickerView>() {
         override fun buildComposableView(
             attributes: ImmutableList<CoreAttribute>, pushEvent: PushEvent?, scope: Any?
         ): DatePickerView = DatePickerView(attributes.fold(Properties()) { props, attribute ->
-            when (attribute.name) {
-                attrColors -> colors(props, attribute.value)
-                attrInitialDisplayedMonthMillis -> initialDisplayedMonthMillis(
-                    props,
-                    attribute.value
-                )
-
-                attrInitialDisplayMode -> initialDisplayMode(props, attribute.value)
-                attrInitialSelectedDateMillis -> initialSelectedDateMillis(props, attribute.value)
-                attrInitialSelectedStartDateMillis -> initialSelectedStartDateMillis(
-                    props,
-                    attribute.value
-                )
-
-                attrInitialSelectedEndDateMillis -> initialSelectedEndDateMillis(
-                    props,
-                    attribute.value
-                )
-
-                attrPhxChange -> onChanged(props, attribute.value)
-                attrShowModeToggle -> showModeToggle(props, attribute.value)
-                attrYearRange -> yearRange(props, attribute.value)
-                else -> props.copy(
-                    commonProps = handleCommonAttributes(
-                        props.commonProps,
-                        attribute,
-                        pushEvent,
-                        scope
+            handleChangeableAttribute(props.changeableProps, attribute)?.let {
+                props.copy(changeableProps = it)
+            } ?: run {
+                when (attribute.name) {
+                    attrColors -> colors(props, attribute.value)
+                    attrInitialDisplayedMonthMillis -> initialDisplayedMonthMillis(
+                        props,
+                        attribute.value
                     )
-                )
+
+                    attrInitialDisplayMode -> initialDisplayMode(props, attribute.value)
+                    attrInitialSelectedDateMillis -> initialSelectedDateMillis(
+                        props,
+                        attribute.value
+                    )
+
+                    attrInitialSelectedStartDateMillis -> initialSelectedStartDateMillis(
+                        props,
+                        attribute.value
+                    )
+
+                    attrInitialSelectedEndDateMillis -> initialSelectedEndDateMillis(
+                        props,
+                        attribute.value
+                    )
+
+                    attrShowModeToggle -> showModeToggle(props, attribute.value)
+                    attrYearRange -> yearRange(props, attribute.value)
+                    else -> props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+                }
             }
         })
 
@@ -317,13 +337,13 @@ internal class DatePickerView private constructor(props: Properties) :
          * ```
          * <DateRangePicker initialSelectedEndDateMillis="1686279600000" />
          * ```
-         * @param initialSelectedDate initial selection of a date in UTC milliseconds.
+         * @param initialSelectedEndDate initial selection of a date in UTC milliseconds.
          */
         private fun initialSelectedEndDateMillis(
             props: Properties,
-            initialSelectedDate: String
+            initialSelectedEndDate: String
         ): Properties {
-            return props.copy(initialSelectedEndDateMillis = initialSelectedDate.toLongOrNull())
+            return props.copy(initialSelectedEndDateMillis = initialSelectedEndDate.toLongOrNull())
         }
 
         /**
@@ -398,18 +418,6 @@ internal class DatePickerView private constructor(props: Properties) :
                     else -> DisplayMode.Picker
                 }
             )
-        }
-
-        /**
-         * Function in the server to be called when the date picker state changes.
-         * ```
-         * <DatePicker phx-change="updateDate" />
-         * ```
-         * @param onChanged the name of the function to be called in the server when the date is
-         * selected.
-         */
-        private fun onChanged(props: Properties, onChanged: String): Properties {
-            return props.copy(onChanged = onChanged)
         }
 
         /**

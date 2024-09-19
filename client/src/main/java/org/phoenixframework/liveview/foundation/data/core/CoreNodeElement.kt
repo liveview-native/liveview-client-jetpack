@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
+import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrNodeId
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrTemplate
 import org.phoenixframework.liveviewnative.core.NodeData
 
@@ -47,14 +48,19 @@ data class CoreNodeElement internal constructor(
     companion object {
         const val TEXT_ATTRIBUTE = "text"
 
-        fun fromNodeElement(node: NodeData): CoreNodeElement {
+        fun fromNodeElement(nodeId: String, node: NodeData): CoreNodeElement {
             return when (node) {
                 is NodeData.NodeElement -> {
                     CoreNodeElement(
                         node.element.name.name,
                         node.element.name.namespace,
-                        node.element.attributes.map { CoreAttribute.fromAttribute(it) }
-                            .toImmutableList()
+                        node.element.attributes.map {
+                            CoreAttribute.fromAttribute(it)
+                        }.toMutableList().apply {
+                            add(
+                                CoreAttribute(attrNodeId, "", nodeId)
+                            )
+                        }.toImmutableList()
                     )
                 }
 

@@ -5,13 +5,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.constants.Attrs.attrExpanded
+import org.phoenixframework.liveview.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.constants.Attrs.attrValue
 import org.phoenixframework.liveview.constants.ComposableTypes.exposedDropdownMenu
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
@@ -79,18 +84,29 @@ internal class ExposedDropdownMenuBoxView private constructor(props: Properties)
                     }
                 )
             }
-            composableNode?.children?.forEach {
-                PhxLiveView(
-                    composableNode = it,
-                    pushEvent = { type, event, value, target ->
-                        isExpanded = false
-                        pushEvent(type, event, value, target)
-                    },
-                    parentNode = composableNode,
-                    paddingValues = null,
-                    scope = scopeWrapper
-                )
+            val onItemSelected = { itemValue: Any ->
+                notifyChange(mergeValueWithPhxValue(KEY_PHX_VALUE, itemValue))
+                isExpanded = false
             }
+            CompositionLocalProvider(
+                LocalDropdownMenuBoxOnItemSelectedNotifier provides onItemSelected
+            ) {
+                composableNode?.children?.forEach {
+                    PhxLiveView(
+                        composableNode = it,
+                        pushEvent = { type, event, value, target ->
+                            isExpanded = false
+                            pushEvent(type, event, value, target)
+                        },
+                        parentNode = composableNode,
+                        paddingValues = null,
+                        scope = scopeWrapper
+                    )
+                }
+            }
+        }
+        LaunchedEffect(Unit) {
+            notifyChange(mergeValueWithPhxValue(KEY_PHX_VALUE, props.commonProps.value))
         }
     }
 
@@ -119,6 +135,14 @@ internal class ExposedDropdownMenuBoxView private constructor(props: Properties)
             attributes.fold(Properties()) { props, attribute ->
                 when (attribute.name) {
                     attrExpanded -> expanded(props, attribute.value)
+                    attrValue -> props.copy(
+                        commonProps = super.setPhxValueFromAttr(
+                            props.commonProps,
+                            attrPhxValue,
+                            attribute.value
+                        )
+                    )
+
                     else -> props.copy(
                         commonProps = handleCommonAttributes(
                             props.commonProps,
@@ -148,3 +172,7 @@ internal data class ExposedDropdownMenuBoxScopeWrapper(
     val isExpanded: Boolean,
     val onDismissRequest: () -> Unit
 )
+
+val LocalDropdownMenuBoxOnItemSelectedNotifier = compositionLocalOf<(Any) -> Unit> {
+    { _ -> }
+}

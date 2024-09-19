@@ -11,6 +11,8 @@ import org.phoenixframework.liveview.foundation.ui.modifiers.BaseModifiersParser
 import org.phoenixframework.liveview.foundation.ui.registry.BaseComposableNodeFactory
 import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
 import org.phoenixframework.liveview.ui.registry.ComposableNodeFactory
+import org.phoenixframework.liveview.ui.view.PhxChangeNotifier
+import java.util.UUID
 
 val clientModule = module {
     single<BaseComposableNodeFactory> {
@@ -21,6 +23,9 @@ val clientModule = module {
     }
     single<BaseThemeHolder> {
         ThemeHolder()
+    }
+    single<PhxChangeNotifier> {
+        PhxChangeNotifier()
     }
     viewModel {
         val httpBaseUrl = it.get<String>(0)
@@ -50,7 +55,8 @@ val clientModule = module {
             modifierParser = get(),
             themeHolder = get(),
             documentParser = get {
-                parametersOf(route, get())
+                // Generate a random UUID to set the screen ID
+                parametersOf(UUID.randomUUID().toString(), get())
              },
             repository = get {
                 parametersOf(httpUrl, wsBaseUrl, get(), get())

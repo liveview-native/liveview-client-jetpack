@@ -77,13 +77,17 @@ internal class DropdownMenuItemView private constructor(props: Properties) :
         val trailingIcon = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateTrailingIcon }
         }
+        val onItemSelected = LocalDropdownMenuBoxOnItemSelectedNotifier.current
         DropdownMenuItem(
             text = {
                 textChild?.let {
                     PhxLiveView(it, pushEvent, composableNode, null)
                 }
             },
-            onClick = onClickFromString(pushEvent, event, props.commonProps.phxValue),
+            onClick = {
+                onClickFromString(pushEvent, event, props.commonProps.phxValue).invoke()
+                onItemSelected.invoke(props.commonProps.phxValue.toString())
+            },
             modifier = props.commonProps.modifier,
             leadingIcon = leadingIcon?.let {
                 {

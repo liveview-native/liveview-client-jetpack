@@ -24,6 +24,7 @@ import org.phoenixframework.liveview.constants.Attrs.attrMaxValue
 import org.phoenixframework.liveview.constants.Attrs.attrMinValue
 import org.phoenixframework.liveview.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.constants.Attrs.attrSteps
+import org.phoenixframework.liveview.constants.Attrs.attrValue
 import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrActiveTickColor
 import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrActiveTrackColor
 import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrDisabledActiveTickColor
@@ -111,6 +112,8 @@ internal class SliderView private constructor(props: Properties) :
                 val sliderValue = remember(phxValue) {
                     phxValue?.let {
                         when (it) {
+                            is String -> it.toFloatOrNull() ?: 0f
+                            is Int -> it.toFloat()
                             is Float -> it
                             is Map<*, *> -> (it[KEY_PHX_VALUE] as? Float) ?: 0f
                             else -> 0f
@@ -154,18 +157,19 @@ internal class SliderView private constructor(props: Properties) :
                     }
                 )
 
-                LaunchedEffect(composableNode) {
-                    changeValueEventName?.let { event ->
-                        snapshotFlow { sliderState.value }
-                            .onChangeable()
-                            .collect { value ->
-                                pushOnChangeEvent(
-                                    pushEvent,
-                                    event,
-                                    mergeValueWithPhxValue(KEY_PHX_VALUE, value),
-                                )
-                            }
-                    }
+                LaunchedEffect(Unit) {
+                    notifyChange(mergeValue(sliderState.value))
+                    snapshotFlow { sliderState.value }
+                        .onChangeable()
+                        .collect { value ->
+                            val newValue = mergeValue(value)
+                            notifyChange(newValue)
+                            pushOnChangeEvent(
+                                pushEvent,
+                                changeValueEventName,
+                                newValue,
+                            )
+                        }
                 }
             }
 
@@ -235,27 +239,35 @@ internal class SliderView private constructor(props: Properties) :
                     },
                 )
 
-                LaunchedEffect(composableNode) {
-                    changeValueEventName?.let { event ->
-                        snapshotFlow {
+                LaunchedEffect(Unit) {
+                    notifyChange(
+                        mergeValue(
                             rangeSliderState.activeRangeStart..rangeSliderState.activeRangeEnd
-                        }
-                            .onTypedChangeable()
-                            .collect { value ->
-                                pushEvent(
-                                    EVENT_TYPE_CHANGE,
-                                    event,
-                                    mergeValueWithPhxValue(
-                                        KEY_PHX_VALUE,
-                                        floatArrayOf(value.start, value.endInclusive)
-                                    ),
-                                    null
-                                )
-                            }
+                        )
+                    )
+                    snapshotFlow {
+                        rangeSliderState.activeRangeStart..rangeSliderState.activeRangeEnd
                     }
+                        .onTypedChangeable()
+                        .collect { value ->
+                            val newValue = mergeValue(value)
+                            pushOnChangeEvent(pushEvent, changeValueEventName, newValue)
+                            notifyChange(newValue)
+                        }
                 }
             }
         }
+    }
+
+    private fun mergeValue(value: Float): Any {
+        return mergeValueWithPhxValue(KEY_PHX_VALUE, value)
+    }
+
+    private fun mergeValue(value: ClosedRange<Float>): Any {
+        return mergeValueWithPhxValue(
+            KEY_PHX_VALUE,
+            floatArrayOf(value.start, value.endInclusive)
+        )
     }
 
     @Composable
@@ -334,6 +346,14 @@ internal class SliderView private constructor(props: Properties) :
                         attrMinValue -> minValue(props, attribute.value)
                         attrPhxValue -> handleValue(props, attribute.value)
                         attrSteps -> steps(props, attribute.value)
+                        attrValue -> props.copy(
+                            commonProps = super.setPhxValueFromAttr(
+                                props.commonProps,
+                                attrPhxValue,
+                                attribute.value
+                            )
+                        )
+
                         else -> props.copy(
                             commonProps = handleCommonAttributes(
                                 props.commonProps,

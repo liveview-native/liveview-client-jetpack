@@ -13,7 +13,7 @@ import org.phoenixframework.liveviewnative.core.NodeRef
 class DocumentParser(
     private val screenId: String,
     private val composableNodeFactory: BaseComposableNodeFactory
-): DocumentChangeHandler {
+) : DocumentChangeHandler {
     private lateinit var document: Document
 
     init {
@@ -96,11 +96,17 @@ class DocumentParser(
         return composableNodeFactory.buildComposableTreeNode(
             screenId = screenId,
             nodeRef = nodeRef,
-            element = CoreNodeElement.fromNodeElement(node),
+            element = CoreNodeElement.fromNodeElement(
+                getNodeId(screenId, nodeRef.ref()), node
+            ),
         )
     }
 
     companion object {
         private const val TAG = "DocumentParser"
+
+        fun getNodeId(screenId: String, nodeRefId: Int): String {
+            return "${screenId}_${nodeRefId}"
+        }
     }
 }

@@ -40,10 +40,12 @@ import org.phoenixframework.liveview.constants.Attrs.attrKeyboardType
 import org.phoenixframework.liveview.constants.Attrs.attrMaxLines
 import org.phoenixframework.liveview.constants.Attrs.attrMinLines
 import org.phoenixframework.liveview.constants.Attrs.attrPhxClick
+import org.phoenixframework.liveview.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.constants.Attrs.attrReadOnly
 import org.phoenixframework.liveview.constants.Attrs.attrShape
 import org.phoenixframework.liveview.constants.Attrs.attrSingleLine
 import org.phoenixframework.liveview.constants.Attrs.attrTextStyle
+import org.phoenixframework.liveview.constants.Attrs.attrValue
 import org.phoenixframework.liveview.constants.Attrs.attrVisualTransformation
 import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrCursorColor
 import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrDisabledBorderColor
@@ -315,19 +317,21 @@ internal class TextFieldView private constructor(props: Properties) :
             }
         }
 
-        LaunchedEffect(composableNode) {
-            changeValueEventName?.let { event ->
-                snapshotFlow { textFieldValue }
-                    .map { it.text }
-                    .onChangeable()
-                    .map {
-                        mergeValueWithPhxValue(KEY_PHX_VALUE, it)
-                    }
-                    .collect { value ->
-                        pushOnChangeEvent(pushEvent, event, value)
-                    }
-            }
+        LaunchedEffect(Unit) {
+            notifyChange(mergeValue(stringValue))
+            snapshotFlow { textFieldValue }
+                .map { it.text }
+                .onChangeable()
+                .collect {
+                    val newValue = mergeValue(it)
+                    pushOnChangeEvent(pushEvent, changeValueEventName, newValue)
+                    notifyChange(newValue)
+                }
         }
+    }
+
+    private fun mergeValue(text: String): Any {
+        return mergeValueWithPhxValue(KEY_PHX_VALUE, text)
     }
 
     @Composable
@@ -536,6 +540,7 @@ internal class TextFieldView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
+        val value: String = "",
         val readOnly: Boolean = false,
         val textStyle: String? = null,
         val isError: Boolean = false,
@@ -584,6 +589,14 @@ internal class TextFieldView private constructor(props: Properties) :
                         // FIXME style attribute is used for modifiers, so I renamed to textStyle
                         attrTextStyle -> textStyle(props, attribute.value)
                         attrVisualTransformation -> visualTransformation(props, attribute.value)
+                        attrValue -> props.copy(
+                            commonProps = super.setPhxValueFromAttr(
+                                props.commonProps,
+                                attrPhxValue,
+                                attribute.value
+                            )
+                        )
+
                         else -> props.copy(
                             commonProps = handleCommonAttributes(
                                 props.commonProps,
