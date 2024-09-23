@@ -65,7 +65,8 @@ internal class CheckBoxView private constructor(props: Properties) :
         )
 
         LaunchedEffect(Unit) {
-            notifyChange(mergeValue(checked))
+            val initialValue = mergeValue(checked)
+            notifyChange(initialValue)
             snapshotFlow { stateValue }
                 .onChangeable()
                 .collect {
@@ -76,7 +77,7 @@ internal class CheckBoxView private constructor(props: Properties) :
         }
     }
 
-    private fun mergeValue(checked: Boolean): Any {
+    private fun mergeValue(checked: Boolean): Any? {
         return mergeValueWithPhxValue(KEY_PHX_VALUE, checked)
     }
 

@@ -10,6 +10,7 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.LiveViewJetpack
+import org.phoenixframework.liveview.constants.Attrs.attrValue
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrClass
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrNodeId
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxClick
@@ -43,7 +44,7 @@ abstract class ComposableView<CP : ComposableProperties>(protected open val prop
     // This function is used to merge/join "on changed" values with the component value(s)
     // (phx-value and phx-value-*). For example, when a checkbox changes its checked state, the new
     // checked value (true/false) and the checkbox values (phx-value/phx-value-*) are sent to server
-    protected fun mergeValueWithPhxValue(key: String, value: Any): Any {
+    protected fun mergeValueWithPhxValue(key: String, value: Any?): Any? {
         val currentPhxValue = props.commonProps.phxValue
         return if (currentPhxValue == null) {
             if (key == KEY_PHX_VALUE) {
@@ -122,7 +123,7 @@ interface ComposableProperties {
 data class CommonComposableProperties(
     val modifier: Modifier = Modifier,
     val nodeId: String = "",
-    val value: ImmutableMap<String, Any> = persistentMapOf()
+    val value: ImmutableMap<String, Any?> = persistentMapOf()
 ) {
     val phxValue: Any?
         get() = if (value.isEmpty())
@@ -181,7 +182,9 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> {
             attrClass -> setClassFromAttr(commonProps, attribute.value, scope, pushEvent)
             attrNodeId -> setNodeId(commonProps, attribute.value)
             attrPhxClick -> setPhxClickFromAttr(commonProps, attribute.value, pushEvent)
-            attrPhxValue -> setPhxValueFromAttr(commonProps, attrPhxValue, attribute.value)
+            attrPhxValue, attrValue ->
+                setPhxValueFromAttr(commonProps, attrPhxValue, attribute.value)
+
             attrStyle -> setStyleFromAttr(commonProps, attribute.value, scope, pushEvent)
             else ->
                 if (attribute.name.startsWith(attrPhxValueNamed)) {

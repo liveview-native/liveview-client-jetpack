@@ -318,7 +318,8 @@ internal class TextFieldView private constructor(props: Properties) :
         }
 
         LaunchedEffect(Unit) {
-            notifyChange(mergeValue(stringValue))
+            val initialValue = mergeValue(stringValue)
+            notifyChange(initialValue)
             snapshotFlow { textFieldValue }
                 .map { it.text }
                 .onChangeable()
@@ -330,7 +331,7 @@ internal class TextFieldView private constructor(props: Properties) :
         }
     }
 
-    private fun mergeValue(text: String): Any {
+    private fun mergeValue(text: String): Any? {
         return mergeValueWithPhxValue(KEY_PHX_VALUE, text)
     }
 

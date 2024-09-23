@@ -84,8 +84,9 @@ internal class ExposedDropdownMenuBoxView private constructor(props: Properties)
                     }
                 )
             }
-            val onItemSelected = { itemValue: Any ->
-                notifyChange(mergeValueWithPhxValue(KEY_PHX_VALUE, itemValue))
+            val onItemSelected = { itemValue: Any? ->
+                val newValue = mergeValueWithPhxValue(KEY_PHX_VALUE, itemValue)
+                notifyChange(newValue)
                 isExpanded = false
             }
             CompositionLocalProvider(
@@ -106,7 +107,8 @@ internal class ExposedDropdownMenuBoxView private constructor(props: Properties)
             }
         }
         LaunchedEffect(Unit) {
-            notifyChange(mergeValueWithPhxValue(KEY_PHX_VALUE, props.commonProps.value))
+            val value = mergeValueWithPhxValue(KEY_PHX_VALUE, props.commonProps.phxValue)
+            notifyChange(value)
         }
     }
 
@@ -173,6 +175,6 @@ internal data class ExposedDropdownMenuBoxScopeWrapper(
     val onDismissRequest: () -> Unit
 )
 
-val LocalDropdownMenuBoxOnItemSelectedNotifier = compositionLocalOf<(Any) -> Unit> {
+val LocalDropdownMenuBoxOnItemSelectedNotifier = compositionLocalOf<(Any?) -> Unit> {
     { _ -> }
 }

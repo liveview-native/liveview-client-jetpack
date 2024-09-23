@@ -54,17 +54,15 @@ internal class LiveFormView private constructor(props: Properties) :
             phxChange?.let {
                 this@LiveFormView.onChange = it
             }
-            //LiveViewJetpack.registerNodeInterceptor(screenId, LiveFormNodeInterceptor)
-            registerPhxChangeListener(composableNode, pushEvent)
+            registerPhxChangeListener(composableNode)
 
             onDispose {
-                //LiveViewJetpack.unregisterNodeInterceptor(screenId, LiveFormNodeInterceptor)
                 LiveViewJetpack.getPhxChangeNotifier().unregisterListener(this@LiveFormView)
             }
         }
     }
 
-    private fun registerPhxChangeListener(node: ComposableTreeNode?, pushEvent: PushEvent) {
+    private fun registerPhxChangeListener(node: ComposableTreeNode?) {
         inputChildrenIdNameMap.clear()
         walkthroughNode(node)
         inputChildrenIdNameMap.keys.forEach {
@@ -93,14 +91,12 @@ internal class LiveFormView private constructor(props: Properties) :
     }
 
     override fun onChange(id: String, value: Any?) {
-        Log.d("NGVL", "LiveForm::onChange | id===>$id | value=$value")
         val name = inputChildrenIdNameMap[id]
         if (name != null) {
             val pushChange = formData.containsKey(name)
             formData[name] = value.toString()
 
             if (pushChange) {
-                Log.d("NGVL", "formData=$formData")
                 pushEvent.invoke(EVENT_TYPE_CHANGE, onChange, formData, null)
             }
         }

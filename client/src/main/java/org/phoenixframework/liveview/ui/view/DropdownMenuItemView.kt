@@ -86,7 +86,7 @@ internal class DropdownMenuItemView private constructor(props: Properties) :
             },
             onClick = {
                 onClickFromString(pushEvent, event, props.commonProps.phxValue).invoke()
-                onItemSelected.invoke(props.commonProps.phxValue.toString())
+                onItemSelected(props.commonProps.phxValue)
             },
             modifier = props.commonProps.modifier,
             leadingIcon = leadingIcon?.let {

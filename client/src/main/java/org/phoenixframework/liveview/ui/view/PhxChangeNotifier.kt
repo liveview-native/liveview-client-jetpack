@@ -2,7 +2,6 @@ package org.phoenixframework.liveview.ui.view
 
 import android.util.Log
 
-// TODO replace by a LocalComposition
 class PhxChangeNotifier {
 
     private val listeners = mutableMapOf<String, Listener>()
@@ -24,13 +23,6 @@ class PhxChangeNotifier {
         listeners[id] = listener
     }
 
-    fun unregisterListener(screenId: String) {
-        listeners.filter { it.key.startsWith("${screenId}_") }.keys.forEach {
-            Log.w(TAG, "Unregistering Listener for screen id=$screenId")
-            listeners.remove(it)
-        }
-    }
-
     fun unregisterListener(listener: Listener) {
         listeners.filter { it.value == listener }.keys.forEach {
             listeners.remove(it)
@@ -42,6 +34,6 @@ class PhxChangeNotifier {
     }
 
     companion object {
-        private const val TAG = "NGVL"//"PhxChangeNotifier"
+        private const val TAG = "PhxChangeNotifier"
     }
 }

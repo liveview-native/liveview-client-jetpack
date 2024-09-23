@@ -154,6 +154,9 @@ internal class DatePickerView private constructor(props: Properties) :
             showModeToggle = showModeToggle,
             colors = getDatePickerColors(colors),
         )
+        //TODO For some reason, the compose is creating a new instance of this component
+        // everytime the date changes. The ideal implementation would be use the snapshotFlow
+        // based on the state changes to submit the date.
         LaunchedEffect(state.selectedDateMillis) {
             val newValue = mergeValue(state.selectedDateMillis ?: 0)
             pushOnChangeEvent(pushEvent, changeValueEventName, newValue)
@@ -217,6 +220,9 @@ internal class DatePickerView private constructor(props: Properties) :
             colors = getDatePickerColors(colors),
         )
         LaunchedEffect(state.selectedStartDateMillis, state.selectedEndDateMillis) {
+            //TODO For some reason, the compose is creating a new instance of this component
+            // everytime the date changes. The ideal implementation would be use the snapshotFlow
+            // based on the state changes to submit the date.
             val interval = mergeValue(
                 state.selectedStartDateMillis, state.selectedEndDateMillis
             )
@@ -225,26 +231,11 @@ internal class DatePickerView private constructor(props: Properties) :
         }
     }
 
-    private fun mergeValue(dateInMillis: Long): Any {
+    private fun mergeValue(dateInMillis: Long): Any? {
         return mergeValueWithPhxValue(KEY_PHX_VALUE, dateInMillis)
     }
 
-    private fun mergeValue(startDate: Long?, endDate: Long?): Any {
-//        var startDateString: String? = null
-//        var endDateString: String? = null
-//        if (startDate != null) {
-//            startDateString = longToStringDate(startDate)
-//        }
-//        if (endDate != null) {
-//            endDateString = longToStringDate(endDate)
-//        }
-//        return mergeValueWithPhxValue(
-//            KEY_PHX_VALUE,
-//            JsonArray().apply {
-//                add(startDateString)
-//                add(endDateString)
-//            }.toString()
-//        )
+    private fun mergeValue(startDate: Long?, endDate: Long?): Any? {
         return mergeValueWithPhxValue(
             KEY_PHX_VALUE,
             JsonArray().apply {
