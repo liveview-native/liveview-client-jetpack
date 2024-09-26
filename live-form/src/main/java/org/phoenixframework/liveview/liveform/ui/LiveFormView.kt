@@ -1,14 +1,14 @@
 package org.phoenixframework.liveview.liveform.ui
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import kotlinx.collections.immutable.ImmutableList
-import org.phoenixframework.liveview.LiveViewJetpack
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.constants.Attrs.attrName
 import org.phoenixframework.liveview.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.constants.Attrs.attrPhxSubmit
@@ -18,18 +18,16 @@ import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
+import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.EVENT_TYPE_CHANGE
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
+import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
+import org.phoenixframework.liveview.foundation.ui.base.ParentViewDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.view.LocalParentButtonAction
-import org.phoenixframework.liveview.ui.view.PhxChangeNotifier
 
 internal class LiveFormView private constructor(props: Properties) :
-    ComposableView<LiveFormView.Properties>(props), PhxChangeNotifier.Listener {
-
-    private val formData = mutableMapOf<String, String>()
-    private var pushEvent: PushEvent = { _, _, _, _ -> }
-    private var onChange: String = ""
+    ComposableView<LiveFormView.Properties>(props) {
 
     @Composable
     override fun Compose(
@@ -37,12 +35,15 @@ internal class LiveFormView private constructor(props: Properties) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val phxChange = props.phxChange
+        val phxChange = props.phxChange ?: ""
         val phxSubmit = props.phxSubmit
 
+        val formDataHolder = remember(composableNode?.id) {
+            FormDataHolder(phxChange, pushEvent)
+        }
         val submitAction = { _: Any? ->
             if (phxSubmit != null) {
-                pushEvent.invoke(EVENT_TYPE_CLICK, phxSubmit, formData, null)
+                pushEvent.invoke(EVENT_TYPE_CLICK, phxSubmit, formDataHolder.data, null)
             }
         }
         Column(
@@ -50,7 +51,8 @@ internal class LiveFormView private constructor(props: Properties) :
                 .paddingIfNotNull(paddingValues),
             content = {
                 CompositionLocalProvider(
-                    LocalParentButtonAction provides submitAction
+                    LocalParentButtonAction provides submitAction,
+                    LocalParentDataHolder provides formDataHolder
                 ) {
                     composableNode?.children?.forEach {
                         PhxLiveView(it, pushEvent, composableNode, null, this)
@@ -58,62 +60,6 @@ internal class LiveFormView private constructor(props: Properties) :
                 }
             }
         )
-
-        DisposableEffect(Unit) {
-            this@LiveFormView.run {
-                this.pushEvent = pushEvent
-                if (phxChange != null) {
-                    this.onChange = phxChange
-                }
-            }
-            registerPhxChangeListener(composableNode)
-
-            onDispose {
-                LiveViewJetpack.run {
-                    getPhxChangeNotifier().unregisterListener(this@LiveFormView)
-                }
-            }
-        }
-    }
-
-    private fun registerPhxChangeListener(node: ComposableTreeNode?) {
-        inputChildrenIdNameMap.clear()
-        walkthroughNode(node)
-        inputChildrenIdNameMap.keys.forEach {
-            LiveViewJetpack.getPhxChangeNotifier().registerListener(it, this@LiveFormView)
-        }
-    }
-
-    private val inputChildrenIdNameMap = mutableMapOf<String, String>()
-
-
-    private fun walkthroughNode(node: ComposableTreeNode?) {
-        if (node != null) {
-            val nameAttribute = node.node?.attributes?.find { it.name == attrName }
-            if (nameAttribute != null) {
-                val id = node.id
-                Log.d("NGVL", "INPUT FOUND: id=$id | name=${nameAttribute.value}")
-                inputChildrenIdNameMap[id] = nameAttribute.value
-
-            }
-            if (node.children.isNotEmpty()) {
-                node.children.forEach {
-                    walkthroughNode(it)
-                }
-            }
-        }
-    }
-
-    override fun onChange(id: String, value: Any?) {
-        val name = inputChildrenIdNameMap[id]
-        if (name != null) {
-            val pushChange = formData.containsKey(name)
-            formData[name] = value.toString()
-
-            if (pushChange) {
-                pushEvent.invoke(EVENT_TYPE_CHANGE, onChange, formData, null)
-            }
-        }
     }
 
     @Stable
@@ -159,6 +105,28 @@ internal class LiveFormView private constructor(props: Properties) :
 
         private fun phxSubmit(props: Properties, phxSubmit: String): Properties {
             return props.copy(phxSubmit = phxSubmit)
+        }
+    }
+}
+
+class FormDataHolder(private val event: String, private val pushEvent: PushEvent?) :
+    ParentViewDataHolder {
+    private val formData = mutableMapOf<String, String>()
+
+    val data: ImmutableMap<String, String>
+        get() = formData.toImmutableMap()
+
+    override fun setValue(node: ComposableTreeNode?, value: Any?) {
+        if (node != null && event.isNotEmpty()) {
+            val nameAttribute = node.node?.attributes?.find { it.name == attrName }
+            if (nameAttribute != null) {
+                val name = nameAttribute.value
+                val pushValue = formData.containsKey(name)
+                formData[name] = value.toString() // nameAttribute.value
+                if (pushValue) {
+                    pushEvent?.invoke(EVENT_TYPE_CHANGE, event, formData, null)
+                }
+            }
         }
     }
 }

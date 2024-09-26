@@ -10,7 +10,6 @@ import org.phoenixframework.liveview.foundation.ui.base.BaseThemeHolder
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.modifiers.BaseModifiersParser
 import org.phoenixframework.liveview.foundation.ui.registry.BaseComposableNodeFactory
-import org.phoenixframework.liveview.ui.view.PhxChangeNotifier
 
 object LiveViewJetpack {
     private val koinApplication: KoinApplication = startKoin {
@@ -36,10 +35,6 @@ object LiveViewJetpack {
     }
 
     fun getThemeHolder(): BaseThemeHolder {
-        return koinApplication.koin.get()
-    }
-
-    fun getPhxChangeNotifier(): PhxChangeNotifier {
         return koinApplication.koin.get()
     }
 

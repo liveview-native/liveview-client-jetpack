@@ -111,6 +111,7 @@ import org.phoenixframework.liveview.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.foundation.ui.view.onClickFromString
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
@@ -317,16 +318,17 @@ internal class TextFieldView private constructor(props: Properties) :
             }
         }
 
-        LaunchedEffect(Unit) {
+        val parentDataHolder = LocalParentDataHolder.current
+        LaunchedEffect(composableNode?.id) {
             val initialValue = mergeValue(stringValue)
-            notifyChange(initialValue)
+            parentDataHolder?.setValue(composableNode, initialValue)
             snapshotFlow { textFieldValue }
                 .map { it.text }
                 .onChangeable()
                 .collect {
                     val newValue = mergeValue(it)
                     pushOnChangeEvent(pushEvent, changeValueEventName, newValue)
-                    notifyChange(newValue)
+                    parentDataHolder?.setValue(composableNode, newValue)
                 }
         }
     }

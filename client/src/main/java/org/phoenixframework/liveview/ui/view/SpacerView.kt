@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import kotlinx.collections.immutable.ImmutableList
-import org.phoenixframework.liveview.LiveViewJetpack
 import org.phoenixframework.liveview.constants.Attrs.attrPhxValue
 import org.phoenixframework.liveview.constants.Attrs.attrValue
 import org.phoenixframework.liveview.extensions.paddingIfNotNull
@@ -16,6 +15,7 @@ import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperti
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
+import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 
 /**
@@ -35,8 +35,9 @@ internal class SpacerView private constructor(props: Properties) :
     ) {
         Spacer(modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues))
         props.commonProps.phxValue?.let { value ->
+            val parentDataHolder = LocalParentDataHolder.current
             LaunchedEffect(value) {
-                LiveViewJetpack.getPhxChangeNotifier().notify(props.commonProps.nodeId, value)
+                parentDataHolder?.setValue(composableNode, value)
             }
         }
     }

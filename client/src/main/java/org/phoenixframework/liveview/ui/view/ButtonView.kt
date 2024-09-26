@@ -543,4 +543,8 @@ internal class ButtonView private constructor(props: Properties) :
     }
 }
 
-val LocalParentButtonAction = compositionLocalOf<((value: Any?) -> Unit)?> { null }
+/**
+ * This composition local allows to a parent node to intercept the button's click event. See
+ * `LiveForm` component for an example of usage.
+ */
+val LocalParentButtonAction = compositionLocalOf<(value: Any?) -> Unit> { { _ -> } }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
@@ -21,7 +22,6 @@ import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.KEY_PHX_VALUE
 import org.phoenixframework.liveview.foundation.ui.view.onClickFromString
-import org.phoenixframework.liveview.ui.view.PhxChangeNotifier
 
 /**
  *  A `ComposableView` is the parent class of all components. Subclasses must implement the
@@ -31,10 +31,6 @@ import org.phoenixframework.liveview.ui.view.PhxChangeNotifier
  *  object informing the respective tag for the composable.
  */
 abstract class ComposableView<CP : ComposableProperties>(protected open val props: CP) {
-
-    private val phxChangeNotifier: PhxChangeNotifier by lazy {
-        LiveViewJetpack.getPhxChangeNotifier()
-    }
 
     @Composable
     abstract fun Compose(
@@ -70,13 +66,9 @@ abstract class ComposableView<CP : ComposableProperties>(protected open val prop
         }
     }
 
-    protected fun notifyChange(value: Any?) {
-        phxChangeNotifier.notify(props.commonProps.nodeId, value)
-    }
-
     protected fun pushOnChangeEvent(pushEvent: PushEvent, event: String?, value: Any?) {
-        event?.let {
-            pushEvent.invoke(EVENT_TYPE_CHANGE, it, value, null)
+        if (!event.isNullOrEmpty()) {
+            pushEvent.invoke(EVENT_TYPE_CHANGE, event, value, null)
         }
     }
 
@@ -303,4 +295,15 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> {
                 }
         )
     }
+}
+
+/**
+ * This local composition allows children nodes to inform their values to parent nodes. For instance,
+ * an input component can notify its value to the form where the input is contained.
+ * See `LiveForm` component for an example of usage.
+ */
+val LocalParentDataHolder = compositionLocalOf<ParentViewDataHolder?> { null }
+
+interface ParentViewDataHolder {
+    fun setValue(node: ComposableTreeNode?, value: Any?)
 }

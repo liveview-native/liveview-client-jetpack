@@ -20,6 +20,8 @@ import com.google.gson.JsonArray
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 import org.phoenixframework.liveview.constants.Attrs.attrColors
 import org.phoenixframework.liveview.constants.Attrs.attrMaxValue
 import org.phoenixframework.liveview.constants.Attrs.attrMinValue
@@ -44,6 +46,7 @@ import org.phoenixframework.liveview.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.DISABLED_CONTAINER_ALPHA
@@ -157,13 +160,16 @@ internal class SliderView private constructor(props: Properties) :
                     }
                 )
 
-                LaunchedEffect(Unit) {
-                    notifyChange(mergeValue(sliderState.value))
+                val parentDataHolder = LocalParentDataHolder.current
+                LaunchedEffect(composableNode.id) {
+                    val initialValue = mergeValue(sliderState.value)
+                    parentDataHolder?.setValue(composableNode, initialValue)
                     snapshotFlow { sliderState.value }
                         .onChangeable()
+                        .flowOn(Dispatchers.IO)
                         .collect { value ->
                             val newValue = mergeValue(value)
-                            notifyChange(newValue)
+                            parentDataHolder?.setValue(composableNode, newValue)
                             pushOnChangeEvent(
                                 pushEvent,
                                 changeValueEventName,
@@ -240,10 +246,6 @@ internal class SliderView private constructor(props: Properties) :
                 )
 
                 LaunchedEffect(Unit) {
-                    val initialValue = mergeValue(
-                        rangeSliderState.activeRangeStart, rangeSliderState.activeRangeEnd
-                    )
-                    notifyChange(initialValue)
                     snapshotFlow {
                         rangeSliderState.activeRangeStart..rangeSliderState.activeRangeEnd
                     }
@@ -251,7 +253,6 @@ internal class SliderView private constructor(props: Properties) :
                         .collect { value ->
                             val newValue = mergeValue(value.start, value.endInclusive)
                             pushOnChangeEvent(pushEvent, changeValueEventName, newValue)
-                            notifyChange(newValue)
                         }
                 }
             }

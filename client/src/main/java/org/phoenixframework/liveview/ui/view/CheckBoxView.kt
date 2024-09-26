@@ -16,6 +16,8 @@ import androidx.compose.runtime.snapshotFlow
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
 import org.phoenixframework.liveview.constants.Attrs.attrChecked
 import org.phoenixframework.liveview.constants.Attrs.attrColors
 import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrCheckedColor
@@ -28,6 +30,7 @@ import org.phoenixframework.liveview.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
+import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.theme.ThemeHolder.Companion.DISABLED_CONTENT_ALPHA
 
@@ -51,7 +54,7 @@ internal class CheckBoxView private constructor(props: Properties) :
         val colors = props.colors
         val checked = props.checked
 
-        var stateValue by remember {
+        var stateValue by remember(composableNode?.id) {
             mutableStateOf(checked)
         }
         Checkbox(
@@ -64,15 +67,17 @@ internal class CheckBoxView private constructor(props: Properties) :
             colors = getCheckBoxColors(colors),
         )
 
-        LaunchedEffect(Unit) {
+        val parentDataHolder = LocalParentDataHolder.current
+        LaunchedEffect(composableNode?.id) {
             val initialValue = mergeValue(checked)
-            notifyChange(initialValue)
+            parentDataHolder?.setValue(composableNode, initialValue)
             snapshotFlow { stateValue }
                 .onChangeable()
+                .flowOn(Dispatchers.IO)
                 .collect {
                     val newValue = mergeValue(it)
                     pushOnChangeEvent(pushEvent, changeValueEventName, newValue)
-                    notifyChange(newValue)
+                    parentDataHolder?.setValue(composableNode, newValue)
                 }
         }
     }

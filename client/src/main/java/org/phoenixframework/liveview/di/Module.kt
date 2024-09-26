@@ -4,14 +4,13 @@ import android.net.Uri
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
-import org.phoenixframework.liveview.ui.theme.ThemeHolder
 import org.phoenixframework.liveview.foundation.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.foundation.ui.base.BaseThemeHolder
 import org.phoenixframework.liveview.foundation.ui.modifiers.BaseModifiersParser
 import org.phoenixframework.liveview.foundation.ui.registry.BaseComposableNodeFactory
 import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
 import org.phoenixframework.liveview.ui.registry.ComposableNodeFactory
-import org.phoenixframework.liveview.ui.view.PhxChangeNotifier
+import org.phoenixframework.liveview.ui.theme.ThemeHolder
 import java.util.UUID
 
 val clientModule = module {
@@ -23,9 +22,6 @@ val clientModule = module {
     }
     single<BaseThemeHolder> {
         ThemeHolder()
-    }
-    single<PhxChangeNotifier> {
-        PhxChangeNotifier()
     }
     viewModel {
         val httpBaseUrl = it.get<String>(0)

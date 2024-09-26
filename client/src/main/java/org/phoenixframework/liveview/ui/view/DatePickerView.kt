@@ -16,12 +16,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.gson.JsonArray
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import org.phoenixframework.liveview.constants.Attrs.attrColors
 import org.phoenixframework.liveview.constants.Attrs.attrInitialDisplayMode
 import org.phoenixframework.liveview.constants.Attrs.attrInitialDisplayedMonthMillis
@@ -58,6 +62,7 @@ import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
+import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.view.CheckBoxView.Factory.handleChangeableAttribute
@@ -154,13 +159,16 @@ internal class DatePickerView private constructor(props: Properties) :
             showModeToggle = showModeToggle,
             colors = getDatePickerColors(colors),
         )
-        //TODO For some reason, the compose is creating a new instance of this component
-        // everytime the date changes. The ideal implementation would be use the snapshotFlow
-        // based on the state changes to submit the date.
-        LaunchedEffect(state.selectedDateMillis) {
-            val newValue = mergeValue(state.selectedDateMillis ?: 0)
-            pushOnChangeEvent(pushEvent, changeValueEventName, newValue)
-            notifyChange(newValue)
+        val parentDataHolder = LocalParentDataHolder.current
+        LaunchedEffect(composableNode.id) {
+            snapshotFlow { state.selectedDateMillis }
+                .distinctUntilChanged()
+                .flowOn(Dispatchers.IO)
+                .collect {
+                    val newValue = mergeValue(it ?: 0)
+                    pushOnChangeEvent(pushEvent, changeValueEventName, newValue)
+                    parentDataHolder?.setValue(composableNode, newValue)
+                }
         }
     }
 
@@ -219,15 +227,17 @@ internal class DatePickerView private constructor(props: Properties) :
             showModeToggle = showModeToggle,
             colors = getDatePickerColors(colors),
         )
-        LaunchedEffect(state.selectedStartDateMillis, state.selectedEndDateMillis) {
-            //TODO For some reason, the compose is creating a new instance of this component
-            // everytime the date changes. The ideal implementation would be use the snapshotFlow
-            // based on the state changes to submit the date.
-            val interval = mergeValue(
-                state.selectedStartDateMillis, state.selectedEndDateMillis
-            )
-            notifyChange(interval)
-            pushOnChangeEvent(pushEvent, changeValueEventName, interval)
+        val parentDataHolder = LocalParentDataHolder.current
+        LaunchedEffect(composableNode.id) {
+            snapshotFlow { state.selectedStartDateMillis to state.selectedEndDateMillis }
+                .distinctUntilChanged()
+                .flowOn(Dispatchers.IO)
+                .collect {
+                    val (selectedStartDate, selectedEndDate) = it
+                    val interval = mergeValue(selectedStartDate, selectedEndDate)
+                    pushOnChangeEvent(pushEvent, changeValueEventName, interval)
+                    parentDataHolder?.setValue(composableNode, interval)
+                }
         }
     }
 

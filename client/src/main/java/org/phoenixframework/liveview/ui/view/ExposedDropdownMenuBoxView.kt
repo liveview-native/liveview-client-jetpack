@@ -24,6 +24,7 @@ import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperti
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
+import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
@@ -68,6 +69,7 @@ internal class ExposedDropdownMenuBoxView private constructor(props: Properties)
         var isExpanded by remember(props) {
             mutableStateOf(props.expanded)
         }
+        val parentDataHolder = LocalParentDataHolder.current
         ExposedDropdownMenuBox(
             expanded = isExpanded,
             onExpandedChange = {
@@ -86,7 +88,7 @@ internal class ExposedDropdownMenuBoxView private constructor(props: Properties)
             }
             val onItemSelected = { itemValue: Any? ->
                 val newValue = mergeValueWithPhxValue(KEY_PHX_VALUE, itemValue)
-                notifyChange(newValue)
+                parentDataHolder?.setValue(composableNode, newValue)
                 isExpanded = false
             }
             CompositionLocalProvider(
@@ -106,9 +108,10 @@ internal class ExposedDropdownMenuBoxView private constructor(props: Properties)
                 }
             }
         }
-        LaunchedEffect(Unit) {
+
+        LaunchedEffect(composableNode?.id) {
             val value = mergeValueWithPhxValue(KEY_PHX_VALUE, props.commonProps.phxValue)
-            notifyChange(value)
+            parentDataHolder?.setValue(composableNode, value)
         }
     }
 
@@ -175,6 +178,9 @@ internal data class ExposedDropdownMenuBoxScopeWrapper(
     val onDismissRequest: () -> Unit
 )
 
+/**
+ * This composition local allows the DropdownMenuItems notify when the value is selected.
+ */
 val LocalDropdownMenuBoxOnItemSelectedAction = compositionLocalOf<(value: Any?) -> Unit> {
     { _ -> }
 }
