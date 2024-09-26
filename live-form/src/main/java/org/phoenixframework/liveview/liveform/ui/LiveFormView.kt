@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import kotlinx.collections.immutable.ImmutableList
@@ -20,6 +21,7 @@ import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
+import org.phoenixframework.liveview.ui.view.LocalParentButtonAction
 import org.phoenixframework.liveview.ui.view.PhxChangeNotifier
 
 internal class LiveFormView private constructor(props: Properties) :
@@ -35,29 +37,41 @@ internal class LiveFormView private constructor(props: Properties) :
         paddingValues: PaddingValues?,
         pushEvent: PushEvent,
     ) {
-        val name = props.name
         val phxChange = props.phxChange
         val phxSubmit = props.phxSubmit
 
+        val submitAction = { _: Any? ->
+            if (phxSubmit != null) {
+                pushEvent.invoke(EVENT_TYPE_CLICK, phxSubmit, formData, null)
+            }
+        }
         Column(
             modifier = props.commonProps.modifier
                 .paddingIfNotNull(paddingValues),
             content = {
-                composableNode?.children?.forEach {
-                    PhxLiveView(it, pushEvent, composableNode, null, this)
+                CompositionLocalProvider(
+                    LocalParentButtonAction provides submitAction
+                ) {
+                    composableNode?.children?.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null, this)
+                    }
                 }
             }
         )
 
         DisposableEffect(Unit) {
-            this@LiveFormView.pushEvent = pushEvent
-            phxChange?.let {
-                this@LiveFormView.onChange = it
+            this@LiveFormView.run {
+                this.pushEvent = pushEvent
+                if (phxChange != null) {
+                    this.onChange = phxChange
+                }
             }
             registerPhxChangeListener(composableNode)
 
             onDispose {
-                LiveViewJetpack.getPhxChangeNotifier().unregisterListener(this@LiveFormView)
+                LiveViewJetpack.run {
+                    getPhxChangeNotifier().unregisterListener(this@LiveFormView)
+                }
             }
         }
     }

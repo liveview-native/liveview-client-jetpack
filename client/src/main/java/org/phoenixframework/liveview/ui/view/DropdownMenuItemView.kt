@@ -77,7 +77,7 @@ internal class DropdownMenuItemView private constructor(props: Properties) :
         val trailingIcon = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateTrailingIcon }
         }
-        val onItemSelected = LocalDropdownMenuBoxOnItemSelectedNotifier.current
+        val onItemSelected = LocalDropdownMenuBoxOnItemSelectedAction.current
         DropdownMenuItem(
             text = {
                 textChild?.let {

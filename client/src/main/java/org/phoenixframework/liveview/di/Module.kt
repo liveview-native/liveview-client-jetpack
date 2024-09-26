@@ -55,9 +55,11 @@ val clientModule = module {
             modifierParser = get(),
             themeHolder = get(),
             documentParser = get {
-                // Generate a random UUID to set the screen ID
-                parametersOf(UUID.randomUUID().toString(), get())
-             },
+                parametersOf(
+                    UUID.randomUUID().toString(), // Generate a random UUID to set the screen ID
+                    get<BaseComposableNodeFactory>(), // composableNodeFactory
+                )
+            },
             repository = get {
                 parametersOf(httpUrl, wsBaseUrl, get(), get())
             }

@@ -90,7 +90,7 @@ internal class ExposedDropdownMenuBoxView private constructor(props: Properties)
                 isExpanded = false
             }
             CompositionLocalProvider(
-                LocalDropdownMenuBoxOnItemSelectedNotifier provides onItemSelected
+                LocalDropdownMenuBoxOnItemSelectedAction provides onItemSelected
             ) {
                 composableNode?.children?.forEach {
                     PhxLiveView(
@@ -175,6 +175,6 @@ internal data class ExposedDropdownMenuBoxScopeWrapper(
     val onDismissRequest: () -> Unit
 )
 
-val LocalDropdownMenuBoxOnItemSelectedNotifier = compositionLocalOf<(Any?) -> Unit> {
+val LocalDropdownMenuBoxOnItemSelectedAction = compositionLocalOf<(value: Any?) -> Unit> {
     { _ -> }
 }
