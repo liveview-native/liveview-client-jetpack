@@ -32,7 +32,7 @@ defmodule LiveViewNative.Jetpack.MixProject do
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:floki, ">= 0.30.0", only: :test},
       {:live_view_native, github: "liveview-native/live_view_native", branch: "main", override: true},
-      {:live_view_native_stylesheet, github: "liveview-native/live_view_native_stylesheet", branch: "main", only: :test},
+      {:live_view_native_stylesheet, github: "liveview-native/live_view_native_stylesheet", branch: "nk-change-stylesheet-output-to-json", only: :test},
       {:live_view_native_test, github: "liveview-native/live_view_native_test", branch: "main", only: :test},
       {:nimble_parsec, "~> 1.3"}
     ]

@@ -18,7 +18,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       {line, input} = {__ENV__.line, "\nbold(true)"}
 
       # We add 1 because the modifier is on the second line of the input
-      output = {:bold, [file: __ENV__.file, line: line + 1, module: __ENV__.module, source: "bold(true)"], [true]}
+      output = [[:bold, %{file: __ENV__.file, line: line + 1, module: __ENV__.module, source: "bold(true)"}, [true]]]
 
       assert parse(input,
                file: __ENV__.file,
@@ -37,9 +37,9 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       """}
 
       output = [
-        {:font, [file: __ENV__.file, line: line, module: __ENV__.module, source: "font(.largeTitle)"], [{:., [file: __ENV__.file, line: line, module: __ENV__.module, source: "font(.largeTitle)"], [nil, :largeTitle]}]},
-        {:bold, [file: __ENV__.file, line: line + 1, module: __ENV__.module, source: "bold(true)"], [true]},
-        {:italic, [file: __ENV__.file, line: line + 2, module: __ENV__.module, source: "italic(true)"], [true]}
+        [:font, %{file: __ENV__.file, line: line, module: __ENV__.module, source: "font(.largeTitle)"}, [[:., %{file: __ENV__.file, line: line, module: __ENV__.module, source: "font(.largeTitle)"}, [nil, :largeTitle]]]],
+        [:bold, %{file: __ENV__.file, line: line + 1, module: __ENV__.module, source: "bold(true)"}, [true]],
+        [:italic, %{file: __ENV__.file, line: line + 2, module: __ENV__.module, source: "italic(true)"}, [true]]
       ]
 
       assert parse(input,
@@ -52,14 +52,14 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
 
     test "parses modifier function definition" do
       input = "bold(true)"
-      output = {:bold, [], [true]}
+      output = [[:bold, %{}, [true]]]
 
       assert parse(input) == output
     end
 
     test "parses modifier with multiple arguments" do
       input = "background(\"foo\", \"bar\")"
-      output = {:background, [], ["foo", "bar"]}
+      output = [[:background, %{}, ["foo", "bar"]]]
 
       assert parse(input) == output
 
@@ -78,14 +78,14 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
 
     test "parses atoms as an argument value" do
       input = "background(content: :star_red)"
-      output = {:background, [], [[content: :star_red]]}
+      output = [[:background, %{}, [[content: :star_red]]]]
 
       assert parse(input) == output
     end
 
     test "parses string wrapped atoms as an argument value" do
       input = "background(content: :\"star-red\")"
-      output = {:background, [], [[content: :"star-red"]]}
+      output = [[:background, %{}, [[content: :"star-red"]]]]
 
       assert parse(input) == output
     end
@@ -93,7 +93,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     test "parses a naked IME" do
       input = "font(.largeTitle)"
 
-      output = {:font, [], [{:., [], [nil, :largeTitle]}]}
+      output = [[:font, %{}, [[:., %{}, [nil, :largeTitle]]]]]
 
       assert parse(input) == output
     end
@@ -101,7 +101,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     test "parses comma seperated IMEs" do
       input = "font(.largeTitle, .bold)"
 
-      output = {:font, [], [{:., [], [nil, :largeTitle]}, {:., [], [nil, :bold]}]}
+      output = [[:font, %{}, [[:., %{}, [nil, :largeTitle]], [:., %{}, [nil, :bold]]]]]
 
       assert parse(input) == output
     end
@@ -109,7 +109,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     test "parses atoms" do
       input = "background(Color.Green, CircleShape)"
 
-      output = {:background, [], [{:., [], [:Color, :Green]}, :CircleShape]}
+      output = [[:background, %{}, [[:., %{}, [:Color, :Green]], :CircleShape]]]
 
       assert parse(input) == output
     end
@@ -117,22 +117,22 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     test "parses chained IMEs" do
       input = "font(color: Color.red)"
 
-      output = {:font, [], [[color: {:., [], [:Color, :red]}]]}
+      output = [[:font, %{}, [[color: [:., %{}, [:Color, :red]]]]]]
 
       assert parse(input) == output
 
       input = "font(color: Color.red.shadow(.thick))"
 
       output =
-        {:font, [],
-         [[color: {:., [], [:Color, {:., [], [:red, {:shadow, [], [{:., [], [nil, :thick]}]}]}]}]]}
+        [[:font, %{},
+         [[color: [:., %{}, [:Color, [:., %{}, [:red, [:shadow, %{}, [[:., %{}, [nil, :thick]]]]]]]]]]]]
 
       assert parse(input) == output
 
       input = "foregroundStyle(Color(.displayP3, red: 0.4627, green: 0.8392, blue: 1.0).opacity(0.25))"
 
       output =
-        {:foregroundStyle, [], [{:., [], [{:Color, [], [{:., [], [nil, :displayP3]}, [red: 0.4627, green: 0.8392, blue: 1.0]]}, {:opacity, [], [0.25]}]}]}
+        [[:foregroundStyle, %{}, [[:., %{}, [[:Color, %{}, [[:., %{}, [nil, :displayP3]], [red: 0.4627, green: 0.8392, blue: 1.0]]], [:opacity, %{}, [0.25]]]]]]]
 
       assert parse(input) == output
     end
@@ -140,30 +140,30 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     test "parses naked chained IME" do
       input = "font(.largeTitle.red)"
 
-      output = {:font, [], [{:., [], [nil, {:., [], [:largeTitle, :red]}]}]}
+      output = [[:font, %{}, [[:., %{}, [nil, [:., %{}, [:largeTitle, :red]]]]]]]
 
       assert parse(input) == output
     end
 
     test "parses non-key-value lists" do
       input = ~s/Gradient([0, 1, 2])/
-      output = {:Gradient, [], [[0, 1, 2]]}
+      output = [[:Gradient, %{}, [[0, 1, 2]]]]
       assert parse(input) == output
 
       input = ~s/Gradient([0, 1, 2], 3)/
-      output = {:Gradient, [], [[0, 1, 2], 3]}
+      output = [[:Gradient, %{}, [[0, 1, 2], 3]]]
       assert parse(input) == output
 
       input = ~s/Gradient(colors: [0, 1, 2])/
-      output = {:Gradient, [], [[colors: [0, 1, 2]]]}
+      output = [[:Gradient, %{}, [[colors: [0, 1, 2]]]]]
       assert parse(input) == output
 
       input = ~s/Gradient(colors: [Color.red, Color.blue])/
-      output = {:Gradient, [], [[colors: [{:., [], [:Color, :red]}, {:., [], [:Color, :blue]}]]]}
+      output = [[:Gradient, %{}, [[colors: [[:., %{}, [:Color, :red]], [:., %{}, [:Color, :blue]]]]]]]
       assert parse(input) == output
 
       input = ~s/Gradient(colors: ["red", "blue"])/
-      output = {:Gradient, [], [[colors: ["red", "blue"]]]}
+      output = [[:Gradient, %{}, [[colors: ["red", "blue"]]]]]
       assert parse(input) == output
     end
 
@@ -171,9 +171,9 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       input = "font(.largeTitle) bold(true) italic(true)"
 
       output = [
-        {:font, [], [{:., [], [nil, :largeTitle]}]},
-        {:bold, [], [true]},
-        {:italic, [], [true]}
+        [:font, %{}, [[:., %{}, [nil, :largeTitle]]]],
+        [:bold, %{}, [true]],
+        [:italic, %{}, [true]]
       ]
 
       assert parse(input) == output
@@ -183,14 +183,14 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       input = "color(color: .foo.bar.baz(1, 2).qux)"
 
       output =
-        {:color, [],
+        [[:color, %{},
          [
            [
              color:
-               {:., [],
-                [nil, {:., [], [:foo, {:., [], [:bar, {:., [], [{:baz, [], [1, 2]}, :qux]}]}]}]}
+               [:., %{},
+                [nil, [:., %{}, [:foo, [:., %{}, [:bar, [:., %{}, [[:baz, %{}, [1, 2]], :qux]]]]]]]]
            ]
-         ]}
+         ]]]
 
       assert parse(input) == output
     end
@@ -203,9 +203,9 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       """
 
       output = [
-        {:font, [], [{:., [], [nil, :largeTitle]}]},
-        {:bold, [], [true]},
-        {:italic, [], [true]}
+        [:font, %{}, [[:., %{}, [nil, :largeTitle]]]],
+        [:bold, %{}, [true]],
+        [:italic, %{}, [true]]
       ]
 
       assert parse(input) == output
@@ -213,169 +213,155 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
 
     test "parses string literal value type" do
       input = "foo(\"bar\")"
-      output = {:foo, [], ["bar"]}
+      output = [[:foo, %{}, ["bar"]]]
 
       assert parse(input) == output
     end
 
     test "parses numerical types" do
       input = "foo(1, -1, 1.1)"
-      output = {:foo, [], [1, -1, 1.1]}
+      output = [[:foo, %{}, [1, -1, 1.1]]]
 
       assert parse(input) == output
     end
 
     test "parses numerical types with units" do
       input = "foo(1.dp, 1.1.dp)"
-      output = {:foo, [], [{:., [], [1, :dp]}, {:., [], [1.1, :dp]}]}
+      output = [[:foo, %{}, [[:., %{}, [1, :dp]], [:., %{}, [1.1, :dp]]]]]
 
       assert parse(input) == output
     end
 
     test "parses function calls with numbers" do
       input = "foo(Dp(1), Dp(1.1))"
-      output = {:foo, [], [{:Dp, [], [1]}, {:Dp, [], [1.1]}]}
+      output = [[:foo, %{}, [[:Dp, %{}, [1]], [:Dp, %{}, [1.1]]]]]
 
       assert parse(input) == output
     end
 
     test "parses underscore numbers" do
       input = "foo(1_000, 1_000_000_000_000, 1_000.4)"
-      output = {:foo, [], [1_000, 1_000_000_000_000, 1_000.4]}
+      output = [[:foo, %{}, [1_000, 1_000_000_000_000, 1_000.4]]]
 
       assert parse(input) == output
     end
 
     test "parses key/value pairs" do
       input = ~s|foo(bar = "baz", qux=.quux)|
-      output = {:foo, [], [[bar: "baz", qux: {:., [], [nil, :quux]}]]}
+      output = [[:foo, %{}, [[bar: "baz", qux: [:., %{}, [nil, :quux]]]]]]
 
       assert parse(input) == output
     end
 
     test "parses bool and nil values" do
       input = "foo(true, false, nil)"
-      output = {:foo, [], [true, false, nil]}
+      output = [[:foo, %{}, [true, false, nil]]]
 
       assert parse(input) == output
     end
 
     test "parses member expressions" do
       input = "color(.red)"
-      output = {:color, [], [{:., [], [nil, :red]}]}
+      output = [[:color, %{}, [[:., %{}, [nil, :red]]]]]
 
       assert parse(input) == output
     end
 
     test "parses nested function calls" do
       input = ~s|foo(bar("baz"))|
-      output = {:foo, [], [{:bar, [], ["baz"]}]}
+      output = [[:foo, %{}, [[:bar, %{}, ["baz"]]]]]
 
       assert parse(input) == output
     end
 
     test "parses attr value references" do
       input = ~s|foo(attr("bar"))|
-      output = {:foo, [], [{:__attr__, [], "bar"}]}
-
-      assert parse(input) == output
-    end
-
-    test "parses variables" do
-      input = "foo(color_name)"
-      output = {:foo, [], [{Elixir, [], {:color_name, [], Elixir}}]}
-
-      assert parse(input) == output
-    end
-
-    test "parses single character variables" do
-      input = "foo(c)"
-      output = {:foo, [], [{Elixir, [], {:c, [], Elixir}}]}
+      output = [[:foo, %{}, [[:__attr__, %{}, "bar"]]]]
 
       assert parse(input) == output
     end
 
     test "parses closed ranges" do
       input = "foo(Foo.bar...Baz.qux)"
-      output = {:foo, [], [{:..., [], [{:., [], [:Foo, :bar]}, {:., [], [:Baz, :qux]}]}]}
+      output = [[:foo, %{}, [[:..., %{}, [[:., %{}, [:Foo, :bar]], [:., %{}, [:Baz, :qux]]]]]]]
 
       assert parse(input) == output
 
       input = "foo(1...10)"
-      output = {:foo, [], [{:..., [], [1, 10]}]}
+      output = [[:foo, %{}, [[:..., %{}, [1, 10]]]]]
 
       assert parse(input) == output
 
       input = "foo(\"a\"...\"z\")"
-      output = {:foo, [], [{:..., [], ["a", "z"]}]}
+      output = [[:foo, %{}, [[:..., %{}, ["a", "z"]]]]]
 
       assert parse(input) == output
     end
 
     test "parses left-hand range" do
       input = "foo(Foo.bar...)"
-      output = {:foo, [], [{:..., [], [{:., [], [:Foo, :bar]}, nil]}]}
+      output = [[:foo, %{}, [[:..., %{}, [[:., %{}, [:Foo, :bar]], nil]]]]]
 
       assert parse(input) == output
 
       input = "foo(1...)"
-      output = {:foo, [], [{:..., [], [1, nil]}]}
+      output = [[:foo, %{}, [[:..., %{}, [1, nil]]]]]
 
       assert parse(input) == output
 
       input = "foo(\"a\"...)"
-      output = {:foo, [], [{:..., [], ["a", nil]}]}
+      output = [[:foo, %{}, [[:..., %{}, ["a", nil]]]]]
 
       assert parse(input) == output
     end
 
     test "parses right-hand range" do
       input = "foo(...Baz.qux)"
-      output = {:foo, [], [{:..., [], [nil, {:., [], [:Baz, :qux]}]}]}
+      output = [[:foo, %{}, [[:..., %{}, [nil, [:., %{}, [:Baz, :qux]]]]]]]
 
       assert parse(input) == output
 
       input = "foo(...10)"
-      output = {:foo, [], [{:..., [], [nil, 10]}]}
+      output = [[:foo, %{}, [[:..., %{}, [nil, 10]]]]]
 
       assert parse(input) == output
 
       input = "foo(...\"z\")"
-      output = {:foo, [], [{:..., [], [nil, "z"]}]}
+      output = [[:foo, %{}, [[:..., %{}, [nil, "z"]]]]]
 
       assert parse(input) == output
     end
 
     test "parses half-open range" do
       input = "foo(Foo.bar..<Baz.qux)"
-      output = {:foo, [], [{:"..<", [], [{:., [], [:Foo, :bar]}, {:., [], [:Baz, :qux]}]}]}
+      output = [[:foo, %{}, [[:"..<", %{}, [[:., %{}, [:Foo, :bar]], [:., %{}, [:Baz, :qux]]]]]]]
 
       assert parse(input) == output
 
       input = "foo(1..<10)"
-      output = {:foo, [], [{:"..<", [], [1, 10]}]}
+      output = [[:foo, %{}, [[:"..<", %{}, [1, 10]]]]]
 
       assert parse(input) == output
 
       input = "foo(\"a\"..<\"z\")"
-      output = {:foo, [], [{:"..<", [], ["a", "z"]}]}
+      output = [[:foo, %{}, [[:"..<", %{}, ["a", "z"]]]]]
 
       assert parse(input) == output
     end
 
     test "parses half-open right-hand range" do
       input = "foo(..<Baz.qux)"
-      output = {:foo, [], [{:"..<", [], [nil, {:., [], [:Baz, :qux]}]}]}
+      output = [[:foo, %{}, [[:"..<", %{}, [nil, [:., %{}, [:Baz, :qux]]]]]]]
 
       assert parse(input) == output
 
       input = "foo(..<10)"
-      output = {:foo, [], [{:"..<", [], [nil, 10]}]}
+      output = [[:foo, %{}, [[:"..<", %{}, [nil, 10]]]]]
 
       assert parse(input) == output
 
       input = "foo(..<\"z\")"
-      output = {:foo, [], [{:"..<", [], [nil, "z"]}]}
+      output = [[:foo, %{}, [[:"..<", %{}, [nil, "z"]]]]]
 
       assert parse(input) == output
     end
@@ -384,7 +370,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
   describe "helper functions" do
     test "event" do
       input = ~s{searchable(change: event("search-event", throttle: 10_000))}
-      output = {:searchable, [], [[change: {:__event__, [], ["search-event", [throttle: 10_000]]}]]}
+      output = [[:searchable, %{}, [[change: [:__event__, %{}, ["search-event", [throttle: 10_000]]]]]]]
 
       assert parse(input) == output
     end
@@ -395,7 +381,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       output = MockSheet.compile_ast(["color-red"])
 
       assert output == %{"color-red" => [
-        {:color, [], [{:., [], [nil, :red]}]}
+        [:color, %{}, [[:., %{}, [nil, :red]]]]
       ]}
     end
 
@@ -403,7 +389,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       output = MockSheet.compile_ast(["button-plain"])
 
       assert output == %{"button-plain" => [
-        {:buttonStyle, [], [{:., [], [nil, :plain]}]}
+        [:buttonStyle, %{}, [[:., %{}, [nil, :plain]]]]
       ]}
     end
 
@@ -411,7 +397,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
       output = MockSheet.compile_ast(["color-blue"])
 
       assert output == %{"color-blue" => [
-        {:color, [], [{:., [], [nil, :blue]}]}
+        [:color, %{}, [[:., %{}, [nil, :blue]]]]
       ]}
     end
   end
@@ -453,7 +439,6 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
          - a list of keyword pairs eg ‘style = dashed’, ‘size = 12’ or  ‘style = [lineWidth = 1]’
          - a modifier eg ‘bold()’
          - a number, string, nil, boolean or :atom
-         - a variable defined in the class header eg ‘color_name’
         """
         |> String.trim()
 
@@ -578,7 +563,6 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
          - an attribute eg ‘attr(\"placeholder\")’
          - a modifier eg ‘bold()’
          - a number, string, nil, boolean or :atom
-         - a variable defined in the class header eg ‘color_name’
         """
         |> String.trim()
 
@@ -586,7 +570,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
     end
 
     test "invalid keyword pair: double nesting" do
-      input = "abc(def = 11, b = lineWidth = a, l = 2a]"
+      input = "abc(def = 11, b = \"lineWidth\" = a, l = 2a]"
 
       error =
         assert_raise SyntaxError, fn ->
@@ -597,8 +581,8 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
         """
         Unsupported input:
           |
-        1 | abc(def = 11, b = lineWidth = a, l = 2a]
-          |                             ^
+        1 | abc(def = 11, b = "lineWidth" = a, l = 2a]
+          |                               ^
           |
 
         expected ‘)’
@@ -749,7 +733,6 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
          - a list of keyword pairs eg ‘style = dashed’, ‘size = 12’ or  ‘style = [lineWidth = 1]’
          - a modifier eg ‘bold()’
          - a number, string, nil, boolean or :atom
-         - a variable defined in the class header eg ‘color_name’
         """
         |> String.trim()
 
