@@ -80,7 +80,9 @@ internal class ModalBottomSheetView private constructor(props: Properties) :
         val sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = skipPartiallyExpanded,
             confirmValueChange = { sheetValue ->
-                pushNewValue(sheetValue, pushEvent, onChanged)
+                if (onChanged.isNotEmpty()) {
+                    pushNewValue(sheetValue, pushEvent, onChanged)
+                }
                 true
             }
         )
