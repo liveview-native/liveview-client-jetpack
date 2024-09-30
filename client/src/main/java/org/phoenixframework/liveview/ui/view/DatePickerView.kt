@@ -127,7 +127,7 @@ internal class DatePickerView private constructor(props: Properties) :
 
         val state = rememberDatePickerState(
             initialSelectedDateMillis = initialSelectedDateMillis,
-            initialDisplayedMonthMillis = initialDisplayedMonthMillis,
+            initialDisplayedMonthMillis = initialDisplayedMonthMillis ?: initialSelectedDateMillis,
             yearRange = yearRange,
             initialDisplayMode = initialDisplayMode ?: DisplayMode.Picker,
         )
@@ -194,7 +194,7 @@ internal class DatePickerView private constructor(props: Properties) :
         val state = rememberDateRangePickerState(
             initialSelectedStartDateMillis = initialSelectedStartDateMillis,
             initialSelectedEndDateMillis = initialSelectedEndDateMillis,
-            initialDisplayedMonthMillis = initialDisplayedMonthMillis,
+            initialDisplayedMonthMillis = initialDisplayedMonthMillis ?: initialSelectedStartDateMillis,
             yearRange = yearRange,
             initialDisplayMode = initialDisplayMode ?: DisplayMode.Picker,
         )
