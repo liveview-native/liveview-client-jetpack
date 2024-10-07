@@ -84,7 +84,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * </TextButton>
  * ```
  */
-internal class ButtonView private constructor(props: Properties) :
+class ButtonView private constructor(props: Properties) :
     ComposableView<ButtonView.Properties>(props) {
 
     @Composable
@@ -103,38 +103,12 @@ internal class ButtonView private constructor(props: Properties) :
 
         val localParentButtonAction = LocalParentButtonAction.current
         when (composableNode?.node?.tag) {
-            // Filled Button
-            ComposableTypes.button ->
-                Button(
-                    onClick = {
-                        if (localParentButtonAction != null)
-                            localParentButtonAction.invoke(props.commonProps.phxValue)
-                        else
-                            onClickFromString(
-                                pushEvent,
-                                onClick,
-                                props.commonProps.phxValue
-                            ).invoke()
-                    },
-                    modifier = props.commonProps.modifier,
-                    enabled = enabled,
-                    shape = shape ?: ButtonDefaults.shape,
-                    colors = getButtonColors(colors),
-                    elevation = getButtonElevation(elevation),
-                    border = border,
-                    contentPadding = contentPadding ?: ButtonDefaults.ContentPadding,
-                ) {
-                    composableNode.children.forEach {
-                        PhxLiveView(it, pushEvent, composableNode, null, this)
-                    }
-                }
-
             // Elevated Button
             ComposableTypes.elevatedButton ->
                 ElevatedButton(
                     onClick = {
                         if (localParentButtonAction != null)
-                            localParentButtonAction.invoke(props.commonProps.phxValue)
+                            localParentButtonAction.invoke(composableNode)
                         else
                             onClickFromString(
                                 pushEvent,
@@ -160,7 +134,7 @@ internal class ButtonView private constructor(props: Properties) :
                 FilledTonalButton(
                     onClick = {
                         if (localParentButtonAction != null)
-                            localParentButtonAction.invoke(props.commonProps.phxValue)
+                            localParentButtonAction.invoke(composableNode)
                         else
                             onClickFromString(
                                 pushEvent,
@@ -186,7 +160,7 @@ internal class ButtonView private constructor(props: Properties) :
                 OutlinedButton(
                     onClick = {
                         if (localParentButtonAction != null)
-                            localParentButtonAction.invoke(props.commonProps.phxValue)
+                            localParentButtonAction.invoke(composableNode)
                         else
                             onClickFromString(
                                 pushEvent,
@@ -212,7 +186,7 @@ internal class ButtonView private constructor(props: Properties) :
                 TextButton(
                     onClick = {
                         if (localParentButtonAction != null)
-                            localParentButtonAction.invoke(props.commonProps.phxValue)
+                            localParentButtonAction.invoke(composableNode)
                         else
                             onClickFromString(
                                 pushEvent,
@@ -229,6 +203,32 @@ internal class ButtonView private constructor(props: Properties) :
                     contentPadding = contentPadding ?: ButtonDefaults.TextButtonContentPadding,
                 ) {
                     composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null, this)
+                    }
+                }
+
+            // Filled Button
+            else ->
+                Button(
+                    onClick = {
+                        if (localParentButtonAction != null)
+                            localParentButtonAction.invoke(composableNode)
+                        else
+                            onClickFromString(
+                                pushEvent,
+                                onClick,
+                                props.commonProps.phxValue
+                            ).invoke()
+                    },
+                    modifier = props.commonProps.modifier,
+                    enabled = enabled,
+                    shape = shape ?: ButtonDefaults.shape,
+                    colors = getButtonColors(colors),
+                    elevation = getButtonElevation(elevation),
+                    border = border,
+                    contentPadding = contentPadding ?: ButtonDefaults.ContentPadding,
+                ) {
+                    composableNode?.children?.forEach {
                         PhxLiveView(it, pushEvent, composableNode, null, this)
                     }
                 }
@@ -392,7 +392,7 @@ internal class ButtonView private constructor(props: Properties) :
     }
 
     @Stable
-    internal data class Properties(
+    data class Properties(
         val onClick: String = "",
         val enabled: Boolean = true,
         val shape: Shape? = null,
@@ -403,7 +403,7 @@ internal class ButtonView private constructor(props: Properties) :
         override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal object Factory : ComposableViewFactory<ButtonView>() {
+    object Factory : ComposableViewFactory<ButtonView>() {
         /**
          * Creates a `ButtonView` object based on the attributes of the input `Attributes` object.
          * ButtonView co-relates to the Button composable
@@ -547,4 +547,5 @@ internal class ButtonView private constructor(props: Properties) :
  * This composition local allows to a parent node to intercept the button's click event. See
  * `LiveForm` component for an example of usage.
  */
-val LocalParentButtonAction = compositionLocalOf<(value: Any?) -> Unit> { { _ -> } }
+val LocalParentButtonAction =
+    compositionLocalOf<((composableNode: ComposableTreeNode?) -> Unit)?> { null }

@@ -23,6 +23,7 @@ import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.ParentViewDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
+import org.phoenixframework.liveview.liveform.constants.LiveFormTypes
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.view.LocalParentButtonAction
 
@@ -41,8 +42,8 @@ internal class LiveFormView private constructor(props: Properties) :
         val formDataHolder = remember(composableNode?.id) {
             FormDataHolder(phxChange, pushEvent)
         }
-        val submitAction = { _: Any? ->
-            if (phxSubmit != null) {
+        val submitAction = { senderNode: ComposableTreeNode? ->
+            if (phxSubmit != null && senderNode?.node?.tag == LiveFormTypes.submitButton) {
                 pushEvent.invoke(EVENT_TYPE_CLICK, phxSubmit, formDataHolder.data, null)
             }
         }
