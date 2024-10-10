@@ -25,7 +25,8 @@ import org.phoenixframework.liveview.foundation.ui.base.ParentViewDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.liveform.constants.LiveFormTypes
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
-import org.phoenixframework.liveview.ui.view.LocalParentButtonAction
+import org.phoenixframework.liveview.ui.view.ButtonParentActionHandler
+import org.phoenixframework.liveview.ui.view.LocalButtonParentActionHandler
 
 internal class LiveFormView private constructor(props: Properties) :
     ComposableView<LiveFormView.Properties>(props) {
@@ -42,9 +43,21 @@ internal class LiveFormView private constructor(props: Properties) :
         val formDataHolder = remember(composableNode?.id) {
             FormDataHolder(phxChange, pushEvent)
         }
-        val submitAction = { senderNode: ComposableTreeNode? ->
-            if (phxSubmit != null && senderNode?.node?.tag == LiveFormTypes.submitButton) {
-                pushEvent.invoke(EVENT_TYPE_CLICK, phxSubmit, formDataHolder.data, null)
+        val submitActionHandler = remember(phxSubmit) {
+            object : ButtonParentActionHandler {
+                override fun buttonParentMustHandleAction(buttonNode: ComposableTreeNode?): Boolean {
+                    return phxSubmit?.isNotEmpty() == true
+                            && buttonNode?.node?.tag == LiveFormTypes.submitButton
+                }
+
+                override fun handleAction(
+                    composableNode: ComposableTreeNode?,
+                    pushEvent: PushEvent
+                ) {
+                    if (phxSubmit != null) {
+                        pushEvent.invoke(EVENT_TYPE_CLICK, phxSubmit, formDataHolder.data, null)
+                    }
+                }
             }
         }
         Column(
@@ -52,7 +65,7 @@ internal class LiveFormView private constructor(props: Properties) :
                 .paddingIfNotNull(paddingValues),
             content = {
                 CompositionLocalProvider(
-                    LocalParentButtonAction provides submitAction,
+                    LocalButtonParentActionHandler provides submitActionHandler,
                     LocalParentDataHolder provides formDataHolder
                 ) {
                     composableNode?.children?.forEach {

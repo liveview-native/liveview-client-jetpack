@@ -6,7 +6,10 @@ import androidx.compose.material3.MultiChoiceSegmentedButtonRow
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
@@ -20,6 +23,7 @@ import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperti
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
+import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
@@ -77,6 +81,12 @@ internal class SegmentedButtonRowView private constructor(props: Properties) :
         pushEvent: PushEvent
     ) {
         val space = props.space
+        val parentDataHolder = LocalParentDataHolder.current
+
+        val onItemSelected = fun(itemValue: Any?) {
+            val newValue = mergeValueWithPhxValue(KEY_PHX_VALUE, itemValue)
+            parentDataHolder?.setValue(composableNode, newValue)
+        }
 
         when (composableNode?.node?.tag) {
             ComposableTypes.singleChoiceSegmentedButtonRow -> {
@@ -84,8 +94,12 @@ internal class SegmentedButtonRowView private constructor(props: Properties) :
                     modifier = props.commonProps.modifier,
                     space = space ?: SegmentedButtonDefaults.BorderWidth,
                 ) {
-                    composableNode.children.forEach {
-                        PhxLiveView(it, pushEvent, composableNode, null, this)
+                    CompositionLocalProvider(
+                        LocalSegmentedButtonViewSelectedAction provides onItemSelected
+                    ) {
+                        composableNode.children.forEach {
+                            PhxLiveView(it, pushEvent, composableNode, null, this)
+                        }
                     }
                 }
             }
@@ -100,6 +114,11 @@ internal class SegmentedButtonRowView private constructor(props: Properties) :
                     }
                 }
             }
+        }
+
+        LaunchedEffect(composableNode?.id) {
+            val value = mergeValueWithPhxValue(KEY_PHX_VALUE, props.commonProps.phxValue)
+            parentDataHolder?.setValue(composableNode, value)
         }
     }
 
@@ -146,4 +165,11 @@ internal class SegmentedButtonRowView private constructor(props: Properties) :
             } else props
         }
     }
+}
+
+/**
+ * This composition local allows the SegmentedButtonView notify when the value is selected.
+ */
+val LocalSegmentedButtonViewSelectedAction = compositionLocalOf<(itemValue: Any?) -> Unit> {
+    { _ -> }
 }

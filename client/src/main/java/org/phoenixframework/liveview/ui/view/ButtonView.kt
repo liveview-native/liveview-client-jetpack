@@ -101,14 +101,17 @@ class ButtonView private constructor(props: Properties) :
         val contentPadding = props.contentPadding
         val border = props.border
 
-        val localParentButtonAction = LocalParentButtonAction.current
+        val localButtonParentActionHandler = LocalButtonParentActionHandler.current
         when (composableNode?.node?.tag) {
             // Elevated Button
             ComposableTypes.elevatedButton ->
                 ElevatedButton(
                     onClick = {
-                        if (localParentButtonAction != null)
-                            localParentButtonAction.invoke(composableNode)
+                        if (localButtonParentActionHandler?.buttonParentMustHandleAction(
+                                composableNode
+                            ) == true
+                        )
+                            localButtonParentActionHandler.handleAction(composableNode, pushEvent)
                         else
                             onClickFromString(
                                 pushEvent,
@@ -133,8 +136,11 @@ class ButtonView private constructor(props: Properties) :
             ComposableTypes.filledTonalButton ->
                 FilledTonalButton(
                     onClick = {
-                        if (localParentButtonAction != null)
-                            localParentButtonAction.invoke(composableNode)
+                        if (localButtonParentActionHandler?.buttonParentMustHandleAction(
+                                composableNode
+                            ) == true
+                        )
+                            localButtonParentActionHandler.handleAction(composableNode, pushEvent)
                         else
                             onClickFromString(
                                 pushEvent,
@@ -159,8 +165,11 @@ class ButtonView private constructor(props: Properties) :
             ComposableTypes.outlinedButton ->
                 OutlinedButton(
                     onClick = {
-                        if (localParentButtonAction != null)
-                            localParentButtonAction.invoke(composableNode)
+                        if (localButtonParentActionHandler?.buttonParentMustHandleAction(
+                                composableNode
+                            ) == true
+                        )
+                            localButtonParentActionHandler.handleAction(composableNode, pushEvent)
                         else
                             onClickFromString(
                                 pushEvent,
@@ -185,8 +194,11 @@ class ButtonView private constructor(props: Properties) :
             ComposableTypes.textButton ->
                 TextButton(
                     onClick = {
-                        if (localParentButtonAction != null)
-                            localParentButtonAction.invoke(composableNode)
+                        if (localButtonParentActionHandler?.buttonParentMustHandleAction(
+                                composableNode
+                            ) == true
+                        )
+                            localButtonParentActionHandler.handleAction(composableNode, pushEvent)
                         else
                             onClickFromString(
                                 pushEvent,
@@ -211,8 +223,11 @@ class ButtonView private constructor(props: Properties) :
             else ->
                 Button(
                     onClick = {
-                        if (localParentButtonAction != null)
-                            localParentButtonAction.invoke(composableNode)
+                        if (localButtonParentActionHandler?.buttonParentMustHandleAction(
+                                composableNode
+                            ) == true
+                        )
+                            localButtonParentActionHandler.handleAction(composableNode, pushEvent)
                         else
                             onClickFromString(
                                 pushEvent,
@@ -544,8 +559,23 @@ class ButtonView private constructor(props: Properties) :
 }
 
 /**
- * This composition local allows to a parent node to intercept the button's click event. See
- * `LiveForm` component for an example of usage.
+ * This composition local allows to a parent node to intercept the button's click event.
+ * See `LiveForm` component for an example of usage.
  */
-val LocalParentButtonAction =
-    compositionLocalOf<((composableNode: ComposableTreeNode?) -> Unit)?> { null }
+val LocalButtonParentActionHandler =
+    compositionLocalOf<ButtonParentActionHandler?> { null }
+
+interface ButtonParentActionHandler {
+    /**
+     * Returns true if the parent node must handle the button action. False otherwise.
+     */
+    fun buttonParentMustHandleAction(buttonNode: ComposableTreeNode?): Boolean
+
+    /**
+     * Button's parent action.
+     */
+    fun handleAction(
+        composableNode: ComposableTreeNode?,
+        pushEvent: PushEvent,
+    )
+}
