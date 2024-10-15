@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -64,12 +65,31 @@ private fun NavDestination(
     val liveViewCoordinator = koinViewModel<LiveViewCoordinator> {
         parametersOf(httpBaseUrl, route)
     }
-
+    val appNavigationController = remember(navController) {
+        object : AppNavigationController {
+            override fun navigate(path: String, redirect: Boolean) {
+                navController.navigate(
+                    createRoute(
+                        generateRelativePath(
+                            getCurrentRoute(navController),
+                            path
+                        )
+                    )
+                ) {
+                    if (redirect) {
+                        popUpTo(backStackEntry.destination.id) {
+                            inclusive = true
+                        }
+                    }
+                }
+            }
+        }
+    }
     val state by liveViewCoordinator.state.collectAsState()
     if (state.composableTreeNode.children.isNotEmpty()) {
         CompositionLocalProvider(
             LocalHttpUrl provides liveViewCoordinator.httpBaseUrl,
-            LocalNavController provides navController,
+            LocalNavigation provides appNavigationController,
         ) {
             state.composableTreeNode.children.forEach {
                 PhxLiveView(
@@ -107,12 +127,6 @@ private fun NavDestination(
     }
 }
 
-internal fun createRoute(route: String): String = "$PHX_LIVE_VIEW_ROUTE?$ARG_ROUTE=$route"
-
-internal fun getCurrentRoute(navController: NavController): String {
-    return navController.currentBackStackEntry?.arguments?.getString(ARG_ROUTE) ?: "/"
-}
-
 internal fun generateRelativePath(currentUrl: String, newUrl: String): String {
     val currentParts = currentUrl.split("/").toMutableList()
     val newParts = newUrl.split("/").toMutableList()
@@ -142,6 +156,12 @@ internal fun generateRelativePath(currentUrl: String, newUrl: String): String {
     )
 }
 
+internal fun createRoute(route: String): String = "$PHX_LIVE_VIEW_ROUTE?$ARG_ROUTE=$route"
+
+internal fun getCurrentRoute(navController: NavController): String {
+    return navController.currentBackStackEntry?.arguments?.getString(ARG_ROUTE) ?: "/"
+}
+
 /**
  * Some components (like AsyncImage) might require some resources using the relative URL. This
  * composition local, provides base URL of the current LiveView, and the child components can
@@ -154,6 +174,10 @@ val LocalHttpUrl = compositionLocalOf { "" }
  * Providing access to the NavController in order to allow local navigation from other components
  * like [org.phoenixframework.liveview.ui.view.LinkView].
  */
-val LocalNavController = compositionLocalOf<NavController> {
+val LocalNavigation = compositionLocalOf<AppNavigationController> {
     error("No LocalNavController provided")
+}
+
+interface AppNavigationController {
+    fun navigate(path: String, redirect: Boolean)
 }

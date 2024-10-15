@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import kotlinx.collections.immutable.ImmutableList
@@ -23,7 +24,11 @@ import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.ParentViewDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
+import org.phoenixframework.liveview.liveform.constants.Attrs.attrAction
+import org.phoenixframework.liveview.liveform.constants.Attrs.attrMethod
+import org.phoenixframework.liveview.liveform.constants.Attrs.attrPhxTriggerAction
 import org.phoenixframework.liveview.liveform.constants.LiveFormTypes
+import org.phoenixframework.liveview.ui.phx_components.LocalNavigation
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.view.ButtonParentActionHandler
 import org.phoenixframework.liveview.ui.view.LocalButtonParentActionHandler
@@ -39,6 +44,8 @@ internal class LiveFormView private constructor(props: Properties) :
     ) {
         val phxChange = props.phxChange ?: ""
         val phxSubmit = props.phxSubmit
+        val phxTriggerAction = props.phxTriggerAction
+        val action = props.action
 
         val formDataHolder = remember(composableNode?.id) {
             FormDataHolder(phxChange, pushEvent)
@@ -74,6 +81,12 @@ internal class LiveFormView private constructor(props: Properties) :
                 }
             }
         )
+        val navigationController = LocalNavigation.current
+        LaunchedEffect(phxTriggerAction) {
+            if (phxTriggerAction && action?.isNotEmpty() == true) {
+                navigationController.navigate(action, true)
+            }
+        }
     }
 
     @Stable
@@ -81,6 +94,9 @@ internal class LiveFormView private constructor(props: Properties) :
         val name: String = "",
         val phxChange: String? = null,
         val phxSubmit: String? = null,
+        val phxTriggerAction: Boolean = false,
+        val action: String? = null,
+        val method: String? = null,
         override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
@@ -95,9 +111,12 @@ internal class LiveFormView private constructor(props: Properties) :
                 Properties()
             ) { props, attribute ->
                 when (attribute.name) {
+                    attrAction -> action(props, attribute.value)
+                    attrMethod -> method(props, attribute.value)
                     attrName -> name(props, attribute.value)
                     attrPhxChange -> phxChange(props, attribute.value)
                     attrPhxSubmit -> phxSubmit(props, attribute.value)
+                    attrPhxTriggerAction -> phxTriggerAction(props, attribute.value)
                     else -> props.copy(
                         commonProps = handleCommonAttributes(
                             props.commonProps,
@@ -109,6 +128,14 @@ internal class LiveFormView private constructor(props: Properties) :
                 }
             })
 
+        private fun action(props: Properties, action: String): Properties {
+            return props.copy(action = action)
+        }
+
+        private fun method(props: Properties, method: String): Properties {
+            return props.copy(method = method)
+        }
+
         private fun name(props: Properties, name: String): Properties {
             return props.copy(name = name)
         }
@@ -119,6 +146,10 @@ internal class LiveFormView private constructor(props: Properties) :
 
         private fun phxSubmit(props: Properties, phxSubmit: String): Properties {
             return props.copy(phxSubmit = phxSubmit)
+        }
+
+        private fun phxTriggerAction(props: Properties, phxTriggerAction: String): Properties {
+            return props.copy(phxTriggerAction = phxTriggerAction.toBooleanStrictOrNull() ?: false)
         }
     }
 }
@@ -136,7 +167,7 @@ class FormDataHolder(private val event: String, private val pushEvent: PushEvent
             if (nameAttribute != null) {
                 val name = nameAttribute.value
                 val pushValue = formData.containsKey(name)
-                formData[name] = value.toString() // nameAttribute.value
+                formData[name] = value.toString()
                 if (pushValue) {
                     pushEvent?.invoke(EVENT_TYPE_CHANGE, event, formData, null)
                 }

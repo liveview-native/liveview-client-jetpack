@@ -83,13 +83,12 @@ class SocketService {
             SOCKET_PARAM_FORMAT to FORMAT_JETPACK
         )
 
-        val socketQueryParams =
-            socketParams.entries.fold("") { acc: String, entry: Map.Entry<String, Any?> ->
-                acc + "${entry.key}=${entry.value}&"
+        val uriBuilder = Uri.parse(socketBaseUrl).buildUpon().apply {
+            socketParams.entries.forEach { entry ->
+                appendQueryParameter(entry.key, entry.value.toString())
             }
-
-        val separator = if (socketBaseUrl.indexOf('?') > -1) '&' else '?'
-        val socketUrl = "${socketBaseUrl}$separator$socketQueryParams"
+        }
+        val socketUrl = uriBuilder.build().toString()
         Log.d(TAG, "connectToLiveViewSocket::socketUrl=$socketUrl")
         phxSocket = Socket(url = socketUrl, client = okHttpClient).apply {
             logger = { Log.d(TAG, it) }

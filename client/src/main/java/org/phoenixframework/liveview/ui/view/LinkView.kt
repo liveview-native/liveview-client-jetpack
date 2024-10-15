@@ -19,11 +19,8 @@ import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
-import org.phoenixframework.liveview.ui.phx_components.LocalNavController
+import org.phoenixframework.liveview.ui.phx_components.LocalNavigation
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
-import org.phoenixframework.liveview.ui.phx_components.createRoute
-import org.phoenixframework.liveview.ui.phx_components.generateRelativePath
-import org.phoenixframework.liveview.ui.phx_components.getCurrentRoute
 
 /**
  * Component that allows a local navigation to a different path declared in the application route.
@@ -41,20 +38,13 @@ internal class LinkView private constructor(props: Properties) :
         pushEvent: PushEvent
     ) {
         val context = LocalContext.current
-        val navController = LocalNavController.current
+        val navController = LocalNavigation.current
         val modifier = props.commonProps.modifier.then(
             Modifier.clickable {
                 if (props.navigationPath.startsWith("http://") || props.navigationPath.startsWith("https://")) {
                     context.startActivity(Intent(ACTION_VIEW, Uri.parse(props.navigationPath)))
                 } else {
-                    navController.navigate(
-                        createRoute(
-                            generateRelativePath(
-                                getCurrentRoute(navController),
-                                props.navigationPath
-                            )
-                        )
-                    )
+                    navController.navigate(props.navigationPath, false)
                 }
             }
         )
