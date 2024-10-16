@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.ui.phx_components
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -16,16 +17,17 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import androidx.navigation.toRoute
+import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.phoenixframework.liveview.LiveViewJetpack
+import org.phoenixframework.liveview.foundation.data.mappers.JsonParser
 import org.phoenixframework.liveview.foundation.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.foundation.ui.base.ErrorView
 import org.phoenixframework.liveview.ui.theme.LiveViewNativeTheme
 
-private const val PHX_LIVE_VIEW_ROUTE = "phxLiveView"
-private const val ARG_ROUTE = "route"
+private const val TAG = "LiveView"
 
 @Composable
 fun LiveView(url: String) {
@@ -37,13 +39,8 @@ fun LiveView(url: String) {
             color = MaterialTheme.colorScheme.background
         ) {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = PHX_LIVE_VIEW_ROUTE) {
-                composable(
-                    route = "$PHX_LIVE_VIEW_ROUTE?$ARG_ROUTE={$ARG_ROUTE}",
-                    arguments = listOf(navArgument(ARG_ROUTE) {
-                        nullable = true
-                    })
-                ) { backStackEntry ->
+            NavHost(navController = navController, startDestination = LiveViewNavRoute()) {
+                composable<LiveViewNavRoute> { backStackEntry ->
                     NavDestination(
                         navController = navController,
                         backStackEntry = backStackEntry,
@@ -61,30 +58,15 @@ private fun NavDestination(
     backStackEntry: NavBackStackEntry,
     httpBaseUrl: String,
 ) {
-    val route = backStackEntry.arguments?.getString(ARG_ROUTE)
+    val lvNavRoute = backStackEntry.toRoute<LiveViewNavRoute>()
+
     val liveViewCoordinator = koinViewModel<LiveViewCoordinator> {
-        parametersOf(httpBaseUrl, route)
+        parametersOf(httpBaseUrl, lvNavRoute.route)
     }
-    val appNavigationController = remember(navController) {
-        object : AppNavigationController {
-            override fun navigate(path: String, redirect: Boolean) {
-                navController.navigate(
-                    createRoute(
-                        generateRelativePath(
-                            getCurrentRoute(navController),
-                            path
-                        )
-                    )
-                ) {
-                    if (redirect) {
-                        popUpTo(backStackEntry.destination.id) {
-                            inclusive = true
-                        }
-                    }
-                }
-            }
-        }
+    val appNavigationController = remember(navController, backStackEntry) {
+        LiveViewAppNavController(navController, backStackEntry)
     }
+
     val state by liveViewCoordinator.state.collectAsState()
     if (state.composableTreeNode.children.isNotEmpty()) {
         CompositionLocalProvider(
@@ -106,28 +88,54 @@ private fun NavDestination(
     }
 
     LaunchedEffect(state.navigationRequest) {
-        val navigationRequest = state.navigationRequest
-        // Connecting to LiveView socket
-        liveViewCoordinator.connectToLiveView()
-        if (navigationRequest != null) {
-            // Cancelling connection jobs
-            liveViewCoordinator.cancelConnectionJobs()
+        processNavigationRequest(
+            state.navigationRequest,
+            liveViewCoordinator,
+            lvNavRoute,
+            navController,
+            backStackEntry
+        )
+    }
+}
 
-            val (newRoute, redirect) = navigationRequest
-            liveViewCoordinator.resetNavigation()
-            val routePath = createRoute(newRoute)
-            navController.navigate(routePath) {
-                if (redirect) {
-                    popUpTo(backStackEntry.destination.id) {
-                        inclusive = true
-                    }
+private fun processNavigationRequest(
+    navigationRequest: LiveViewCoordinator.NavigationRequest?,
+    liveViewCoordinator: LiveViewCoordinator,
+    lvNavRoute: LiveViewNavRoute,
+    navController: NavController,
+    backStackEntry: NavBackStackEntry
+) {
+    // Connecting to LiveView socket
+    liveViewCoordinator.connectToLiveView(
+        method = lvNavRoute.method ?: "GET",
+        params = lvNavRoute.argsAsJson?.let { JsonParser.parse<Map<String, Any?>>(it) }
+            ?: emptyMap()
+    )
+    if (navigationRequest != null) {
+        // Cancelling connection jobs
+        liveViewCoordinator.cancelConnectionJobs()
+
+        val (newRoute, redirect) = navigationRequest
+        liveViewCoordinator.resetNavigation()
+        val routePath = generateRelativePath(getCurrentRoute(navController), newRoute)
+        Log.d(TAG, "Navigate to: $routePath")
+        navController.navigate(
+            LiveViewNavRoute(
+                route = routePath,
+                argsAsJson = lvNavRoute.argsAsJson
+            )
+        ) {
+            if (redirect) {
+                liveViewCoordinator.disconnect()
+                popUpTo(backStackEntry.destination.id) {
+                    inclusive = true
                 }
             }
         }
     }
 }
 
-internal fun generateRelativePath(currentUrl: String, newUrl: String): String {
+private fun generateRelativePath(currentUrl: String, newUrl: String): String {
     val currentParts = currentUrl.split("/").toMutableList()
     val newParts = newUrl.split("/").toMutableList()
 
@@ -156,10 +164,43 @@ internal fun generateRelativePath(currentUrl: String, newUrl: String): String {
     )
 }
 
-internal fun createRoute(route: String): String = "$PHX_LIVE_VIEW_ROUTE?$ARG_ROUTE=$route"
+@Serializable
+private data class LiveViewNavRoute(
+    val route: String? = null,
+    val method: String? = null,
+    val argsAsJson: String? = null,
+)
 
-internal fun getCurrentRoute(navController: NavController): String {
-    return navController.currentBackStackEntry?.arguments?.getString(ARG_ROUTE) ?: "/"
+private class LiveViewAppNavController(
+    private val navController: NavController,
+    private val backStackEntry: NavBackStackEntry,
+) : AppNavigationController {
+    override fun navigate(
+        path: String,
+        method: String,
+        params: Map<String, Any?>,
+        redirect: Boolean
+    ) {
+        navController.navigate(
+            LiveViewNavRoute(
+                route = generateRelativePath(getCurrentRoute(navController), path),
+                method = method,
+                argsAsJson = JsonParser.toString(params),
+            )
+        ) {
+            if (redirect) {
+                popUpTo(backStackEntry.destination.id) {
+                    inclusive = true
+                }
+            }
+        }
+    }
+}
+
+private fun getCurrentRoute(navController: NavController): String {
+    val lvNavRoute = navController.currentBackStackEntry?.toRoute<LiveViewNavRoute>()
+    Log.d(TAG, "Current Route: $lvNavRoute")
+    return lvNavRoute?.route ?: "/"
 }
 
 /**
@@ -179,5 +220,5 @@ val LocalNavigation = compositionLocalOf<AppNavigationController> {
 }
 
 interface AppNavigationController {
-    fun navigate(path: String, redirect: Boolean)
+    fun navigate(path: String, method: String, params: Map<String, Any?>, redirect: Boolean)
 }

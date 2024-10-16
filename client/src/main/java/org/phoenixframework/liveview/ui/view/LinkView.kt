@@ -44,7 +44,7 @@ internal class LinkView private constructor(props: Properties) :
                 if (props.navigationPath.startsWith("http://") || props.navigationPath.startsWith("https://")) {
                     context.startActivity(Intent(ACTION_VIEW, Uri.parse(props.navigationPath)))
                 } else {
-                    navController.navigate(props.navigationPath, false)
+                    navController.navigate(props.navigationPath, "GET", emptyMap(), false)
                 }
             }
         )

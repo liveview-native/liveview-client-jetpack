@@ -10,9 +10,12 @@ import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Cookie
 import okhttp3.CookieJar
+import okhttp3.FormBody
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.internal.EMPTY_REQUEST
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
@@ -32,6 +35,12 @@ class SocketService {
 
     var payload: PhoenixLiveViewPayload? = null
         private set
+
+    val isConnected: Boolean
+        get() = phxSocket?.isConnected == true
+
+    val isInitialPayloadLoaded: Boolean
+        get() = payload != null
 
     private val _connection = MutableStateFlow<Events>(Events.NotConnected)
     val connectionFlow: StateFlow<Events> = _connection
@@ -56,18 +65,9 @@ class SocketService {
             .build()
     }
 
-    suspend fun connectToLiveViewSocket(
-        httpBaseUrl: String,
-        socketBaseUrl: String,
-    ) {
-        Log.d(TAG, "connectToLiveViewSocket::httpBaseUrl=> $httpBaseUrl")
+    fun connectToLiveViewSocket(socketBaseUrl: String) {
         Log.d(TAG, "connectToLiveViewSocket::socketBaseUrl=> $socketBaseUrl")
-        if (phxSocket?.isConnected == true) {
-            return
-        }
-        if (payload == null) {
-            loadInitialPayload(httpBaseUrl)
-        }
+
         if (payload == null) {
             _connection.update {
                 Events.PayloadLoadingError(IllegalStateException("Initial payload is null"))
@@ -80,7 +80,7 @@ class SocketService {
             SOCKET_PARAM_CSRF_TOKEN to payload?.phxCSRFToken,
             SOCKET_PARAM_MOUNTS to 0,
             SOCKET_PARAM_CLIENT_ID to uuid,
-            SOCKET_PARAM_FORMAT to FORMAT_JETPACK
+            SOCKET_PARAM_FORMAT to FORMAT_JETPACK,
         )
 
         val uriBuilder = Uri.parse(socketBaseUrl).buildUpon().apply {
@@ -133,8 +133,37 @@ class SocketService {
         )
     }
 
-    private fun newHttpCall(url: String): Call {
-        val request = Request.Builder().url(url).get().build()
+    private fun newHttpCall(url: String, method: String = "GET", params: Map<String, Any?>): Call {
+        fun formBodyRequest(params: Map<String, Any?>): RequestBody {
+            return if (params.isEmpty()) EMPTY_REQUEST else {
+                FormBody.Builder().apply {
+                    params.forEach { entry ->
+                        addEncoded(entry.key, entry.value.toString())
+                    }
+                }.build()
+            }
+        }
+
+        val request = Request.Builder().url(url).apply {
+            when (method.uppercase()) {
+                "HEAD" -> head()
+                "DELETE" -> delete(formBodyRequest(params))
+                "PATCH" -> patch(formBodyRequest(params))
+                "POST" -> post(formBodyRequest(params))
+                "PUT" -> put(formBodyRequest(params))
+                else -> {
+                    if (params.isNotEmpty()) {
+                        val uri = Uri.parse(url).buildUpon().apply {
+                            params.forEach { entry ->
+                                appendQueryParameter(entry.key, entry.value.toString())
+                            }
+                        }
+                        url(uri.toString())
+                    }
+                    get()
+                }
+            }
+        }.build()
         return okHttpClient.newCall(request)
     }
 
@@ -172,12 +201,12 @@ class SocketService {
         return liveReloadSocket?.channel(topic = "phoenix:live_reload")
     }
 
-    suspend fun loadInitialPayload(url: String) {
+    suspend fun loadInitialPayload(url: String, method: String, params: Map<String, Any?>) {
         payload = withContext(Dispatchers.IO) {
             try {
                 val uri = Uri.parse(url).buildUpon()
                     .appendQueryParameter(SOCKET_PARAM_FORMAT, FORMAT_JETPACK)
-                val doc: Document? = newHttpCall(uri.toString())
+                val doc: Document? = newHttpCall(uri.toString(), method, params)
                     .execute()
                     .body?.string()
                     ?.let { Jsoup.parse(it) }

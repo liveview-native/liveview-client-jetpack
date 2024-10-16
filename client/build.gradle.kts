@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.roborazzi)
     alias(libs.plugins.com.strumenta.antlr.kotlin)
+    alias(libs.plugins.kotlinx.serialization)
     id("maven-publish")
 }
 
@@ -106,6 +107,8 @@ dependencies {
     //   Extract the libjnidispatch.so file for each architecture using `jar xf android-aarch64.jar`
     implementation(libs.net.java.dev.jna)
     implementation(libs.org.jsoup)
+
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)

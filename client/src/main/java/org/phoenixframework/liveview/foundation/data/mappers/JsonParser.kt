@@ -10,4 +10,12 @@ object JsonParser {
     inline fun <reified T> parse(json: String): T? {
         return gson.fromJson(json, T::class.java)
     }
+
+    inline fun <reified T> toString(obj: T): String {
+        return try {
+            gson.toJson(obj)
+        } catch (e: Exception) {
+            ""
+        }
+    }
 }

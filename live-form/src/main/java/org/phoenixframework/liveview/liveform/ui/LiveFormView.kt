@@ -46,6 +46,7 @@ internal class LiveFormView private constructor(props: Properties) :
         val phxSubmit = props.phxSubmit
         val phxTriggerAction = props.phxTriggerAction
         val action = props.action
+        val method = props.method ?: "GET"
 
         val formDataHolder = remember(composableNode?.id) {
             FormDataHolder(phxChange, pushEvent)
@@ -68,8 +69,7 @@ internal class LiveFormView private constructor(props: Properties) :
             }
         }
         Column(
-            modifier = props.commonProps.modifier
-                .paddingIfNotNull(paddingValues),
+            modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
             content = {
                 CompositionLocalProvider(
                     LocalButtonParentActionHandler provides submitActionHandler,
@@ -84,7 +84,7 @@ internal class LiveFormView private constructor(props: Properties) :
         val navigationController = LocalNavigation.current
         LaunchedEffect(phxTriggerAction) {
             if (phxTriggerAction && action?.isNotEmpty() == true) {
-                navigationController.navigate(action, true)
+                navigationController.navigate(action, method, formDataHolder.data, true)
             }
         }
     }
@@ -133,7 +133,7 @@ internal class LiveFormView private constructor(props: Properties) :
         }
 
         private fun method(props: Properties, method: String): Properties {
-            return props.copy(method = method)
+            return props.copy(method = method.uppercase())
         }
 
         private fun name(props: Properties, name: String): Properties {
