@@ -21,9 +21,7 @@ object Attrs {
     const val attrBottom = "bottom"
     const val attrCap = "cap"
     const val attrCapitalization = "capitalization"
-    const val attrCaretHeight = "caretHeight"
-    const val attrCaretProperties = "caretProperties"
-    const val attrCaretWidth = "caretWidth"
+    const val attrCaretSize = "caretSize"
     const val attrChecked = "checked"
     const val attrClass = CoreAttrs.attrClass
     const val attrClippingEnabled = "clippingEnabled"
@@ -76,6 +74,7 @@ object Attrs {
     const val attrFontSynthesis = "fontSynthesis"
     const val attrFontWeight = "fontWeight"
     const val attrGesturesEnabled = "gesturesEnabled"
+    const val attrHeight = "height"
     const val attrHorizontalAlignment = "horizontalAlignment"
     const val attrHorizontalArrangement = "horizontalArrangement"
     const val attrHyphens = "hyphens"

@@ -135,7 +135,7 @@ private fun processNavigationRequest(
     }
 }
 
-private fun generateRelativePath(currentUrl: String, newUrl: String): String {
+internal fun generateRelativePath(currentUrl: String, newUrl: String): String {
     val currentParts = currentUrl.split("/").toMutableList()
     val newParts = newUrl.split("/").toMutableList()
 
