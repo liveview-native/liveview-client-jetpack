@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.roborazzi) apply false
     alias(libs.plugins.org.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.com.strumenta.antlr.kotlin) apply false
+    alias(libs.plugins.kotlinx.serialization) apply false
 }
 
 tasks.register<Delete>("clean") {

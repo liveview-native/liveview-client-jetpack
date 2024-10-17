@@ -20,6 +20,7 @@ import org.phoenixframework.liveview.constants.Attrs.attrColors
 import org.phoenixframework.liveview.constants.Attrs.attrInitialIsVisible
 import org.phoenixframework.liveview.constants.Attrs.attrIsPersistent
 import org.phoenixframework.liveview.constants.Attrs.attrShape
+import org.phoenixframework.liveview.constants.Attrs.attrSpacingBetweenTooltipAndAnchor
 import org.phoenixframework.liveview.constants.Attrs.attrStyle
 import org.phoenixframework.liveview.constants.Attrs.attrTemplate
 import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrActionContentColor
@@ -36,6 +37,7 @@ import org.phoenixframework.liveview.constants.ModifierNames.modifierBackground
 import org.phoenixframework.liveview.constants.ModifierNames.modifierSize
 import org.phoenixframework.liveview.constants.ModifierTypes.typeColor
 import org.phoenixframework.liveview.constants.ModifierTypes.typeDp
+import org.phoenixframework.liveview.constants.ShapeValues.roundedCorner
 import org.phoenixframework.liveview.constants.SystemColorValues.Green
 import org.phoenixframework.liveview.constants.SystemColorValues.Red
 import org.phoenixframework.liveview.constants.SystemColorValues.White
@@ -89,17 +91,30 @@ class TooltipShotTest : LiveViewComposableTest() {
     @Test
     fun simpleRichTooltipTest() {
         compareNativeComposableWithTemplate(
+            captureScreenImage = true,
             nativeComposable = {
-                RichTooltip(
-                    text = {
-                        Text(text = "Text")
+                TooltipBox(
+                    positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+                    state = rememberTooltipState(initialIsVisible = true, isPersistent = true),
+                    tooltip = {
+                        RichTooltip(
+                            text = {
+                                Text(text = "Text")
+                            },
+                        )
                     },
+                    content = {
+                        Text(text = "Content")
+                    }
                 )
             },
             template = """
-                <$richTooltip>
-                  <$text $attrTemplate="$templateText">Text</$text>
-                </$richTooltip>
+                <$tooltipBox $attrInitialIsVisible="true" $attrIsPersistent="true">
+                  <$richTooltip $attrTemplate="$templateTooltip">
+                      <$text $attrTemplate="$templateText">Text</$text>
+                  </$richTooltip>
+                  <$text $attrTemplate="$templateContent">Content</$text>
+                </$tooltipBox>
                 """
         )
     }
@@ -107,21 +122,34 @@ class TooltipShotTest : LiveViewComposableTest() {
     @Test
     fun richTooltipWithTitleTest() {
         compareNativeComposableWithTemplate(
+            captureScreenImage = true,
             nativeComposable = {
-                RichTooltip(
-                    title = {
-                        Text(text = "Title")
+                TooltipBox(
+                    positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+                    state = rememberTooltipState(initialIsVisible = true, isPersistent = true),
+                    tooltip = {
+                        RichTooltip(
+                            title = {
+                                Text(text = "Title")
+                            },
+                            text = {
+                                Text(text = "Text")
+                            },
+                        )
                     },
-                    text = {
-                        Text(text = "Text")
-                    },
+                    content = {
+                        Text(text = "Content")
+                    }
                 )
             },
             template = """
-                <$richTooltip>
-                  <$text $attrTemplate="$templateTitle">Title</$text>
-                  <$text $attrTemplate="$templateText">Text</$text>
-                </$richTooltip>
+                <$tooltipBox $attrInitialIsVisible="true" $attrIsPersistent="true">
+                  <$richTooltip $attrTemplate="$templateTooltip">
+                    <$text $attrTemplate="$templateTitle">Title</$text>
+                    <$text $attrTemplate="$templateText">Text</$text>
+                  </$richTooltip>
+                  <$text $attrTemplate="$templateContent">Content</$text>
+                </$tooltipBox>
                 """
         )
     }
@@ -129,29 +157,42 @@ class TooltipShotTest : LiveViewComposableTest() {
     @Test
     fun richTooltipWithTitleAndActionTest() {
         compareNativeComposableWithTemplate(
+            captureScreenImage = true,
             nativeComposable = {
-                RichTooltip(
-                    title = {
-                        Text(text = "Title")
+                TooltipBox(
+                    positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(),
+                    state = rememberTooltipState(initialIsVisible = true, isPersistent = true),
+                    tooltip = {
+                        RichTooltip(
+                            title = {
+                                Text(text = "Title")
+                            },
+                            text = {
+                                Text(text = "Text")
+                            },
+                            action = {
+                                Button(onClick = {}) {
+                                    Text(text = "Action")
+                                }
+                            }
+                        )
                     },
-                    text = {
-                        Text(text = "Text")
-                    },
-                    action = {
-                        Button(onClick = {}) {
-                            Text(text = "Action")
-                        }
+                    content = {
+                        Text(text = "Content")
                     }
                 )
             },
             template = """
-                <$richTooltip>
-                  <$text $attrTemplate="$templateTitle">Title</$text>
-                  <$text $attrTemplate="$templateText">Text</$text>
-                  <$button $attrTemplate="$templateAction">
-                    <$text>Action</$text>
-                  </$button>
-                </$richTooltip>
+                <$tooltipBox $attrInitialIsVisible="true" $attrIsPersistent="true">
+                  <$richTooltip $attrTemplate="$templateTooltip">
+                    <$text $attrTemplate="$templateTitle">Title</$text>
+                    <$text $attrTemplate="$templateText">Text</$text>
+                    <$button $attrTemplate="$templateAction">
+                      <$text>Action</$text>
+                    </$button>
+                  </$richTooltip>
+                  <$text $attrTemplate="$templateContent">Content</$text>
+                </$tooltipBox>
                 """
         )
     }
@@ -167,6 +208,7 @@ class TooltipShotTest : LiveViewComposableTest() {
             }
             """.toJsonForTemplate()
         compareNativeComposableWithTemplate(
+            captureScreenImage = true,
             nativeComposable = {
                 val colors = TooltipDefaults.richTooltipColors(
                     containerColor = Color.Red,
@@ -174,26 +216,44 @@ class TooltipShotTest : LiveViewComposableTest() {
                     titleContentColor = Color.Yellow,
                     actionContentColor = Color.Green,
                 )
-                RichTooltip(
-                    shape = RoundedCornerShape(4.dp),
-                    colors = colors,
-                    title = {
-                        Text(text = "Title")
-                    },
-                    text = {
-                        Text(text = "Text")
-                    },
-                    action = {
-                        Text(text = "Action")
+                val positionProvider = TooltipDefaults.rememberRichTooltipPositionProvider(
+                    spacingBetweenTooltipAndAnchor = 16.dp
+                )
+                val state = rememberTooltipState(
+                    initialIsVisible = true,
+                    isPersistent = true,
+                )
+                TooltipBox(
+                    positionProvider = positionProvider,
+                    state = state,
+                    tooltip = {
+                        RichTooltip(
+                            shape = RoundedCornerShape(4.dp),
+                            colors = colors,
+                            title = {
+                                Text(text = "Title")
+                            },
+                            text = {
+                                Text(text = "Text")
+                            },
+                            action = {
+                                Text(text = "Action")
+                            }
+                        )
+                    }, content = {
+                        Text(text = "Content")
                     }
                 )
             },
             template = """
-                <$richTooltip $attrColors="$colorsForTemplate" $attrShape="4">
-                  <$text $attrTemplate="$templateTitle">Title</$text>
-                  <$text $attrTemplate="$templateText">Text</$text>
-                  <$text $attrTemplate="$templateAction">Action</$text>
-                </$richTooltip>
+                <$tooltipBox $attrInitialIsVisible="true" $attrIsPersistent="true" $attrSpacingBetweenTooltipAndAnchor="16">
+                  <$richTooltip $attrTemplate="$templateTooltip" $attrColors="$colorsForTemplate" $attrShape="$roundedCorner(4)">
+                    <$text $attrTemplate="$templateTitle">Title</$text>
+                    <$text $attrTemplate="$templateText">Text</$text>
+                    <$text $attrTemplate="$templateAction">Action</$text>
+                  </$richTooltip>
+                  <$text $attrTemplate="$templateContent">Content</$text>
+                </$tooltipBox>                  
                 """
         )
     }

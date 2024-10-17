@@ -4,13 +4,14 @@ import android.net.Uri
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
-import org.phoenixframework.liveview.ui.theme.ThemeHolder
 import org.phoenixframework.liveview.foundation.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.foundation.ui.base.BaseThemeHolder
 import org.phoenixframework.liveview.foundation.ui.modifiers.BaseModifiersParser
 import org.phoenixframework.liveview.foundation.ui.registry.BaseComposableNodeFactory
 import org.phoenixframework.liveview.ui.modifiers.ModifiersParser
 import org.phoenixframework.liveview.ui.registry.ComposableNodeFactory
+import org.phoenixframework.liveview.ui.theme.ThemeHolder
+import java.util.UUID
 
 val clientModule = module {
     single<BaseComposableNodeFactory> {
@@ -50,8 +51,11 @@ val clientModule = module {
             modifierParser = get(),
             themeHolder = get(),
             documentParser = get {
-                parametersOf(route, get())
-             },
+                parametersOf(
+                    UUID.randomUUID().toString(), // Generate a random UUID to set the screen ID
+                    get<BaseComposableNodeFactory>(), // composableNodeFactory
+                )
+            },
             repository = get {
                 parametersOf(httpUrl, wsBaseUrl, get(), get())
             }

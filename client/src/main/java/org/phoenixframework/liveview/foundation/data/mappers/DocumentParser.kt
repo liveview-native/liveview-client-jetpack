@@ -13,7 +13,7 @@ import org.phoenixframework.liveviewnative.core.NodeRef
 class DocumentParser(
     private val screenId: String,
     private val composableNodeFactory: BaseComposableNodeFactory
-): DocumentChangeHandler {
+) : DocumentChangeHandler {
     private lateinit var document: Document
 
     init {

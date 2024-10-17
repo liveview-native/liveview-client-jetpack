@@ -41,4 +41,8 @@ object LiveViewJetpack {
     fun registerComponent(tag: String, factory: ComposableViewFactory<*>) {
         koinApplication.koin.get<BaseComposableNodeFactory>().registerComponent(tag, factory)
     }
+
+    fun unregisterComponent(tag: String) {
+        koinApplication.koin.get<BaseComposableNodeFactory>().unregisterComponent(tag)
+    }
 }

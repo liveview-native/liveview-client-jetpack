@@ -16,13 +16,17 @@ class Repository(
     val liveSocketConnectionFlow = socketService.connectionFlow
     val liveReloadSocketConnectionFlow = socketService.liveReloadConnectionFlow
 
-    suspend fun connectToLiveViewSocket() {
+    suspend fun connectToLiveViewSocket(params: Map<String, Any?>, method: String = "GET") {
         Log.i(TAG, "connectToLiveViewSocket")
         Log.i(TAG, ">>>>httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
-        socketService.connectToLiveViewSocket(
-            httpBaseUrl = httpBaseUrl,
-            socketBaseUrl = wsBaseUrl,
-        )
+        if (socketService.isConnected) {
+            Log.d(TAG, "connectToLiveViewSocket::already connected cancelling")
+            return
+        }
+        if (!socketService.isInitialPayloadLoaded) {
+            socketService.loadInitialPayload(httpBaseUrl, method, params)
+        }
+        socketService.connectToLiveViewSocket(socketBaseUrl = wsBaseUrl)
     }
 
     fun disconnectFromLiveViewSocket() {
@@ -32,9 +36,6 @@ class Repository(
     }
 
     fun joinLiveViewChannel(redirect: Boolean) = callbackFlow {
-        if (socketService.payload == null) {
-            socketService.loadInitialPayload(httpBaseUrl)
-        }
         socketService.payload?.let {
             Log.i(TAG, "joinLiveViewChannel")
             Log.i(TAG, ">>>>httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")

@@ -89,6 +89,7 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextGeometricTransform
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.text.style.TextMotion
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -96,6 +97,7 @@ import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.constants.AlignmentValues
@@ -113,6 +115,7 @@ import org.phoenixframework.liveview.constants.Attrs.attrFontSize
 import org.phoenixframework.liveview.constants.Attrs.attrFontStyle
 import org.phoenixframework.liveview.constants.Attrs.attrFontSynthesis
 import org.phoenixframework.liveview.constants.Attrs.attrFontWeight
+import org.phoenixframework.liveview.constants.Attrs.attrHeight
 import org.phoenixframework.liveview.constants.Attrs.attrHyphens
 import org.phoenixframework.liveview.constants.Attrs.attrJoin
 import org.phoenixframework.liveview.constants.Attrs.attrLeft
@@ -209,6 +212,7 @@ import org.phoenixframework.liveview.ui.view.alignmentFromString
 import org.phoenixframework.liveview.ui.view.borderFromString
 import org.phoenixframework.liveview.ui.view.colorsFromString
 import org.phoenixframework.liveview.ui.view.contentScaleFromString
+import org.phoenixframework.liveview.ui.view.dpSizeFromString
 import org.phoenixframework.liveview.ui.view.drawStyleFromString
 import org.phoenixframework.liveview.ui.view.easingFromString
 import org.phoenixframework.liveview.ui.view.elevationsFromString
@@ -325,6 +329,21 @@ class SharedAttributesTest {
         assertEquals(
             ContentScale.None,
             contentScaleFromString(ContentScaleValues.none, ContentScale.None)
+        )
+    }
+
+    @Test
+    fun dpSizeFromStringTest() {
+        assertEquals(
+            DpSize(100.dp, 200.dp),
+            dpSizeFromString("{'$attrWidth': '100', '$attrHeight': '200'}")
+        )
+        assertEquals(
+            DpSize.Zero,
+            dpSizeFromString("{'$attrWidth': '0', '$attrHeight': '0'}")
+        )
+        assertNull(
+            dpSizeFromString("invalid_string")
         )
     }
 

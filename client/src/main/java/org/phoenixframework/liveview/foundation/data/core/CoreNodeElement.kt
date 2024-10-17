@@ -53,8 +53,9 @@ data class CoreNodeElement internal constructor(
                     CoreNodeElement(
                         node.element.name.name,
                         node.element.name.namespace,
-                        node.element.attributes.map { CoreAttribute.fromAttribute(it) }
-                            .toImmutableList()
+                        node.element.attributes.map {
+                            CoreAttribute.fromAttribute(it)
+                        }.toImmutableList()
                     )
                 }
 

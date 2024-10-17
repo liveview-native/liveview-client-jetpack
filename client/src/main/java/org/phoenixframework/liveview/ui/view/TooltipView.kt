@@ -1,26 +1,24 @@
 package org.phoenixframework.liveview.ui.view
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.CaretProperties
-import androidx.compose.material3.CaretScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.RichTooltipColors
 import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.TooltipScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableMap
-import org.phoenixframework.liveview.constants.Attrs.attrCaretHeight
-import org.phoenixframework.liveview.constants.Attrs.attrCaretProperties
-import org.phoenixframework.liveview.constants.Attrs.attrCaretWidth
+import org.phoenixframework.liveview.constants.Attrs.attrCaretSize
 import org.phoenixframework.liveview.constants.Attrs.attrColors
 import org.phoenixframework.liveview.constants.Attrs.attrContainerColor
 import org.phoenixframework.liveview.constants.Attrs.attrContentColor
@@ -35,7 +33,6 @@ import org.phoenixframework.liveview.constants.Templates.templateTitle
 import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
 import org.phoenixframework.liveview.extensions.toColor
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
-import org.phoenixframework.liveview.foundation.data.mappers.JsonParser
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
@@ -79,7 +76,7 @@ internal class TooltipView private constructor(props: Properties) :
         pushEvent: PushEvent
     ) {
         val scope = props.scope
-        val caretProperties = props.caretProperties
+        val caretSize = props.caretSize
         val colors = props.colors
         val shape = props.shape
         val contentColor = props.contentColor
@@ -89,23 +86,21 @@ internal class TooltipView private constructor(props: Properties) :
 
         when (composableNode?.node?.tag) {
             ComposableTypes.plainTooltip -> {
-                if (scope is CaretScope) {
-                    scope.PlainTooltip(
-                        modifier = props.commonProps.modifier,
-                        caretProperties = caretProperties ?: TooltipDefaults.caretProperties,
-                        shape = shape ?: TooltipDefaults.plainTooltipContainerShape,
-                        contentColor = contentColor ?: TooltipDefaults.plainTooltipContentColor,
-                        containerColor = containerColor
-                            ?: TooltipDefaults.plainTooltipContainerColor,
-                        tonalElevation = tonalElevation ?: 0.dp,
-                        shadowElevation = shadowElevation ?: 0.dp,
-                        content = {
-                            composableNode.children.forEach {
-                                PhxLiveView(it, pushEvent, composableNode, null)
-                            }
+                scope?.PlainTooltip(
+                    modifier = props.commonProps.modifier,
+                    caretSize = caretSize ?: TooltipDefaults.caretSize,
+                    shape = shape ?: TooltipDefaults.plainTooltipContainerShape,
+                    contentColor = contentColor ?: TooltipDefaults.plainTooltipContentColor,
+                    containerColor = containerColor
+                        ?: TooltipDefaults.plainTooltipContainerColor,
+                    tonalElevation = tonalElevation ?: 0.dp,
+                    shadowElevation = shadowElevation ?: 0.dp,
+                    content = {
+                        composableNode.children.forEach {
+                            PhxLiveView(it, pushEvent, composableNode, null)
                         }
-                    )
-                }
+                    }
+                )
             }
 
             ComposableTypes.richTooltip -> {
@@ -118,7 +113,7 @@ internal class TooltipView private constructor(props: Properties) :
                 val text = remember(composableNode.children) {
                     composableNode.children.find { it.node?.template == templateText }
                 }
-                RichTooltip(
+                scope?.RichTooltip(
                     modifier = props.commonProps.modifier,
                     title = title?.let {
                         {
@@ -131,6 +126,7 @@ internal class TooltipView private constructor(props: Properties) :
                         }
                     },
                     shape = shape ?: TooltipDefaults.richTooltipContainerShape,
+                    caretSize = caretSize ?: TooltipDefaults.caretSize,
                     colors = getRichTooltipColors(colors),
                     tonalElevation = tonalElevation ?: 3.dp,
                     shadowElevation = shadowElevation ?: 3.dp,
@@ -165,8 +161,8 @@ internal class TooltipView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val scope: CaretScope?,
-        val caretProperties: CaretProperties? = null,
+        val scope: TooltipScope?,
+        val caretSize: DpSize? = null,
         val colors: ImmutableMap<String, String>? = null,
         val shape: Shape? = null,
         val contentColor: Color? = null,
@@ -177,16 +173,15 @@ internal class TooltipView private constructor(props: Properties) :
     ) : ComposableProperties
 
 
-    @OptIn(ExperimentalMaterial3Api::class)
     internal object Factory : ComposableViewFactory<TooltipView>() {
         override fun buildComposableView(
             attributes: ImmutableList<CoreAttribute>,
             pushEvent: PushEvent?,
             scope: Any?
-        ): TooltipView = TooltipView(
-            attributes.fold(Properties(scope as? CaretScope)) { props, attribute ->
+        ) = TooltipView(
+            attributes.fold(Properties(scope as TooltipScope)) { props, attribute ->
                 when (attribute.name) {
-                    attrCaretProperties -> caretProperties(props, attribute.value)
+                    attrCaretSize -> caretSize(props, attribute.value)
                     attrColors -> colors(props, attribute.value)
                     attrContainerColor -> containerColor(props, attribute.value)
                     attrContentColor -> contentColor(props, attribute.value)
@@ -225,22 +220,11 @@ internal class TooltipView private constructor(props: Properties) :
          * specific dimension.
          * ```
          * <PlainTooltip
-         *   caretProperties="{'caretHeight': '100', 'caretWidth': '200'}">...</PlainTooltip>
+         *   caretSize="{'height': '100', 'width': '200'}">...</PlainTooltip>
          * ```
          */
-        private fun caretProperties(props: Properties, value: String): Properties {
-            return try {
-                JsonParser.parse<Map<String, String>>(value)?.let { map ->
-                    props.copy(
-                        caretProperties = CaretProperties(
-                            caretHeight = map[attrCaretHeight].toString().toInt().dp,
-                            caretWidth = map[attrCaretWidth].toString().toInt().dp,
-                        )
-                    )
-                } ?: props
-            } catch (_: Exception) {
-                props
-            }
+        private fun caretSize(props: Properties, value: String): Properties {
+            return props.copy(caretSize = dpSizeFromString(value))
         }
 
         /**

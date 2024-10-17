@@ -18,18 +18,19 @@ internal fun shapeFromString(
             shape == ShapeValues.circle -> CircleShape
             shape == ShapeValues.rectangle -> RoundedCornerShape(0.dp)
             shape.startsWith(ShapeValues.roundedCorner) -> {
-                // roundedCored(1, 2, 3, 4)
                 val values =
-                    shape.substring(ShapeValues.roundedCorner.length + 1, shape.lastIndex - 1)
+                    shape.substring(ShapeValues.roundedCorner.length + 1, shape.lastIndex)
                         .split(',')
+                        .map { it.trim().toIntOrNull() ?: 0 }
+                println(values)
                 if (values.size == 1) {
-                    RoundedCornerShape((values.first().toIntOrNull() ?: 0).dp)
+                    RoundedCornerShape((values.first()).dp)
                 } else {
                     RoundedCornerShape(
-                        (values.getOrNull(0)?.toIntOrNull() ?: 0).dp,
-                        (values.getOrNull(1)?.toIntOrNull() ?: 0).dp,
-                        (values.getOrNull(2)?.toIntOrNull() ?: 0).dp,
-                        (values.getOrNull(3)?.toIntOrNull() ?: 0).dp,
+                        (values.getOrNull(0) ?: 0).dp,
+                        (values.getOrNull(1) ?: 0).dp,
+                        (values.getOrNull(2) ?: 0).dp,
+                        (values.getOrNull(3) ?: 0).dp,
                     )
                 }
             }

@@ -3,8 +3,11 @@ package org.phoenixframework.liveview.ui.view
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import kotlinx.collections.immutable.ImmutableList
+import org.phoenixframework.liveview.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.constants.Attrs.attrValue
 import org.phoenixframework.liveview.extensions.paddingIfNotNull
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
@@ -12,6 +15,7 @@ import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperti
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
+import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 
 /**
@@ -30,6 +34,12 @@ internal class SpacerView private constructor(props: Properties) :
         pushEvent: PushEvent
     ) {
         Spacer(modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues))
+        props.commonProps.phxValue?.let { value ->
+            val parentDataHolder = LocalParentDataHolder.current
+            LaunchedEffect(value) {
+                parentDataHolder?.setValue(composableNode, value)
+            }
+        }
     }
 
     @Stable
@@ -51,14 +61,25 @@ internal class SpacerView private constructor(props: Properties) :
             pushEvent: PushEvent?,
             scope: Any?,
         ): SpacerView = SpacerView(attributes.fold(Properties()) { props, attribute ->
-            props.copy(
-                commonProps = handleCommonAttributes(
-                    props.commonProps,
-                    attribute,
-                    pushEvent,
-                    scope
+            when (attribute.name) {
+                attrValue -> props.copy(
+                    commonProps = super.setPhxValueFromAttr(
+                        props.commonProps,
+                        attrPhxValue,
+                        attribute.value
+                    )
                 )
-            )
+
+                else ->
+                    props.copy(
+                        commonProps = handleCommonAttributes(
+                            props.commonProps,
+                            attribute,
+                            pushEvent,
+                            scope
+                        )
+                    )
+            }
         })
     }
 }

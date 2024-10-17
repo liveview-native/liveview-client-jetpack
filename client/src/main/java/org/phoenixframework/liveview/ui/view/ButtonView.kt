@@ -13,6 +13,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
@@ -83,7 +84,7 @@ import org.phoenixframework.liveview.ui.theme.shapeFromString
  * </TextButton>
  * ```
  */
-internal class ButtonView private constructor(props: Properties) :
+class ButtonView private constructor(props: Properties) :
     ComposableView<ButtonView.Properties>(props) {
 
     @Composable
@@ -100,36 +101,24 @@ internal class ButtonView private constructor(props: Properties) :
         val contentPadding = props.contentPadding
         val border = props.border
 
+        val localButtonParentActionHandler = LocalButtonParentActionHandler.current
         when (composableNode?.node?.tag) {
-            // Filled Button
-            ComposableTypes.button ->
-                Button(
-                    onClick = onClickFromString(
-                        pushEvent,
-                        onClick,
-                        props.commonProps.phxValue
-                    ),
-                    modifier = props.commonProps.modifier,
-                    enabled = enabled,
-                    shape = shape ?: ButtonDefaults.shape,
-                    colors = getButtonColors(colors),
-                    elevation = getButtonElevation(elevation),
-                    border = border,
-                    contentPadding = contentPadding ?: ButtonDefaults.ContentPadding,
-                ) {
-                    composableNode.children.forEach {
-                        PhxLiveView(it, pushEvent, composableNode, null, this)
-                    }
-                }
-
             // Elevated Button
             ComposableTypes.elevatedButton ->
                 ElevatedButton(
-                    onClick = onClickFromString(
-                        pushEvent,
-                        onClick,
-                        props.commonProps.phxValue
-                    ),
+                    onClick = {
+                        if (localButtonParentActionHandler?.buttonParentMustHandleAction(
+                                composableNode
+                            ) == true
+                        )
+                            localButtonParentActionHandler.handleAction(composableNode, pushEvent)
+                        else
+                            onClickFromString(
+                                pushEvent,
+                                onClick,
+                                props.commonProps.phxValue
+                            ).invoke()
+                    },
                     modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.elevatedShape,
@@ -146,11 +135,19 @@ internal class ButtonView private constructor(props: Properties) :
             // Filled Tonal Button
             ComposableTypes.filledTonalButton ->
                 FilledTonalButton(
-                    onClick = onClickFromString(
-                        pushEvent,
-                        onClick,
-                        props.commonProps.phxValue
-                    ),
+                    onClick = {
+                        if (localButtonParentActionHandler?.buttonParentMustHandleAction(
+                                composableNode
+                            ) == true
+                        )
+                            localButtonParentActionHandler.handleAction(composableNode, pushEvent)
+                        else
+                            onClickFromString(
+                                pushEvent,
+                                onClick,
+                                props.commonProps.phxValue
+                            ).invoke()
+                    },
                     modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.filledTonalShape,
@@ -167,11 +164,19 @@ internal class ButtonView private constructor(props: Properties) :
             // Outlined Button
             ComposableTypes.outlinedButton ->
                 OutlinedButton(
-                    onClick = onClickFromString(
-                        pushEvent,
-                        onClick,
-                        props.commonProps.phxValue
-                    ),
+                    onClick = {
+                        if (localButtonParentActionHandler?.buttonParentMustHandleAction(
+                                composableNode
+                            ) == true
+                        )
+                            localButtonParentActionHandler.handleAction(composableNode, pushEvent)
+                        else
+                            onClickFromString(
+                                pushEvent,
+                                onClick,
+                                props.commonProps.phxValue
+                            ).invoke()
+                    },
                     modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.outlinedShape,
@@ -188,11 +193,19 @@ internal class ButtonView private constructor(props: Properties) :
             // Text Button
             ComposableTypes.textButton ->
                 TextButton(
-                    onClick = onClickFromString(
-                        pushEvent,
-                        onClick,
-                        props.commonProps.phxValue
-                    ),
+                    onClick = {
+                        if (localButtonParentActionHandler?.buttonParentMustHandleAction(
+                                composableNode
+                            ) == true
+                        )
+                            localButtonParentActionHandler.handleAction(composableNode, pushEvent)
+                        else
+                            onClickFromString(
+                                pushEvent,
+                                onClick,
+                                props.commonProps.phxValue
+                            ).invoke()
+                    },
                     modifier = props.commonProps.modifier,
                     enabled = enabled,
                     shape = shape ?: ButtonDefaults.textShape,
@@ -202,6 +215,35 @@ internal class ButtonView private constructor(props: Properties) :
                     contentPadding = contentPadding ?: ButtonDefaults.TextButtonContentPadding,
                 ) {
                     composableNode.children.forEach {
+                        PhxLiveView(it, pushEvent, composableNode, null, this)
+                    }
+                }
+
+            // Filled Button
+            else ->
+                Button(
+                    onClick = {
+                        if (localButtonParentActionHandler?.buttonParentMustHandleAction(
+                                composableNode
+                            ) == true
+                        )
+                            localButtonParentActionHandler.handleAction(composableNode, pushEvent)
+                        else
+                            onClickFromString(
+                                pushEvent,
+                                onClick,
+                                props.commonProps.phxValue
+                            ).invoke()
+                    },
+                    modifier = props.commonProps.modifier,
+                    enabled = enabled,
+                    shape = shape ?: ButtonDefaults.shape,
+                    colors = getButtonColors(colors),
+                    elevation = getButtonElevation(elevation),
+                    border = border,
+                    contentPadding = contentPadding ?: ButtonDefaults.ContentPadding,
+                ) {
+                    composableNode?.children?.forEach {
                         PhxLiveView(it, pushEvent, composableNode, null, this)
                     }
                 }
@@ -263,7 +305,8 @@ internal class ButtonView private constructor(props: Properties) :
                         ?.copy(alpha = DISABLED_CONTAINER_ALPHA)
                     ?: MaterialTheme.colorScheme.primary.copy(alpha = DISABLED_CONTAINER_ALPHA),
                 disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
-                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: colors[colorAttrContentColor]?.toColor()
+                        ?.copy(alpha = DISABLED_CONTENT_ALPHA)
                     ?: MaterialTheme.colorScheme.onPrimary.copy(alpha = DISABLED_CONTENT_ALPHA),
             )
         }
@@ -286,7 +329,8 @@ internal class ButtonView private constructor(props: Properties) :
                         ?.copy(alpha = DISABLED_CONTAINER_ALPHA)
                     ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTAINER_ALPHA),
                 disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
-                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: colors[colorAttrContentColor]?.toColor()
+                        ?.copy(alpha = DISABLED_CONTENT_ALPHA)
                     ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
             )
         }
@@ -309,7 +353,8 @@ internal class ButtonView private constructor(props: Properties) :
                         ?.copy(alpha = DISABLED_CONTAINER_ALPHA)
                     ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTAINER_ALPHA),
                 disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
-                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: colors[colorAttrContentColor]?.toColor()
+                        ?.copy(alpha = DISABLED_CONTENT_ALPHA)
                     ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
             )
         }
@@ -331,7 +376,8 @@ internal class ButtonView private constructor(props: Properties) :
                         ?.copy(alpha = DISABLED_CONTAINER_ALPHA)
                     ?: Color.Transparent,
                 disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
-                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: colors[colorAttrContentColor]?.toColor()
+                        ?.copy(alpha = DISABLED_CONTENT_ALPHA)
                     ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
             )
         }
@@ -353,14 +399,15 @@ internal class ButtonView private constructor(props: Properties) :
                         ?.copy(alpha = DISABLED_CONTAINER_ALPHA)
                     ?: Color.Transparent,
                 disabledContentColor = colors[colorAttrDisabledContentColor]?.toColor()
-                    ?: colors[colorAttrContentColor]?.toColor()?.copy(alpha = DISABLED_CONTENT_ALPHA)
+                    ?: colors[colorAttrContentColor]?.toColor()
+                        ?.copy(alpha = DISABLED_CONTENT_ALPHA)
                     ?: MaterialTheme.colorScheme.onSurface.copy(alpha = DISABLED_CONTENT_ALPHA),
             )
         }
     }
 
     @Stable
-    internal data class Properties(
+    data class Properties(
         val onClick: String = "",
         val enabled: Boolean = true,
         val shape: Shape? = null,
@@ -371,7 +418,7 @@ internal class ButtonView private constructor(props: Properties) :
         override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
-    internal object Factory : ComposableViewFactory<ButtonView>() {
+    object Factory : ComposableViewFactory<ButtonView>() {
         /**
          * Creates a `ButtonView` object based on the attributes of the input `Attributes` object.
          * ButtonView co-relates to the Button composable
@@ -509,4 +556,26 @@ internal class ButtonView private constructor(props: Properties) :
             return props.copy(border = borderFromString(border))
         }
     }
+}
+
+/**
+ * This composition local allows to a parent node to intercept the button's click event.
+ * See `LiveForm` component for an example of usage.
+ */
+val LocalButtonParentActionHandler =
+    compositionLocalOf<ButtonParentActionHandler?> { null }
+
+interface ButtonParentActionHandler {
+    /**
+     * Returns true if the parent node must handle the button action. False otherwise.
+     */
+    fun buttonParentMustHandleAction(buttonNode: ComposableTreeNode?): Boolean
+
+    /**
+     * Button's parent action.
+     */
+    fun handleAction(
+        composableNode: ComposableTreeNode?,
+        pushEvent: PushEvent,
+    )
 }

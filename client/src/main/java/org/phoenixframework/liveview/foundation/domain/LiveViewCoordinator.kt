@@ -28,8 +28,9 @@ class LiveViewCoordinator(
     private val documentParser: DocumentParser,
     private val repository: Repository,
 ) : ViewModel() {
-    private val _state =
-        MutableStateFlow(LiveViewState(composableTreeNode = ComposableTreeNode(screenId, 0, null)))
+    private val _state = MutableStateFlow(
+        LiveViewState(composableTreeNode = ComposableTreeNode(screenId, 0, null))
+    )
     val state = _state.asStateFlow()
 
     private var connectionJob: Job? = null
@@ -45,8 +46,8 @@ class LiveViewCoordinator(
     private val screenId: String
         get() = this.toString()
 
-    fun connectToLiveView() {
-        Log.i(TAG, "connectToLiveView -> ROUTE=$route | $this")
+    fun connectToLiveView(params: Map<String, Any?>, method: String) {
+        Log.i(TAG, "connectToLiveView -> [$method] ROUTE=$route | $this")
         Log.i(TAG, "connectToLiveView::httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -83,7 +84,7 @@ class LiveViewCoordinator(
                                     }
                                 }
                                 joinLiveViewChannel()
-                                connectLiveReload()
+                                connectLiveReload(params, method)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                                 setError(e)
@@ -96,7 +97,7 @@ class LiveViewCoordinator(
                 }
             }
             try {
-                repository.connectToLiveViewSocket()
+                repository.connectToLiveViewSocket(params, method)
             } catch (e: Exception) {
                 setError(e)
             }
@@ -149,7 +150,7 @@ class LiveViewCoordinator(
         }
     }
 
-    private fun connectLiveReload() {
+    private fun connectLiveReload(params: Map<String, Any?>, method: String) {
         viewModelScope.launch(Dispatchers.IO) {
             reloadConnectionJob = launch {
                 repository.liveReloadSocketConnectionFlow.collect { reloadEvent ->
@@ -168,7 +169,7 @@ class LiveViewCoordinator(
 
                         SocketService.Events.Opened -> {
                             Log.d(TAG, "liveReloadSocketConnectionFlow::Opened")
-                            joinLiveReloadChannel()
+                            joinLiveReloadChannel(params, method)
                         }
                     }
                 }
@@ -181,7 +182,7 @@ class LiveViewCoordinator(
         }
     }
 
-    private fun joinLiveReloadChannel() {
+    private fun joinLiveReloadChannel(params: Map<String, Any?>, method: String) {
         reloadChannelJob = viewModelScope.launch(Dispatchers.IO) {
             repository.joinReloadChannel()
                 .catch { cause: Throwable ->
@@ -199,7 +200,7 @@ class LiveViewCoordinator(
 
                     viewModelScope.launch(Dispatchers.Main) {
                         cancelConnectionJobs()
-                        connectToLiveView()
+                        connectToLiveView(params, method)
                     }
                 }
         }
@@ -294,6 +295,13 @@ class LiveViewCoordinator(
             repository.disconnectFromLiveViewSocket()
             repository.disconnectFromReloadSocket()
         }
+    }
+
+    fun disconnect() {
+        repository.leaveReloadChannel()
+        repository.leaveChannel()
+        repository.disconnectFromLiveViewSocket()
+        repository.disconnectFromReloadSocket()
     }
 
     data class NavigationRequest(

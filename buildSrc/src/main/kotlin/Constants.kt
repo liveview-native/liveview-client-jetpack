@@ -13,6 +13,7 @@ object Constants {
     const val moduleClient = ":client"
     const val moduleClientAddons = ":client-addons"
     const val moduleClientTestBase = ":client-test-base"
+    const val moduleLiveForm = ":live-form"
 
     const val publishGroupId = "com.github.liveview-native"
     const val publishVersion = "0.0.0-dev001"

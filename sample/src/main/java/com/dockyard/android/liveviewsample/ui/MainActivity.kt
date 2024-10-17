@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import org.phoenixframework.liveview.addons.LiveViewJetpackAddons
 import org.phoenixframework.liveview.addons.constants.AddonsTypes
+import org.phoenixframework.liveview.liveform.LiveForm
 import org.phoenixframework.liveview.ui.phx_components.LiveView
 
 class MainActivity : ComponentActivity() {
@@ -16,6 +17,7 @@ class MainActivity : ComponentActivity() {
                 AddonsTypes.annotatedText
             )
         }
+        LiveForm.registerComponents()
         setContent {
             LiveView(url = "http://10.0.2.2:4000/users/register")
         }
