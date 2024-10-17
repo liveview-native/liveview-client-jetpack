@@ -96,17 +96,11 @@ class DocumentParser(
         return composableNodeFactory.buildComposableTreeNode(
             screenId = screenId,
             nodeRef = nodeRef,
-            element = CoreNodeElement.fromNodeElement(
-                getNodeId(screenId, nodeRef.ref()), node
-            ),
+            element = CoreNodeElement.fromNodeElement(node),
         )
     }
 
     companion object {
         private const val TAG = "DocumentParser"
-
-        fun getNodeId(screenId: String, nodeRefId: Int): String {
-            return "${screenId}_${nodeRefId}"
-        }
     }
 }

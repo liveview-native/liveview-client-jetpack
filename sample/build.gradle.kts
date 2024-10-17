@@ -44,5 +44,5 @@ dependencies {
     implementation(libs.com.google.android.material)
     implementation(project(Constants.moduleClient))
     implementation(project(Constants.moduleClientAddons))
-    implementation(project(":live-form"))
+    implementation(project(Constants.moduleLiveForm))
 }

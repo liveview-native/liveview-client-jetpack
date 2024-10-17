@@ -20,6 +20,7 @@ import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperti
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.EVENT_TYPE_CHANGE
+import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.EVENT_TYPE_CLICK
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.ParentViewDataHolder
@@ -52,21 +53,7 @@ internal class LiveFormView private constructor(props: Properties) :
             FormDataHolder(phxChange, pushEvent)
         }
         val submitActionHandler = remember(phxSubmit) {
-            object : ButtonParentActionHandler {
-                override fun buttonParentMustHandleAction(buttonNode: ComposableTreeNode?): Boolean {
-                    return phxSubmit?.isNotEmpty() == true
-                            && buttonNode?.node?.tag == LiveFormTypes.submitButton
-                }
-
-                override fun handleAction(
-                    composableNode: ComposableTreeNode?,
-                    pushEvent: PushEvent
-                ) {
-                    if (phxSubmit != null) {
-                        pushEvent.invoke(EVENT_TYPE_CLICK, phxSubmit, formDataHolder.data, null)
-                    }
-                }
-            }
+            SubmitButtonActionHandler(phxSubmit, formDataHolder)
         }
         Column(
             modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
@@ -128,33 +115,91 @@ internal class LiveFormView private constructor(props: Properties) :
                 }
             })
 
+        /**
+         * Sets the form action. Usually a path to a new page where the user is redirected and the
+         * form data will be received.
+         * ```
+         * <.simple_form  action="/users/log_in">
+         * ```
+         */
         private fun action(props: Properties, action: String): Properties {
             return props.copy(action = action)
         }
 
+        /**
+         * Sets the form HTTP method. The new HTTP call will be performed using this HTTP method to
+         * the destination specified in the `action` property.
+         * ```
+         * <.simple_form method="POST">
+         * ```
+         */
         private fun method(props: Properties, method: String): Properties {
             return props.copy(method = method.uppercase())
         }
 
-        private fun name(props: Properties, name: String): Properties {
-            return props.copy(name = name)
-        }
-
+        /**
+         * Sets the server function name to be called when any field in the form change its value.
+         * ```
+         * <.simple_form phx-change="validateMyForm">
+         * ```
+         */
         private fun phxChange(props: Properties, phxChange: String): Properties {
             return props.copy(phxChange = phxChange)
         }
 
+        /**
+         * Sets the form name.
+         * ```
+         * <.simple_form name="myForm">
+         * ```
+         */
+        private fun name(props: Properties, name: String): Properties {
+            return props.copy(name = name)
+        }
+
+        /**
+         * Sets the server function name to be called when the submit button is pressed.
+         * ```
+         * <.simple_form phx-submit="saveMyForm">
+         * ```
+         */
         private fun phxSubmit(props: Properties, phxSubmit: String): Properties {
             return props.copy(phxSubmit = phxSubmit)
         }
 
+        /**
+         * Flag used to determine if the form should trigger a new request to the new destination
+         * using the `action` property.
+         * ```
+         * <.simple_form phx-trigger-action={@trigger_submit}>
+         * ```
+         */
         private fun phxTriggerAction(props: Properties, phxTriggerAction: String): Properties {
             return props.copy(phxTriggerAction = phxTriggerAction.toBooleanStrictOrNull() ?: false)
         }
     }
 }
 
-class FormDataHolder(private val event: String, private val pushEvent: PushEvent?) :
+internal class SubmitButtonActionHandler(
+    private val phxSubmit: String?,
+    private val dataHolder: FormDataHolder,
+) : ButtonParentActionHandler {
+    override fun buttonParentMustHandleAction(buttonNode: ComposableTreeNode?): Boolean {
+        return phxSubmit?.isNotEmpty() == true
+                && buttonNode?.node?.tag == LiveFormTypes.submitButton
+    }
+
+    override fun handleAction(
+        composableNode: ComposableTreeNode?,
+        pushEvent: PushEvent
+    ) {
+        if (phxSubmit != null) {
+            pushEvent.invoke(EVENT_TYPE_CLICK, phxSubmit, dataHolder.data, null)
+        }
+    }
+}
+
+internal class FormDataHolder(private val event: String, private val pushEvent: PushEvent?) :
     ParentViewDataHolder {
     private val formData = mutableMapOf<String, String>()
 

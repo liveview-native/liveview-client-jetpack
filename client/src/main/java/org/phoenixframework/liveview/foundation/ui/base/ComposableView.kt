@@ -13,7 +13,6 @@ import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.LiveViewJetpack
 import org.phoenixframework.liveview.constants.Attrs.attrValue
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrClass
-import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrNodeId
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxClick
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxValue
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxValueNamed
@@ -114,7 +113,6 @@ interface ComposableProperties {
 @Stable
 data class CommonComposableProperties(
     val modifier: Modifier = Modifier,
-    val nodeId: String = "",
     val value: ImmutableMap<String, Any?> = persistentMapOf()
 ) {
     val phxValue: Any?
@@ -172,7 +170,6 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> {
     ): CommonComposableProperties {
         return when (attribute.name) {
             attrClass -> setClassFromAttr(commonProps, attribute.value, scope, pushEvent)
-            attrNodeId -> setNodeId(commonProps, attribute.value)
             attrPhxClick -> setPhxClickFromAttr(commonProps, attribute.value, pushEvent)
             attrPhxValue, attrValue ->
                 setPhxValueFromAttr(commonProps, attrPhxValue, attribute.value)
@@ -184,13 +181,6 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> {
                 } else
                     commonProps
         }
-    }
-
-    private fun setNodeId(
-        commonProps: CommonComposableProperties,
-        nodeId: String,
-    ): CommonComposableProperties {
-        return commonProps.copy(nodeId = nodeId)
     }
 
     /**
