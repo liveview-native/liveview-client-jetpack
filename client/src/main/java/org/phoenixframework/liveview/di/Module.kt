@@ -4,6 +4,8 @@ import android.net.Uri
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
+import org.phoenixframework.liveview.foundation.data.service.ChannelService
+import org.phoenixframework.liveview.foundation.data.service.SocketService
 import org.phoenixframework.liveview.foundation.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.foundation.ui.base.BaseThemeHolder
 import org.phoenixframework.liveview.foundation.ui.modifiers.BaseModifiersParser
@@ -24,8 +26,11 @@ val clientModule = module {
         ThemeHolder()
     }
     viewModel {
-        val httpBaseUrl = it.get<String>(0)
-        val route = it.get<String?>(1)
+        val route = it.get<String?>(0)
+        val httpBaseUrl = it.get<String>(1)
+        val method = it.get<String?>(2)
+        val params = it.get<Map<String, Any?>>(3)
+        val redirect = it.get<Boolean>(4)
 
         // The WebSocket URL is the same of the HTTP URL,
         // so we just copy the HTTP URL changing the schema (protocol)
@@ -47,6 +52,9 @@ val clientModule = module {
         LiveViewCoordinator(
             httpBaseUrl = httpUrl,
             wsBaseUrl = wsBaseUrl,
+            method = method,
+            params = params,
+            redirect = redirect,
             route = route,
             modifierParser = get(),
             themeHolder = get(),
@@ -57,7 +65,7 @@ val clientModule = module {
                 )
             },
             repository = get {
-                parametersOf(httpUrl, wsBaseUrl, get(), get())
+                parametersOf(get<SocketService>(), get<ChannelService>())
             }
         )
     }

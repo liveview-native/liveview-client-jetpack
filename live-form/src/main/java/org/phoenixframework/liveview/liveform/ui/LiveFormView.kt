@@ -1,5 +1,6 @@
 package org.phoenixframework.liveview.liveform.ui
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
@@ -19,8 +20,7 @@ import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
-import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.EVENT_TYPE_CHANGE
-import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.EVENT_TYPE_CLICK
+import org.phoenixframework.liveview.foundation.ui.base.ComposableView.Companion.EVENT_TYPE_FORM
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
 import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.ParentViewDataHolder
@@ -29,6 +29,7 @@ import org.phoenixframework.liveview.liveform.constants.Attrs.attrAction
 import org.phoenixframework.liveview.liveform.constants.Attrs.attrMethod
 import org.phoenixframework.liveview.liveform.constants.Attrs.attrPhxTriggerAction
 import org.phoenixframework.liveview.liveform.constants.LiveFormTypes
+import org.phoenixframework.liveview.ui.phx_components.AppNavigationController
 import org.phoenixframework.liveview.ui.phx_components.LocalNavigation
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 import org.phoenixframework.liveview.ui.view.ButtonParentActionHandler
@@ -48,12 +49,19 @@ internal class LiveFormView private constructor(props: Properties) :
         val phxTriggerAction = props.phxTriggerAction
         val action = props.action
         val method = props.method ?: "GET"
+        val navigationController = LocalNavigation.current
 
         val formDataHolder = remember(composableNode?.id) {
             FormDataHolder(phxChange, pushEvent)
         }
         val submitActionHandler = remember(phxSubmit) {
-            SubmitButtonActionHandler(phxSubmit, formDataHolder)
+            SubmitButtonActionHandler(
+                phxSubmit,
+                action,
+                method,
+                formDataHolder,
+                navigationController
+            )
         }
         Column(
             modifier = props.commonProps.modifier.paddingIfNotNull(paddingValues),
@@ -68,7 +76,6 @@ internal class LiveFormView private constructor(props: Properties) :
                 }
             }
         )
-        val navigationController = LocalNavigation.current
         LaunchedEffect(phxTriggerAction) {
             if (phxTriggerAction && action?.isNotEmpty() == true) {
                 navigationController.navigate(action, method, formDataHolder.data, true)
@@ -182,10 +189,13 @@ internal class LiveFormView private constructor(props: Properties) :
 
 internal class SubmitButtonActionHandler(
     private val phxSubmit: String?,
+    private val action: String?,
+    private val method: String?,
     private val dataHolder: FormDataHolder,
+    private val navigationController: AppNavigationController,
 ) : ButtonParentActionHandler {
     override fun buttonParentMustHandleAction(buttonNode: ComposableTreeNode?): Boolean {
-        return phxSubmit?.isNotEmpty() == true
+        return (phxSubmit?.isNotEmpty() == true || action?.isNotEmpty() == true)
                 && buttonNode?.node?.tag == LiveFormTypes.submitButton
     }
 
@@ -193,13 +203,18 @@ internal class SubmitButtonActionHandler(
         composableNode: ComposableTreeNode?,
         pushEvent: PushEvent
     ) {
-        if (phxSubmit != null) {
-            pushEvent.invoke(EVENT_TYPE_CLICK, phxSubmit, dataHolder.data, null)
+        if (phxSubmit?.isNotEmpty() == true) {
+            pushEvent.invoke(EVENT_TYPE_FORM, phxSubmit, dataHolder.formDataToQueryString(), null)
+        } else if (action?.isNotEmpty() == true) {
+            navigationController.navigate(action, method ?: "GET", dataHolder.data, true)
         }
     }
 }
 
-internal class FormDataHolder(private val event: String, private val pushEvent: PushEvent?) :
+internal class FormDataHolder(
+    private val phxChangeEventName: String,
+    private val pushEvent: PushEvent?
+) :
     ParentViewDataHolder {
     private val formData = mutableMapOf<String, String>()
 
@@ -207,16 +222,30 @@ internal class FormDataHolder(private val event: String, private val pushEvent: 
         get() = formData.toImmutableMap()
 
     override fun setValue(node: ComposableTreeNode?, value: Any?) {
-        if (node != null && event.isNotEmpty()) {
+        if (node != null) {
             val nameAttribute = node.node?.attributes?.find { it.name == attrName }
             if (nameAttribute != null) {
                 val name = nameAttribute.value
                 val pushValue = formData.containsKey(name)
                 formData[name] = value.toString()
-                if (pushValue) {
-                    pushEvent?.invoke(EVENT_TYPE_CHANGE, event, formData, null)
+                if (phxChangeEventName.isNotEmpty() && pushValue) {
+                    pushEvent?.invoke(
+                        EVENT_TYPE_FORM,
+                        phxChangeEventName,
+                        formDataToQueryString(),
+                        null
+                    )
                 }
             }
         }
+    }
+
+    fun formDataToQueryString(): String {
+        val uri = Uri.Builder().apply {
+            formData.forEach { entry ->
+                appendQueryParameter(entry.key, entry.value)
+            }
+        }
+        return uri.build().query ?: ""
     }
 }

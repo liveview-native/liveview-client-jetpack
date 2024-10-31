@@ -75,6 +75,7 @@ abstract class ComposableView<CP : ComposableProperties>(protected open val prop
         const val EVENT_TYPE_CHANGE = "change"
         const val EVENT_TYPE_CLICK = "click"
         const val EVENT_TYPE_DOUBLE_CLICK = "double-click"
+        const val EVENT_TYPE_FORM = "form"
         const val EVENT_TYPE_FOCUS_CHANGED = "focus-changed"
         const val EVENT_TYPE_FOCUS_EVENT = "focus-event"
         const val EVENT_TYPE_KEY_UP = "keyup"

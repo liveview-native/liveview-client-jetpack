@@ -22,10 +22,8 @@ val foundationModule = module {
     }
     factory<Repository> {
         Repository(
-            httpBaseUrl = it.get<String>(0).toString(),
-            wsBaseUrl = it.get<String>(1).toString(),
-            socketService = get(),
-            channelService = get()
+            socketService = get<SocketService>(),
+            channelService = get<ChannelService>()
         )
     }
     single {

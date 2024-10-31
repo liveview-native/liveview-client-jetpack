@@ -1,6 +1,8 @@
 package org.phoenixframework.liveview.foundation.domain
 
 import android.util.Log
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -23,11 +25,14 @@ class LiveViewCoordinator(
     val httpBaseUrl: String,
     private val wsBaseUrl: String,
     private val route: String?,
+    private val method: String?,
+    private val params: Map<String, Any?>,
+    private val redirect: Boolean,
     private val modifierParser: BaseModifiersParser,
     private val themeHolder: BaseThemeHolder,
     private val documentParser: DocumentParser,
     private val repository: Repository,
-) : ViewModel() {
+) : ViewModel(), DefaultLifecycleObserver {
     private val _state = MutableStateFlow(
         LiveViewState(composableTreeNode = ComposableTreeNode(screenId, 0, null))
     )
@@ -39,14 +44,19 @@ class LiveViewCoordinator(
     private var reloadConnectionJob: Job? = null
     private var reloadChannelJob: Job? = null
 
-    init {
-        instanceCount++
-    }
-
     private val screenId: String
         get() = this.toString()
 
-    fun connectToLiveView(params: Map<String, Any?>, method: String) {
+    override fun onResume(owner: LifecycleOwner) {
+        connectToLiveView(redirect)
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        disconnect()
+    }
+
+    private fun connectToLiveView(redirect: Boolean) {
         Log.i(TAG, "connectToLiveView -> [$method] ROUTE=$route | $this")
         Log.i(TAG, "connectToLiveView::httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
 
@@ -73,18 +83,19 @@ class LiveViewCoordinator(
                         SocketService.Events.Opened -> {
                             try {
                                 if (themeHolder.isEmpty()) {
-                                    themeHolder.updateThemeData(repository.loadThemeData())
+                                    themeHolder.updateThemeData(repository.loadThemeData(httpBaseUrl))
                                 }
                                 if (modifierParser.isEmpty) {
-                                    repository.loadStyleData()?.let { styleFileContentAsString ->
-                                        modifierParser.fromStyleFile(
-                                            styleFileContentAsString,
-                                            null,
-                                        )
-                                    }
+                                    repository.loadStyleData(httpBaseUrl)
+                                        ?.let { styleFileContentAsString ->
+                                            modifierParser.fromStyleFile(
+                                                styleFileContentAsString,
+                                                null,
+                                            )
+                                        }
                                 }
-                                joinLiveViewChannel()
-                                connectLiveReload(params, method)
+                                joinLiveViewChannel(redirect)
+                                connectLiveReload()
                             } catch (e: Exception) {
                                 e.printStackTrace()
                                 setError(e)
@@ -97,16 +108,16 @@ class LiveViewCoordinator(
                 }
             }
             try {
-                repository.connectToLiveViewSocket(params, method)
+                repository.connectToLiveViewSocket(httpBaseUrl, method, params, wsBaseUrl)
             } catch (e: Exception) {
                 setError(e)
             }
         }
     }
 
-    private fun joinLiveViewChannel() {
+    private fun joinLiveViewChannel(redirect: Boolean) {
         channelJob = viewModelScope.launch(Dispatchers.IO) {
-            repository.joinLiveViewChannel(redirect = instanceCount > 1)
+            repository.joinLiveViewChannel(httpBaseUrl, redirect = redirect)
                 .catch { cause: Throwable ->
                     Log.e(TAG, "joinLiveViewChannel::Error", cause)
                     setError(cause)
@@ -145,12 +156,21 @@ class LiveViewCoordinator(
                                 )
                             )
                         }
+
+                        // Errors
+                        message.status == STATUS_ERROR -> {
+                            Log.e(TAG, "Error: $message")
+                            if (message.payload[ChannelService.MESSAGE_ERROR_REASON] == "stale") {
+                                repository.resetPayload()
+                                connectToLiveView(redirect)
+                            }
+                        }
                     }
                 }
         }
     }
 
-    private fun connectLiveReload(params: Map<String, Any?>, method: String) {
+    private fun connectLiveReload() {
         viewModelScope.launch(Dispatchers.IO) {
             reloadConnectionJob = launch {
                 repository.liveReloadSocketConnectionFlow.collect { reloadEvent ->
@@ -169,20 +189,20 @@ class LiveViewCoordinator(
 
                         SocketService.Events.Opened -> {
                             Log.d(TAG, "liveReloadSocketConnectionFlow::Opened")
-                            joinLiveReloadChannel(params, method)
+                            joinLiveReloadChannel()
                         }
                     }
                 }
             }
             try {
-                repository.connectToReloadSocket()
+                repository.connectToReloadSocket(wsBaseUrl)
             } catch (e: Exception) {
                 setError(e)
             }
         }
     }
 
-    private fun joinLiveReloadChannel(params: Map<String, Any?>, method: String) {
+    private fun joinLiveReloadChannel() {
         reloadChannelJob = viewModelScope.launch(Dispatchers.IO) {
             repository.joinReloadChannel()
                 .catch { cause: Throwable ->
@@ -200,13 +220,13 @@ class LiveViewCoordinator(
 
                     viewModelScope.launch(Dispatchers.Main) {
                         cancelConnectionJobs()
-                        connectToLiveView(params, method)
+                        connectToLiveView(false)
                     }
                 }
         }
     }
 
-    fun cancelConnectionJobs() {
+    private fun cancelConnectionJobs() {
         reloadChannelJob?.cancel()
         reloadConnectionJob?.cancel()
         channelJob?.cancel()
@@ -283,25 +303,16 @@ class LiveViewCoordinator(
     override fun onCleared() {
         super.onCleared()
         Log.i(TAG, "onCleared::ROUTE=$route")
-
-        repository.leaveReloadChannel()
-        repository.leaveChannel()
-
-        cancelConnectionJobs()
-
-        instanceCount--
-        if (instanceCount == 0) {
-            Log.i(TAG, "onCleared::DISCONNECTING SOCKETS")
-            repository.disconnectFromLiveViewSocket()
-            repository.disconnectFromReloadSocket()
-        }
+        disconnect()
     }
 
     fun disconnect() {
+        Log.i(TAG, "disconnect")
+        cancelConnectionJobs()
         repository.leaveReloadChannel()
         repository.leaveChannel()
-        repository.disconnectFromLiveViewSocket()
         repository.disconnectFromReloadSocket()
+        repository.disconnectFromLiveViewSocket()
     }
 
     data class NavigationRequest(
@@ -322,8 +333,6 @@ class LiveViewCoordinator(
         private const val PAYLOAD_REDIRECT = "redirect"
         private const val PAYLOAD_RENDERED = "rendered"
 
-        // We're keeping the instance count in order to deallocate the server socket when the last
-        // instance is cleared.
-        private var instanceCount = 0
+        private const val STATUS_ERROR = "error"
     }
 }

@@ -6,12 +6,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -61,7 +63,13 @@ private fun NavDestination(
     val lvNavRoute = backStackEntry.toRoute<LiveViewNavRoute>()
 
     val liveViewCoordinator = koinViewModel<LiveViewCoordinator> {
-        parametersOf(httpBaseUrl, lvNavRoute.route)
+        parametersOf(
+            lvNavRoute.route,
+            httpBaseUrl,
+            lvNavRoute.method,
+            lvNavRoute.argsAsMap(),
+            lvNavRoute.redirect
+        )
     }
     val appNavigationController = remember(navController, backStackEntry) {
         LiveViewAppNavController(navController, backStackEntry)
@@ -87,49 +95,45 @@ private fun NavDestination(
         }
     }
 
+    val lifecycle = LocalLifecycleOwner.current
+    DisposableEffect(lifecycle) {
+        lifecycle.lifecycle.addObserver(liveViewCoordinator)
+        onDispose {
+            lifecycle.lifecycle.removeObserver(liveViewCoordinator)
+        }
+    }
     LaunchedEffect(state.navigationRequest) {
-        processNavigationRequest(
-            state.navigationRequest,
-            liveViewCoordinator,
-            lvNavRoute,
-            navController,
-            backStackEntry
-        )
+        state.navigationRequest?.let { navigationRequest ->
+            processNavigationRequest(
+                navigationRequest,
+                lvNavRoute,
+                navController,
+                backStackEntry
+            )
+        }
+        liveViewCoordinator.resetNavigation()
     }
 }
 
 private fun processNavigationRequest(
-    navigationRequest: LiveViewCoordinator.NavigationRequest?,
-    liveViewCoordinator: LiveViewCoordinator,
+    navigationRequest: LiveViewCoordinator.NavigationRequest,
     lvNavRoute: LiveViewNavRoute,
     navController: NavController,
     backStackEntry: NavBackStackEntry
 ) {
-    // Connecting to LiveView socket
-    liveViewCoordinator.connectToLiveView(
-        method = lvNavRoute.method ?: "GET",
-        params = lvNavRoute.argsAsJson?.let { JsonParser.parse<Map<String, Any?>>(it) }
-            ?: emptyMap()
-    )
-    if (navigationRequest != null) {
-        // Cancelling connection jobs
-        liveViewCoordinator.cancelConnectionJobs()
-
-        val (newRoute, redirect) = navigationRequest
-        liveViewCoordinator.resetNavigation()
-        val routePath = generateRelativePath(getCurrentRoute(navController), newRoute)
-        Log.d(TAG, "Navigate to: $routePath")
-        navController.navigate(
-            LiveViewNavRoute(
-                route = routePath,
-                argsAsJson = lvNavRoute.argsAsJson
-            )
-        ) {
-            if (redirect) {
-                liveViewCoordinator.disconnect()
-                popUpTo(backStackEntry.destination.id) {
-                    inclusive = true
-                }
+    val (newRoute, redirect) = navigationRequest
+    val routePath = generateRelativePath(getCurrentRoute(navController), newRoute)
+    Log.d(TAG, "Navigate to: $routePath")
+    navController.navigate(
+        LiveViewNavRoute(
+            route = routePath,
+            argsAsJson = lvNavRoute.argsAsJson,
+            redirect = redirect
+        )
+    ) {
+        if (redirect) {
+            popUpTo(backStackEntry.destination.id) {
+                inclusive = true
             }
         }
     }
@@ -169,7 +173,18 @@ private data class LiveViewNavRoute(
     val route: String? = null,
     val method: String? = null,
     val argsAsJson: String? = null,
-)
+    val redirect: Boolean = false
+) {
+    fun argsAsMap(): Map<String, Any?> {
+        return argsAsJson?.let {
+            try {
+                JsonParser.parse<Map<String, Any?>>(it)
+            } catch (e: Exception) {
+                emptyMap()
+            }
+        } ?: emptyMap()
+    }
+}
 
 private class LiveViewAppNavController(
     private val navController: NavController,
@@ -186,6 +201,7 @@ private class LiveViewAppNavController(
                 route = generateRelativePath(getCurrentRoute(navController), path),
                 method = method,
                 argsAsJson = JsonParser.toString(params),
+                redirect = redirect
             )
         ) {
             if (redirect) {

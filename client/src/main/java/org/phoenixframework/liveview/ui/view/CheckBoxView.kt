@@ -58,7 +58,7 @@ internal class CheckBoxView private constructor(props: Properties) :
             mutableStateOf(checked)
         }
         Checkbox(
-            checked = checked,
+            checked = stateValue,
             onCheckedChange = {
                 stateValue = it
             },

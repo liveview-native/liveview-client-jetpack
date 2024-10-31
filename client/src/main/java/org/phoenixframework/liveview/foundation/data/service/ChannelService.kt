@@ -91,6 +91,7 @@ class ChannelService(
         private const val TAG = "ChannelService"
 
         const val MESSAGE_EVENT_DIFF = "diff"
+        const val MESSAGE_ERROR_REASON = "reason"
         private const val MESSAGE_EVENT_PHX_REPLY = "phx_reply"
         private const val MESSAGE_EVENT_CLOSE = "close"
         private const val MESSAGE_EVENT_ASSETS_CHANGE = "assets_change"

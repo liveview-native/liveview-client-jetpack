@@ -36,12 +36,6 @@ class SocketService {
     var payload: PhoenixLiveViewPayload? = null
         private set
 
-    val isConnected: Boolean
-        get() = phxSocket?.isConnected == true
-
-    val isInitialPayloadLoaded: Boolean
-        get() = payload != null
-
     private val _connection = MutableStateFlow<Events>(Events.NotConnected)
     val connectionFlow: StateFlow<Events> = _connection
 
@@ -57,6 +51,21 @@ class SocketService {
 
                 override fun loadForRequest(url: HttpUrl): List<Cookie> = storedCookies
             })
+            .addNetworkInterceptor { chain ->
+                // Intercepting redirection and add _format parameter to the URL
+                val request = chain.request()
+                if (!request.url.queryParameterNames.contains(SOCKET_PARAM_FORMAT)) {
+                    val newUrl = request.url.newBuilder()
+                        .addQueryParameter(SOCKET_PARAM_FORMAT, FORMAT_JETPACK)
+                        .build()
+                    val newRequest = request.newBuilder()
+                        .url(newUrl)
+                        .build()
+                    chain.proceed(newRequest)
+                } else {
+                    chain.proceed(request)
+                }
+            }
             .addInterceptor { chain ->
                 val original = chain.request()
                 val authorized = original.newBuilder().build()
@@ -68,7 +77,7 @@ class SocketService {
     fun connectToLiveViewSocket(socketBaseUrl: String) {
         Log.d(TAG, "connectToLiveViewSocket::socketBaseUrl=> $socketBaseUrl")
 
-        if (payload == null) {
+        if (payload == null || payload?.phxCSRFToken == null) {
             _connection.update {
                 Events.PayloadLoadingError(IllegalStateException("Initial payload is null"))
             }
@@ -77,10 +86,10 @@ class SocketService {
         Log.d(TAG, "connectToLiveViewSocket::phxLiveViewPayload=> $payload")
 
         val socketParams = mapOf(
-            SOCKET_PARAM_CSRF_TOKEN to payload?.phxCSRFToken,
             SOCKET_PARAM_MOUNTS to 0,
-            SOCKET_PARAM_CLIENT_ID to uuid,
             SOCKET_PARAM_FORMAT to FORMAT_JETPACK,
+            SOCKET_PARAM_CSRF_TOKEN to payload?.phxCSRFToken,
+            SOCKET_PARAM_CLIENT_ID to uuid,
         )
 
         val uriBuilder = Uri.parse(socketBaseUrl).buildUpon().apply {
@@ -105,9 +114,9 @@ class SocketService {
         }
     }
 
-    fun disconnectFromLiveView() {
+    fun disconnectFromLiveViewSocket() {
+        Log.d(TAG, "disconnectFromLiveViewSocket")
         phxSocket?.disconnect()
-        payload = null
     }
 
     fun createChannel(
@@ -133,19 +142,28 @@ class SocketService {
         )
     }
 
-    private fun newHttpCall(url: String, method: String = "GET", params: Map<String, Any?>): Call {
+    private fun newHttpCall(
+        url: String,
+        method: String?,
+        params: Map<String, Any?>,
+    ): Call {
         fun formBodyRequest(params: Map<String, Any?>): RequestBody {
             return if (params.isEmpty()) EMPTY_REQUEST else {
                 FormBody.Builder().apply {
                     params.forEach { entry ->
                         addEncoded(entry.key, entry.value.toString())
                     }
+                    // TODO Check if this is really necessary
+                    payload?.phxCSRFToken?.let {
+                        addEncoded(SOCKET_PARAM_CSRF_TOKEN, it)
+                    }
                 }.build()
             }
         }
 
         val request = Request.Builder().url(url).apply {
-            when (method.uppercase()) {
+
+            when ((method ?: "GET").uppercase()) {
                 "HEAD" -> head()
                 "DELETE" -> delete(formBodyRequest(params))
                 "PATCH" -> patch(formBodyRequest(params))
@@ -201,15 +219,20 @@ class SocketService {
         return liveReloadSocket?.channel(topic = "phoenix:live_reload")
     }
 
-    suspend fun loadInitialPayload(url: String, method: String, params: Map<String, Any?>) {
+    suspend fun loadInitialPayload(
+        url: String,
+        method: String?,
+        params: Map<String, Any?>,
+    ) {
         payload = withContext(Dispatchers.IO) {
             try {
                 val uri = Uri.parse(url).buildUpon()
                     .appendQueryParameter(SOCKET_PARAM_FORMAT, FORMAT_JETPACK)
-                val doc: Document? = newHttpCall(uri.toString(), method, params)
-                    .execute()
-                    .body?.string()
-                    ?.let { Jsoup.parse(it) }
+                val response = newHttpCall(uri.toString(), method, params).execute()
+
+                val doc: Document? = response.body?.string()?.let {
+                    Jsoup.parse(it)
+                }
 
                 val csrfTokenTag: Elements? = doc?.getElementsByTag(TAG_CSRF_TOKEN)
                 val csrfToken = csrfTokenTag?.attr(ATTR_VALUE)
@@ -238,6 +261,10 @@ class SocketService {
         }
     }
 
+    fun resetPayload() {
+        payload = null
+    }
+
     suspend fun loadThemeData(httpBaseUrl: String): Map<String, Any> {
         return withContext(Dispatchers.IO) {
             try {
@@ -256,12 +283,12 @@ class SocketService {
         }
     }
 
-    suspend fun loadStyleData(httpBaseUrl: String): String? {
+    suspend fun loadStyleData(httpBaseUrl: String, stylePath: String): String? {
         return withContext(Dispatchers.IO) {
             try {
                 val uri = Uri.parse(httpBaseUrl)
                     .buildUpon()
-                    .path(payload?.stylePath)
+                    .path(stylePath)
                     .build()
                 val request = Request.Builder()
                     .url(uri.toString())

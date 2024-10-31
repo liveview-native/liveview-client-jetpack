@@ -20,9 +20,15 @@ object LiveViewJetpack {
         return koinApplication.koin.get()
     }
 
-    fun newLiveViewCoordinator(httpBaseUrl: String, route: String): LiveViewCoordinator {
+    fun newLiveViewCoordinator(
+        httpBaseUrl: String,
+        route: String,
+        method: String = "GET",
+        params: Map<String, Any?> = emptyMap(),
+        redirect: Boolean = false
+    ): LiveViewCoordinator {
         return koinApplication.koin.get {
-            parametersOf(httpBaseUrl, route)
+            parametersOf(route, httpBaseUrl, method, params, redirect)
         }
     }
 
