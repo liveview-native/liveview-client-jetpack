@@ -17,33 +17,46 @@ class Repository(
     private var _httpBaseUrl: String = ""
     private var _wsBaseUrl: String = ""
 
-    suspend fun connectToLiveViewSocket(
+    suspend fun loadInitialPayload(
+        url: String,
+        method: String?,
+        params: Map<String, Any?>,
+        csrfToken: String?
+    ): PhoenixLiveViewPayload {
+        return socketService.loadInitialPayload(url, method, params, csrfToken)
+    }
+
+    fun connectToLiveViewSocket(
         httpBaseUrl: String,
         method: String?,
         params: Map<String, Any?>,
         wsBaseUrl: String,
+        csrfToken: String?
     ) {
         _httpBaseUrl = httpBaseUrl
         _wsBaseUrl = wsBaseUrl
         Log.i(TAG, "connectToLiveViewSocket")
         Log.i(TAG, "\t>>>httpBaseUrl=$httpBaseUrl | method=$method | params=$params")
         Log.i(TAG, "\t>>>wsBaseUrl=$wsBaseUrl")
-        socketService.loadInitialPayload(httpBaseUrl, method, params)
 
-        socketService.connectToLiveViewSocket(socketBaseUrl = wsBaseUrl)
+        socketService.connectToLiveViewSocket(socketBaseUrl = wsBaseUrl, phxCSRFToken = csrfToken)
     }
 
     fun disconnectFromLiveViewSocket() {
         Log.i(TAG, "disconnectFromLiveViewSocket")
-        Log.i(TAG, ">>>>httpBaseUrl=$_httpBaseUrl | wsBaseUrl=$_wsBaseUrl")
+        Log.i(TAG, "\t>>>>httpBaseUrl=$_httpBaseUrl | wsBaseUrl=$_wsBaseUrl")
         socketService.disconnectFromLiveViewSocket()
     }
 
-    fun joinLiveViewChannel(httpBaseUrl: String, redirect: Boolean) = callbackFlow {
-        socketService.payload?.let { payload ->
+    fun joinLiveViewChannel(
+        httpBaseUrl: String,
+        redirect: Boolean,
+        phxLiveViewPayload: PhoenixLiveViewPayload?
+    ) = callbackFlow {
+        phxLiveViewPayload?.let { payload ->
             Log.i(TAG, "joinLiveViewChannel")
-            Log.i(TAG, ">>>>httpBaseUrl=$httpBaseUrl")
-            Log.i(TAG, ">>>>payload=$payload")
+            Log.i(TAG, "\t>>>>httpBaseUrl=$httpBaseUrl")
+            Log.i(TAG, "\t>>>>payload=$payload")
             channelService.joinPhoenixChannel(
                 payload,
                 httpBaseUrl,
@@ -85,11 +98,9 @@ class Repository(
     }
 
     fun joinReloadChannel() = callbackFlow {
-        socketService.payload?.let {
-            Log.i(TAG, "joinReloadChannel>>>>httpBaseUrl=$_httpBaseUrl | wsBaseUrl=$_wsBaseUrl")
-            channelService.joinLiveReloadChannel {
-                trySend(Unit)
-            }
+        Log.i(TAG, "joinReloadChannel>>>>httpBaseUrl=$_httpBaseUrl | wsBaseUrl=$_wsBaseUrl")
+        channelService.joinLiveReloadChannel {
+            trySend(Unit)
         }
         awaitClose {
             try {
@@ -104,10 +115,6 @@ class Repository(
     fun leaveReloadChannel() {
         Log.i(TAG, "leaveReloadChannel>>>>httpBaseUrl=$_httpBaseUrl | wsBaseUrl=$_wsBaseUrl")
         channelService.leaveReloadChannel()
-    }
-
-    fun resetPayload() {
-        socketService.resetPayload()
     }
 
     fun pushEvent(type: String, event: String, value: Any?, target: Int? = null) {
@@ -126,8 +133,11 @@ class Repository(
         return socketService.loadThemeData(httpBaseUrl)
     }
 
-    suspend fun loadStyleData(httpBaseUrl: String): String? {
-        return socketService.payload?.stylePath?.let { stylePath ->
+    suspend fun loadStyleData(
+        httpBaseUrl: String,
+        phxLiveViewPayload: PhoenixLiveViewPayload
+    ): String? {
+        return phxLiveViewPayload.stylePath?.let { stylePath ->
             socketService.loadStyleData(httpBaseUrl, stylePath)
         }
     }

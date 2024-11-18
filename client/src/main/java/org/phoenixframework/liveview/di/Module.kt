@@ -4,6 +4,7 @@ import android.net.Uri
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
+import org.phoenixframework.liveview.foundation.data.mappers.mergeRouteToBaseUrl
 import org.phoenixframework.liveview.foundation.data.service.ChannelService
 import org.phoenixframework.liveview.foundation.data.service.SocketService
 import org.phoenixframework.liveview.foundation.domain.LiveViewCoordinator
@@ -31,23 +32,16 @@ val clientModule = module {
         val method = it.get<String?>(2)
         val params = it.get<Map<String, Any?>>(3)
         val redirect = it.get<Boolean>(4)
+        val prevCsrfToken = it.get<String?>(5)
 
         // The WebSocket URL is the same of the HTTP URL,
         // so we just copy the HTTP URL changing the schema (protocol)
         val uri = Uri.parse(httpBaseUrl)
-        val webSocketScheme = if (uri.scheme == "https") "wss" else "ws"
+        val webSocketScheme = if (uri.scheme?.lowercase() == "https") "wss" else "ws"
         val wsBaseUrl =
             uri.buildUpon().scheme(webSocketScheme).path("live/websocket").build().toString()
 
-        val httpUrl = if (route == null) httpBaseUrl else {
-            val uriBuilder = Uri.parse(httpBaseUrl).buildUpon()
-            if (route.startsWith('/')) {
-                uriBuilder.path(route)
-            } else {
-                uriBuilder.appendPath(route)
-            }
-            uriBuilder.toString()
-        }
+        val httpUrl = mergeRouteToBaseUrl(httpBaseUrl, route)
 
         LiveViewCoordinator(
             httpBaseUrl = httpUrl,
@@ -55,6 +49,7 @@ val clientModule = module {
             method = method,
             params = params,
             redirect = redirect,
+            prevCsrfToken = prevCsrfToken,
             route = route,
             modifierParser = get(),
             themeHolder = get(),

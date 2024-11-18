@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.phoenixframework.Message
 import org.phoenixframework.liveview.foundation.data.mappers.DocumentParser
+import org.phoenixframework.liveview.foundation.data.repository.PhoenixLiveViewPayload
 import org.phoenixframework.liveview.foundation.data.repository.Repository
 import org.phoenixframework.liveview.foundation.data.service.ChannelService
 import org.phoenixframework.liveview.foundation.data.service.SocketService
@@ -28,6 +29,7 @@ class LiveViewCoordinator(
     private val method: String?,
     private val params: Map<String, Any?>,
     private val redirect: Boolean,
+    private var prevCsrfToken: String?,
     private val modifierParser: BaseModifiersParser,
     private val themeHolder: BaseThemeHolder,
     private val documentParser: DocumentParser,
@@ -47,8 +49,11 @@ class LiveViewCoordinator(
     private val screenId: String
         get() = this.toString()
 
+    var payload: PhoenixLiveViewPayload? = null
+        private set
+
     override fun onResume(owner: LifecycleOwner) {
-        connectToLiveView(redirect)
+        connectToLiveView(redirect, prevCsrfToken)
     }
 
     override fun onPause(owner: LifecycleOwner) {
@@ -56,8 +61,11 @@ class LiveViewCoordinator(
         disconnect()
     }
 
-    private fun connectToLiveView(redirect: Boolean) {
-        Log.i(TAG, "connectToLiveView -> [$method] ROUTE=$route | $this")
+    private fun connectToLiveView(redirect: Boolean, prevCsrfToken: String?) {
+        Log.i(
+            TAG,
+            "connectToLiveView -> [$method] ROUTE=$route | $this | prevCsrfToken=$prevCsrfToken"
+        )
         Log.i(TAG, "connectToLiveView::httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -85,8 +93,9 @@ class LiveViewCoordinator(
                                 if (themeHolder.isEmpty()) {
                                     themeHolder.updateThemeData(repository.loadThemeData(httpBaseUrl))
                                 }
-                                if (modifierParser.isEmpty) {
-                                    repository.loadStyleData(httpBaseUrl)
+                                val payload = payload
+                                if (modifierParser.isEmpty && payload != null) {
+                                    repository.loadStyleData(httpBaseUrl, payload)
                                         ?.let { styleFileContentAsString ->
                                             modifierParser.fromStyleFile(
                                                 styleFileContentAsString,
@@ -95,7 +104,9 @@ class LiveViewCoordinator(
                                         }
                                 }
                                 joinLiveViewChannel(redirect)
-                                connectLiveReload()
+                                if (payload?.liveReloadEnabled == true) {
+                                    connectLiveReload()
+                                }
                             } catch (e: Exception) {
                                 e.printStackTrace()
                                 setError(e)
@@ -108,7 +119,19 @@ class LiveViewCoordinator(
                 }
             }
             try {
-                repository.connectToLiveViewSocket(httpBaseUrl, method, params, wsBaseUrl)
+                if (payload == null) {
+                    payload =
+                        repository.loadInitialPayload(httpBaseUrl, method, params, prevCsrfToken)
+                }
+                payload?.let {
+                    repository.connectToLiveViewSocket(
+                        httpBaseUrl,
+                        method,
+                        params,
+                        wsBaseUrl,
+                        it.phxCSRFToken
+                    )
+                }
             } catch (e: Exception) {
                 setError(e)
             }
@@ -117,7 +140,7 @@ class LiveViewCoordinator(
 
     private fun joinLiveViewChannel(redirect: Boolean) {
         channelJob = viewModelScope.launch(Dispatchers.IO) {
-            repository.joinLiveViewChannel(httpBaseUrl, redirect = redirect)
+            repository.joinLiveViewChannel(httpBaseUrl, redirect = redirect, payload)
                 .catch { cause: Throwable ->
                     Log.e(TAG, "joinLiveViewChannel::Error", cause)
                     setError(cause)
@@ -160,9 +183,13 @@ class LiveViewCoordinator(
                         // Errors
                         message.status == STATUS_ERROR -> {
                             Log.e(TAG, "Error: $message")
-                            if (message.payload[ChannelService.MESSAGE_ERROR_REASON] == "stale") {
-                                repository.resetPayload()
-                                connectToLiveView(redirect)
+                            val reason = message.payload[ChannelService.MESSAGE_ERROR_REASON]
+                            if (reason == "stale" || reason == "unauthorized") {
+                                payload = null
+                                prevCsrfToken = null
+                                cancelConnectionJobs()
+                                disconnect()
+                                connectToLiveView(redirect, null)
                             }
                         }
                     }
@@ -220,7 +247,7 @@ class LiveViewCoordinator(
 
                     viewModelScope.launch(Dispatchers.Main) {
                         cancelConnectionJobs()
-                        connectToLiveView(false)
+                        connectToLiveView(false, null)
                     }
                 }
         }
@@ -313,6 +340,12 @@ class LiveViewCoordinator(
         repository.leaveChannel()
         repository.disconnectFromReloadSocket()
         repository.disconnectFromLiveViewSocket()
+    }
+
+    fun resetError() {
+        _state.update {
+            it.copy(throwable = null)
+        }
     }
 
     data class NavigationRequest(

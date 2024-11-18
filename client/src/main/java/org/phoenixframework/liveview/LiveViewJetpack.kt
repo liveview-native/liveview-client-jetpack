@@ -28,7 +28,7 @@ object LiveViewJetpack {
         redirect: Boolean = false
     ): LiveViewCoordinator {
         return koinApplication.koin.get {
-            parametersOf(route, httpBaseUrl, method, params, redirect)
+            parametersOf(route, httpBaseUrl, method, params, redirect, null)
         }
     }
 

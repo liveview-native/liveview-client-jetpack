@@ -31,10 +31,18 @@ class SocketService {
 
     private val uuid: String = UUID.randomUUID().toString()
 
-    private val storedCookies = mutableListOf<Cookie>()
+    private val storedCookies = mutableMapOf<String, Cookie>()
+    private val cookieJar = object : CookieJar {
+        override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+            cookies.forEach { cookie ->
+                storedCookies[cookie.name] = cookie
+            }
+        }
 
-    var payload: PhoenixLiveViewPayload? = null
-        private set
+        override fun loadForRequest(url: HttpUrl): List<Cookie> {
+            return storedCookies.values.toList()
+        }
+    }
 
     private val _connection = MutableStateFlow<Events>(Events.NotConnected)
     val connectionFlow: StateFlow<Events> = _connection
@@ -44,17 +52,12 @@ class SocketService {
 
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
-            .cookieJar(object : CookieJar {
-                override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-                    storedCookies.addAll(cookies)
-                }
-
-                override fun loadForRequest(url: HttpUrl): List<Cookie> = storedCookies
-            })
+            .followRedirects(false) // Handling redirects manually
+            .cookieJar(cookieJar)
             .addNetworkInterceptor { chain ->
                 // Intercepting redirection and add _format parameter to the URL
                 val request = chain.request()
-                if (!request.url.queryParameterNames.contains(SOCKET_PARAM_FORMAT)) {
+                val response = if (!request.url.queryParameterNames.contains(SOCKET_PARAM_FORMAT)) {
                     val newUrl = request.url.newBuilder()
                         .addQueryParameter(SOCKET_PARAM_FORMAT, FORMAT_JETPACK)
                         .build()
@@ -65,6 +68,7 @@ class SocketService {
                 } else {
                     chain.proceed(request)
                 }
+                response
             }
             .addInterceptor { chain ->
                 val original = chain.request()
@@ -74,21 +78,23 @@ class SocketService {
             .build()
     }
 
-    fun connectToLiveViewSocket(socketBaseUrl: String) {
-        Log.d(TAG, "connectToLiveViewSocket::socketBaseUrl=> $socketBaseUrl")
+    fun connectToLiveViewSocket(socketBaseUrl: String, phxCSRFToken: String?) {
+        Log.d(
+            TAG,
+            "connectToLiveViewSocket::socketBaseUrl=> $socketBaseUrl | CSRFToken: $phxCSRFToken"
+        )
 
-        if (payload == null || payload?.phxCSRFToken == null) {
+        if (phxCSRFToken == null) {
             _connection.update {
                 Events.PayloadLoadingError(IllegalStateException("Initial payload is null"))
             }
             return
         }
-        Log.d(TAG, "connectToLiveViewSocket::phxLiveViewPayload=> $payload")
 
         val socketParams = mapOf(
             SOCKET_PARAM_MOUNTS to 0,
             SOCKET_PARAM_FORMAT to FORMAT_JETPACK,
-            SOCKET_PARAM_CSRF_TOKEN to payload?.phxCSRFToken,
+            SOCKET_PARAM_CSRF_TOKEN to phxCSRFToken,
             SOCKET_PARAM_CLIENT_ID to uuid,
         )
 
@@ -102,12 +108,15 @@ class SocketService {
         phxSocket = Socket(url = socketUrl, client = okHttpClient).apply {
             logger = { Log.d(TAG, it) }
             onOpen {
+                Log.d(TAG, "socket opened")
                 _connection.update { Events.Opened }
             }
             onClose {
+                Log.d(TAG, "socket closed")
                 _connection.update { Events.Closed }
             }
             onError { t, _ ->
+                Log.e(TAG, "socket error", t)
                 _connection.update { Events.Error(t) }
             }
             connect()
@@ -146,6 +155,7 @@ class SocketService {
         url: String,
         method: String?,
         params: Map<String, Any?>,
+        phxCSRFToken: String?,
     ): Call {
         fun formBodyRequest(params: Map<String, Any?>): RequestBody {
             return if (params.isEmpty()) EMPTY_REQUEST else {
@@ -154,7 +164,7 @@ class SocketService {
                         addEncoded(entry.key, entry.value.toString())
                     }
                     // TODO Check if this is really necessary
-                    payload?.phxCSRFToken?.let {
+                    phxCSRFToken?.let {
                         addEncoded(SOCKET_PARAM_CSRF_TOKEN, it)
                     }
                 }.build()
@@ -223,46 +233,43 @@ class SocketService {
         url: String,
         method: String?,
         params: Map<String, Any?>,
-    ) {
-        payload = withContext(Dispatchers.IO) {
-            try {
-                val uri = Uri.parse(url).buildUpon()
-                    .appendQueryParameter(SOCKET_PARAM_FORMAT, FORMAT_JETPACK)
-                val response = newHttpCall(uri.toString(), method, params).execute()
+        prevCsrfToken: String?,
+    ): PhoenixLiveViewPayload {
+        return withContext(Dispatchers.IO) {
+            val response = newHttpCall(url, method, params, prevCsrfToken).execute()
 
-                val doc: Document? = response.body?.string()?.let {
-                    Jsoup.parse(it)
-                }
-
-                val csrfTokenTag: Elements? = doc?.getElementsByTag(TAG_CSRF_TOKEN)
-                val csrfToken = csrfTokenTag?.attr(ATTR_VALUE)
-
-                val styleTag: Elements? = doc?.getElementsByTag(TAG_STYLE)
-                val stylePath = styleTag?.attr(ATTR_URL)
-
-                val theLiveViewMetaDataElement =
-                    doc?.body()?.getElementsByAttribute(ATTR_DATA_PHX_MAIN)
-
-                val liveReloadEnabled =
-                    doc?.select("iframe[src=\"/phoenix/live_reload/frame\"]")?.isNotEmpty() == true
-
-                PhoenixLiveViewPayload(
-                    phxSession = theLiveViewMetaDataElement?.attr(ATTR_DATA_PHX_SESSION),
-                    phxStatic = theLiveViewMetaDataElement?.attr(ATTR_DATA_PHX_STATIC),
-                    phxId = theLiveViewMetaDataElement?.attr(ATTR_ID),
-                    phxCSRFToken = csrfToken,
-                    liveReloadEnabled = liveReloadEnabled,
-                    stylePath = stylePath
+            if (response.isRedirect) {
+                throw RedirectException(
+                    location = response.header("Location"),
+                    method = "GET",
                 )
-            } catch (e: Exception) {
-                Log.e(TAG, "SocketService::Error: ${e.message}", e)
-                null
             }
-        }
-    }
 
-    fun resetPayload() {
-        payload = null
+            val doc: Document? = response.body?.string()?.let {
+                Jsoup.parse(it)
+            }
+
+            val csrfTokenTag: Elements? = doc?.getElementsByTag(TAG_CSRF_TOKEN)
+            val csrfToken = csrfTokenTag?.attr(ATTR_VALUE)
+
+            val styleTag: Elements? = doc?.getElementsByTag(TAG_STYLE)
+            val stylePath = styleTag?.attr(ATTR_URL)
+
+            val theLiveViewMetaDataElement =
+                doc?.body()?.getElementsByAttribute(ATTR_DATA_PHX_MAIN)
+
+            val liveReloadEnabled =
+                doc?.select("iframe[src=\"/phoenix/live_reload/frame\"]")?.isNotEmpty() == true
+
+            PhoenixLiveViewPayload(
+                phxSession = theLiveViewMetaDataElement?.attr(ATTR_DATA_PHX_SESSION),
+                phxStatic = theLiveViewMetaDataElement?.attr(ATTR_DATA_PHX_STATIC),
+                phxId = theLiveViewMetaDataElement?.attr(ATTR_ID),
+                phxCSRFToken = prevCsrfToken ?: csrfToken,
+                liveReloadEnabled = liveReloadEnabled,
+                stylePath = stylePath
+            )
+        }
     }
 
     suspend fun loadThemeData(httpBaseUrl: String): Map<String, Any> {
@@ -343,4 +350,9 @@ class SocketService {
 
         class PayloadLoadingError(t: Throwable) : Error(t)
     }
+
+    class RedirectException(
+        val location: String?,
+        val method: String,
+    ) : Exception()
 }

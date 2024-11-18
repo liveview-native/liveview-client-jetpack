@@ -25,6 +25,8 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.phoenixframework.liveview.LiveViewJetpack
 import org.phoenixframework.liveview.foundation.data.mappers.JsonParser
+import org.phoenixframework.liveview.foundation.data.mappers.generateRelativePath
+import org.phoenixframework.liveview.foundation.data.service.SocketService
 import org.phoenixframework.liveview.foundation.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.foundation.ui.base.ErrorView
 import org.phoenixframework.liveview.ui.theme.LiveViewNativeTheme
@@ -60,7 +62,9 @@ private fun NavDestination(
     backStackEntry: NavBackStackEntry,
     httpBaseUrl: String,
 ) {
-    val lvNavRoute = backStackEntry.toRoute<LiveViewNavRoute>()
+    val lvNavRoute = remember(backStackEntry) {
+        backStackEntry.toRoute<LiveViewNavRoute>()
+    }
 
     val liveViewCoordinator = koinViewModel<LiveViewCoordinator> {
         parametersOf(
@@ -68,11 +72,12 @@ private fun NavDestination(
             httpBaseUrl,
             lvNavRoute.method,
             lvNavRoute.argsAsMap(),
-            lvNavRoute.redirect
+            lvNavRoute.redirect,
+            lvNavRoute.csrfToken,
         )
     }
-    val appNavigationController = remember(navController, backStackEntry) {
-        LiveViewAppNavController(navController, backStackEntry)
+    val appNavigationController = remember(navController, backStackEntry, liveViewCoordinator) {
+        LiveViewAppNavController(navController, backStackEntry, liveViewCoordinator)
     }
 
     val state by liveViewCoordinator.state.collectAsState()
@@ -91,7 +96,17 @@ private fun NavDestination(
     } else {
         val error = state.throwable
         if (error != null) {
-            ErrorView(throwable = error)
+            if (error is SocketService.RedirectException && error.location != null) {
+                liveViewCoordinator.resetError()
+                appNavigationController.navigate(
+                    path = error.location,
+                    method = "GET",
+                    params = emptyMap(),
+                    redirect = true
+                )
+            } else {
+                ErrorView(throwable = error)
+            }
         }
     }
 
@@ -108,7 +123,8 @@ private fun NavDestination(
                 navigationRequest,
                 lvNavRoute,
                 navController,
-                backStackEntry
+                backStackEntry,
+                liveViewCoordinator,
             )
         }
         liveViewCoordinator.resetNavigation()
@@ -119,7 +135,8 @@ private fun processNavigationRequest(
     navigationRequest: LiveViewCoordinator.NavigationRequest,
     lvNavRoute: LiveViewNavRoute,
     navController: NavController,
-    backStackEntry: NavBackStackEntry
+    backStackEntry: NavBackStackEntry,
+    liveViewCoordinator: LiveViewCoordinator,
 ) {
     val (newRoute, redirect) = navigationRequest
     val routePath = generateRelativePath(getCurrentRoute(navController), newRoute)
@@ -128,7 +145,8 @@ private fun processNavigationRequest(
         LiveViewNavRoute(
             route = routePath,
             argsAsJson = lvNavRoute.argsAsJson,
-            redirect = redirect
+            redirect = redirect,
+            csrfToken = liveViewCoordinator.payload?.phxCSRFToken
         )
     ) {
         if (redirect) {
@@ -139,41 +157,13 @@ private fun processNavigationRequest(
     }
 }
 
-internal fun generateRelativePath(currentUrl: String, newUrl: String): String {
-    val currentParts = currentUrl.split("/").toMutableList()
-    val newParts = newUrl.split("/").toMutableList()
-
-    // Remove empty parts caused by leading or trailing slashes
-    currentParts.removeAll { it.isEmpty() }
-    newParts.removeAll { it.isEmpty() }
-
-    // Handle the case where newUrl is an absolute path
-    if (newUrl.startsWith("/")) {
-        return newUrl
-    }
-
-    // Handle the case where newUrl starts with "../"
-    while (newParts.firstOrNull() == "..") {
-        newParts.removeFirstOrNull()
-        currentParts.removeLastOrNull()
-    }
-
-    val relativeParts = mutableListOf<String>()
-
-    // Add remaining parts of newUrl
-    relativeParts.addAll(newParts)
-
-    return currentParts.joinToString("/", prefix = "/", postfix = "/") + relativeParts.joinToString(
-        "/"
-    )
-}
-
 @Serializable
 private data class LiveViewNavRoute(
     val route: String? = null,
     val method: String? = null,
     val argsAsJson: String? = null,
-    val redirect: Boolean = false
+    val redirect: Boolean = false,
+    val csrfToken: String? = null,
 ) {
     fun argsAsMap(): Map<String, Any?> {
         return argsAsJson?.let {
@@ -189,19 +179,21 @@ private data class LiveViewNavRoute(
 private class LiveViewAppNavController(
     private val navController: NavController,
     private val backStackEntry: NavBackStackEntry,
+    private val liveViewCoordinator: LiveViewCoordinator,
 ) : AppNavigationController {
     override fun navigate(
         path: String,
         method: String,
         params: Map<String, Any?>,
-        redirect: Boolean
+        redirect: Boolean,
     ) {
         navController.navigate(
             LiveViewNavRoute(
                 route = generateRelativePath(getCurrentRoute(navController), path),
                 method = method,
                 argsAsJson = JsonParser.toString(params),
-                redirect = redirect
+                redirect = redirect,
+                csrfToken = liveViewCoordinator.payload?.phxCSRFToken
             )
         ) {
             if (redirect) {
