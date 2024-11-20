@@ -93,16 +93,7 @@ class SocketService {
         socketBaseUrl: String,
     ) {
         Log.d(TAG, "connectToLiveViewSocket::socketBaseUrl=> $socketBaseUrl")
-        if (payload == null || method == POST) {
-            payload = loadInitialPayload(httpUrl, method, params)
-        }
-
-        if (payload == null) {
-            _connection.update {
-                Events.PayloadLoadingError(IllegalStateException("Initial payload is null"))
-            }
-            return
-        }
+        payload = loadInitialPayload(httpUrl, method, params)
 
         val socketParams = mapOf(
             SOCKET_PARAM_MOUNTS to 0,
