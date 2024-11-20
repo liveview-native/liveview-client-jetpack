@@ -15,6 +15,7 @@ import org.phoenixframework.liveview.constants.Attrs.attrName
 import org.phoenixframework.liveview.constants.Attrs.attrPhxChange
 import org.phoenixframework.liveview.constants.Attrs.attrPhxSubmit
 import org.phoenixframework.liveview.extensions.paddingIfNotNull
+import org.phoenixframework.liveview.foundation.data.constants.HttpMethod.GET
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
@@ -48,7 +49,7 @@ internal class LiveFormView private constructor(props: Properties) :
         val phxSubmit = props.phxSubmit
         val phxTriggerAction = props.phxTriggerAction
         val action = props.action
-        val method = props.method ?: "GET"
+        val method = props.method ?: GET
         val navigationController = LocalNavigation.current
 
         val formDataHolder = remember(composableNode?.id) {
@@ -206,7 +207,7 @@ internal class SubmitButtonActionHandler(
         if (phxSubmit?.isNotEmpty() == true) {
             pushEvent.invoke(EVENT_TYPE_FORM, phxSubmit, dataHolder.formDataToQueryString(), null)
         } else if (action?.isNotEmpty() == true) {
-            navigationController.navigate(action, method ?: "GET", dataHolder.data, true)
+            navigationController.navigate(action, method ?: GET, dataHolder.data, true)
         }
     }
 }

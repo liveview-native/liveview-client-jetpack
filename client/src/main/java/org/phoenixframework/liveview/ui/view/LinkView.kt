@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.constants.Attrs.attrNavigate
+import org.phoenixframework.liveview.foundation.data.constants.HttpMethod.GET
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
 import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperties
@@ -44,7 +45,7 @@ internal class LinkView private constructor(props: Properties) :
                 if (props.navigationPath.startsWith("http://") || props.navigationPath.startsWith("https://")) {
                     context.startActivity(Intent(ACTION_VIEW, Uri.parse(props.navigationPath)))
                 } else {
-                    navController.navigate(props.navigationPath, "GET", emptyMap(), false)
+                    navController.navigate(props.navigationPath, GET, emptyMap(), false)
                 }
             }
         )

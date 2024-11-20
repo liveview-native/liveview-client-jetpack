@@ -4,6 +4,7 @@ import org.koin.core.KoinApplication
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.parameter.parametersOf
 import org.phoenixframework.liveview.di.clientModule
+import org.phoenixframework.liveview.foundation.data.constants.HttpMethod.GET
 import org.phoenixframework.liveview.foundation.di.foundationModule
 import org.phoenixframework.liveview.foundation.domain.LiveViewCoordinator
 import org.phoenixframework.liveview.foundation.ui.base.BaseThemeHolder
@@ -23,12 +24,12 @@ object LiveViewJetpack {
     fun newLiveViewCoordinator(
         httpBaseUrl: String,
         route: String,
-        method: String = "GET",
+        method: String = GET,
         params: Map<String, Any?> = emptyMap(),
         redirect: Boolean = false
     ): LiveViewCoordinator {
         return koinApplication.koin.get {
-            parametersOf(route, httpBaseUrl, method, params, redirect, null)
+            parametersOf(route, httpBaseUrl, method, params, redirect)
         }
     }
 

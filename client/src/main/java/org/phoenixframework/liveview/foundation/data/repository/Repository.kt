@@ -17,21 +17,11 @@ class Repository(
     private var _httpBaseUrl: String = ""
     private var _wsBaseUrl: String = ""
 
-    suspend fun loadInitialPayload(
-        url: String,
-        method: String?,
-        params: Map<String, Any?>,
-        csrfToken: String?
-    ): PhoenixLiveViewPayload {
-        return socketService.loadInitialPayload(url, method, params, csrfToken)
-    }
-
-    fun connectToLiveViewSocket(
+    suspend fun connectToLiveViewSocket(
         httpBaseUrl: String,
         method: String?,
         params: Map<String, Any?>,
         wsBaseUrl: String,
-        csrfToken: String?
     ) {
         _httpBaseUrl = httpBaseUrl
         _wsBaseUrl = wsBaseUrl
@@ -39,38 +29,38 @@ class Repository(
         Log.i(TAG, "\t>>>httpBaseUrl=$httpBaseUrl | method=$method | params=$params")
         Log.i(TAG, "\t>>>wsBaseUrl=$wsBaseUrl")
 
-        socketService.connectToLiveViewSocket(socketBaseUrl = wsBaseUrl, phxCSRFToken = csrfToken)
+        socketService.connectToLiveViewSocket(
+            httpUrl = httpBaseUrl,
+            method = method,
+            params = params,
+            socketBaseUrl = wsBaseUrl
+        )
     }
 
-    fun disconnectFromLiveViewSocket() {
+    fun disconnectFromLiveViewSocket(resetPayload: Boolean = false) {
         Log.i(TAG, "disconnectFromLiveViewSocket")
         Log.i(TAG, "\t>>>>httpBaseUrl=$_httpBaseUrl | wsBaseUrl=$_wsBaseUrl")
-        socketService.disconnectFromLiveViewSocket()
+        socketService.disconnectFromLiveViewSocket(resetPayload)
     }
 
     fun joinLiveViewChannel(
         httpBaseUrl: String,
         redirect: Boolean,
-        phxLiveViewPayload: PhoenixLiveViewPayload?
     ) = callbackFlow {
-        phxLiveViewPayload?.let { payload ->
-            Log.i(TAG, "joinLiveViewChannel")
-            Log.i(TAG, "\t>>>>httpBaseUrl=$httpBaseUrl")
-            Log.i(TAG, "\t>>>>payload=$payload")
-            channelService.joinPhoenixChannel(
-                payload,
-                httpBaseUrl,
-                redirect
-            ) { message ->
-                trySend(message)
-            }
-            awaitClose {
-                try {
-                    Log.i(TAG, "joinLiveViewChannel::Closing channel...")
-                    channel.close()
-                } catch (e: Exception) {
-                    Log.e(TAG, "joinLiveViewChannel::Error awaiting for close: ${e.message}", e)
-                }
+        Log.i(TAG, "joinLiveViewChannel")
+        Log.i(TAG, "\t>>>>httpBaseUrl=$httpBaseUrl")
+        channelService.joinPhoenixChannel(
+            httpBaseUrl,
+            redirect
+        ) { message ->
+            trySend(message)
+        }
+        awaitClose {
+            try {
+                Log.i(TAG, "joinLiveViewChannel::Closing channel...")
+                channel.close()
+            } catch (e: Exception) {
+                Log.e(TAG, "joinLiveViewChannel::Error awaiting for close: ${e.message}", e)
             }
         }
     }.catch {
@@ -133,13 +123,8 @@ class Repository(
         return socketService.loadThemeData(httpBaseUrl)
     }
 
-    suspend fun loadStyleData(
-        httpBaseUrl: String,
-        phxLiveViewPayload: PhoenixLiveViewPayload
-    ): String? {
-        return phxLiveViewPayload.stylePath?.let { stylePath ->
-            socketService.loadStyleData(httpBaseUrl, stylePath)
-        }
+    suspend fun loadStyleData(httpBaseUrl: String): String? {
+        return socketService.loadStyleData(httpBaseUrl)
     }
 
     companion object {

@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.phoenixframework.Message
 import org.phoenixframework.liveview.foundation.data.mappers.DocumentParser
-import org.phoenixframework.liveview.foundation.data.repository.PhoenixLiveViewPayload
 import org.phoenixframework.liveview.foundation.data.repository.Repository
 import org.phoenixframework.liveview.foundation.data.service.ChannelService
 import org.phoenixframework.liveview.foundation.data.service.SocketService
@@ -29,7 +28,6 @@ class LiveViewCoordinator(
     private val method: String?,
     private val params: Map<String, Any?>,
     private val redirect: Boolean,
-    private var prevCsrfToken: String?,
     private val modifierParser: BaseModifiersParser,
     private val themeHolder: BaseThemeHolder,
     private val documentParser: DocumentParser,
@@ -46,14 +44,13 @@ class LiveViewCoordinator(
     private var reloadConnectionJob: Job? = null
     private var reloadChannelJob: Job? = null
 
+    private var reconnectionAttempts = 0
+
     private val screenId: String
         get() = this.toString()
 
-    var payload: PhoenixLiveViewPayload? = null
-        private set
-
     override fun onResume(owner: LifecycleOwner) {
-        connectToLiveView(redirect, prevCsrfToken)
+        connectToLiveView(redirect)
     }
 
     override fun onPause(owner: LifecycleOwner) {
@@ -61,11 +58,8 @@ class LiveViewCoordinator(
         disconnect()
     }
 
-    private fun connectToLiveView(redirect: Boolean, prevCsrfToken: String?) {
-        Log.i(
-            TAG,
-            "connectToLiveView -> [$method] ROUTE=$route | $this | prevCsrfToken=$prevCsrfToken"
-        )
+    private fun connectToLiveView(redirect: Boolean) {
+        Log.i(TAG, "connectToLiveView -> [$method] ROUTE=$route")
         Log.i(TAG, "connectToLiveView::httpBaseUrl=$httpBaseUrl | wsBaseUrl=$wsBaseUrl")
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -88,14 +82,14 @@ class LiveViewCoordinator(
                             Log.d(TAG, "liveSocketConnectionFlow::NotConnected")
                         }
 
-                        SocketService.Events.Opened -> {
+                        is SocketService.Events.Opened -> {
                             try {
+                                reconnectionAttempts = 0
                                 if (themeHolder.isEmpty()) {
                                     themeHolder.updateThemeData(repository.loadThemeData(httpBaseUrl))
                                 }
-                                val payload = payload
-                                if (modifierParser.isEmpty && payload != null) {
-                                    repository.loadStyleData(httpBaseUrl, payload)
+                                if (modifierParser.isEmpty) {
+                                    repository.loadStyleData(httpBaseUrl)
                                         ?.let { styleFileContentAsString ->
                                             modifierParser.fromStyleFile(
                                                 styleFileContentAsString,
@@ -104,7 +98,7 @@ class LiveViewCoordinator(
                                         }
                                 }
                                 joinLiveViewChannel(redirect)
-                                if (payload?.liveReloadEnabled == true) {
+                                if (event.liveReloadEnabled) {
                                     connectLiveReload()
                                 }
                             } catch (e: Exception) {
@@ -119,19 +113,12 @@ class LiveViewCoordinator(
                 }
             }
             try {
-                if (payload == null) {
-                    payload =
-                        repository.loadInitialPayload(httpBaseUrl, method, params, prevCsrfToken)
-                }
-                payload?.let {
-                    repository.connectToLiveViewSocket(
-                        httpBaseUrl,
-                        method,
-                        params,
-                        wsBaseUrl,
-                        it.phxCSRFToken
-                    )
-                }
+                repository.connectToLiveViewSocket(
+                    httpBaseUrl,
+                    method,
+                    params,
+                    wsBaseUrl,
+                )
             } catch (e: Exception) {
                 setError(e)
             }
@@ -140,7 +127,7 @@ class LiveViewCoordinator(
 
     private fun joinLiveViewChannel(redirect: Boolean) {
         channelJob = viewModelScope.launch(Dispatchers.IO) {
-            repository.joinLiveViewChannel(httpBaseUrl, redirect = redirect, payload)
+            repository.joinLiveViewChannel(httpBaseUrl, redirect)
                 .catch { cause: Throwable ->
                     Log.e(TAG, "joinLiveViewChannel::Error", cause)
                     setError(cause)
@@ -184,12 +171,17 @@ class LiveViewCoordinator(
                         message.status == STATUS_ERROR -> {
                             Log.e(TAG, "Error: $message")
                             val reason = message.payload[ChannelService.MESSAGE_ERROR_REASON]
-                            if (reason == "stale" || reason == "unauthorized") {
-                                payload = null
-                                prevCsrfToken = null
-                                cancelConnectionJobs()
-                                disconnect()
-                                connectToLiveView(redirect, null)
+                            if (reason == ChannelService.ERROR_REASON_STALE ||
+                                reason == ChannelService.ERROR_REASON_UNAUTHORIZED
+                            ) {
+                                if (reconnectionAttempts < 3) {
+                                    reconnectionAttempts++
+                                    cancelConnectionJobs()
+                                    disconnect(resetPayload = true)
+                                    connectToLiveView(redirect)
+                                } else {
+                                    handleReconnectionFailure()
+                                }
                             }
                         }
                     }
@@ -214,7 +206,7 @@ class LiveViewCoordinator(
                         SocketService.Events.NotConnected ->
                             Log.d(TAG, "liveReloadSocketConnectionFlow::NotConnected")
 
-                        SocketService.Events.Opened -> {
+                        is SocketService.Events.Opened -> {
                             Log.d(TAG, "liveReloadSocketConnectionFlow::Opened")
                             joinLiveReloadChannel()
                         }
@@ -247,7 +239,7 @@ class LiveViewCoordinator(
 
                     viewModelScope.launch(Dispatchers.Main) {
                         cancelConnectionJobs()
-                        connectToLiveView(false, null)
+                        connectToLiveView(false)
                     }
                 }
         }
@@ -299,6 +291,12 @@ class LiveViewCoordinator(
         }
     }
 
+    private fun handleReconnectionFailure() {
+        _state.update {
+            it.copy(throwable = IllegalStateException("Reconnection failure."))
+        }
+    }
+
     fun resetNavigation() {
         _state.update { it.copy(navigationRequest = null) }
     }
@@ -333,13 +331,13 @@ class LiveViewCoordinator(
         disconnect()
     }
 
-    fun disconnect() {
+    private fun disconnect(resetPayload: Boolean = false) {
         Log.i(TAG, "disconnect")
         cancelConnectionJobs()
         repository.leaveReloadChannel()
         repository.leaveChannel()
         repository.disconnectFromReloadSocket()
-        repository.disconnectFromLiveViewSocket()
+        repository.disconnectFromLiveViewSocket(resetPayload)
     }
 
     fun resetError() {

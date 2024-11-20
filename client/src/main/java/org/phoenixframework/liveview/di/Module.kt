@@ -32,7 +32,6 @@ val clientModule = module {
         val method = it.get<String?>(2)
         val params = it.get<Map<String, Any?>>(3)
         val redirect = it.get<Boolean>(4)
-        val prevCsrfToken = it.get<String?>(5)
 
         // The WebSocket URL is the same of the HTTP URL,
         // so we just copy the HTTP URL changing the schema (protocol)
@@ -49,7 +48,6 @@ val clientModule = module {
             method = method,
             params = params,
             redirect = redirect,
-            prevCsrfToken = prevCsrfToken,
             route = route,
             modifierParser = get(),
             themeHolder = get(),

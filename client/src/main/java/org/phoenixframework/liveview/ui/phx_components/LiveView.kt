@@ -24,6 +24,7 @@ import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 import org.phoenixframework.liveview.LiveViewJetpack
+import org.phoenixframework.liveview.foundation.data.constants.HttpMethod.GET
 import org.phoenixframework.liveview.foundation.data.mappers.JsonParser
 import org.phoenixframework.liveview.foundation.data.mappers.generateRelativePath
 import org.phoenixframework.liveview.foundation.data.service.SocketService
@@ -73,7 +74,6 @@ private fun NavDestination(
             lvNavRoute.method,
             lvNavRoute.argsAsMap(),
             lvNavRoute.redirect,
-            lvNavRoute.csrfToken,
         )
     }
     val appNavigationController = remember(navController, backStackEntry, liveViewCoordinator) {
@@ -98,9 +98,10 @@ private fun NavDestination(
         if (error != null) {
             if (error is SocketService.RedirectException && error.location != null) {
                 liveViewCoordinator.resetError()
+                // All redirects are converted to GET requests (params must be send as query string)
                 appNavigationController.navigate(
                     path = error.location,
-                    method = "GET",
+                    method = GET,
                     params = emptyMap(),
                     redirect = true
                 )
@@ -146,7 +147,6 @@ private fun processNavigationRequest(
             route = routePath,
             argsAsJson = lvNavRoute.argsAsJson,
             redirect = redirect,
-            csrfToken = liveViewCoordinator.payload?.phxCSRFToken
         )
     ) {
         if (redirect) {
@@ -163,7 +163,6 @@ private data class LiveViewNavRoute(
     val method: String? = null,
     val argsAsJson: String? = null,
     val redirect: Boolean = false,
-    val csrfToken: String? = null,
 ) {
     fun argsAsMap(): Map<String, Any?> {
         return argsAsJson?.let {
@@ -193,7 +192,6 @@ private class LiveViewAppNavController(
                 method = method,
                 argsAsJson = JsonParser.toString(params),
                 redirect = redirect,
-                csrfToken = liveViewCoordinator.payload?.phxCSRFToken
             )
         ) {
             if (redirect) {
