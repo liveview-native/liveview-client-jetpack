@@ -717,7 +717,7 @@ internal class TextFieldView private constructor(props: Properties) :
         /**
          * Defines the shape of this text field's container
          * ```
-         * <TextField shape="rectangle" />
+         * <TextField shape="RectangleShape" />
          * ```
          * @param shape text field container's shape. See the supported values at
          * [org.phoenixframework.liveview.constants.ShapeValues], or use an integer
@@ -786,7 +786,7 @@ internal class TextFieldView private constructor(props: Properties) :
          * Only applicable to only text based KeyboardTypes such as KeyboardType.Text,
          * KeyboardType.Ascii. It will not be applied to KeyboardTypes such as KeyboardType.Number.
          * ```
-         * <TextField capitalization="words" />
+         * <TextField capitalization="Words" />
          * ```
          * @param capitalization capitalization type. See the supported values at
          * [org.phoenixframework.liveview.constants.KeyboardCapitalizationValues].
@@ -834,7 +834,7 @@ internal class TextFieldView private constructor(props: Properties) :
          * keyboard and shows corresponding keyboard but this is not guaranteed. For example, some
          * keyboards may send non-ASCII character even if you set KeyboardType.Ascii.
          * ```
-         * <TextField keyboardType="email" />
+         * <TextField keyboardType="Email" />
          * ```
          * @param keyboardType the keyboard type. See the supported values at
          * [org.phoenixframework.liveview.constants.KeyboardTypeValues]
@@ -862,7 +862,7 @@ internal class TextFieldView private constructor(props: Properties) :
          * ImeOptions.singleLine is false, the keyboard might show return key rather than the
          * action requested here.
          * ```
-         * <TextField imeAction="search" />
+         * <TextField imeAction="Search" />
          * ```
          * @param imeAction IME action. See supported values at
          * [org.phoenixframework.liveview.constants.ImeActionValues].
