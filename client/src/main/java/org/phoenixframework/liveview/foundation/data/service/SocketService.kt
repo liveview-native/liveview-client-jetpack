@@ -250,6 +250,9 @@ class SocketService {
             if (response.isRedirect) {
                 throw RedirectException(location = response.header("Location"))
             }
+            if (!response.isSuccessful) {
+                throw IllegalArgumentException("Initial payload download failed")
+            }
 
             val doc: Document? = response.body?.string()?.let {
                 Jsoup.parse(it)
