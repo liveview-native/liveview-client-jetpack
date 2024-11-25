@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Added
 - `LiveViewNative.Jetpack.normalize_os_version/1`
 - `LiveViewNative.Jetpack.normalize_app_version/1`
+- CoreComponents
 
 ## Changed
 
