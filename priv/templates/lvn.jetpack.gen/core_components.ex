@@ -1,14 +1,14 @@
 defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.module_suffix %> do
   @moduledoc """
-  Provides core UI components built for Jetpack.<%= unless @live_form? do %>
+  Provides core UI components built for Jetpack.<%= if not @live_form? do %>
   > #### No LiveForm Installed! {: .warning}
   >
   > You will not get access to any of the form related inputs without LiveForm. After it is installed regenerate
-  > this file with `mix lvn.jetpack.gen --no-xcodegen`<% end %>
+  > this file with `mix lvn.jetpack.gen`<% end %>
 
   This file contains feature parity components to your applications's CoreComponent module.
   The goal is to retain a common API for fast prototyping. Leveraging your existing knowledge
-  of the `<%= inspect context.web_module %>.CoreComponents` functions you should expect identical functionality for similarly named
+  of the `FormDemoWeb.CoreComponents` functions you should expect identical functionality for similarly named
   components between web and native. That means utilizing your existing `handle_event/3` functions to manage state
   and stay focused on adding new templates for your native applications.
 
@@ -22,7 +22,8 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
   use LiveViewNative.Component<%= if @live_form? do %>
 
-  import LiveViewNative.LiveForm.Component
+  import LiveViewNative.LiveForm.Component<%= if @test? do %>
+  @external_resource "priv/templates/lvn.jetpack.gen/core_components.ex"<% end %>
 
   @doc """
   Renders an input with label and error messages.
@@ -57,7 +58,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
   attr :type, :string,
     default: "TextField",
-    values: ~w(TextFieldLink DatePicker MultiDatePicker Picker SecureField Slider Stepper TextEditor TextField Toggle hidden)
+    values: ~w(Checkbox DatePicker MultiDatePicker Picker SecureField Slider TextField hidden SingleChoiceSegmentedButtonRow)
 
   attr :field, Phoenix.HTML.FormField,
     doc: "a form field struct retrieved from the form, for example: `@form[:email]`"
@@ -85,6 +86,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
   slot :inner_block
 
   def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+    #dbg assigns
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
     |> assign(:errors, Enum.map(field.errors, &translate_error(&1)))
@@ -103,127 +105,116 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
   def input(%{type: "hidden"} = assigns) do
     ~LVN"""
-    <LiveHiddenField id={@id} name={@name} value={@value} {@rest} />
-    """
-  end
-
-  def input(%{type: "TextFieldLink"} = assigns) do
-    ~LVN"""
-    <VStack alignment="leading">
-      <LabeledContent>
-        <Text template="label"><%%= @label %></Text>
-        <TextFieldLink id={@id} name={@name} value={@value} prompt={@prompt} {@rest}>
-          <%%= @label %>
-        </TextFieldLink>
-      </LabeledContent>
-      <.error :for={msg <- @errors}><%%= msg %></.error>
-    </VStack>
+    <Spacer id={@id} name={@name} value={@value} {@rest} />
     """
   end
 
   def input(%{type: "DatePicker"} = assigns) do
     ~LVN"""
-    <VStack alignment="leading">
-      <DatePicker id={@id} name={@name} selection={@value} {@rest}>
-        <%%= @label %>
+    <Column>
+      <DatePicker id={@id} name={@name} initialSelectedDateMillis={@value} {@rest} >
+        <Text :if={@label} template="title"><%%= @label %></Text>
       </DatePicker>
       <.error :for={msg <- @errors}><%%= msg %></.error>
-    </VStack>
+    </Column>
     """
   end
 
   def input(%{type: "MultiDatePicker"} = assigns) do
+    [start_date, end_date] = Jason.decode!(assigns.value)
+
+    assigns =
+      assigns
+      |> assign(:start_date, start_date)
+      |> assign(:end_date, end_date)
+
     ~LVN"""
-    <VStack alignment="leading">
-      <LabeledContent>
-        <Text template="label"><%%= @label %></Text>
-        <MultiDatePicker id={@id} name={@name} selection={@value} {@rest}><%%= @label %></MultiDatePicker>
-      </LabeledContent>
+    <Column>
+      <DateRangePicker id={@id} name={@name} initialSelectedStartDateMillis={@start_date} initialSelectedEndDateMillis={@end_date}  {@rest} >
+        <Text :if={@label} template="title"><%%= @label %></Text>
+      </DateRangePicker>
       <.error :for={msg <- @errors}><%%= msg %></.error>
-    </VStack>
+    </Column>
     """
   end
 
   def input(%{type: "Picker"} = assigns) do
     ~LVN"""
-    <VStack alignment="leading">
-      <Picker id={@id} name={@name} selection={@value} {@rest}>
-        <Text template="label"><%%= @label %></Text>
-        <Text
-          :for={{name, value} <- @options}
-          tag={value}
-        >
-          <%%= name %>
-        </Text>
-      </Picker>
+    <Column>
+      <ExposedDropdownMenuBox id={@id} name={@name} {@rest} value={@value}>
+        <TextField value={List.keyfind(@options, @value, 1, {"", ""}) |> elem(0)} readOnly="true" style="menuAnchor()" >
+          <Text :if={@label} template="label"><%%= @label %></Text>
+          <Text :if={@placeholder} template="placeholder"><%%= @placeholder %></Text>
+        </TextField>
+        <ExposedDropdownMenu>
+          <DropdownMenuItem :for={{name, value} <- @options} phx-value={value}>
+            <Text><%%= name %></Text>
+          </DropdownMenuItem>
+        </ExposedDropdownMenu>
+      </ExposedDropdownMenuBox>
       <.error :for={msg <- @errors}><%%= msg %></.error>
-    </VStack>
+    </Column>
     """
   end
+
+  def input(%{type: "SingleChoiceSegmentedButtonRow"} = assigns) do
+    ~LVN"""
+    <Column>
+      <Text :if={@label} template="label"><%%= @label %></Text>
+      <SingleChoiceSegmentedButtonRow id={@id} name={@name} {@rest} value={@value}>
+        <SegmentedButton :for={{name, value} <- @options} selected={value == @value} phx-value={value}>
+          <Text template="label"><%%= name %></Text>
+        </SegmentedButton>
+      </SingleChoiceSegmentedButtonRow>
+      <.error :for={msg <- @errors}><%%= msg %></.error>
+    </Column>
+    """
+  end
+
 
   def input(%{type: "Slider"} = assigns) do
     ~LVN"""
-    <VStack alignment="leading">
-      <LabeledContent>
-        <Text template="label"><%%= @label %></Text>
-        <Slider id={@id} name={@name} value={@value} lowerBound={@min} upperBound={@max} {@rest}><%%= @label %></Slider>
-      </LabeledContent>
+    <Column>
+      <Text :if={@label}><%%= @label %></Text>
+      <Slider id={@id} name={@name} value={@value} minValue={@min} maxValue={@max} {@rest} />
       <.error :for={msg <- @errors}><%%= msg %></.error>
-    </VStack>
-    """
-  end
-
-  def input(%{type: "Stepper"} = assigns) do
-    ~LVN"""
-    <VStack alignment="leading">
-      <LabeledContent>
-        <Text template="label"><%%= @label %></Text>
-        <Stepper id={@id} name={@name} value={@value} {@rest}></Stepper>
-      </LabeledContent>
-      <.error :for={msg <- @errors}><%%= msg %></.error>
-    </VStack>
-    """
-  end
-
-  def input(%{type: "TextEditor"} = assigns) do
-    ~LVN"""
-    <VStack alignment="leading">
-      <LabeledContent>
-        <Text template="label"><%%= @label %></Text>
-        <TextEditor id={@id} name={@name} text={@value} {@rest} />
-      </LabeledContent>
-      <.error :for={msg <- @errors}><%%= msg %></.error>
-    </VStack>
+    </Column>
     """
   end
 
   def input(%{type: "TextField"} = assigns) do
     ~LVN"""
-    <VStack alignment="leading">
-      <TextField id={@id} name={@name} text={@value} prompt={@prompt} {@rest}><%%= @placeholder || @label %></TextField>
+    <Column>
+      <TextField id={@id} name={@name} value={@value} isError={not Enum.empty?(@errors)} {@rest}>
+        <Text :if={@label} template="label"><%%= @label %></Text>
+        <Text :if={@placeholder} template="placeholder"><%%= @placeholder %></Text>
+      </TextField>
       <.error :for={msg <- @errors}><%%= msg %></.error>
-    </VStack>
+    </Column>
     """
   end
 
   def input(%{type: "SecureField"} = assigns) do
     ~LVN"""
-    <VStack alignment="leading">
-      <SecureField id={@id} name={@name} text={@value} prompt={@prompt} {@rest}><%%= @placeholder || @label %></SecureField>
+    <Column>
+      <TextField id={@id} name={@name} value={@value} prompt={@prompt} isError={not Enum.empty?(@errors)} visualTransformation="password" {@rest}>
+        <Text :if={@label} template="label"><%%= @label %></Text>
+        <Text :if={@placeholder} template="placeholder"><%%= @placeholder %></Text>
+      </TextField>
       <.error :for={msg <- @errors}><%%= msg %></.error>
-    </VStack>
+    </Column>
     """
   end
 
-  def input(%{type: "Toggle"} = assigns) do
+  def input(%{type: "Checkbox"} = assigns) do
     ~LVN"""
-    <VStack alignment="leading">
-      <LabeledContent>
-        <Text template="label"><%%= @label %></Text>
-        <Toggle id={@id} name={@name} isOn={Map.get(assigns, :checked, Map.get(assigns, :value))} {@rest}></Toggle>
-      </LabeledContent>
+    <Column>
+      <Row verticalAlignment="CenterVertically" style="wrapContentWidth()">
+        <CheckBox id={@id} name={@name} checked={Map.get(assigns, :checked, Map.get(assigns, :value))} {@rest} />
+        <Text><%%= @label %></Text>
+      </Row>
       <.error :for={msg <- @errors}><%%= msg %></.error>
-    </VStack>
+    </Column>
     """
   end
 
@@ -235,9 +226,9 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
   def error(assigns) do
     ~LVN"""
-    <Group style="font(.caption); foregroundStyle(.red)">
+    <Text textStyle="bodyMedium" color="error">
       <%%= render_slot(@inner_block) %>
-    </Group>
+    </Text>
     """
   end<% end %>
 
@@ -254,21 +245,19 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
   def header(assigns) do
     ~LVN"""
-    <VStack style={[
-      "navigationTitle(:title)",
-      "navigationSubtitle(:subtitle)",
-      "toolbar(content: :toolbar)"
-    ]}>
-      <Text template="title">
-        <%%= render_slot(@inner_block) %>
-      </Text>
-      <Text :if={@subtitle != []} template="subtitle">
-        <%%= render_slot(@subtitle) %>
-      </Text>
-      <ToolbarItemGroup template="toolbar">
+    <TopAppBar>
+      <Column template="title">
+        <Text>
+          <%%= render_slot(@inner_block) %>
+        </Text>
+        <Text :if={@subtitle != []} template="subtitle" textStyle="bodyMedium">
+          <%%= render_slot(@subtitle) %>
+        </Text>
+      </Column>
+      <Row template="action">
         <%%= render_slot(@actions) %>
-      </ToolbarItemGroup>
-    </VStack>
+      </Row>
+    </TopAppBar>
     """
   end
 
@@ -296,17 +285,14 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
   def modal(assigns) do
     ~LVN"""
-    <VStack
-      id={@id}
-      :if={@show}
-      style='sheet(isPresented: attr("presented"), content: :content)'
-      presented={@show}
-      phx-change={@on_cancel}
-    >
-      <VStack template="content">
+    <%%= if @show do %>
+      <ModalBottomSheet
+        id={@id}
+        onDismissRequest={@on_cancel}
+      >
         <%%= render_slot(@inner_block) %>
-      </VStack>
-    </VStack>
+      </ModalBottomSheet>
+    <%% end %>
     """
   end
 
@@ -331,22 +317,11 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
     ~LVN"""
     <%% msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind) %>
-    <VStack
-      :if={msg != nil}
-      style={[
-        "hidden()",
-        ~s[alert(attr("title"), isPresented: attr("presented"), actions: :actions, message: :message)]
-      ]}
-      title={@title}
-      presented={msg != nil}
-      id={@id}
-      {@rest}
-      phx-change="lv:clear-flash"
-      phx-value-key={@kind}
-    >
-      <Text template="message"><%%= msg %></Text>
-      <Button template="actions">Ok</Button>
-    </VStack>
+    <AlertDialog :if={msg != nil} onDismissRequest="lv:clear-flash" {@rest}>
+      <Text template="title"><%%= @title %></Text>
+      <Text><%%= msg %></Text>
+      <Button template="confirm" phx-click="lv:clear-flash" phx-value-key={@kind}>OK</Button>
+    </AlertDialog>
     """
   end
 
@@ -362,10 +337,10 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
   def flash_group(assigns) do
     ~LVN"""
-    <Group id={@id}>
+    <Box id={@id}>
       <.flash kind={:info} title={"Success!"} flash={@flash} />
       <.flash kind={:error} title={"Error!"} flash={@flash} />
-    </Group>
+    </Box>
     """
   end<%= if @live_form? do %>
 
@@ -399,14 +374,11 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
   def simple_form(assigns) do
     ~LVN"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <Form>
-        <%%= render_slot(@inner_block, f) %>
-        <Section>
-          <%%= for action <- @actions do %>
-            <%%= render_slot(action, f) %>
-          <%% end %>
-        </Section>
-      </Form>
+      <%%= render_slot(@inner_block, f) %>
+
+      <%%= for action <- @actions do %>
+        <%%= render_slot(action, f) %>
+      <%% end %>
     </.form>
     """
   end
@@ -428,21 +400,9 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
   def button(%{ type: "submit" } = assigns) do
     ~LVN"""
-    <Section>
-      <LiveSubmitButton style={[
-        "buttonStyle(.borderedProminent)",
-        "controlSize(.large)",
-        "listRowInsets(EdgeInsets())",
-        "listRowBackground(:empty)"
-      ]} {@rest}>
-        <Group style={[
-          "frame(maxWidth: .infinity)",
-          "bold(true)"
-        ]}>
-          <%%= render_slot(@inner_block) %>
-        </Group>
-      </LiveSubmitButton>
-    </Section>
+    <LiveSubmitButton {@rest}>
+      <%%= render_slot(@inner_block) %>
+    </LiveSubmitButton>
     """
   end
 
@@ -454,58 +414,6 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     """
   end<% end %>
 
-  @doc ~S"""
-  Renders a table with generic styling.
-
-  ## Examples
-
-      <.table id="users" rows={@users}>
-        <:col :let={user} label="id"><%%= user.id %></:col>
-        <:col :let={user} label="username"><%%= user.username %></:col>
-      </.table>
-  """
-  @doc type: :component
-
-  attr :id, :string, required: true
-  attr :rows, :list, required: true
-  attr :row_id, :any, default: nil, doc: "the function for generating the row id"
-
-  attr :row_item, :any,
-    default: &Function.identity/1,
-    doc: "the function for mapping each row before calling the :col and :action slots"
-
-  slot :col, required: true do
-    attr :label, :string
-  end
-
-  slot :action, doc: "the slot for showing user actions in the last table column"
-
-  def table(assigns) do
-    ~LVN"""
-    <Table id={@id}>
-      <Group template="columns">
-        <TableColumn :for={col <- @col}><%%= col[:label] %></TableColumn>
-        <TableColumn :if={@action != []} />
-      </Group>
-      <Group template="rows">
-        <TableRow
-          :for={{row, i} <- Enum.with_index(@rows)}
-          id={(@row_id && @row_id.(row)) || i}
-        >
-          <VStack :for={col <- @col}>
-            <%%= render_slot(col, @row_item.(row)) %>
-          </VStack>
-          <HStack :if={@action != []}>
-            <%%= for action <- @action do %>
-              <%%= render_slot(action, @row_item.(row)) %>
-            <%% end %>
-          </HStack>
-        </TableRow>
-      </Group>
-    </Table>
-    """
-  end
-
   @doc """
   Renders a data list.
 
@@ -516,18 +424,20 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
         <:item title="Views"><%%= @post.views %></:item>
       </.list>
   """
+  attr :rest, :global
+
   slot :item, required: true do
     attr :title, :string, required: true
   end
 
   def list(assigns) do
     ~LVN"""
-    <List>
-      <LabeledContent :for={item <- @item}>
-        <Text template="label"><%%= item.title %></Text>
-        <%%= render_slot(item) %>
-      </LabeledContent>
-    </List>
+    <LazyColumn {@rest}>
+      <ListItem :for={item <- @item}>
+        <Text template="headlineContent"><%%= item.title %></Text>
+        <Box style="wrapContentWidth()" template="trailingContent"><%%= render_slot(item) %></Box>
+      </ListItem>
+    </LazyColumn>
     """
   end
 
@@ -546,7 +456,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
   def icon(assigns) do
     ~LVN"""
-    <Image systemName={@name} {@rest} />
+    <Icon imageVector={@name} {@rest} />
     """
   end
 
@@ -601,9 +511,9 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
   def image(assigns) do
     ~LVN"""
     <AsyncImage url={@url} {@rest}>
-      <Group template="phase.empty" :if={@empty != []}>
+      <Box template="loading" :if={@empty != []}>
         <%%= render_slot(@empty) %>
-      </Group>
+      </Box>
       <.image_success slot={@success} />
       <.image_failure slot={@failure} />
     </AsyncImage>
@@ -612,29 +522,29 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
   defp image_success(%{ slot: [%{ inner_block: nil }] } = assigns) do
     ~LVN"""
-    <AsyncImage image template="phase.success" :for={slot <- @slot} class={Map.get(slot, :class)} {%{ style: Map.get(slot, :style) }} />
+    <AsyncImage image :for={slot <- @slot} class={Map.get(slot, :class)} {%{ style: Map.get(slot, :style) }} />
     """
   end
 
   defp image_success(assigns) do
     ~LVN"""
-    <Group template="phase.success" :if={@slot != []}>
+    <Box :if={@slot != []}>
       <%%= render_slot(@slot) %>
-    </Group>
+    </Box>
     """
   end
 
   defp image_failure(%{ slot: [%{ inner_block: nil }] } = assigns) do
     ~LVN"""
-    <AsyncImage error template="phase.failure" :for={slot <- @slot} class={Map.get(slot, :class)} {%{ style: Map.get(slot, :style) }} />
+    <AsyncImage error template="error" :for={slot <- @slot} class={Map.get(slot, :class)} {%{ style: Map.get(slot, :style) }} />
     """
   end
 
   defp image_failure(assigns) do
     ~LVN"""
-    <Group template="phase.failure" :if={@slot != []}>
+    <Box template="error" :if={@slot != []}>
       <%%= render_slot(@slot) %>
-    </Group>
+    </Box>
     """
   end<%= if @live_form? do %>
 
@@ -663,9 +573,9 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     # uncommenting and adjusting the following code:
 
     # if count = opts[:count] do
-    #   Gettext.dngettext(<%= inspect context.web_module %>.Gettext, "errors", msg, msg, count, opts)
+    #   Gettext.dngettext(<%%= inspect context.web_module %>.Gettext, "errors", msg, msg, count, opts)
     # else
-    #   Gettext.dgettext(<%= inspect context.web_module %>.Gettext, "errors", msg, opts)
+    #   Gettext.dgettext(<%%= inspect context.web_module %>.Gettext, "errors", msg, opts)
     # end
 
     Enum.reduce(opts, msg, fn {key, value}, acc ->
