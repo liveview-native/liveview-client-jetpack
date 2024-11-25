@@ -4,12 +4,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableMap
 import org.phoenixframework.liveview.LiveViewJetpack
+import org.phoenixframework.liveview.constants.Attrs.attrValue
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrClass
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxClick
 import org.phoenixframework.liveview.foundation.data.constants.CoreAttrs.attrPhxValue
@@ -37,7 +39,7 @@ abstract class ComposableView<CP : ComposableProperties>(protected open val prop
     // This function is used to merge/join "on changed" values with the component value(s)
     // (phx-value and phx-value-*). For example, when a checkbox changes its checked state, the new
     // checked value (true/false) and the checkbox values (phx-value/phx-value-*) are sent to server
-    protected fun mergeValueWithPhxValue(key: String, value: Any): Any {
+    protected fun mergeValueWithPhxValue(key: String, value: Any?): Any? {
         val currentPhxValue = props.commonProps.phxValue
         return if (currentPhxValue == null) {
             if (key == KEY_PHX_VALUE) {
@@ -63,10 +65,17 @@ abstract class ComposableView<CP : ComposableProperties>(protected open val prop
         }
     }
 
+    protected fun pushOnChangeEvent(pushEvent: PushEvent, event: String?, value: Any?) {
+        if (!event.isNullOrEmpty()) {
+            pushEvent.invoke(EVENT_TYPE_CHANGE, event, value, null)
+        }
+    }
+
     companion object {
         const val EVENT_TYPE_CHANGE = "change"
         const val EVENT_TYPE_CLICK = "click"
         const val EVENT_TYPE_DOUBLE_CLICK = "double-click"
+        const val EVENT_TYPE_FORM = "form"
         const val EVENT_TYPE_FOCUS_CHANGED = "focus-changed"
         const val EVENT_TYPE_FOCUS_EVENT = "focus-event"
         const val EVENT_TYPE_KEY_UP = "keyup"
@@ -105,7 +114,7 @@ interface ComposableProperties {
 @Stable
 data class CommonComposableProperties(
     val modifier: Modifier = Modifier,
-    val value: ImmutableMap<String, Any> = persistentMapOf()
+    val value: ImmutableMap<String, Any?> = persistentMapOf()
 ) {
     val phxValue: Any?
         get() = if (value.isEmpty())
@@ -163,7 +172,9 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> {
         return when (attribute.name) {
             attrClass -> setClassFromAttr(commonProps, attribute.value, scope, pushEvent)
             attrPhxClick -> setPhxClickFromAttr(commonProps, attribute.value, pushEvent)
-            attrPhxValue -> setPhxValueFromAttr(commonProps, attrPhxValue, attribute.value)
+            attrPhxValue, attrValue ->
+                setPhxValueFromAttr(commonProps, attrPhxValue, attribute.value)
+
             attrStyle -> setStyleFromAttr(commonProps, attribute.value, scope, pushEvent)
             else ->
                 if (attribute.name.startsWith(attrPhxValueNamed)) {
@@ -275,4 +286,15 @@ abstract class ComposableViewFactory<CV : ComposableView<*>> {
                 }
         )
     }
+}
+
+/**
+ * This local composition allows children nodes to inform their values to parent nodes. For instance,
+ * an input component can notify its value to the form where the input is contained.
+ * See `LiveForm` component for an example of usage.
+ */
+val LocalParentDataHolder = compositionLocalOf<ParentViewDataHolder?> { null }
+
+interface ParentViewDataHolder {
+    fun setValue(node: ComposableTreeNode?, value: Any?)
 }

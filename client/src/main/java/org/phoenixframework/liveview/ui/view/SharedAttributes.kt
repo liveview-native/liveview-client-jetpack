@@ -91,6 +91,7 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextGeometricTransform
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.text.style.TextMotion
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.TextUnit
@@ -115,6 +116,7 @@ import org.phoenixframework.liveview.constants.Attrs.attrFontSize
 import org.phoenixframework.liveview.constants.Attrs.attrFontStyle
 import org.phoenixframework.liveview.constants.Attrs.attrFontSynthesis
 import org.phoenixframework.liveview.constants.Attrs.attrFontWeight
+import org.phoenixframework.liveview.constants.Attrs.attrHeight
 import org.phoenixframework.liveview.constants.Attrs.attrHyphens
 import org.phoenixframework.liveview.constants.Attrs.attrJoin
 import org.phoenixframework.liveview.constants.Attrs.attrLeft
@@ -289,6 +291,19 @@ fun contentScaleFromString(
     ContentScaleValues.inside -> ContentScale.Inside
     ContentScaleValues.none -> ContentScale.None
     else -> defaultValue
+}
+
+fun dpSizeFromString(string: String): DpSize? {
+    return try {
+        JsonParser.parse<Map<String, String>>(string)?.let { map ->
+            DpSize(
+                height = map[attrHeight].toString().toInt().dp,
+                width = map[attrWidth].toString().toInt().dp,
+            )
+        }
+    } catch (e: Exception) {
+        null
+    }
 }
 
 fun drawStyleFromString(string: String): DrawStyle {

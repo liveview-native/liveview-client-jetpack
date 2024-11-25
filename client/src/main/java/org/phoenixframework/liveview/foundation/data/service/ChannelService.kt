@@ -4,7 +4,6 @@ import android.util.Log
 import org.phoenixframework.Channel
 import org.phoenixframework.Message
 import org.phoenixframework.Payload
-import org.phoenixframework.liveview.foundation.data.repository.PhoenixLiveViewPayload
 
 class ChannelService(
     private val socketService: SocketService
@@ -13,12 +12,11 @@ class ChannelService(
     private var liveReloadChannel: Channel? = null
 
     fun joinPhoenixChannel(
-        phxLiveViewPayload: PhoenixLiveViewPayload,
         baseHttpUrl: String,
         redirect: Boolean,
         messageListener: (message: Message) -> Unit
     ) {
-        channel = socketService.createChannel(phxLiveViewPayload, baseHttpUrl, redirect)?.apply {
+        channel = socketService.createChannel(baseHttpUrl, redirect)?.apply {
             join()
                 .receive(JOIN_STATUS_OK) { message: Message ->
                     Log.d(TAG, "joinPhoenixChannel::ok")
@@ -91,6 +89,11 @@ class ChannelService(
         private const val TAG = "ChannelService"
 
         const val MESSAGE_EVENT_DIFF = "diff"
+        const val MESSAGE_ERROR_REASON = "reason"
+
+        const val ERROR_REASON_STALE = "stale"
+        const val ERROR_REASON_UNAUTHORIZED = "unauthorized"
+
         private const val MESSAGE_EVENT_PHX_REPLY = "phx_reply"
         private const val MESSAGE_EVENT_CLOSE = "close"
         private const val MESSAGE_EVENT_ASSETS_CHANGE = "assets_change"

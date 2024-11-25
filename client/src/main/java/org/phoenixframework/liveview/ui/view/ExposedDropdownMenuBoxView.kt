@@ -5,13 +5,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.constants.Attrs.attrExpanded
+import org.phoenixframework.liveview.constants.Attrs.attrPhxValue
+import org.phoenixframework.liveview.constants.Attrs.attrValue
 import org.phoenixframework.liveview.constants.ComposableTypes.exposedDropdownMenu
 import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.domain.ComposableTreeNode
@@ -19,6 +24,7 @@ import org.phoenixframework.liveview.foundation.ui.base.CommonComposableProperti
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
+import org.phoenixframework.liveview.foundation.ui.base.LocalParentDataHolder
 import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 import org.phoenixframework.liveview.ui.phx_components.PhxLiveView
 
@@ -63,6 +69,7 @@ internal class ExposedDropdownMenuBoxView private constructor(props: Properties)
         var isExpanded by remember(props) {
             mutableStateOf(props.expanded)
         }
+        val parentDataHolder = LocalParentDataHolder.current
         ExposedDropdownMenuBox(
             expanded = isExpanded,
             onExpandedChange = {
@@ -79,18 +86,32 @@ internal class ExposedDropdownMenuBoxView private constructor(props: Properties)
                     }
                 )
             }
-            composableNode?.children?.forEach {
-                PhxLiveView(
-                    composableNode = it,
-                    pushEvent = { type, event, value, target ->
-                        isExpanded = false
-                        pushEvent(type, event, value, target)
-                    },
-                    parentNode = composableNode,
-                    paddingValues = null,
-                    scope = scopeWrapper
-                )
+            val onItemSelected = { itemValue: Any? ->
+                val newValue = mergeValueWithPhxValue(KEY_PHX_VALUE, itemValue)
+                parentDataHolder?.setValue(composableNode, newValue)
+                isExpanded = false
             }
+            CompositionLocalProvider(
+                LocalDropdownMenuBoxOnItemSelectedAction provides onItemSelected
+            ) {
+                composableNode?.children?.forEach {
+                    PhxLiveView(
+                        composableNode = it,
+                        pushEvent = { type, event, value, target ->
+                            isExpanded = false
+                            pushEvent(type, event, value, target)
+                        },
+                        parentNode = composableNode,
+                        paddingValues = null,
+                        scope = scopeWrapper
+                    )
+                }
+            }
+        }
+
+        LaunchedEffect(composableNode?.id) {
+            val value = mergeValueWithPhxValue(KEY_PHX_VALUE, props.commonProps.phxValue)
+            parentDataHolder?.setValue(composableNode, value)
         }
     }
 
@@ -119,6 +140,14 @@ internal class ExposedDropdownMenuBoxView private constructor(props: Properties)
             attributes.fold(Properties()) { props, attribute ->
                 when (attribute.name) {
                     attrExpanded -> expanded(props, attribute.value)
+                    attrValue -> props.copy(
+                        commonProps = super.setPhxValueFromAttr(
+                            props.commonProps,
+                            attrPhxValue,
+                            attribute.value
+                        )
+                    )
+
                     else -> props.copy(
                         commonProps = handleCommonAttributes(
                             props.commonProps,
@@ -148,3 +177,10 @@ internal data class ExposedDropdownMenuBoxScopeWrapper(
     val isExpanded: Boolean,
     val onDismissRequest: () -> Unit
 )
+
+/**
+ * This composition local allows the DropdownMenuItems notify when the value is selected.
+ */
+val LocalDropdownMenuBoxOnItemSelectedAction = compositionLocalOf<(value: Any?) -> Unit> {
+    { _ -> }
+}

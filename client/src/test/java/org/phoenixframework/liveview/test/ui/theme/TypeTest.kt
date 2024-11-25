@@ -1,5 +1,7 @@
 package org.phoenixframework.liveview.test.ui.theme
 
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -15,6 +17,7 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextGeometricTransform
 import androidx.compose.ui.text.style.TextIndent
 import androidx.compose.ui.text.style.TextMotion
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
@@ -58,6 +61,7 @@ import org.phoenixframework.liveview.constants.LineBreakValues
 import org.phoenixframework.liveview.constants.LineBreakValues.paragraph
 import org.phoenixframework.liveview.constants.LineHeightStyleAlignmentValues
 import org.phoenixframework.liveview.constants.LineHeightStyleTrimValues
+import org.phoenixframework.liveview.constants.ShapeValues
 import org.phoenixframework.liveview.constants.SystemColorValues.Blue
 import org.phoenixframework.liveview.constants.SystemColorValues.Yellow
 import org.phoenixframework.liveview.constants.TextAlignValues
@@ -74,6 +78,7 @@ import org.phoenixframework.liveview.ui.theme.fontSynthesisFromString
 import org.phoenixframework.liveview.ui.theme.fontWeightFromString
 import org.phoenixframework.liveview.ui.theme.hyphensFromString
 import org.phoenixframework.liveview.ui.theme.lineBreakFromString
+import org.phoenixframework.liveview.ui.theme.shapeFromString
 import org.phoenixframework.liveview.ui.theme.textAlignFromString
 import org.phoenixframework.liveview.ui.theme.textDecorationFromString
 import org.phoenixframework.liveview.ui.theme.textDirectionFromString
@@ -145,6 +150,17 @@ class TypeTest {
         assertEquals(lineBreakFromString(LineBreakValues.paragraph), LineBreak.Paragraph)
         assertEquals(lineBreakFromString(LineBreakValues.heading), LineBreak.Heading)
         assertEquals(lineBreakFromString(LineBreakValues.simple), LineBreak.Simple)
+    }
+
+    @Test
+    fun shapeFromStringTest() {
+        assertEquals(shapeFromString(ShapeValues.circle, CircleShape), CircleShape)
+        assertEquals(shapeFromString(ShapeValues.rectangle, CircleShape), RoundedCornerShape(0.dp))
+        assertEquals(
+            shapeFromString("${ShapeValues.roundedCorner}(1, 2, 3, 4)", CircleShape),
+            RoundedCornerShape(1.dp, 2.dp, 3.dp, 4.dp)
+        )
+        assertEquals(shapeFromString("8", CircleShape), RoundedCornerShape(8.dp))
     }
 
     @Test

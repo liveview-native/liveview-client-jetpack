@@ -1,3 +1,18 @@
+File.read!("priv/templates/lvn.jetpack.gen/core_components.ex")
+|> EEx.eval_string([
+  context: %{
+    web_module: LiveViewNativeTest,
+    module_suffix: Jetpack
+  },
+  assigns: %{
+    live_form?: true,
+    gettext: true,
+    version: Application.spec(:live_view_native_jetpack)[:vsn],
+    test?: true
+  }
+])
+|> Code.eval_string()
+
 {:ok, _} = LiveViewNativeTest.Endpoint.start_link()
 
 [MockSheet]

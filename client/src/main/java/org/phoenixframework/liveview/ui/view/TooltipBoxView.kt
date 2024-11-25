@@ -65,9 +65,16 @@ internal class TooltipBoxView private constructor(props: Properties) :
         val content = remember(composableNode?.children) {
             composableNode?.children?.find { it.node?.template == templateContent }
         }
-        val positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(
-            spacingBetweenTooltipAndAnchor = spacingBetweenTooltipAndAnchor
-        )
+        val positionProvider =
+            if (tooltip?.node?.tag == richTooltip) {
+                TooltipDefaults.rememberRichTooltipPositionProvider(
+                    spacingBetweenTooltipAndAnchor = spacingBetweenTooltipAndAnchor
+                )
+            } else {
+                TooltipDefaults.rememberPlainTooltipPositionProvider(
+                    spacingBetweenTooltipAndAnchor = spacingBetweenTooltipAndAnchor
+                )
+            }
         val state = rememberTooltipState(
             initialIsVisible = isVisible,
             isPersistent = isPersistent,

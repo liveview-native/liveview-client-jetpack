@@ -15,7 +15,6 @@ import org.phoenixframework.liveview.foundation.data.core.CoreAttribute
 import org.phoenixframework.liveview.foundation.ui.base.ComposableProperties
 import org.phoenixframework.liveview.foundation.ui.base.ComposableView
 import org.phoenixframework.liveview.foundation.ui.base.ComposableViewFactory
-import org.phoenixframework.liveview.foundation.ui.base.PushEvent
 
 /**
  * Common class for ComposableViews which the user can change the component value to be displayed.
@@ -34,10 +33,6 @@ internal abstract class ChangeableView<T : Any, CP : IChangeableProperties>(prop
         .throttleLatest(props.changeableProps.throttle)
 
     protected fun Flow<T>.onChangeable(): Flow<T> = onTypedChangeable()
-
-    protected fun pushOnChangeEvent(pushEvent: PushEvent, event: String, value: Any?) {
-        pushEvent.invoke(EVENT_TYPE_CHANGE, event, value, null)
-    }
 
     internal abstract class Factory : ComposableViewFactory<ChangeableView<*, *>>() {
 

@@ -72,6 +72,7 @@ defmodule Mix.Tasks.Lvn.Jetpack.Gen do
       assigns: %{
         app_namespace: inspect(context.base_module),
         gettext: true,
+        test?: false,
         live_form?: live_form_opt? && live_form_app?
       }
     ]

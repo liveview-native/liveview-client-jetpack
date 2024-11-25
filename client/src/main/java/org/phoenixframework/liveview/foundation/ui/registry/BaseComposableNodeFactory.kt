@@ -21,6 +21,10 @@ abstract class BaseComposableNodeFactory(
         )
     }
 
+    fun unregisterComponent(tag: String) {
+        composableRegistry.unregisterComponent(tag)
+    }
+
     /**
      * Creates a `ComposableTreeNode` object based on the input `Element` object.
      *

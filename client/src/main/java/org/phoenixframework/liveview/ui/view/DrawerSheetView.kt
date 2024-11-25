@@ -69,9 +69,9 @@ internal class DrawerSheetView private constructor(props: Properties) :
                 ModalDrawerSheet(
                     modifier = props.commonProps.modifier,
                     drawerShape = drawerShape ?: DrawerDefaults.shape,
-                    drawerContainerColor = containerColor ?: DrawerDefaults.containerColor,
+                    drawerContainerColor = containerColor ?: DrawerDefaults.modalContainerColor,
                     drawerContentColor = contentColor ?: contentColorFor(
-                        containerColor ?: DrawerDefaults.containerColor
+                        containerColor ?: DrawerDefaults.modalContainerColor
                     ),
                     drawerTonalElevation = tonalElevation ?: DrawerDefaults.ModalDrawerElevation,
                     windowInsets = windowsInsets ?: DrawerDefaults.windowInsets,
@@ -86,9 +86,9 @@ internal class DrawerSheetView private constructor(props: Properties) :
                 DismissibleDrawerSheet(
                     modifier = props.commonProps.modifier,
                     drawerShape = drawerShape ?: RectangleShape,
-                    drawerContainerColor = containerColor ?: DrawerDefaults.containerColor,
+                    drawerContainerColor = containerColor ?: DrawerDefaults.standardContainerColor,
                     drawerContentColor = contentColor ?: contentColorFor(
-                        containerColor ?: DrawerDefaults.containerColor
+                        containerColor ?: DrawerDefaults.standardContainerColor
                     ),
                     drawerTonalElevation = tonalElevation
                         ?: DrawerDefaults.DismissibleDrawerElevation,
@@ -104,9 +104,9 @@ internal class DrawerSheetView private constructor(props: Properties) :
                 PermanentDrawerSheet(
                     modifier = props.commonProps.modifier,
                     drawerShape = drawerShape ?: RectangleShape,
-                    drawerContainerColor = containerColor ?: DrawerDefaults.containerColor,
+                    drawerContainerColor = containerColor ?: DrawerDefaults.standardContainerColor,
                     drawerContentColor = contentColor ?: contentColorFor(
-                        containerColor ?: DrawerDefaults.containerColor
+                        containerColor ?: DrawerDefaults.standardContainerColor
                     ),
                     drawerTonalElevation = tonalElevation
                         ?: DrawerDefaults.PermanentDrawerElevation,

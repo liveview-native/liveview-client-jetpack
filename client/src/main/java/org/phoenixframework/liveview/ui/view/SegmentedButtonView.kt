@@ -90,13 +90,13 @@ internal class SegmentedButtonView private constructor(props: Properties) :
         )
         when (scope) {
             is SingleChoiceSegmentedButtonRowScope -> {
+                val onItemSelected = LocalSegmentedButtonViewSelectedAction.current
                 scope.SegmentedButton(
                     selected = selected,
-                    onClick = onClickFromString(
-                        pushEvent,
-                        onClick,
-                        props.commonProps.phxValue
-                    ),
+                    onClick = {
+                        onClickFromString(pushEvent, onClick, props.commonProps.phxValue).invoke()
+                        onItemSelected(props.commonProps.phxValue)
+                    },
                     shape = shape,
                     modifier = props.commonProps.modifier,
                     enabled = enabled,
