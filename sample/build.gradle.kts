@@ -44,5 +44,7 @@ dependencies {
     implementation(libs.com.google.android.material)
     implementation(project(Constants.moduleClient))
     implementation(project(Constants.moduleClientAddons))
-    implementation(project(Constants.moduleLiveForm))
+    implementation(libs.live.form) {
+        isChanging = true
+    }
 }
