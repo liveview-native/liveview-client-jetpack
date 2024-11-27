@@ -36,7 +36,7 @@ class ThemeHolder : BaseThemeHolder() {
     private val _themeData = MutableStateFlow<ThemeData?>(null)
     override val themeData = _themeData.asStateFlow()
 
-    override fun isEmpty() = themeData.value == null
+    override var mustLoadThemeFile: Boolean = true
 
     override fun updateThemeData(map: Map<String, Any>?) {
         if (map != null) {
