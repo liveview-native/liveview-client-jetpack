@@ -2,24 +2,17 @@ package org.phoenixframework.liveview.foundation.ui.base
 
 import android.content.Context
 import androidx.compose.foundation.shape.CornerBasedShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.StateFlow
 
 abstract class BaseThemeHolder {
 
     abstract val themeData: StateFlow<ThemeData?>
-    abstract fun isEmpty(): Boolean
+    abstract var mustLoadThemeFile: Boolean
 
     abstract fun loadDefaultTheme(context: Context, darkTheme: Boolean, dynamicColor: Boolean)
     abstract fun updateThemeData(map: Map<String, Any>?)

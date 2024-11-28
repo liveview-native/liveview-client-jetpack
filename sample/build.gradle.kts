@@ -18,7 +18,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -44,5 +47,8 @@ dependencies {
     implementation(libs.com.google.android.material)
     implementation(project(Constants.moduleClient))
     implementation(project(Constants.moduleClientAddons))
-    implementation(project(Constants.moduleLiveForm))
+    implementation(libs.live.form) {
+        isChanging = true
+        exclude(group = Constants.publishGroupId, module = Constants.publishArtifactClientId)
+    }
 }

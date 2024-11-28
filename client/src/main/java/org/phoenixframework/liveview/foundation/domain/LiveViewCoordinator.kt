@@ -85,8 +85,9 @@ class LiveViewCoordinator(
                         is SocketService.Events.Opened -> {
                             try {
                                 reconnectionAttempts = 0
-                                if (themeHolder.isEmpty()) {
+                                if (themeHolder.mustLoadThemeFile) {
                                     themeHolder.updateThemeData(repository.loadThemeData(httpBaseUrl))
+                                    themeHolder.mustLoadThemeFile = false
                                 }
                                 if (modifierParser.isEmpty) {
                                     repository.loadStyleData(httpBaseUrl)
@@ -231,6 +232,7 @@ class LiveViewCoordinator(
                 .buffer()
                 .collect {
                     Log.w(TAG, "-----------Reloading-----------")
+                    themeHolder.mustLoadThemeFile = true
                     repository.leaveReloadChannel()
                     repository.disconnectFromReloadSocket()
                     repository.leaveChannel()
