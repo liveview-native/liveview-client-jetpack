@@ -122,6 +122,8 @@ import org.phoenixframework.liveview.ui.view.ExposedDropdownMenuBoxScopeWrapper
 
 class ModifiersParser : BaseModifiersParser() {
 
+    override var mustLoadModifiersFile: Boolean = true
+
     @SuppressLint("ModifierFactoryExtensionFunction")
     override fun handleModifier(
         modifierId: String,

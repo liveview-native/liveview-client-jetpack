@@ -18,6 +18,8 @@ import org.phoenixframework.liveview.stylesheet.ElixirParser.TupleExprContext
 abstract class BaseModifiersParser {
     private val modifiersCacheTable = mutableMapOf<String, List<Modifier>>()
 
+    abstract var mustLoadModifiersFile: Boolean
+
     val isEmpty: Boolean
         get() = modifiersCacheTable.isEmpty()
 
