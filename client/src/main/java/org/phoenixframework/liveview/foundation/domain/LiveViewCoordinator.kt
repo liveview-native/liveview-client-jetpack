@@ -89,7 +89,7 @@ class LiveViewCoordinator(
                                     themeHolder.updateThemeData(repository.loadThemeData(httpBaseUrl))
                                     themeHolder.mustLoadThemeFile = false
                                 }
-                                if (modifierParser.isEmpty) {
+                                if (modifierParser.mustLoadModifiersFile) {
                                     repository.loadStyleData(httpBaseUrl)
                                         ?.let { styleFileContentAsString ->
                                             modifierParser.fromStyleFile(
@@ -97,6 +97,7 @@ class LiveViewCoordinator(
                                                 null,
                                             )
                                         }
+                                    modifierParser.mustLoadModifiersFile = false
                                 }
                                 joinLiveViewChannel(redirect)
                                 if (event.liveReloadEnabled) {
@@ -233,6 +234,7 @@ class LiveViewCoordinator(
                 .collect {
                     Log.w(TAG, "-----------Reloading-----------")
                     themeHolder.mustLoadThemeFile = true
+                    modifierParser.mustLoadModifiersFile = true
                     repository.leaveReloadChannel()
                     repository.disconnectFromReloadSocket()
                     repository.leaveChannel()
