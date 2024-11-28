@@ -101,22 +101,24 @@ class ThemeHolder : BaseThemeHolder() {
     }
 
     private fun shapesFromThemeData(map: Map<String, Any>): Shapes {
+        val shapeData = (map["shapes"] as? Map<String, Any>) ?: emptyMap()
         return Shapes(
-            extraSmall = map["extraSmall"]?.let { themeShapeFromString(it.toString()) }
+            extraSmall = shapeData["extraSmall"]?.let { themeShapeFromString(it.toString()) }
                 ?: defaultShapes.extraSmall,
-            small = map["small"]?.let { themeShapeFromString(it.toString()) }
+            small = shapeData["small"]?.let { themeShapeFromString(it.toString()) }
                 ?: defaultShapes.small,
-            medium = map["medium"]?.let { themeShapeFromString(it.toString()) }
+            medium = shapeData["medium"]?.let { themeShapeFromString(it.toString()) }
                 ?: defaultShapes.medium,
-            large = map["large"]?.let { themeShapeFromString(it.toString()) }
+            large = shapeData["large"]?.let { themeShapeFromString(it.toString()) }
                 ?: defaultShapes.large,
-            extraLarge = map["extraLarge"]?.let { themeShapeFromString(it.toString()) }
+            extraLarge = shapeData["extraLarge"]?.let { themeShapeFromString(it.toString()) }
                 ?: defaultShapes.extraLarge,
         )
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun typographyFromThemeData(fontData: Map<String, Any>): Typography {
+    private fun typographyFromThemeData(map: Map<String, Any>): Typography {
+        val fontData = (map["typography"] as? Map<String, Any>) ?: emptyMap()
         return Typography(
             displayLarge = fontData["displayLarge"]?.let { textStyleFromData(it as Map<String, Any>) }
                 ?: defaultTypography.displayLarge,
