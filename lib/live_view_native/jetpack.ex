@@ -5,7 +5,8 @@ defmodule LiveViewNative.Jetpack do
     component: LiveViewNative.Jetpack.Component,
     module_suffix: :Jetpack,
     template_engine: LiveViewNative.Engine,
-    stylesheet_rules_parser: LiveViewNative.Jetpack.RulesParser
+    stylesheet_rules_parser: LiveViewNative.Jetpack.RulesParser,
+    client: LiveViewNative.Jetpack.Client
 
   def normalize_os_version(os_version),
     do: normalize_version(os_version)

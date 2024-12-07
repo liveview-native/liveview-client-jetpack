@@ -2,7 +2,6 @@ defmodule LiveViewNative.Jetpack.TemplateRenderTest do
   use ExUnit.Case, async: false
 
   import Phoenix.ConnTest
-  import Phoenix.LiveViewTest
   import LiveViewNativeTest
 
   @endpoint LiveViewNativeTest.Endpoint
@@ -12,14 +11,14 @@ defmodule LiveViewNative.Jetpack.TemplateRenderTest do
   end
 
   test "can render the jetpack format", %{conn: conn} do
-    {:ok, lv, _body} = native(conn, "/template", :jetpack)
+    {:ok, lv, _body} = live(conn, "/template", _format: :jetpack)
 
-    assert lv |> element("text") |> render() =~ "Template Jetpack Render 100"
+    assert lv |> element("Text") |> render() =~ "Template Jetpack Render 100"
   end
 
   test "can render the jetpack format with watch target", %{conn: conn} do
-    {:ok, lv, _body} = native(conn, "/template", :jetpack, %{"target" => "watch"})
+    {:ok, lv, _body} = live(conn, "/template", _format: :jetpack, _interface: %{"target" => "watch"})
 
-    assert lv |> element("text") |> render() =~ "Watch Target Template Jetpack Render 100"
+    assert lv |> element("Text") |> render() =~ "Watch Target Template Jetpack Render 100"
   end
 end

@@ -10,13 +10,13 @@ defmodule MockSheet do
 
   "button-" <> style do
     # this is also a comment that isn't included in the output
-    buttonStyle(.<%= style %>)
+    buttonStyle(.{style})
   end
   """
 
   def class("color-" <> color_name) do
     ~RULES"""
-    color(.<%= color_name %>)
+    color(.{color_name})
     """
   end
 end
