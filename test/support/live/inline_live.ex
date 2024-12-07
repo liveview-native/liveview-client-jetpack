@@ -5,13 +5,13 @@ defmodule LiveViewNativeTest.Jetpack.InlineLive.Jetpack do
 
   def render(assigns, %{"target" => "watch"}) do
     ~LVN"""
-    <Text>Watch Target Inline Jetpack Render <%= @count %></Text>
+    <Text>Watch Target Inline Jetpack Render {@count}</Text>
     """
   end
 
   def render(assigns, _interface) do
     ~LVN"""
-    <Text>Inline Jetpack Render <%= @count %></Text>
+    <Text>Inline Jetpack Render {@count}</Text>
     """
   end
 end

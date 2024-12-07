@@ -113,9 +113,9 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     ~LVN"""
     <Column>
       <DatePicker id={@id} name={@name} initialSelectedDateMillis={@value} {@rest} >
-        <Text :if={@label} template="title"><%%= @label %></Text>
+        <Text :if={@label} template="title">{@label}</Text>
       </DatePicker>
-      <.error :for={msg <- @errors}><%%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </Column>
     """
   end
@@ -131,9 +131,9 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     ~LVN"""
     <Column>
       <DateRangePicker id={@id} name={@name} initialSelectedStartDateMillis={@start_date} initialSelectedEndDateMillis={@end_date}  {@rest} >
-        <Text :if={@label} template="title"><%%= @label %></Text>
+        <Text :if={@label} template="title">{@label}</Text>
       </DateRangePicker>
-      <.error :for={msg <- @errors}><%%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </Column>
     """
   end
@@ -143,16 +143,16 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     <Column>
       <ExposedDropdownMenuBox id={@id} name={@name} {@rest} value={@value}>
         <TextField value={List.keyfind(@options, @value, 1, {"", ""}) |> elem(0)} readOnly="true" style="menuAnchor()" >
-          <Text :if={@label} template="label"><%%= @label %></Text>
-          <Text :if={@placeholder} template="placeholder"><%%= @placeholder %></Text>
+          <Text :if={@label} template="label">{@label}</Text>
+          <Text :if={@placeholder} template="placeholder">{@placeholder}</Text>
         </TextField>
         <ExposedDropdownMenu>
           <DropdownMenuItem :for={{name, value} <- @options} phx-value={value}>
-            <Text><%%= name %></Text>
+            <Text>{name}</Text>
           </DropdownMenuItem>
         </ExposedDropdownMenu>
       </ExposedDropdownMenuBox>
-      <.error :for={msg <- @errors}><%%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </Column>
     """
   end
@@ -160,13 +160,13 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
   def input(%{type: "SingleChoiceSegmentedButtonRow"} = assigns) do
     ~LVN"""
     <Column>
-      <Text :if={@label} template="label"><%%= @label %></Text>
+      <Text :if={@label} template="label">{@label}</Text>
       <SingleChoiceSegmentedButtonRow id={@id} name={@name} {@rest} value={@value}>
         <SegmentedButton :for={{name, value} <- @options} selected={value == @value} phx-value={value}>
-          <Text template="label"><%%= name %></Text>
+          <Text template="label">{name}</Text>
         </SegmentedButton>
       </SingleChoiceSegmentedButtonRow>
-      <.error :for={msg <- @errors}><%%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </Column>
     """
   end
@@ -175,9 +175,9 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
   def input(%{type: "Slider"} = assigns) do
     ~LVN"""
     <Column>
-      <Text :if={@label}><%%= @label %></Text>
+      <Text :if={@label}>{@label}</Text>
       <Slider id={@id} name={@name} value={@value} minValue={@min} maxValue={@max} {@rest} />
-      <.error :for={msg <- @errors}><%%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </Column>
     """
   end
@@ -186,10 +186,10 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     ~LVN"""
     <Column>
       <TextField id={@id} name={@name} value={@value} isError={not Enum.empty?(@errors)} {@rest}>
-        <Text :if={@label} template="label"><%%= @label %></Text>
-        <Text :if={@placeholder} template="placeholder"><%%= @placeholder %></Text>
+        <Text :if={@label} template="label">{@label}</Text>
+        <Text :if={@placeholder} template="placeholder">{@placeholder}</Text>
       </TextField>
-      <.error :for={msg <- @errors}><%%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </Column>
     """
   end
@@ -198,10 +198,10 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     ~LVN"""
     <Column>
       <TextField id={@id} name={@name} value={@value} prompt={@prompt} isError={not Enum.empty?(@errors)} visualTransformation="password" {@rest}>
-        <Text :if={@label} template="label"><%%= @label %></Text>
-        <Text :if={@placeholder} template="placeholder"><%%= @placeholder %></Text>
+        <Text :if={@label} template="label">{@label}</Text>
+        <Text :if={@placeholder} template="placeholder">{@placeholder}</Text>
       </TextField>
-      <.error :for={msg <- @errors}><%%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </Column>
     """
   end
@@ -211,9 +211,9 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     <Column>
       <Row verticalAlignment="CenterVertically" style="wrapContentWidth()">
         <CheckBox id={@id} name={@name} checked={Map.get(assigns, :checked, Map.get(assigns, :value))} {@rest} />
-        <Text><%%= @label %></Text>
+        <Text>{@label}</Text>
       </Row>
-      <.error :for={msg <- @errors}><%%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </Column>
     """
   end
@@ -318,8 +318,8 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     ~LVN"""
     <%% msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind) %>
     <AlertDialog :if={msg != nil} onDismissRequest="lv:clear-flash" {@rest}>
-      <Text template="title"><%%= @title %></Text>
-      <Text><%%= msg %></Text>
+      <Text template="title">{@title}</Text>
+      <Text>{msg}</Text>
       <Button template="confirm" phx-click="lv:clear-flash" phx-value-key={@kind}>OK</Button>
     </AlertDialog>
     """

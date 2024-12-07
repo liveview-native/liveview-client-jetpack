@@ -19,7 +19,7 @@ config :mime, :types, %{
   "text/jetpack" => ["jetpack"]
 }
 
-config :live_view_native_test,
+config :live_view_native_test_endpoint,
   formats: [:jetpack],
   otp_app: :live_view_native_jetpack,
   routes: [
@@ -33,7 +33,7 @@ config :live_view_native_stylesheet,
   content: [
     jetpack: [
       "test/**/*.*"
-      
+
     ]
   ],
   output: "priv/static/assets"

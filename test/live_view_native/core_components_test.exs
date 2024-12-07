@@ -347,7 +347,7 @@ defmodule LiveViewNative.Jetpack.CoreComponentsTest do
       template = ~LVN"""
       <.list>
         <:item :for={item <- [%{title: "Foo"}, %{title: "Bar"}]} title={item.title}>
-          <Text><%= item.title %></Text>
+          <Text>{item.title}</Text>
         </:item>
       </.list>
       """

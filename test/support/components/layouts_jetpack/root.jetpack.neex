@@ -1,2 +1,2 @@
 <.csrf_token />
-<%= @inner_content %>
+{@inner_content}

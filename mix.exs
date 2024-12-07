@@ -34,7 +34,7 @@ defmodule LiveViewNative.Jetpack.MixProject do
       {:live_view_native, github: "liveview-native/live_view_native", branch: "main", override: true},
       {:live_view_native_stylesheet, github: "liveview-native/live_view_native_stylesheet", branch: "main", only: :test},
       {:live_view_native_live_form, github: "liveview-native/liveview-native-live-form", only: :test},
-      {:live_view_native_test, github: "liveview-native/live_view_native_test", branch: "main", only: :test},
+      {:live_view_native_test_endpoint, github: "liveview-native/live_view_native_test_endpoint", branch: "main", only: :test},
       {:gettext, "~> 0.20", only: :test},
       {:nimble_parsec, "~> 1.3"}
     ]
