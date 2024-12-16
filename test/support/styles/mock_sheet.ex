@@ -1,6 +1,14 @@
 defmodule MockSheet do
   use LiveViewNative.Stylesheet, :jetpack
 
+  @theme material: %{
+    colors: %{
+        "lightColors" => %{
+            "primary" => "#FFB90063"
+        }
+      }
+    }
+
   ~SHEET"""
   "color-red" do
     color(.red)

@@ -396,7 +396,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
 
       assert output == %{"color-red" => [
         {:color, [], [{:., [], [nil, :red]}]}
-      ]}
+      ], "__themes__" => %{material: %{colors: %{"lightColors" => %{"primary" => "#FFB90063"}}}}}
     end
 
     test "ensure to_ime doesn't double print ast node" do
@@ -404,7 +404,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
 
       assert output == %{"button-plain" => [
         {:buttonStyle, [], [{:., [], [nil, :plain]}]}
-      ]}
+      ], "__themes__" => %{material: %{colors: %{"lightColors" => %{"primary" => "#FFB90063"}}}}}
     end
 
     test "can compile custom classes using the RULES sigil" do
@@ -412,7 +412,7 @@ defmodule LiveViewNative.Jetpack.RulesParserTest do
 
       assert output == %{"color-blue" => [
         {:color, [], [{:., [], [nil, :blue]}]}
-      ]}
+      ], "__themes__" => %{material: %{colors: %{"lightColors" => %{"primary" => "#FFB90063"}}}}}
     end
   end
 

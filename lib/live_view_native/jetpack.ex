@@ -5,6 +5,7 @@ defmodule LiveViewNative.Jetpack do
     component: LiveViewNative.Jetpack.Component,
     module_suffix: :Jetpack,
     template_engine: LiveViewNative.Engine,
+    stylesheet: LiveViewNative.Jetpack.Stylesheet,
     stylesheet_rules_parser: LiveViewNative.Jetpack.RulesParser,
     client: LiveViewNative.Jetpack.Client
 
