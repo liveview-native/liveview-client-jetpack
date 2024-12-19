@@ -12,7 +12,8 @@ defmodule LiveViewNativeTest.Jetpack.TemplateLive do
     formats: [:jetpack],
     layouts: [
       jetpack: {LiveViewNativeTest.Jetpack.Layouts.Jetpack, :app}
-    ]
+    ],
+    dispatch_to: &Module.concat/2
 
   def mount(_params, _session, socket) do
     {:ok, assign(socket, :count, 100)}
