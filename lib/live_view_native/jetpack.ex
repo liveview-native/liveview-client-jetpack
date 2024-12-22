@@ -7,7 +7,7 @@ defmodule LiveViewNative.Jetpack do
     template_engine: LiveViewNative.Engine,
     stylesheet: LiveViewNative.Jetpack.Stylesheet,
     stylesheet_rules_parser: LiveViewNative.Jetpack.RulesParser,
-    client: LiveViewNative.Jetpack.Client
+    test_client: %LiveViewNativeTest.Jetpack.TestClient{}
 
   def normalize_os_version(os_version),
     do: normalize_version(os_version)
