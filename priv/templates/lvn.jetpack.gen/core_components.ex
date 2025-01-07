@@ -85,7 +85,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
   slot :inner_block
 
-  def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
+  def input(%{field: %Phoenix.HTML.FormField{} = field} = assigns, interface) do
     #dbg assigns
     assigns
     |> assign(field: nil, id: assigns.id || field.id)
@@ -100,16 +100,16 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
         (if assigns.autocomplete == "off", do: "textInputAutocapitalization(.never) autocorrectionDisabled()", else: "")
       ] |> Enum.join(" "))
     )
-    |> input()
+    |> input(interface)
   end
 
-  def input(%{type: "hidden"} = assigns) do
+  def input(%{type: "hidden"} = assigns, _interface) do
     ~LVN"""
     <Spacer id={@id} name={@name} value={@value} {@rest} />
     """
   end
 
-  def input(%{type: "DatePicker"} = assigns) do
+  def input(%{type: "DatePicker"} = assigns, _interface) do
     ~LVN"""
     <Column>
       <DatePicker id={@id} name={@name} initialSelectedDateMillis={@value} {@rest} >
@@ -120,7 +120,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     """
   end
 
-  def input(%{type: "MultiDatePicker"} = assigns) do
+  def input(%{type: "MultiDatePicker"} = assigns, _interface) do
     [start_date, end_date] = Jason.decode!(assigns.value)
 
     assigns =
@@ -138,7 +138,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     """
   end
 
-  def input(%{type: "Picker"} = assigns) do
+  def input(%{type: "Picker"} = assigns, _interface) do
     ~LVN"""
     <Column>
       <ExposedDropdownMenuBox id={@id} name={@name} {@rest} value={@value}>
@@ -157,7 +157,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     """
   end
 
-  def input(%{type: "SingleChoiceSegmentedButtonRow"} = assigns) do
+  def input(%{type: "SingleChoiceSegmentedButtonRow"} = assigns, _interface) do
     ~LVN"""
     <Column>
       <Text :if={@label} template="label">{@label}</Text>
@@ -172,7 +172,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
   end
 
 
-  def input(%{type: "Slider"} = assigns) do
+  def input(%{type: "Slider"} = assigns, _interface) do
     ~LVN"""
     <Column>
       <Text :if={@label}>{@label}</Text>
@@ -182,7 +182,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     """
   end
 
-  def input(%{type: "TextField"} = assigns) do
+  def input(%{type: "TextField"} = assigns, _interface) do
     ~LVN"""
     <Column>
       <TextField id={@id} name={@name} value={@value} isError={not Enum.empty?(@errors)} {@rest}>
@@ -194,7 +194,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     """
   end
 
-  def input(%{type: "SecureField"} = assigns) do
+  def input(%{type: "SecureField"} = assigns, _interface) do
     ~LVN"""
     <Column>
       <TextField id={@id} name={@name} value={@value} prompt={@prompt} isError={not Enum.empty?(@errors)} visualTransformation="password" {@rest}>
@@ -206,7 +206,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     """
   end
 
-  def input(%{type: "Checkbox"} = assigns) do
+  def input(%{type: "Checkbox"} = assigns, _interface) do
     ~LVN"""
     <Column>
       <Row verticalAlignment="CenterVertically" style="wrapContentWidth()">
@@ -224,7 +224,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
   @doc type: :component
   slot :inner_block, required: true
 
-  def error(assigns) do
+  def error(assigns, _interface) do
     ~LVN"""
     <Text textStyle="bodyMedium" color="error">
       <%%= render_slot(@inner_block) %>
@@ -243,7 +243,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
   slot :subtitle
   slot :actions
 
-  def header(assigns) do
+  def header(assigns, _interface) do
     ~LVN"""
     <TopAppBar>
       <Column template="title">
@@ -283,7 +283,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
   attr :on_cancel, :string, default: nil
   slot :inner_block, required: true
 
-  def modal(assigns) do
+  def modal(assigns, _interface) do
     ~LVN"""
     <%%= if @show do %>
       <ModalBottomSheet
@@ -312,7 +312,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
   slot :inner_block, doc: "the optional inner block that renders the flash message"
 
-  def flash(assigns) do
+  def flash(assigns, _interface) do
     assigns = assign_new(assigns, :id, fn -> "flash-#{assigns.kind}" end)
 
     ~LVN"""
@@ -335,7 +335,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
   attr :flash, :map, required: true, doc: "the map of flash messages"
   attr :id, :string, default: "flash-group", doc: "the optional id of flash container"
 
-  def flash_group(assigns) do
+  def flash_group(assigns, _interface) do
     ~LVN"""
     <Box id={@id}>
       <.flash kind={:info} title={"Success!"} flash={@flash} />
@@ -371,7 +371,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
   slot :inner_block, required: true
   slot :actions, doc: "the slot for form actions, such as a submit button"
 
-  def simple_form(assigns) do
+  def simple_form(assigns, _interface) do
     ~LVN"""
     <.form :let={f} for={@for} as={@as} {@rest}>
       <%%= render_slot(@inner_block, f) %>
@@ -398,7 +398,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
 
   slot :inner_block, required: true
 
-  def button(%{ type: "submit" } = assigns) do
+  def button(%{ type: "submit" } = assigns, _interface) do
     ~LVN"""
     <LiveSubmitButton {@rest}>
       <%%= render_slot(@inner_block) %>
@@ -406,7 +406,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     """
   end
 
-  def button(assigns) do
+  def button(assigns, _interface) do
     ~LVN"""
     <Button {@rest}>
       <%%= render_slot(@inner_block) %>
@@ -430,7 +430,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     attr :title, :string, required: true
   end
 
-  def list(assigns) do
+  def list(assigns, _interface) do
     ~LVN"""
     <LazyColumn {@rest}>
       <ListItem :for={item <- @item}>
@@ -454,7 +454,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
   attr :name, :string, required: true
   attr :rest, :global
 
-  def icon(assigns) do
+  def icon(assigns, _interface) do
     ~LVN"""
     <Icon imageVector={@name} {@rest} />
     """
@@ -508,7 +508,7 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     attr :style, :string
   end
 
-  def image(assigns) do
+  def image(assigns, _interface) do
     ~LVN"""
     <AsyncImage url={@url} {@rest}>
       <Box template="loading" :if={@empty != []}>
@@ -520,13 +520,13 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     """
   end
 
-  defp image_success(%{ slot: [%{ inner_block: nil }] } = assigns) do
+  defp image_success(%{ slot: [%{ inner_block: nil }] } = assigns, _interface) do
     ~LVN"""
     <AsyncImage image :for={slot <- @slot} class={Map.get(slot, :class)} {%{ style: Map.get(slot, :style) }} />
     """
   end
 
-  defp image_success(assigns) do
+  defp image_success(assigns, _interface) do
     ~LVN"""
     <Box :if={@slot != []}>
       <%%= render_slot(@slot) %>
@@ -534,13 +534,13 @@ defmodule <%= inspect context.web_module %>.CoreComponents.<%= inspect context.m
     """
   end
 
-  defp image_failure(%{ slot: [%{ inner_block: nil }] } = assigns) do
+  defp image_failure(%{ slot: [%{ inner_block: nil }] } = assigns, _interface) do
     ~LVN"""
     <AsyncImage error template="error" :for={slot <- @slot} class={Map.get(slot, :class)} {%{ style: Map.get(slot, :style) }} />
     """
   end
 
-  defp image_failure(assigns) do
+  defp image_failure(assigns, _interface) do
     ~LVN"""
     <Box template="error" :if={@slot != []}>
       <%%= render_slot(@slot) %>

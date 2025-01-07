@@ -4,7 +4,7 @@ defmodule LiveViewNative.Jetpack do
     format: :jetpack,
     component: LiveViewNative.Jetpack.Component,
     module_suffix: :Jetpack,
-    template_engine: LiveViewNative.Engine,
+    template_engine: LiveViewNative.Template.Engine,
     stylesheet: LiveViewNative.Jetpack.Stylesheet,
     stylesheet_rules_parser: LiveViewNative.Jetpack.RulesParser,
     test_client: %LiveViewNativeTest.Jetpack.TestClient{}
