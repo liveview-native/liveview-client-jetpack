@@ -42,7 +42,7 @@ def deps do
 end
 ```
 
-Then add the `Jepack` plugin to your list of LiveView Native plugins:
+Then add the `Jetpack` plugin to your list of LiveView Native plugins:
 
 ```elixir
 config :live_view_native, plugins: [
