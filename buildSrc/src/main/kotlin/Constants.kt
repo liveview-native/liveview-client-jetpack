@@ -1,9 +1,9 @@
 import org.gradle.api.JavaVersion
 
 object Constants {
-    const val compileSdkVersion = 34
+    const val compileSdkVersion = 35
     const val minSdkVersion = 23
-    const val targetSdkVersion = 34
+    const val targetSdkVersion = 35
     const val instrumentationRunnerClass = "androidx.test.runner.AndroidJUnitRunner"
     const val jvmTargetVersion = "17"
     const val kotlinCompilerExtVersion = "1.5.7"

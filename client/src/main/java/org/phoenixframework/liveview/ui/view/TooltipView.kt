@@ -1,8 +1,7 @@
 package org.phoenixframework.liveview.ui.view
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.CaretProperties
-import androidx.compose.material3.CaretScope
+import androidx.compose.material3.TooltipScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.RichTooltip
@@ -79,7 +78,6 @@ internal class TooltipView private constructor(props: Properties) :
         pushEvent: PushEvent
     ) {
         val scope = props.scope
-        val caretProperties = props.caretProperties
         val colors = props.colors
         val shape = props.shape
         val contentColor = props.contentColor
@@ -89,10 +87,9 @@ internal class TooltipView private constructor(props: Properties) :
 
         when (composableNode?.node?.tag) {
             ComposableTypes.plainTooltip -> {
-                if (scope is CaretScope) {
+                if (scope is TooltipScope) {
                     scope.PlainTooltip(
                         modifier = props.commonProps.modifier,
-                        caretProperties = caretProperties ?: TooltipDefaults.caretProperties,
                         shape = shape ?: TooltipDefaults.plainTooltipContainerShape,
                         contentColor = contentColor ?: TooltipDefaults.plainTooltipContentColor,
                         containerColor = containerColor
@@ -106,40 +103,6 @@ internal class TooltipView private constructor(props: Properties) :
                         }
                     )
                 }
-            }
-
-            ComposableTypes.richTooltip -> {
-                val title = remember(composableNode.children) {
-                    composableNode.children.find { it.node?.template == templateTitle }
-                }
-                val action = remember(composableNode.children) {
-                    composableNode.children.find { it.node?.template == templateAction }
-                }
-                val text = remember(composableNode.children) {
-                    composableNode.children.find { it.node?.template == templateText }
-                }
-                RichTooltip(
-                    modifier = props.commonProps.modifier,
-                    title = title?.let {
-                        {
-                            PhxLiveView(it, pushEvent, composableNode, null)
-                        }
-                    },
-                    action = action?.let {
-                        {
-                            PhxLiveView(it, pushEvent, composableNode, null)
-                        }
-                    },
-                    shape = shape ?: TooltipDefaults.richTooltipContainerShape,
-                    colors = getRichTooltipColors(colors),
-                    tonalElevation = tonalElevation ?: 3.dp,
-                    shadowElevation = shadowElevation ?: 3.dp,
-                    text = {
-                        text?.let {
-                            PhxLiveView(it, pushEvent, composableNode, null)
-                        }
-                    },
-                )
             }
         }
     }
@@ -165,8 +128,7 @@ internal class TooltipView private constructor(props: Properties) :
 
     @Stable
     internal data class Properties(
-        val scope: CaretScope?,
-        val caretProperties: CaretProperties? = null,
+        val scope: TooltipScope?,
         val colors: ImmutableMap<String, String>? = null,
         val shape: Shape? = null,
         val contentColor: Color? = null,
@@ -184,9 +146,8 @@ internal class TooltipView private constructor(props: Properties) :
             pushEvent: PushEvent?,
             scope: Any?
         ): TooltipView = TooltipView(
-            attributes.fold(Properties(scope as? CaretScope)) { props, attribute ->
+            attributes.fold(Properties(scope as? TooltipScope)) { props, attribute ->
                 when (attribute.name) {
-                    attrCaretProperties -> caretProperties(props, attribute.value)
                     attrColors -> colors(props, attribute.value)
                     attrContainerColor -> containerColor(props, attribute.value)
                     attrContentColor -> contentColor(props, attribute.value)
@@ -218,29 +179,6 @@ internal class TooltipView private constructor(props: Properties) :
             return if (colors.isNotEmpty()) {
                 props.copy(colors = colorsFromString(colors)?.toImmutableMap())
             } else props
-        }
-
-        /**
-         * Properties for the caret of the PlainTooltip, if a default caret is desired with a
-         * specific dimension.
-         * ```
-         * <PlainTooltip
-         *   caretProperties="{'caretHeight': '100', 'caretWidth': '200'}">...</PlainTooltip>
-         * ```
-         */
-        private fun caretProperties(props: Properties, value: String): Properties {
-            return try {
-                JsonParser.parse<Map<String, String>>(value)?.let { map ->
-                    props.copy(
-                        caretProperties = CaretProperties(
-                            caretHeight = map[attrCaretHeight].toString().toInt().dp,
-                            caretWidth = map[attrCaretWidth].toString().toInt().dp,
-                        )
-                    )
-                } ?: props
-            } catch (_: Exception) {
-                props
-            }
         }
 
         /**

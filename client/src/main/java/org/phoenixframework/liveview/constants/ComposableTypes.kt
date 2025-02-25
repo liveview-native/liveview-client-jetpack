@@ -80,7 +80,6 @@ object ComposableTypes {
     const val plainTooltip = "PlainTooltip"
     const val radioButton = "RadioButton"
     const val rangeSlider = "RangeSlider"
-    const val richTooltip = "RichTooltip"
     const val row = "Row"
     const val scaffold = "Scaffold"
     const val scrollableTabRow = "ScrollableTabRow"

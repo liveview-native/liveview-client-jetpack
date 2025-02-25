@@ -191,7 +191,6 @@ class ComposableNodeFactory(
         )
         registerComponent(ComposableTypes.radioButton, RadioButtonView.Factory)
         registerComponent(ComposableTypes.rangeSlider, SliderView.Factory)
-        registerComponent(ComposableTypes.richTooltip, TooltipView.Factory)
         registerComponent(ComposableTypes.row, RowView.Factory)
         registerComponent(ComposableTypes.scaffold, ScaffoldView.Factory)
         registerComponent(ComposableTypes.scrollableTabRow, TabRowView.Factory)

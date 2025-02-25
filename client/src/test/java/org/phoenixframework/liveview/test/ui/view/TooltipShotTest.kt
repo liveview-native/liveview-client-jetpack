@@ -29,7 +29,6 @@ import org.phoenixframework.liveview.constants.ColorAttrs.colorAttrTitleContentC
 import org.phoenixframework.liveview.constants.ComposableTypes.box
 import org.phoenixframework.liveview.constants.ComposableTypes.button
 import org.phoenixframework.liveview.constants.ComposableTypes.plainTooltip
-import org.phoenixframework.liveview.constants.ComposableTypes.richTooltip
 import org.phoenixframework.liveview.constants.ComposableTypes.text
 import org.phoenixframework.liveview.constants.ComposableTypes.tooltipBox
 import org.phoenixframework.liveview.constants.ModifierNames.modifierBackground
@@ -86,115 +85,5 @@ class TooltipShotTest : LiveViewComposableTest() {
         )
     }
 
-    @Test
-    fun simpleRichTooltipTest() {
-        compareNativeComposableWithTemplate(
-            nativeComposable = {
-                RichTooltip(
-                    text = {
-                        Text(text = "Text")
-                    },
-                )
-            },
-            template = """
-                <$richTooltip>
-                  <$text $attrTemplate="$templateText">Text</$text>
-                </$richTooltip>
-                """
-        )
-    }
 
-    @Test
-    fun richTooltipWithTitleTest() {
-        compareNativeComposableWithTemplate(
-            nativeComposable = {
-                RichTooltip(
-                    title = {
-                        Text(text = "Title")
-                    },
-                    text = {
-                        Text(text = "Text")
-                    },
-                )
-            },
-            template = """
-                <$richTooltip>
-                  <$text $attrTemplate="$templateTitle">Title</$text>
-                  <$text $attrTemplate="$templateText">Text</$text>
-                </$richTooltip>
-                """
-        )
-    }
-
-    @Test
-    fun richTooltipWithTitleAndActionTest() {
-        compareNativeComposableWithTemplate(
-            nativeComposable = {
-                RichTooltip(
-                    title = {
-                        Text(text = "Title")
-                    },
-                    text = {
-                        Text(text = "Text")
-                    },
-                    action = {
-                        Button(onClick = {}) {
-                            Text(text = "Action")
-                        }
-                    }
-                )
-            },
-            template = """
-                <$richTooltip>
-                  <$text $attrTemplate="$templateTitle">Title</$text>
-                  <$text $attrTemplate="$templateText">Text</$text>
-                  <$button $attrTemplate="$templateAction">
-                    <$text>Action</$text>
-                  </$button>
-                </$richTooltip>
-                """
-        )
-    }
-
-    @Test
-    fun richTooltipWithCustomColorAndShapeTest() {
-        val colorsForTemplate = """
-            {
-            '$colorAttrContainerColor': '$Red',
-            '$colorAttrContentColor': '$White',
-            '$colorAttrTitleContentColor': '$Yellow',
-            '$colorAttrActionContentColor': '$Green'
-            }
-            """.toJsonForTemplate()
-        compareNativeComposableWithTemplate(
-            nativeComposable = {
-                val colors = TooltipDefaults.richTooltipColors(
-                    containerColor = Color.Red,
-                    contentColor = Color.White,
-                    titleContentColor = Color.Yellow,
-                    actionContentColor = Color.Green,
-                )
-                RichTooltip(
-                    shape = RoundedCornerShape(4.dp),
-                    colors = colors,
-                    title = {
-                        Text(text = "Title")
-                    },
-                    text = {
-                        Text(text = "Text")
-                    },
-                    action = {
-                        Text(text = "Action")
-                    }
-                )
-            },
-            template = """
-                <$richTooltip $attrColors="$colorsForTemplate" $attrShape="4">
-                  <$text $attrTemplate="$templateTitle">Title</$text>
-                  <$text $attrTemplate="$templateText">Text</$text>
-                  <$text $attrTemplate="$templateAction">Action</$text>
-                </$richTooltip>
-                """
-        )
-    }
 }

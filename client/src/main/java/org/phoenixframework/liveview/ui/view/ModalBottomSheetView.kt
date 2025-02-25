@@ -109,7 +109,7 @@ internal class ModalBottomSheetView private constructor(props: Properties) :
                     PhxLiveView(it, pushEvent, composableNode, null)
                 } ?: BottomSheetDefaults.DragHandle()
             },
-            windowInsets = windowsInsets ?: BottomSheetDefaults.windowInsets,
+            //windowInsets = windowsInsets ?: BottomSheetDefaults.windowInsets,
             content = {
                 content?.let {
                     PhxLiveView(it, pushEvent, composableNode, null, this)

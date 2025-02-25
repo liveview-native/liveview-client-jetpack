@@ -17,7 +17,6 @@ import org.phoenixframework.liveview.constants.Attrs.attrInitialIsVisible
 import org.phoenixframework.liveview.constants.Attrs.attrIsPersistent
 import org.phoenixframework.liveview.constants.Attrs.attrSpacingBetweenTooltipAndAnchor
 import org.phoenixframework.liveview.constants.ComposableTypes.plainTooltip
-import org.phoenixframework.liveview.constants.ComposableTypes.richTooltip
 import org.phoenixframework.liveview.constants.Templates.templateContent
 import org.phoenixframework.liveview.constants.Templates.templateTooltip
 import org.phoenixframework.liveview.extensions.isNotEmptyAndIsDigitsOnly
@@ -131,7 +130,6 @@ internal class TooltipBoxView private constructor(props: Properties) :
         override fun subTags(): Map<String, ComposableViewFactory<*>> {
             return mapOf(
                 plainTooltip to TooltipView.Factory,
-                richTooltip to TooltipView.Factory,
             )
         }
 
