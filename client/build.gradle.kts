@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.roborazzi)
     alias(libs.plugins.com.strumenta.antlr.kotlin)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.compose.compiler)
     id("maven-publish")
 }
 
@@ -49,6 +50,7 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = Constants.sourceCompatibilityVersion
         targetCompatibility = Constants.targetCompatibilityVersion
     }
@@ -131,6 +133,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.koin.test)
     testImplementation(libs.org.robolectric)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
 
 // ./gradlew assembleRelease -PcomposeCompilerReports=true
