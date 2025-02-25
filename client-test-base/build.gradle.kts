@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         minSdk = Constants.minSdkVersion
-
+        multiDexEnabled = true
         testInstrumentationRunner = Constants.instrumentationRunnerClass
         consumerProguardFiles("consumer-rules.pro")
     }
