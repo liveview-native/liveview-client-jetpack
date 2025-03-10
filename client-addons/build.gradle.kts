@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.roborazzi)
+    alias(libs.plugins.compose.compiler)
     id("maven-publish")
 }
 
@@ -36,9 +37,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = Constants.kotlinCompilerExtVersion
     }
 
     testNamespace = "$moduleId.test"
