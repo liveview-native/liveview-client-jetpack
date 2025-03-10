@@ -26,7 +26,7 @@ class DocumentParser(
         }
     }
 
-    override fun handle(
+    override fun handleDocumentChange(
         changeType: ChangeType,
         nodeRef: NodeRef,
         nodeData: NodeData,
