@@ -26,6 +26,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = Constants.sourceCompatibilityVersion
         targetCompatibility = Constants.targetCompatibilityVersion
     }
@@ -49,6 +50,8 @@ dependencies {
     implementation(libs.junit)
     implementation(libs.koin.test)
     implementation(libs.org.robolectric)
+
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
 
 publishing {
