@@ -11,6 +11,7 @@ import org.phoenixframework.liveviewnative.core.NodeData
  * This class is abstraction of  the `Node.Element` class existing in Core-Jetpack.
  * It stores data from `Node.Element` class in order to avoid to deal native objects.
  */
+@ConsistentCopyVisibility
 @Immutable
 data class CoreNodeElement internal constructor(
     val tag: String,
