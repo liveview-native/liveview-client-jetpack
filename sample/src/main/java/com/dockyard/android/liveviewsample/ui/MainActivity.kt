@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         }
         LiveForm.registerComponents()
         setContent {
-            LiveView(url = "http://10.0.2.2:4000/users/log_in")
+            LiveView(url = "http://10.0.2.2:4001/thermostat")
         }
     }
 }
