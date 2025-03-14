@@ -16,12 +16,12 @@ io-coil-kt = "2.5.0"
 java-phoenix-client = "1.3.0"
 junit = "4.13.2"
 jna = "5.14.0" # remember to update the jniLibs folder with updated *.so files
-koin-bom= "4.0.0-RC1"
-kotlin = "1.9.21"
+koin-bom = "4.0.0-RC1"
+kotlin = "2.1.0"
 kotlin-immutable-collections = "0.3.7"
 kotlinx-serialization-json = "1.6.0"
 live-form = "main-SNAPSHOT"
-liveview-native-core-jetpack = "0.4.0-alpha-4"
+liveview-native-core-jetpack = "0.4.1-rc-2"
 okhttp = "4.12.0"
 org-jsoup = "1.17.2"
 roborazzi = "1.25.0"
@@ -82,3 +82,4 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
 com-strumenta-antlr-kotlin = { id = "com.strumenta.antlr-kotlin", version.ref = "com-strumenta-antlr-kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
