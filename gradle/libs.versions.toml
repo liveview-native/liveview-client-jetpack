@@ -20,7 +20,8 @@ koin-bom= "4.0.0-RC1"
 kotlin = "1.9.21"
 kotlin-immutable-collections = "0.3.7"
 kotlinx-serialization-json = "1.6.0"
-live-form = "main-SNAPSHOT"
+live-form = "0.4.0-rc.1"
+liveview-native-core-host = "0.4.1-rc-2"
 liveview-native-core-jetpack = "0.4.0-alpha-4"
 okhttp = "4.12.0"
 org-jsoup = "1.17.2"
@@ -58,6 +59,7 @@ koin-core = { module = "io.insert-koin:koin-core" }
 koin-test = { module = "io.insert-koin:koin-test" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 live-form = { module = "com.github.liveview-native:liveview-native-live-form", version.ref = "live-form" }
+liveview-native-core-host = { module = "org.phoenixframework:liveview-native-core-host", version.ref = "liveview-native-core-host" }
 net-java-dev-jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna" }
 okhttp = { module = "com.squareup.okhttp3:okhttp" }
 okhttp-bom = { module = "com.squareup.okhttp3:okhttp-bom", version.ref = "okhttp" }

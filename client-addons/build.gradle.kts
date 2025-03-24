@@ -61,6 +61,8 @@ dependencies {
     testImplementation(libs.androidx.compose.ui.test.junit4)
     testImplementation(libs.io.coil.kt.coil.test)
     testImplementation(libs.junit)
+
+    testImplementation(libs.liveview.native.core.host)
 }
 
 // Configuring Java Lib Path in order to find the native library before running the Unit Tests

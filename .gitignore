@@ -49,3 +49,7 @@ live_view_native_jetpack-*.tar
 
 # compiled static assets from test suites
 priv/static
+
+# host libs
+core-jetpack-desktop-libs/jniLibs/**/*.so
+core-jetpack-desktop-libs/jniLibs/**/*.dylib
