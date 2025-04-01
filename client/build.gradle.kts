@@ -49,6 +49,7 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = Constants.sourceCompatibilityVersion
         targetCompatibility = Constants.targetCompatibilityVersion
     }
@@ -85,6 +86,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.0")
     // These dependencies are used internally, and not exposed to consumers on their own compile classpath.
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)

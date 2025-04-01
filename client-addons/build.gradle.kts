@@ -28,6 +28,8 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = Constants.sourceCompatibilityVersion
         targetCompatibility = Constants.targetCompatibilityVersion
     }
@@ -46,6 +48,8 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.0")
+
     implementation(project(Constants.moduleClient))
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
