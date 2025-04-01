@@ -19,6 +19,8 @@ class MainActivity : ComponentActivity() {
         }
         LiveForm.registerComponents()
         setContent {
+            // Points to the thermostat example from the core library tests.
+            // Change this URL to point at your local LVN app.
             LiveView(url = "http://10.0.2.2:4001/thermostat")
         }
     }
