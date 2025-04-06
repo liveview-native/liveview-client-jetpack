@@ -1,47 +1,47 @@
 import org.gradle.api.tasks.testing.Test
+import org.gradle.api.GradleException
+import org.gradle.kotlin.dsl.withGroovyBuilder
 import java.io.File
-import java.util.zip.ZipFile
 
-fun copyDesktopJniLibs(rootDir: File, test: Test) {
-    val classpath = test.classpath.files
-    val hostJar = classpath.find { it.name.contains("liveview-native-core-host") }
+fun copyDesktopJniLibs(rootDir: File, test: Test, coreVersion: String) {
+    val currentArch = when {
+        org.gradle.internal.os.OperatingSystem.current().isMacOsX -> "darwin-aarch64"
+        org.gradle.internal.os.OperatingSystem.current().isLinux -> "linux-x86-64"
+        else -> throw GradleException("unsupported OS")
+    }
 
-    val jniLibsForDesktopDir = File("$rootDir/core-jetpack-desktop-libs/jniLibs")
-    test.systemProperty("java.library.path", jniLibsForDesktopDir.absolutePath)
-    test.systemProperty("jna.library.path", jniLibsForDesktopDir.absolutePath)
-    test.classpath = test.classpath.plus(test.project.files(jniLibsForDesktopDir.absolutePath))
+    val libsDir = File("${rootDir}/build/nativeLibs/$currentArch")
+    val outputFile = File("${libsDir}/liveview-native-core-$currentArch.jar")
 
-    if (hostJar != null && hostJar.exists()) {
-        println("found host jar: ${hostJar.absolutePath}")
+    libsDir.mkdirs()
 
-        // Create destination directories
-        val darwinDir = File("${rootDir}/core-jetpack-desktop-libs/jniLibs/darwin-aarch64")
-        val linuxDir = File("${rootDir}/core-jetpack-desktop-libs/jniLibs/linux-x86-64")
-        val windowsDir = File("${rootDir}/core-jetpack-desktop-libs/jniLibs/windows-x86-64")
+    val url = "https://github.com/liveview-native/liveview-native-core/releases/download/$coreVersion/liveview-native-core-$currentArch.jar"
 
-        ZipFile(hostJar).use { zip ->
-            zip.entries().asSequence().forEach { entry ->
-                if (!entry.isDirectory) {
-                    val destDir = when {
-                        entry.name.endsWith(".dylib") -> darwinDir
-                        entry.name.endsWith(".so") -> linuxDir
-                        entry.name.endsWith(".dll") -> windowsDir
-                        else -> null
-                    }
+    test.ant.withGroovyBuilder {
+        "get"(
+            "src" to url,
+            "dest" to outputFile.absolutePath,
+            "verbose" to true
+        )
+    }
 
-                    destDir?.let { dir ->
-                        val destFile = File(dir, File(entry.name).name)
-                        println("extracting: ${destFile.absolutePath}")
-                        zip.getInputStream(entry).use { input ->
-                            destFile.outputStream().use { output ->
-                                input.copyTo(output)
-                            }
-                        }
-                    }
-                }
-            }
+    println(outputFile.absolutePath)
+
+    if (outputFile.exists()) {
+        test.classpath += test.project.files(outputFile)
+
+        val jniLibsDir = File("${rootDir}/core-jetpack-desktop-libs/jniLibs/$currentArch")
+        jniLibsDir.mkdirs()
+
+        test.project.copy {
+            from(test.project.zipTree(outputFile))
+            into(jniLibsDir)
+            include("*.so", "*.dylib", "*.dll")
         }
+
+        test.systemProperty("java.library.path", jniLibsDir.absolutePath)
+        test.systemProperty("jna.library.path", jniLibsDir.absolutePath)
     } else {
-        println("host jar not found in test classpath")
+        println("native library JAR not found at ${outputFile.absolutePath}")
     }
 }

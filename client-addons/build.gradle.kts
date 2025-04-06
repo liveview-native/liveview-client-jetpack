@@ -61,14 +61,17 @@ dependencies {
     testImplementation(libs.androidx.compose.ui.test.junit4)
     testImplementation(libs.io.coil.kt.coil.test)
     testImplementation(libs.junit)
-
-    testImplementation(libs.liveview.native.core.host)
 }
 
 // Configuring Java Lib Path in order to find the native library before running the Unit Tests
 tasks.withType<Test>().configureEach {
     doFirst {
-        copyDesktopJniLibs(rootDir, this@configureEach)
+        val coreVersion = project.extensions.getByType<VersionCatalogsExtension>()
+            .named("libs")
+            .findVersion("liveview-native-core-jetpack")
+            .get()
+            .toString()
+        copyDesktopJniLibs(rootDir, this@configureEach, coreVersion)
     }
 }
 
