@@ -12,15 +12,8 @@ import java.io.File
 //  `testImplementation "com.github.liveview-native:liveview-native-core-jetpack-host:<version>"`
 fun copyDesktopJniLibs(rootDir: File, test: Test) {
     val jniLibsForDesktopDir = File("$rootDir/core-jetpack-desktop-libs/jniLibs")
-    val archTypesSubdirs = jniLibsForDesktopDir.listFiles() ?: emptyArray()
-    for (dir in archTypesSubdirs) {
-        // Selecting the proper JNI lib file for run the unit tests
-        // in according to the architecture. e.g.: darwin-aarch64, darwin-x86-64
-        val arch = System.getProperty("os.arch").replace("_", "-")
-        if (dir.isDirectory && dir.name.contains(arch)) {
-            test.systemProperty("java.library.path", dir.absolutePath)
-            test.systemProperty("jna.library.path", dir.absolutePath)
-            break
-        }
-    }
+
+    test.systemProperty("java.library.path", jniLibsForDesktopDir.absolutePath)
+    test.systemProperty("jna.library.path", jniLibsForDesktopDir.absolutePath)
+    test.classpath = test.classpath.plus(test.project.files(jniLibsForDesktopDir.absolutePath))
 }

@@ -25,6 +25,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = Constants.sourceCompatibilityVersion
         targetCompatibility = Constants.targetCompatibilityVersion
     }
@@ -51,4 +52,6 @@ dependencies {
         isChanging = true
         exclude(group = Constants.publishGroupId, module = Constants.publishArtifactClientId)
     }
+
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
