@@ -160,7 +160,12 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 // Configuring Java Lib Path in order to find the native library before running the Unit Tests
 tasks.withType<Test>().configureEach {
     doFirst {
-        copyDesktopJniLibs(rootDir, this@configureEach)
+        val coreVersion = project.extensions.getByType<VersionCatalogsExtension>()
+            .named("libs")
+            .findVersion("liveview-native-core-jetpack")
+            .get()
+            .toString()
+        copyDesktopJniLibs(rootDir, this@configureEach, coreVersion)
     }
 }
 
