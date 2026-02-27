@@ -118,7 +118,9 @@ abstract class BaseModifiersParser {
         }
 
         val mapContext = mapExprContext.map()
-        val mapEntryContext = mapContext.map_entries()?.map_entry()?.map { mapEntryContext ->
+        val mapEntryContext = mapContext.map_entries()?.map_entry()
+            ?.filter { it.expression(1) is ListExprContext }
+            ?.map { mapEntryContext ->
             // The map key is the style name and the map value contain the list of modifiers
             val styleName = mapEntryContext.expression(0)?.text
                 ?.removePrefix("\"")

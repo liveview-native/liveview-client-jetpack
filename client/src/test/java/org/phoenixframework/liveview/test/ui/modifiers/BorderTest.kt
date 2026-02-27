@@ -56,6 +56,18 @@ class BorderTest : ModifierBaseTest() {
     }
 
     @Test
+    fun borderWithColorAndRoundedCornerShapeTest() {
+        assertModifierFromStyle(
+            """
+            %{"borderWithColorAndRoundedCornerShapeTest" => [
+                {:border, [], [{:., [], [2, :dp]}, {:., [], [:Color, :Green]}, {:RoundedCornerShape, [], [{:Dp, [], [12]}]}]},
+            ]}
+            """.trimStyle(),
+            Modifier.border(2.dp, Color.Green, RoundedCornerShape(Dp(12f)))
+        )
+    }
+
+    @Test
     fun borderWithColorAndShapeNamedParamsTest() {
         assertModifierFromStyle(
             """
@@ -79,6 +91,22 @@ class BorderTest : ModifierBaseTest() {
             ]}
             """.trimStyle(),
             Modifier.border(BorderStroke(3.dp, Color.Blue))
+        )
+    }
+
+    @Test
+    fun borderWithBorderStrokeAndRoundedCornerShapeTest() {
+        assertModifierFromStyle(
+            """
+            %{"borderWithBorderStrokeAndRoundedCornerShapeTest" => [
+                {:border, [], [{:BorderStroke, [], [
+                    {:Dp, [], [3]},
+                    {:., [], [:Color, :Blue]}]},
+                    {:RoundedCornerShape, [], [{:Dp, [], [12]}]}
+                ]},
+            ]}
+            """.trimStyle(),
+            Modifier.border(BorderStroke(3.dp, Color.Blue), RoundedCornerShape(Dp(12f)))
         )
     }
 

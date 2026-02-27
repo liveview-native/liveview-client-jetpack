@@ -22,7 +22,7 @@ kotlin = "1.9.21"
 kotlin-immutable-collections = "0.3.7"
 kotlinx-serialization-json = "1.6.3"
 live-form = "0.4.0-rc.1"
-liveview-native-core-jetpack = "0.4.1-rc-2"
+liveview-native-core-jetpack = "499b4a536e"
 okhttp = "4.12.0"
 org-jsoup = "1.17.2"
 roborazzi = "1.25.0"
@@ -45,7 +45,7 @@ androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "l
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation-compose" }
 antlr4-runtime = { module = "org.antlr:antlr4-runtime", version.ref = "antlr4" }
 com-github-dsrees-javaphoenixclient = { group = "com.github.dsrees", name = "JavaPhoenixClient", version.ref = "java-phoenix-client" }
-com-github-liveview-native-core-jetpack = { group = "com.github.liveview-native", name = "liveview-native-core", version.ref = "liveview-native-core-jetpack" }
+com-github-liveview-native-core-jetpack = { group = "com.github.sephianl", name = "liveview-native-core", version.ref = "liveview-native-core-jetpack" }
 com-google-android-material = { group = "com.google.android.material", name = "material", version.ref = "com-google-android-material" }
 com-google-code-gson = { group = "com.google.code.gson", name = "gson", version.ref = "com-google-code-gson" }
 com-strumenta-antlr-kotlin-runtime = { group = "com.strumenta", name = "antlr-kotlin-runtime", version.ref = "com-strumenta-antlr-kotlin" }

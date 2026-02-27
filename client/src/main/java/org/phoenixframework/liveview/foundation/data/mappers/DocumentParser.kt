@@ -14,16 +14,10 @@ class DocumentParser(
     private val screenId: String,
     private val composableNodeFactory: BaseComposableNodeFactory
 ) : DocumentChangeHandler {
-    private lateinit var document: Document
-
-    init {
-        newDocument()
-    }
+    private var document: Document? = null
 
     fun newDocument() {
-        document = Document.empty().apply {
-            setEventHandler(this@DocumentParser)
-        }
+        document = null
     }
 
     override fun handleDocumentChange(
@@ -38,30 +32,41 @@ class DocumentParser(
 
         when (changeType) {
             ChangeType.CHANGE -> {
-                Log.i(TAG, "Changed: ${this.document.get(nodeRef)}")
+                Log.i(TAG, "Changed: $nodeData")
             }
 
             ChangeType.ADD -> {
-                Log.i(TAG, "Added: ${this.document.get(nodeRef)}")
+                Log.i(TAG, "Added: $nodeData")
             }
 
             ChangeType.REMOVE -> {
-                Log.i(TAG, "Remove: ${this.document.get(nodeRef)}")
+                Log.i(TAG, "Remove: $nodeData")
             }
 
             ChangeType.REPLACE -> {
-                Log.i(TAG, "Replace: ${this.document.get(nodeRef)}")
+                Log.i(TAG, "Replace: $nodeData")
             }
         }
     }
 
     fun parseDocumentJson(json: String): ComposableTreeNode {
-        document.mergeFragmentJson(json)
+        val currentDoc = document
+        val doc = if (currentDoc == null) {
+            // First render: use parseFragmentJson to properly set up templates
+            Document.parseFragmentJson(json).also {
+                it.setEventHandler(this@DocumentParser)
+                document = it
+            }
+        } else {
+            // Subsequent diffs: merge into existing document
+            currentDoc.mergeFragmentJson(json)
+            currentDoc
+        }
 
         return ComposableTreeNode(this.screenId, -1, null, id = "rootNode").apply {
             // Walk through the DOM and create a ComposableTreeNode tree
             Log.i(TAG, "walkThroughDOM start")
-            walkThroughDOM(document, document.root(), this)
+            walkThroughDOM(doc, doc.root(), this)
             Log.i(TAG, "walkThroughDOM complete")
         }
     }

@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import org.phoenixframework.liveview.constants.Attrs.attrColor
+import org.phoenixframework.liveview.constants.Attrs.attrProgress
 import org.phoenixframework.liveview.constants.Attrs.attrStrokeCap
 import org.phoenixframework.liveview.constants.Attrs.attrStrokeWidth
 import org.phoenixframework.liveview.constants.Attrs.attrTrackColor
@@ -46,22 +47,48 @@ internal class ProgressIndicatorView private constructor(props: Properties) :
         val strokeWidth = props.strokeWidth
         val trackColor = props.trackColor
         val strokeCap = props.strokeCap
+        val progress = props.progress
 
         if (composableNode?.node?.tag == ComposableTypes.linearProgressIndicator) {
-            LinearProgressIndicator(
-                modifier = props.commonProps.modifier,
-                color = color ?: ProgressIndicatorDefaults.linearColor,
-                trackColor = trackColor ?: ProgressIndicatorDefaults.linearTrackColor,
-                strokeCap = strokeCap ?: ProgressIndicatorDefaults.LinearStrokeCap,
-            )
+            if (progress != null) {
+                // Determinate progress indicator
+                LinearProgressIndicator(
+                    progress = { progress },
+                    modifier = props.commonProps.modifier,
+                    color = color ?: ProgressIndicatorDefaults.linearColor,
+                    trackColor = trackColor ?: ProgressIndicatorDefaults.linearTrackColor,
+                    strokeCap = strokeCap ?: ProgressIndicatorDefaults.LinearStrokeCap,
+                )
+            } else {
+                // Indeterminate progress indicator
+                LinearProgressIndicator(
+                    modifier = props.commonProps.modifier,
+                    color = color ?: ProgressIndicatorDefaults.linearColor,
+                    trackColor = trackColor ?: ProgressIndicatorDefaults.linearTrackColor,
+                    strokeCap = strokeCap ?: ProgressIndicatorDefaults.LinearStrokeCap,
+                )
+            }
         } else {
-            CircularProgressIndicator(
-                modifier = props.commonProps.modifier,
-                color = color ?: ProgressIndicatorDefaults.circularColor,
-                trackColor = trackColor ?: ProgressIndicatorDefaults.circularTrackColor,
-                strokeCap = strokeCap ?: ProgressIndicatorDefaults.CircularIndeterminateStrokeCap,
-                strokeWidth = strokeWidth ?: ProgressIndicatorDefaults.CircularStrokeWidth,
-            )
+            if (progress != null) {
+                // Determinate progress indicator
+                CircularProgressIndicator(
+                    progress = { progress },
+                    modifier = props.commonProps.modifier,
+                    color = color ?: ProgressIndicatorDefaults.circularColor,
+                    trackColor = trackColor ?: ProgressIndicatorDefaults.circularTrackColor,
+                    strokeCap = strokeCap ?: ProgressIndicatorDefaults.CircularDeterminateStrokeCap,
+                    strokeWidth = strokeWidth ?: ProgressIndicatorDefaults.CircularStrokeWidth,
+                )
+            } else {
+                // Indeterminate progress indicator
+                CircularProgressIndicator(
+                    modifier = props.commonProps.modifier,
+                    color = color ?: ProgressIndicatorDefaults.circularColor,
+                    trackColor = trackColor ?: ProgressIndicatorDefaults.circularTrackColor,
+                    strokeCap = strokeCap ?: ProgressIndicatorDefaults.CircularIndeterminateStrokeCap,
+                    strokeWidth = strokeWidth ?: ProgressIndicatorDefaults.CircularStrokeWidth,
+                )
+            }
         }
     }
 
@@ -71,6 +98,7 @@ internal class ProgressIndicatorView private constructor(props: Properties) :
         val trackColor: Color? = null,
         val strokeCap: StrokeCap? = null,
         val strokeWidth: Dp? = null,
+        val progress: Float? = null,
         override val commonProps: CommonComposableProperties = CommonComposableProperties(),
     ) : ComposableProperties
 
@@ -91,6 +119,7 @@ internal class ProgressIndicatorView private constructor(props: Properties) :
             attributes.fold(Properties()) { props, attribute ->
                 when (attribute.name) {
                     attrColor -> color(props, attribute.value)
+                    attrProgress -> progress(props, attribute.value)
                     attrStrokeCap -> strokeCap(props, attribute.value)
                     attrStrokeWidth -> strokeWidth(props, attribute.value)
                     attrTrackColor -> trackColor(props, attribute.value)
@@ -119,6 +148,29 @@ internal class ProgressIndicatorView private constructor(props: Properties) :
             return if (color.isNotEmpty()) {
                 props.copy(color = color.toColor())
             } else props
+        }
+
+        /**
+         * Progress value for determinate progress indicator.
+         * Value should be between 0.0 and 1.0.
+         * If not set, the progress indicator will be indeterminate.
+         * ```
+         * <LinearProgressIndicator progress='0.5' />
+         * <CircularProgressIndicator progress='0.75' />
+         * ```
+         * @param progress Progress value between 0.0 and 1.0
+         */
+        private fun progress(props: Properties, progress: String): Properties {
+            // Try parsing the progress value, handling potential locale issues
+            val progressValue = progress.trim().toFloatOrNull()
+                ?: progress.trim().replace(',', '.').toFloatOrNull()
+
+            return if (progressValue != null) {
+                props.copy(progress = progressValue.coerceIn(0f, 1f))
+            } else {
+                android.util.Log.w("ProgressIndicator", "Failed to parse progress value: '$progress'")
+                props
+            }
         }
 
         /**

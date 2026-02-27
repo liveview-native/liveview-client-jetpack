@@ -31,10 +31,10 @@ defmodule LiveViewNative.Jetpack.MixProject do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:floki, ">= 0.30.0", only: :test},
-      {:live_view_native, github: "liveview-native/live_view_native", branch: "main", override: true},
-      {:live_view_native_stylesheet, github: "liveview-native/live_view_native_stylesheet", branch: "main", only: :test},
-      {:live_view_native_live_form, github: "liveview-native/liveview-native-live-form", only: :test},
-      {:live_view_native_test_endpoint, github: "liveview-native/live_view_native_test_endpoint", branch: "main", only: :test},
+      {:live_view_native, github: "sephianl/live_view_native", branch: "main", override: true},
+      {:live_view_native_stylesheet, github: "sephianl/live_view_native_stylesheet", branch: "main", only: :test},
+      {:live_view_native_live_form, github: "sephianl/liveview-native-live-form", only: :test},
+      # {:live_view_native_test_endpoint, github: "liveview-native/live_view_native_test_endpoint", branch: "main", only: :test},
       {:gettext, "~> 0.20", only: :test},
       {:nimble_parsec, "~> 1.3"}
     ]

@@ -132,6 +132,7 @@ object Attrs {
     const val attrPhxValue = CoreAttrs.attrPhxValue
     const val attrPivotFractionX = "pivotFractionX"
     const val attrPivotFractionY = "pivotFractionY"
+    const val attrProgress = "progress"
     const val attrPropagateMinConstraints = "propagateMinConstraints"
     const val attrQuery = "query"
     const val attrOnActiveChanged = "onActiveChanged"

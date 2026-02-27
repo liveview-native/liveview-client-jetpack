@@ -16,6 +16,7 @@ import org.phoenixframework.liveview.constants.ModifierArgs.argWidth
 import org.phoenixframework.liveview.constants.ModifierTypes.typeBorderStroke
 import org.phoenixframework.liveview.constants.ModifierTypes.typeColor
 import org.phoenixframework.liveview.constants.ModifierTypes.typeShape
+import org.phoenixframework.liveview.constants.ShapeValues
 import org.phoenixframework.liveview.foundation.ui.modifiers.ModifierDataAdapter
 
 fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>): Modifier {
@@ -53,7 +54,10 @@ fun Modifier.borderFromStyle(arguments: List<ModifierDataAdapter.ArgumentData>):
                 borderArgument.type == typeColor ->
                     borderColor = colorFromArgument(borderArgument)
 
-                borderArgument.type == typeShape ->
+                borderArgument.type == typeShape ||
+                    borderArgument.type == ShapeValues.roundedCorner ||
+                    borderArgument.type == ShapeValues.circle ||
+                    borderArgument.type == ShapeValues.rectangle ->
                     borderShape = shapeFromArgument(borderArgument)
 
                 borderArgument.isDot || borderArgument.isAtom -> {

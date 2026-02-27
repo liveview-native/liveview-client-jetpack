@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.phoenixframework.liveview.test.base.ModifierBaseTest
@@ -49,5 +50,21 @@ class ModifiersParserTest : ModifierBaseTest() {
                 .size(Dp(150f))
                 .padding(Dp(20f)),
         )
+    }
+
+    @Test
+    fun parseStyleWithNonModifierEntriesTest() {
+        // __themes__ has a map value, not a list-of-tuples.
+        // Parser should skip it and still parse the modifier entries.
+        val style = """%{
+            "__themes__" => %{material: %{colors: %{}}},
+            "style1" => [
+              {:background, [], [{:Color, [], [255, 0, 0, 255]}]}
+            ]
+        }""".trimStyle()
+        modifiersParser.fromStyleFile(style)
+        assertFalse(modifiersParser.isEmpty)
+        val result = modifiersParser.run { Modifier.fromStyleName("style1") }
+        assertEquals(result, Modifier.background(Color(255, 0, 0, 255)))
     }
 }

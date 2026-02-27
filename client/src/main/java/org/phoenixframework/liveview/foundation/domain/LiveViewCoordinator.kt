@@ -1,6 +1,7 @@
 package org.phoenixframework.liveview.foundation.domain
 
 import android.util.Log
+import com.google.gson.JsonParser as GsonJsonParser
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
@@ -257,10 +258,8 @@ class LiveViewCoordinator(
     }
 
     private fun getJsonFieldAsString(field: String, json: String): String {
-        return json.run {
-            val jsonField = "\"${field}\":"
-            substring(indexOf(jsonField) + jsonField.length, lastIndex)
-        }
+        val jsonObject = GsonJsonParser.parseString(json).asJsonObject
+        return jsonObject.get(field).toString()
     }
 
     private fun handleNavigation(message: Message) {
